@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# commit-msg hook: strip any AI co-authorship / "Generated with" lines so they
+# never enter the history. Silently sanitizes the message (does not block).
+# Enabled per-clone with:  git config core.hooksPath .githooks
+set -euo pipefail
+msg_file="$1"
+perl -0777 -i -pe '
+  s/^[^\n]*Co-Authored-By:[^\n]*(?:Claude|Anthropic|anthropic)[^\n]*\n//mig;
+  s/^[^\n]*Generated with[^\n]*(?:Claude|Anthropic)[^\n]*\n//mig;
+  s/^\s*🤖[^\n]*\n//mg;
+  s/\n{2,}\z/\n/;
+' "$msg_file"

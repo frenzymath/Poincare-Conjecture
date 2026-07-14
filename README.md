@@ -82,3 +82,9 @@ dimensions, tracked per PR:
 
 - **Mathematics** — correctness and fidelity of the blueprint statement to its source.
 - **Lean** — validity of the formal code discharging it.
+
+After cloning, enable the repository's git hooks:
+
+```bash
+git config core.hooksPath .githooks
+```
