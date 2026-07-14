@@ -1,0 +1,1539 @@
+\chapter{Isometric Immersions}
+\label{chap:dc-isometric-immersions}
+
+Faithful transcription of do Carmo, \emph{Riemannian Geometry}. Each numbered
+statement keeps do Carmo's number, kind and (name); proofs keep his explicit
+cross-references ("by \cref{prop:dc-ch6-2-1}", "\cref{thm:dc-ch6-2-5} of this chapter", "Chapter 4")
+so the dependency graph is recoverable from the text.
+
+\section{Introduction}
+
+In this chapter we consider an isometric immersion $f:M\to\overline{M}$ of a manifold
+$M$ of dimension $n$ into a Riemannian manifold $\overline{M}$ of dimension
+$k=n+m$. The Riemannian metric of $\overline{M}$ induces, in a natural manner, a
+Riemannian metric on $M$: if $v_1,v_2\in T_pM$, define
+$\langle v_1,v_2\rangle=\langle df_p(v_1),df_p(v_2)\rangle$. In this situation $f$
+becomes an isometric immersion of $M$ into $\overline{M}$, and we study the
+relationship between the geometry of $M$ and that of $\overline{M}$.
+
+The motivation comes from the classical case of surfaces $S$ in $\mathbb{R}^3$.
+Restricting to the case where $S$ is the graph
+$\{(x,y,z)\in\mathbb{R}^3;z=f(x,y)\}$ of a differentiable function $f$ with
+$f(0,0)=0$ and $f_x(0,0)=f_y(0,0)=0$ (so that $S$ is tangent to the $x,y$ plane),
+the behavior of $S$ near the origin $0\in\mathbb{R}^3$ is strongly influenced by
+the quadratic form
+
+$$
+\mathit{II}(x,y)=f_{xx}(0)x^2+2f_{xy}(0)xy+f_{yy}(0)y^2
+$$
+
+defined in the $x,y$ plane. $\mathit{II}$ is called the \emph{second fundamental form}
+of $S$ at the point $0$, and the Gaussian curvature of $S$ at $0$ is given by
+
+$$
+K=f_{xx}f_{yy}-f_{xy}^2.\qquad(1)
+$$
+
+Our first objective is to generalize the notion of the second fundamental form to
+$f:M\to\overline{M}$. Since the codimension $m$ can be larger than $1$, the
+quadratic form so defined must take values in a vector space of dimension
+$m\geq 1$.
+
+The most important relation between the metrics of $M$ and $\overline{M}$ is the
+Gauss formula (\cref{thm:dc-ch6-2-5}), which generalizes (1) and yields the difference
+between the curvatures of $M$ and $\overline{M}$ in terms of the second
+fundamental form. Since the curvatures are defined intrinsically, the Gauss
+formula generalizes the fundamental theorem of Gauss (the point of departure for
+Riemannian Geometry). Using the Gauss formula we give a geometric interpretation
+of sectional curvature that is essentially the definition used by Riemann
+(Cf. Chap. 4, Introduction). In the last section we introduce the equations of
+Codazzi and Ricci, which together with Gauss' equation form the fundamental
+equations of the local theory of isometric immersions.
+
+\section{The second fundamental form}
+
+Let $f:M^n\to\overline{M}^{n+m=k}$ be an immersion. For each $p\in M$ there is a
+neighborhood $U\subset M$ of $p$ such that $f(U)\subset\overline{M}$ is a
+submanifold of $\overline{M}$. To simplify notation we identify $U$ with $f(U)$
+and each vector $v\in T_qM$, $q\in U$, with $df_q(v)\in T_{f(q)}\overline{M}$, and
+use such identifications to extend a local vector field on $M$ to a local vector
+field on $\overline{M}$.
+
+For each $p\in M$ the inner product on $T_p\overline{M}$ splits it into the direct
+sum
+
+$$
+T_p\overline{M}=T_pM\oplus(T_pM)^\perp,
+$$
+
+where $(T_pM)^\perp$ is the orthogonal complement of $T_pM$ in $T_p\overline{M}$.
+If $v\in T_p\overline{M}$ we write $v=v^T+v^N$, $v^T\in T_pM$,
+$v^N\in(T_pM)^\perp$, calling $v^T$ the \emph{tangential component} and $v^N$ the
+\emph{normal component} of $v$; this splitting is differentiable.
+
+The Riemannian connection of $\overline{M}$ is denoted $\overline{\nabla}$. If
+$X,Y$ are local vector fields on $M$ and $\overline{X},\overline{Y}$ local
+extensions to $\overline{M}$, define
+
+$$
+\nabla_X Y=(\overline{\nabla}_{\overline{X}}\overline{Y})^T;
+$$
+
+this is the Riemannian connection relative to the induced metric on $M$
+(Cf. Exercise 3 of Chap. 2). To define the second fundamental form, set, for $X,Y$
+local vector fields on $M$,
+
+$$
+B(X,Y)=\overline{\nabla}_{\overline{X}}\overline{Y}-\nabla_X Y,
+$$
+
+a local vector field on $\overline{M}$ normal to $M$. $B(X,Y)$ does not depend on
+the extensions $\overline{X},\overline{Y}$. We denote by $\mathcal{X}(U)^\perp$ the
+differentiable vector fields on $U$ that are normal to $f(U)\approx U$.
+
+The identification of $U$ with $f(U)$ places the whole chapter inside the
+ambient manifold; the following definitions record the working setup so
+obtained and the tangential and normal parts of the objects above.
+
+\begin{definition}[the identified setup: tangent distribution and orthogonal splitting]
+  \label{def:dc-ch6-2-patch}
+  \lean{Riemannian.DCImmersedPatch,
+    Riemannian.DCImmersedPatch.normalSpace,
+    Riemannian.DCImmersedPatch.mem_normalSpace_iff,
+    Riemannian.DCImmersedPatch.normalProj,
+    Riemannian.DCImmersedPatch.IsTangentField,
+    Riemannian.DCImmersedPatch.IsNormalField,
+    Riemannian.DCImmersedPatch.isTangentField_bracketField}
+  \leanok
+  Let $(\overline{M},\langle\,,\rangle)$ be a Riemannian manifold. An
+  \emph{immersed patch} of dimension $n$ in $\overline{M}$ — the data furnished
+  by an isometric immersion $f:M^n\to\overline{M}$ after the identification of
+  $U\subset M$ with $f(U)\subset\overline{M}$ — consists of a family of
+  subspaces $T_pM\subseteq T_p\overline{M}$, $p\in\overline{M}$, of constant
+  dimension $n$, such that:
+
+  (i) the orthogonal splitting $T_p\overline{M}=T_pM\oplus(T_pM)^\perp$ is
+  \emph{differentiable}: every differentiable vector field $X$ on
+  $\overline{M}$ admits a differentiable field $X^T$ with $X^T(p)\in T_pM$ and
+  $\langle v,\,X(p)-X^T(p)\rangle=0$ for every $v\in T_pM$ and every $p$;
+
+  (ii) fields tangent to $M$ are closed under the Lie bracket: if
+  $X(p),Y(p)\in T_pM$ for all $p$, then $[X,Y](p)\in T_pM$ for all $p$ (on $M$,
+  $[\overline{X},\overline{Y}]=[X,Y]$).
+
+  The \emph{normal space} at $p$ is
+  $(T_pM)^\perp=\{v\in T_p\overline{M};\ \langle w,v\rangle=0\ \text{for all}\
+  w\in T_pM\}$, and the \emph{normal part} of a field is $X^N=X-X^T$, so that
+  $X=X^T+X^N$. A field is \emph{tangent} when $X(p)\in T_pM$ for every $p$ and
+  \emph{normal} when $X(p)\in(T_pM)^\perp$ for every $p$; under the
+  identification, the tangent fields are the local fields $\mathcal{X}(U)$ of
+  $M$ and the normal fields are $\mathcal{X}(U)^\perp$.
+\end{definition}
+
+\begin{lemma}[uniqueness and tensoriality of the tangential projection]
+  \label{lem:dc-ch6-2-proj}
+  \uses{def:dc-ch6-2-patch}
+  \lean{Riemannian.DCImmersedPatch.eq_zero_of_mem_tang_of_mem_normalSpace,
+    Riemannian.DCImmersedPatch.tangentProj_eq_at,
+    Riemannian.DCImmersedPatch.tangentProj_congr_apply,
+    Riemannian.DCImmersedPatch.tangentProj_add,
+    Riemannian.DCImmersedPatch.tangentProj_smul,
+    Riemannian.DCImmersedPatch.tangentProj_apply_of_mem,
+    Riemannian.DCImmersedPatch.tangentProj_apply_of_mem_normalSpace,
+    Riemannian.DCImmersedPatch.normalProj_add,
+    Riemannian.DCImmersedPatch.normalProj_smul}
+  \leanok
+  The splitting $X(p)=X^T(p)+X^N(p)$ at a point is the unique decomposition of
+  $X(p)$ into a tangent and a normal vector: if $u\in T_pM$ and
+  $\langle v,\,X(p)-u\rangle=0$ for all $v\in T_pM$, then $u=X^T(p)$. In
+  particular $X^T(p)$ depends only on the value $X(p)$; the projections
+  $X\mapsto X^T$ and $X\mapsto X^N$ are additive and
+  $\mathcal{D}(\overline{M})$-homogeneous; $X^T=X$ and $X^N=0$ for tangent
+  fields; and $X^T=0$, $X^N=X$ for normal fields.
+\end{lemma}
+\begin{proof}
+  \leanok
+  If $d\in T_pM$ is also normal at $p$ then $\langle d,d\rangle=0$, so $d=0$ by
+  positive-definiteness: the splitting is direct. Let $u$ be as in the
+  statement. Then $X^T(p)-u\in T_pM$, and for every tangent $v$,
+  $\langle v,\,X^T(p)-u\rangle
+  =\langle v,\,X(p)-u\rangle-\langle v,\,X(p)-X^T(p)\rangle=0$, so $X^T(p)-u$
+  is also normal, hence zero. Every remaining assertion is an instance of this
+  uniqueness: $X^T(p)+Y^T(p)$ is tangent and
+  $(X+Y)(p)-(X^T(p)+Y^T(p))=(X(p)-X^T(p))+(Y(p)-Y^T(p))$ is orthogonal to
+  $T_pM$, so $(X+Y)^T=X^T+Y^T$; likewise $f(p)X^T(p)$ is tangent with
+  $f(p)X(p)-f(p)X^T(p)=f(p)(X(p)-X^T(p))$ orthogonal to $T_pM$, so
+  $(fX)^T=fX^T$; if $X(p)\in T_pM$ then $u=X(p)$ satisfies the
+  characterization, and if $X(p)$ is normal then $u=0$ does. The assertions
+  for $X^N=X-X^T$ follow by subtraction.
+\end{proof}
+
+\begin{definition}[the induced connection]
+  \label{def:dc-ch6-2-induced-connection}
+  \uses{def:dc-ch6-2-patch, thm:dc-ch2-3-6}
+  \lean{Riemannian.DCImmersedPatch.inducedCov}
+  \leanok
+  Let $\overline{\nabla}$ be the Riemannian connection of $\overline{M}$. The
+  \emph{induced connection} of the patch is
+  $\nabla_X Y=(\overline{\nabla}_X Y)^T$.
+\end{definition}
+
+\begin{proposition}[the induced connection is the Riemannian connection of the induced metric]
+  \label{prop:dc-ch6-2-induced-connection}
+  \uses{def:dc-ch6-2-induced-connection, lem:dc-ch6-2-proj}
+  \lean{Riemannian.DCImmersedPatch.isTangentField_inducedCov,
+    Riemannian.DCImmersedPatch.inducedCov_add_left,
+    Riemannian.DCImmersedPatch.inducedCov_smul_left,
+    Riemannian.DCImmersedPatch.inducedCov_add_right,
+    Riemannian.DCImmersedPatch.inducedCov_smul_right,
+    Riemannian.DCImmersedPatch.inducedCov_sub_swap,
+    Riemannian.DCImmersedPatch.inducedCov_compat}
+  \leanok
+  The induced connection is tangent-valued and, on tangent fields, satisfies
+  the axioms of an affine connection: it is additive in both arguments,
+  $\mathcal{D}$-homogeneous in the direction ($\nabla_{fX}Y=f\nabla_XY$), and
+  satisfies the Leibniz rule $\nabla_X(fY)=f\nabla_XY+X(f)\,Y$ for $Y$ tangent.
+  Moreover it is symmetric, $\nabla_XY-\nabla_YX=[X,Y]$ for tangent $X,Y$, and
+  compatible with the metric on tangent fields,
+  $X\langle Y,Z\rangle=\langle\nabla_XY,Z\rangle+\langle Y,\nabla_XZ\rangle$.
+  By the uniqueness of the Riemannian connection (\cref{thm:dc-ch2-3-6}) it is
+  the Riemannian connection of the induced metric.
+\end{proposition}
+\begin{proof}
+  \leanok
+  Additivity and $\mathcal{D}$-homogeneity in the direction slot follow from
+  the corresponding laws of $\overline{\nabla}$ and of the projection
+  (\cref{lem:dc-ch6-2-proj}). For the Leibniz rule,
+  $\overline{\nabla}_X(fY)=f\overline{\nabla}_XY+X(f)\,Y$; taking tangential
+  parts, the term $X(f)\,Y$ is already tangent, giving
+  $\nabla_X(fY)=f\nabla_XY+X(f)\,Y$. For symmetry, the difference
+  $\overline{\nabla}_XY-\overline{\nabla}_YX=[X,Y]$ is tangent for tangent
+  $X,Y$ (\cref{def:dc-ch6-2-patch}(ii)), so applying the projection gives
+  $\nabla_XY-\nabla_YX=[X,Y]$. For compatibility, write
+  $\overline{\nabla}_XY=(\overline{\nabla}_XY)^T+(\overline{\nabla}_XY)^N$ in
+  $X\langle Y,Z\rangle
+  =\langle\overline{\nabla}_XY,Z\rangle+\langle Y,\overline{\nabla}_XZ\rangle$;
+  the normal parts pair to zero against the tangent fields $Z$ and $Y$.
+\end{proof}
+
+\begin{definition}[the second fundamental form field]
+  \label{def:dc-ch6-2-B}
+  \uses{def:dc-ch6-2-induced-connection}
+  \lean{Riemannian.DCImmersedPatch.secondFundForm,
+    Riemannian.DCImmersedPatch.cov_eq_inducedCov_add_secondFundForm,
+    Riemannian.DCImmersedPatch.secondFundForm_mem}
+  \leanok
+  The \emph{second fundamental form} of the patch is
+  $B(X,Y)=\overline{\nabla}_XY-\nabla_XY=(\overline{\nabla}_XY)^N$, a
+  normal-valued form on fields, giving the \emph{Gauss decomposition}
+  $\overline{\nabla}_XY=\nabla_XY+B(X,Y)$.
+\end{definition}
+
+\begin{proposition}[the second fundamental form mapping $B$]
+  \label{prop:dc-ch6-2-1}
+  \dcref{ch6:2.1}
+  \uses{def:dc-ch6-2-B, lem:dc-ch6-2-proj, prop:dc-ch6-2-induced-connection}
+  \lean{Riemannian.DCImmersedPatch.secondFundForm_add_left,
+    Riemannian.DCImmersedPatch.secondFundForm_add_right,
+    Riemannian.DCImmersedPatch.secondFundForm_sub_left,
+    Riemannian.DCImmersedPatch.secondFundForm_smul_left,
+    Riemannian.DCImmersedPatch.secondFundForm_smul_right,
+    Riemannian.DCImmersedPatch.secondFundForm_symm,
+    Riemannian.DCImmersedPatch.isNormalField_secondFundForm}
+  \leanok
+  If $X,Y\in\mathcal{X}(U)$, the mapping
+  $B:\mathcal{X}(U)\times\mathcal{X}(U)\to\mathcal{X}(U)^\perp$ given by
+
+  $$
+  B(X,Y)=\overline{\nabla}_{\overline{X}}\overline{Y}-\nabla_X Y
+  $$
+
+  is bilinear and symmetric.
+\end{proposition}
+\begin{proof}
+  \leanok
+  From linearity of a connection, $B$ is additive in $X$ and $Y$ and
+  $B(fX,Y)=fB(X,Y)$, $f\in\mathcal{D}(U)$. To show $B(X,fY)=fB(X,Y)$, denote the
+  extension of $f$ to $\overline{U}$ by $\overline{f}$; then
+
+  $$
+  B(X,fY)=\overline{\nabla}_{\overline{X}}(\overline{f}\,\overline{Y})-\nabla_X(fY)=\overline{f}\,\overline{\nabla}_{\overline{X}}\overline{Y}-f\nabla_X Y+\overline{X}(\overline{f})\overline{Y}-X(f)Y.
+  $$
+
+  Since $f=\overline{f}$, $\overline{X}(\overline{f})=X(f)$, and $Y=\overline{Y}$ on
+  $M$, the last two terms cancel, giving $B(X,fY)=fB(X,Y)$. To show $B$ is
+  symmetric, by symmetry of the Riemannian connection,
+
+  $$
+  B(X,Y)=\overline{\nabla}_{\overline{X}}\overline{Y}-\nabla_X Y=\overline{\nabla}_{\overline{Y}}\overline{X}+[\overline{X},\overline{Y}]-\nabla_Y X-[X,Y].
+  $$
+
+  Since $[\overline{X},\overline{Y}]=[X,Y]$ on $M$, we conclude $B(X,Y)=B(Y,X)$.
+  $\square$
+\end{proof}
+
+\begin{lemma}[pointwise locality of $B$ and of the covariant derivative]
+  \label{lem:dc-ch6-2-locality}
+  \uses{prop:dc-ch6-2-1, def:dc-ch6-2-patch}
+  \lean{Riemannian.AffineConnection.cov_congr_apply_left,
+    Riemannian.exists_decomposition_of_apply_eq_zero,
+    Riemannian.DCImmersedPatch.exists_tangent_decomposition_of_apply_eq_zero,
+    Riemannian.DCImmersedPatch.secondFundForm_congr_apply,
+    Riemannian.DCImmersedPatch.exists_isTangentField_eq,
+    Riemannian.DCImmersedPatch.exists_isNormalField_eq}
+  \leanok
+  Because $B$ is bilinear over the differentiable functions, the value
+  $B(X,Y)(p)$ depends only on the values $X(p)$ and $Y(p)$: if $X(p)=X'(p)$ and
+  the tangent fields $Y,Y'$ satisfy $Y(p)=Y'(p)$, then
+  $B(X,Y)(p)=B(X',Y')(p)$. Likewise $\overline{\nabla}_XZ(p)$ depends on the
+  direction only through $X(p)$. Moreover every tangent vector $v\in T_pM$
+  (resp.\ normal vector $\eta\in(T_pM)^\perp$) is the value at $p$ of a tangent
+  (resp.\ normal) field, so the pointwise objects of this chapter are
+  well-defined.
+\end{lemma}
+\begin{proof}
+  \leanok
+  A field $\sigma$ with $\sigma(p)=0$ can be written, near $p$, as a finite sum
+  $\sum_i f_i W_i$ with differentiable functions $f_i$ vanishing at $p$: expand
+  $\sigma$ in a local frame of the tangent bundle of $\overline{M}$ around $p$
+  and cut the coefficients and the frame off by a bump function equal to $1$
+  near $p$; the discrepancy is a field vanishing on a neighbourhood of $p$.
+  For a mapping $\Phi$ that is additive and $\mathcal{D}$-homogeneous in
+  $\sigma$, each summand contributes $f_i(p)\,\Phi(W_i)(p)=0$, and a field
+  vanishing near $p$ contributes $0$ because it equals $(1-\chi)\tau$ for a
+  bump $\chi$ with $\chi(p)=1$ supported in the vanishing neighbourhood.
+  Applying this to $\Phi=\overline{\nabla}_{(\cdot)}Z$ and, in the second slot,
+  to $\Phi=B(X,\cdot)$ — where for tangent $\sigma$ the frame decomposition
+  may be projected tangentially, so the $W_i$ can be taken tangent — gives the
+  locality claims. For the extensions: any vector extends to a global
+  differentiable field, and composing with the tangential (resp.\ normal)
+  projection fixes the value at $p$ when it is tangent (resp.\ normal).
+\end{proof}
+
+By \cref{lem:dc-ch6-2-locality}, the value $B(X,Y)(p)$ depends only on the
+values $X(p)$ and $Y(p)$. Now let $p\in M$ and $\eta\in(T_pM)^\perp$. The
+mapping $H_\eta:T_pM\times T_pM\to\mathbb{R}$ given by
+
+$$
+H_\eta(x,y)=\langle B(x,y),\eta\rangle,\quad x,y\in T_pM,
+$$
+
+is, by Proposition 2.1, a symmetric bilinear form.
+
+\begin{definition}[second fundamental form $\mathit{II}_\eta$]
+  \label{def:dc-ch6-2-2}
+  \dcref{ch6:2.2}
+  \uses{lem:dc-ch6-2-locality, prop:dc-ch6-2-1, def:dc-ch6-3-normal-connection, lem:dc-ch6-3-weingarten}
+  \lean{Riemannian.DCImmersedPatch.secondFundFormAt,
+    Riemannian.DCImmersedPatch.secondFundScalarAt,
+    Riemannian.DCImmersedPatch.secondFundQuadAt,
+    Riemannian.DCImmersedPatch.shapeOperatorAt,
+    Riemannian.DCImmersedPatch.inner_shapeOperatorAt,
+    Riemannian.DCImmersedPatch.inner_shapeOperatorAt_symm,
+    Riemannian.DCImmersedPatch.secondFundScalarAt_symm,
+    Riemannian.DCImmersedPatch.secondFundFormAt_symm}
+  \leanok
+  The quadratic form $\mathit{II}_\eta$ defined on $T_pM$ by
+  
+  $$
+  \mathit{II}_\eta(x)=H_\eta(x,x)
+  $$
+  
+  is called \emph{the second fundamental form} of $f$ at $p$ along the normal vector
+  $\eta$. Sometimes the expression \emph{second fundamental form} also designates the
+  mapping $B$. The bilinear mapping $H_\eta$ is associated to a linear self-adjoint
+  operator $S_\eta:T_pM\to T_pM$ by
+  
+  $$
+  \langle S_\eta(x),y\rangle=H_\eta(x,y)=\langle B(x,y),\eta\rangle.
+  $$
+\end{definition}
+
+\begin{proposition}[the operator $S_\eta$ via the covariant derivative]
+  \label{prop:dc-ch6-2-3}
+  \dcref{ch6:2.3}
+  \uses{def:dc-ch6-2-2, def:dc-ch6-3-normal-connection, lem:dc-ch6-3-weingarten, lem:dc-ch6-2-locality}
+  \lean{Riemannian.DCImmersedPatch.shapeOperatorAt_eq_shapeOperator}
+  \leanok
+  Let $p\in M$, $x\in T_pM$ and $\eta\in(T_pM)^\perp$. Let $N$ be a local extension
+  of $\eta$ normal to $M$. Then
+
+  $$
+  S_\eta(x)=-(\overline{\nabla}_x N)^T.
+  $$
+\end{proposition}
+\begin{proof}
+  \leanok
+  Let $y\in T_pM$ and let $X,Y$ be local extensions of $x,y$, tangent to
+  $M$. Then $\langle N,Y\rangle=0$, and therefore
+  
+  $$
+  \langle S_\eta(x),y\rangle=\langle B(X,Y)(p),N\rangle=\langle\overline{\nabla}_X Y-\nabla_X Y,N\rangle(p)=\langle\overline{\nabla}_X Y,N\rangle(p)=-\langle Y,\overline{\nabla}_X N\rangle(p)=\langle-\overline{\nabla}_x N,y\rangle,
+  $$
+  
+  for all $y\in T_pM$. $\square$
+\end{proof}
+
+\begin{example}[hypersurface; principal curvatures; Gauss spherical mapping]
+  \label{ex:dc-ch6-2-4}
+  \dcref{ch6:2.4}
+  \uses{def:dc-ch6-2-2, prop:dc-ch6-2-3, def:dc-ch6-2-4-principal,
+    lem:dc-ch6-2-8-euclidean-opens, ex:dc-ch6-2-8}
+  \lean{Riemannian.gaussMap, Riemannian.gaussMap_norm,
+    Riemannian.normalSpace_eq_span_of_unit_normal,
+    Riemannian.mem_tang_of_inner_unit_normal_eq_zero,
+    Riemannian.fderiv_gaussMap_mem_tang,
+    Riemannian.fderiv_gaussMap_eq_neg_shapeOperatorAt,
+    Riemannian.fderiv_gaussMap_mem_sphereTang}
+  \leanok
+  Consider the case in which the codimension of the immersion is $1$, i.e.
+  $f:M^n\to\overline{M}^{n+1}$; $f(M)\subset\overline{M}$ is then called a
+  \emph{hypersurface}. Let $p\in M$ and $\eta\in(T_pM)^\perp$, $|\eta|=1$. Since
+  $S_\eta:T_pM\to T_pM$ is symmetric, there exists an orthonormal basis of
+  eigenvectors $\{e_1,\dots,e_n\}$ of $T_pM$ with real eigenvalues
+  $\lambda_1,\dots,\lambda_n$, $S_\eta(e_i)=\lambda_i e_i$. If $M$ and $\overline{M}$
+  are both orientable and oriented, then $\eta$ is uniquely determined by requiring
+  $\{e_1,\dots,e_n\}$ to be in the orientation of $M$ and $\{e_1,\dots,e_n,\eta\}$ in
+  the orientation of $\overline{M}$. The $e_i$ are \emph{principal directions} and the
+  $\lambda_i=k_i$ are \emph{principal curvatures} of $f$. The symmetric functions of the
+  $\lambda_i$ are invariants of the immersion: $\det(S_\eta)=\lambda_1\cdots\lambda_n$
+  is the \emph{Gauss-Kronecker curvature} and
+  $\frac{1}{n}(\lambda_1+\cdots+\lambda_n)$ the \emph{mean curvature} of $f$.
+  
+  When $\overline{M}=\mathbb{R}^{n+1}$, take $N$ a local unit normal extension of
+  $\eta$. Let $S_1^n=\{x\in\mathbb{R}^{n+1};|x|=1\}$ and define the *Gauss spherical
+  mapping* $g:M^n\to S_1^n$ by translating the origin of $N$ to the origin of
+  $\mathbb{R}^{n+1}$, with $g(q)=$ endpoint of the translation of $N(q)$. Since
+  $T_qM$ and $T_{g(q)}S_1^n$ are parallel, we identify them and find
+  
+  $$
+  dg_q(x)=\frac{d}{dt}(N\circ c(t))_{t=0}=\overline{\nabla}_x N=(\overline{\nabla}_x N)^T=-S_\eta(x),
+  $$
+  
+  where $c:(-\varepsilon,\varepsilon)\to M$ has $c(0)=q$, $c'(0)=x$, using
+  $\langle N,N\rangle=1$. Thus $-S_\eta$ is the derivative of the Gauss spherical
+  mapping.
+
+  In the identified picture, for a hypersurface patch in an open subset of
+  Euclidean space (\cref{lem:dc-ch6-2-8-euclidean-opens}) with a smooth unit
+  normal field $N$: differentiating $\langle N,N\rangle\equiv1$ gives
+  $\langle N(q),dN_q(v)\rangle=0$, so $dg_q(v)$ is tangent both to the
+  unit-sphere leaf through $g(q)$ of the concentric-sphere foliation of
+  \cref{ex:dc-ch6-2-8} (the "parallel tangent spaces" identification) and — by
+  the codimension-$1$ fact that the normal space is exactly the line
+  $\mathbb{R}\,N(q)$ — to the hypersurface itself; the Weingarten identity of
+  \cref{prop:dc-ch6-2-3} then yields $dg_q(x)=\overline\nabla_xN
+  =(\overline\nabla_xN)^T=-S_\eta(x)$.
+\end{example}
+
+\begin{remark}[compact hypersurfaces with non-vanishing Gauss-Kronecker curvature]
+  \label{rem:dc-ch6-2-4-covering}
+  \uses{ex:dc-ch6-2-4}
+  \notready
+  As an application: if $M^n$, $n\geq 2$, is a connected, compact,
+  orientable manifold and there exists an immersion $f:M^n\to\mathbb{R}^{n+1}$ with
+  non-vanishing Gauss-Kronecker curvature at every point, then $M$ is diffeomorphic
+  to $S_1^n$ (the proof depends on covering spaces; $\det(dg_p)\neq 0$ makes
+  $g:M\to S_1^n$ a local diffeomorphism, hence a covering map since $M$ is compact,
+  hence a diffeomorphism since $S_1^n$ is simply connected). The covering-space
+  theory needed here is not yet available in the development; this application
+  remains a documented gap.
+\end{remark}
+
+\begin{definition}[principal curvatures and directions; Gauss-Kronecker and mean curvature]
+  \label{def:dc-ch6-2-4-principal}
+  \uses{def:dc-ch6-2-2}
+  \lean{Riemannian.DCImmersedPatch.shapeOperatorHom,
+    Riemannian.DCImmersedPatch.shapeOperatorHom_isSymmetric,
+    Riemannian.DCImmersedPatch.principalCurvatures,
+    Riemannian.DCImmersedPatch.principalDirections,
+    Riemannian.DCImmersedPatch.principalDirection,
+    Riemannian.DCImmersedPatch.metricInner_principalDirection,
+    Riemannian.DCImmersedPatch.shapeOperatorAt_principalDirection,
+    Riemannian.DCImmersedPatch.secondFundScalarAt_principalDirection,
+    Riemannian.DCImmersedPatch.gaussKroneckerCurvature,
+    Riemannian.DCImmersedPatch.meanCurvature,
+    Riemannian.DCImmersedPatch.trace_shapeOperatorHom,
+    Riemannian.DCImmersedPatch.meanCurvature_eq_sum,
+    Riemannian.DCImmersedPatch.gaussKroneckerCurvature_eq_prod}
+  \leanok
+  Let $p\in M$ and $\eta\in(T_pM)^\perp$. Since $S_\eta:T_pM\to T_pM$ is linear
+  and self-adjoint with respect to the metric, the spectral theorem yields an
+  orthonormal basis of eigenvectors $\{e_1,\dots,e_n\}$ of $T_pM$ with real
+  eigenvalues $\lambda_1,\dots,\lambda_n$, $S_\eta(e_i)=\lambda_ie_i$, and
+  $H_\eta(e_i,e_j)=\lambda_i\delta_{ij}$. The $e_i$ are the \emph{principal
+  directions} and the $\lambda_i=k_i$ the \emph{principal curvatures} of $f$ at
+  $p$ along $\eta$. Their symmetric functions are invariants of the immersion:
+  $\det(S_\eta)=\lambda_1\cdots\lambda_n$ is the \emph{Gauss-Kronecker
+  curvature} and $\frac1n\operatorname{trace}(S_\eta)
+  =\frac1n(\lambda_1+\cdots+\lambda_n)$ the \emph{mean curvature} of $f$ at $p$
+  along $\eta$.
+\end{definition}
+
+\begin{theorem}[Gauss]
+  \label{thm:dc-ch6-2-5}
+  \dcref{ch6:2.5}
+  \uses{prop:dc-ch6-2-1, def:dc-ch6-3-curvatures, def:dc-ch4-3-2, prop:dc-ch6-3-1}
+  \lean{Riemannian.DCImmersedPatch.gauss_theorem,
+    Riemannian.DCImmersedPatch.inducedCurvature_inner_sub_curvature_inner}
+  \leanok
+  Let $p\in M$ and let $x,y$ be orthonormal vectors in $T_pM$. Then
+
+  $$
+  K(x,y)-\overline{K}(x,y)=\langle B(x,x),B(y,y)\rangle-|B(x,y)|^2,\qquad(1)
+  $$
+
+  where $K(x,y)$ and $\overline{K}(x,y)$ denote the sectional curvatures of $M$ and
+  $\overline{M}$, respectively, in the plane generated by $x$ and $y$.
+\end{theorem}
+\begin{proof}
+  \leanok
+  Let $X,Y$ be local orthogonal extensions of $x,y$, tangent to $M$, with
+  extensions $\overline{X},\overline{Y}$ to $\overline{M}$. Then
+  
+  $$
+  K(x,y)-\overline{K}(x,y)=\langle\nabla_Y\nabla_X X-\nabla_X\nabla_Y X-(\overline{\nabla}_{\overline{Y}}\overline{\nabla}_{\overline{X}}\overline{X}-\overline{\nabla}_{\overline{X}}\overline{\nabla}_{\overline{Y}}\overline{X}),Y\rangle(p)+\langle\nabla_{[X,Y]}X-\overline{\nabla}_{[\overline{X},\overline{Y}]}\overline{X},Y\rangle(p).
+  $$
+  
+  The last term is zero because
+  $\langle\nabla_{[X,Y]}X-\overline{\nabla}_{[\overline{X},\overline{Y}]}\overline{X},Y\rangle(p)=-\langle(\overline{\nabla}_{[\overline{X},\overline{Y}]}\overline{X})^N,Y\rangle(p)=0$.
+  Denoting by $E_1,\dots,E_m$, $m=\dim\overline{M}-\dim M$, local orthonormal fields
+  normal to $M$, we have $B(X,Y)=\sum_i H_i(X,Y)E_i$, $H_i=H_{E_i}$. Then at $p$,
+  
+  $$
+  \overline{\nabla}_{\overline{Y}}\overline{\nabla}_{\overline{X}}\overline{X}=\overline{\nabla}_{\overline{Y}}\Big(\sum_i H_i(X,X)E_i+\nabla_X X\Big)=\sum_i\{H_i(X,X)\overline{\nabla}_{\overline{Y}}E_i+\overline{Y}H_i(X,X)E_i\}+\overline{\nabla}_{\overline{Y}}\nabla_X X,
+  $$
+  
+  hence
+  
+  $$
+  \langle\overline{\nabla}_{\overline{Y}}\overline{\nabla}_{\overline{X}}\overline{X},Y\rangle=-\sum_i H_i(X,X)H_i(Y,Y)+\langle\nabla_Y\nabla_X X,Y\rangle,\qquad(2)
+  $$
+  
+  and similarly
+  
+  $$
+  \langle\overline{\nabla}_{\overline{X}}\overline{\nabla}_{\overline{Y}}\overline{X},Y\rangle=-\sum_i H_i(X,Y)H_i(X,Y)+\langle\nabla_X\nabla_Y X,Y\rangle.\qquad(3)
+  $$
+  
+  Using (2) and (3) we obtain (1). $\square$
+
+  Alternatively, the theorem is the special case $Z=x$, $T=y$ of the Gauss
+  equation of \cref{prop:dc-ch6-3-1}, together with the symmetry of $B$
+  (\cref{prop:dc-ch6-2-1}); for orthonormal $x,y$ the normalizing factor
+  $|x|^2|y|^2-\langle x,y\rangle^2$ of the sectional curvature equals $1$.
+\end{proof}
+
+\begin{remark}[Gauss formula for a hypersurface]
+  \label{rem:dc-ch6-2-6}
+  \dcref{ch6:2.6}
+  \uses{thm:dc-ch6-2-5, def:dc-ch6-2-4-principal}
+  \lean{Riemannian.DCImmersedPatch.secondFundFormAt_eq_secondFundScalarAt_smul,
+    Riemannian.DCImmersedPatch.hypersurface_gauss}
+  \leanok
+  In the case of a hypersurface $f:M^n\to\overline{M}^{n+1}$, let $p\in M$,
+  $\eta\in(T_pM)^\perp$, $|\eta|=1$, and $\{e_1,\dots,e_n\}$ an orthonormal basis of $T_pM$ in
+  which $S_\eta=S$ is diagonal, $S(e_i)=\lambda_ie_i$. Then $H(e_i,e_i)=\lambda_i$
+  and $H(e_i,e_j)=0$ if $i\neq j$, so (1) becomes
+  
+  $$
+  K(e_i,e_j)-\overline{K}(e_i,e_j)=\lambda_i\lambda_j.\qquad(4)
+  $$
+\end{remark}
+
+\begin{lemma}[Koszul formula for the induced connection]
+  \label{lem:dc-ch6-2-7-koszul}
+  \uses{prop:dc-ch6-2-induced-connection}
+  \lean{Riemannian.DCImmersedPatch.inducedCov_koszul}
+  \leanok
+  For fields $X,Y,Z$ tangent to the patch,
+  $$
+  2\langle Z,\nabla_YX\rangle
+    = X\langle Y,Z\rangle + Y\langle Z,X\rangle - Z\langle X,Y\rangle
+      - \langle[X,Z],Y\rangle - \langle[Y,Z],X\rangle - \langle[X,Y],Z\rangle.
+  $$
+  Every quantity on the right-hand side — inner products of tangent fields,
+  their derivatives along tangent fields, and brackets of tangent fields — is
+  intrinsic to the immersed manifold: the induced connection is determined by
+  the induced metric.
+\end{lemma}
+\begin{proof}
+  \leanok
+  Write the compatibility identity of \cref{prop:dc-ch6-2-induced-connection}
+  for the three cyclic orderings,
+  $X\langle Y,Z\rangle=\langle\nabla_XY,Z\rangle+\langle Y,\nabla_XZ\rangle$,
+  $Y\langle Z,X\rangle=\langle\nabla_YZ,X\rangle+\langle Z,\nabla_YX\rangle$,
+  $Z\langle X,Y\rangle=\langle\nabla_ZX,Y\rangle+\langle X,\nabla_ZY\rangle$,
+  and substitute the symmetry identities
+  $\nabla_XY-\nabla_YX=[X,Y]$, $\nabla_XZ-\nabla_ZX=[X,Z]$,
+  $\nabla_YZ-\nabla_ZY=[Y,Z]$ of the same proposition. Adding the first two
+  identities and subtracting the third, all covariant-derivative terms cancel
+  against bracket terms except $2\langle Z,\nabla_YX\rangle$, which gives the
+  formula.
+\end{proof}
+
+\begin{lemma}[orthonormal pairs spanning a plane give equal curvature values]
+  \label{lem:dc-ch6-2-7-plane}
+  \uses{prop:dc-ch4-2-5, prop:dc-ch4-3-1}
+  \lean{Riemannian.linearIndependent_pair_of_orthonormal,
+    Riemannian.IsAlgCurvatureForm.apply_eq_of_orthonormal_of_mem_span,
+    Riemannian.IsAlgCurvatureForm.apply_eq_of_orthonormal_of_finrank_eq_two}
+  \leanok
+  Let $B$ be an algebraic curvature form (\cref{prop:dc-ch4-2-5}) on an inner
+  product space $V$, and let $\{u_1,u_2\}$ and $\{v_1,v_2\}$ be orthonormal
+  pairs with $v_1,v_2\in\operatorname{span}\{u_1,u_2\}$ — in particular any two
+  orthonormal pairs when $\dim V=2$. Then
+  $$
+  B(v_1,v_2,v_1,v_2)=B(u_1,u_2,u_1,u_2).
+  $$
+\end{lemma}
+\begin{proof}
+  \leanok
+  Write $v_1=au_1+bu_2$ and $v_2=cu_1+du_2$. Orthonormality of the two pairs
+  gives $a^2+b^2=1$, $c^2+d^2=1$ and $ac+bd=0$, so by the Lagrange identity
+  $$
+  (ad-bc)^2=(a^2+b^2)(c^2+d^2)-(ac+bd)^2=1,
+  $$
+  and the change of basis is invertible. An orthonormal pair is linearly
+  independent (pair a vanishing combination against $u_1$ and $u_2$), so by
+  the basis independence of the sectional curvature (\cref{prop:dc-ch4-3-1})
+  $$
+  \frac{B(v_1,v_2,v_1,v_2)}{|v_1\wedge v_2|^2}
+    =\frac{B(u_1,u_2,u_1,u_2)}{|u_1\wedge u_2|^2},
+  $$
+  and both denominators equal $1$ by orthonormality. When $\dim V=2$ the pair
+  $\{u_1,u_2\}$ is a basis, so the span hypothesis is automatic.
+\end{proof}
+
+\begin{definition}[pushforward of fields along a diffeomorphism of Euclidean opens]
+  \label{def:dc-ch6-2-7-pushforward}
+  \uses{lem:dc-ch6-2-8-euclidean-opens}
+  \lean{Riemannian.opensMapExt, Riemannian.opensFDeriv,
+    Riemannian.opensPushforward, Riemannian.fderiv_extendZero_comp,
+    Riemannian.opensFDeriv_symm_comp}
+  \leanok
+  Let $S\subseteq F$ and $T\subseteq G$ be open subsets of Euclidean spaces and
+  $\varphi:S\to T$ a smooth map. Its \emph{derivative} $d\varphi_p:F\to G$ at
+  $p\in S$ is the derivative of any local extension of $\varphi$ to the
+  ambient space; it obeys the chain rule
+  $d(g\circ\varphi)_p=dg_{\varphi(p)}\circ d\varphi_p$, and if $\varphi$ is a
+  diffeomorphism with inverse $\psi$ then
+  $d\psi_{\varphi(p)}\circ d\varphi_p=\mathrm{id}$. For a diffeomorphism
+  $\varphi$ and a smooth vector field $X$ on $S$, the \emph{pushforward}
+  $$
+  (\varphi_*X)(q)=d\varphi_{\varphi^{-1}(q)}\bigl(X(\varphi^{-1}(q))\bigr)
+  $$
+  is a smooth vector field on $T$ (the derivative of a smooth map depends
+  smoothly on the base point).
+\end{definition}
+
+\begin{lemma}[naturality of derivations and brackets under pushforward]
+  \label{lem:dc-ch6-2-7-pushforward-naturality}
+  \uses{def:dc-ch6-2-7-pushforward, lem:dc-ch0-5-2}
+  \lean{Riemannian.dir_opensPushforward,
+    Riemannian.DCLieBracket_opensPushforward,
+    Riemannian.bracketField_opensPushforward,
+    Riemannian.metricInner_field_contMDiff_opens}
+  \leanok
+  Let $\varphi$ be a diffeomorphism of Euclidean opens. For smooth vector
+  fields $X,Y$ and a smooth scalar $h$,
+  $$
+  (\varphi_*X)(h\circ\varphi^{-1})=(Xh)\circ\varphi^{-1}
+  \qquad\text{and}\qquad
+  [\varphi_*X,\varphi_*Y]=\varphi_*[X,Y].
+  $$
+\end{lemma}
+\begin{proof}
+  \leanok
+  The first identity is the chain rule of \cref{def:dc-ch6-2-7-pushforward}
+  together with $d\psi_{\varphi(p)}\circ d\varphi_p=\mathrm{id}$, where
+  $\psi=\varphi^{-1}$. For the bracket, compute the derivative of the
+  pushforward field $\varphi_*Y=(d\varphi\circ Y)\circ\psi$ at
+  $q=\varphi(p)$ by the chain and product rules:
+  $$
+  d(\varphi_*Y)_q\bigl(d\varphi_p(X_p)\bigr)
+    = d^2\varphi_p(X_p,Y_p)+d\varphi_p\bigl(dY_p(X_p)\bigr).
+  $$
+  Subtracting the same expression with $X$ and $Y$ interchanged, the
+  second-derivative terms cancel by the symmetry of $d^2\varphi_p$ (Schwarz),
+  leaving
+  $[\varphi_*X,\varphi_*Y](q)
+    =d\varphi_p\bigl(dY_p(X_p)-dX_p(Y_p)\bigr)=d\varphi_p([X,Y](p))$,
+  the bracket of fields on a Euclidean open being the commutator of directional
+  derivatives (\cref{lem:dc-ch0-5-2}, computed in
+  \cref{lem:dc-ch6-2-8-euclidean-opens}).
+\end{proof}
+
+\begin{definition}[isometry of immersed patches]
+  \label{def:dc-ch6-2-7-isometry}
+  \uses{def:dc-ch6-2-patch, def:dc-ch1-2-2, def:dc-ch6-2-7-pushforward}
+  \lean{Riemannian.DCPatchIsometry,
+    Riemannian.DCPatchIsometry.isTangentField_opensPushforward,
+    Riemannian.DCPatchIsometry.metricInner_opensPushforward}
+  \leanok
+  Let $D$ and $D'$ be immersed patches in open subsets of Euclidean spaces. An
+  \emph{isometry} $\varphi:D\to D'$ is a diffeomorphism of the ambient opens
+  whose derivative carries each tangent space $T_pM$ into
+  $T_{\varphi(p)}M'$ (and, for the inverse, $T_qM'$ into
+  $T_{\varphi^{-1}(q)}M$) and preserves the inner product of tangent vectors:
+  $$
+  \langle d\varphi_p(v),d\varphi_p(w)\rangle=\langle v,w\rangle
+  \qquad\text{for } v,w\in T_pM.
+  $$
+  Nothing is required of $d\varphi$ transverse to the distribution — this is
+  do Carmo's isometry (\cref{def:dc-ch1-2-2}) of the immersed manifolds, read
+  after the identification of each with its image. The pushforward of a
+  tangent field along an isometry is a tangent field, and isometries preserve
+  inner products of tangent fields pointwise.
+\end{definition}
+
+\begin{lemma}[isometries preserve the induced connection]
+  \label{lem:dc-ch6-2-7-connection}
+  \uses{def:dc-ch6-2-7-isometry, lem:dc-ch6-2-7-koszul,
+    lem:dc-ch6-2-7-pushforward-naturality}
+  \lean{Riemannian.DCPatchIsometry.inducedCov_opensPushforward}
+  \leanok
+  Let $\varphi:D\to D'$ be an isometry of immersed patches in flat Euclidean
+  ambients, and let $\nabla,\nabla'$ be the induced connections. Then for
+  tangent fields $X,Y$,
+  $$
+  \nabla'_{\varphi_*X}(\varphi_*Y)=\varphi_*(\nabla_XY).
+  $$
+\end{lemma}
+\begin{proof}
+  \leanok
+  Both sides are tangent fields, so by positive-definiteness it suffices that
+  their inner products against every tangent vector at every $q=\varphi(p)$
+  agree. A tangent vector $w\in T_qM'$ is $d\varphi_p(z)$ for the tangent
+  vector $z=d\varphi^{-1}_q(w)\in T_pM$; extend $z$ to a tangent field $Z$.
+  By the Koszul formula (\cref{lem:dc-ch6-2-7-koszul}) applied upstairs to
+  the tangent fields $\varphi_*X,\varphi_*Y,\varphi_*Z$, each term of
+  $2\langle\varphi_*Z,\nabla'_{\varphi_*X}\varphi_*Y\rangle$ is a
+  derivative of an inner product of tangent fields along a tangent field, or
+  an inner product with a bracket of tangent fields; by
+  \cref{lem:dc-ch6-2-7-pushforward-naturality} and the metric preservation of
+  \cref{def:dc-ch6-2-7-isometry}, each equals the corresponding term of the
+  Koszul formula downstairs, so
+  $\langle\varphi_*Z,\nabla'_{\varphi_*X}\varphi_*Y\rangle(q)
+    =\langle Z,\nabla_XY\rangle(p)
+    =\langle\varphi_*Z,\varphi_*(\nabla_XY)\rangle(q)$,
+  the last step again by metric preservation, since $\nabla_XY$ is tangent.
+\end{proof}
+
+\begin{lemma}[isometries preserve the induced curvature]
+  \label{lem:dc-ch6-2-7-curvature}
+  \uses{lem:dc-ch6-2-7-connection, def:dc-ch6-3-curvatures}
+  \lean{Riemannian.DCPatchIsometry.inducedCurvature_opensPushforward,
+    Riemannian.DCPatchIsometry.inducedCurvature_inner_opensPushforward}
+  \leanok
+  Under the hypotheses of \cref{lem:dc-ch6-2-7-connection}, for tangent fields
+  $X,Y,Z$,
+  $$
+  R'(\varphi_*X,\varphi_*Y)(\varphi_*Z)=\varphi_*\bigl(R(X,Y)Z\bigr),
+  $$
+  and consequently the sectional numerator is invariant:
+  $\langle R'(\varphi_*X,\varphi_*Y)\varphi_*X,\varphi_*Y\rangle(\varphi(p))
+    =\langle R(X,Y)X,Y\rangle(p)$.
+\end{lemma}
+\begin{proof}
+  \leanok
+  Expand $R(X,Y)Z=\nabla_Y\nabla_XZ-\nabla_X\nabla_YZ+\nabla_{[X,Y]}Z$
+  (\cref{def:dc-ch6-3-curvatures}) and apply
+  \cref{lem:dc-ch6-2-7-connection} to each covariant derivative — the
+  intermediate fields $\nabla_XZ$, $\nabla_YZ$ and the bracket $[X,Y]$ are
+  again tangent, the bracket pushes forward by
+  \cref{lem:dc-ch6-2-7-pushforward-naturality}, and the pushforward is
+  pointwise linear. The numerator identity follows by pairing with
+  $\varphi_*Y$ and metric preservation, $R(X,Y)X$ being tangent.
+\end{proof}
+
+\begin{lemma}[the pointwise Gauss form of a patch in a flat ambient]
+  \label{lem:dc-ch6-2-7-gauss-form}
+  \uses{def:dc-ch6-2-2, prop:dc-ch6-3-1, prop:dc-ch4-2-5,
+    lem:dc-ch6-2-8-euclidean-opens}
+  \lean{Riemannian.DCImmersedPatch.gaussFormAt,
+    Riemannian.DCImmersedPatch.isAlgCurvatureForm_gaussFormAt,
+    Riemannian.inducedCurvature_inner_eq_gaussFormAt}
+  \leanok
+  For an immersed patch and $p\in M$, the \emph{Gauss form}
+  $$
+  A(x,y,z,t)=\langle B(y,t),B(x,z)\rangle-\langle B(x,t),B(y,z)\rangle,
+  \qquad x,y,z,t\in T_pM,
+  $$
+  built from the pointwise second fundamental form of \cref{def:dc-ch6-2-2},
+  is an algebraic curvature form on $T_pM$ (\cref{prop:dc-ch4-2-5}). If the
+  ambient space is a flat Euclidean open, then for tangent fields
+  $$
+  \langle R(X,Y)Z,T\rangle(p)=A\bigl(X_p,Y_p,Z_p,T_p\bigr):
+  $$
+  the curvature pairing depends only on the values of the fields at $p$.
+\end{lemma}
+\begin{proof}
+  \uses{prop:dc-ch6-2-1}
+  \leanok
+  Multilinearity of $A$ follows from bilinearity of the pointwise $B$ and of
+  the inner product. Antisymmetry in $(x,y)$ is immediate from the shape of
+  $A$; antisymmetry in $(z,t)$ follows using the symmetry of the inner
+  product; the first Bianchi identity follows from the symmetry
+  $B(x,y)=B(y,x)$ on tangent vectors (\cref{prop:dc-ch6-2-1} read at a
+  point): the six terms of the cyclic sum cancel in pairs. The identity with
+  the curvature pairing is the Gauss equation (\cref{prop:dc-ch6-3-1}) with
+  flat ambient curvature $\overline{R}\equiv 0$
+  (\cref{lem:dc-ch6-2-8-euclidean-opens}), the field-level second fundamental
+  forms being evaluated through the pointwise one
+  (\cref{def:dc-ch6-2-2}).
+\end{proof}
+
+\begin{remark}[Theorema Egregium]
+  \label{rem:dc-ch6-2-7}
+  \dcref{ch6:2.7}
+  \uses{rem:dc-ch6-2-6, def:dc-ch6-2-7-isometry, def:dc-ch6-2-4-principal}
+  \lean{Riemannian.DCPatchIsometry.theorema_egregium}
+  \leanok
+  In the case $M=M^2\subset\overline{M}=\mathbb{R}^3$, the product $\lambda_1\lambda_2$
+  of the principal curvatures coincides with the Gaussian curvature of the surface.
+  \cref{rem:dc-ch6-2-6} then shows that the Gaussian curvature coincides with the sectional
+  curvature of the surface, and implies the famous \emph{Theorema Egregium} of Gauss:
+  the Gaussian curvature of $M^2\subset\mathbb{R}^3$ is an invariant under
+  isometries. Precisely: let $D,D'$ be two-dimensional hypersurface patches in
+  flat Euclidean ambients, with unit normals $\eta$ at $p$ and $\eta'$ at
+  $\varphi(p)$ spanning the normal lines, and let $\varphi:D\to D'$ be an
+  isometry (\cref{def:dc-ch6-2-7-isometry}). Then
+  $$
+  \lambda_1(p)\,\lambda_2(p)=\lambda'_1(\varphi(p))\,\lambda'_2(\varphi(p)).
+  $$
+\end{remark}
+\begin{proof}
+  \uses{lem:dc-ch6-2-7-curvature, lem:dc-ch6-2-7-gauss-form,
+    lem:dc-ch6-2-7-plane}
+  \leanok
+  Let $e_1,e_2$ be principal directions at $p$, extended to tangent fields
+  $E_1,E_2$, and $e'_1,e'_2$ principal directions at $\varphi(p)$, extended to
+  $E'_1,E'_2$. Since the ambients are flat, the Gauss formula for a
+  hypersurface (\cref{rem:dc-ch6-2-6}) reads
+  $$
+  \lambda_1\lambda_2=\langle R(E_1,E_2)E_1,E_2\rangle(p),
+  \qquad
+  \lambda'_1\lambda'_2=\langle R'(E'_1,E'_2)E'_1,E'_2\rangle(\varphi(p)).
+  $$
+  By the curvature invariance (\cref{lem:dc-ch6-2-7-curvature}),
+  $\langle R(E_1,E_2)E_1,E_2\rangle(p)
+    =\langle R'(\varphi_*E_1,\varphi_*E_2)\varphi_*E_1,\varphi_*E_2\rangle(\varphi(p))$.
+  By \cref{lem:dc-ch6-2-7-gauss-form} both curvature pairings at
+  $\varphi(p)$ are values of the Gauss form $A$ of $D'$: on the pair
+  $u_i=d\varphi_p(e_i)$, and on the pair $e'_i$, respectively. Both pairs are
+  orthonormal in the two-dimensional plane $T_{\varphi(p)}M'$ — the first
+  because $\varphi$ is an isometry — so the two values of $A$ agree by
+  \cref{lem:dc-ch6-2-7-plane}, and the chain
+  $\lambda_1\lambda_2
+    =A(u_1,u_2,u_1,u_2)=A(e'_1,e'_2,e'_1,e'_2)=\lambda'_1\lambda'_2$
+  closes.
+\end{proof}
+
+\begin{lemma}[the Euclidean ambient: flat connection, vanishing curvature]
+  \label{lem:dc-ch6-2-8-euclidean}
+  \uses{def:dc-ch1-2-1, thm:dc-ch2-3-6, def:dc-ch4-2-1,
+    def:dc-ch6-3-constant-curvature}
+  \lean{Riemannian.SmoothVectorField.contDiff,
+    Riemannian.DCLieBracket_eq_fderiv,
+    Riemannian.euclideanCov,
+    Riemannian.euclideanConnection,
+    Riemannian.euclideanConnection_isLeviCivita,
+    Riemannian.euclideanConnection_curvature,
+    Riemannian.euclideanConnection_isConstantCurvature_zero}
+  \leanok
+  On Euclidean space — a real inner-product space $F$ with the metric of
+  \cref{def:dc-ch1-2-1} given by the ambient inner product — the ordinary
+  directional derivative $\nabla_XY=dY(X)$ is an affine connection, it is the
+  Levi-Civita connection of the Euclidean metric, and its curvature tensor
+  vanishes identically; in particular Euclidean space has constant sectional
+  curvature $0$ in the field form of \cref{def:dc-ch6-3-constant-curvature}.
+  This is the ambient datum for the hypersurface examples of this chapter
+  (\cref{ex:dc-ch6-2-4}, \cref{ex:dc-ch6-2-8}, \cref{rem:dc-ch6-2-7}).
+\end{lemma}
+\begin{proof}
+  \leanok
+  On the vector-space model the tangent bundle is canonically trivial, so a
+  smooth vector field \emph{is} a smooth map $F\to F$, and the manifold Lie
+  bracket is the classical commutator $[X,Y]=dY(X)-dX(Y)$. Additivity and
+  $\mathcal{D}$-homogeneity of $\nabla_XY=dY(X)$ in $X$ are linearity of
+  $dY_p$; additivity and the Leibniz rule in $Y$ are the sum and product rules
+  for the derivative. Symmetry is $dY(X)-dX(Y)=[X,Y]$; metric compatibility is
+  the product rule for the inner product. For the curvature,
+  $$
+  R(X,Y)Z=\nabla_Y\nabla_XZ-\nabla_X\nabla_YZ+\nabla_{[X,Y]}Z ,
+  $$
+  the second-order terms cancel by symmetry of the second derivative
+  (Schwarz), and the remaining first-order terms cancel exactly against
+  $\nabla_{[X,Y]}Z=dZ([X,Y])$. Constant curvature $0$ is then immediate.
+  $\square$
+\end{proof}
+
+\begin{lemma}[open subsets of Euclidean space as ambient manifolds]
+  \label{lem:dc-ch6-2-8-euclidean-opens}
+  \uses{def:dc-ch1-2-1, thm:dc-ch2-3-6, def:dc-ch4-2-1,
+    def:dc-ch6-3-constant-curvature, lem:dc-ch6-2-8-euclidean}
+  \lean{Riemannian.opensEuclideanMetric,
+    Riemannian.opensEuclideanConnection,
+    Riemannian.opensEuclideanConnection_isLeviCivita,
+    Riemannian.opensEuclideanConnection_curvature,
+    Riemannian.opensEuclideanConnection_isConstantCurvature_zero,
+    Riemannian.DCLieBracket_opens_eq_fderiv}
+  \leanok
+  Let $A\subseteq F$ be an open subset of a Euclidean space, regarded as an
+  open submanifold. A vector field on $A$ is canonically a smooth map
+  $A\to F$, and under this identification $A$ carries the restricted Euclidean
+  metric $\langle v,w\rangle_q=\langle v,w\rangle$, the Lie bracket is the
+  commutator $[X,Y]=dY(X)-dX(Y)$, and the ordinary directional derivative
+  $\nabla_XY=dY(X)$ is the Levi-Civita connection of this metric, with
+  identically vanishing curvature. Thus $A$ is a flat ambient manifold of
+  constant sectional curvature $0$ in the field form of
+  \cref{def:dc-ch6-3-constant-curvature}.
+\end{lemma}
+\begin{proof}
+  \leanok
+  Smoothness of a field on $A$ and its derivative at $q\in A$ depend only on
+  the germ at $q$, and $A$ is open in $F$, so both may be computed after
+  extending the field to $F$. The pointwise arguments of
+  \cref{lem:dc-ch6-2-8-euclidean} then apply verbatim at each $q\in A$:
+  linearity and the Leibniz rule are the sum and product rules of the
+  derivative, symmetry of the connection is the commutator identity, metric
+  compatibility is the product rule for the inner product, and the curvature
+  vanishes by symmetry of the second derivative (Schwarz). $\square$
+\end{proof}
+
+\begin{example}[curvature of $S^n$]
+  \label{ex:dc-ch6-2-8}
+  \dcref{ch6:2.8}
+  \uses{def:dc-ch6-2-patch, def:dc-ch6-2-B, def:dc-ch6-2-2,
+    thm:dc-ch6-2-5, rem:dc-ch6-2-6, lem:dc-ch6-2-8-euclidean-opens}
+  \lean{Riemannian.punctured, Riemannian.sphereTang, Riemannian.spherePatch,
+    Riemannian.spherePatch_secondFundForm_apply,
+    Riemannian.spherePatch_secondFundScalarAt,
+    Riemannian.spherePatch_shapeOperatorAt,
+    Riemannian.spherePatch_inducedCurvature_inner,
+    Riemannian.sphere_sectionalCurvature_one}
+  \leanok
+  The sectional curvature of the unit sphere $S^n\subset\mathbb{R}^{n+1}$ is constant
+  equal to $1$. Orient $S^n$ by the inward pointing unit normal $N(x)=-x$,
+  $|x|=1$. The Gauss mapping is then equal to $(-i)$, $i$ the identity of $S^n$, so
+  the self-adjoint operator associated to $H_N$ has all eigenvalues equal to $1$.
+  Thus every $v\in T_pS^n$ is an eigenvector; by (4) all sectional curvatures of
+  $S^n$ equal $1$.
+
+  Concretely, work in the punctured space $F\setminus\{0\}$ of
+  \cref{lem:dc-ch6-2-8-euclidean-opens}, foliated by the concentric spheres:
+  the sphere through $p$ has tangent space $(\mathbb{R}p)^\perp$ and
+  orthogonal projection $v\mapsto v-\frac{\langle p,v\rangle}{\langle
+  p,p\rangle}p$. Differentiating the tangency identity $\langle x,
+  Y(x)\rangle\equiv0$ of a tangent field along a tangent direction gives the
+  second fundamental form $B(X,Y)=-\frac{\langle X,Y\rangle}{\langle
+  p,p\rangle}\,p$; at $|p|=1$ with inward unit normal $\eta=-p$ this is
+  $H_\eta(x,y)=\langle x,y\rangle$, so $S_\eta=\mathrm{id}$. By Gauss'
+  theorem (\cref{thm:dc-ch6-2-5}) against the flat ambient, the sphere of
+  radius $r$ has constant sectional curvature $\langle
+  p,p\rangle^{-1}=1/r^2$, equal to $1$ on the unit sphere.
+  
+  An immersion $f:M\to\overline{M}$ is \emph{geodesic at} $p\in M$ if for every
+  $\eta\in(T_pM)^\perp$ the second fundamental form $H_\eta$ is identically zero at
+  $p$. An immersion $f$ is \emph{totally geodesic} if it is geodesic for all $p\in M$.
+\end{example}
+
+\begin{definition}[geodesic at a point; totally geodesic immersion]
+  \label{def:dc-ch6-2-8-geodesic}
+  \source{docarmo:page-0147}
+  \uses{def:dc-ch6-2-2}
+  \lean{Riemannian.DCImmersedPatch.IsGeodesicAt,
+    Riemannian.DCImmersedPatch.IsTotallyGeodesic,
+    Riemannian.DCImmersedPatch.isGeodesicAt_iff_secondFundFormAt_eq_zero}
+  \leanok
+  An immersion $f:M\to\overline{M}$ is \emph{geodesic at} $p\in M$ if for every
+  $\eta\in(T_pM)^\perp$ the second fundamental form $\mathit{II}_\eta$ is
+  identically zero at $p$ — equivalently, by polarization, $B$ vanishes at $p$.
+  An immersion is \emph{totally geodesic} if it is geodesic at every
+  $p\in M$.
+\end{definition}
+
+\begin{definition}[geodesic field at a point]
+  \label{def:dc-ch6-2-9-geodesic-field}
+  \uses{def:dc-ch6-2-induced-connection, def:dc-ch6-2-8-geodesic}
+  \lean{Riemannian.DCImmersedPatch.IsGeodesicFieldAt}
+  \leanok
+  A tangent field $X\in\mathcal{X}(U)$ is a \emph{geodesic field at} $p$ when its
+  induced covariant self-derivative vanishes there: $(\nabla_X X)(p)=0$. In the
+  identified picture these are exactly the extensions of the velocity fields of
+  curves of $M$ through $p$ that are geodesic at $p$; in particular the velocity
+  extension of any geodesic $\gamma$ of $M$ starting from $p$ is a geodesic field
+  at $p$, since $\nabla_{\gamma'}\gamma'\equiv0$ along $\gamma$.
+\end{definition}
+
+\begin{lemma}[existence of geodesic fields; first-order scalar data]
+  \label{lem:dc-ch6-2-9-existence}
+  \uses{def:dc-ch6-2-9-geodesic-field, def:dc-ch6-2-induced-connection, lem:dc-ch6-2-proj}
+  \lean{Riemannian.exists_contMDiff_dirTangent_eq_one,
+    Riemannian.AffineConnection.cov_apply_eq_zero_of_apply_eq_zero_left,
+    Riemannian.DCImmersedPatch.exists_isGeodesicFieldAt}
+  \leanok
+  (a) For every $p\in\overline{M}$ and $v\in T_p\overline{M}$, $v\neq0$, there is a
+  globally smooth $f:\overline{M}\to\mathbb{R}$ with $f(p)=0$ and $df_p(v)=1$.
+  (b) Through every $x\in T_pM$ there passes a geodesic field at $p$: a tangent
+  field $X$ with $X(p)=x$ and $(\nabla_X X)(p)=0$.
+\end{lemma}
+\begin{proof}
+  \leanok
+  (a) Choose by Hahn--Banach a continuous linear functional $\ell$ on the model
+  space with $\ell(v)=1$, and let $\varphi$ be the coordinate reading of $\ell$
+  in the chart at $p$, shifted so that $\varphi(p)=0$. Cutting $\varphi$ off by
+  a smooth bump function equal to $1$ near $p$ and supported in the chart source
+  yields a global smooth $f$ with $f(p)=0$; since the cut-off is constant near
+  $p$ it does not affect the differential, and $df_p(v)=\ell(d(\mathrm{chart})_p
+  v)=\ell(v)=1$ because the differential of the chart at its base point is the
+  identity.
+
+  (b) If $x=0$ the zero field works, by tensoriality of the covariant derivative
+  in its direction slot. Otherwise let $X_0$ be a tangent extension of $x$
+  (\cref{lem:dc-ch6-2-proj}), set $a:=(\nabla_{X_0}X_0)(p)\in T_pM$, let $W$ be a
+  tangent extension of $-a$, and take $f$ as in (a) with $df_p(x)=1$, $f(p)=0$.
+  Put $X:=X_0+fW$; then $X$ is tangent and $X(p)=x$. Expanding
+  $\nabla_{X}X$ by additivity in both slots, $\mathcal{D}$-homogeneity in the
+  direction slot and the Leibniz rule in the derived slot,
+  $$
+  \nabla_X X=\nabla_{X_0}X_0+f\,\nabla_{X_0}W+X_0(f)\,W+f\,\nabla_{W}X ,
+  $$
+  and at $p$ all terms carrying the factor $f(p)=0$ vanish, leaving
+  $(\nabla_XX)(p)=a+X_0(f)(p)\,W(p)=a+1\cdot(-a)=0$. $\square$
+\end{proof}
+
+\begin{proposition}[totally geodesic criterion]
+  \label{prop:dc-ch6-2-9}
+  \source{docarmo:page-0147}
+  \dcref{ch6:2.9}
+  \uses{def:dc-ch6-2-8-geodesic, def:dc-ch6-2-9-geodesic-field,
+    lem:dc-ch6-2-9-existence, def:dc-ch6-2-B, def:dc-ch6-2-2,
+    lem:dc-ch6-2-locality, prop:dc-ch6-2-1}
+  \lean{Riemannian.DCImmersedPatch.isGeodesicAt_iff_forall_isGeodesicFieldAt,
+    Riemannian.DCImmersedPatch.secondFundQuadAt_eq_metricInner_cov,
+    Riemannian.DCImmersedPatch.IsTotallyGeodesic.cov_apply_eq_zero}
+  \leanok
+  An immersion $f:M\to\overline{M}$ is geodesic at $p\in M$ if and only if every
+  geodesic of $M$ at $p$ is a geodesic of $\overline{M}$ at $p$; precisely: if
+  and only if every geodesic field $X$ at $p$
+  (\cref{def:dc-ch6-2-9-geodesic-field}) satisfies
+  $(\overline{\nabla}_X X)(p)=0$. The two readings agree through the displayed
+  identity of the proof: for any tangent field $X$ with $X(p)=x$ and any
+  $\eta\in(T_pM)^\perp$,
+  $$
+  H_\eta(x,x)=\langle\overline{\nabla}_X X,\eta\rangle(p).
+  $$
+\end{proposition}
+\begin{proof}
+  \leanok
+  For any tangent field $X$ with $X(p)=x$ and $\eta\in(T_pM)^\perp$, the Gauss
+  decomposition $\overline{\nabla}_X X=\nabla_X X+B(X,X)$ paired against $\eta$
+  gives (do Carmo computes the same identity through the Weingarten pairing
+  $\langle N,\overline{\nabla}_X X\rangle=-\langle\overline{\nabla}_X N,X\rangle$
+  for a normal extension $N$ of $\eta$)
+  $$
+  H_\eta(x,x)=\langle B(x,x),\eta\rangle=\langle\overline{\nabla}_X X,\eta\rangle(p),
+  $$
+  since the tangential part $\nabla_X X$ pairs to zero against $\eta$.
+
+  ($\Rightarrow$) If $f$ is geodesic at $p$ then $B$ vanishes at $p$, so for a
+  geodesic field $X$ at $p$ the ambient acceleration
+  $(\overline{\nabla}_X X)(p)=(\nabla_X X)(p)+B(x,x)=0+0=0$.
+
+  ($\Leftarrow$) Let $\eta\in(T_pM)^\perp$ and $x\in T_pM$. By
+  \cref{lem:dc-ch6-2-9-existence} there is a geodesic field $X$ at $p$ with
+  $X(p)=x$; by hypothesis $(\overline{\nabla}_X X)(p)=0$, hence
+  $H_\eta(x,x)=\langle\overline{\nabla}_X X,\eta\rangle(p)=0$. Thus every
+  $\mathit{II}_\eta$ vanishes at $p$, i.e.\ $f$ is geodesic at $p$. $\square$
+
+  do Carmo quantifies over the genuine geodesics of $M$ through $p$; every such
+  geodesic yields a geodesic field at $p$ by extending its velocity, so the
+  criterion above is the pointwise content of his statement. Recovering his
+  literal quantifier in addition needs the \emph{existence} of geodesics of $M$
+  through $p$ tangent to each $x$ — geodesic ODE theory inside the distribution
+  (equivalently on the leaf through $p$), which is deferred together with the
+  chart-Christoffel bridge (cf.\ the workspace issues on ODE smooth dependence
+  and the chart-confined geodesic theory).
+\end{proof}
+
+\begin{remark}[geometric interpretation of sectional curvature]
+  \label{rem:dc-ch6-2-9-interpretation}
+  \source{docarmo:page-0147,docarmo:page-0148}
+  \uses{prop:dc-ch6-2-9, thm:dc-ch6-2-5, def:dc-ch6-2-8-geodesic,
+    def:dc-ch4-3-2}
+  \lean{Riemannian.DCImmersedPatch.secondFundForm_apply_eq_zero_of_isGeodesicAt,
+    Riemannian.DCImmersedPatch.inducedCurvature_inner_eq_curvature_inner_of_isGeodesicAt,
+    Riemannian.DCImmersedPatch.sectionalCurvature_eq_of_isGeodesicAt,
+    Riemannian.DCImmersedPatch.inducedCurvatureAt_inner_eq_of_isGeodesicAt}
+  \leanok
+  Proposition 2.9 gives the geometric interpretation of sectional curvature. Let
+  $B\subset T_pM$ be an open ball on which $\exp_p$ is a diffeomorphism, and
+  $\sigma\subset T_pM$ a two-dimensional subspace. Then $\exp_p(\sigma\cap B)=S$ is a
+  two-dimensional submanifold of $M$ through $p$, the surface formed by "small"
+  geodesics tangent to $\sigma$ at $p$. By Proposition 2.9, $S$ is geodesic at $p$,
+  so the second fundamental forms of $i:S\subset M$ vanish at $p$. Denoting by $K_S$
+  the Gaussian curvature of $S$ at $p$, the Gauss formula gives
+
+  $$
+  K_S(p)=K(p,\sigma).
+  $$
+
+  This is exactly the way Riemann defined sectional curvature in [Ri].
+
+  The displayed equation holds for every submanifold that is geodesic at $p$,
+  as $S$ is: when the second fundamental form vanishes at $p$
+  (\cref{def:dc-ch6-2-8-geodesic}), the right-hand side
+  $\langle B(x,x),B(y,y)\rangle-|B(x,y)|^2$ of Gauss' theorem
+  (\cref{thm:dc-ch6-2-5}) vanishes, so the sectional curvatures of the
+  submanifold and of the ambient manifold agree on every tangent plane
+  $\sigma=\operatorname{span}(x,y)\subseteq T_pS$ at $p$, computed as in
+  \cref{thm:dc-ch6-2-5} on an orthonormal pair $x,y$ spanning $\sigma$; for a
+  two-dimensional submanifold this is $K_S(p)=K(p,\sigma)$ with $\sigma=T_pS$.
+  The construction of the geodesic surface $S=\exp_p(\sigma\cap B)$ itself is
+  the subject of \cref{rem:dc-ch6-2-9-exp-surface}.
+\end{remark}
+
+\begin{remark}[the geodesic surface $\exp_p(\sigma\cap B)$; E. Cartan's theorem]
+  \label{rem:dc-ch6-2-9-exp-surface}
+  \source{docarmo:page-0148}
+  \uses{prop:dc-ch6-2-9}
+  \notready
+  Realizing $S=\exp_p(\sigma\cap B)$ as a submanifold geodesic at $p$ requires
+  the exponential map as a smooth local diffeomorphism, the restriction
+  $\exp_p|_{\sigma\cap B}$ as an immersion, and the geodesic theory of the
+  surface itself (every geodesic of $M$ tangent to $\sigma$ at $p$ lies in $S$
+  near $p$, and its velocity extends to a geodesic field of $S$ at $p$). This
+  exponential-map development belongs to Chapter~3/Chapter~7 and is not yet
+  available; the construction remains a documented gap.
+
+  Examples of totally geodesic submanifolds are rare. In the case
+  $\overline{M}=\mathbb{R}^n$, the linear subspaces and their translates are
+  evidently totally geodesic submanifolds. In the case
+  $\overline{M}=S^n\subset\mathbb{R}^{n+1}$, the intersections $\Sigma$ of
+  linear subspaces of $\mathbb{R}^{n+1}$ with $S^n$ are totally geodesic
+  submanifolds: for every $p\in\Sigma$, the geodesics of $S^n$ that start from
+  $p$ and are tangent to $\Sigma$ are geodesics of $\Sigma$. It was proven by
+  E.~Cartan that, conversely, if a Riemannian manifold $M$ has, for every $p$
+  and every two-dimensional $\sigma\subset T_pM$, a totally geodesic
+  submanifold tangent to $\sigma$, then $M$ has constant sectional curvature;
+  these examples and the converse likewise carry no proof obligation here.
+\end{remark}
+
+\begin{definition}[minimal immersion; mean curvature vector]
+  \label{def:dc-ch6-2-10}
+  \source{docarmo:page-0148}
+  \dcref{ch6:2.10}
+  \uses{def:dc-ch6-2-4-principal, def:dc-ch6-2-2}
+  \lean{Riemannian.DCImmersedPatch.IsMinimal,
+    Riemannian.DCImmersedPatch.meanCurvatureVector,
+    Riemannian.DCImmersedPatch.meanCurvatureVector_mem,
+    Riemannian.DCImmersedPatch.inner_meanCurvatureVector,
+    Riemannian.DCImmersedPatch.meanCurvatureVector_unique,
+    Riemannian.DCImmersedPatch.existsUnique_meanCurvatureVector,
+    Riemannian.DCImmersedPatch.isMinimal_iff_meanCurvatureVector_eq_zero,
+    Riemannian.DCImmersedPatch.shapeOperatorAt_add_normal,
+    Riemannian.DCImmersedPatch.shapeOperatorAt_smul_normal}
+  \leanok
+  An immersion $f:M\to\overline{M}$ is called \emph{minimal} if for every $p\in M$ and
+  every $\eta\in(T_pM)^\perp$ the trace of $S_\eta$ is zero. Choosing an orthonormal frame
+  $E_1,\dots,E_m$ of vectors in $\mathcal{X}(U)^\perp$, where $U$ is a neighborhood
+  of $p$ in which $f$ is an embedding, we write at $p$
+  
+  $$
+  B(x,y)=\sum_i H_i(x,y)E_i,\quad x,y\in T_pM,\ i=1,\dots,m,
+  $$
+  
+  with $H_i=H_{E_i}$. The normal vector
+  
+  $$
+  H=\frac{1}{n}\sum_i(\operatorname{trace}S_i)E_i,
+  $$
+  
+  where $S_i=S_{E_i}$, does not depend on the chosen frame; it is the *mean
+  curvature vector* of $f$. Thus $f$ is minimal iff $H(p)=0$ for all $p\in M$. Such
+  immersions minimize volume in the induced metric, in the same way that geodesics
+  minimize arc length.
+\end{definition}
+
+\section{The fundamental equations}
+
+Given an isometric immersion $f:M^n\to\overline{M}^{n+m}$, at each $p\in M$ we have
+$T_p\overline{M}=T_pM\oplus(T_pM)^\perp$, varying differentiably with $p$. Locally
+$T\overline{M}$ over $M$ decomposes into the direct sum of the \emph{tangent bundle}
+$TM$ and the \emph{normal bundle} $TM^\perp$. We use Latin letters $X,Y,Z$ for fields
+tangent to $M$ and Greek letters $\xi,\eta,\zeta$ for fields normal to $M$.
+
+Given $X$ and $\eta$, the tangent component of $\overline{\nabla}_X\eta$ is
+$(\overline{\nabla}_X\eta)^T=-S_\eta(X)$. The normal component is called the
+\emph{normal connection} $\nabla^\perp$ of the immersion:
+
+$$
+\nabla_X^\perp\eta=(\overline{\nabla}_X\eta)^N=\overline{\nabla}_X\eta-(\overline{\nabla}_X\eta)^T=\overline{\nabla}_X\eta+S_\eta(X).\qquad(5)
+$$
+
+The normal connection $\nabla^\perp$ has the usual properties of a connection:
+linear in $X$, additive in $\eta$, and
+$\nabla_X^\perp(f\eta)=f\nabla_X^\perp\eta+X(f)\eta$, $f\in\mathcal{D}(M)$. As with
+the tangent bundle, we introduce the \emph{normal curvature} $R^\perp$ of the immersion,
+
+$$
+R^\perp(X,Y)\eta=\nabla_Y^\perp\nabla_X^\perp\eta-\nabla_X^\perp\nabla_Y^\perp\eta+\nabla_{[X,Y]}^\perp\eta.
+$$
+
+\begin{definition}[shape operator and normal connection: the Weingarten decomposition]
+  \label{def:dc-ch6-3-normal-connection}
+  \uses{def:dc-ch6-2-patch, def:dc-ch6-2-B}
+  \lean{Riemannian.DCImmersedPatch.shapeOperator,
+    Riemannian.DCImmersedPatch.normalCov,
+    Riemannian.DCImmersedPatch.cov_eq_neg_shapeOperator_add_normalCov,
+    Riemannian.DCImmersedPatch.shapeOperator_mem,
+    Riemannian.DCImmersedPatch.normalCov_mem}
+  \leanok
+  For fields $X$, $\eta$ on the patch set
+  $S_\eta(X)=-(\overline{\nabla}_X\eta)^T$ (the \emph{shape operator}, tangent
+  valued) and $\nabla^\perp_X\eta=(\overline{\nabla}_X\eta)^N$ (the \emph{normal
+  connection}, normal valued), so that equation (5) reads
+
+  $$
+  \overline{\nabla}_X\eta=-S_\eta(X)+\nabla^\perp_X\eta.
+  $$
+\end{definition}
+
+\begin{proposition}[connection laws of the normal connection]
+  \label{prop:dc-ch6-3-normal-connection-laws}
+  \uses{def:dc-ch6-3-normal-connection, lem:dc-ch6-2-proj}
+  \lean{Riemannian.DCImmersedPatch.normalCov_add_left,
+    Riemannian.DCImmersedPatch.normalCov_smul_left,
+    Riemannian.DCImmersedPatch.normalCov_add_right,
+    Riemannian.DCImmersedPatch.normalCov_smul_right}
+  \leanok
+  The normal connection has the usual properties of a connection: it is
+  additive in both arguments, $\mathcal{D}$-homogeneous in the direction
+  ($\nabla^\perp_{fX}\eta=f\nabla^\perp_X\eta$), and satisfies the Leibniz rule
+  $\nabla^\perp_X(f\eta)=f\nabla^\perp_X\eta+X(f)\,\eta$ for $\eta$ normal.
+\end{proposition}
+\begin{proof}
+  \leanok
+  Immediate from the corresponding laws of $\overline{\nabla}$ and the
+  additivity and $\mathcal{D}$-homogeneity of the normal projection
+  (\cref{lem:dc-ch6-2-proj}); in the Leibniz rule the first-order term
+  $X(f)\,\eta$ is already normal because $\eta$ is.
+\end{proof}
+
+\begin{lemma}[Weingarten pairing and self-adjointness]
+  \label{lem:dc-ch6-3-weingarten}
+  \uses{def:dc-ch6-3-normal-connection, prop:dc-ch6-2-1, def:dc-ch6-2-B}
+  \lean{Riemannian.DCImmersedPatch.inner_shapeOperator_apply,
+    Riemannian.DCImmersedPatch.inner_shapeOperator_symm}
+  \leanok
+  For $Y$ tangent and $\eta$ normal,
+
+  $$
+  \langle S_\eta(X),Y\rangle=\langle B(X,Y),\eta\rangle
+  $$
+
+  at every point. Consequently, for tangent $X,Y$,
+  $\langle S_\eta(X),Y\rangle=\langle X,S_\eta(Y)\rangle$: the shape operator
+  is self-adjoint with respect to the metric.
+\end{lemma}
+\begin{proof}
+  \leanok
+  Since $\langle\eta,Y\rangle=0$ identically, compatibility of
+  $\overline{\nabla}$ with the metric gives
+  $0=X\langle\eta,Y\rangle
+  =\langle\overline{\nabla}_X\eta,Y\rangle+\langle\eta,\overline{\nabla}_XY\rangle$.
+  In the first term only the tangential part of $\overline{\nabla}_X\eta$
+  survives against the tangent field $Y$, giving $-\langle S_\eta(X),Y\rangle$;
+  in the second only the normal part of $\overline{\nabla}_XY$ survives against
+  the normal field $\eta$, giving $\langle B(X,Y),\eta\rangle$. The
+  self-adjointness follows from the symmetry of $B$
+  (\cref{prop:dc-ch6-2-1}):
+  $\langle S_\eta(X),Y\rangle=\langle B(X,Y),\eta\rangle
+  =\langle B(Y,X),\eta\rangle=\langle S_\eta(Y),X\rangle$.
+\end{proof}
+
+\begin{definition}[curvatures of the induced and normal connections]
+  \label{def:dc-ch6-3-curvatures}
+  \uses{def:dc-ch6-2-induced-connection, def:dc-ch6-3-normal-connection, def:dc-ch4-2-1}
+  \lean{Riemannian.DCImmersedPatch.inducedCurvature,
+    Riemannian.DCImmersedPatch.inducedCurvature_mem,
+    Riemannian.DCImmersedPatch.normalCurvature,
+    Riemannian.DCImmersedPatch.normalCurvature_mem}
+  \leanok
+  The \emph{curvature of the induced connection} is
+  $R(X,Y)Z=\nabla_Y\nabla_XZ-\nabla_X\nabla_YZ+\nabla_{[X,Y]}Z$ (tangent
+  valued), and the \emph{normal curvature} is
+  $R^\perp(X,Y)\eta=\nabla^\perp_Y\nabla^\perp_X\eta
+  -\nabla^\perp_X\nabla^\perp_Y\eta+\nabla^\perp_{[X,Y]}\eta$ (normal valued);
+  on tangent fields $R$ is the curvature of the immersed manifold.
+\end{definition}
+
+\begin{lemma}[decomposition of the ambient curvature]
+  \label{lem:dc-ch6-3-decomposition}
+  \uses{def:dc-ch6-3-curvatures, lem:dc-ch6-2-proj, def:dc-ch6-2-B, def:dc-ch6-3-normal-connection}
+  \lean{Riemannian.DCImmersedPatch.curvature_decomposition,
+    Riemannian.DCImmersedPatch.curvature_normal_decomposition}
+  \leanok
+  For any fields $X,Y,Z,\eta$ on the patch,
+
+  $$
+  \overline{R}(X,Y)Z=R(X,Y)Z+B(Y,\nabla_X Z)-B(X,\nabla_Y Z)+B([X,Y],Z)-S_{B(X,Z)}Y+S_{B(Y,Z)}X+\nabla_Y^\perp B(X,Z)-\nabla_X^\perp B(Y,Z)\qquad(6)
+  $$
+
+  and
+
+  $$
+  \overline{R}(X,Y)\eta=R^\perp(X,Y)\eta-S_{\nabla_X^\perp\eta}Y+S_{\nabla_Y^\perp\eta}X-\nabla_Y(S_\eta X)+\nabla_X(S_\eta Y)-B(Y,S_\eta X)+B(X,S_\eta Y)-S_\eta([X,Y]).
+  $$
+\end{lemma}
+\begin{proof}
+  \leanok
+  Substitute the Gauss decomposition
+  $\overline{\nabla}_XW=\nabla_XW+B(X,W)$ (\cref{def:dc-ch6-2-B}) and the
+  Weingarten decomposition
+  $\overline{\nabla}_X\eta=-S_\eta(X)+\nabla^\perp_X\eta$
+  (\cref{def:dc-ch6-3-normal-connection}) into
+  $\overline{R}(X,Y)W=\overline{\nabla}_Y\overline{\nabla}_XW
+  -\overline{\nabla}_X\overline{\nabla}_YW+\overline{\nabla}_{[X,Y]}W$ and
+  collect terms: for the first identity split
+  $\overline{\nabla}_XZ=\nabla_XZ+B(X,Z)$, then split
+  $\overline{\nabla}_Y(\nabla_XZ)=\nabla_Y\nabla_XZ+B(Y,\nabla_XZ)$ and
+  $\overline{\nabla}_Y(B(X,Z))=-S_{B(X,Z)}Y+\nabla^\perp_YB(X,Z)$, and likewise
+  for the terms with $X$ and $Y$ interchanged and for
+  $\overline{\nabla}_{[X,Y]}Z$; for the second identity split
+  $\overline{\nabla}_X\eta=-S_\eta(X)+\nabla^\perp_X\eta$, then
+  $\overline{\nabla}_Y(S_\eta X)=\nabla_Y(S_\eta X)+B(Y,S_\eta X)$ and
+  $\overline{\nabla}_Y(\nabla^\perp_X\eta)
+  =-S_{\nabla^\perp_X\eta}Y+\nabla^\perp_Y\nabla^\perp_X\eta$, and likewise for
+  the remaining terms.
+\end{proof}
+
+\begin{proposition}[Gauss equation and Ricci equation]
+  \label{prop:dc-ch6-3-1}
+  \dcref{ch6:3.1}
+  \uses{def:dc-ch6-3-curvatures, lem:dc-ch6-3-decomposition, lem:dc-ch6-3-weingarten}
+  \lean{Riemannian.DCImmersedPatch.gauss_equation,
+    Riemannian.DCImmersedPatch.ricci_equation}
+  \leanok
+  The following equations are valid.
+  
+  (a) \emph{Gauss equation}
+  
+  $$
+  \langle\overline{R}(X,Y)Z,T\rangle=\langle R(X,Y)Z,T\rangle-\langle B(Y,T),B(X,Z)\rangle+\langle B(X,T),B(Y,Z)\rangle.
+  $$
+  
+  (b) \emph{Ricci equation}
+  
+  $$
+  \langle\overline{R}(X,Y)\eta,\zeta\rangle-\langle R^\perp(X,Y)\eta,\zeta\rangle=\langle[S_\eta,S_\zeta]X,Y\rangle,
+  $$
+  
+  where $[S_\eta,S_\zeta]$ denotes the operator $S_\eta\circ S_\zeta-S_\zeta\circ S_\eta$.
+\end{proposition}
+\begin{proof}
+  \leanok
+  Observe that $\overline{\nabla}_X Y=\nabla_X Y+B(X,Y)$. Since
+  
+  $$
+  \overline{R}(X,Y)Z=\overline{\nabla}_Y\overline{\nabla}_X Z-\overline{\nabla}_X\overline{\nabla}_Y Z+\overline{\nabla}_{[X,Y]}Z=\overline{\nabla}_Y(\nabla_X Z+B(X,Z))-\overline{\nabla}_X(\nabla_Y Z+B(Y,Z))+\nabla_{[X,Y]}Z+B([X,Y],Z),
+  $$
+  
+  we have
+  
+  $$
+  \overline{R}(X,Y)Z=R(X,Y)Z+B(Y,\nabla_X Z)+\nabla_Y^\perp B(X,Z)-S_{B(X,Z)}Y-B(X,\nabla_Y Z)-\nabla_X^\perp B(Y,Z)+S_{B(Y,Z)}X+B([X,Y],Z).\qquad(6)
+  $$
+  
+  Taking the inner product of (6) with $T$, the normal terms vanish and
+  
+  $$
+  \langle\overline{R}(X,Y)Z,T\rangle=\langle R(X,Y)Z,T\rangle-\langle S_{B(X,Z)}Y,T\rangle+\langle S_{B(Y,Z)}X,T\rangle=\langle R(X,Y)Z,T\rangle-\langle B(Y,T),B(X,Z)\rangle+\langle B(X,T),B(Y,Z)\rangle,
+  $$
+  
+  which is the Gauss equation. For the Ricci equation, calculate
+  
+  $$
+  \overline{R}(X,Y)\eta=\overline{\nabla}_Y\overline{\nabla}_X\eta-\overline{\nabla}_X\overline{\nabla}_Y\eta+\overline{\nabla}_{[X,Y]}\eta=R^\perp(X,Y)\eta-S_{\nabla_X^\perp\eta}Y-\nabla_Y(S_\eta X)-B(S_\eta X,Y)+S_{\nabla_Y^\perp\eta}X+\nabla_X(S_\eta Y)+B(X,S_\eta Y)-S_\eta[X,Y].
+  $$
+  
+  Multiplying by $\zeta$ and observing that $\langle B(X,Y),\eta\rangle=\langle S_\eta X,Y\rangle$,
+  
+  $$
+  \langle\overline{R}(X,Y)\eta,\zeta\rangle=\langle R^\perp(X,Y)\eta,\zeta\rangle-\langle B(S_\eta X,Y),\zeta\rangle+\langle B(X,S_\eta Y),\zeta\rangle=\langle R^\perp(X,Y)\eta,\zeta\rangle+\langle(S_\eta S_\zeta-S_\zeta S_\eta)X,Y\rangle=\langle R^\perp(X,Y)\eta,\zeta\rangle+\langle[S_\eta,S_\zeta]X,Y\rangle,
+  $$
+  
+  which is Ricci's equation. $\square$
+\end{proof}
+
+\begin{remark}[Remark 3.2]
+  \label{rem:dc-ch6-3-2}
+  \dcref{ch6:3.2}
+  \uses{thm:dc-ch6-2-5, prop:dc-ch6-3-1}
+  \lean{Riemannian.DCImmersedPatch.inducedCurvature_inner_sub_curvature_inner}
+  \leanok
+  \cref{thm:dc-ch6-2-5} of this chapter is a special case of Gauss' equation:
+  taking $Z=X$ and $T=Y$ in the Gauss equation and using the symmetry of $B$
+  yields $\langle R(X,Y)X,Y\rangle-\langle\overline{R}(X,Y)X,Y\rangle
+  =\langle B(X,X),B(Y,Y)\rangle-|B(X,Y)|^2$.
+\end{remark}
+
+\begin{definition}[constant sectional curvature, field form]
+  \label{def:dc-ch6-3-constant-curvature}
+  \uses{def:dc-ch4-2-1, lem:dc-ch4-3-4}
+  \lean{Riemannian.AffineConnection.IsConstantCurvature}
+  \leanok
+  A Riemannian manifold with Riemannian connection $\overline{\nabla}$ has
+  \emph{constant sectional curvature} $K_0$ when
+
+  $$
+  \langle\overline{R}(X,Y)Z,W\rangle=K_0\big(\langle X,Z\rangle\langle Y,W\rangle-\langle Y,Z\rangle\langle X,W\rangle\big)
+  $$
+
+  for all fields $X,Y,Z,W$ — the characterization of constant sectional
+  curvature of \cref{lem:dc-ch4-3-4}.
+\end{definition}
+
+\begin{remark}[flat normal bundle]
+  \label{rem:dc-ch6-3-3}
+  \dcref{ch6:3.3}
+  \uses{prop:dc-ch6-3-1, def:dc-ch6-3-covderiv-B, def:dc-ch6-3-constant-curvature, def:dc-ch6-2-2}
+  \lean{Riemannian.DCImmersedPatch.ricci_equation_of_isConstantCurvature,
+    Riemannian.DCImmersedPatch.HasFlatNormalBundle,
+    Riemannian.DCImmersedPatch.ShapeOperatorsCommuteAt,
+    Riemannian.DCImmersedPatch.hasFlatNormalBundle_iff_shapeOperatorsCommute,
+    Riemannian.DCImmersedPatch.eq_of_inner_eq_of_mem_normalSpace}
+  \leanok
+  We say the normal bundle of an immersion is \emph{flat} if $R^\perp=0$. Assume the
+  ambient space $\overline{M}$ has constant sectional curvature. Then the Ricci
+  equation can be written
+  
+  $$
+  \langle R^\perp(X,Y)\eta,\zeta\rangle=-\langle[S_\eta,S_\zeta]X,Y\rangle.
+  $$
+  
+  It follows that $R^\perp=0$ if and only if $[S_\eta,S_\zeta]=0$ for all
+  $\eta,\zeta$, that is, if and only if for all $p\in M$ there exists a basis of
+  $T_pM$ which diagonalizes all of the $S_\eta$ simultaneously.
+  
+  The Gauss and Ricci equations are algebraic relations between the curvatures of
+  the tangent and normal bundles and the second fundamental form. A non-algebraic
+  relation is the Codazzi equation, for which we differentiate the second
+  fundamental form considered as a tensor
+  $B:\mathcal{X}(M)\times\mathcal{X}(M)\times\mathcal{X}(M)^\perp\to\mathbb{R}$,
+  $B(X,Y,\eta)=\langle B(X,Y),\eta\rangle$, with covariant derivative
+  
+  $$
+  (\overline{\nabla}_X B)(Y,Z,\eta)=X(B(Y,Z,\eta))-B(\nabla_X Y,Z,\eta)-B(Y,\nabla_X Z,\eta)-B(Y,Z,\nabla_X^\perp\eta).
+  $$
+\end{remark}
+
+\begin{definition}[the covariant derivative of the second fundamental form]
+  \label{def:dc-ch6-3-covderiv-B}
+  \uses{def:dc-ch6-2-B, def:dc-ch6-2-induced-connection, def:dc-ch6-3-normal-connection}
+  \lean{Riemannian.DCImmersedPatch.secondFundTensor,
+    Riemannian.DCImmersedPatch.secondFundTensorCovDeriv}
+  \leanok
+  The second fundamental form regarded as a tensor
+  $B:\mathcal{X}(M)\times\mathcal{X}(M)\times\mathcal{X}(M)^\perp\to\mathbb{R}$
+  is $B(X,Y,\eta)=\langle B(X,Y),\eta\rangle$, with covariant derivative
+
+  $$
+  (\overline{\nabla}_X B)(Y,Z,\eta)=X(B(Y,Z,\eta))-B(\nabla_X Y,Z,\eta)-B(Y,\nabla_X Z,\eta)-B(Y,Z,\nabla_X^\perp\eta).
+  $$
+\end{definition}
+
+\begin{lemma}[reduction of the covariant derivative of $B$]
+  \label{lem:dc-ch6-3-covderiv-reduce}
+  \uses{def:dc-ch6-3-covderiv-B, lem:dc-ch6-3-weingarten}
+  \lean{Riemannian.DCImmersedPatch.secondFundTensorCovDeriv_eq}
+  \leanok
+  For $\eta$ normal,
+
+  $$
+  (\overline{\nabla}_X B)(Y,Z,\eta)=\langle\nabla_X^\perp(B(Y,Z)),\eta\rangle-\langle B(\nabla_X Y,Z),\eta\rangle-\langle B(Y,\nabla_X Z),\eta\rangle.
+  $$
+\end{lemma}
+\begin{proof}
+  \leanok
+  By compatibility of $\overline{\nabla}$ with the metric,
+  $X\langle B(Y,Z),\eta\rangle
+  =\langle\overline{\nabla}_X(B(Y,Z)),\eta\rangle
+  +\langle B(Y,Z),\overline{\nabla}_X\eta\rangle$. In the first term only the
+  normal part $\nabla^\perp_X(B(Y,Z))$ of $\overline{\nabla}_X(B(Y,Z))$
+  survives against the normal field $\eta$; in the second only the normal part
+  $\nabla^\perp_X\eta$ of $\overline{\nabla}_X\eta$ survives against the normal
+  field $B(Y,Z)$. Substituting into the definition of
+  $(\overline{\nabla}_X B)(Y,Z,\eta)$ cancels the term
+  $\langle B(Y,Z),\nabla^\perp_X\eta\rangle$ and leaves the stated formula.
+\end{proof}
+
+\begin{proposition}[Codazzi's equation]
+  \label{prop:dc-ch6-3-4}
+  \dcref{ch6:3.4}
+  \uses{def:dc-ch6-3-covderiv-B, lem:dc-ch6-3-covderiv-reduce, lem:dc-ch6-3-decomposition, prop:dc-ch6-2-induced-connection}
+  \lean{Riemannian.DCImmersedPatch.codazzi_equation}
+  \leanok
+  With the notation above,
+
+  $$
+  \langle\overline{R}(X,Y)Z,\eta\rangle=(\overline{\nabla}_Y B)(X,Z,\eta)-(\overline{\nabla}_X B)(Y,Z,\eta).
+  $$
+\end{proposition}
+\begin{proof}
+  \leanok
+  Observe first that, by \cref{lem:dc-ch6-3-covderiv-reduce},
+
+  $$
+  (\overline{\nabla}_X B)(Y,Z,\eta)=X\langle B(Y,Z),\eta\rangle-\langle B(\nabla_X Y,Z),\eta\rangle-\langle B(Y,\nabla_X Z),\eta\rangle-\langle B(Y,Z),\nabla_X^\perp\eta\rangle=\langle\nabla_X^\perp(B(Y,Z)),\eta\rangle-\langle B(\nabla_X Y,Z),\eta\rangle-\langle B(Y,\nabla_X Z),\eta\rangle.
+  $$
+
+  Consider expression (6) of \cref{lem:dc-ch6-3-decomposition} and multiply both sides by
+  $\eta$. Taking the remark above into account,
+  
+  $$
+  \langle\overline{R}(X,Y)Z,\eta\rangle=\langle B(Y,\nabla_X Z),\eta\rangle+\langle\nabla_Y^\perp B(X,Z),\eta\rangle-\langle B(X,\nabla_Y Z),\eta\rangle-\langle\nabla_X^\perp B(Y,Z),\eta\rangle+\langle B(\nabla_X Y,Z),\eta\rangle-\langle B(\nabla_Y X,Z),\eta\rangle=-(\overline{\nabla}_X B)(Y,Z,\eta)+(\overline{\nabla}_Y B)(X,Z,\eta),
+  $$
+  
+  which is Codazzi's equation. $\square$
+\end{proof}
+
+\begin{remark}[Codazzi for constant curvature ambient and hypersurfaces]
+  \label{rem:dc-ch6-3-5}
+  \dcref{ch6:3.5}
+  \uses{prop:dc-ch6-3-4, def:dc-ch6-3-constant-curvature, def:dc-ch6-3-normal-connection}
+  \lean{Riemannian.DCImmersedPatch.codazzi_symm_of_isConstantCurvature,
+    Riemannian.DCImmersedPatch.normalCov_eq_zero_of_unit_spanning,
+    Riemannian.DCImmersedPatch.codazzi_hypersurface}
+  \leanok
+  If the ambient space $\overline{M}$ has constant sectional curvature, the Codazzi
+  equation reduces to
+  
+  $$
+  (\overline{\nabla}_X B)(Y,Z,\eta)=(\overline{\nabla}_Y B)(X,Z,\eta).
+  $$
+  
+  If, in addition, the codimension of the immersion is $1$ and $\eta$ is chosen as a
+  local unit normal field, then
+  $\nabla_X^\perp\eta=0$, hence
+  
+  $$
+  (\overline{\nabla}_X B)(Y,Z,\eta)=X\langle S_\eta(Y),Z\rangle-\langle S_\eta(\nabla_X Y),Z\rangle-\langle S_\eta(Y),\nabla_X Z\rangle=\langle\nabla_X(S_\eta(Y)),Z\rangle-\langle S_\eta(\nabla_X Y),Z\rangle.
+  $$
+  
+  Therefore, in this case, the Codazzi equation can be written
+  
+  $$
+  \nabla_X(S_\eta(Y))-\nabla_Y(S_\eta(X))=S_\eta([X,Y]).
+  $$
+  
+  The importance of the equations of Gauss, Codazzi, and Ricci is that, when the
+  ambient space has constant sectional curvature, they play an analogous role to the
+  compatibility equations in the local theory of surfaces (Cf. M. do Carmo [dC 2],
+  pp. 235–236). It is possible to state an analogous theorem to the fundamental
+  theorem of local surface theory; see K. Tenenblat, "On isometric immersions of
+  Riemannian manifolds", Boletim da Soc. Bras. de Mat. vol. 2 (1971), 23–36, and
+  H. Jacobowitz, "The Gauss-Codazzi equations", Tensor N.S., 39 (1982), 15–22.
+\end{remark}

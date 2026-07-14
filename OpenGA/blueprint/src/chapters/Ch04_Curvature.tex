@@ -1,0 +1,858 @@
+\chapter{Curvature}
+\label{chap:dc-curvature}
+
+Faithful transcription of do Carmo, \emph{Riemannian Geometry}. Each numbered
+statement keeps do Carmo's number, kind and (name); proofs keep his explicit
+cross-references ("by \cref{prop:dc-ch4-2-5}", "from (3)", "Chapter 6") so the
+dependency graph is recoverable from the text.
+
+\section{Introduction}
+
+The notion of curvature in a Riemannian manifold was introduced by Riemann in a
+geometric manner. Let $p$ be a point of a Riemannian manifold $M$ and let
+$\sigma\subset T_pM$ be a two-dimensional subspace of the tangent space. Consider
+the geodesics that start at $p$ and are tangent to $\sigma$; their segments in a
+normal neighborhood $U\subset M$ of $p$ determine a two-dimensional submanifold
+$S\subset M$ (with the present notation, $S$ is the image of $\exp_p$ restricted to
+$\sigma\cap\exp_p^{-1}(U)$). $S$ has a metric induced from the inclusion. Since
+Gauss proved that the curvature of a surface can be expressed in terms of its
+metric, Riemann could speak of the curvature of $S$ at $p$, denoted $K(p,\sigma)$;
+nowadays $K(p,\sigma)$ is called the \emph{sectional curvature} of $M$ at $p$ with
+respect to $\sigma$. It is a natural generalization of the Gaussian curvature of
+surfaces, and if $M=\mathbb{R}^n$ then $K(p,\sigma)=0$ for all $p$ and all
+$\sigma$. A workable formulation of the concept of curvature took a long time to
+develop; this chapter presents a definition (Def. 2.1) that intuitively measures
+the amount that a Riemannian manifold deviates from being Euclidean. In Chapter 6
+it is shown that the notion of sectional curvature (Def. 3.2) obtained from this
+definition generalizes the Gaussian curvature for surfaces and coincides with the
+concept introduced by Riemann.
+
+\section{Curvature}
+
+\begin{definition}[curvature]
+  \label{def:dc-ch4-2-1}
+  \dcref{ch4:2.1}
+  \lean{Riemannian.AffineConnection.curvature}
+  \leanok
+  \uses{def:dc-ch2-2-1}
+  The \emph{curvature} $R$ of a Riemannian manifold $M$ is a correspondence that
+  associates to every pair $X,Y\in\mathcal{X}(M)$ a mapping
+  $R(X,Y):\mathcal{X}(M)\to\mathcal{X}(M)$ given by
+  
+  $$
+  R(X,Y)Z=\nabla_Y\nabla_X Z-\nabla_X\nabla_Y Z+\nabla_{[X,Y]}Z,\quad Z\in\mathcal{X}(M),
+  $$
+  
+  where $\nabla$ is the Riemannian connection of $M$.
+  
+  Observe that if $M=\mathbb{R}^n$ then $R(X,Y)Z=0$ for all
+  $X,Y,Z\in\mathcal{X}(\mathbb{R}^n)$. In fact, if $Z=(z_1,\dots,z_n)$ with
+  components from the natural coordinates of $\mathbb{R}^n$, then
+  $\nabla_X Z=(Xz_1,\dots,Xz_n)$, hence
+  $\nabla_Y\nabla_X Z=(YXz_1,\dots,YXz_n)$, which implies $R(X,Y)Z=0$. We may thus
+  think of $R$ as a way of measuring how much $M$ deviates from being Euclidean.
+  In a coordinate system $\{x_i\}$ around $p\in M$, since
+  $[\frac{\partial}{\partial x_i},\frac{\partial}{\partial x_j}]=0$,
+  
+  $$
+  R\Big(\frac{\partial}{\partial x_i},\frac{\partial}{\partial x_j}\Big)\frac{\partial}{\partial x_k}=\Big(\nabla_{\partial/\partial x_j}\nabla_{\partial/\partial x_i}-\nabla_{\partial/\partial x_i}\nabla_{\partial/\partial x_j}\Big)\frac{\partial}{\partial x_k},
+  $$
+  
+  that is, the curvature measures the non-commutativity of the covariant
+  derivative. A frequently encountered definition of curvature in the literature
+  differs from Definition 2.1 by a sign.
+\end{definition}
+
+\begin{proposition}[linearity properties of $R$]
+  \label{prop:dc-ch4-2-2}
+  \dcref{ch4:2.2}
+  \lean{Riemannian.AffineConnection.curvature_add_left,
+    Riemannian.AffineConnection.curvature_add_middle,
+    Riemannian.AffineConnection.curvature_add_right,
+    Riemannian.AffineConnection.curvature_smul_left,
+    Riemannian.AffineConnection.curvature_smul_middle,
+    Riemannian.AffineConnection.curvature_smul_right}
+  \leanok
+  \uses{def:dc-ch4-2-1}
+  The curvature $R$ of a Riemannian manifold has the following properties:
+  - (i) $R$ is bilinear in $\mathcal{X}(M)\times\mathcal{X}(M)$, that is,
+  
+  $$
+  R(fX_1+gX_2,Y_1)=fR(X_1,Y_1)+gR(X_2,Y_1),
+  $$
+  
+  $$
+  R(X_1,fY_1+gY_2)=fR(X_1,Y_1)+gR(X_1,Y_2),\quad f,g\in\mathcal{D}(M),\ X_1,X_2,Y_1,Y_2\in\mathcal{X}(M).
+  $$
+  
+  - (ii) For any $X,Y\in\mathcal{X}(M)$, the curvature operator
+  $R(X,Y):\mathcal{X}(M)\to\mathcal{X}(M)$ is linear, that is,
+  
+  $$
+  R(X,Y)(Z+W)=R(X,Y)Z+R(X,Y)W,\qquad R(X,Y)fZ=fR(X,Y)Z,\quad f\in\mathcal{D}(M),\ Z,W\in\mathcal{X}(M).
+  $$
+\end{proposition}
+\begin{proof}
+  \leanok
+  We verify (ii) only, leaving (i) as an exercise. The first part of (ii)
+  is obvious. As for the second,
+  
+  $$
+  \nabla_Y\nabla_X(fZ)=\nabla_Y(f\nabla_X Z+(Xf)Z)=f\nabla_Y\nabla_X Z+(Yf)(\nabla_X Z)+(Xf)(\nabla_Y Z)+(Y(Xf))Z.
+  $$
+  
+  Therefore
+  
+  $$
+  \nabla_Y\nabla_X(fZ)-\nabla_X\nabla_Y(fZ)=f(\nabla_Y\nabla_X-\nabla_X\nabla_Y)Z+((YX-XY)f)Z,
+  $$
+  
+  hence
+  
+  $$
+  R(X,Y)fZ=f\nabla_Y\nabla_X Z-f\nabla_X\nabla_Y Z+([Y,X]f)Z+f\nabla_{[X,Y]}Z+([X,Y]f)Z=fR(X,Y)Z.\ \blacksquare
+  $$
+\end{proof}
+
+\begin{remark}[Remark 2.3]
+  \label{rem:dc-ch4-2-3}
+  \dcref{ch4:2.3}
+  \uses{rem:dc-ch4-2-6}
+  An analysis of the proof above shows that the necessity of the appearance of the
+  term $\nabla_{[X,Y]}Z$ in the definition of the curvature is connected to the fact
+  that we want the mapping $R(X,Y):\mathcal{X}(M)\to\mathcal{X}(M)$ to be linear
+  (see the next \cref{rem:dc-ch4-2-6}).
+\end{remark}
+
+\begin{proposition}[Bianchi Identity]
+  \label{prop:dc-ch4-2-4}
+  \dcref{ch4:2.4}
+  \lean{Riemannian.AffineConnection.curvature_bianchi}
+  \leanok
+  \uses{def:dc-ch4-2-1, def:dc-ch2-3-4, lem:dc-ch0-5-3-jacobi}
+  $$
+  R(X,Y)Z+R(Y,Z)X+R(Z,X)Y=0.
+  $$
+\end{proposition}
+\begin{proof}
+  \leanok
+  From the symmetry of the Riemannian connection,
+  
+  $$
+  \begin{aligned}R(X,Y)Z+R(Y,Z)X+R(Z,X)Y&=\nabla_Y\nabla_X Z-\nabla_X\nabla_Y Z+\nabla_{[X,Y]}Z\\&\quad+\nabla_Z\nabla_Y X-\nabla_Y\nabla_Z X+\nabla_{[Y,Z]}X\\&\quad+\nabla_X\nabla_Z Y-\nabla_Z\nabla_X Y+\nabla_{[Z,X]}Y\\&=\nabla_Y[X,Z]+\nabla_Z[Y,X]+\nabla_X[Z,Y]-\nabla_{[X,Z]}Y-\nabla_{[Y,X]}Z-\nabla_{[Z,Y]}X\\&=[Y,[X,Z]]+[Z,[Y,X]]+[X,[Z,Y]]=0,\end{aligned}
+  $$
+  
+  where the last equality follows from the Jacobi identity for vector fields.
+  $\blacksquare$
+\end{proof}
+
+\begin{proposition}[symmetries of the curvature]
+  \label{prop:dc-ch4-2-5}
+  \dcref{ch4:2.5}
+  \uses{def:dc-ch4-2-1, prop:dc-ch4-2-4, def:dc-ch2-3-4, cor:dc-ch2-3-3}
+  % (a) = curvatureForm_bianchi (= prop:dc-ch4-2-4); (b) = curvatureForm_antisymm_left;
+  % (c) = curvatureForm_antisymm_right (metric compatibility); (d) = curvatureForm_pairSwap.
+  \lean{Riemannian.AffineConnection.curvatureForm_antisymm_left,
+    Riemannian.AffineConnection.curvatureForm_antisymm_right,
+    Riemannian.AffineConnection.curvatureForm_bianchi,
+    Riemannian.AffineConnection.curvatureForm_pairSwap}
+  \leanok
+  From now on, we shall write $\langle R(X,Y)Z,T\rangle=(X,Y,Z,T)$.
+  
+  - (a) $(X,Y,Z,T)+(Y,Z,X,T)+(Z,X,Y,T)=0$
+  - (b) $(X,Y,Z,T)=-(Y,X,Z,T)$
+  - (c) $(X,Y,Z,T)=-(X,Y,T,Z)$
+  - (d) $(X,Y,Z,T)=(Z,T,X,Y)$.
+\end{proposition}
+\begin{proof}
+  \leanok
+  (a) is just the Bianchi identity again; (b) follows directly from \cref{def:dc-ch4-2-1};
+  (c) is equivalent to $(X,Y,Z,Z)=0$, whose proof follows:
+  
+  $$
+  (X,Y,Z,Z)=\langle\nabla_Y\nabla_X Z-\nabla_X\nabla_Y Z+\nabla_{[X,Y]}Z,Z\rangle.
+  $$
+  
+  But
+  
+  $$
+  \langle\nabla_Y\nabla_X Z,Z\rangle=Y\langle\nabla_X Z,Z\rangle-\langle\nabla_X Z,\nabla_Y Z\rangle,\qquad\langle\nabla_{[X,Y]}Z,Z\rangle=\tfrac{1}{2}[X,Y]\langle Z,Z\rangle.
+  $$
+  
+  Hence
+  
+  $$
+  \begin{aligned}(X,Y,Z,Z)&=Y\langle\nabla_X Z,Z\rangle-X\langle\nabla_Y Z,Z\rangle+\tfrac{1}{2}[X,Y]\langle Z,Z\rangle\\&=\tfrac{1}{2}Y(X\langle Z,Z\rangle)-\tfrac{1}{2}X(Y\langle Z,Z\rangle)+\tfrac{1}{2}[X,Y]\langle Z,Z\rangle\\&=-\tfrac{1}{2}[X,Y]\langle Z,Z\rangle+\tfrac{1}{2}[X,Y]\langle Z,Z\rangle=0,\end{aligned}
+  $$
+  
+  which proves (c). To prove (d), we use (a), and write:
+  
+  $$
+  \begin{aligned}(X,Y,Z,T)+(Y,Z,X,T)+(Z,X,Y,T)&=0,\\(Y,Z,T,X)+(Z,T,Y,X)+(T,Y,Z,X)&=0,\\(Z,T,X,Y)+(T,X,Z,Y)+(X,Z,T,Y)&=0,\\(T,X,Y,Z)+(X,Y,T,Z)+(Y,T,X,Z)&=0.\end{aligned}
+  $$
+  
+  Summing the equations above we obtain $2(Z,X,Y,T)+2(T,Y,Z,X)=0$ and therefore
+  $(Z,X,Y,T)=(Y,T,Z,X)$. $\blacksquare$
+\end{proof}
+
+\begin{remark}[Remark 2.6]
+  \label{rem:dc-ch4-2-6}
+  \dcref{ch4:2.6}
+  \uses{rem:dc-ch2-2-3}
+  It is convenient to express what was seen above in a coordinate system $(U,\mathbf{x})$
+  based at $p\in M$. Indicating $\frac{\partial}{\partial x_i}=X_i$, we put
+  
+  $$
+  R(X_i,X_j)X_k=\sum_\ell R_{ijk}^\ell X_\ell,
+  $$
+  
+  so the $R_{ijk}^\ell$ are the components of the curvature $R$ in $(U,\mathbf{x})$.
+  If $X=\sum_i u^i X_i$, $Y=\sum_j v^j X_j$, $Z=\sum_k w^k X_k$, then by linearity of
+  $R$,
+  
+  $$
+  R(X,Y)Z=\sum_{i,j,k,\ell}R_{ijk}^\ell u^i v^j w^k X_\ell.\qquad(1)
+  $$
+  
+  To express $R_{ijk}^\ell$ in terms of the coefficients $\Gamma_{ij}^k$ of the
+  Riemannian connection, we write
+  
+  $$
+  R(X_i,X_j)X_k=\nabla_{X_j}\nabla_{X_i}X_k-\nabla_{X_i}\nabla_{X_j}X_k=\nabla_{X_j}\Big(\sum_\ell\Gamma_{ik}^\ell X_\ell\Big)-\nabla_{X_i}\Big(\sum_\ell\Gamma_{jk}^\ell X_\ell\Big),
+  $$
+  
+  which by a direct calculation yields
+  
+  $$
+  R_{ijk}^s=\sum_\ell\Gamma_{ik}^\ell\Gamma_{j\ell}^s-\sum_\ell\Gamma_{jk}^\ell\Gamma_{i\ell}^s+\frac{\partial}{\partial x_j}\Gamma_{ik}^s-\frac{\partial}{\partial x_i}\Gamma_{jk}^s.\qquad(2)
+  $$
+  
+  Putting $\langle R(X_i,X_j)X_k,X_s\rangle=\sum_\ell R_{ijk}^\ell g_{\ell s}=R_{ijks}$,
+  the identities of Proposition 2.5 can be written as
+  
+  $$
+  R_{ijks}+R_{jkis}+R_{kijs}=0,\qquad R_{ijks}=-R_{jiks},\qquad R_{ijks}=-R_{ijsk},\qquad R_{ijks}=R_{ksij}.
+  $$
+  
+  Equation (1), which depends on the linearity of the operator $R$, shows that the
+  value of $R(X,Y)Z$ at the point $p$ depends uniquely on the values of $X,Y,Z$ at
+  $p$ and the values of the functions $R_{ijk}^\ell$ at $p$. This contrasts with the
+  behavior of the covariant derivative (see \cref{rem:dc-ch2-2-3}), the reason
+  being that the covariant derivative is not linear in all of its arguments. In
+  general, entities such as the curvature that are linear are called \emph{tensors} on
+  $M$ (more details in Section 5).
+\end{remark}
+
+\section{Sectional curvature}
+
+Given a vector space $V$, we denote by $|x\wedge y|$ the expression
+
+$$
+\sqrt{|x|^2|y|^2-\langle x,y\rangle^2},
+$$
+
+which represents the area of a two-dimensional parallelogram determined by the
+pair of vectors $x,y\in V$.
+
+\begin{proposition}[sectional curvature independent of basis]
+  \label{prop:dc-ch4-3-1}
+  \dcref{ch4:3.1}
+  \lean{Riemannian.IsAlgCurvatureForm.sectionalCurvature_changeBasis}
+  \leanok
+  \uses{prop:dc-ch4-2-5, def:dc-ch4-3-2}
+  Let $\sigma\subset T_pM$ be a two-dimensional subspace of the tangent space
+  $T_pM$ and let $x,y\in\sigma$ be two linearly independent vectors. Then
+  
+  $$
+  K(x,y)=\frac{(x,y,x,y)}{|x\wedge y|^2}
+  $$
+  
+  does not depend on the choice of the vectors $x,y\in\sigma$.
+\end{proposition}
+\begin{proof}
+  \leanok
+  To avoid calculating, we observe that we can pass from the basis $\{x,y\}$
+  of $\sigma$ to any other basis $\{x',y'\}$ by iterating the following elementary
+  transformations:
+  - (a) $\{x,y\}\to\{y,x\}$,
+  - (b) $\{x,y\}\to\{\lambda x,y\}$,
+  - (c) $\{x,y\}\to\{x+\lambda y,y\}$.
+  
+  It is easy to see that $K(x,y)$ is invariant by such transformations, which
+  completes the proof. $\blacksquare$
+
+  \emph{Formalization note.} In the Lean development the plane change of basis is
+  taken directly: for an invertible linear change $x'=ax+by$, $y'=cx+dy$ (with
+  $ad-bc\neq 0$) of a linearly independent pair, both the numerator $(x',y',x',y')$
+  and the denominator $|x'\wedge y'|^2$ scale by $(ad-bc)^2$ — the numerator by the
+  antisymmetries of \cref{prop:dc-ch4-2-5}, the denominator because $|x\wedge y|^2$
+  is itself the diagonal of the algebraic curvature form $R'$ (see
+  \cref{lem:dc-ch4-3-4}) — so the ratio $K$ is unchanged.
+\end{proof}
+
+\begin{definition}[sectional curvature]
+  \label{def:dc-ch4-3-2}
+  \dcref{ch4:3.2}
+  \lean{Riemannian.sectionalCurvature}
+  \leanok
+  \uses{def:dc-ch4-2-1}
+  Given a point $p\in M$ and a two-dimensional subspace $\sigma\subset T_pM$, the
+  real number $K(x,y)=K(\sigma)$, where $\{x,y\}$ is any basis of $\sigma$, is
+  called the \emph{sectional curvature} of $\sigma$ at $p$.
+  
+  The importance of the sectional curvature comes from the fact that knowledge of
+  $K(\sigma)$ for all $\sigma$ determines the curvature $R$ completely. This is a
+  purely algebraic fact:
+\end{definition}
+
+\begin{lemma}[sectional curvature determines $R$]
+  \label{lem:dc-ch4-3-3}
+  \dcref{ch4:3.3}
+  \lean{Riemannian.IsAlgCurvatureForm.ext}
+  \leanok
+  \uses{prop:dc-ch4-2-5}
+  Let $V$ be a vector space of dimension $\geq 2$, provided with an inner product
+  $\langle\,,\,\rangle$. Let $R:V\times V\times V\to V$ and $R':V\times V\times V\to V$
+  be tri-linear mappings such that conditions (a), (b), (c) and (d) of \cref{prop:dc-ch4-2-5} are satisfied by
+  
+  $$
+  (x,y,z,t)=\langle R(x,y)z,t\rangle,\qquad (x,y,z,t)'=\langle R'(x,y)z,t\rangle.
+  $$
+  
+  If $x,y$ are two linearly independent vectors, we may write
+  
+  $$
+  K(\sigma)=\frac{(x,y,x,y)}{|x\wedge y|^2},\qquad K'(\sigma)=\frac{(x,y,x,y)'}{|x\wedge y|^2},
+  $$
+  
+  where $\sigma$ is the bi-dimensional subspace generated by $x$ and $y$. If for all
+  $\sigma\subset V$, $K(\sigma)=K'(\sigma)$, then $R=R'$.
+\end{lemma}
+\begin{proof}
+  \leanok
+  It suffices to prove that $(x,y,z,t)=(x,y,z,t)'$ for any $x,y,z,t\in V$.
+  Observe first that, by hypothesis, $(x,y,x,y)=(x,y,x,y)'$ for all $x,y\in V$. Then
+  
+  $$
+  (x+z,y,x+z,y)=(x+z,y,x+z,y)',
+  $$
+  
+  hence
+  
+  $$
+  (x,y,x,y)+2(x,y,z,y)+(z,y,z,y)=(x,y,x,y)'+2(x,y,z,y)'+(z,y,z,y)',
+  $$
+  
+  and therefore $(x,y,z,y)=(x,y,z,y)'$ for all $x,y,z\in V$. Using what we have just
+  proved,
+  
+  $$
+  (x,y+t,z,y+t)=(x,y+t,z,y+t)',
+  $$
+  
+  hence
+  
+  $$
+  (x,y,z,t)+(x,t,z,y)=(x,y,z,t)'+(x,t,z,y)',
+  $$
+  
+  which can be written as
+  
+  $$
+  (x,y,z,t)-(x,y,z,t)'=(y,z,x,t)-(y,z,x,t)'.
+  $$
+  
+  It follows that the expression $(x,y,z,t)-(x,y,z,t)'$ is invariant by cyclic
+  permutations of the first three elements. Therefore, by (a) of \cref{prop:dc-ch4-2-5},
+  
+  $$
+  3[(x,y,z,t)-(x,y,z,t)']=0,
+  $$
+  
+  hence $(x,y,z,t)=(x,y,z,t)'$ for all $x,y,z,t\in V$. $\blacksquare$
+\end{proof}
+
+\begin{lemma}[constant curvature characterization]
+  \label{lem:dc-ch4-3-4}
+  \dcref{ch4:3.4}
+  \lean{Riemannian.IsAlgCurvatureForm.eq_smul_stdCurvForm_of_const,
+    Riemannian.IsAlgCurvatureForm.const_of_eq_smul_stdCurvForm}
+  \leanok
+  \uses{lem:dc-ch4-3-3, prop:dc-ch4-2-5}
+  Let $M$ be a Riemannian manifold and $p$ a point of $M$. Define a tri-linear
+  mapping $R':T_pM\times T_pM\times T_pM\to T_pM$ by
+  
+  $$
+  \langle R'(X,Y,W),Z\rangle=\langle X,W\rangle\langle Y,Z\rangle-\langle Y,W\rangle\langle X,Z\rangle,
+  $$
+  
+  for all $X,Y,W,Z\in T_pM$. Then $M$ has constant sectional curvature equal to
+  $K_o$ if and only if $R=K_o R'$, where $R$ is the curvature of $M$.
+\end{lemma}
+\begin{proof}
+  \leanok
+  Assume that $K(p,\sigma)=K_o$ for all $\sigma\subset T_pM$, and set
+  $\langle R'(X,Y,W),Z\rangle=(X,Y,W,Z)'$. Observe that $R'$ satisfies the properties
+  (a), (b), (c) and (d) of \cref{prop:dc-ch4-2-5}. Since
+  
+  $$
+  (X,Y,X,Y)'=\langle X,X\rangle\langle Y,Y\rangle-\langle X,Y\rangle^2,
+  $$
+  
+  we have that, for all pairs of vectors $X,Y\in T_pM$,
+  
+  $$
+  R(X,Y,X,Y)=K_o(|X|^2|Y|^2-\langle X,Y\rangle^2)=K_o R'(X,Y,X,Y).
+  $$
+  
+  \cref{lem:dc-ch4-3-3} implies that, for all $X,Y,W,Z$,
+  
+  $$
+  R(X,Y,W,Z)=K_o R'(X,Y,W,Z),
+  $$
+  
+  hence $R=K_o R'$. The converse is immediate. $\blacksquare$
+\end{proof}
+
+\begin{corollary}[constant curvature in an orthonormal basis]
+  \label{cor:dc-ch4-3-5}
+  \dcref{ch4:3.5}
+  \lean{Riemannian.IsAlgCurvatureForm.eq_kronecker_iff_const}
+  \leanok
+  \uses{lem:dc-ch4-3-4, prop:dc-ch4-2-5}
+  Let $M$ be a Riemannian manifold, $p$ a point of $M$ and $\{e_1,\dots,e_n\}$,
+  $n=\dim M$, an orthonormal basis of $T_pM$. Define
+  $R_{ijk\ell}=\langle R(e_i,e_j)e_k,e_\ell\rangle$, $i,j,k,\ell=1,\dots,n$. Then
+  $K(p,\sigma)=K_o$ for all $\sigma\subset T_pM$ if and only if
+  
+  $$
+  R_{ijk\ell}=K_o(\delta_{ik}\delta_{j\ell}-\delta_{i\ell}\delta_{jk}),
+  $$
+  
+  where $\delta_{ij}=1$ if $i=j$ and $\delta_{ij}=0$ if $i\neq j$. In other words,
+  $K(p,\sigma)=K_o$ for all $\sigma\subset T_pM$ if and only if
+  $R_{ijij}=-R_{ijji}=K_o$ for all $i\neq j$, and $R_{ijk\ell}=0$ in the other
+  cases.
+\end{corollary}
+\begin{proof}
+  \leanok
+  \uses{lem:dc-ch4-3-4, lem:dc-ch4-3-3}
+  By \cref{lem:dc-ch4-3-4}, $K(p,\sigma)=K_o$ for all $\sigma$ is equivalent to
+  $R=K_oR'$, where $R'(X,Y,Z,T)=\langle X,Z\rangle\langle Y,T\rangle-\langle
+  Y,Z\rangle\langle X,T\rangle$. Evaluating $R'$ on the orthonormal basis gives
+  $R'(e_i,e_j,e_k,e_\ell)=\delta_{ik}\delta_{j\ell}-\delta_{i\ell}\delta_{jk}$,
+  so $R=K_oR'$ yields
+  $R_{ijk\ell}=K_o(\delta_{ik}\delta_{j\ell}-\delta_{i\ell}\delta_{jk})$.
+  Conversely, since an algebraic curvature form is determined by its components
+  in a basis (multilinearity, \cref{lem:dc-ch4-3-3}), the Kronecker identity on
+  all basis $4$-tuples forces $R=K_oR'$, hence constant sectional curvature
+  $K_o$. $\blacksquare$
+\end{proof}
+
+\section{Ricci curvature and scalar curvature}
+
+Certain combinations of sectional curvature appear with such frequency that they
+deserve special names. Let $x=z_n$ be a unit vector in $T_pM$; we take an
+orthonormal basis $\{z_1,z_2,\dots,z_{n-1}\}$ of the hyperplane in $T_pM$
+orthogonal to $x$ and consider the following averages:
+
+$$
+\mathrm{Ric}_p(x)=\frac{1}{n-1}\sum_i\langle R(x,z_i)x,z_i\rangle,\quad i=1,2,\dots,n-1,
+$$
+
+$$
+K(p)=\frac{1}{n}\sum_j\mathrm{Ric}_p(z_j)=\frac{1}{n(n-1)}\sum_{ij}\langle R(z_i,z_j)z_i,z_j\rangle,\quad j=1,\dots,n.
+$$
+
+These expressions do not depend on the choice of the corresponding orthonormal
+basis; they are called the \emph{Ricci curvature} in the direction $x$ and the *scalar
+curvature* at $p$, respectively. To prove independence, define a bilinear form on
+$T_pM$ by
+
+$$
+Q(x,y)=\text{trace of the mapping }z\mapsto R(x,z)y.
+$$
+
+Choosing $x$ a unit vector and completing it to an orthonormal basis
+$\{z_1,\dots,z_{n-1},z_n=x\}$ of $T_pM$ we have
+
+$$
+Q(x,y)=\sum_i\langle R(x,z_i)y,z_i\rangle=\sum_i\langle R(y,z_i)x,z_i\rangle=Q(y,x),
+$$
+
+that is, $Q$ is symmetric and $Q(x,x)=(n-1)\mathrm{Ric}_p(x)$; this proves that
+$\mathrm{Ric}_p(x)$ is intrinsically defined. The bilinear form $Q$ corresponds to
+a linear self-adjoint mapping $K$ given by $\langle K(x),y\rangle=Q(x,y)$, and
+taking an orthonormal basis $\{z_1,\dots,z_n\}$,
+
+$$
+\text{Trace of }K=\sum_j\langle K(z_j),z_j\rangle=\sum_j Q(z_j,z_j)=(n-1)\sum_j\mathrm{Ric}_p(z_j)=n(n-1)K(p),
+$$
+
+which proves the statement. The bilinear form $\frac{1}{n-1}Q$ is, at times,
+called \emph{the Ricci tensor}. In a coordinate system $(x_i)$ with
+$X_i=\frac{\partial}{\partial x_i}$, $g_{ij}=\langle X_i,X_j\rangle$ and $g^{ij}$
+the inverse matrix of $g_{ij}$, the coefficients of the bilinear form
+$\frac{1}{n-1}Q$ in the basis $\{X_i\}$ are
+
+$$
+\frac{1}{n-1}R_{ik}=\frac{1}{n-1}\sum_j R_{ijk}^j=\frac{1}{n-1}\sum_{sj}R_{ijks}g^{sj},
+$$
+
+and the scalar curvature is given by
+
+$$
+K=\frac{1}{n(n-1)}\sum_{ik}R_{ik}g^{ik}.
+$$
+
+\begin{definition}[Ricci form]
+  \label{def:dc-ch4-4-ricci-form}
+  \dcref{ch4:4}
+  \lean{Riemannian.ricciForm, Riemannian.ricciForm_eq_sum}
+  \leanok
+  \uses{prop:dc-ch4-2-5}
+  Let $p\in M$ and let $B(x,y,z,t)=\langle R(x,y)z,t\rangle$ be the algebraic
+  curvature form on $T_pM$. The \emph{Ricci form} is the bilinear form
+  $$
+  Q(x,y)=\text{trace of the mapping }z\mapsto R(x,z)y,
+  $$
+  the trace of the endomorphism of $T_pM$ whose associated bilinear form is
+  $(z,w)\mapsto B(x,z,y,w)$. In any orthonormal basis $\{e_i\}$ of $T_pM$,
+  $$
+  Q(x,y)=\sum_i\langle R(x,e_i)y,e_i\rangle=\sum_i B(x,e_i,y,e_i),
+  $$
+  and this sum is independent of the orthonormal basis, since it is a trace. The
+  \emph{Ricci curvature} in the direction of a unit vector $x$ is
+  $\mathrm{Ric}_p(x)=\frac{1}{n-1}Q(x,x)$.
+\end{definition}
+
+\begin{proposition}[the Ricci form is symmetric]
+  \label{prop:dc-ch4-4-ricci-symm}
+  \dcref{ch4:4}
+  \lean{Riemannian.ricciForm_symm}
+  \leanok
+  \uses{def:dc-ch4-4-ricci-form, prop:dc-ch4-2-5}
+  The Ricci form is symmetric, $Q(x,y)=Q(y,x)$ for all $x,y\in T_pM$. In
+  particular $\mathrm{Ric}_p(x)$ is intrinsically defined.
+\end{proposition}
+\begin{proof}
+  \leanok
+  In an orthonormal basis $\{e_i\}$ we have $Q(x,y)=\sum_i B(x,e_i,y,e_i)$. By the
+  pair-swap symmetry (d) of \cref{prop:dc-ch4-2-5}, $B(x,e_i,y,e_i)=B(y,e_i,x,e_i)$,
+  hence $Q(x,y)=\sum_i B(y,e_i,x,e_i)=Q(y,x)$. $\blacksquare$
+\end{proof}
+
+\begin{definition}[scalar curvature]
+  \label{def:dc-ch4-4-scalar}
+  \dcref{ch4:4}
+  \lean{Riemannian.scalarCurvature, Riemannian.scalarCurvature_eq_sum}
+  \leanok
+  \uses{def:dc-ch4-4-ricci-form}
+  The (unnormalized) \emph{scalar curvature} at $p$ is the trace of the Ricci
+  form $Q$,
+  $$
+  \mathrm{trace}(Q)=\sum_j Q(e_j,e_j)=\sum_{ij}\langle R(e_i,e_j)e_i,e_j\rangle
+    =\sum_{ij}B(e_i,e_j,e_i,e_j),
+  $$
+  again independent of the orthonormal basis $\{e_i\}$ (a trace of a trace). do
+  Carmo's normalized scalar curvature is $K(p)=\frac{1}{n(n-1)}\mathrm{trace}(Q)$.
+\end{definition}
+
+\begin{lemma}[curvature on a parametrized surface]
+  \label{lem:dc-ch4-4-1}
+  \dcref{ch4:4.1}
+  Let $f:A\subset\mathbb{R}^2\to M$ be a parametrized surface (cf. Def. 3.3, Chapter
+  3) and let $(s,t)$ be the usual coordinates of $\mathbb{R}^2$. Let $V=V(s,t)$ be a
+  vector field along $f$. Then
+  
+  $$
+  \frac{D}{dt}\frac{D}{ds}V-\frac{D}{ds}\frac{D}{dt}V=R\Big(\frac{\partial f}{\partial s},\frac{\partial f}{\partial t}\Big)V.\qquad(3)
+  $$
+\end{lemma}
+\begin{proof}
+  The proof is a long calculation. Choose a system of coordinates
+  $(U,\mathbf{x})$ based at $p\in M$. Let $V=\sum_i v^i X_i$, where $v^i=v^i(s,t)$ and
+  $X_i=\frac{\partial}{\partial x_i}$. Then
+  
+  $$
+  \frac{D}{ds}V=\sum_i v^i\frac{D}{ds}X_i+\sum_i\frac{\partial v^i}{\partial s}X_i,
+  $$
+  
+  $$
+  \frac{D}{dt}\Big(\frac{D}{ds}V\Big)=\sum_i v^i\frac{D}{dt}\frac{D}{ds}X_i+\sum_i\frac{\partial v^i}{\partial t}\frac{D}{ds}X_i+\sum_i\frac{\partial v^i}{\partial s}\frac{D}{dt}X_i+\sum_i\frac{\partial^2 v^i}{\partial t\partial s}X_i.
+  $$
+  
+  Interchanging the roles of $s$ and $t$ and subtracting,
+  
+  $$
+  \frac{D}{dt}\frac{D}{ds}V-\frac{D}{ds}\frac{D}{dt}V=\sum_i v^i\Big(\frac{D}{dt}\frac{D}{ds}X_i-\frac{D}{ds}\frac{D}{dt}X_i\Big).
+  $$
+  
+  Putting $f(s,t)=(x_1(s,t),\dots,x_n(s,t))$, so that
+  $\frac{\partial f}{\partial s}=\sum_j\frac{\partial x_j}{\partial s}X_j$ and
+  $\frac{\partial f}{\partial t}=\sum_k\frac{\partial x_k}{\partial t}X_k$, we have
+  $\frac{D}{ds}X_i=\sum_j\frac{\partial x_j}{\partial s}\nabla_{X_j}X_i$ and
+  
+  $$
+  \frac{D}{dt}\frac{D}{ds}X_i=\sum_j\frac{\partial^2 x_j}{\partial t\partial s}\nabla_{X_j}X_i+\sum_{jk}\frac{\partial x_j}{\partial s}\frac{\partial x_k}{\partial t}\nabla_{X_k}\nabla_{X_j}X_i,
+  $$
+  
+  or
+  
+  $$
+  \Big(\frac{D}{dt}\frac{D}{ds}-\frac{D}{ds}\frac{D}{dt}\Big)X_i=\sum_{jk}\frac{\partial x_j}{\partial s}\frac{\partial x_k}{\partial t}(\nabla_{X_k}\nabla_{X_j}X_i-\nabla_{X_j}\nabla_{X_k}X_i).
+  $$
+  
+  Joining everything together, we finally get
+  
+  $$
+  \Big(\frac{D}{dt}\frac{D}{ds}-\frac{D}{ds}\frac{D}{dt}\Big)V=\sum_{ijk}v^i\frac{\partial x_j}{\partial s}\frac{\partial x_k}{\partial t}R(X_j,X_k)X_i=R\Big(\frac{\partial f}{\partial s},\frac{\partial f}{\partial t}\Big)V.\ \blacksquare
+  $$
+\end{proof}
+
+\section{Tensors on Riemannian manifolds}
+
+The notion of curvature is a particular case of the idea of a tensor. The idea of
+a tensor is a natural generalization of the idea of a vector field, an important
+point being that, analogously to vector fields, tensors can be differentiated
+covariantly. For what follows it is useful to observe that $\mathcal{X}(M)$ is a
+module over $\mathcal{D}(M)$.
+
+\begin{definition}[tensor of order $r$]
+  \label{def:dc-ch4-5-1}
+  \dcref{ch4:5.1}
+  \lean{Riemannian.IsCovariantTensor2, Riemannian.IsCovariantTensor4}
+  \leanok
+  A \emph{tensor} $T$ of order $r$ on a Riemannian manifold is a multilinear mapping
+  
+  $$
+  T:\underbrace{\mathcal{X}(M)\times\cdots\times\mathcal{X}(M)}_{r\text{ factors}}\to\mathcal{D}(M).
+  $$
+  
+  This means that given $Y_1,\dots,Y_r\in\mathcal{X}(M)$, $T(Y_1,\dots,Y_r)$ is a
+  differentiable function on $M$, and that $T$ is linear in each argument, that is,
+  
+  $$
+  T(Y_1,\dots,fX+gY,\dots,Y_r)=fT(Y_1,\dots,X,\dots,Y_r)+gT(Y_1,\dots,Y,\dots,Y_r),
+  $$
+  
+  for all $X,Y\in\mathcal{X}(M)$, $f,g\in\mathcal{D}(M)$.
+  
+  A tensor is a pointwise object. Fix $p\in M$ and let $U$ be a neighborhood of $p$
+  on which it is possible to define vector fields $E_1,\dots,E_n\in\mathcal{X}(U)$
+  such that at each $q\in U$ the vectors $\{E_i(q)\}$, $i=1,\dots,n$, form a basis of
+  $T_qM$; we say $\{E_i\}$ is a \emph{moving frame} on $U$. Writing
+  $Y_1=\sum_{i_1}y_{i_1}E_{i_1},\dots,Y_r=\sum_{i_r}y_{i_r}E_{i_r}$, by linearity
+  
+  $$
+  T(Y_1,\dots,Y_r)=\sum_{i_1,\dots,i_r}y_{i_1}\cdots y_{i_r}T(E_{i_1},\dots,E_{i_r}).
+  $$
+  
+  The functions $T(E_{i_1},\dots,E_{i_r})=T_{i_1\dots i_r}$ on $U$ are called the
+  \emph{components} of $T$ in the frame $\{E_i\}$. The value of $T(Y_1,\dots,Y_r)$ at $p$
+  depends only on the values at $p$ of the components of $T$ and the values of
+  $Y_1,\dots,Y_r$ at $p$.
+\end{definition}
+
+\begin{example}[curvature tensor]
+  \label{ex:dc-ch4-5-2}
+  \dcref{ch4:5.2}
+  \lean{Riemannian.AffineConnection.curvatureForm, Riemannian.AffineConnection.curvatureForm_isCovariantTensor4}
+  \leanok
+  \uses{def:dc-ch4-5-1, prop:dc-ch4-2-2, prop:dc-ch4-2-5}
+  The \emph{curvature tensor}
+
+  $$
+  R:\mathcal{X}(M)\times\mathcal{X}(M)\times\mathcal{X}(M)\times\mathcal{X}(M)\to\mathcal{D}(M)
+  $$
+
+  is defined by
+
+  $$
+  R(X,Y,Z,W)=\langle R(X,Y)Z,W\rangle,\quad X,Y,Z,W\in\mathcal{X}(M).
+  $$
+
+  It is easy to verify that $R$ is a tensor of order 4, whose components in the
+  frame $\{X_i=\frac{\partial}{\partial x_i}\}$ associated with the system of
+  coordinates $(x_i)$ are $R(X_i,X_j,X_k,X_\ell)=R_{ijk\ell}$.
+\end{example}
+\begin{proof}
+  \leanok
+  Multilinearity of $R(X,Y,Z,W)=\langle R(X,Y)Z,W\rangle$ over $\mathcal{D}(M)$
+  in the first three arguments is the $\mathcal{D}(M)$-linearity of the curvature
+  operator $R(X,Y)Z$ (\cref{prop:dc-ch4-2-2}: additivity and homogeneity
+  $R(fX,Y)Z=R(X,fY)Z=R(X,Y)fZ=fR(X,Y)Z$); linearity in the fourth argument $W$
+  is the bilinearity of the metric $\langle\cdot,\cdot\rangle$. $\blacksquare$
+\end{proof}
+
+\begin{example}[metric tensor]
+  \label{ex:dc-ch4-5-3}
+  \dcref{ch4:5.3}
+  \lean{Riemannian.metricTensor, Riemannian.metricTensor_isCovariantTensor2}
+  \leanok
+  \uses{def:dc-ch4-5-1}
+  The "\emph{metric tensor}" $G:\mathcal{X}(M)\times\mathcal{X}(M)\to\mathcal{D}(M)$ is
+  defined by $G(X,Y)=\langle X,Y\rangle$, $X,Y\in\mathcal{X}(M)$. $G$ is a tensor of
+  order 2 and its components in the frame $\{X_i\}$ are the coefficients $g_{ij}$ of
+  the Riemannian metric in the given system of coordinates.
+\end{example}
+\begin{proof}
+  \leanok
+  $\mathcal{D}(M)$-bilinearity of $G(X,Y)=\langle X,Y\rangle$ is inherited slotwise
+  from the bilinearity of the inner product $g_p$ on each tangent space:
+  $G(fX+gY,Z)=fG(X,Z)+gG(Y,Z)$ and symmetrically in the second argument.
+  $\blacksquare$
+\end{proof}
+
+\begin{example}[the connection is not a tensor]
+  \label{ex:dc-ch4-5-4}
+  \dcref{ch4:5.4}
+  \lean{Riemannian.AffineConnection.connectionForm,
+    Riemannian.AffineConnection.connectionForm_not_isCovariantTensor}
+  \leanok
+  \uses{def:dc-ch4-5-1, def:dc-ch2-2-1}
+  The Riemannian connection $\nabla$ defined by
+
+  $$
+  \nabla:\mathcal{X}(M)\times\mathcal{X}(M)\times\mathcal{X}(M)\to\mathcal{D}(M),\qquad\nabla(X,Y,Z)=\langle\nabla_X Y,Z\rangle,\quad X,Y,Z\in\mathcal{X}(M),
+  $$
+
+  is \emph{not} a tensor, because $\nabla$ is not linear with respect to the argument
+  $Y$.
+\end{example}
+\begin{proof}
+  \leanok
+  The form is $\mathcal{D}(M)$-linear in the direction slot $X$, by the
+  $\mathcal{D}(M)$-linearity of $\nabla$ in its first argument, and in the metric
+  slot $Z$, by bilinearity of $\langle\cdot,\cdot\rangle$. In the differentiated
+  slot $Y$, however, the Leibniz rule of the connection (\cref{def:dc-ch2-2-1},
+  property (iii)) gives
+  $$
+  \nabla(X, fY, Z)=f\,\nabla(X, Y, Z)+(Xf)\,\langle Y, Z\rangle .
+  $$
+  The correction term $(Xf)\langle Y,Z\rangle$ is not of the tensorial form
+  $f\,\nabla(X,Y,Z)$: whenever it is nonzero at some point — which occurs on any
+  manifold of positive dimension — the middle-slot homogeneity required of an
+  order-$3$ tensor (\cref{def:dc-ch4-5-1}) fails, so $\nabla$ is not a tensor.
+  $\blacksquare$
+\end{proof}
+
+\begin{remark}[Remark 5.5]
+  \label{rem:dc-ch4-5-5}
+  \dcref{ch4:5.5}
+  It is possible to define the notion of a tensor on a differentiable manifold which
+  does not have a Riemannian metric. In this case, it is necessary to distinguish
+  the covariant tensors (which we have already defined) from the contravariant
+  tensors (which can be defined in an analogous manner, using in place of
+  $\mathcal{X}(M)$ its dual $\mathcal{X}^*(M)$). On a Riemannian manifold this is
+  unnecessary, because the Riemannian metric associates to each $X\in\mathcal{X}(M)$
+  a unique element $\omega\in\mathcal{X}^*(M)$ given by
+  
+  $$
+  \omega(Y)=\langle X,Y\rangle,\quad\text{for all }Y\in\mathcal{X}(M).
+  $$
+  
+  Such a correspondence allows us to identify the contravariant tensors with the
+  covariant tensors. For reasons of economy, we restrict ourselves to covariant
+  tensors.
+\end{remark}
+
+\begin{remark}[Remark 5.6]
+  \label{rem:dc-ch4-5-6}
+  \dcref{ch4:5.6}
+  For various reasons, it is convenient to identify the field $X\in\mathcal{X}(M)$
+  with the tensor $X:\mathcal{X}(M)\to\mathcal{D}(M)$ given by $X(Y)=\langle X,Y\rangle$,
+  for all $Y\in\mathcal{X}(M)$.
+\end{remark}
+
+\begin{definition}[covariant differential of a tensor]
+  \label{def:dc-ch4-5-7}
+  \dcref{ch4:5.7}
+  \lean{Riemannian.AffineConnection.covariantDifferential1, Riemannian.AffineConnection.covariantDifferential2}
+  \leanok
+  \uses{def:dc-ch4-5-1, def:dc-ch2-2-1}
+  Let $T$ be a tensor of order $r$. The \emph{covariant differential} $\nabla T$ of $T$
+  is a tensor of order $(r+1)$ given by
+  
+  $$
+  \nabla T(Y_1,\dots,Y_r,Z)=Z(T(Y_1,\dots,Y_r))-T(\nabla_Z Y_1,\dots,Y_r)-\cdots-T(Y_1,\dots,Y_{r-1},\nabla_Z Y_r).
+  $$
+  
+  For each $Z\in\mathcal{X}(M)$, the \emph{covariant derivative} $\nabla_Z T$ of $T$
+  relative to $Z$ is a tensor of order $r$ given by
+  
+  $$
+  \nabla_Z T(Y_1,\dots,Y_r)=\nabla T(Y_1,\dots,Y_r,Z).
+  $$
+  
+  In a convenient frame this becomes natural. Let $p\in M$ and let
+  $\alpha:(-\varepsilon,\varepsilon)\to M$ be a differentiable curve with $\alpha(0)=p$,
+  $\alpha'(t)=Z(\alpha(t))$. Let $\{e_1,\dots,e_n\}$ be a basis of $T_pM$ and let
+  $e_i(t)$ be the parallel transport of $e_i$ along $\alpha$. Let $T_{i_1\dots i_r}(t)$
+  be the components, in the basis $\{e_i(t)\}$, of the restriction $T(\alpha(t))$ of
+  $T$ to the curve $\alpha$. Then, by the definition of $\nabla_Z T$,
+  
+  $$
+  (\nabla_Z T)(e_{i_1}(t),\dots,e_{i_r}(t))=\frac{d}{dt}T_{i_1\dots i_r}(t)-T(\nabla_Z e_{i_1},\dots,e_{i_r}(t))-\cdots-T(e_{i_1}(t),\dots,\nabla_Z e_{i_r}(t)).
+  $$
+  
+  Since $\nabla_Z e_i(t)=0$, we have by linearity
+  
+  $$
+  (\nabla_Z T)_{i_1\dots i_r}=(\nabla_Z T)(e_{i_1}(t),\dots,e_{i_r}(t))=\frac{d}{dt}T_{i_1\dots i_r}.
+  $$
+  
+  In other words, in this frame, the components of the covariant derivative of $T$
+  are the usual derivatives of the components of $T$.
+\end{definition}
+
+\begin{example}[covariant differential of the metric tensor]
+  \label{ex:dc-ch4-5-8}
+  \dcref{ch4:5.8}
+  \lean{Riemannian.AffineConnection.covariantDifferential2_metricTensor_eq_zero}
+  \leanok
+  \uses{def:dc-ch4-5-7, ex:dc-ch4-5-3, def:dc-ch2-3-1}
+  The covariant differential of the metric tensor is the zero tensor. Indeed, for
+  all $X,Y,Z\in\mathcal{X}(M)$,
+
+  $$
+  \nabla G(X,Y,Z)=Z\langle X,Y\rangle-\langle\nabla_Z X,Y\rangle-\langle X,\nabla_Z Y\rangle=0,
+  $$
+
+  because $\nabla$ is the Riemannian connection.
+\end{example}
+\begin{proof}
+  \leanok
+  By \cref{def:dc-ch4-5-7}, $\nabla G(X,Y,Z)=Z\langle X,Y\rangle-\langle\nabla_Z X,Y\rangle
+  -\langle X,\nabla_Z Y\rangle$. Compatibility of the Levi-Civita connection with the
+  metric (\cref{def:dc-ch2-3-1}) gives $Z\langle X,Y\rangle=\langle\nabla_Z X,Y\rangle
+  +\langle X,\nabla_Z Y\rangle$, so the three terms cancel. $\blacksquare$
+\end{proof}
+
+\begin{example}[covariant derivative of a vector field as a tensor]
+  \label{ex:dc-ch4-5-9}
+  \dcref{ch4:5.9}
+  \lean{Riemannian.AffineConnection.covectorTensor, Riemannian.AffineConnection.covariantDifferential1_covectorTensor_eq}
+  \leanok
+  \uses{rem:dc-ch4-5-6, def:dc-ch4-5-7, def:dc-ch2-3-1}
+  Let $X\in\mathcal{X}(M)$. Identify $X$ with the tensor that associates to the
+  vector field $Y\in\mathcal{X}(M)$ the function $\langle X,Y\rangle$ (see \cref{rem:dc-ch4-5-6}). The covariant derivative of the tensor $X$ relative to the vector field
+  $Z\in\mathcal{X}(M)$ is such that, for all $Y\in\mathcal{X}(M)$,
+
+  $$
+  \nabla_Z X(Y)=\nabla X(Y,Z)=Z(X(Y))-X(\nabla_Z Y)=Z\langle X,Y\rangle-\langle X,\nabla_Z Y\rangle=\langle\nabla_Z X,Y\rangle.
+  $$
+
+  We conclude that the tensor $\nabla_Z X$ can be identified with the vector field
+  $\nabla_Z X$. This justifies the notation adopted, and shows that the covariant
+  derivative of tensors is a generalization of the covariant derivative of vector
+  fields.
+\end{example}
+\begin{proof}
+  \leanok
+  By \cref{def:dc-ch4-5-7}, $\nabla_Z X(Y)=Z\langle X,Y\rangle-\langle X,\nabla_Z Y\rangle$.
+  Metric compatibility (\cref{def:dc-ch2-3-1}) gives $Z\langle X,Y\rangle
+  =\langle\nabla_Z X,Y\rangle+\langle X,\nabla_Z Y\rangle$, whence
+  $\nabla_Z X(Y)=\langle\nabla_Z X,Y\rangle$; i.e. the tensor $\nabla_Z X$ is the
+  covector tensor of the vector field $\nabla_Z X$. $\blacksquare$
+\end{proof}

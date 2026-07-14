@@ -1,0 +1,2296 @@
+\chapter{Examples}
+\label{chap:pet-examples}
+
+Faithful transcription of Petersen, \emph{Riemannian Geometry} (GTM 171, 3rd ed.),
+Chapter 4. Having built the curvature apparatus (Chapter 3), the chapter computes
+curvature tensors on the examples of Chapter 1: constant-curvature spheres, product
+spheres, rotationally symmetric and doubly warped product metrics, the Riemannian
+Schwarzschild metric, left-invariant and biinvariant metrics on Lie groups (Berger
+spheres, hyperbolic space as a Lie group), and Riemannian submersions (complex
+projective space, Berger--Cheeger perturbations). Along the way it gives a local
+characterization of rotationally symmetric constant-curvature metrics via the Hessian
+of a distance-like function (Brinkmann's theorem), and conformal models of the
+sphere and of hyperbolic space. Each numbered statement keeps Petersen's
+example/proposition/theorem number in the environment title; proofs keep his
+explicit cross-references so the dependency graph is recoverable from the text.
+
+\section{Computational Simplifications}
+
+\begin{proposition}[Prop. 4.1.1 — sectional curvature bounds from a diagonalized curvature operator]
+  \label{prop:pet-ch4-curvature-operator-diagonal-bounds}
+  \lean{PetersenLib.secBoundsFromDiagonalCurvatureOperator}
+  \leanok
+  Let $e_i$ be an orthonormal basis for $T_pM$. If $e_i\wedge e_j$ diagonalize the
+  curvature operator, $\mathfrak{R}(e_i\wedge e_j)=\lambda_{ij}e_i\wedge e_j$, then for any
+  plane $\pi\subset T_pM$, $\mathrm{sec}(\pi)\in[\min\lambda_{ij},\max\lambda_{ij}]$.
+  \source{petersen:page-0133}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-curvature-operator-diagonal-bounds}
+  \leanok
+  If $v,w$ form an orthonormal basis of $\pi$, then
+  $\mathrm{sec}(\pi)=g(\mathfrak{R}(v\wedge w),v\wedge w)$; writing $v\wedge w$ in the
+  orthonormal eigenbasis $e_i\wedge e_j$ of $\mathfrak{R}$ and using that $\mathfrak{R}$ is
+  self-adjoint expresses $g(\mathfrak{R}(v\wedge w),v\wedge w)$ as a convex combination of
+  the eigenvalues $\lambda_{ij}$ (since $|v\wedge w|=1$), so it lies in
+  $[\min\lambda_{ij},\max\lambda_{ij}]$.
+\end{proof}
+
+\begin{proposition}[Prop. 4.1.2 — pairwise vanishing diagonalizes the curvature operator]
+  \label{prop:pet-ch4-triple-vanishing-diagonalizes-operator}
+  \lean{PetersenLib.diagonalCurvatureOperatorFromTripleVanishing}
+  \leanok
+  Let $e_i$ be an orthonormal basis for $T_pM$. If $\mathfrak{R}(e_i,e_j)e_k=0$ whenever
+  $i,j,k$ are mutually distinct, then $e_i\wedge e_j$ diagonalize the curvature
+  operator.
+  \source{petersen:page-0134}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-triple-vanishing-diagonalizes-operator}
+  \leanok
+  Using the symmetries of $\mathfrak{R}$,
+  \[
+    g(\mathfrak{R}(e_i\wedge e_j),e_k\wedge e_\ell)
+    =-g(\mathfrak{R}(e_i,e_j)e_k,e_\ell)=g(\mathfrak{R}(e_i,e_j)e_\ell,e_k).
+  \]
+  This vanishes whenever $i,j,k$ are mutually distinct or $i,j,\ell$ are mutually
+  distinct, by hypothesis; hence the expression can be nonzero only when
+  $\{k,\ell\}=\{i,j\}$, i.e.\ only the diagonal entries
+  $g(\mathfrak{R}(e_i\wedge e_j),e_i\wedge e_j)$ can be nonzero in this basis, so
+  $e_i\wedge e_j$ diagonalize $\mathfrak{R}$.
+\end{proof}
+
+\begin{proposition}[Prop. 4.1.3 — a criterion for diagonalizing the Ricci tensor]
+  \label{prop:pet-ch4-ricci-diagonal-criterion}
+  \lean{PetersenLib.ricciDiagonalFromTripleVanishing}
+  \leanok
+  Let $e_i$ be an orthonormal basis for $T_pM$. If $g(\mathfrak{R}(e_i,e_j)e_k,e_i)=0$
+  whenever three of the indices $i,j,k$ are mutually distinct, then $e_i$
+  diagonalize $\mathrm{Ric}$.
+  \source{petersen:page-0134}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-ricci-diagonal-criterion}
+  \leanok
+  Since $g(\mathrm{Ric}(e_i),e_j)=\sum_{k=1}^ng(\mathfrak{R}(e_i,e_k)e_k,e_j)$, if $i\ne j$
+  then $g(\mathfrak{R}(e_i,e_k)e_k,e_j)=0$ unless $k\in\{i,j\}$ by hypothesis (three
+  mutually distinct indices among $i,k,k,j$ reduces to the pair $i,k,j$ being
+  mutually distinct, forced unless $k=i$ or $k=j$). If $k=i$ or $k=j$ the term
+  vanishes by the symmetries of $\mathfrak{R}$ (e.g.\ $g(\mathfrak{R}(e_i,e_i)e_i,e_j)=0$ and
+  $g(\mathfrak{R}(e_i,e_j)e_j,e_j)=0$ since $\mathfrak{R}(e_i,e_j)$ is skew and
+  $g(\mathfrak{R}(e_i,e_j)e_j,e_j)=-g(\mathfrak{R}(e_i,e_j)e_j,e_j)$ type cancellation).
+  Hence $g(\mathrm{Ric}(e_i),e_j)=0$ for $i\ne j$, i.e.\ $e_i$ diagonalize
+  $\mathrm{Ric}$.
+\end{proof}
+
+\section{Warped Products}
+
+The only curvature computation available so far is $\mathfrak{R}=0$ on Euclidean
+space; from this the curvature tensor of $S^{n-1}(R)$ is determined, and from that
+in turn the curvature of rotationally symmetric and doubly warped product metrics.
+
+\subsection{Spheres}
+
+\begin{proposition}[Hessian of the Euclidean distance function]
+  \label{prop:pet-ch4-hess-r-euclidean}
+  \lean{PetersenLib.hessDistanceEuclidean}
+  On $\mathbb{R}^n$, write the polar-coordinate metric $g=dr^2+g_r$, $g_r=r^2ds_{n-1}^2$,
+  where $ds_{n-1}^2$ is the canonical metric on $S^{n-1}(1)$ and $r(x)=|x|$. Then
+  $\mathrm{Hess}\,r=\tfrac1r g_r$.
+  \source{petersen:page-0135}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-hess-r-euclidean}
+  Since $ds_{n-1}^2$ does not depend on $r$, $L_{\partial_r}(ds_{n-1}^2)=0$, and
+  $L_{\partial_r}(dr)=0$ since $dr(\partial_r)=1$ is constant along $\partial_r$ and
+  $\partial_r$ is the gradient of $r$. Hence
+  \[
+    2\,\mathrm{Hess}\,r=L_{\partial_r}g=L_{\partial_r}(dr^2)+L_{\partial_r}(r^2ds_{n-1}^2)
+    =\partial_r(r^2)\,ds_{n-1}^2=2r\,ds_{n-1}^2=\tfrac2r g_r.
+  \]
+\end{proof}
+
+\begin{proposition}[constant curvature of Euclidean spheres]
+  \label{prop:pet-ch4-euclidean-sphere-constant-curvature}
+  \lean{PetersenLib.sphereConstantCurvatureFromEuclideanTangential}
+  \uses{prop:pet-ch4-hess-r-euclidean,prop:pet-ch4-triple-vanishing-diagonalizes-operator}
+  For $n\ge3$, the level sphere $S^{n-1}(R)\subset\mathbb{R}^n$ (with its induced metric
+  $g_R=R^2ds_{n-1}^2$) has constant curvature $R^{-2}$.
+  \source{petersen:page-0135}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-euclidean-sphere-constant-curvature}
+  Since the ambient curvature on $\mathbb{R}^n$ vanishes, the tangential curvature
+  equation applied to the level hypersurfaces of $r$, together with
+  \cref{prop:pet-ch4-hess-r-euclidean} (giving the second fundamental form
+  $\mathrm{II}=\mathrm{Hess}\,r=r^{-1}g_r$), yields
+  \[
+    \mathfrak{R}^\top(X,Y)Z=r^{-2}\big(g_r(Y,Z)X-g_r(X,Z)Y\big)
+  \]
+  on the level set $S^{n-1}(r)$. In particular, for an orthonormal basis $e_i$ of
+  $T_pS^{n-1}(r)$, $\mathfrak{R}^\top(e_i,e_j)e_k=0$ whenever $i,j,k$ are mutually
+  distinct, so by \cref{prop:pet-ch4-triple-vanishing-diagonalizes-operator}
+  $e_i\wedge e_j$ diagonalize $\mathfrak{R}^\top$, with
+  $\mathfrak{R}^\top(e_i\wedge e_j)=r^{-2}e_i\wedge e_j$ read off from the displayed
+  formula; hence every sectional curvature of $S^{n-1}(r)$ equals $r^{-2}$. Setting
+  $r=R$ gives the claim, and this justifies writing $S^n_k$ for the rotationally
+  symmetric metric $dr^2+\mathrm{sn}_k^2(r)ds_{n-1}^2$ when $k\ge0$, since these
+  metrics then have curvature $k$.
+\end{proof}
+
+\subsection{Product Spheres}
+
+\begin{definition}[product sphere metric $S^n_a\times S^m_b$]
+  \label{def:pet-ch4-product-sphere-metric}
+  \lean{PetersenLib.productSphereMetric}
+  \leanok
+  For $a,b>0$, $S^n_a\times S^m_b:=S^n(1/\sqrt a)\times S^m(1/\sqrt b)$, with metric
+  $g=\tfrac1a ds_n^2+\tfrac1b ds_m^2$ on $S^n\times S^m$.
+  \source{petersen:page-0135,petersen:page-0136}
+\end{definition}
+
+\begin{proposition}[curvature of product spheres]
+  \label{prop:pet-ch4-product-sphere-curvature}
+  \lean{PetersenLib.productSphereCurvature}
+  \uses{def:pet-ch4-product-sphere-metric,prop:pet-ch4-euclidean-sphere-constant-curvature,prop:pet-ch4-triple-vanishing-diagonalizes-operator}
+  On $S^n_a\times S^m_b$, let $Y$ be a unit vector field on $S^n$, $V$ a unit
+  vector field on $S^m$, and $X$ a unit vector field tangent to either factor and
+  perpendicular to both $Y$ and $V$. Then $\nabla_YX=0$ if $X$ is tangent to
+  $S^m$ and $\nabla_YX$ is tangent to $S^n$ if $X$ is tangent to $S^n$ (so
+  $\nabla_YX$ can be computed within $S^n$); consequently
+  \[
+    \mathfrak{R}(X\wedge Y)=aX\wedge Y\ (X\text{ tangent to }S^n),\qquad
+    \mathfrak{R}(X\wedge Y)=0\ (X\text{ tangent to }S^m),\qquad
+    \mathfrak{R}(U\wedge V)=bU\wedge V.
+  \]
+  \source{petersen:page-0136}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-product-sphere-curvature}
+  By the Koszul formula, for $X$ tangent to $S^n$ or $S^m$,
+  \[
+    2g(\nabla_YX,V)=g([Y,X],V)+g([V,Y],X)-g([X,V],Y)=g([Y,X],V)-g([X,V],Y)=0,
+  \]
+  since $[Y,X]$ (a bracket of vector fields tangent to $S^n$ and, respectively,
+  either $S^n$ or $S^m$) is either zero or tangent to $S^n$, hence
+  $g([Y,X],V)=0$ as $V$ is tangent to the orthogonal factor $S^m$; likewise
+  $g([X,V],Y)=0$. Thus $\nabla_YX\perp V$ for every such $V$, i.e.\ $\nabla_YX$
+  has no $S^m$-component: it is $0$ when $X$ is tangent to $S^m$, and tangent to
+  $S^n$ when $X$ is tangent to $S^n$, in which case it is computed entirely
+  within $(S^n,ds_n^2)$. Combined with the curvature of the factors from
+  \cref{prop:pet-ch4-euclidean-sphere-constant-curvature} (curvature $a$ on
+  $S^n$, $b$ on $S^m$, after rescaling $ds_n^2\mapsto a^{-1}ds_n^2$) and
+  $\mathfrak{R}(e_i,e_j)e_k=0$ for mutually distinct $i,j,k$ built from mixed
+  factors, \cref{prop:pet-ch4-triple-vanishing-diagonalizes-operator} gives the
+  three displayed formulas for $\mathfrak{R}$ on the pure and mixed planes.
+\end{proof}
+
+\begin{remark}[Ricci, scalar curvature, and the Einstein condition for product spheres]
+  \label{rem:pet-ch4-product-sphere-ricci-einstein}
+  \lean{PetersenLib.productSphereRicciEinstein}
+  \uses{prop:pet-ch4-product-sphere-curvature,prop:pet-ch4-curvature-operator-diagonal-bounds}
+  On $S^n_a\times S^m_b$: $\mathrm{Ric}(X)=(n-1)aX$, $\mathrm{Ric}(V)=(m-1)bV$, and
+  $\mathrm{scal}=n(n-1)a+m(m-1)b$; all sectional curvatures lie in
+  $[0,\max\{a,b\}]$. Consequently $S^n_a\times S^m_b$ always has constant scalar
+  curvature, is Einstein exactly when $(n-1)a=(m-1)b$ (forcing $n,m\ge2$ or
+  $n=m=1$), and has constant sectional curvature only when $n=m=1$; its curvature
+  tensor is always parallel.
+  \source{petersen:page-0136}
+\end{remark}
+
+\subsection{Rotationally Symmetric Metrics}
+
+\begin{proposition}[Hessian of $r$ for a rotationally symmetric metric]
+  \label{prop:pet-ch4-hess-r-rotsym}
+  \lean{PetersenLib.hessDistanceRotSym}
+  On $g=dr^2+g_r$, $g_r=\rho^2(r)ds_{n-1}^2$, on $(a,b)\times S^{n-1}$, since
+  $ds_{n-1}^2$ does not depend on $r$,
+  \[
+    \mathrm{Hess}\,r=\frac{\partial_r\rho}{\rho}\,g_r.
+  \]
+  \source{petersen:page-0136,petersen:page-0137}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-hess-r-rotsym}
+  As in \cref{prop:pet-ch4-hess-r-euclidean}, $L_{\partial_r}(dr)=0$ and
+  $L_{\partial_r}(ds_{n-1}^2)=0$, so
+  \[
+    2\,\mathrm{Hess}\,r=L_{\partial_r}g_r=L_{\partial_r}(\rho^2ds_{n-1}^2)
+    =\partial_r(\rho^2)\,ds_{n-1}^2=2\rho(\partial_r\rho)\,ds_{n-1}^2
+    =2\frac{\partial_r\rho}{\rho}g_r.
+  \]
+\end{proof}
+
+\begin{lemma}[Lie and covariant derivatives of $\mathrm{Hess}\,r$]
+  \label{lem:pet-ch4-hess-r-derivatives}
+  \lean{PetersenLib.hessDistanceRotSymDerivatives}
+  \uses{prop:pet-ch4-hess-r-rotsym}
+  With $\mathrm{Hess}\,r$ as in \cref{prop:pet-ch4-hess-r-rotsym},
+  \[
+    L_{\partial_r}\mathrm{Hess}\,r=\frac{\partial_r^2\rho}{\rho}g_r+(\mathrm{Hess}\,r)^2,
+    \qquad
+    \nabla_{\partial_i}\mathrm{Hess}\,r=\frac{\partial_r^2\rho}{\rho}g_r-(\mathrm{Hess}\,r)^2,
+  \]
+  and, restricted to $S^{n-1}$, $\mathrm{Hess}\,r=\tfrac{\partial_r\rho}{\rho}g_r$
+  while $R(\cdot,\partial_r,\partial_r,\cdot)=-\tfrac{\partial_r^2\rho}{\rho}g_r$.
+  \source{petersen:page-0137,petersen:page-0138}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch4-hess-r-derivatives}
+  Write $\mathrm{Hess}\,r=\tfrac{\partial_r\rho}{\rho}g_r$. Then
+  \[
+    L_{\partial_r}\mathrm{Hess}\,r
+    =\partial_r\!\Big(\frac{\partial_r\rho}{\rho}\Big)g_r+\frac{\partial_r\rho}{\rho}L_{\partial_r}(g_r)
+    =\frac{(\partial_r^2\rho)\rho-(\partial_r\rho)^2}{\rho^2}g_r+2\Big(\frac{\partial_r\rho}{\rho}\Big)^2g_r
+    =\frac{\partial_r^2\rho}{\rho}g_r+\Big(\frac{\partial_r\rho}{\rho}\Big)^2g_r,
+  \]
+  using $L_{\partial_r}(g_r)=2\tfrac{\partial_r\rho}{\rho}g_r$ from
+  \cref{prop:pet-ch4-hess-r-rotsym}; since $(\mathrm{Hess}\,r)^2=(\partial_r\rho/\rho)^2g_r$
+  this is $\tfrac{\partial_r^2\rho}{\rho}g_r+(\mathrm{Hess}\,r)^2$. For the covariant
+  derivative in a direction $\partial_i$ tangent to $S^{n-1}$, the coefficient
+  $\partial_r\rho/\rho$ depends only on $r$ so $\nabla_{\partial_i}$ of it vanishes as
+  a directional derivative but the connection term on $g_r$ contributes the same
+  algebraic expression with the opposite sign on the squared term, giving
+  $\nabla_{\partial_i}\mathrm{Hess}\,r=\tfrac{\partial_r^2\rho}{\rho}g_r-(\mathrm{Hess}\,r)^2$.
+  The stated restriction of $\mathrm{Hess}\,r$ to $S^{n-1}$ is
+  \cref{prop:pet-ch4-hess-r-rotsym} itself, and the fundamental (Gauss/Codazzi)
+  equations for the level hypersurfaces of $r$ then give the radial curvature
+  $R(\cdot,\partial_r,\partial_r,\cdot)=-\nabla_{\partial_i}(\partial_r\rho/\rho)\,g_r=-\tfrac{\partial_r^2\rho}{\rho}g_r$.
+\end{proof}
+
+\begin{proposition}[normal Jacobi field data and vanishing of the mixed curvature]
+  \label{prop:pet-ch4-rotsym-radial-jacobi}
+  \lean{PetersenLib.rotSymRadialJacobiData}
+  \uses{lem:pet-ch4-hess-r-derivatives}
+  On $(I\times S^{n-1},dr^2+\rho^2(r)ds_{n-1}^2)$,
+  \[
+    \nabla_X\partial_r=\begin{cases}\dfrac{\partial_r\rho}{\rho}X&X\text{ tangent to }S^{n-1},\\[4pt]0&X=\partial_r,\end{cases}
+    \qquad
+    R(X,\partial_r)\partial_r=\begin{cases}-\dfrac{\partial_r^2\rho}{\rho}X&X\text{ tangent to }S^{n-1},\\[4pt]0&X=\partial_r,\end{cases}
+  \]
+  and the mixed curvature vanishes: $\nabla_X\mathrm{II}=0$ for $\mathrm{II}=\mathrm{Hess}\,r$.
+  \source{petersen:page-0138}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-rotsym-radial-jacobi}
+  The formulas for $\nabla_X\partial_r$ and $R(X,\partial_r)\partial_r$ follow directly
+  from \cref{prop:pet-ch4-hess-r-rotsym,lem:pet-ch4-hess-r-derivatives} by
+  definition of the second fundamental form and radial curvature. For the mixed
+  curvature, since $\mathrm{II}=\tfrac{\partial_r\rho}{\rho}g_r$ and the coefficient
+  $\partial_r\rho/\rho$ depends only on $r$ (a function constant on each level set
+  of $r$), for $X$ tangent to a level set,
+  $\nabla_X\mathrm{II}=D_X(\partial_r\rho/\rho)\,g_r+\tfrac{\partial_r\rho}{\rho}\nabla_Xg_r=0+0=0$,
+  since $D_X(\partial_r\rho/\rho)=0$ ($X$ is tangent to the level set on which
+  $\partial_r\rho/\rho$ is constant) and $\nabla_Xg_r=0$ ($g_r$ is parallel along its
+  own level sets by metric compatibility).
+\end{proof}
+
+\begin{theorem}[curvature operator of a rotationally symmetric metric]
+  \label{thm:pet-ch4-rotsym-curvature-operator}
+  \lean{PetersenLib.rotSymCurvatureOperator}
+  \uses{prop:pet-ch4-rotsym-radial-jacobi,prop:pet-ch4-triple-vanishing-diagonalizes-operator}
+  For $g=dr^2+\rho^2(r)ds_{n-1}^2$ and $X,Y$ tangent to $S^{n-1}$,
+  \[
+    \mathfrak{R}(X\wedge\partial_r)=-\frac{\ddot\rho}{\rho}X\wedge\partial_r,
+    \qquad
+    \mathfrak{R}(X\wedge Y)=\frac{1-\dot\rho^2}{\rho^2}X\wedge Y,
+  \]
+  so $\mathfrak{R}$ is diagonalized, with all sectional curvatures between
+  $-\ddot\rho/\rho$ and $(1-\dot\rho^2)/\rho^2$.
+  \source{petersen:page-0138,petersen:page-0139}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch4-rotsym-curvature-operator}
+  From the mixed and tangential curvature equations (relating $R$ on
+  $I\times S^{n-1}$ to $R'$ on the level spheres and the second fundamental form
+  $\mathrm{II}=\mathrm{Hess}\,r$), together with
+  $g_r(R'(X,Y)V,W)=\rho^{-2}g_r(X\wedge Y,W\wedge V)$ (the level sphere $S^{n-1}(\rho)$
+  has curvature $\rho^{-2}$, by rescaling
+  \cref{prop:pet-ch4-euclidean-sphere-constant-curvature}), one obtains
+  \[
+    g(R(X,Y)V,W)=g_r(R'(X,Y)V,W)-\mathrm{II}(Y,V)\mathrm{II}(X,W)+\mathrm{II}(X,V)\mathrm{II}(Y,W)
+    =\frac{1-(\partial_r\rho)^2}{\rho^2}g_r(X\wedge Y,W\wedge V)
+  \]
+  using $\mathrm{II}=\tfrac{\partial_r\rho}{\rho}g_r$
+  (\cref{prop:pet-ch4-hess-r-rotsym}). Together with the radial curvature
+  $R(X,\partial_r)\partial_r=-\tfrac{\ddot\rho}{\rho}X$ from
+  \cref{prop:pet-ch4-rotsym-radial-jacobi} and the vanishing mixed curvature
+  (same proposition, giving $R(X,Y)Z\perp\partial_r$ for
+  $X,Y,Z\perp\partial_r$ mutually distinct along the sphere directions), the
+  hypothesis of \cref{prop:pet-ch4-triple-vanishing-diagonalizes-operator}
+  holds for the orthonormal basis $\{\partial_r\}\cup\{e_i\}$ ($e_i$ orthonormal
+  on $S^{n-1}$), yielding the two displayed eigenvalue formulas for
+  $\mathfrak{R}$; the sectional curvature bound then follows from
+  \cref{prop:pet-ch4-curvature-operator-diagonal-bounds}.
+\end{proof}
+
+\begin{proposition}[Ricci and scalar curvature of a rotationally symmetric metric]
+  \label{prop:pet-ch4-rotsym-ricci-scalar}
+  \lean{PetersenLib.rotSymRicciScalar}
+  \uses{thm:pet-ch4-rotsym-curvature-operator}
+  For $g=dr^2+\rho^2(r)ds_{n-1}^2$ on $I\times S^{n-1}$, $n\ge2$, and $X$ tangent
+  to $S^{n-1}$,
+  \[
+    \mathrm{Ric}(X)=\Big((n-2)\frac{1-\dot\rho^2}{\rho^2}-\frac{\ddot\rho}{\rho}\Big)X,
+    \qquad
+    \mathrm{Ric}(\partial_r)=-(n-1)\frac{\ddot\rho}{\rho}\partial_r,
+  \]
+  \[
+    \mathrm{scal}=-2(n-1)\frac{\ddot\rho}{\rho}+(n-1)(n-2)\frac{1-\dot\rho^2}{\rho^2}.
+  \]
+  \source{petersen:page-0139}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-rotsym-ricci-scalar}
+  Choose an orthonormal basis $E_1,\dots,E_n$ with $E_1=\partial_r$ and
+  $E_2,\dots,E_n$ tangent to $S^{n-1}$. By
+  \cref{thm:pet-ch4-rotsym-curvature-operator},
+  $\mathrm{Ric}(X)=\sum_{i=1}^nR(X,E_i)E_i=\sum_{i=2}^nR(X,E_i)E_i+R(X,\partial_r)\partial_r$;
+  the first sum has $n-2$ terms of the form $\tfrac{1-\dot\rho^2}{\rho^2}X$ (all
+  $E_i$ with $i\ge2$, $E_i\ne X$) and the second term is
+  $-\tfrac{\ddot\rho}{\rho}X$, giving the displayed formula for $\mathrm{Ric}(X)$.
+  Similarly $\mathrm{Ric}(\partial_r)=\sum_{i=2}^nR(\partial_r,E_i)E_i=(n-1)\big(-\tfrac{\ddot\rho}{\rho}\big)\partial_r$.
+  Summing $\mathrm{scal}=g(\mathrm{Ric}(\partial_r),\partial_r)+\sum_{i=2}^ng(\mathrm{Ric}(E_i),E_i)$
+  gives $\mathrm{scal}=-(n-1)\tfrac{\ddot\rho}{\rho}+(n-1)\big((n-2)\tfrac{1-\dot\rho^2}{\rho^2}-\tfrac{\ddot\rho}{\rho}\big)
+  =-2(n-1)\tfrac{\ddot\rho}{\rho}+(n-1)(n-2)\tfrac{1-\dot\rho^2}{\rho^2}$.
+\end{proof}
+
+\begin{remark}[the two-dimensional case]
+  \label{rem:pet-ch4-rotsym-dim2}
+  \lean{PetersenLib.rotSymDim2Curvature}
+  \uses{prop:pet-ch4-rotsym-ricci-scalar}
+  When $n=2$ there are no tangential curvatures, so
+  $\mathrm{sec}=-\ddot\rho/\rho$; this is a genuine difference between
+  $2$-dimensional and higher-dimensional rotationally symmetric metrics.
+  \source{petersen:page-0139}
+\end{remark}
+
+\begin{proposition}[constant curvature of $S^n_k$]
+  \label{prop:pet-ch4-snk-constant-curvature}
+  \lean{PetersenLib.snkConstantCurvature}
+  \uses{thm:pet-ch4-rotsym-curvature-operator}
+  The metric $dr^2+\mathrm{sn}_k^2(r)ds_{n-1}^2$ has all sectional curvatures
+  equal to $k$.
+  \source{petersen:page-0139,petersen:page-0140}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-snk-constant-curvature}
+  With $\rho=\mathrm{sn}_k$, $\ddot\rho+k\rho=0$, so $-\ddot\rho/\rho=k$, giving
+  $\mathrm{sec}(X,\partial_r)=k$ by \cref{thm:pet-ch4-rotsym-curvature-operator}.
+  Since $\dot\rho=\mathrm{cs}_k$ and $\mathrm{cs}_k^2+k\,\mathrm{sn}_k^2=1$, one has
+  $1-\dot\rho^2=1-\mathrm{cs}_k^2=k\,\mathrm{sn}_k^2=k\rho^2$, so
+  $(1-\dot\rho^2)/\rho^2=k$ as well; hence all sectional curvatures given by
+  \cref{thm:pet-ch4-rotsym-curvature-operator} equal $k$.
+\end{proof}
+
+\begin{proposition}[Ricci flat rotationally symmetric metrics are flat]
+  \label{prop:pet-ch4-ricci-flat-rotsym}
+  \lean{PetersenLib.ricciFlatRotSymIsFlat}
+  \uses{prop:pet-ch4-rotsym-ricci-scalar}
+  If $dr^2+\rho^2(r)ds_{n-1}^2$ is Ricci flat, then $\rho(r)=a+r$ for a constant
+  $a$, i.e.\ the metric is flat.
+  \source{petersen:page-0139,petersen:page-0140}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-ricci-flat-rotsym}
+  Ricci flatness means $\mathrm{Ric}(\partial_r)=0$ and $\mathrm{Ric}(X)=0$, i.e.\ (by
+  \cref{prop:pet-ch4-rotsym-ricci-scalar}) $\ddot\rho/\rho=0$ and
+  $(n-2)(1-\dot\rho^2)/\rho^2-\ddot\rho/\rho=0$. If $n>2$ the first equation
+  gives $\ddot\rho\equiv0$ and then the second forces $\dot\rho^2\equiv1$; hence
+  $\rho(r)=a+r$ (taking $\dot\rho=1$, the sign making $\rho>0$ near the relevant
+  domain). If $n=2$ only $\ddot\rho\equiv0$ is required, again giving
+  $\rho(r)=a+r$ for constants $a$ and (absorbed) slope. In either case the
+  metric $dr^2+(a+r)^2ds_{n-1}^2$ is isometric to (a piece of) Euclidean space,
+  hence flat.
+\end{proof}
+
+\begin{definition}[the scalar-flat ODE and its first-order reduction]
+  \label{def:pet-ch4-scalar-flat-ode}
+  \lean{PetersenLib.scalarFlatRotSymODE}
+  \leanok
+  \uses{prop:pet-ch4-rotsym-ricci-scalar}
+  For $n\ge3$, scalar flatness of $dr^2+\rho^2(r)ds_{n-1}^2$ is the equation
+  $\ddot\rho+\tfrac{n-2}2\tfrac{\dot\rho^2-1}\rho=0$. Substituting $\dot\rho=G(\rho)$
+  (so $\ddot\rho=G'G$) turns this autonomous second-order equation into the
+  first-order equation $G'G+\tfrac{n-2}2\tfrac{G^2-1}\rho=0$, whose separated
+  solutions satisfy $\dot\rho^2=G^2=1+C\rho^{2-n}$ for a constant $C$, equivalently
+  $\ddot\rho=-\tfrac{n-2}2C\rho^{1-n}$ (compatible initial data:
+  $\dot\rho(0)^2=1+C\rho(0)^{2-n}$).
+  \source{petersen:page-0140}
+\end{definition}
+
+\begin{proposition}[classification of scalar-flat rotationally symmetric solutions]
+  \label{prop:pet-ch4-scalar-flat-cases}
+  \lean{PetersenLib.scalarFlatRotSymCases}
+  \uses{def:pet-ch4-scalar-flat-ode}
+  For the family $\dot\rho^2=1+C\rho^{2-n}$ of \cref{def:pet-ch4-scalar-flat-ode}:
+  if $C=0$ then $\rho(r)=a+r$ (the Euclidean metric); if $C>0$ then $\rho$ is
+  concave and any positive solution must cross the $r$-axis in finite parameter,
+  where $\ddot\rho$ becomes undefined, so no smooth positive solution exists on
+  all of an interval; if $C<0$, writing $C=-\rho_0^{n-2}$, the solution with
+  $\rho(0)=\rho_0>0$ is even, convex, satisfies $\rho_0\le\rho$ and $|\dot\rho|\le1$,
+  and is defined on all of $\mathbb{R}$.
+  \source{petersen:page-0140,petersen:page-0141}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-scalar-flat-cases}
+  If $C\ne0$, both $\rho$ and $\dot\rho$ approach $\pm\infty$ as $\rho\to0^+$ (from
+  $\dot\rho^2=1+C\rho^{2-n}$, the right side blows up as $\rho\to0$ when
+  $C\ne0$). For $C=0$, $\ddot\rho\equiv0$ and $\dot\rho(0)^2=1$ force
+  $\rho=a+r$. For $C>0$, $\ddot\rho=-\tfrac{n-2}2C\rho^{1-n}<0$ on the domain
+  where $\rho>0$, so $\rho$ is concave; a concave function that is initially
+  increasing (or has any point with $\dot\rho>-\infty$ well-defined) must
+  eventually decrease and cross $\rho=0$ on its maximal interval of definition,
+  where by the blow-up just noted $\ddot\rho$ is undefined, so there is no
+  everywhere-smooth positive solution. For $C<0$, write $C=-\rho_0^{n-2}$; then
+  $\dot\rho^2=1-(\rho_0/\rho)^{n-2}\ge0$ forces $\rho\ge\rho_0$. At a point $a$
+  with $\rho(a)=\rho_0$, $\dot\rho(a)=0$ and, since
+  $\ddot\rho=-\tfrac{n-2}2C\rho^{1-n}=\tfrac{n-2}2\rho_0^{n-2}\rho^{1-n}>0$ there,
+  $a$ is a strict local minimum, so the solution extends smoothly in a
+  neighborhood of $a$; since $|\dot\rho|\le1$ throughout, $\rho$ cannot blow up
+  in finite parameter, so it extends to all of $\mathbb{R}$. Taking $\rho(0)=\rho_0$
+  forces $\dot\rho(0)=0$, and since $\rho(-r)$ solves the same initial value
+  problem, $\rho$ is even.
+\end{proof}
+
+\begin{example}[scalar-flat metric on the tautological line bundle over $\mathbb{RP}^{n-1}$]
+  \label{ex:pet-ch4-scalar-flat-tautological-bundle}
+  \lean{PetersenLib.scalarFlatTautologicalBundleMetric}
+  \uses{prop:pet-ch4-scalar-flat-cases}
+  For the even solution $\rho$ with $\rho(0)=\rho_0>0$ from
+  \cref{prop:pet-ch4-scalar-flat-cases}, the map $(r,x)\mapsto(-r,-x)$ is an
+  isometry of $\big(\mathbb{R}\times S^{n-1},dr^2+\rho^2(r)ds_{n-1}^2\big)$, giving a
+  Riemannian covering $\mathbb{R}\times S^{n-1}\to\tau(\mathbb{RP}^{n-1})$ onto the
+  tautological line bundle over $\mathbb{RP}^{n-1}$, and hence a scalar-flat metric on
+  $\tau(\mathbb{RP}^{n-1})$. Using $\rho$ as parameter for $r>0$, since
+  $d\rho^2=\dot\rho^2dr^2=\big(1-(\rho_0/\rho)^{n-2}\big)dr^2$,
+  \[
+    dr^2+\rho^2(r)ds_{n-1}^2=\frac1{1-(\rho_0/\rho)^{n-2}}\,d\rho^2+\rho^2ds_{n-1}^2,
+  \]
+  which approaches the Euclidean metric $d\rho^2+\rho^2ds_{n-1}^2$ as
+  $\rho\to\infty$.
+  \source{petersen:page-0141}
+\end{example}
+
+\begin{remark}[scalar flat without Ricci flat or constant curvature]
+  \label{rem:pet-ch4-scalar-flat-not-ricci-flat}
+  \lean{PetersenLib.scalarFlatNotRicciFlatRemark}
+  \uses{ex:pet-ch4-scalar-flat-tautological-bundle}
+  $\mathbb{R}\times S^{n-1}$, $n\ge3$, admits no complete constant-curvature metric
+  (later, §5.6.2); moreover if it carried a Ricci-flat metric then $S^{n-1}$
+  would carry a Ricci-flat metric too (§7.3.1, Thm.\ 7.3.5), impossible for
+  $n=3,4$ (giving flat metrics on $S^2,S^3$, excluded in §5.6.2). Thus the
+  tautological bundle of \cref{ex:pet-ch4-scalar-flat-tautological-bundle}
+  carries a scalar-flat metric but no Ricci-flat or constant-curvature metric.
+  \source{petersen:page-0141}
+\end{remark}
+
+\subsection{Doubly Warped Products}
+
+\begin{theorem}[curvature operator of a doubly warped product]
+  \label{thm:pet-ch4-doubly-warped-curvature}
+  \lean{PetersenLib.doublyWarpedCurvatureOperator}
+  \uses{thm:pet-ch4-rotsym-curvature-operator,prop:pet-ch4-product-sphere-curvature,prop:pet-ch4-triple-vanishing-diagonalizes-operator}
+  On $\big(I\times S^p\times S^q,\,dr^2+\rho^2(r)ds_p^2+\phi^2(r)ds_q^2\big)$, the
+  second fundamental form of the level sets is
+  $\mathrm{II}=(\partial_r\rho)\rho\,ds_p^2+(\partial_r\phi)\phi\,ds_q^2$, the mixed
+  curvature vanishes ($\nabla_X\mathrm{II}=0$), and for $X,Y$ tangent to $S^p$,
+  $V,W$ tangent to $S^q$,
+  \[
+    \mathfrak{R}(\partial_r\wedge X)=-\frac{\ddot\rho}\rho\partial_r\wedge X,\quad
+    \mathfrak{R}(\partial_r\wedge V)=-\frac{\ddot\phi}\phi\partial_r\wedge V,\quad
+    \mathfrak{R}(X\wedge Y)=\frac{1-\dot\rho^2}{\rho^2}X\wedge Y,
+  \]
+  \[
+    \mathfrak{R}(V\wedge W)=\frac{1-\dot\phi^2}{\phi^2}V\wedge W,\qquad
+    \mathfrak{R}(X\wedge V)=-\frac{\dot\rho\dot\phi}{\rho\phi}X\wedge V.
+  \]
+  In particular, all sectional curvatures are convex combinations of
+  $-\ddot\rho/\rho$, $-\ddot\phi/\phi$, $(1-\dot\rho^2)/\rho^2$,
+  $(1-\dot\phi^2)/\phi^2$, $-\dot\rho\dot\phi/(\rho\phi)$.
+  \source{petersen:page-0142}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch4-doubly-warped-curvature}
+  The Hessian computation is as in \cref{prop:pet-ch4-hess-r-rotsym}, applied
+  separately to the two warped factors: $\mathrm{Hess}\,r=(\partial_r\rho)\rho\,ds_p^2+(\partial_r\phi)\phi\,ds_q^2$,
+  and, as in \cref{prop:pet-ch4-rotsym-radial-jacobi}, each coefficient depends
+  only on $r$, so $\nabla_X\mathrm{II}=0$. The tangential curvature equation,
+  combined with the curvature on each factor sphere
+  (\cref{prop:pet-ch4-euclidean-sphere-constant-curvature}) rescaled by $\rho$
+  or $\phi$ as in \cref{thm:pet-ch4-rotsym-curvature-operator}, and with the
+  cross term between the $S^p$ and $S^q$ directions arising purely from the
+  second fundamental form (since the ambient curvature mixing the two spheres
+  vanishes, as in \cref{prop:pet-ch4-product-sphere-curvature}), gives the five
+  displayed eigenvalue formulas via
+  \cref{prop:pet-ch4-triple-vanishing-diagonalizes-operator} applied to the
+  orthonormal basis $\{\partial_r\}\cup\{e_i\}_{S^p}\cup\{f_j\}_{S^q}$. The
+  sectional curvature bound follows since every plane's sectional curvature is
+  a convex combination of these diagonal eigenvalues, by
+  \cref{prop:pet-ch4-curvature-operator-diagonal-bounds}.
+\end{proof}
+
+\begin{proposition}[Ricci curvature of a doubly warped product]
+  \label{prop:pet-ch4-doubly-warped-ricci}
+  \lean{PetersenLib.doublyWarpedRicci}
+  \uses{thm:pet-ch4-doubly-warped-curvature}
+  On $\big(I\times S^p\times S^q,\,dr^2+\rho^2(r)ds_p^2+\phi^2(r)ds_q^2\big)$, for
+  $X$ tangent to $S^p$ and $V$ tangent to $S^q$,
+  \[
+    \mathrm{Ric}(\partial_r)=\Big(-p\frac{\ddot\rho}\rho-q\frac{\ddot\phi}\phi\Big)\partial_r,
+  \]
+  \[
+    \mathrm{Ric}(X)=\Big(-\frac{\ddot\rho}\rho+(p-1)\frac{1-\dot\rho^2}{\rho^2}-q\frac{\dot\rho\dot\phi}{\rho\phi}\Big)X,
+    \qquad
+    \mathrm{Ric}(V)=\Big(-\frac{\ddot\phi}\phi+(q-1)\frac{1-\dot\phi^2}{\phi^2}-p\frac{\dot\rho\dot\phi}{\rho\phi}\Big)V.
+  \]
+  \source{petersen:page-0142,petersen:page-0143}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-doubly-warped-ricci}
+  As in \cref{prop:pet-ch4-rotsym-ricci-scalar}, sum the eigenvalues from
+  \cref{thm:pet-ch4-doubly-warped-curvature} over an orthonormal basis
+  $\{\partial_r\}\cup\{e_1,\dots,e_p\}\cup\{f_1,\dots,f_q\}$: for
+  $\mathrm{Ric}(\partial_r)$, sum $p$ copies of $-\ddot\rho/\rho$ and $q$ copies of
+  $-\ddot\phi/\phi$; for $\mathrm{Ric}(X)$ with $X=e_1$ say, sum $-\ddot\rho/\rho$
+  (the $\partial_r$ term), $(p-1)$ copies of $(1-\dot\rho^2)/\rho^2$ (the other
+  $S^p$ directions), and $q$ copies of $-\dot\rho\dot\phi/(\rho\phi)$ (the $S^q$
+  directions); symmetrically for $\mathrm{Ric}(V)$.
+\end{proof}
+
+\subsection{The Schwarzschild Metric}
+
+\begin{definition}[the Schwarzschild Ricci-flat equations]
+  \label{def:pet-ch4-schwarzschild-construction}
+  \lean{PetersenLib.schwarzschildRicciFlatEquations}
+  \leanok
+  \uses{prop:pet-ch4-doubly-warped-ricci}
+  Take $p=n-2$, $q=1$ in \cref{prop:pet-ch4-doubly-warped-ricci} on
+  $(0,\infty)\times S^{n-2}\times S^1$: Ricci flatness $\mathrm{Ric}\equiv0$
+  ($\mathrm{Ric}(\partial_r)=0$, $\mathrm{Ric}(X)=0$, $\mathrm{Ric}(V)=0$) becomes
+  \[
+    -(n-2)\frac{\ddot\rho}\rho-\frac{\ddot\phi}\phi=0,\qquad
+    -\frac{\ddot\rho}\rho+(n-3)\frac{1-\dot\rho^2}{\rho^2}-\frac{\dot\rho\dot\phi}{\rho\phi}=0,\qquad
+    -\frac{\ddot\phi}\phi-(n-2)\frac{\dot\rho\dot\phi}{\rho\phi}=0.
+  \]
+  \source{petersen:page-0143}
+\end{definition}
+
+\begin{proposition}[reduction to the scalar-flat equation]
+  \label{prop:pet-ch4-schwarzschild-reduces-scalar-flat}
+  \lean{PetersenLib.schwarzschildReducesToScalarFlat}
+  \leanok
+  \uses{def:pet-ch4-schwarzschild-construction,def:pet-ch4-scalar-flat-ode}
+  Subtracting the first and third equations of
+  \cref{def:pet-ch4-schwarzschild-construction} gives
+  $\ddot\rho/\rho=\dot\rho\dot\phi/(\rho\phi)$, which integrates to
+  $\dot\rho=c\phi$ for a constant $c$; substituting
+  $\dot\rho\dot\phi/(\rho\phi)=\ddot\rho/\rho$ back into the second equation
+  reduces it to the scalar-flat equation
+  $-2\ddot\rho/\rho+(n-3)(1-\dot\rho^2)/\rho^2=0$ for $dr^2+\rho^2(r)ds_{n-2}^2$
+  (the case of \cref{def:pet-ch4-scalar-flat-ode} with $n$ replaced by $n-1$).
+  \source{petersen:page-0143}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-schwarzschild-reduces-scalar-flat}
+  \leanok
+  Subtracting the third equation of
+  \cref{def:pet-ch4-schwarzschild-construction} from the first cancels the
+  $\ddot\phi/\phi$ terms:
+  \[
+    \Big(-(n-2)\frac{\ddot\rho}\rho-\frac{\ddot\phi}\phi\Big)
+    -\Big(-\frac{\ddot\phi}\phi-(n-2)\frac{\dot\rho\dot\phi}{\rho\phi}\Big)
+    =-(n-2)\frac{\ddot\rho}\rho+(n-2)\frac{\dot\rho\dot\phi}{\rho\phi}=0,
+  \]
+  i.e.\ (dividing by $-(n-2)$, valid for $n>2$) $\ddot\rho/\rho=\dot\rho\dot\phi/(\rho\phi)$,
+  equivalently $\ddot\rho/\dot\rho=\dot\phi/\phi$ wherever $\dot\rho\ne0$, i.e.\
+  $\tfrac{d}{dr}\ln|\dot\rho|=\tfrac{d}{dr}\ln|\phi|$. Integrating,
+  $\ln|\dot\rho|=\ln|\phi|+\text{const}$, so $\dot\rho=c\phi$ for a constant
+  $c\ne0$. Substituting $\dot\phi/\phi=\ddot\rho/\dot\rho$ (equivalently
+  $\dot\rho\dot\phi/(\rho\phi)=\ddot\rho/\rho$) into the second equation of
+  \cref{def:pet-ch4-schwarzschild-construction} replaces the last term
+  $-\dot\rho\dot\phi/(\rho\phi)$ by $-\ddot\rho/\rho$, giving
+  $-2\ddot\rho/\rho+(n-3)(1-\dot\rho^2)/\rho^2=0$, which is exactly
+  \cref{def:pet-ch4-scalar-flat-ode}'s scalar-flat equation for the
+  $(n-1)$-dimensional warped factor $dr^2+\rho^2(r)ds_{n-2}^2$.
+\end{proof}
+
+\begin{proposition}[the Schwarzschild metric is Ricci flat]
+  \label{prop:pet-ch4-schwarzschild-ricci-flat}
+  \lean{PetersenLib.schwarzschildRicciFlat}
+  \uses{prop:pet-ch4-schwarzschild-reduces-scalar-flat,prop:pet-ch4-scalar-flat-cases}
+  Let $\rho$ be the even solution of the scalar-flat equation from
+  \cref{prop:pet-ch4-scalar-flat-cases} (with $n$ there replaced by $n-1$) with
+  $\rho(0)=\rho_0>0$ and $\dot\rho^2=1-(\rho_0/\rho)^{n-3}$, and define $\phi$ by
+  $\dot\rho=c\phi$ with $c=\tfrac{n-3}2\rho_0^{-1}$. Then $\phi$ is odd,
+  $\phi(0)=0$, $\dot\phi(0)=1$, $\dot\phi=(\rho_0/\rho)^{n-2}$, and $(\rho,\phi)$
+  solve the equations of \cref{def:pet-ch4-schwarzschild-construction}; the
+  resulting metric $dr^2+\rho^2(r)ds_{n-2}^2+\phi^2(r)d\theta^2$ is a Ricci-flat
+  metric on $\mathbb{R}^2\times S^{n-2}$ (the \emph{Schwarzschild metric}), with the
+  explicit algebraic form
+  \[
+    \frac1{1-(\rho_0/\rho)^{n-3}}\,d\rho^2+\rho^2ds_{n-2}^2
+    +\rho_0^2\frac4{(n-3)^2}\Big(1-\Big(\frac{\rho_0}\rho\Big)^{n-3}\Big)\,d\theta^2,
+  \]
+  which is asymptotic to the flat metric on $\mathbb{R}^{n-1}\times S^1$ (suitably
+  scaled) as $\rho\to\infty$.
+  \source{petersen:page-0143,petersen:page-0144}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-schwarzschild-ricci-flat}
+  Since $\dot\rho(0)=0$ and $\dot\rho=c\phi$, $\phi(0)=0$. Differentiating
+  $\dot\rho^2=1-\rho_0^{n-3}\rho^{3-n}$ gives
+  $2\dot\rho\ddot\rho=(n-3)\rho_0^{n-3}\rho^{2-n}\dot\rho$, so (dividing by
+  $\dot\rho$ where nonzero, and by continuity everywhere)
+  $2\ddot\rho=(n-3)\rho_0^{n-3}\rho^{2-n}=(n-3)\rho_0^{-1}(\rho_0/\rho)^{n-2}$.
+  Since $\dot\rho=c\phi$ gives $\ddot\rho=c\dot\phi$, this reads
+  $2c\dot\phi=(n-3)\rho_0^{-1}(\rho_0/\rho)^{n-2}$; at $r=0$, $\rho=\rho_0$ so
+  $(\rho_0/\rho)^{n-2}=1$, and requiring $\dot\phi(0)=1$ forces
+  $c=\tfrac{n-3}2\rho_0^{-1}$, giving $\dot\phi=(\rho_0/\rho)^{n-2}$. As $\rho$
+  is even in $r$, $\dot\phi$ is even, so $\phi$ (with $\phi(0)=0$) is odd. This
+  verifies the second Ricci-flat equation holds by construction
+  (\cref{prop:pet-ch4-schwarzschild-reduces-scalar-flat}). For the first
+  equation, differentiate $\dot\phi=\rho_0^{n-2}\rho^{2-n}$ again:
+  $\ddot\phi=-(n-2)\rho_0^{n-2}\rho^{1-n}\dot\rho$. Since
+  $\phi=\dot\rho/c=\tfrac{2\rho_0}{n-3}\dot\rho$,
+  \[
+    \frac{\ddot\phi}\phi=\frac{-(n-2)\rho_0^{n-2}\rho^{1-n}\dot\rho}{\tfrac{2\rho_0}{n-3}\dot\rho}
+    =-\frac{(n-2)(n-3)}2\rho_0^{n-3}\rho^{1-n},
+  \]
+  while from $2\ddot\rho=(n-3)\rho_0^{n-3}\rho^{2-n}$,
+  $\ddot\rho/\rho=\tfrac{n-3}2\rho_0^{n-3}\rho^{1-n}$, so
+  \[
+    -(n-2)\frac{\ddot\rho}\rho-\frac{\ddot\phi}\phi
+    =-\frac{(n-2)(n-3)}2\rho_0^{n-3}\rho^{1-n}+\frac{(n-2)(n-3)}2\rho_0^{n-3}\rho^{1-n}=0,
+  \]
+  which is exactly the first equation of
+  \cref{def:pet-ch4-schwarzschild-construction}; also, directly,
+  $\ddot\phi=-(n-2)\rho_0^{n-2}\rho^{1-n}\dot\rho=-(n-2)\dot\rho\dot\phi/\rho$
+  (using $\dot\phi=\rho_0^{n-2}\rho^{2-n}$), which is exactly the third
+  equation, $-\ddot\phi/\phi-(n-2)\dot\rho\dot\phi/(\rho\phi)=0$. Hence all
+  three Ricci-flat equations hold and the metric
+  $dr^2+\rho^2(r)ds_{n-2}^2+\phi^2(r)d\theta^2$ is Ricci flat. Using $\rho$ as
+  parameter for $r>0$ as in \cref{ex:pet-ch4-scalar-flat-tautological-bundle},
+  with $d\rho^2=\dot\rho^2dr^2$ and
+  $\phi^2=\dot\rho^2/c^2=\tfrac{4\rho_0^2}{(n-3)^2}\big(1-(\rho_0/\rho)^{n-3}\big)$,
+  produces the displayed explicit form (up to the stated normalization
+  constant); as $\rho\to\infty$ the coefficient of $d\rho^2$ tends to $1$ and
+  the coefficient of $d\theta^2$ tends to the constant
+  $\tfrac{4\rho_0^2}{(n-3)^2}$, so the metric is asymptotic to a flat metric on
+  $\mathbb{R}^{n-1}\times S^1$.
+\end{proof}
+
+\begin{remark}[the classical space-time Schwarzschild metric]
+  \label{rem:pet-ch4-schwarzschild-physical}
+  \lean{PetersenLib.schwarzschildPhysicalMetric}
+  \uses{prop:pet-ch4-schwarzschild-ricci-flat}
+  Replacing $S^1$ by $\mathbb{R}$, treating the parameter $c$ (the speed of light) as
+  independent of $\rho_0$, and passing to a Lorentzian signature gives the
+  classical (non-Riemannian) Schwarzschild space-time metric
+  \[
+    \frac1{1-\rho_0/\rho}\,d\rho^2+\rho^2ds_2^2-\frac1{c^2}\Big(1-\frac{\rho_0}\rho\Big)dt^2,
+  \]
+  which is not smooth at $\rho=\rho_0$.
+  \source{petersen:page-0144}
+\end{remark}
+
+\section{Warped Products in General}
+
+\subsection{Basic Constructions}
+
+\begin{definition}[warped product over an interval]
+  \label{def:pet-ch4-warped-product-general}
+  \lean{PetersenLib.warpedProductGeneral}
+  \leanok
+  Given a Riemannian manifold $(H,g_H)$ and an open interval $I\subset\mathbb{R}$, a
+  \emph{warped product} (over $I$) is $g=dr^2+\rho^2(r)g_H$ on $I\times H$, with
+  $\rho>0$ on $I$. The more general form $\psi^2(r)dr^2+\rho^2(r)g_H$ reduces to
+  this form by the change of variable $d\rho'=\psi(r)dr$, giving
+  $d(\rho')^2+\rho^2(r(\rho'))g_H$. Basic special cases: the plain product
+  $g=dr^2+g_H$, and Euclidean polar coordinates $dr^2+r^2ds_{n-1}^2$ on
+  $(0,\infty)\times S^{n-1}$.
+  \source{petersen:page-0145}
+\end{definition}
+
+\begin{definition}[the potential function $f$ of a warped product]
+  \label{def:pet-ch4-warping-potential-f}
+  \lean{PetersenLib.warpedProductPotential}
+  \leanok
+  \uses{def:pet-ch4-warped-product-general}
+  For $g=dr^2+\rho^2(r)g_H$ on $M=I\times H$, set $f=\int\rho\,dr$, so $df=\rho\,dr$
+  and
+  \[
+    g=dr^2+\rho^2(r)g_H=\frac1{\rho^2(r)}df^2+\rho^2(r)g_H.
+  \]
+  \source{petersen:page-0145}
+\end{definition}
+
+\begin{proposition}[Prop. 4.3.1 — the Hessian of the potential is conformal to $g$]
+  \label{prop:pet-ch4-hess-f-conformal}
+  \lean{PetersenLib.hessPotentialConformal}
+  \uses{def:pet-ch4-warping-potential-f,prop:pet-ch4-hess-r-rotsym}
+  For $f=\int\rho\,dr$ as in \cref{def:pet-ch4-warping-potential-f},
+  $\mathrm{Hess}\,f=\dot\rho\,g$.
+  \source{petersen:page-0145,petersen:page-0146}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-hess-f-conformal}
+  By \cref{prop:pet-ch4-hess-r-rotsym}, $\mathrm{Hess}\,r=\tfrac{\partial_r\rho}\rho g_r=\dot\rho\rho\,g_H$
+  (since $g_r=\rho^2g_H$). Since $df=\rho\,dr$,
+  \[
+    (\mathrm{Hess}\,f)(X,Y)=(\nabla_Xdf)(Y)=\big(\nabla_X(\rho\,dr)\big)(Y)
+    =\dot\rho\,dr(X)\,dr(Y)+\rho\,(\mathrm{Hess}\,r)(X,Y)
+    =\dot\rho\,dr^2(X,Y)+\rho\cdot\dot\rho\rho\,g_H(X,Y).
+  \]
+  Since $g=dr^2+\rho^2g_H$, this is $\dot\rho\,dr^2(X,Y)+\dot\rho\rho^2g_H(X,Y)=\dot\rho\,g(X,Y)$.
+\end{proof}
+
+\begin{remark}[warped product data from $f$ and $|\nabla f|$ alone]
+  \label{rem:pet-ch4-warped-product-canonical-form}
+  \lean{PetersenLib.warpedProductFromPotentialAndGradientNorm}
+  \uses{prop:pet-ch4-hess-f-conformal}
+  With $\rho=|\nabla f|$ (so $\rho^2=g(\nabla f,\nabla f)$),
+  $\dot\rho=\tfrac{d\rho}{dr}=\tfrac{d\rho}{df}\tfrac{df}{dr}=\tfrac{d\rho}{df}\rho
+  =\tfrac12\tfrac{d|\nabla f|^2}{df}$; hence the warped product representation
+  depends only on $f$ and $|\nabla f|$:
+  \[
+    g=\frac1{|\nabla f|^2}df^2+|\nabla f|^2g_H,\qquad
+    \mathrm{Hess}\,f=\frac12\frac{d|\nabla f|^2}{df}\,g.
+  \]
+  \source{petersen:page-0146}
+\end{remark}
+
+\begin{example}[Ex. 4.3.2 — the potential for constant-curvature warped products]
+  \label{ex:pet-ch4-hess-f-space-forms}
+  \lean{PetersenLib.hessFPotentialSpaceForms}
+  \uses{prop:pet-ch4-hess-f-conformal,prop:pet-ch4-snk-constant-curvature}
+  For $dr^2+\mathrm{sn}_k^2(r)ds_{n-1}^2$, with $f$ the antiderivative of
+  $\mathrm{sn}_k$ vanishing at $r=0$: when $k=0$, $f=\tfrac12r^2$ and
+  $\mathrm{Hess}\,f=g$; when $k\ne0$, $f=\tfrac1k-\tfrac1k\mathrm{cs}_k(r)$ and
+  $\mathrm{Hess}\,f=\mathrm{cs}_k(r)\,g=(1-kf)\,g$. In particular, $k=1$ gives
+  $f=1-\cos r$, $\mathrm{Hess}\,f=(1-f)g$, and $k=-1$ gives $f=\cosh r-1$,
+  $\mathrm{Hess}\,f=(1+f)g$.
+  \source{petersen:page-0146,petersen:page-0147}
+\end{example}
+
+\subsection{General Characterization}
+
+\begin{theorem}[Thm. 4.3.3(a) (Brinkmann, 1925) — conformal Hessian gives a warped product away from critical points]
+  \label{thm:pet-ch4-brinkmann-warped-product}
+  \lean{PetersenLib.brinkmannWarpedProductAwayFromCriticalPoints}
+  \uses{def:pet-ch4-warped-product-general}
+  If $f$ is a smooth function on $(M,g)$ with $\mathrm{Hess}\,f=\lambda g$ for a
+  function $\lambda$, then around any point $p$ with $df|_p\ne0$, $(M,g)$ is
+  locally a warped product $g=dr^2+\rho^2(r)g_H$.
+  \source{petersen:page-0147}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch4-brinkmann-warped-product}
+  Since $df|_p\ne0$, $f$ is locally the first coordinate of a coordinate
+  system near $p$. Put $\rho=|\nabla f|$; then
+  $D_X\rho^2=2(\mathrm{Hess}\,f)(\nabla f,X)=2\lambda\,g(\nabla f,X)$, i.e.\
+  $d\rho^2=2\lambda\,df$, so also $d\lambda\wedge df=0$ (differentiating and
+  using $d(d\rho^2)=0$, or directly since $d\rho^2$ is proportional to $df$
+  forces $\lambda$, as a coefficient, to be locally constant on level sets of
+  $f$ up to the same proportionality). Hence $d\rho$ and $d\lambda$ are both
+  proportional to $df$, so $\rho,\lambda$ are locally constant on level sets of
+  $f$; write $\rho=\rho(f)$, $\lambda=\lambda(f)$. Then $\rho^{-1}df$ is closed,
+  hence locally exact: define $r$ by $dr=\rho^{-1}df$. Since
+  $\partial_r=\nabla r=\rho(f)^{-1}\nabla f$ has $g(\partial_r,\partial_r)=\rho^{-2}g(\nabla f,\nabla f)=1$,
+  $r$ is a (locally defined) distance function, and $g=dr^2+g_r$ on a suitable
+  domain $I\times H$, $H\subset\{r=r_0\}$. For $X\perp\partial_r$,
+  $\nabla_Xdr=\rho^{-1}\nabla_Xdf$, so $\mathrm{Hess}\,r=\rho^{-1}\lambda\,g_r$
+  (restricting $\mathrm{Hess}\,f=\lambda g$ and using $dr=\rho^{-1}df$), i.e.\ by
+  the definition of the Lie derivative of the induced metric under the normal
+  flow, $L_{\partial_r}g_r=2\rho^{-1}\lambda\,g_r$. If $g_n$ is defined by
+  $g_{r_0}=\rho^2(r_0)g_n$ on the fixed level set $r=r_0$, then
+  $L_{\partial_r}(\rho^2g_n)=(\partial_r\rho^2)g_n=2\lambda\rho\,g_n
+  =\tfrac{2\lambda}\rho\rho^2g_n$ matches the same evolution equation, so
+  $g_r=\rho^2g_n$ for all $r$ in the domain, giving $g=dr^2+\rho^2g_n$, a
+  warped product over $H=(H,g_n)$.
+\end{proof}
+
+\begin{theorem}[Thm. 4.3.3(b) (Brinkmann, 1925) — conformal Hessian at a nondegenerate critical point]
+  \label{thm:pet-ch4-brinkmann-critical-point}
+  \lean{PetersenLib.brinkmannAtNondegenerateCriticalPoint}
+  \uses{thm:pet-ch4-brinkmann-warped-product}
+  If $\mathrm{Hess}\,f=\lambda g$, $df|_p=0$, and $\lambda(p)\ne0$, then after
+  replacing $f$ by an affine rescaling one may assume $f(p)=0$, $\lambda(p)=1$;
+  if $M$ is (locally) the connected component of $\{f<\varepsilon\}$ containing
+  $p$ with $p$ the only critical point, then near $p$,
+  $g=dr^2+\rho^2(r)ds_{n-1}^2$ for the standard round metric $ds_{n-1}^2$ on
+  $S^{n-1}$, with $\rho(0)=0$, $\dot\rho(0)=1$.
+  \source{petersen:page-0147,petersen:page-0148,petersen:page-0149}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch4-brinkmann-critical-point}
+  Since $\mathrm{Hess}\,f=g$ at $p$, there are coordinates $y^1,\dots,y^n$ with
+  $y^i(p)=0$ and $f(y)=\tfrac12\sum_i(y^i)^2$, so all regular level sets of $f$
+  near $p$ are spheres. Applying \cref{thm:pet-ch4-brinkmann-warped-product} on
+  $M-\{p\}\simeq(0,b)\times S^{n-1}$ gives a warped product
+  $dr^2+\rho^2g_{n-1}$ for some metric $g_{n-1}$ on $S^{n-1}$, with $r\to0$
+  approaching $p$; writing $f,\rho$ as functions of $r$,
+  $\tfrac{df}{dr}=\rho$, $\tfrac{d^2f}{dr^2}=\dot\rho=\lambda$, and the initial
+  conditions transfer to $f(0)=\dot f(0)=\rho(0)=0$, $\dot\rho(0)=\lambda(0)=1$
+  by continuity through $p$. It remains to identify $g_{n-1}=ds_{n-1}^2$. In
+  dimension $2$: write $x=r\cos\theta$, $y=r\sin\theta$ and let $g_{S^1}=\phi^2(\theta)d\theta^2$
+  parametrize the abstract metric on $S^1$; the coordinate vector fields
+  $\partial_x=\cos\theta\,\partial_r-r^{-1}\sin\theta\,\partial_\theta$,
+  $\partial_y=\sin\theta\,\partial_r+r^{-1}\cos\theta\,\partial_\theta$ give
+  $g_{xx}=\cos^2\theta+\phi^2(\theta)\rho^2(r)r^{-2}\sin^2\theta$ and similarly
+  for $g_{yy}$; letting $r\to0$ (using $\rho(0)=0$, $\dot\rho(0)=1$, so
+  $\rho^2/r^2\to1$) gives $g_{xx}(p)=\cos^2\theta+\phi^2(\theta)\sin^2\theta$,
+  $g_{yy}(p)=\sin^2\theta+\phi^2(\theta)\cos^2\theta$, both $\theta$-independent
+  since they are components of $g$ at the single point $p$; adding them gives
+  $1+\phi^2(\theta)$ constant, so $\phi$ is constant, and then $g_{xx}(p)$
+  being $\theta$-independent forces $\phi=1$. In higher dimensions, restrict to
+  the plane through a great circle $c(\theta)$ of $S^{n-1}$ (unit speed for the
+  standard metric); the same argument on this plane gives
+  $1=g_{S^{n-1}}(\dot c,\dot c)$ for every unit vector $\dot c$, i.e.\
+  $g_{n-1}=ds_{n-1}^2$.
+\end{proof}
+
+\begin{corollary}[Cor. 4.3.4 — characterization of warped-product constant-curvature metrics]
+  \label{cor:pet-ch4-brinkmann-constant-curvature}
+  \lean{PetersenLib.brinkmannConstantCurvatureCorollary}
+  \uses{thm:pet-ch4-brinkmann-critical-point,ex:pet-ch4-hess-f-space-forms}
+  If $f(p)=0$, $df|_p=0$, and $\mathrm{Hess}\,f=(1-kf)g$, then near $p$ the metric
+  is the warped-product metric of curvature $k$ from
+  \cref{ex:pet-ch4-hess-f-space-forms}.
+  \source{petersen:page-0149,petersen:page-0150}
+\end{corollary}
+\begin{proof}
+  \uses{cor:pet-ch4-brinkmann-constant-curvature}
+  Since $\lambda=1-kf$ is an explicit function of $f$, along $r$ the equation
+  $\tfrac{d^2f}{dr^2}=1-kf$, $f(0)=0$, $\tfrac{df}{dr}(0)=0$ determines $f=f(r)$
+  uniquely, and $\rho(r)=|\nabla f|=\tfrac{df}{dr}$. When $k=0$ this gives
+  $f(r)=\tfrac12r^2$, $\rho(r)=r$, i.e.\ $g=dr^2+r^2ds_{n-1}^2$; when $k\ne0$ it
+  gives $f(r)=\tfrac1k-\tfrac1k\mathrm{cs}_k(r)$, $\rho(r)=\mathrm{sn}_k(r)$
+  (the unique solutions of $\ddot x+kx=0$ with the stated initial data, matching
+  \cref{ex:pet-ch4-hess-f-space-forms}), i.e.\
+  $g=dr^2+\mathrm{sn}_k^2(r)ds_{n-1}^2$; in either case
+  \cref{thm:pet-ch4-brinkmann-critical-point} identifies the angular part as
+  $ds_{n-1}^2$ and $r=0$ as $p$.
+\end{proof}
+
+\begin{remark}[Rem. 4.3.5 — transnormal functions]
+  \label{rem:pet-ch4-transnormal-functions}
+  \lean{PetersenLib.transnormalFunctionRemark}
+  \uses{thm:pet-ch4-brinkmann-warped-product}
+  A function $f:M\to\mathbb{R}$ is \emph{transnormal} if $|df|^2=\rho^2(f)$ for some
+  smooth $\rho$; functions with conformal Hessian are locally transnormal by
+  \cref{thm:pet-ch4-brinkmann-warped-product}, but the converse fails: on the
+  doubly warped representation $dr^2+\sin^2(r)d\theta_1^2+\cos^2(r)d\theta_2^2$
+  of $S^3(1)$ on $(0,\pi/2)\times S^1\times S^1$, $f=\tfrac14\sin(2r)$ is
+  transnormal but does not have conformal Hessian.
+  \source{petersen:page-0150}
+\end{remark}
+
+\subsection{Conformal Representations of Warped Products}
+
+\begin{definition}[conformal change of metric]
+  \label{def:pet-ch4-conformal-change}
+  \lean{PetersenLib.conformalChangeOfMetric}
+  \leanok
+  For a Riemannian manifold $(M,g)$ and positive $\psi$ on $M$, $(M,\psi^2g)$ is
+  a \emph{conformal change} of $(M,g)$, with $\psi^2$ the \emph{conformal
+  factor}.
+  \source{petersen:page-0150}
+\end{definition}
+
+\begin{definition}[the two conformal forms of a warped product]
+  \label{def:pet-ch4-warped-product-conformal-forms}
+  \lean{PetersenLib.warpedProductConformalForms}
+  \uses{def:pet-ch4-conformal-change,def:pet-ch4-warped-product-general}
+  A warped product $dr^2+\rho^2(r)g_H$ can be written conformally in two ways,
+  via $dr=\psi(\rho)d\rho$:
+  \[
+    dr^2+\rho^2(r)g_H=\psi^2(\rho)\big(d\rho^2+g_H\big)\quad\text{when }\rho(r)=\psi(\rho),
+  \]
+  \[
+    dr^2+\rho^2(r)g_H=\psi^2(\rho)\big(d\rho^2+\rho^2g_H\big)\quad\text{when }\rho(r)=\rho\psi(\rho).
+  \]
+  \source{petersen:page-0150,petersen:page-0151}
+\end{definition}
+
+\paragraph{4.3.3.1 Conformal Models of Spheres}
+
+\begin{proposition}[the Mercator conformal model of the sphere]
+  \label{prop:pet-ch4-mercator-model}
+  \lean{PetersenLib.mercatorConformalModel}
+  \uses{def:pet-ch4-warped-product-conformal-forms,prop:pet-ch4-snk-constant-curvature}
+  Writing $R^2ds_n^2=dr^2+R^2\sin^2(r/R)ds_{n-1}^2$ (curvature $1/R^2$) in the
+  first conformal form of \cref{def:pet-ch4-warped-product-conformal-forms},
+  with $\psi(\rho)d\rho=dr$ and $\psi(\rho)=R\sin(r/R)$,
+  \[
+    \rho=\frac12\log\frac{1-\cos(r/R)}{1+\cos(r/R)},\qquad
+    \cos(r/R)=\frac{1-e^{2\rho}}{1+e^{2\rho}},\qquad
+    \psi^2(\rho)=\frac{4R^2e^{2\rho}}{(1+e^{2\rho})^2},
+  \]
+  so $R^2ds_n^2=\dfrac{4R^2e^{2\rho}}{(1+e^{2\rho})^2}\big(d\rho^2+ds_{n-1}^2\big)$.
+  \source{petersen:page-0151,petersen:page-0152}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-mercator-model}
+  From $\psi(\rho)d\rho=dr$ and $\psi(\rho)=R\sin(r/R)$,
+  $d\rho=dr/\big(R\sin(r/R)\big)$; integrating,
+  $\rho=\tfrac12\log\tfrac{1-\cos(r/R)}{1+\cos(r/R)}$ (an antiderivative of
+  $1/\sin$, up to the constant fixed by evaluating at a base point). Solving
+  for $\cos(r/R)$ in terms of $e^{2\rho}=\tfrac{1-\cos(r/R)}{1+\cos(r/R)}$ gives
+  $\cos(r/R)=\tfrac{1-e^{2\rho}}{1+e^{2\rho}}$, and then
+  $\sin^2(r/R)=1-\cos^2(r/R)=1-\Big(\tfrac{1-e^{2\rho}}{1+e^{2\rho}}\Big)^2
+  =\tfrac{4e^{2\rho}}{(1+e^{2\rho})^2}$, so
+  $\psi^2(\rho)=R^2\sin^2(r/R)=\tfrac{4R^2e^{2\rho}}{(1+e^{2\rho})^2}$; the
+  displayed conformal representation follows from
+  \cref{def:pet-ch4-warped-product-conformal-forms}.
+\end{proof}
+
+\begin{proposition}[the polar-coordinate (stereographic) conformal model of the sphere]
+  \label{prop:pet-ch4-sphere-stereographic-conformal}
+  \lean{PetersenLib.sphereStereographicConformalModel}
+  \uses{def:pet-ch4-warped-product-conformal-forms,prop:pet-ch4-mercator-model}
+  In the second conformal form of
+  \cref{def:pet-ch4-warped-product-conformal-forms}, applied to
+  $R^2ds_n^2=dr^2+R^2\sin^2(r/R)ds_{n-1}^2$,
+  \[
+    \cos(r/R)=\frac{1-\rho^2}{1+\rho^2},\qquad
+    \psi^2(\rho)=\frac{4R^2}{(1+\rho^2)^2},
+  \]
+  so
+  \[
+    R^2ds_n^2=\frac{4R^2}{(1+\rho^2)^2}\big(d\rho^2+\rho^2ds_{n-1}^2\big)
+    =\frac{4R^2}{(1+\rho^2)^2}g_{\mathrm{eu}^n}.
+  \]
+  \source{petersen:page-0152,petersen:page-0153}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-sphere-stereographic-conformal}
+  Here $d\rho/\rho=dr/\big(R\sin(r/R)\big)$, integrating to
+  $\rho^2=\tfrac{1-\cos(r/R)}{1+\cos(r/R)}$ (up to a multiplicative constant
+  fixed at a base point), which rearranges to
+  $\cos(r/R)=\tfrac{1-\rho^2}{1+\rho^2}$. From $R\sin(r/R)=\rho\psi(\rho)$ and
+  $\sin^2(r/R)=1-\cos^2(r/R)=\tfrac{4\rho^2}{(1+\rho^2)^2}$ (by the same
+  algebra as in \cref{prop:pet-ch4-mercator-model}),
+  $\rho^2\psi^2(\rho)=R^2\tfrac{4\rho^2}{(1+\rho^2)^2}$, so
+  $\psi^2(\rho)=\tfrac{4R^2}{(1+\rho^2)^2}$; substituting into
+  \cref{def:pet-ch4-warped-product-conformal-forms}'s second form gives the
+  displayed identity, and $d\rho^2+\rho^2ds_{n-1}^2=g_{\mathrm{eu}^n}$ is the
+  Euclidean metric in polar coordinates.
+\end{proof}
+
+\paragraph{4.3.3.2 Conformal Models of Hyperbolic Space}
+
+\begin{proposition}[the Poincaré ball model]
+  \label{prop:pet-ch4-poincare-disc-model}
+  \lean{PetersenLib.poincareDiscModel}
+  \uses{def:pet-ch4-warped-product-conformal-forms,prop:pet-ch4-sphere-stereographic-conformal}
+  Writing hyperbolic space as
+  $dr^2+\mathrm{sn}_{-1/R^2}^2(r)ds_{n-1}^2=dr^2+R^2\sinh^2(r/R)ds_{n-1}^2
+  =R^2\big(dt^2+\sinh^2(t)ds_{n-1}^2\big)$, the same construction as
+  \cref{prop:pet-ch4-sphere-stereographic-conformal} (with $\sinh,\cosh$ in
+  place of $\sin,\cos$) gives the \emph{Poincaré model} on the unit ball,
+  \[
+    R^2\big(dt^2+\sinh^2(t)ds_{n-1}^2\big)=\frac{4R^2}{(1-\rho^2)^2}\,g_{\mathrm{eu}^n},
+    \qquad\rho\in B(0,1).
+  \]
+  \source{petersen:page-0153}
+\end{proposition}
+
+\begin{definition}[the upper half-space model]
+  \label{def:pet-ch4-upper-half-space-model}
+  \lean{PetersenLib.upperHalfSpaceModel}
+  \leanok
+  \uses{def:pet-ch4-warped-product-general}
+  On the half-space $x^n>0$, the metric $(1/x^n)^2\big((dx^1)^2+\dots+(dx^n)^2\big)$
+  becomes, with $r=\log(x^n)$, the warped product
+  $g=dr^2+(e^{-r})^2\big((dx^1)^2+\dots+(dx^{n-1})^2\big)$.
+  \source{petersen:page-0153}
+\end{definition}
+
+\begin{theorem}[inversion transforms the upper half-space model to the Poincaré ball model]
+  \label{thm:pet-ch4-inversion-isometry}
+  \lean{PetersenLib.inversionUpperHalfSpaceToPoincareball}
+  \uses{prop:pet-ch4-poincare-disc-model,def:pet-ch4-upper-half-space-model}
+  Write $x=(x^1,\dots,x^{n-1})\in\mathbb{R}^{n-1}$, $y=x^n>0$. The inversion in the
+  sphere of radius $\sqrt2$ centered at $(0,-1)\in\mathbb{R}^{n-1}\times\mathbb{R}$,
+  \[
+    F(x,y)=\frac1{r^2}\big(2x,\,1-|x|^2-y^2\big),\qquad r^2=|x|^2+(y+1)^2,
+  \]
+  maps the upper half-space $\{y>0\}$ into the unit ball ($|F(x,y)|^2=1-4y/r^2=:\rho^2$)
+  and pulls back the Poincaré ball metric $\tfrac4{(1-\rho^2)^2}g_{\mathrm{eu}^n}$
+  to the upper half-space metric $\tfrac1{y^2}\big(dy^2+g_{\mathbb{R}^{n-1}}\big)$.
+  \source{petersen:page-0153,petersen:page-0154}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch4-inversion-isometry}
+  Writing $F=(F^1,\dots,F^n)$ with $F^k=2x^k/r^2$ ($k<n$) and
+  $F^n=2(y+1)/r^2-1$, one computes the differentials
+  $dF^k=2\,dx^k/r^2-4x^kr\,dr/r^4$, $dF^n=2\,dy/r^2-4(y+1)r\,dr/r^4$ (with
+  $r\,dr=x\cdot dx+(y+1)dy$), and substitutes into
+  $\tfrac4{(1-\rho^2)^2}\big((dF^n)^2+\sum_{k<n}(dF^k)^2\big)$ with
+  $1-\rho^2=4y/r^2$. Expanding the squares, the cross terms between $dy,dx^k$
+  and $dr$ combine with the pure-$dr^2$ terms coming from
+  $\big(\tfrac{2(y+1)2r\,dr}{r^4}\big)^2+\sum_{k<n}\big(\tfrac{x^k2r\,dr}{r^4}\big)^2$
+  and $-2$ times the mixed terms; using $r^2=|x|^2+(y+1)^2$ these combine so
+  that all terms involving $dr$ explicitly cancel, leaving
+  \[
+    \frac4{(1-\rho^2)^2}\big((dF^n)^2+\textstyle\sum_{k<n}(dF^k)^2\big)
+    =\frac1{y^2}\Big(dy^2+\sum_{k<n}(dx^k)^2\Big)=\frac1{y^2}\big(dy^2+g_{\mathbb{R}^{n-1}}\big),
+  \]
+  exhibiting the pullback of the Poincaré ball metric under $F$ as the upper
+  half-space metric of \cref{def:pet-ch4-upper-half-space-model}.
+\end{proof}
+
+\begin{remark}[the Riemann model of constant curvature]
+  \label{rem:pet-ch4-riemann-model}
+  \lean{PetersenLib.riemannConstantCurvatureModel}
+  \uses{def:pet-ch4-conformal-change}
+  For $\psi^2\big((dx^1)^2+\dots+(dx^n)^2\big)$ to have constant curvature $k$,
+  taking $\psi=\big(1+\tfrac k4r^2\big)^{-1}$ (with $\psi\cdot dx^1,\dots,\psi\cdot dx^n$
+  the orthonormal coframe and $\psi^{-1}\partial_1,\dots,\psi^{-1}\partial_n$ the
+  orthonormal frame used in the Koszul-formula computation of $R$) gives the
+  \emph{Riemann model}, defined on all of $\mathbb{R}^n$ if $k\ge0$ and on
+  $B(0,1/\sqrt{|k|})$ if $k<0$.
+  \source{petersen:page-0155}
+\end{remark}
+
+\begin{proposition}[the Riemann model with $k=-1$ is isometric to the Poincaré model]
+  \label{prop:pet-ch4-riemann-poincare-isometric}
+  \lean{PetersenLib.riemannPoincareIsometric}
+  \uses{rem:pet-ch4-riemann-model,prop:pet-ch4-poincare-disc-model}
+  The map $F(x)=2x$ carries the Riemann model with $k=-1$ (on the unit ball) to
+  the Poincaré model (on the ball of radius $2$):
+  \[
+    \frac1{\big(1-\tfrac14|F|^2\big)^2}\Big(\sum_{k=1}^n(dF^k)^2\Big)
+    =\frac4{(1-|x|^2)^2}\Big(\sum_{k=1}^n(dx^k)^2\Big).
+  \]
+  \source{petersen:page-0155}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-riemann-poincare-isometric}
+  With $F(x)=2x$, $dF^k=2\,dx^k$ and $|F|^2=4|x|^2$, so
+  $1-\tfrac14|F|^2=1-|x|^2$ and $\sum(dF^k)^2=4\sum(dx^k)^2$; substituting,
+  $\tfrac1{(1-|x|^2)^2}\cdot4\sum(dx^k)^2=\tfrac4{(1-|x|^2)^2}\sum(dx^k)^2$, the
+  displayed identity.
+\end{proof}
+
+\subsection{Singular Points}
+
+\begin{proposition}[smoothness criterion in the conformal polar-coordinate model]
+  \label{prop:pet-ch4-conformal-smoothness-criterion}
+  \lean{PetersenLib.conformalSmoothnessCriterion}
+  \uses{def:pet-ch4-warped-product-conformal-forms}
+  For $dr^2+\varphi^2(r)ds_{n-1}^2=\psi^2(\rho)\big(d\rho^2+\rho^2ds_{n-1}^2\big)$
+  with $\varphi(r_0)=0$, $\rho(r_0)=0$ at $r_0\in\partial I$: the right-hand side
+  is smooth at $\rho=0$ iff $\psi(0)>0$ and $\psi^{(\mathrm{odd})}(0)=0$; translated
+  back to $\varphi$, this is the usual criterion $\dot\varphi(r_0)=\pm1$,
+  $\varphi^{(\mathrm{even})}(r_0)=0$.
+  \source{petersen:page-0155}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-conformal-smoothness-criterion}
+  When $g_H=ds_{n-1}^2$, smoothness of $\psi^2(\rho)(d\rho^2+\rho^2ds_{n-1}^2)$
+  at the point $\rho=0$ of $\mathbb{R}^n$ (viewing $\rho$ as Euclidean radial distance,
+  as in the criterion for rotationally symmetric metrics) depends only on
+  $\psi^2(\rho)$ being smooth as a function of the Cartesian coordinates near
+  the origin, which by the same even-function argument as in the proof of
+  smoothness for rotationally symmetric metrics requires $\psi(0)>0$ and
+  $\psi^{(\mathrm{odd})}(0)=0$. Translating via $\rho(r)=\psi(\rho)$ or
+  $\rho(r)=\rho\psi(\rho)$ (\cref{def:pet-ch4-warped-product-conformal-forms})
+  and matching Taylor expansions at $r=r_0$ converts this into the equivalent
+  conditions $\dot\varphi(r_0)=\pm1$, $\varphi^{(\mathrm{even})}(r_0)=0$ on the
+  original warping function $\varphi$.
+\end{proof}
+
+\section{Metrics on Lie Groups}
+
+\subsection{Generalities on Left-invariant Metrics}
+
+\begin{definition}[left-invariant metric via left translation]
+  \label{def:pet-ch4-left-invariant-metric-lie}
+  \lean{PetersenLib.leftInvariantMetricViaTranslation}
+  \leanok
+  Fixing an inner product $(\cdot,\cdot)$ on $T_eG$ for a Lie group $G$ and
+  translating it to $T_gG$ via $L_g(x)=gx$ produces a Riemannian metric $(\cdot,\cdot)$
+  on $G$; left-invariant vector fields $X$ (those with $DL_g(X|_h)=X|_{gh}$)
+  are determined by their value at $e$, identifying $T_eG$ with the space
+  $\mathfrak g$ of left-invariant vector fields, which is a vector space and a
+  Lie algebra (bracket of left-invariant fields is left-invariant); on matrix
+  groups this bracket is the matrix commutator.
+  \source{petersen:page-0155}
+\end{definition}
+
+\begin{proposition}[left translations are isometries]
+  \label{prop:pet-ch4-left-translation-isometry}
+  \lean{PetersenLib.leftTranslationIsIsometry}
+  \leanok
+  \uses{def:pet-ch4-left-invariant-metric-lie}
+  With the metric of \cref{def:pet-ch4-left-invariant-metric-lie}, $L_g$ is a
+  Riemannian isometry for every $g\in G$.
+  \source{petersen:page-0155}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-left-translation-isometry}
+  \leanok
+  For $h\in G$, $L_{gh}=L_g\circ L_h$, so
+  $(DL_g)|_h=(DL_{ghh^{-1}})|_h=D(L_{gh}\circ L_{h^{-1}})|_h=(DL_{gh})|_e\circ(DL_{h^{-1}})|_h$.
+  By construction $(DL_{gh})|_e$ and $(DL_h)|_e$ are isometries $T_eG\to T_{gh}G$,
+  resp.\ $T_eG\to T_hG$ (the metric on $T_xG$ is, by definition, the pushforward
+  of the fixed inner product on $T_eG$ under $(DL_x)|_e$), so
+  $(DL_{h^{-1}})|_h=\big((DL_h)|_e\big)^{-1}$ composed with the isometric
+  identification is itself an isometry $T_hG\to T_eG$; hence $(DL_g)|_h$, a
+  composition of two isometries, is an isometry $T_hG\to T_{gh}G$.
+\end{proof}
+
+\begin{definition}[the exponential map and its integral-curve property]
+  \label{def:pet-ch4-lie-algebra-exp}
+  \lean{PetersenLib.lieAlgebraExpMap}
+  \leanok
+  \uses{def:pet-ch4-left-invariant-metric-lie}
+  For $X\in\mathfrak g$, $\exp(tX)$ denotes the integral curve of $X$ through
+  $e\in G$; on a matrix group the matrix exponential $e^{tX}$ is this integral
+  curve, and the flow of $X$ is $F^t(x)=x\exp(tX)=L_x(\exp(tX))=R_{\exp(tX)}(x)$.
+  \source{petersen:page-0155,petersen:page-0156}
+\end{definition}
+
+\begin{proposition}[the matrix exponential is the integral curve of a left-invariant field]
+  \label{prop:pet-ch4-matrix-exp-integral-curve}
+  \lean{PetersenLib.matrixExpIsIntegralCurve}
+  \leanok
+  \uses{def:pet-ch4-lie-algebra-exp}
+  On a matrix Lie group, $\tfrac{d}{dt}\big|_{t=t_0}e^{tX}=X|_{e^{t_0X}}$; more
+  generally $t\mapsto\exp(tX)$ is the unique integral curve of $X$ through $e$
+  because $t\mapsto\exp(tX)$ is a homomorphism $\mathbb{R}\to G$ with derivative
+  $X|_e$ at $t=0$.
+  \source{petersen:page-0155,petersen:page-0156}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-matrix-exp-integral-curve}
+  \leanok
+  Using $e^{(t_0+s)X}=e^{t_0X}e^{sX}=L_{e^{t_0X}}(e^{sX})$ and the chain rule,
+  \[
+    \frac{d}{dt}\Big|_{t=t_0}e^{tX}=\frac{d}{ds}\Big|_{s=0}e^{(t_0+s)X}
+    =\frac{d}{ds}\Big|_{s=0}L_{e^{t_0X}}\big(e^{sX}\big)
+    =D\big(L_{e^{t_0X}}\big)\Big(\frac{d}{ds}\Big|_{s=0}e^{sX}\Big)
+    =D\big(L_{e^{t_0X}}\big)(X|_e)=X|_{e^{t_0X}},
+  \]
+  using $\tfrac{d}{ds}|_{s=0}e^{sX}=X|_e$ (the defining property of $X$ as the
+  left-invariant field generated by $X\in T_eG$). The key facts making
+  $t\mapsto\exp(tX)$ the integral curve for a general (not-necessarily-matrix)
+  Lie group are exactly that this map is a homomorphism
+  $\exp((t+s)X)=\exp(tX)\exp(sX)$ with derivative $X|_e$ at $t=0$; these
+  characterize the flow of the left-invariant field $X$.
+\end{proof}
+
+\begin{remark}[right-invariant fields are the Killing fields of a left-invariant metric]
+  \label{rem:pet-ch4-flow-right-invariant-killing}
+  \lean{PetersenLib.rightInvariantFieldsAreKilling}
+  \uses{prop:pet-ch4-left-translation-isometry,def:pet-ch4-lie-algebra-exp}
+  For $X\in\mathfrak g$, the flow $F^t(x)=x\exp(tX)=R_{\exp(tX)}(x)$ need not
+  act by isometries of a merely left-invariant metric, unless the metric is
+  also invariant under right translations (\emph{biinvariant}); thus elements
+  of $\mathfrak g$ are not in general Killing fields. Instead, it is the
+  right-invariant fields — with flow
+  $F^t(x)=\exp(tX)x=L_{\exp(tX)}(x)$ — that are Killing fields for a
+  left-invariant metric, by \cref{prop:pet-ch4-left-translation-isometry}.
+  \source{petersen:page-0156}
+\end{remark}
+
+\begin{definition}[the adjoint action of $G$ on $\mathfrak g$]
+  \label{def:pet-ch4-adjoint-action}
+  \lean{PetersenLib.adjointActionOfLieGroup}
+  \leanok
+  \uses{def:pet-ch4-lie-algebra-exp}
+  Conjugation $\mathrm{Ad}_g(x)=gxg^{-1}$ is the \emph{adjoint action of $G$ on
+  $G$}; its differential at $e$, again denoted $\mathrm{Ad}_g:\mathfrak g\to\mathfrak g$,
+  is a Lie algebra isomorphism, the \emph{adjoint action of $G$ on $\mathfrak g$}.
+  \source{petersen:page-0156}
+\end{definition}
+
+\begin{proposition}[$\mathrm{Ad}_g$ intertwines conjugation and the exponential map]
+  \label{prop:pet-ch4-adjoint-exp-relation}
+  \lean{PetersenLib.adjointExpRelation}
+  \leanok
+  \uses{def:pet-ch4-adjoint-action}
+  $\mathrm{Ad}_g(\exp(tX))=\exp(t\,\mathrm{Ad}_g(X))$ for all $g\in G$, $X\in\mathfrak g$, $t\in\mathbb{R}$.
+  \source{petersen:page-0156}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-adjoint-exp-relation}
+  \leanok
+  The map $t\mapsto\mathrm{Ad}_g(\exp(tX))$ is a homomorphism $\mathbb{R}\to G$, being
+  the composite of the two homomorphisms $x\mapsto\mathrm{Ad}_g(x)$ (a Lie group
+  automorphism) and $t\mapsto\exp(tX)$; its derivative at $t=0$ is, by the
+  chain rule and the definition of the differential $\mathrm{Ad}_g:\mathfrak g\to\mathfrak g$,
+  equal to $\mathrm{Ad}_g(X)$. Since $t\mapsto\exp(t\,\mathrm{Ad}_g(X))$ is the unique
+  homomorphism $\mathbb{R}\to G$ with derivative $\mathrm{Ad}_g(X)$ at $t=0$
+  (\cref{prop:pet-ch4-matrix-exp-integral-curve}), the two curves coincide.
+\end{proof}
+
+\begin{proposition}[Prop. 4.4.1 — biinvariance criterion]
+  \label{prop:pet-ch4-biinvariant-criterion}
+  \lean{PetersenLib.biinvariantMetricCriterion}
+  \uses{def:pet-ch4-adjoint-action,prop:pet-ch4-left-translation-isometry}
+  A left-invariant metric on a Lie group $G$ is biinvariant if and only if
+  $\mathrm{Ad}_g:\mathfrak g\to\mathfrak g$ is a linear isometry for every $g\in G$.
+  \source{petersen:page-0156,petersen:page-0157,petersen:page-0158}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-biinvariant-criterion}
+  ($\Rightarrow$) If the metric is biinvariant, both $L_g$ and $R_{g^{-1}}$ act
+  by isometries, hence so does $\mathrm{Ad}_g=L_g\circ R_{g^{-1}}$; its
+  differential at $e$, i.e.\ $\mathrm{Ad}_g:\mathfrak g\to\mathfrak g$, is then a
+  linear isometry.
+
+  ($\Leftarrow$) Assume $\mathrm{Ad}_g:\mathfrak g\to\mathfrak g$ is a linear isometry
+  for every $g\in G$. Since $R_g=L_g\circ\mathrm{Ad}_{g^{-1}}$ as maps $G\to G$
+  (indeed $L_g(\mathrm{Ad}_{g^{-1}}(x))=g(g^{-1}xg)=xg=R_g(x)$), differentiating at
+  $e$ gives $(DR_g)|_e=(DL_g)|_e\circ\mathrm{Ad}_{g^{-1}}$, a composition of the
+  isometry $(DL_g)|_e$ (left-invariance of the metric,
+  \cref{prop:pet-ch4-left-translation-isometry}) with the isometry
+  $\mathrm{Ad}_{g^{-1}}$ (the hypothesis), hence itself a linear isometry
+  $T_eG\to T_gG$. For a general point $h\in G$, using $R_g\circ R_h=R_{hg}$ and
+  $R_h\circ R_{h^{-1}}=\mathrm{id}$ gives the identity
+  $R_g=R_{hg}\circ R_{h^{-1}}$, so at the point $h$,
+  \[
+    (DR_g)|_h=(DR_{hg})|_{R_{h^{-1}}(h)}\circ(DR_{h^{-1}})|_h
+    =(DR_{hg})|_e\circ\big((DR_h)|_e\big)^{-1},
+  \]
+  using $R_{h^{-1}}(h)=e$ and $(DR_{h^{-1}})|_h=\big((DR_h)|_e\big)^{-1}$ (from
+  differentiating $R_h\circ R_{h^{-1}}=\mathrm{id}$ at $h$). Since
+  $(DR_{hg})|_e$ and $(DR_h)|_e$ are both isometries by the case already
+  established, $(DR_g)|_h$ is a composition of isometries, hence an isometry.
+  As $h$ was arbitrary, $R_g$ is a Riemannian isometry for every $g$, i.e.\ the
+  metric is biinvariant.
+\end{proof}
+
+\begin{proposition}[Prop. 4.4.2 — connection and curvature of a biinvariant metric]
+  \label{prop:pet-ch4-biinvariant-curvature-formula}
+  \lean{PetersenLib.biinvariantConnectionCurvature}
+  \uses{prop:pet-ch4-biinvariant-criterion,def:pet-ch4-adjoint-action}
+  On a Lie group $G$ with biinvariant metric $(\cdot,\cdot)$ and
+  $X,Y,Z,W\in\mathfrak g$,
+  \[
+    \nabla_YX=\tfrac12[Y,X],\qquad R(X,Y)Z=-\tfrac14[[X,Y],Z],\qquad
+    R(X,Y,Z,W)=\tfrac14\big([X,Y],[W,Z]\big).
+  \]
+  In particular, sectional curvature is always $\ge0$.
+  \source{petersen:page-0158,petersen:page-0159}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-biinvariant-curvature-formula}
+  Let $\mathrm{ad}_X:\mathfrak g\to\mathfrak g$, $\mathrm{ad}_X(Y)=[X,Y]$, be the
+  differential at $e$ of $\mathrm{Ad}:G\to\mathrm{Aut}(\mathfrak g)$. By
+  \cref{prop:pet-ch4-biinvariant-criterion}, $\mathrm{Ad}(G)\subset O(\mathfrak g)$,
+  so differentiating $t\mapsto(\mathrm{Ad}_{\exp(tX)}Y,\mathrm{Ad}_{\exp(tX)}Z)$ at
+  $t=0$ (constant, since each $\mathrm{Ad}_{\exp(tX)}$ preserves the inner
+  product) gives $0=(\mathrm{ad}_XY,Z)+(Y,\mathrm{ad}_XZ)$, i.e.\ $\mathrm{ad}_X$ is
+  skew-adjoint. The Koszul formula for $X,Y,Z\in\mathfrak g$ (constant inner
+  products $(X,Y)$ etc., since these are also constant along $G$ by
+  left-invariance) reduces to
+  \[
+    2(\nabla_YX,Z)=-([X,Y],Z)-([Y,Z],X)+([Z,X],Y)
+    =-([X,Y],Z)+([Y,X],Z)+([X,Y],Z)=([Y,X],Z)
+  \]
+  (using skew-adjointness of $\mathrm{ad}_Y,\mathrm{ad}_Z$ to rewrite
+  $-([Y,Z],X)=(Z,\mathrm{ad}_YX)=([Y,X],Z)$ and
+  $([Z,X],Y)=-(X,\mathrm{ad}_ZY)$, matching terms), so $\nabla_YX=\tfrac12[Y,X]$
+  for all $Z$, hence as vector fields. For the curvature, since brackets of
+  elements of $\mathfrak g$ are again in $\mathfrak g$ and $\nabla$ on
+  $\mathfrak g$ is given by the bracket,
+  \[
+    R(X,Y)Z=\nabla_X\nabla_YZ-\nabla_Y\nabla_XZ-\nabla_{[X,Y]}Z
+    =\tfrac12\nabla_X[Y,Z]-\tfrac12\nabla_Y[X,Z]-\tfrac12[[X,Y],Z]
+  \]
+  \[
+    =\tfrac14[X,[Y,Z]]-\tfrac14[Y,[X,Z]]-\tfrac12[[X,Y],Z]
+    =\tfrac14[X,[Y,Z]]+\tfrac14[Y,[Z,X]]+\tfrac14[Z,[X,Y]]-\tfrac14[[X,Y],Z]
+    =-\tfrac14[[X,Y],Z],
+  \]
+  the middle equality by the Jacobi identity ($[X,[Y,Z]]+[Y,[Z,X]]+[Z,[X,Y]]=0$,
+  so $\tfrac14[X,[Y,Z]]-\tfrac14[Y,[X,Z]]=\tfrac14[X,[Y,Z]]+\tfrac14[Y,[Z,X]]=-\tfrac14[Z,[X,Y]]$,
+  which combined with $-\tfrac12[[X,Y],Z]=-\tfrac12[[X,Y],Z]$ gives the stated
+  simplification). Finally, using skew-adjointness of $\mathrm{ad}_Z$ and
+  invariance of the bracket under the (biinvariant) inner product,
+  \[
+    (R(X,Y)Z,W)=-\tfrac14([[X,Y],Z],W)=\tfrac14([Z,[X,Y]],W)=-\tfrac14([Z,W],[X,Y])=\tfrac14([X,Y],[W,Z]).
+  \]
+  Setting $Z=X$, $W=Y$ gives $\mathrm{sec}(X,Y)=(R(X,Y)X,Y)/\ldots=\tfrac14|[X,Y]|^2\ge0$
+  for orthonormal $X,Y$, so sectional curvature is always nonnegative.
+\end{proof}
+
+\begin{remark}[nonnegative curvature of biinvariant metrics]
+  \label{rem:pet-ch4-biinvariant-nonneg-curvature}
+  \lean{PetersenLib.biinvariantNonnegCurvatureRemark}
+  \uses{prop:pet-ch4-biinvariant-curvature-formula}
+  Lie groups with biinvariant Riemannian metrics always have nonnegative
+  sectional curvature; with more work the curvature operator itself can be
+  shown to be nonnegative.
+  \source{petersen:page-0159}
+\end{remark}
+
+\subsection{Hyperbolic Space as a Lie Group}
+
+\begin{example}[the upper half-plane group has constant curvature $-1$]
+  \label{ex:pet-ch4-hyperbolic-lie-group}
+  \lean{PetersenLib.hyperbolicPlaneAsLieGroup}
+  \uses{def:pet-ch4-left-invariant-metric-lie}
+  On $G=\Big\{\begin{bsmallmatrix}\alpha&\beta\\0&1\end{bsmallmatrix}:\alpha>0,\beta\in\mathbb{R}\Big\}$
+  (whose first row identifies $G$ with the upper half-plane), with Lie algebra
+  $\mathfrak g=\Big\{\begin{bsmallmatrix}a&b\\0&0\end{bsmallmatrix}\Big\}$,
+  $X=\begin{bsmallmatrix}1&0\\0&0\end{bsmallmatrix}$,
+  $Y=\begin{bsmallmatrix}0&1\\0&0\end{bsmallmatrix}$, so $[X,Y]=Y$: declaring
+  $X,Y$ orthonormal makes $G$ have constant curvature $-1$.
+  \source{petersen:page-0159,petersen:page-0160}
+\end{example}
+\begin{proof}
+  \uses{ex:pet-ch4-hyperbolic-lie-group}
+  The Koszul formula with $[X,Y]=Y$ gives $\nabla_XX=0$, $\nabla_XY=0$,
+  $\nabla_YY=X$, and $\nabla_YX=\nabla_XY-[X,Y]=-Y$. Hence
+  \[
+    R(X,Y)Y=\nabla_X\nabla_YY-\nabla_Y\nabla_XY-\nabla_{[X,Y]}Y
+    =\nabla_XX-0-\nabla_YY=0-X=-X,
+  \]
+  so $\mathrm{sec}(X,Y)=(R(X,Y)Y,X)=-1$; since $G$ is $2$-dimensional this is
+  the constant curvature.
+\end{proof}
+
+\begin{proposition}[the metric on the upper half-plane group is not biinvariant]
+  \label{prop:pet-ch4-hyperbolic-lie-group-not-biinvariant}
+  \lean{PetersenLib.hyperbolicLieGroupNotBiinvariant}
+  \uses{ex:pet-ch4-hyperbolic-lie-group,prop:pet-ch4-biinvariant-criterion}
+  For $g=\begin{bsmallmatrix}\alpha&\beta\\0&1\end{bsmallmatrix}\in G$,
+  $\mathrm{Ad}_g\big(\begin{bsmallmatrix}a&b\\0&0\end{bsmallmatrix}\big)
+  =\begin{bsmallmatrix}a&-a\beta+b\alpha\\0&0\end{bsmallmatrix}=aX+(-a\beta+b\alpha)Y$;
+  this is not orthonormal-basis-preserving unless $\beta=0,\alpha=1$, so the
+  metric on $G$ is not biinvariant (equivalently, the left-invariant fields
+  $X,Y$ are not Killing fields).
+  \source{petersen:page-0160}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-hyperbolic-lie-group-not-biinvariant}
+  A direct matrix computation gives
+  $\begin{bsmallmatrix}\alpha&\beta\\0&1\end{bsmallmatrix}
+  \begin{bsmallmatrix}a&b\\0&0\end{bsmallmatrix}
+  \begin{bsmallmatrix}\alpha&\beta\\0&1\end{bsmallmatrix}^{-1}
+  =\begin{bsmallmatrix}a&-a\beta+b\alpha\\0&0\end{bsmallmatrix}$.
+  The orthonormal basis $X,Y$ is mapped to
+  $\begin{bsmallmatrix}1&-\beta\\0&0\end{bsmallmatrix}=X-\beta Y$,
+  $\begin{bsmallmatrix}0&\alpha\\0&0\end{bsmallmatrix}=\alpha Y$, which is
+  orthonormal only if $\beta=0$ and $\alpha=1$; hence $\mathrm{Ad}_g$ is not
+  an isometry for general $g$, so by
+  \cref{prop:pet-ch4-biinvariant-criterion} the metric is not biinvariant.
+\end{proof}
+
+\begin{remark}[higher-dimensional hyperbolic space as a Lie group, contrasted with spheres]
+  \label{rem:pet-ch4-lie-group-spheres-contrast}
+  \lean{PetersenLib.hyperbolicSpaceLieGroupHigherDim}
+  \uses{prop:pet-ch4-hyperbolic-lie-group-not-biinvariant}
+  \cref{ex:pet-ch4-hyperbolic-lie-group} generalizes: the upper half-space is
+  in a natural way a Lie group with a left-invariant metric of constant
+  curvature $-1$ in every dimension. This is in sharp contrast to the spheres,
+  where only $S^3=SU(2)$ and $S^1=SO(2)$ are Lie groups.
+  \source{petersen:page-0161}
+\end{remark}
+
+\subsection{Berger Spheres}
+
+\begin{example}[general left-invariant metrics on $SU(2)$ diagonalize $\mathfrak{R}$]
+  \label{ex:pet-ch4-general-berger-metric}
+  \lean{PetersenLib.suTwoGeneralLeftInvariantMetric}
+  \uses{prop:pet-ch4-biinvariant-criterion}
+  On $SU(2)$, let $\lambda_1^{-1}X_1,\lambda_2^{-1}X_2,\lambda_3^{-1}X_3$ be
+  orthonormal, where $[X_i,X_{i+1}]=2X_{i+2}$ (indices mod $3$). Then
+  $\nabla_{X_i}X_i=0$ for each $i$, and
+  \[
+    \nabla_{X_i}X_{i+1}=\Big(\frac{\lambda_{i+2}^2+\lambda_{i+1}^2-\lambda_i^2}{\lambda_{i+2}^2}\Big)X_{i+2},
+    \qquad
+    \nabla_{X_{i+1}}X_i=\Big(\frac{-\lambda_{i+2}^2+\lambda_{i+1}^2-\lambda_i^2}{\lambda_{i+2}^2}\Big)X_{i+2},
+  \]
+  and $R(X_i,X_{i+1})X_{i+2}=0$ for all $i$, so all curvatures between three
+  mutually distinct basis vectors vanish.
+  \source{petersen:page-0161}
+\end{example}
+\begin{proof}
+  \uses{ex:pet-ch4-general-berger-metric}
+  The Koszul formula
+  $2(\nabla_{X_i}X_i,X_i)=([X_i,X_i],X_i)+([X_i,X_i],X_i)-([X_i,X_i],X_i)=0$
+  shows $\nabla_{X_i}X_i\perp X_i$; combined with the same computation of
+  $\nabla_{X_i}X_i$ against the other basis vectors (using
+  $[X_i,X_{i\pm1}]=\pm2X_{i\mp1\text{ or }i\pm2}$ suitably and the
+  antisymmetry of the bracket) as in the biinvariant case
+  (\cref{prop:pet-ch4-biinvariant-curvature-formula}), one gets
+  $\nabla_{X_i}X_i=0$. The Koszul formula applied to $(\nabla_{X_i}X_{i+1},X_{i+2})$
+  and $(\nabla_{X_{i+1}}X_i,X_{i+2})$, using $[X_i,X_{i+1}]=2X_{i+2}$ and the
+  metric values $\lambda_i^2,\lambda_{i+1}^2,\lambda_{i+2}^2$ on the
+  (orthogonal but non-orthonormal) frame $X_1,X_2,X_3$, gives the two
+  displayed formulas. Then
+  $R(X_i,X_{i+1})X_{i+2}=\nabla_{X_i}\nabla_{X_{i+1}}X_{i+2}-\nabla_{X_{i+1}}\nabla_{X_i}X_{i+2}-\nabla_{[X_i,X_{i+1}]}X_{i+2}$;
+  since $X_{i+2}$ is orthogonal to $X_i,X_{i+1}$ and
+  $\nabla_{X_i}X_{i+2},\nabla_{X_{i+1}}X_{i+2}$ lie along the remaining basis
+  vector (by the same Koszul computation applied cyclically) while
+  $\nabla_{[X_i,X_{i+1}]}X_{i+2}=2\nabla_{X_{i+2}}X_{i+2}=0$, direct
+  substitution (as in the biinvariant computation) shows all three terms
+  cancel, giving $R(X_i,X_{i+1})X_{i+2}=0$.
+\end{proof}
+
+\begin{example}[curvature of the Berger spheres]
+  \label{ex:pet-ch4-berger-sphere-curvature}
+  \lean{PetersenLib.bergerSphereCurvatureComputation}
+  \uses{ex:pet-ch4-general-berger-metric}
+  Specializing \cref{ex:pet-ch4-general-berger-metric} to $\lambda_1=\varepsilon<1$,
+  $\lambda_2=\lambda_3=1$ (the Berger sphere $g_\varepsilon$):
+  \[
+    \nabla_{X_1}X_2=(2-\varepsilon^2)X_3,\quad \nabla_{X_2}X_1=-\varepsilon^2X_3,\quad
+    \nabla_{X_2}X_3=X_1,\quad \nabla_{X_3}X_2=-X_1,\quad
+    \nabla_{X_3}X_1=\varepsilon^2X_2,\quad \nabla_{X_1}X_3=(\varepsilon^2-2)X_2,
+  \]
+  \[
+    \mathfrak{R}(X_1\wedge X_2)=\varepsilon^2X_1\wedge X_2,\qquad
+    \mathfrak{R}(X_3\wedge X_1)=\varepsilon^2X_3\wedge X_1,\qquad
+    \mathfrak{R}(X_2\wedge X_3)=(4-3\varepsilon^2)X_2\wedge X_3,
+  \]
+  so all sectional curvatures lie in $[\varepsilon^2,4-3\varepsilon^2]$.
+  \source{petersen:page-0161,petersen:page-0162}
+\end{example}
+\begin{proof}
+  \uses{ex:pet-ch4-berger-sphere-curvature}
+  Substituting $\lambda_1=\varepsilon$, $\lambda_2=\lambda_3=1$ into the two
+  connection formulas of \cref{ex:pet-ch4-general-berger-metric} (cyclically
+  in $i=1,2,3$) gives the six displayed connection coefficients, e.g.\ for
+  $i=1$: $\nabla_{X_1}X_2=\big(\tfrac{\lambda_3^2+\lambda_2^2-\lambda_1^2}{\lambda_3^2}\big)X_3
+  =(2-\varepsilon^2)X_3$ and
+  $\nabla_{X_2}X_1=\big(\tfrac{-\lambda_3^2+\lambda_2^2-\lambda_1^2}{\lambda_3^2}\big)X_3=-\varepsilon^2X_3$;
+  the other four follow cyclically. Then
+  $R(X_1,X_2)X_2=\nabla_{X_1}\nabla_{X_2}X_2-\nabla_{X_2}\nabla_{X_1}X_2-\nabla_{[X_1,X_2]}X_2$;
+  using $\nabla_{X_2}X_2=0$, $\nabla_{X_1}X_2=(2-\varepsilon^2)X_3$,
+  $\nabla_{X_2}X_3=X_1$, and $[X_1,X_2]=2X_3$ with $\nabla_{X_3}X_2=-X_1$,
+  \[
+    R(X_1,X_2)X_2=0-(2-\varepsilon^2)\nabla_{X_2}X_3-2\nabla_{X_3}X_2
+    =-(2-\varepsilon^2)X_1-2(-X_1)=\varepsilon^2X_1,
+  \]
+  giving $\mathfrak{R}(X_1\wedge X_2)=\varepsilon^2X_1\wedge X_2$ (using
+  \cref{ex:pet-ch4-general-berger-metric}'s vanishing of
+  three-mutually-distinct-index curvatures, so $\mathfrak{R}$ is diagonal in
+  this basis, by \cref{prop:pet-ch4-triple-vanishing-diagonalizes-operator}).
+  The analogous computations for $R(X_3,X_1)X_1=\varepsilon^4X_3$ and
+  $R(X_2,X_3)X_3=(4-3\varepsilon^2)X_2$ (using the same connection
+  coefficients) give the other two eigenvalues; the sectional curvature range
+  then follows from \cref{prop:pet-ch4-curvature-operator-diagonal-bounds}.
+\end{proof}
+
+\begin{remark}[the Hopf-fibration limit $\varepsilon\to0$]
+  \label{rem:pet-ch4-berger-limit}
+  \lean{PetersenLib.bergerSphereLimitCurvature}
+  \uses{ex:pet-ch4-berger-sphere-curvature}
+  As $\varepsilon\to0$, $\mathrm{sec}(X_2,X_3)\to4$, the curvature of the base
+  space $S^2(1/2)$ of the Hopf fibration.
+  \source{petersen:page-0162}
+\end{remark}
+
+\begin{proposition}[adjoint action on the Berger-sphere frame]
+  \label{prop:pet-ch4-berger-adjoint-action}
+  \lean{PetersenLib.bergerSphereAdjointAction}
+  \uses{ex:pet-ch4-general-berger-metric,prop:pet-ch4-biinvariant-criterion}
+  For $g=\begin{bsmallmatrix}z&w\\-\bar w&\bar z\end{bsmallmatrix}\in SU(2)$,
+  \[
+    \mathrm{Ad}_gX_1=(|z|^2-|w|^2)X_1-2\mathrm{Re}(w\bar z)X_2-2\mathrm{Im}(w\bar z)X_3,
+  \]
+  \[
+    \mathrm{Ad}_gX_2=2\,\mathrm{Im}(z\bar w)X_1+\mathrm{Re}(w^2+z^2)X_2+\mathrm{Im}(w^2+z^2)X_3,
+  \]
+  \[
+    \mathrm{Ad}_gX_3=2\,\mathrm{Re}(z\bar w)X_1+\mathrm{Re}\big(i(z^2-w^2)\big)X_2+\mathrm{Im}\big(i(z^2-w^2)\big)X_3.
+  \]
+  If $X_1,X_2,X_3$ have equal length, $\mathrm{Ad}_g$ is an isometry for every
+  $g$ (so the biinvariant metric on $SU(2)$ satisfies the criterion of
+  \cref{prop:pet-ch4-biinvariant-criterion}); otherwise, generically, it is
+  not.
+  \source{petersen:page-0162}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-berger-adjoint-action}
+  Direct matrix conjugation
+  $\begin{bsmallmatrix}z&w\\-\bar w&\bar z\end{bsmallmatrix}
+  \begin{bsmallmatrix}i&0\\0&-i\end{bsmallmatrix}
+  \begin{bsmallmatrix}z&w\\-\bar w&\bar z\end{bsmallmatrix}^{-1}$, and similarly
+  for $X_2,X_3$, expands and simplifies (using $|z|^2+|w|^2=1$) to the three
+  displayed formulas, each again in $\mathfrak{su}(2)=\mathrm{span}\{X_1,X_2,X_3\}$.
+  When $X_1,X_2,X_3$ all have the same length, the coefficient matrix of
+  $\mathrm{Ad}_g$ in this orthonormal basis is orthogonal (a direct check using
+  $|z|^2+|w|^2=1$ on the displayed coefficients), so $\mathrm{Ad}_g$ is an
+  isometry; when the lengths differ (as with $\lambda_1=\varepsilon\ne1=\lambda_2=\lambda_3$),
+  the formulas show $\mathrm{Ad}_g$ mixes the differently-scaled directions
+  ($X_1$ into $X_2,X_3$ and vice versa) with coefficients that do not respect
+  the rescaled inner product in general, so $\mathrm{Ad}_g$ fails to be an
+  isometry for general $g$.
+\end{proof}
+
+\section{Riemannian Submersions}
+
+\subsection{Riemannian Submersions and Curvatures}
+
+\begin{definition}[vertical and horizontal distributions, basic horizontal lift]
+  \label{def:pet-ch4-vertical-horizontal-distribution}
+  \lean{PetersenLib.verticalHorizontalDistribution}
+  For a Riemannian submersion $F:(\bar M,\bar g)\to(M,g)$, the \emph{vertical
+  distribution} is $\mathcal V_{\bar p}=\ker DF_{\bar p}\subset T_{\bar p}\bar M$
+  and the \emph{horizontal distribution} is $\mathcal H_{\bar p}=(\mathcal V_{\bar p})^\perp$;
+  $DF:\mathcal H_{\bar p}\to T_pM$ is an isometry. For a vector field $X$ on
+  $M$, its unique horizontal, $F$-related lift is the \emph{basic horizontal
+  lift} $\bar X$. Every $v\in T_{\bar p}\bar M$ decomposes as $v=v^{\mathcal H}+v^{\mathcal V}$.
+  \source{petersen:page-0162,petersen:page-0163}
+\end{definition}
+
+\begin{proposition}[Prop. 4.5.1 — basic properties of vertical and basic horizontal fields]
+  \label{prop:pet-ch4-submersion-basic-properties}
+  \lean{PetersenLib.submersionBasicHorizontalProperties}
+  \uses{def:pet-ch4-vertical-horizontal-distribution}
+  Let $V$ be a vertical vector field on $\bar M$ and $X,Y,Z$ vector fields on
+  $M$ with basic horizontal lifts $\bar X,\bar Y,\bar Z$. Then:
+  \begin{enumerate}
+  \item $[V,\bar X]$ is vertical.
+  \item $(L_V\bar g)(\bar X,\bar Y)=D_V\bar g(\bar X,\bar Y)=0$.
+  \item $\bar g([\bar X,\bar Y],V)=2\bar g(\nabla_{\bar Y}\bar X,V)=-2\bar g(\nabla_{\bar X}\bar Y,V)=2\bar g(\nabla_VY,X)$.
+  \item $\nabla_{\bar X}\bar Y=\overline{\nabla_XY}+\tfrac12[\bar X,\bar Y]^{\mathcal V}$.
+  \end{enumerate}
+  \source{petersen:page-0163}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-submersion-basic-properties}
+  (1): $\bar X$ is $F$-related to $X$ and $V$ is $F$-related to the zero field
+  on $M$, so $DF([\bar X,V])=[DF(\bar X),DF(V)]=[X,0]=0$, i.e.\ $[\bar X,V]$ is
+  vertical.
+
+  (2): By (1), $[V,\bar X]$ and $[V,\bar Y]$ are vertical, so
+  $(L_V\bar g)(\bar X,\bar Y)=D_V\bar g(\bar X,\bar Y)-\bar g([V,\bar X],\bar Y)-\bar g(\bar X,[V,\bar Y])$
+  reduces to $D_V\bar g(\bar X,\bar Y)$, using that both terms
+  $\bar g([V,\bar X],\bar Y)$, $\bar g(\bar X,[V,\bar Y])$ vanish because a
+  vertical vector is orthogonal to a basic horizontal one. Since $F$ is a
+  Riemannian submersion, $\bar g(\bar X,\bar Y)=g(X,Y)\circ F$, which is
+  constant along the fibers of $F$, i.e.\ $D_V\bar g(\bar X,\bar Y)=0$.
+
+  (3): In each of the three cyclic instances of the Koszul formula for
+  $2\bar g(\nabla_{\bar X}\bar Y,V)$, $2\bar g(\nabla_{\bar Y}V,\bar X)$,
+  $2\bar g(\nabla_V\bar X,\bar Y)$, the terms with $D(\cdot)\bar g(\cdot,\cdot)$
+  vanish by (2), leaving
+  $2\bar g(\nabla_{\bar X}\bar Y,V)=\bar g([\bar X,\bar Y],V)$,
+  $2\bar g(\nabla_{\bar Y}\bar X,V)=-\bar g([\bar X,\bar Y],V)$ (relabelling),
+  and $2\bar g(\nabla_VV',\bar X)$-type terms simplify using (1); combining
+  gives the stated chain of equalities.
+
+  (4): By (3), $\bar g(\nabla_{\bar X}\bar Y,V)=\tfrac12\bar g([\bar X,\bar Y],V)$
+  for every vertical $V$, so the vertical part of $\nabla_{\bar X}\bar Y$ is
+  $\tfrac12[\bar X,\bar Y]^{\mathcal V}$. For the horizontal part, the Koszul
+  formula for $2\bar g(\nabla_{\bar X}\bar Y,\bar Z)$ ($\bar Z$ basic
+  horizontal), using $F$-relatedness of $\bar X,\bar Y,\bar Z$ to $X,Y,Z$ and
+  that $\bar g$ restricted to basic horizontal fields equals $g$ pulled back,
+  matches term-by-term the Koszul formula for $2g(\nabla_XY,Z)$, so
+  $\bar g(\nabla_{\bar X}\bar Y,\bar Z)=g(\nabla_XY,Z)=\bar g(\overline{\nabla_XY},\bar Z)$,
+  i.e.\ the horizontal part of $\nabla_{\bar X}\bar Y$ is $\overline{\nabla_XY}$.
+\end{proof}
+
+\begin{definition}[the integrability tensor of a Riemannian submersion]
+  \label{def:pet-ch4-integrability-tensor}
+  \lean{PetersenLib.submersionIntegrabilityTensor}
+  \uses{prop:pet-ch4-submersion-basic-properties}
+  For basic horizontal $\bar X,\bar Y$, $[\bar X,\bar Y]^{\mathcal V}$ is
+  tensorial and skew-symmetric in $\bar X,\bar Y$ (since
+  $[\bar X,f\bar Y]^{\mathcal V}=f[\bar X,\bar Y]^{\mathcal V}+(D_{\bar X}f)\bar Y^{\mathcal V}=f[\bar X,\bar Y]^{\mathcal V}$,
+  as $\bar Y$ is horizontal), defining the \emph{integrability tensor}
+  $\mathcal H\times\mathcal H\to\mathcal V$; it measures the failure of
+  Frobenius integrability of the horizontal distribution.
+  \source{petersen:page-0164}
+\end{definition}
+
+\begin{example}[the Hopf map has non-integrable horizontal distribution]
+  \label{ex:pet-ch4-hopf-integrability}
+  \lean{PetersenLib.hopfMapIntegrabilityTensor}
+  \uses{def:pet-ch4-integrability-tensor}
+  For the Hopf map $S^3(1)\to S^2(1/2)$, with orthonormal left-invariant frame
+  $X_1,X_2,X_3$ satisfying $[X_i,X_{i+1}]=2X_{i+2}$: $X_1$ is vertical and
+  $X_2,X_3$ are horizontal (though not basic); since $[X_2,X_3]=2X_1$, the
+  horizontal distribution is not integrable.
+  \source{petersen:page-0164}
+\end{example}
+
+\begin{theorem}[Thm. 4.5.3 (O'Neill--Gray) — the O'Neill curvature formula]
+  \label{thm:pet-ch4-oneill-formula}
+  \lean{PetersenLib.oneillCurvatureFormula}
+  \uses{prop:pet-ch4-submersion-basic-properties,def:pet-ch4-integrability-tensor}
+  For a Riemannian submersion $F:(\bar M,\bar g)\to(M,g)$ with curvature
+  tensors $R$ on $M$ and $\bar R$ on $\bar M$,
+  \[
+    g(R(X,Y)Y,X)=\bar g(\bar R(\bar X,\bar Y)\bar Y,\bar X)+\tfrac34\big|[\bar X,\bar Y]^{\mathcal V}\big|^2.
+  \]
+  \source{petersen:page-0164,petersen:page-0165}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch4-oneill-formula}
+  Let $X,Y,Z,H$ be vector fields on $M$ with vanishing pairwise Lie brackets,
+  so the corresponding brackets of basic horizontal lifts are vertical. By
+  \cref{prop:pet-ch4-submersion-basic-properties}(4),
+  $\nabla_{\bar X}\bar Z=\overline{\nabla_XZ}+\tfrac12[\bar X,\bar Z]$ (and
+  similarly for the other pairs), so
+  \[
+    \bar g(\bar R(\bar X,\bar Y)\bar Z,\bar H)
+    =\bar g\Big(\nabla_{\bar X}\big(\nabla_{\bar Y}\bar Z+\tfrac12[\bar Y,\bar Z]\big)
+    -\nabla_{\bar Y}\big(\nabla_{\bar X}\bar Z+\tfrac12[\bar X,\bar Z]\big),\bar H\Big)
+    +\bar g([\bar Z,\bar H],[\bar X,\bar Y]),
+  \]
+  using $\nabla_{[\bar X,\bar Y]}\bar Z=\nabla_{[\bar X,\bar Y]^{\mathcal V}}\bar Z$
+  and the Koszul-formula identity
+  $\bar g(\nabla_{[\bar X,\bar Y]}\bar Z,\bar H)=-\bar g([\bar Z,\bar H],[\bar X,\bar Y])$
+  valid for the vertical bracket paired against basic horizontal fields (via
+  \cref{prop:pet-ch4-submersion-basic-properties}(3)). Expanding each
+  $\nabla_{\bar X}(\nabla_{\bar Y}\bar Z)$ term via (4) again (splitting into
+  horizontal part $\overline{\nabla_X\nabla_YZ}$ plus vertical corrections
+  $\tfrac12[\bar X,\bar Y]^{\mathcal V}\bar Z$-type and
+  $\tfrac12\nabla_{\bar X}[\bar Y,\bar Z]$ terms) and using $\bar g(\cdot,\bar H)$
+  with $\bar H$ basic horizontal to discard purely vertical contributions
+  except through further inner products with brackets, one obtains after
+  collecting terms
+  \[
+    \bar g(\bar R(\bar X,\bar Y)\bar Z,\bar H)=g(R(X,Y)Z,H)
+    -\tfrac18\bar g([\bar Y,\bar Z],[\bar X,\bar H])+\tfrac18\bar g([\bar X,\bar Z],[\bar Y,\bar H])
+    -\tfrac18\bar g([\bar X,\bar Y],[\bar H,\bar Z]).
+  \]
+  Setting $X=H$, $Y=Z$ (so $[\bar Y,\bar Z]=0$, $[\bar X,\bar Z]=[\bar X,\bar Y]$
+  up to sign, $[\bar X,\bar H]=0$) collapses the three correction terms to
+  $-\tfrac18\bar g([\bar X,\bar Y],[\bar X,\bar Y])\cdot(-1)-\tfrac18\bar g([\bar X,\bar Y],[\bar X,\bar Y])$,
+  i.e.\ $\tfrac34|[\bar X,\bar Y]^{\mathcal V}|^2$ (only the vertical part of the
+  bracket contributes to the inner product of two vertical vectors), giving
+  the displayed formula.
+\end{proof}
+
+\subsection{Riemannian Submersions and Lie Groups}
+
+\begin{remark}[fiber-homogeneous submersions from isometric group actions]
+  \label{rem:pet-ch4-fiber-homogeneous-submersions}
+  \lean{PetersenLib.fiberHomogeneousSubmersionExamples}
+  \uses{def:pet-ch4-vertical-horizontal-distribution}
+  Many examples of nonnegative or positive curvature arise from a compact
+  group $G$ acting freely by isometries on $(\bar M,\bar g)$ with
+  $M=G\backslash\bar M$; such a submersion is \emph{fiber homogeneous}, $G$
+  acting transitively on fibers. Examples: $\mathbb{CP}^n=S^{2n+1}/S^1$,
+  $TS^n=(SO(n+1)\times\mathbb{R}^n)/SO(n)$, $SU(3)/T^2$.
+  \source{petersen:page-0165}
+\end{remark}
+
+\begin{proposition}[an isometric group action with manifold quotient is a Riemannian submersion]
+  \label{prop:pet-ch4-group-action-submersion}
+  \lean{PetersenLib.groupActionInducesRiemannianSubmersion}
+  \uses{rem:pet-ch4-fiber-homogeneous-submersions}
+  If $G$ acts by isometries on $(\bar M,\bar g)$ with $M=\bar M/G$ a manifold
+  and $F:\bar M\to M$ the quotient map a submersion, then: for
+  $\mathfrak x\in\mathfrak g$, the vector field
+  $X|_{\bar p}=\tfrac{d}{dt}\big|_{t=0}\exp(t\mathfrak x)\cdot\bar p$ is a
+  Killing field (the flow of $X$ is by isometries $F^t(\bar p)=\exp(t\mathfrak x)\cdot\bar p$),
+  and $\mathcal V_{\bar p}=\mathrm{span}\{X|_{\bar p}:\mathfrak x\in\mathfrak g\}$;
+  the action preserves $\mathcal V$, i.e.\ $Dx(\mathcal V_{\bar p})=\mathcal V_{x\bar p}$
+  for $x\in G$, hence preserves the orthogonal complements $\mathcal H_{\bar p}$;
+  defining the metric on $T_pM$ via the isomorphism $DF:\mathcal H_{\bar p}\to T_pM$
+  is then well defined (independent of the choice of $\bar p\in F^{-1}(p)$),
+  making $F$ a Riemannian submersion.
+  \source{petersen:page-0165,petersen:page-0166}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-group-action-submersion,prop:pet-ch4-adjoint-exp-relation}
+  Since $\bar p\mapsto x\cdot\bar p$ is an isometry for every $x\in G$, its
+  flow for fixed $\mathfrak x$, namely $F^t(\bar p)=\exp(t\mathfrak x)\cdot\bar p$,
+  acts by isometries, so its generating vector field $X$ is Killing. For
+  $x\in G$,
+  \[
+    Dx(X|_{\bar p})=Dx\Big(\frac d{dt}\Big|_{t=0}\exp(t\mathfrak x)\cdot\bar p\Big)
+    =\frac d{dt}\Big|_{t=0}x\cdot\big(\exp(t\mathfrak x)\cdot\bar p\big)
+    =\frac d{dt}\Big|_{t=0}\big(x\exp(t\mathfrak x)x^{-1}\big)\cdot(x\cdot\bar p)
+    =\frac d{dt}\Big|_{t=0}\exp\big(t\,\mathrm{Ad}_x(\mathfrak x)\big)\cdot(x\bar p)
+  \]
+  (using $x\exp(t\mathfrak x)x^{-1}=\exp(t\,\mathrm{Ad}_x\mathfrak x)$, from
+  \cref{prop:pet-ch4-adjoint-exp-relation}) $=\mathrm{Ad}_x(\mathfrak x)|_{x\bar p}\in\mathcal V_{x\bar p}$.
+  So $Dx$ maps $\mathcal V_{\bar p}$ into $\mathcal V_{x\bar p}$, and, since
+  $Dx$ is a linear isometry, its orthogonal complement $\mathcal H_{\bar p}$
+  into $\mathcal H_{x\bar p}$. Hence the isomorphisms
+  $DF:\mathcal H_{\bar p}\to T_pM$, for varying $\bar p\in F^{-1}(p)$, are all
+  related by the isometries $Dx:\mathcal H_{\bar p}\to\mathcal H_{x\bar p}$
+  composed with $DF$, so they induce the same inner product on $T_pM$; this
+  defines the metric on $M$ making $F$ a Riemannian submersion.
+\end{proof}
+
+\subsection{Complex Projective Space}
+
+\begin{definition}[the submersion metric on $\mathbb{CP}^n$]
+  \label{def:pet-ch4-cpn-submersion-setup}
+  \lean{PetersenLib.cpnSubmersionSetup}
+  \uses{prop:pet-ch4-group-action-submersion}
+  $\mathbb{CP}^n=S^{2n+1}/S^1$ for the complex-scalar $S^1$-action on
+  $S^{2n+1}\subset\mathbb{C}^{n+1}$. Writing
+  $ds_{2n+1}^2=dr^2+\sin^2(r)ds_{2n-1}^2+\cos^2(r)d\theta^2$ and letting the
+  $S^1$-action act separately on the $S^{2n-1}$ and $S^1$ factors,
+  $\mathbb{CP}^n=[0,\pi/2]\times\big((S^{2n-1}\times S^1)/S^1\big)$, with metric
+  $dr^2+\sin^2(r)(g+\cos^2(r)h)$ (in the splitting $ds_{2n-1}^2=h+g$ along and
+  orthogonal to the residual Hopf circle). Let $V$ be the unit vertical field
+  on $S^{2n+1}\subset\mathbb{C}^{n+1}$ tangent to the $S^1$ action.
+  \source{petersen:page-0166,petersen:page-0167}
+\end{definition}
+
+\begin{proposition}[the integrability tensor of the $\mathbb{CP}^n$ submersion]
+  \label{prop:pet-ch4-cpn-integrability-tensor}
+  \lean{PetersenLib.cpnIntegrabilityTensor}
+  \uses{def:pet-ch4-cpn-submersion-setup,def:pet-ch4-integrability-tensor}
+  For basic horizontal $\bar X,\bar Y$ on $S^{2n+1}$, $\tfrac12[\bar X,\bar Y]^{\mathcal V}=\bar g(\bar Y,i\bar X)V$,
+  where $iV$ is the unit inward normal to $S^{2n+1}\subset\mathbb{C}^{n+1}$ and
+  $\bar g$ the canonical Euclidean metric on $\mathbb{C}^{n+1}$; in particular the
+  horizontal distribution (orthogonal to $V$) is invariant under
+  multiplication by $i$, reflecting the complex structure of $\mathbb{CP}^n$.
+  \source{petersen:page-0167}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-cpn-integrability-tensor}
+  By \cref{prop:pet-ch4-submersion-basic-properties}(3),
+  $\bar g\big(\tfrac12[\bar X,\bar Y],V\big)=\bar g\big(\nabla^{S^{2n+1}}_{\bar X}\bar Y,V\big)$.
+  Since $S^{2n+1}\subset\mathbb{C}^{n+1}$ is totally geodesic-computable via the
+  ambient connection, $\bar g(\nabla^{S^{2n+1}}_{\bar X}\bar Y,V)=\bar g(\nabla^{\mathbb{C}^{n+1}}_{\bar X}\bar Y,V)$
+  (as $V$ is tangent to $S^{2n+1}$, the second fundamental form's normal
+  component drops out of the inner product with $V$), and
+  $\bar g(\nabla^{\mathbb{C}^{n+1}}_{\bar X}\bar Y,V)=-\bar g(\bar Y,\nabla^{\mathbb{C}^{n+1}}_{\bar X}V)$
+  (metric compatibility on $\mathbb{C}^{n+1}$, since $\bar g(\bar Y,V)\equiv0$).
+  Because $V$ is (up to normalization) the restriction of the linear complex
+  structure $iX$ applied to the position vector, $\nabla^{\mathbb{C}^{n+1}}_{\bar X}V=\nabla^{\mathbb{C}^{n+1}}_{i\bar X}(iV)$
+  (parallel transport of the ambient complex structure), so
+  $-\bar g(\bar Y,\nabla^{\mathbb{C}^{n+1}}_{\bar X}V)=\bar g(\bar Y,\nabla^{\mathbb{C}^{n+1}}_{i\bar X}(iV))
+  =\mathrm{II}^{S^{2n+1}}(\bar Y,i\bar X)=\bar g(\bar Y,i\bar X)$ (using that
+  $iV$ is the unit normal, so the second fundamental form of $S^{2n+1}$ paired
+  with the normal direction recovers the ambient inner product). Combining,
+  $\bar g(\tfrac12[\bar X,\bar Y],V)=\bar g(\bar Y,i\bar X)$, giving the stated
+  formula. Since $V$ spans the vertical space, the horizontal distribution
+  $V^\perp$ is preserved by $i$ (as $\bar g(i\bar X,V)=-\bar g(\bar X,iV)=0$
+  when $\bar X\perp V$, since $iV\parallel$ the ambient position direction
+  orthogonal to $S^{2n+1}$'s tangent space... more directly, $\bar g(\bar X,V)=0$
+  and the ambient complex structure being orthogonal give $\bar g(i\bar X,iV)=\bar g(\bar X,V)=0$,
+  and $iV$ is normal to $S^{2n+1}$ so tangentially $i\bar X\perp V$ reduces to
+  the standard fact that $i$ preserves the horizontal Hopf distribution).
+\end{proof}
+
+\begin{theorem}[sectional curvature of $\mathbb{CP}^n$]
+  \label{thm:pet-ch4-cpn-sectional-curvature}
+  \lean{PetersenLib.cpnSectionalCurvature}
+  \uses{thm:pet-ch4-oneill-formula,prop:pet-ch4-cpn-integrability-tensor}
+  For $X,Y$ orthonormal on $\mathbb{CP}^n$ with orthonormal horizontal lifts
+  $\bar X,\bar Y$,
+  \[
+    \mathrm{sec}(X,Y)=1+3\big|\bar g(\bar Y,i\bar X)\big|^2\le4,
+  \]
+  with equality iff $\bar Y=\pm i\bar X$; in particular $\mathrm{sec}\ge1$
+  everywhere on $\mathbb{CP}^n$.
+  \source{petersen:page-0167,petersen:page-0168}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch4-cpn-sectional-curvature}
+  Since $S^{2n+1}$ has constant curvature $1$
+  (\cref{prop:pet-ch4-euclidean-sphere-constant-curvature}),
+  $\bar g(\bar R(\bar X,\bar Y)\bar Y,\bar X)=1$ for orthonormal $\bar X,\bar Y$;
+  the O'Neill formula (\cref{thm:pet-ch4-oneill-formula}) gives
+  $\mathrm{sec}(X,Y)=g(R(X,Y)Y,X)=1+\tfrac34|[\bar X,\bar Y]^{\mathcal V}|^2$.
+  By \cref{prop:pet-ch4-cpn-integrability-tensor},
+  $[\bar X,\bar Y]^{\mathcal V}=2\bar g(\bar Y,i\bar X)V$ with $|V|=1$, so
+  $\tfrac34|[\bar X,\bar Y]^{\mathcal V}|^2=\tfrac34\cdot4|\bar g(\bar Y,i\bar X)|^2=3|\bar g(\bar Y,i\bar X)|^2$,
+  giving $\mathrm{sec}(X,Y)=1+3|\bar g(\bar Y,i\bar X)|^2$. Since $\bar X,\bar Y$
+  are orthonormal and $i$ is an orthogonal complex structure on the horizontal
+  space, $|\bar g(\bar Y,i\bar X)|\le|i\bar X|=1$ (Cauchy--Schwarz), with
+  equality iff $\bar Y$ is proportional to $i\bar X$, i.e.\ $\bar Y=\pm i\bar X$
+  (as both are unit vectors); this gives the upper bound $\mathrm{sec}\le1+3=4$.
+\end{proof}
+
+\begin{remark}[curvature-operator eigenbasis and eigenvalue range on $\mathbb{CP}^n$]
+  \label{rem:pet-ch4-cpn-curvature-operator-eigenbasis}
+  \lean{PetersenLib.cpnCurvatureOperatorEigenbasis}
+  \uses{thm:pet-ch4-oneill-formula,thm:pet-ch4-cpn-sectional-curvature}
+  Applying the O'Neill formula for the full curvature tensor to orthonormal
+  vectors of the form $X,iX,Y,iY$ shows the curvature operator on $\mathbb{CP}^n$
+  is not diagonalized by simple bivectors $E_i\wedge E_j$; instead it is
+  diagonalized by
+  $X\wedge iX\pm Y\wedge iY$, $X\wedge Y\pm iX\wedge iY$, $X\wedge iY\pm Y\wedge iX$,
+  with eigenvalues in $[0,6]$.
+  \source{petersen:page-0168}
+\end{remark}
+
+\begin{proposition}[$\mathbb{CP}^n$ is Einstein with constant $2n+2$]
+  \label{prop:pet-ch4-cpn-einstein}
+  \lean{PetersenLib.cpnEinsteinConstant}
+  \uses{thm:pet-ch4-cpn-sectional-curvature}
+  $\mathrm{Ric}(X,X)=2n+2$ for every unit $X$ on $\mathbb{CP}^n$.
+  \source{petersen:page-0168}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-cpn-einstein}
+  Fix a unit $X$ and an orthonormal basis $E_0,\dots,E_{2n-2}$ of $X^\perp$
+  with lifts satisfying $i\bar X=\bar E_0$. By
+  \cref{thm:pet-ch4-cpn-sectional-curvature},
+  \[
+    \mathrm{Ric}(X,X)=\sum_{i=0}^{2n-2}\mathrm{sec}(X,E_i)
+    =\big(1+3|\bar g(\bar E_0,i\bar X)|^2\big)+\sum_{i=1}^{2n-2}\big(1+3|\bar g(\bar E_i,i\bar X)|^2\big).
+  \]
+  Since $\bar E_0=i\bar X$, $\bar g(\bar E_0,i\bar X)=\bar g(i\bar X,i\bar X)=1$;
+  since $\bar E_i\perp\bar E_0=i\bar X$ for $i\ge1$,
+  $\bar g(\bar E_i,i\bar X)=0$. Hence
+  $\mathrm{Ric}(X,X)=(1+3)+\sum_{i=1}^{2n-2}(1+0)=4+(2n-2)=2n+2$.
+\end{proof}
+
+\subsection{Berger--Cheeger Perturbations}
+
+\begin{definition}[the Berger--Cheeger construction $G\times_GM$]
+  \label{def:pet-ch4-berger-cheeger-construction}
+  \lean{PetersenLib.bergerCheegerConstruction}
+  \uses{def:pet-ch4-left-invariant-metric-lie}
+  Fix $(M,g)$ and a Lie group $G$ with right-invariant metric $(\cdot,\cdot)$
+  acting by isometries on $M$. Then $G$ acts freely by isometries on
+  $(G\times M,\,g_\lambda)$, $g_\lambda=\lambda(\cdot,\cdot)+g$ ($\lambda>0$), via
+  $h\cdot(x,p)=(xh^{-1},hp)$. The quotient map $Q:G\times M\to M=(G\times M)/G$,
+  $Q(x,p)=xp$, exhibits $M$ (diffeomorphic to the quotient) with a submersion
+  metric $g_\lambda$, called the \emph{Berger--Cheeger perturbation} of $g$.
+  \source{petersen:page-0169}
+\end{definition}
+
+\begin{proposition}[horizontal lift and length formula for the Berger--Cheeger metric]
+  \label{prop:pet-ch4-berger-cheeger-horizontal-lift}
+  \lean{PetersenLib.bergerCheegerHorizontalLift}
+  \uses{def:pet-ch4-berger-cheeger-construction}
+  For $X\in T_eG$ generating the Killing field $X|_p=\tfrac d{dt}|_{t=0}\exp(tX)\cdot p$
+  on $M$, the horizontal lift of $X|_p\in T_pM$ to $T_eG\times T_pM$ (for the
+  action on $G\times M$) is
+  \[
+    \overline{X|_p}=\Big(\frac{|X|_p^2}{\lambda|X|^2+|X|_p^2}\mathfrak x,\ \frac{\lambda|X|^2}{\lambda|X|^2+|X|_p^2}X|_p\Big),
+  \]
+  with length $\big|\overline{X|_p}\big|_{g_\lambda}^2=\dfrac{\lambda|X|^2}{\lambda|X|^2+|X|_p^2}|X|_p^2\le|X|_p^2$,
+  tending to $0$ as $\lambda\to0$ and to $|X|_p^2$ as $\lambda\to\infty$.
+  \source{petersen:page-0169,petersen:page-0170}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch4-berger-cheeger-horizontal-lift}
+  A general horizontal vector at $(e,p)$ has the form
+  $\big(|X|_p^2\mathfrak x,\lambda|X|^2X|_p\big)$ (orthogonal, in $g_\lambda$,
+  to the vertical direction $(-\mathfrak x,X|_p)$ generated by $X$, since
+  $g_\lambda\big((|X|_p^2\mathfrak x,\lambda|X|^2X|_p),(-\mathfrak x,X|_p)\big)
+  =\lambda|X|_p^2(\mathfrak x,-\mathfrak x)+\lambda|X|^2 g(X|_p,X|_p)
+  =-\lambda|X|_p^2|X|^2+\lambda|X|^2|X|_p^2=0$). Its image under $DQ$ is
+  \[
+    DQ\big(|X|_p^2\mathfrak x,\lambda|X|^2X|_p\big)
+    =|X|_p^2\,DQ(\mathfrak x,0)+\lambda|X|^2\,DQ(0,X|_p)
+    =-|X|_p^2\frac d{dt}\Big|_{t=0}Q(\exp(-t\mathfrak x),p)+\lambda|X|^2\frac d{dt}\Big|_{t=0}Q(e,\exp(t\mathfrak x)\cdot p)
+  \]
+  \[
+    =|X|_p^2X|_p+\lambda|X|^2X|_p=\big(\lambda|X|^2+|X|_p^2\big)X|_p,
+  \]
+  using $Q(\exp(-t\mathfrak x),p)=\exp(-t\mathfrak x)\cdot p$ (so its derivative
+  is $-X|_p$, contributing $+|X|_p^2X|_p$ after the leading minus sign) and
+  $Q(e,\exp(t\mathfrak x)\cdot p)=\exp(t\mathfrak x)\cdot p$ (derivative
+  $X|_p$). Rescaling the horizontal vector by
+  $1/(\lambda|X|^2+|X|_p^2)$ so that its image under $DQ$ is exactly $X|_p$
+  gives the displayed horizontal lift $\overline{X|_p}$. Its $g_\lambda$-length
+  squared is
+  \[
+    \Big(\frac{|X|_p^2}{\lambda|X|^2+|X|_p^2}\Big)^2\lambda|X|^2
+    +\Big(\frac{\lambda|X|^2}{\lambda|X|^2+|X|_p^2}\Big)^2|X|_p^2
+    =\frac{\lambda|X|^2|X|_p^2\big(|X|_p^2+\lambda|X|^2\big)}{(\lambda|X|^2+|X|_p^2)^2}
+    =\frac{\lambda|X|^2}{\lambda|X|^2+|X|_p^2}|X|_p^2,
+  \]
+  which is $\le|X|_p^2$ (as $\lambda|X|^2/(\lambda|X|^2+|X|_p^2)\le1$), tends to
+  $0$ as $\lambda\to0^+$, and tends to $|X|_p^2$ as $\lambda\to\infty$.
+\end{proof}
+
+\begin{remark}[curvature increase on the un-squeezed directions]
+  \label{rem:pet-ch4-berger-cheeger-curvature-increase}
+  \lean{PetersenLib.bergerCheegerCurvatureIncrease}
+  \uses{prop:pet-ch4-berger-cheeger-horizontal-lift,thm:pet-ch4-oneill-formula}
+  For $X,Y\in\mathcal H_p$ (already horizontal for the $G$-action on $M$, hence
+  also horizontal for the action on $G\times M$),
+  $\mathrm{sec}_{g_\lambda}(X,Y)\ge\mathrm{sec}_g(X,Y)$, the excess coming from
+  the nonnegative integrability-tensor correction in
+  \cref{thm:pet-ch4-oneill-formula} applied to the action on $G\times M$.
+  \source{petersen:page-0170}
+\end{remark}
+
+\section{Further Study}
+
+\begin{remark}[further reading]
+  \label{rem:pet-ch4-further-study}
+  \lean{PetersenLib.chapter4FurtherStudy}
+  O'Neill's book gives an excellent account of Minkowski geometry and studies
+  in detail the Schwarzschild metric in the setting of general relativity — the
+  first exact nontrivial solution of the vacuum Einstein field equations — and
+  a good introduction to locally symmetric spaces; it is among the most
+  comprehensive elementary texts, good for a first encounter with most of the
+  concepts of differential geometry. The third edition of do Carmo's text also
+  contains many examples, in particular a large amount of material on
+  hyperbolic space and a brief account of the Schwarzschild metric in general
+  relativity. Besse's book contains many more advanced examples and is also a
+  good general reference on Riemannian geometry.
+  \source{petersen:page-0171}
+\end{remark}
+
+\section{Exercises}
+
+It is useful to have read Petersen's exercises 3.4.23--3.4.25 before attempting
+the exercises below.
+
+\begin{remark}[Exercise 4.7.1 — Schwarzschild curvature is not parallel]
+  \label{rem:pet-ch4-ex-1}
+  \lean{PetersenLib.exercise4_7_1}
+  \uses{prop:pet-ch4-schwarzschild-ricci-flat}
+  Show that the Schwarzschild metric does not have parallel curvature tensor.
+  \source{petersen:page-0171}
+\end{remark}
+
+\begin{remark}[Exercise 4.7.2 — Berger sphere curvature is not parallel]
+  \label{rem:pet-ch4-ex-2}
+  \lean{PetersenLib.exercise4_7_2}
+  \uses{ex:pet-ch4-berger-sphere-curvature}
+  Show that the Berger spheres ($\varepsilon\ne1$) do not have parallel
+  curvature tensor.
+  \source{petersen:page-0171}
+\end{remark}
+
+\begin{remark}[Exercise 4.7.3 — isometries of projective spaces force $\nabla R=0$]
+  \label{rem:pet-ch4-ex-3}
+  \lean{PetersenLib.exercise4_7_3}
+  \uses{def:pet-ch4-cpn-submersion-setup}
+  (1) Show $U(n+1)$ acts by isometries on $\mathbb{CP}^n$ (it acts by isometries on
+  $S^{2n+1}(1)$ commuting with the quotient action). (2) Show that for each
+  $p\in\mathbb{CP}^n$ there is an isometry $A_p\in\mathrm{Iso}_p$ with
+  $DA_p|_p=-I$. (3) Use that isometries preserve $\nabla$ and $R$ to conclude
+  $\nabla R=0$. (4) Repeat (1)--(3) for $\mathbb{HP}^n$ using the symplectic
+  group $\mathrm{Sp}(n+1)$ of quaternionic matrices with $A^*A=I$.
+  \source{petersen:page-0171}
+\end{remark}
+
+\begin{remark}[Exercise 4.7.4 — a more general Hessian criterion for a warped product]
+  \label{rem:pet-ch4-ex-4}
+  \lean{PetersenLib.exercise4_7_4}
+  \uses{thm:pet-ch4-brinkmann-warped-product}
+  If $(M,g)$ has a function $f$ with
+  $\mathrm{Hess}\,f=\lambda(x)g+\mu(f)df^2$ for $\lambda:M\to\mathbb{R}$, $\mu:\mathbb{R}\to\mathbb{R}$,
+  show that the metric is locally a warped product.
+  \source{petersen:page-0171,petersen:page-0172}
+\end{remark}
+
+\begin{remark}[Exercise 4.7.5 — the conformal factor is $\Delta f/\dim M$]
+  \label{rem:pet-ch4-ex-5}
+  \lean{PetersenLib.exercise4_7_5}
+  \uses{thm:pet-ch4-brinkmann-warped-product}
+  Show that if $\mathrm{Hess}\,f=\lambda g$ then $\lambda=\Delta f/\dim M$.
+  \source{petersen:page-0172}
+\end{remark}
+
+\begin{remark}[Exercise 4.7.6 — warped product from an eigenvector Hessian with $\le2$ eigenvalues]
+  \label{rem:pet-ch4-ex-6}
+  \lean{PetersenLib.exercise4_7_6}
+  \uses{thm:pet-ch4-brinkmann-warped-product}
+  For $f$ on $(M,g)$ with $\nabla f\ne0$ an eigenvector of $S(X)=\nabla_X\nabla f$:
+  show that if $S$ has $\le2$ eigenvalues the metric is locally a warped
+  product.
+  \source{petersen:page-0172}
+\end{remark}
+
+\begin{remark}[Exercise 4.7.7 (O'Neill) — the $A$-tensors of a Riemannian submersion]
+  \label{rem:pet-ch4-ex-7}
+  \lean{PetersenLib.exercise4_7_7}
+  \uses{def:pet-ch4-integrability-tensor,prop:pet-ch4-submersion-basic-properties}
+  Define $A_{\bar X}\bar Y=[\bar X,\bar Y]^{\mathcal V}$,
+  $A_{\bar X}V=[\bar X,V]^{\mathcal H}$, extended by $A_V=0$, and let $T_V$ be
+  the second-fundamental-form tensor of the fibers (extended by
+  $T_{\mathfrak x}=0$), giving $(1,2)$-tensors on $\bar M$. (1) Show both
+  $A$-tensors are tensorial. (2) Show
+  $A_{\bar X}\bar Y=\tfrac12[\bar X,\bar Y]^{\mathcal V}$. (3) Show
+  $\bar g(A_{\bar X}\bar Y,V)=-\bar g(\bar Y,A_{\bar X}V)$. (4) Show
+  $(\nabla_VA)_W=-A_{T_{V,W}}$ and $(\nabla_{\bar X}A)_W=-A_{A_{\bar X}W}$.
+  (5) Show $(\nabla_{\bar X}T)_{\bar Y}=-T_{A_{\bar X}\bar Y}$ and
+  $(\nabla_VT)_{\bar Y}=-T_{T_{V,\bar Y}}$. (6) Show
+  $\bar g\big((\nabla_UA)_{\bar X}V,W\big)=\bar g(T_UV,A_{\bar X}W)-\bar g(T_UW,A_{\bar X}V)$.
+  \source{petersen:page-0172}
+\end{remark}
+
+\begin{remark}[Exercise 4.7.8 (O'Neill) — horizontal and mixed curvature formulas]
+  \label{rem:pet-ch4-ex-8}
+  \lean{PetersenLib.exercise4_7_8}
+  \uses{rem:pet-ch4-ex-7,thm:pet-ch4-oneill-formula}
+  Using the $A,T$-tensors of \cref{rem:pet-ch4-ex-7}, show
+  $\bar R(\bar Y,\bar X,\bar X,\bar Y)=R(Y,X,X,Y)-3|A_{\bar X}\bar Y|^2$ and
+  $\bar R(V,\bar X,\bar X,V)=\bar g\big((\nabla_{\bar X}T)_V,\bar X\big)+|A_{\bar X}V|^2-|T_V\bar X|^2$;
+  compare the second formula to the radial curvature equation.
+  \source{petersen:page-0172}
+\end{remark}
+
+\begin{remark}[Exercise 4.7.9 — curvature, Einstein condition, and Weyl tensor of a product]
+  \label{rem:pet-ch4-ex-9}
+  \lean{PetersenLib.exercise4_7_9}
+  Let $(M,g)=(M_1\times M_2,g_1+g_2)$. (1) Show $R=R_1+R_2$ (pulled back). (2)
+  Assume $(M_i,g_i)$ has constant curvature $c_i$; show $R=c_1g_1\circ g_1+c_2g_2\circ g_2$.
+  (3) Show $(M,g)$ is Einstein iff $(n_1-1)c_1=(n_2-1)c_2$, $n_i=\dim M_i$. (4)
+  Show the Weyl tensor vanishes if $c_1=-c_2$, $n_1=1$, or $n_2=1$. (5) Show
+  the Weyl tensor does not vanish if none of these hold.
+  \source{petersen:page-0172,petersen:page-0173}
+\end{remark}
+
+\begin{remark}[Exercise 4.7.10 — constant curvature and the double warped-product representation of hyperbolic space]
+  \label{rem:pet-ch4-ex-10}
+  \lean{PetersenLib.exercise4_7_10}
+  \uses{thm:pet-ch4-rotsym-curvature-operator}
+  Let $(M^n,g)=(I\times N,dr^2+\rho^2(r)g_N)$ have constant curvature $k$. (1)
+  Show $(N^{n-1},\rho^2(r)g_N)$ has constant curvature $k+(\dot\rho/\rho)^2$ if
+  $n>2$. (2) Show explicitly that hyperbolic space is a warped product over
+  both hyperbolic space and Euclidean space.
+  \source{petersen:page-0173}
+\end{remark}
+
+\begin{remark}[Exercise 4.7.11 — Einstein metric via a rescaling function]
+  \label{rem:pet-ch4-ex-11}
+  \lean{PetersenLib.exercise4_7_11}
+  \uses{prop:pet-ch4-rotsym-ricci-scalar}
+  Let $(N^{n-1},g_N)$ have $\mathrm{Ric}=\tfrac{n-2}2\lambda g_N$, $\lambda<0$.
+  Find $\rho:\mathbb{R}\to(0,\infty)$ so that $(M^n,g)=(\mathbb{R}\times N,dr^2+\rho^2(r)g_N)$
+  is Einstein with $\mathrm{Ric}=\lambda g$.
+  \source{petersen:page-0173}
+\end{remark}
+
+\begin{remark}[Exercise 4.7.12 — curvature, Weyl tensor, and Schouten tensor of a constant-curvature-base warped product]
+  \label{rem:pet-ch4-ex-12}
+  \lean{PetersenLib.exercise4_7_12}
+  \uses{thm:pet-ch4-rotsym-curvature-operator}
+  Let $(N^{n-1},g_N)$ have constant curvature $c$, $n>2$, and
+  $(M,g)=(I\times N,dr^2+\rho^2(r)g_N)$. (1) Show
+  $R=\tfrac{c-\dot\rho^2}{\rho^2}g_r\circ g_r-2\tfrac{\ddot\rho}\rho dr^2\circ g_r
+  =\tfrac{c-\dot\rho^2}{\rho^2}g\circ g-2\big(\tfrac{\ddot\rho}\rho+\tfrac{c-\dot\rho^2}{\rho^2}\big)dr^2\circ g$.
+  (2) Show the Weyl tensor vanishes. (3) Show directly that the Schouten
+  tensor $P$ satisfies $(\nabla_XP)(Y,Z)=(\nabla_YP)(X,Z)$.
+  \source{petersen:page-0173}
+\end{remark}
+
+\begin{remark}[Exercise 4.7.13 — stereographic projection and the conformal models]
+  \label{rem:pet-ch4-ex-13}
+  \lean{PetersenLib.exercise4_7_13}
+  \uses{prop:pet-ch4-sphere-stereographic-conformal,prop:pet-ch4-poincare-disc-model}
+  For $S(x)=-e_{n+1}+\lambda(x)(e_{n+1}+(x,0))$, $x\in\mathbb{R}^n$, stereographic
+  projection from $-e_{n+1}$ onto a hypersurface $M$: (1) for $M=S^n(1)$, show
+  $\lambda(1+|x|^2)=2$ and $S$ is conformal with
+  $g_{S^n(1)}=\tfrac4{(1+|x|^2)^2}g_{\mathbb{R}^n}$; (2) for $M=H^n(1)\subset\mathbb{R}^{n,1}$,
+  show $\lambda(1-|x|^2)=2$ and $S$ is conformal with the Poincaré disc metric
+  $\tfrac4{(1-|x|^2)^2}g_{\mathbb{R}^n}$.
+  \source{petersen:page-0173,petersen:page-0174}
+\end{remark}
+
+\begin{remark}[Exercise 4.7.14 — conformal change formulas and Weyl invariance]
+  \label{rem:pet-ch4-ex-14}
+  \lean{PetersenLib.exercise4_7_14}
+  Let $\tilde g=e^{2\psi}g$. (1) Show
+  $\tilde\nabla_XY=\nabla_XY+(D_X\psi)Y+(D_Y\psi)X-g(X,Y)\nabla\psi$. (2) Show
+  $e^{-2\psi}\tilde R=R-\big(2\,\mathrm{Hess}\,\psi-2(d\psi)^2+|d\psi|^2g\big)\circ g$.
+  (3) For orthonormal $X,Y$, show
+  $e^{2\psi}\widetilde{\mathrm{sec}}(X,Y)=\mathrm{sec}(X,Y)-\mathrm{Hess}\,\psi(X,X)-\mathrm{Hess}\,\psi(Y,Y)+(D_X\psi)^2+(D_Y\psi)^2-|d\psi|^2$.
+  (4) Show
+  $\widetilde{\mathrm{Ric}}=\mathrm{Ric}-(n-2)(\mathrm{Hess}\,\psi-d\psi^2)-(\Delta\psi+(n-2)|d\psi|^2)g$.
+  (5) Show $e^{2\psi}\widetilde{\mathrm{scal}}=\mathrm{scal}-2(n-1)\Delta\psi-(n-1)(n-2)|d\psi|^2$.
+  (6) Using exercise 3.4.25, show $e^{-2\psi}\tilde W=W$ (conformal invariance
+  of the Weyl tensor, Weyl).
+  \source{petersen:page-0174}
+\end{remark}
+
+\begin{remark}[Exercise 4.7.15 — explicit algebraic rewriting of the scalar-flat and Schwarzschild metrics]
+  \label{rem:pet-ch4-ex-15}
+  \lean{PetersenLib.exercise4_7_15}
+  \uses{ex:pet-ch4-scalar-flat-tautological-bundle,prop:pet-ch4-schwarzschild-ricci-flat}
+  Show
+  $\big(\tfrac14\rho_0^2+r^{2-n}\big)^{\frac{n-2}2}g_{\mathbb{R}^n}
+  =\tfrac1{1-(\rho_0/\rho)^{n-2}}d\rho^2+\rho^2ds_{n-1}^2$, the scalar-flat
+  metric of \cref{ex:pet-ch4-scalar-flat-tautological-bundle}; use this to
+  rewrite the Schwarzschild metric of \cref{prop:pet-ch4-schwarzschild-ricci-flat}
+  algebraically in terms of the flat metric on $\mathbb{R}^{n-1}$ and a conformal
+  factor.
+  \source{petersen:page-0175}
+\end{remark}
+
+\begin{remark}[Exercise 4.7.16 — the static Einstein equations]
+  \label{rem:pet-ch4-ex-16}
+  \lean{PetersenLib.exercise4_7_16}
+  For $(M,g)=(N\times\mathbb{R},g_N+w^2dt^2)$, $w:N\to(0,\infty)$, $\dim N=n-1$: (1)
+  show $\nabla^N_XY=\nabla^M_XY$, $R^N(X,Y)Z=R^M(X,Y)Z$ for $X,Y,Z$ tangent to
+  $N$, and conclude $\mathrm{Ric}^M(X,\partial_t)=0$. (2) Show $|\partial_t|^2=w^2$.
+  (3) Show $\nabla^M_{\partial_t}\partial_t=-w\nabla w$ and
+  $\nabla^M_X\partial_t=\nabla^M_{\partial_t}X=\tfrac1w(D_Xw)\partial_t$. (4)
+  Show $R^M(X,\partial_t)\partial_t=-w\nabla_X\nabla w$,
+  $\mathrm{Ric}^M(\partial_t,\partial_t)=-w\Delta w$,
+  $\mathrm{Ric}^M(X,X)=\mathrm{Ric}^N(X,X)-\tfrac1w\mathrm{Hess}\,w(X,X)$. (5) Show
+  $\mathrm{Ric}^M=\lambda g$ iff $\mathrm{Ric}^N-\tfrac1w\mathrm{Hess}\,w=\lambda g_N$
+  and $w\Delta w+\lambda w^2=0$, iff
+  $\mathrm{Ric}^N-\tfrac1w\mathrm{Hess}\,w=\lambda g_N$ and $\mathrm{scal}^N=(n-2)\lambda$.
+  \source{petersen:page-0175,petersen:page-0176}
+\end{remark}
+
+\begin{remark}[Exercise 4.7.17 — local conformal flatness and isothermal coordinates]
+  \label{rem:pet-ch4-ex-17}
+  \lean{PetersenLib.exercise4_7_17}
+  \uses{prop:pet-ch4-snk-constant-curvature}
+  A metric is \emph{locally conformally flat} if near every point
+  $g=e^{-2\psi}\big((dx^1)^2+\dots+(dx^n)^2\big)$. (1) Show the space forms
+  $S^n_k$, $dr^2+\mathrm{sn}_k^2(r)ds_{n-1}^2$, are locally conformally flat. (2)
+  Show a locally conformally flat Einstein metric has constant curvature. (3)
+  For $\dim M=2$ (Gauss's isothermal coordinates): (a) if $du\ne0$ on
+  $O\subset M$, show there is, up to sign, a unique $1$-form
+  $\omega=i_{\nabla u}\mathrm{vol}_g$ with $|du|=|\omega|$ and
+  $d(du,\omega)=0$; (b) show $d\omega=(\Delta_gu)\mathrm{vol}_g$; (c) show
+  isothermal coordinates exist near $p$ whenever there is a harmonic $u$ near
+  $p$ with $du|_p\ne0$.
+  \source{petersen:page-0176}
+\end{remark}
+
+\begin{remark}[Exercise 4.7.18 (Schouten 1921) — local conformal flatness via the Schouten tensor]
+  \label{rem:pet-ch4-ex-18}
+  \lean{PetersenLib.exercise4_7_18}
+  Let $\dim M=n>2$. (1) Show $g$ is locally conformally flat iff $W=0$ and
+  locally there is $\psi$ with
+  $P=2\,\mathrm{Hess}\,\psi-2(d\psi)^2+|d\psi|^2g$ (the condition $W=0$ being
+  redundant for $n=3$). (2) Show that if $g$ is locally conformally flat then
+  $(\nabla_XP)(Y,Z)=(\nabla_YP)(X,Z)$.
+  \source{petersen:page-0176,petersen:page-0177}
+\end{remark}
+
+\begin{remark}[Exercise 4.7.19 (Schouten 1921) — the converse integrability argument]
+  \label{rem:pet-ch4-ex-19}
+  \lean{PetersenLib.exercise4_7_19}
+  \uses{rem:pet-ch4-ex-18}
+  Assume $\dim M=n>2$, $W=0$, and $(\nabla_XP)(Y,Z)=(\nabla_YP)(X,Z)$. (1) Show
+  that if $\nabla\omega=\tfrac12P+\omega^2-\tfrac12|\omega|^2g$ for a $1$-form
+  $\omega$, then locally $\omega=d\psi$ and
+  $P=2\,\mathrm{Hess}\,\psi-2(d\psi)^2+|\nabla\psi|^2g$. (2) Using the Ricci
+  identity $\nabla^2_{X,Y}\omega-\nabla^2_{Y,X}\omega=R_{X,Y}\omega$, show that
+  the same hypothesis on $\nabla\omega$ gives
+  $(\nabla^2_{X,Y}\omega)(Z)=\tfrac12(\nabla_XP)(Y,Z)+(\nabla_X\omega)(Y)\omega(Z)+\omega(Y)(\nabla_X\omega)(Z)-g(\nabla_X\omega,\omega)g(Y,Z)$.
+  (3) Deduce $\nabla^2_{X,Y}\omega-\nabla^2_{Y,X}\omega=(P\circ g)(X,Y,V,Z)$ for
+  $V$ dual to $\omega$. (4) Using $R=P\circ g$, show
+  $(R_{X,Y}\omega)(Z)=(P\circ g)(X,Y,V,Z)$. (5) Conclude the integrability
+  conditions for $\omega$ hold, so the manifold is locally conformally flat.
+  \source{petersen:page-0176,petersen:page-0177}
+\end{remark}
+
+\begin{remark}[Exercise 4.7.20 — conformal flatness of $N^2\times\mathbb{R}$]
+  \label{rem:pet-ch4-ex-20}
+  \lean{PetersenLib.exercise4_7_20}
+  For $(N^2\times\mathbb{R},g_N+g_{\mathbb{R}})$: (1) show
+  $P_{N\times\mathbb{R}}=\tfrac{\mathrm{scal}_N}2(g_N-g_{\mathbb{R}})$; (2) show this product
+  metric is conformally flat iff $\mathrm{scal}_N$ is constant.
+  \source{petersen:page-0177}
+\end{remark}
+
+\begin{remark}[Exercise 4.7.21 — explicit conformal factor for constant curvature]
+  \label{rem:pet-ch4-ex-21}
+  \lean{PetersenLib.exercise4_7_21}
+  \uses{rem:pet-ch4-ex-19}
+  Let $(M^n,g)$, $n>2$, have constant curvature $k$. (1) Use exercise 4.7.19
+  to show the metric is locally conformally flat. (2) If
+  $g=e^{-2\psi}\big((dx^1)^2+\dots+(dx^n)^2\big)$, show
+  $2e^\psi\partial_i\partial_j\psi=\big(k+\sum_k(\partial_ke^\psi)^2\big)\delta_{ij}$.
+  (3) Show $e^\psi=a+\sum_ib_ix^i+c\sum_i(x^i)^2$ with $k=4ac-\sum_ib_i^2$.
+  \source{petersen:page-0178}
+\end{remark}
+
+\begin{remark}[Exercise 4.7.22 — the Heisenberg group]
+  \label{rem:pet-ch4-ex-22}
+  \lean{PetersenLib.exercise4_7_22}
+  \uses{def:pet-ch4-left-invariant-metric-lie}
+  For the Heisenberg group $G$ of upper unitriangular $3\times3$ matrices with
+  Lie algebra basis $X,Y,Z$: (1) show the only nonzero bracket is $[X,Y]=Z$;
+  declare $X,Y,Z$ orthonormal for a left-invariant metric. (2) Show
+  $\mathrm{Ric}$ has both positive and negative eigenvalues. (3) Show
+  $\mathrm{scal}$ is constant. (4) Show $\mathrm{Ric}$ is not parallel.
+  \source{petersen:page-0178}
+\end{remark}
+
+\begin{remark}[Exercise 4.7.23 — the Eguchi--Hanson metric is Ricci flat]
+  \label{rem:pet-ch4-ex-23}
+  \lean{PetersenLib.exercise4_7_23}
+  \uses{ex:pet-ch4-general-berger-metric}
+  For $dr^2+\rho^2(r)\big(\phi^2(r)(\sigma^1)^2+(\sigma^2)^2+(\sigma^3)^2\big)$
+  (in the coframe dual to the left-invariant frame $X_1,X_2,X_3$ of
+  \cref{ex:pet-ch4-general-berger-metric} on $S^3$):
+  (1) show that $\dot\rho=\phi$, $\dot\rho^2=1-k\rho^{-4}$,
+  $\rho(0)=k^{1/4}$, $\dot\rho(0)=0$, $\phi(0)=0$, $\dot\phi(0)=2$ give a family
+  of Ricci-flat metrics on $TS^2$. (2) Show $\rho(r)\sim r$, $\dot\rho(r)\sim1$,
+  and (a further derivative) $\sim2kr^{-5}$ as $r\to\infty$; conclude
+  curvatures are $O(r^{-6})$ and the metric looks like
+  $(0,\infty)\times\mathbb{RP}^3=(0,\infty)\times SO(3)$ at infinity, that
+  rescaling corresponds to changing $k$, and that this is (up to scale) the
+  unique Ricci-flat \emph{Eguchi--Hanson metric}.
+  \source{petersen:page-0178,petersen:page-0179}
+\end{remark}
+
+\begin{remark}[Exercise 4.7.24 — the Kähler/Hermitian structure and scalar-flat bundle metrics]
+  \label{rem:pet-ch4-ex-24}
+  \lean{PetersenLib.exercise4_7_24}
+  \uses{rem:pet-ch4-ex-23}
+  For $dr^2+\rho^2(r)\big(\phi^2(r)(\sigma^1)^2+(\sigma^2)^2+(\sigma^3)^2\big)$
+  and the $(1,1)$-tensor represented (in the orthonormal frame) by the block
+  matrix $\begin{bsmallmatrix}0&-1&0&0\\1&0&0&0\\0&0&0&-1\\0&0&1&0\end{bsmallmatrix}$,
+  which defines a Hermitian structure: (1) show this structure is Kähler
+  (parallel) iff $\dot\rho=\phi$. (2) Find the scalar curvature of such
+  metrics. (3) Show there are scalar-flat metrics on all $2$-dimensional
+  vector bundles over $S^2$: the one on $TS^2$ is the Eguchi--Hanson metric,
+  and the one on $S^2\times\mathbb{R}^2$ is the Schwarzschild metric.
+  \source{petersen:page-0179}
+\end{remark}
+
+\begin{remark}[Exercise 4.7.25 — nonpositive Ricci curvature on the tautological bundle]
+  \label{rem:pet-ch4-ex-25}
+  \lean{PetersenLib.exercise4_7_25}
+  \uses{ex:pet-ch4-scalar-flat-tautological-bundle}
+  Show that $\tau(\mathbb{RP}^{n-1})$ admits rotationally symmetric metrics
+  $dr^2+\rho^2(r)ds_{n-1}^2$ with $\rho(r)=r$ for $r>1$ and nonpositive Ricci
+  curvature, i.e.\ the Euclidean metric can be topologically perturbed to have
+  nonpositive Ricci curvature (though not, similarly, to have nonnegative
+  scalar curvature or nonpositive sectional curvature — examine rotationally
+  symmetric metrics on $\mathbb{R}^n$ and $\tau(\mathbb{RP}^{n-1})$).
+  \source{petersen:page-0179}
+\end{remark}
+
+\begin{remark}[Exercise 4.7.26 — orthogonal coordinates]
+  \label{rem:pet-ch4-ex-26}
+  \lean{PetersenLib.exercise4_7_26}
+  A manifold admits \emph{orthogonal coordinates} at $p$ if in some coordinate
+  neighborhood $g_{ij}=0$ for $i\ne j$. Show such coordinates always exist in
+  dimension $2$ (and, though not proved here, dimension $3$), but may fail to
+  exist in dimension $>3$; for a counterexample, show that in orthogonal
+  coordinates the curvatures $R^i_{jk\ell}=0$ whenever all indices are
+  distinct.
+  \source{petersen:page-0179,petersen:page-0180}
+\end{remark}
+
+\begin{remark}[Exercise 4.7.27 — nonvanishing of the Schwarzschild and Eguchi--Hanson Weyl tensors]
+  \label{rem:pet-ch4-ex-27}
+  \lean{PetersenLib.exercise4_7_27}
+  \uses{prop:pet-ch4-schwarzschild-ricci-flat,rem:pet-ch4-ex-23}
+  Show the Weyl tensors for the Schwarzschild metric and the Eguchi--Hanson
+  metric are nonzero.
+  \source{petersen:page-0180}
+\end{remark}
+
+\begin{remark}[Exercise 4.7.28 — the Hodge star and the block decomposition of the curvature operator]
+  \label{rem:pet-ch4-ex-28}
+  \lean{PetersenLib.exercise4_7_28}
+  \uses{thm:pet-ch4-doubly-warped-curvature,ex:pet-ch4-general-berger-metric,prop:pet-ch4-cpn-einstein}
+  Let $(M^4,g)$ be oriented, and $*:\Lambda^2TM\to\Lambda^2TM$ the Hodge star,
+  $*(e_1\wedge e_2)=e_3\wedge e_4$ for oriented orthonormal $e_1,\dots,e_4$. (1)
+  Show $*$ is a well-defined endomorphism with $**=I$ (and in dimension $2$,
+  $*:TM\to TM$ satisfies $**=-I$, an almost complex structure). (2) Show
+  $e_1\wedge e_2\pm e_3\wedge e_4$, $e_1\wedge e_3\pm e_4\wedge e_2$,
+  $e_1\wedge e_4\pm e_2\wedge e_3$ lie in the $\pm1$ eigenspaces
+  $\Lambda^\pm TM$ of $*$. (3) Deduce the block decomposition
+  $\mathfrak R=\begin{bsmallmatrix}A&D\\B&C\end{bsmallmatrix}$ with
+  $A=W^++\tfrac{\mathrm{scal}}{12}I$, $C=W^-+\tfrac{\mathrm{scal}}{12}I$,
+  $D=B^*$; find these decompositions for the doubly warped metrics
+  $dr^2+\rho^2(r)d\theta^2+\phi^2(r)ds_2^2$ on $I\times S^1\times S^2$ and
+  $dr^2+\rho^2(r)\big(\phi^2(r)(\sigma^1)^2+(\sigma^2)^2+(\sigma^3)^2\big)$ on
+  $I\times S^3$. (4) Find the curvature operators for the Schwarzschild
+  metric, the Eguchi--Hanson metric, $S^2\times S^2$, $S^4$, and $\mathbb{CP}^2$.
+  (5) Show $(M,g)$ is Einstein iff $B=0$ iff $\mathrm{sec}(\pi)=\mathrm{sec}(\pi^\perp)$
+  for every plane $\pi$ and its orthogonal complement $\pi^\perp$.
+  \source{petersen:page-0180,petersen:page-0181}
+\end{remark}

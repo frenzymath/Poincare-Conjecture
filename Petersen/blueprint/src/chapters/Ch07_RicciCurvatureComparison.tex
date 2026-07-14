@@ -1,0 +1,2025 @@
+\chapter{Ricci Curvature Comparison}
+\label{chap:pet-ricci-curvature-comparison}
+
+\newcommand{\Ric}{\operatorname{Ric}}
+\newcommand{\Hess}{\operatorname{Hess}}
+\newcommand{\vol}{\operatorname{vol}}
+\newcommand{\diam}{\operatorname{diam}}
+\newcommand{\Iso}{\mathrm{Iso}}
+\newcommand{\snk}{\mathrm{sn}}
+
+Faithful transcription of Petersen, \emph{Riemannian Geometry} (GTM 171, 3rd ed.),
+Chapter 7. The chapter develops the analytic consequences of a lower Ricci
+curvature bound: the trace identities for the Laplacian and volume form of a
+distance function and the resulting Bishop--Gromov absolute and relative
+volume comparison theorems (§7.1.1--7.1.2); the maximum principle for
+functions with one-sided Hessian or Laplacian bounds in the barrier
+(support-function) sense, the Laplacian comparison theorem of Calabi, the
+segment inequality of Cheeger and Colding and the weak Poincaré and
+Poincaré--Sobolev inequalities it implies, and the Rellich compactness theorem
+(§7.1.3--7.1.5); applications to finiteness of fundamental groups and to the
+rigidity of manifolds attaining the maximal diameter allowed by Myers'
+theorem (§7.2); the Cheeger--Gromoll splitting theorem and the resulting
+structure theory for compact manifolds of nonnegative Ricci curvature (§7.3);
+a guide to further reading (§7.4); and the chapter's exercises (§7.5).
+
+\section{Volume Comparison}
+
+\subsection{The Fundamental Equations}
+
+Throughout §7.1, $(M,g)$ is a complete Riemannian $n$-manifold and
+$r(x)=|xp|$ a distance function, smooth on an open set $U\subset M$ (from
+§7.1.3 on, $U$ is the image of the interior of the segment domain at $p$, see
+§5.7.3). Write $\partial_r=\nabla r$. Recall the fundamental equations for the
+metric along $r$ (Proposition 3.2.11):
+\[
+  L_{\partial_r}g=2\Hess r,
+  \qquad
+  (\nabla_{\partial_r}\Hess r)(X,Y)+\Hess^2r(X,Y)=-R(X,\partial_r,\partial_r,Y),
+\]
+where $\Hess r(X,Y)=g(\nabla_X\partial_r,Y)$ and
+$\Hess^2r(X,Y)=g(\nabla_X\partial_r,\nabla_Y\partial_r)$ (writing $\Hess r$
+also for the associated self-adjoint operator). There is an analogous pair of
+equations for the volume form.
+
+\begin{proposition}[Proposition 7.1.1]
+  \label{prop:pet-ch7-volume-form-laplacian-trace}
+  \lean{PetersenLib.volumeFormLaplacianTraceIdentities}
+  The volume form $\vol$ and Laplacian $\Delta r$ of a smooth distance
+  function $r$ satisfy
+  \[
+    \text{(tr1)}\quad L_{\partial_r}\vol=\Delta r\,\vol,
+    \qquad
+    \text{(tr2)}\quad \partial_r\Delta r+\frac{(\Delta r)^2}{n-1}
+    \le\partial_r\Delta r+|\Hess r|^2=-\Ric(\partial_r,\partial_r).
+  \]
+  \source{petersen:page-0291,petersen:page-0292}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch7-volume-form-laplacian-trace}
+  (tr1) is one of the equivalent characterizations of $\Delta r$ established
+  in §2.1.3, recalled here for use in this chapter.
+
+  For (tr2), fix $p\in U$ and choose an orthonormal frame $E_1,\dots,E_n$ near
+  $p$ that is parallel along the integral curve of $\partial_r$ through $p$
+  (i.e.\ $\nabla_{\partial_r}E_i=0$); set $X=Y=E_i$ in the second fundamental
+  equation and sum over $i$. On the right,
+  \[
+    \sum_{i=1}^nR(E_i,\partial_r,\partial_r,E_i)=\Ric(\partial_r,\partial_r).
+  \]
+  On the left, parallelism of the frame lets the derivative pass through the
+  trace,
+  \[
+    \sum_{i=1}^n(\nabla_{\partial_r}\Hess r)(E_i,E_i)
+    =\partial_r\sum_{i=1}^n\Hess r(E_i,E_i)=\partial_r\Delta r,
+  \]
+  while, using $\Hess r(X,Y)=g(\nabla_X\partial_r,Y)$ and expanding
+  $\nabla_{E_i}\partial_r$ in the frame,
+  \[
+    \sum_{i=1}^n\Hess^2r(E_i,E_i)
+    =\sum_{i=1}^ng(\nabla_{E_i}\partial_r,\nabla_{E_i}\partial_r)
+    =\sum_{i,j=1}^ng(\nabla_{E_i}\partial_r,E_j)^2
+    =|\Hess r|^2.
+  \]
+  Together these give the equality
+  $\partial_r\Delta r+|\Hess r|^2=-\Ric(\partial_r,\partial_r)$.
+
+  It remains to show $(\Delta r)^2/(n-1)\le|\Hess r|^2$. Take
+  $E_1=\partial_r$; since $|\nabla r|\equiv1$ forces $\Hess
+  r(\partial_r,\cdot)=0$ (differentiate $g(\partial_r,\partial_r)=1$ along any
+  direction), the sum defining $|\Hess r|^2$ has no $i=1$ or $j=1$ terms:
+  \[
+    |\Hess r|^2=\sum_{i,j=1}^ng(\nabla_{E_i}\partial_r,E_j)^2
+    =\sum_{i,j=2}^ng(\nabla_{E_i}\partial_r,E_j)^2.
+  \]
+  Writing $A=[g(\nabla_{E_i}\partial_r,E_j)]_{2\le i,j\le n}$, an
+  $(n-1)\times(n-1)$ matrix, the Cauchy--Schwarz inequality applied to the
+  Frobenius inner product of $A$ against the identity matrix $I_{n-1}$ gives
+  \[
+    (\operatorname{tr}A)^2=\langle A,I_{n-1}\rangle^2
+    \le|A|^2|I_{n-1}|^2=(n-1)|A|^2,
+  \]
+  i.e.\ $|A|^2\ge(\operatorname{tr}A)^2/(n-1)$. Since
+  $\operatorname{tr}A=\sum_{i=2}^ng(\nabla_{E_i}\partial_r,E_i)=\Delta r$ (the
+  $i=1$ term of the full trace vanishes, as just noted) and $|A|^2=|\Hess
+  r|^2$, this is exactly $|\Hess r|^2\ge(\Delta r)^2/(n-1)$, completing the
+  proof of (tr2).
+\end{proof}
+
+Work in exponential polar coordinates at $p$: write $g=dr^2+g_r$ and let
+$\vol_{n-1}$ denote the canonical volume form on $S^{n-1}(1)$. The volume form
+of $g$ then factors as $\vol=\lambda(r,\theta)\,dr\wedge\vol_{n-1}$,
+$\theta\in S^{n-1}$, for a positive function $\lambda$, the \emph{polar
+density}. Since $L_{\partial_r}dr=0$ and $L_{\partial_r}\vol_{n-1}=0$ (both
+are pulled back from the unit-sphere factor, independent of $r$), applying
+(tr1) to this expression gives $L_{\partial_r}\vol=\partial_r(\lambda)\,dr
+\wedge\vol_{n-1}$, so (tr1) reduces to the scalar ODE
+$\partial_r\lambda=\lambda\,\Delta r$.
+
+\begin{definition}[polar density and its constant-curvature model]
+  \label{def:pet-ch7-polar-density}
+  \lean{PetersenLib.polarDensity,PetersenLib.polarDensityConstantCurvature}
+  \uses{prop:pet-ch7-volume-form-laplacian-trace}
+  In exponential polar coordinates $g=dr^2+g_r$ at $p$, the \emph{polar
+  density} $\lambda(r,\theta)>0$ is defined by
+  $\vol=\lambda\,dr\wedge\vol_{n-1}$; it satisfies
+  $\partial_r\lambda=\lambda\,\Delta r$. In the constant curvature $k$ space
+  form, $g_k=dr^2+\snk_k^2(r)\,ds_{n-1}^2$, and the corresponding density
+  $\lambda_k(r)=\snk_k^{n-1}(r)$ satisfies the same relation with
+  $\Delta r=(n-1)\snk_k'(r)/\snk_k(r)$:
+  \[
+    \partial_r\big(\snk_k^{n-1}(r)\big)
+    =(n-1)\frac{\snk_k'(r)}{\snk_k(r)}\,\snk_k^{n-1}(r).
+  \]
+  \source{petersen:page-0292,petersen:page-0293}
+\end{definition}
+
+\subsection{Volume Estimation}
+
+With \cref{prop:pet-ch7-volume-form-laplacian-trace} and the polar density in
+hand we obtain volume estimates analogous to the metric and Hessian
+comparison estimates of §6.4, now under a lower Ricci (rather than sectional)
+curvature bound.
+
+\begin{lemma}[Lemma 7.1.2 — Ricci Comparison]
+  \label{lem:pet-ch7-ricci-comparison-mean-curvature}
+  \lean{PetersenLib.ricciMeanCurvatureComparison}
+  \uses{prop:pet-ch7-volume-form-laplacian-trace,def:pet-ch7-polar-density}
+  If $(M,g)$ has $\Ric\ge(n-1)k$ for some $k\in\mathbb{R}$, then
+  \[
+    \Delta r\le(n-1)\frac{\snk_k'(r)}{\snk_k(r)},
+    \qquad
+    \partial_r\Big(\frac{\lambda}{\lambda_k}\Big)\le0,
+    \qquad
+    \lambda(r,\theta)\le\lambda_k(r)=\snk_k^{n-1}(r).
+  \]
+  \source{petersen:page-0293}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch7-ricci-comparison-mean-curvature}
+  Divide (tr2) by $n-1$: with $\rho=\Delta r/(n-1)$,
+  \[
+    \partial_r\rho+\rho^2\le\frac{1}{n-1}\Big(\partial_r\Delta r+|\Hess r|^2\Big)
+    =-\frac{\Ric(\partial_r,\partial_r)}{n-1}\le-k,
+  \]
+  using \cref{prop:pet-ch7-volume-form-laplacian-trace} and the hypothesis
+  $\Ric\ge(n-1)k$. Thus $\rho$ solves the Riccati differential inequality
+  $\dot\rho+\rho^2\le-k$ along $\partial_r$, with the same singular behavior
+  $\rho(r)=1/r+O(r)$ as $r\to0$ as the comparison solution
+  $\rho_k(t)=\snk_k'(t)/\snk_k(t)$, which solves $\dot\rho_k+\rho_k^2=-k$
+  exactly. By the Riccati comparison estimate of Chapter 6 (Corollary 6.4.2),
+  $\rho(r)\le\rho_k(r)$, i.e.
+  $\Delta r\le(n-1)\snk_k'(r)/\snk_k(r)$.
+
+  For the second inequality, \cref{def:pet-ch7-polar-density} gives
+  $\partial_r\lambda=\lambda\Delta r\le(n-1)\dfrac{\snk_k'(r)}{\snk_k(r)}\lambda$
+  (using $\lambda>0$ and the first inequality) and, exactly,
+  $\partial_r\lambda_k=(n-1)\dfrac{\snk_k'(r)}{\snk_k(r)}\lambda_k$. Since
+  $\lambda_k>0$ on the relevant range of $r$, the quotient rule gives
+  \[
+    \partial_r\Big(\frac{\lambda}{\lambda_k}\Big)
+    =\frac{\lambda_k\,\partial_r\lambda-\lambda\,\partial_r\lambda_k}{\lambda_k^2}
+    \le\frac{\lambda_k\cdot(n-1)\frac{\snk_k'}{\snk_k}\lambda
+      -\lambda\cdot(n-1)\frac{\snk_k'}{\snk_k}\lambda_k}{\lambda_k^2}=0.
+  \]
+
+  Finally, near $r=0$ the polar density of any metric has the expansion
+  $\lambda(r,\theta)=r^{n-1}+O(r^n)$ (the leading term of the volume of a
+  small geodesic ball, from the Jacobi field expansion of $\exp_p$), and
+  likewise $\snk_k(r)=r+O(r^3)$ gives
+  $\lambda_k(r)=\snk_k^{n-1}(r)=r^{n-1}+O(r^n)$; hence
+  $\lim_{r\to0}\lambda(r,\theta)/\lambda_k(r)=1$. Combined with
+  $\partial_r(\lambda/\lambda_k)\le0$, the ratio $\lambda/\lambda_k$ is
+  nonincreasing from its limiting value $1$ at $r=0$, so
+  $\lambda(r,\theta)\le\lambda_k(r)$ for all $r$ in the domain.
+\end{proof}
+
+\begin{lemma}[Lemma 7.1.3]
+  \label{lem:pet-ch7-absolute-volume-comparison}
+  \lean{PetersenLib.absoluteVolumeComparison}
+  \uses{lem:pet-ch7-ricci-comparison-mean-curvature}
+  If $(M,g)$ has $\Ric\ge(n-1)k$, then $\vol B(p,r)\le v(n,k,r)$, where
+  $v(n,k,r)$ is the volume of a metric ball of radius $r$ in the constant
+  curvature space form $S^n_k$.
+  \source{petersen:page-0294}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch7-absolute-volume-comparison}
+  In exponential polar coordinates at $p$,
+  \[
+    \vol B(p,r)
+    =\int_{S^{n-1}\cap B(0,r)}\lambda(r,\theta)\,dr\wedge\vol_{n-1}
+    \le\int_{S^{n-1}\cap B(0,r)}\lambda_k(r)\,dr\wedge\vol_{n-1}
+    \le\int_{B(0,r)}\vol_k
+    =v(n,k,r),
+  \]
+  the first inequality by
+  \cref{lem:pet-ch7-ricci-comparison-mean-curvature} and the second by
+  extending the domain of integration from (a subset of) the segment domain
+  at $p$ to all of the model ball $B(0,r)$ in $S^n_k$, using that the
+  integrand $\lambda_k(r)$ is nonnegative.
+\end{proof}
+
+With a little more work, the absolute bound of
+\cref{lem:pet-ch7-absolute-volume-comparison} improves to a relative
+statement — the \emph{relative volume comparison} estimate, used repeatedly
+throughout the rest of the book.
+
+\begin{lemma}[Lemma 7.1.4 — Relative Volume Comparison, Bishop, 1964, and Gromov, 1980]
+  \label{lem:pet-ch7-relative-volume-comparison}
+  \lean{PetersenLib.relativeVolumeComparison}
+  \uses{lem:pet-ch7-ricci-comparison-mean-curvature}
+  Let $(M,g)$ be complete with $\Ric\ge(n-1)k$. The volume ratio
+  \[
+    r\mapsto\frac{\vol B(p,r)}{v(n,k,r)}
+  \]
+  is a nonincreasing function of $r$, with limit $1$ as $r\to0$.
+  \source{petersen:page-0294,petersen:page-0295}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch7-relative-volume-comparison}
+  Work in exponential polar coordinates at $p$. The polar density $\lambda$
+  of $(M,g)$ is defined a priori only on the (star-shaped) segment domain in
+  $T_pM\cong\mathbb{R}^n$; extend it by $\lambda=0$ outside. The comparison
+  density $\lambda_k$ is defined on all of $\mathbb{R}^n$ when $k\le0$ and on
+  $B(0,\pi/\sqrt k)$ when $k>0$; in the latter case extend $\lambda_k=0$
+  outside $B(0,\pi/\sqrt k)$, and note that Myers' diameter theorem (Theorem
+  6.3.3) forces $\lambda=0$ outside $B(0,\pi/\sqrt k)$ as well when $k>0$
+  (since $M$ then has diameter $\le\pi/\sqrt k$, so no point of the segment
+  domain lies at distance $>\pi/\sqrt k$ from $p$); it therefore suffices to
+  consider $r<\pi/\sqrt k$ in that case. In either case,
+  $0\le\lambda(r,\theta)\le\lambda_k(r)$ for all $(r,\theta)$, by
+  \cref{lem:pet-ch7-ricci-comparison-mean-curvature}.
+
+  Write $N(R)=\int_0^R\int_{S^{n-1}}\lambda\,dr\wedge\vol_{n-1}=\vol B(p,R)$
+  and $D(R)=\int_0^R\int_{S^{n-1}}\lambda_k\,dr\wedge\vol_{n-1}=v(n,k,R)$.
+  Differentiating the quotient,
+  \[
+    \frac{d}{dR}\frac{N(R)}{D(R)}=\frac{N'(R)D(R)-N(R)D'(R)}{D(R)^2},
+  \]
+  where $N'(R)=\int_{S^{n-1}}\lambda(R,\theta)\,\vol_{n-1}$ and
+  $D'(R)=\int_{S^{n-1}}\lambda_k(R)\,\vol_{n-1}$. Writing
+  $D(R)=\int_0^RD'(r)\,dr$, $N(R)=\int_0^RN'(r)\,dr$, this becomes
+  \[
+    \frac{d}{dR}\frac{N(R)}{D(R)}
+    =D(R)^{-2}\int_0^R\Big(N'(R)D'(r)-D'(R)N'(r)\Big)\,dr,
+  \]
+  so it suffices that $N'(R)D'(r)\le D'(R)N'(r)$ for all $r\le R$, i.e.\
+  (since $D'(r)=\omega_{n-1}\lambda_k(r)>0$) that
+  \[
+    r\mapsto\frac{N'(r)}{D'(r)}
+    =\frac{1}{\omega_{n-1}}\int_{S^{n-1}}\frac{\lambda(r,\theta)}{\lambda_k(r)}\,\vol_{n-1}
+  \]
+  is nonincreasing. By \cref{lem:pet-ch7-ricci-comparison-mean-curvature},
+  $\partial_r(\lambda(r,\theta)/\lambda_k(r))\le0$ pointwise in $\theta$, so
+  the average over $\theta\in S^{n-1}$ is nonincreasing in $r$ as well. Hence
+  $N(R)/D(R)=\vol B(p,R)/v(n,k,R)$ is nonincreasing in $R$.
+
+  Finally, $\lim_{r\to0}\lambda(r,\theta)/\lambda_k(r)=1$ uniformly in
+  $\theta$ (established in the proof of
+  \cref{lem:pet-ch7-ricci-comparison-mean-curvature}), so
+  $N'(r)/D'(r)\to1$ as $r\to0$; since also $N(r),D(r)\to0$ with $D(r)>0$ for
+  $r>0$, this gives $N(r)/D(r)\to1$ as $r\to0$ as well.
+\end{proof}
+
+\subsection{The Maximum Principle}
+
+We explain how one can assign second derivatives to functions at points where
+the function is not smooth, using \emph{support functions} (also called
+barrier functions in PDE theory) rather than the generalized gradients of
+Lipschitz functions.
+
+\begin{lemma}[Lemma 7.1.5]
+  \label{lem:pet-ch7-hessian-touching-comparison}
+  \lean{PetersenLib.hessianTouchingComparison}
+  If $f,h:(M,g)\to\mathbb{R}$ are $C^2$ functions such that $f(p)=h(p)$ and
+  $f(x)\ge h(x)$ for all $x$ near $p$, then
+  \[
+    \nabla f(p)=\nabla h(p),\qquad \Hess f|_p\ge \Hess h|_p,\qquad \Delta f(p)\ge \Delta h(p).
+  \]
+  \source{petersen:page-0295,petersen:page-0296}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch7-hessian-touching-comparison}
+  If $(M,g)\subset(\mathbb{R},g_\mathbb{R})$ this is standard single-variable calculus.
+  In general let $c:(-\varepsilon,\varepsilon)\to M$ be a curve with $c(0)=p$. Applying
+  the one-dimensional statement to $f\circ c,\,h\circ c$ (which agree at $0$ and
+  satisfy $f\circ c\ge h\circ c$ near $0$) gives
+  \[
+    df(\dot c(0))=dh(\dot c(0)),\qquad \Hess f(\dot c(0),\dot c(0))\ge \Hess h(\dot c(0),\dot c(0)).
+  \]
+  Letting $v=\dot c(0)$ range over all of $T_pM$ (every $v$ is $\dot c(0)$ for
+  some geodesic $c$ with $c(0)=p$) yields $\nabla f(p)=\nabla h(p)$ and
+  $\Hess f|_p\ge\Hess h|_p$; taking traces gives $\Delta f(p)\ge \Delta h(p)$.
+\end{proof}
+
+\begin{definition}[support functions; barrier-sense Hessian and Laplacian bounds]
+  \label{def:pet-ch7-support-function}
+  \lean{PetersenLib.SupportFunctionBelow,PetersenLib.barrierHessBound}
+  \uses{lem:pet-ch7-hessian-touching-comparison}
+  By \cref{lem:pet-ch7-hessian-touching-comparison}, a $C^2$ function
+  $f:M\to\mathbb{R}$ has $\Hess f|_p\ge B$ for a symmetric bilinear form $B$ on $T_pM$
+  (respectively $\Delta f(p)\ge a\in\mathbb{R}$) if and only if for every
+  $\varepsilon>0$ there is a function $f_\varepsilon$ defined near $p$, called a
+  \emph{support function from below} for $f$ at $p$, with
+  \begin{enumerate}
+    \item[(1)] $f_\varepsilon(p)=f(p)$;
+    \item[(2)] $f(x)\ge f_\varepsilon(x)$ near $p$;
+    \item[(3)] $\Hess f_\varepsilon|_p\ge B-\varepsilon g|_p$ (respectively
+      $\Delta f_\varepsilon(p)\ge a-\varepsilon$).
+  \end{enumerate}
+  \emph{Support functions from above} are defined symmetrically and give upper
+  bounds for $\Hess f$ and $\Delta f$. For a merely continuous $f:(M,g)\to\mathbb{R}$
+  one \emph{defines} $\Hess f|_p\ge B$ (respectively $\Delta f(p)\ge a$), said to
+  hold in the \emph{support} or \emph{barrier sense}, to mean that such smooth
+  support functions $f_\varepsilon$ from below exist for every $\varepsilon>0$.
+  A continuous $f:(M,g)\to\mathbb{R}$ is \emph{convex} if $\Hess f\ge0$ everywhere in
+  this sense; this matches the classical definition when $(M,g)\subset(\mathbb{R},g_\mathbb{R})$.
+  \source{petersen:page-0296}
+\end{definition}
+
+\begin{theorem}[Theorem 7.1.6]
+  \label{thm:pet-ch7-convex-constant-near-max}
+  \lean{PetersenLib.convexHessNonnegConstantNearMax}
+  \uses{def:pet-ch7-support-function}
+  If $f:(M,g)\to\mathbb{R}$ is continuous with $\Hess f\ge0$ everywhere, then $f$ is
+  constant near any local maximum. In particular, $f$ cannot have a global
+  maximum unless $f$ is constant.
+  \source{petersen:page-0296}
+\end{theorem}
+
+\begin{definition}[subharmonic and superharmonic functions]
+  \label{def:pet-ch7-subharmonic-superharmonic}
+  \lean{PetersenLib.IsSubharmonic,PetersenLib.IsSuperharmonic}
+  \uses{def:pet-ch7-support-function}
+  A continuous $f:(M,g)\to\mathbb{R}$ with $\Delta f\ge0$ everywhere (in the support
+  sense) is \emph{subharmonic}; if $\Delta f\le0$ it is \emph{superharmonic}.
+  \source{petersen:page-0296}
+\end{definition}
+
+\begin{theorem}[Theorem 7.1.7 — The Strong Maximum Principle]
+  \label{thm:pet-ch7-strong-maximum-principle}
+  \lean{PetersenLib.strongMaximumPrinciple}
+  \uses{def:pet-ch7-subharmonic-superharmonic,thm:pet-ch7-convex-constant-near-max}
+  If $f:(M,g)\to\mathbb{R}$ is continuous and subharmonic, then $f$ is constant in a
+  neighborhood of every local maximum. In particular, if $f$ has a global
+  maximum then $f$ is constant.
+  \source{petersen:page-0296,petersen:page-0297,petersen:page-0298}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch7-strong-maximum-principle,def:pet-ch7-support-function,lem:pet-ch7-hessian-touching-comparison}
+  First suppose $\Delta f>0$ everywhere. If $f$ had a local maximum at
+  $p$, there would be a smooth support function $f_\varepsilon$ from below with
+  $f_\varepsilon(p)=f(p)$, $f_\varepsilon\le f$ near $p$, and
+  $\Delta f_\varepsilon(p)>0$. Conditions (1)-(2) force $f_\varepsilon$ also to
+  have a local maximum at $p$, so $\Hess f_\varepsilon(p)\le0$ and hence
+  $\Delta f_\varepsilon(p)\le0$, a contradiction. Thus $f$ has no local maxima
+  at all in this case.
+
+  Now assume only $\Delta f\ge0$, and let $p\in M$ be a local maximum. For
+  $r<\operatorname{inj}(p)$ small enough, $f|_{B(p,r)}$ has a global maximum at
+  $p$. If $f$ is constant on $B(p,r)$ we are done; otherwise, after possibly
+  shrinking $r$, there is $x_0\in\partial B(p,r)$ with $f(x_0)\ne f(p)$. Put
+  \[
+    V=\{x\in\partial B(p,r)\mid f(x)=f(p)\}.
+  \]
+  Choose an open disc $U\subset\partial B(p,r)$ containing $V$ and a function
+  $\phi$ with $\phi(p)=0$, $\phi<0$ on $U$, and $\nabla\phi\ne0$ on
+  $\overline{B}(p,r)$: take $\phi=x^1$ in a coordinate system $(x^1,\dots,x^n)$
+  centered at $p$ chosen so that $U$ lies in $\{x^1<0\}$. For $\alpha$ large
+  enough,
+  \[
+    h=e^{\alpha\phi}-1
+  \]
+  satisfies $\Delta h=\alpha e^{\alpha\phi}(\alpha|\nabla\phi|^2+\Delta\phi)>0$
+  on $\overline{B}(p,r)$, while $h(p)=0$ and $h<0$ on $V\subset U$ (since
+  $\phi<0$ there).
+
+  Consider $\bar f=f+\delta h$ on $\overline{B}(p,r)$. For $\delta>0$ small
+  enough, $h<0$ on $V$ and continuity of $f-f(p)$ (which vanishes only on $V$
+  among boundary maximizers) force
+  \[
+    \bar f(p)=f(p)>\max\{\bar f(x)\mid x\in\partial B(p,r)\},
+  \]
+  so $\bar f$ has a local maximum at some interior point $q\in B(p,r)$. Fix
+  $\varepsilon>0$ and let $f_\varepsilon$ be a support function from below for
+  $f$ at $q$; then $f_\varepsilon+\delta h$ is a support function from below
+  for $\bar f$ at $q$, and
+  \[
+    \Delta(f_\varepsilon+\delta h)(q)\ge-\varepsilon+\delta\,\Delta h(q),
+  \]
+  which is positive for $\varepsilon$ small since $\Delta h(q)>0$. This
+  contradicts the first paragraph applied to $\bar f$ (which has $\Delta\bar
+  f>0$ in the support sense near its interior maximum $q$), so no such $x_0$
+  exists and $f$ is constant on $B(p,r)$.
+\end{proof}
+
+\begin{definition}[linear and harmonic functions]
+  \label{def:pet-ch7-linear-harmonic-function}
+  \lean{PetersenLib.IsLinearFunction,PetersenLib.IsHarmonicFunction}
+  \uses{def:pet-ch7-support-function}
+  A continuous $f:(M,g)\to\mathbb{R}$ is \emph{linear} if $\Hess f\equiv0$, i.e.\
+  both $\Hess f\ge0$ and $\Hess f\le0$ hold everywhere in the support sense.
+  Then $f\circ c$ is both convex and concave along every geodesic $c$, so
+  $(f\circ c)(t)=f(c(0))+at$; equivalently
+  $f\circ\exp_p(x)=f(p)+g(v_p,x)$ for a fixed $v_p\in T_pM$, and $f$ is
+  automatically $C^\infty$ with $\nabla f|_p=v_p$. More generally, $f$ is
+  \emph{harmonic} if it is continuous with $\Delta f=0$ (in the support sense).
+  \source{petersen:page-0298}
+\end{definition}
+
+\begin{theorem}[Theorem 7.1.8 — Regularity of harmonic functions]
+  \label{thm:pet-ch7-harmonic-regularity}
+  \lean{PetersenLib.harmonicFunctionRegularity}
+  \uses{def:pet-ch7-linear-harmonic-function}
+  If $f:(M,g)\to\mathbb{R}$ is continuous and harmonic in the weak (support) sense,
+  then $f$ is smooth.
+  \source{petersen:page-0298,petersen:page-0299}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch7-harmonic-regularity,thm:pet-ch7-strong-maximum-principle}
+  Fix $p\in M$ and a neighborhood $\Omega$ of $p$ with smooth boundary,
+  contained in a coordinate chart. By standard, nontrivial elliptic PDE theory
+  the Dirichlet problem
+  \[
+    \Delta u=0,\qquad u|_{\partial\Omega}=f|_{\partial\Omega}
+  \]
+  has a solution $u$ that is smooth on the interior of $\Omega$. Consider
+  $u-f$ and $f-u$ on $\Omega$: both vanish on $\partial\Omega$, and each is
+  subharmonic (being the difference of a harmonic and a harmonic-in-the-weak-sense
+  function, so of two functions with $\Delta\ge0$, hence itself has $\Delta\ge0$
+  in the support sense). If both are $\le0$ on $\Omega$, they both vanish and
+  $f=u$ is smooth near $p$. Otherwise one of them is positive somewhere in
+  $\Omega$; being subharmonic and vanishing on $\partial\Omega$, it then attains
+  an interior global maximum, so by \cref{thm:pet-ch7-strong-maximum-principle}
+  it is constant on $\Omega$ — but a nonnegative constant vanishing on the
+  boundary must be $0$, a contradiction. Hence $f=u$ is smooth near $p$, and
+  since $p$ was arbitrary, $f$ is smooth on $M$.
+\end{proof}
+
+\subsection{Geometric Laplacian Comparison}
+
+The idea of using support functions to estimate the Laplacian is particularly
+convenient for geometric applications, since distance functions always have
+support functions from above (obtained from the triangle inequality along a
+fixed segment to the base point).
+
+\begin{lemma}[Lemma 7.1.9 — Calabi, 1958]
+  \label{lem:pet-ch7-laplacian-comparison-calabi}
+  \lean{PetersenLib.laplacianComparisonCalabi}
+  \uses{def:pet-ch7-support-function}
+  If $(M,g)$ is complete and $\Ric(M,g)\ge(n-1)k$, then any distance function
+  $r(x)=|xp|$ satisfies
+  \[
+    \Delta r(x)\le(n-1)\frac{\snk_k'(r(x))}{\snk_k(r(x))}.
+  \]
+  \source{petersen:page-0298,petersen:page-0299}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch7-laplacian-comparison-calabi,lem:pet-ch7-ricci-comparison-mean-curvature}
+  By \cref{lem:pet-ch7-ricci-comparison-mean-curvature} (mean curvature
+  comparison), the stated inequality already holds pointwise wherever $r$ is
+  smooth. In general fix $q\in M$ and a unit-speed segment $\sigma:[0,L]\to M$ with
+  $\sigma(0)=p$, $\sigma(L)=q$. By the triangle inequality,
+  \[
+    r_\varepsilon(x)=\varepsilon+|\sigma(\varepsilon)x|
+  \]
+  is a support function from above for $r$ at $q$: $r_\varepsilon(q)=r(q)$ and
+  $r_\varepsilon(x)\ge r(x)$ near $q$ (a segment from $\sigma(\varepsilon)$ to
+  $x$ together with the segment from $p$ to $\sigma(\varepsilon)$ need not be
+  the shortest path from $p$ to $x$).
+
+  Suppose first each $r_\varepsilon$ is smooth at $q$. Applying the smooth case
+  to the distance function based at $\sigma(\varepsilon)$,
+  \[
+    \Delta r_\varepsilon(q)\le(n-1)\frac{\snk_k'(r_\varepsilon(q))}{\snk_k(r_\varepsilon(q))}
+    =(n-1)\frac{\snk_k'(r(q)-\varepsilon)}{\snk_k(r(q)-\varepsilon)}
+    \searrow(n-1)\frac{\snk_k'(r(q))}{\snk_k(r(q))}
+  \]
+  as $\varepsilon\to0$, since $t\mapsto \snk_k'(t)/\snk_k(t)$ is decreasing.
+  Since $\Delta r(q)\le\Delta r_\varepsilon(q)$ for every $\varepsilon$ (as
+  $r_\varepsilon$ is a support function from above), letting $\varepsilon\to0$
+  gives the claimed bound at $q$.
+
+  It remains to justify smoothness of $r_\varepsilon$ at $q$ for $\varepsilon>0$
+  small. If $r_\varepsilon$ fails to be smooth at $q$, then (by the criterion
+  for smoothness of distance functions) either (1) there are two distinct
+  segments from $\sigma(\varepsilon)$ to $q$, or (2) $q$ is a critical value of
+  $\exp_{\sigma(\varepsilon)}$. Case (1) would produce a broken curve of length
+  $L$ from $p$ to $q$ (concatenating $\sigma|_{[0,\varepsilon]}$ with either of
+  the two segments), forced by minimality of $L=|pq|$ to itself be a
+  (necessarily smooth, hence unbroken) segment; this rules out two distinct
+  segments from $\sigma(\varepsilon)$ to $q$ unless they coincide, contradicting
+  (1). So case (2) must hold: $q$ is a critical value of
+  $\exp_{\sigma(\varepsilon)}$, which in turn forces $q$ to be a critical value
+  of $\exp_p$ as well (the segment $\sigma$ concatenated with a Jacobi field
+  vanishing at $\sigma(\varepsilon)$ produces a Jacobi field along $\sigma$
+  vanishing at $p$ that also degenerates at $q$), contradicting that $r=|{\cdot}p|$
+  is smooth at points that are not critical values of $\exp_p$ and that
+  $q\ne p$ lies on the minimizing segment $\sigma$, a locus on which $\exp_p$ is
+  nonsingular up to $q$. This contradiction shows $r_\varepsilon$ is smooth at
+  $q$ for $\varepsilon$ small, completing the proof.
+\end{proof}
+
+\subsection{The Segment, Poincaré, and Sobolev Inequalities}
+
+We use the volume comparison results of §7.1.2 to prove analytic inequalities
+used later in the book (Chapter 9). Throughout, for a bounded domain $B\subset
+M$ and $u:M\to\mathbb{R}$, write
+\[
+  \|u\|_{p,B}=\left(\frac{1}{\vol B}\int_B|u|^p\,\vol\right)^{1/p},\qquad
+  u_B=\frac{1}{\vol B}\int_Bu\,\vol.
+\]
+
+\begin{theorem}[Theorem 7.1.10 — The Segment Inequality, Cheeger and Colding, 1996]
+  \label{thm:pet-ch7-segment-inequality}
+  \lean{PetersenLib.segmentInequality}
+  Assume $(M,g)$ has $\Ric\ge(n-1)k$, $k\le0$. Let $f:M\to[0,\infty)$ and
+  $A,B\subset W\subset M$ with $\diam W\le D$. For each $x\in A$, $y\in B$ fix a
+  segment $c_{x,y}:[0,1]\to M$ from $x$ to $y$, and suppose $c_{x,y}(t)\in W$
+  for all $x\in A$, $y\in B$, $t\in[0,1]$. Then
+  \[
+    \int_A\int_B\int_0^1 f\circ c_{x,y}(t)\,dt\,\vol_x\,\vol_y
+    \le C(\vol A+\vol B)\int_Wf\,\vol,
+  \]
+  where $C=C(n,kD^2)$.
+  \source{petersen:page-0300}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch7-segment-inequality,lem:pet-ch7-ricci-comparison-mean-curvature}
+  Let
+  \[
+    C=\max_{R\le D}\frac{\snk_k^{n-1}(R)}{\snk_k^{n-1}(R/2)},
+  \]
+  which is $2^{n-1}$ when $k=0$ and
+  $\sinh^{n-1}(\sqrt{-k}D)/\sinh^{n-1}(\tfrac12\sqrt{-k}D)$ otherwise; in either
+  case $C=C(n,kD^2)$.
+
+  Fix $x\in A$ and use polar coordinates centered at $x$ with polar density
+  $\lambda$. For $t\ge\tfrac12$ the map $y\mapsto c_{x,y}(t)$ rescales radial
+  distance from $x$ by the factor $t$ along each segment, so writing
+  $y=(r,\theta)$ in these polar coordinates,
+  \[
+    \int_Bf\circ c_{x,y}(t)\,\vol_y
+    =\int_Bf\circ c_{x,y}(t)\,\lambda(y)\,dr\,\vol_{n-1}
+    =\int_Bf\circ c_{x,y}(t)\,\lambda(c_{x,y}(t))\,
+      \frac{\lambda(y)}{\lambda(c_{x,y}(t))}\,dr\,\vol_{n-1}.
+  \]
+  Mean curvature comparison (\cref{lem:pet-ch7-ricci-comparison-mean-curvature})
+  shows $r\mapsto\lambda(r,\theta)$ grows no
+  faster than the comparison density, so along the ray from $x$ through $y$ at
+  parameter $t\ge\tfrac12$ the ratio $\lambda(y)/\lambda(c_{x,y}(t))$ is bounded
+  by the comparison ratio $\snk_k^{n-1}(r)/\snk_k^{n-1}(tr)\le
+  \snk_k^{n-1}(D)/\snk_k^{n-1}(D/2)\le C$. Hence
+  \[
+    \int_Bf\circ c_{x,y}(t)\,\vol_y
+    \le C\int_Bf\circ c_{x,y}(t)\,\lambda(c_{x,y}(t))\,dr\,\vol_{n-1}
+    \le C\int_Wf\,\vol,
+  \]
+  the last step being a change of variables to the point $c_{x,y}(t)\in W$.
+  Integrating over $t\in[\tfrac12,1]$ and $x\in A$,
+  \[
+    \int_A\int_B\int_{1/2}^1f\circ c_{x,y}(t)\,dt\,\vol_x\,\vol_y
+    \le\tfrac12C\,\vol A\int_Wf\,\vol.
+  \]
+  By the symmetric argument (swapping the roles of $A,B$ and using
+  $t\le\tfrac12$, so $1-t\ge\tfrac12$ rescales from $y$ instead of $x$),
+  \[
+    \int_B\int_A\int_0^{1/2}f\circ c_{x,y}(t)\,dt\,\vol_x\,\vol_y
+    \le\tfrac12C\,\vol B\int_Wf\,\vol.
+  \]
+  Adding the two estimates gives the segment inequality.
+\end{proof}
+
+\begin{corollary}[Corollary 7.1.11]
+  \label{cor:pet-ch7-weak-poincare}
+  \lean{PetersenLib.weakPoincareInequality}
+  \uses{thm:pet-ch7-segment-inequality}
+  Assume $(M,g)$ has $\Ric\ge(n-1)k$, $k\le0$. Any smooth $u:M\to[0,\infty)$
+  satisfies
+  \[
+    \|u-u_{B(p,R)}\|_{1,B(p,R)}\le4C^2R\,\|du\|_{1,B(p,2R)},
+  \]
+  where $R\le D$ and $C=C(n,kD^2)$ is as in \cref{thm:pet-ch7-segment-inequality}.
+  \source{petersen:page-0301,petersen:page-0302}
+\end{corollary}
+\begin{proof}
+  \uses{cor:pet-ch7-weak-poincare,thm:pet-ch7-segment-inequality,lem:pet-ch7-relative-volume-comparison}
+  Write $B=B(p,R)$, $W=B(p,2R)$. For $x,y\in B$ let $c_{x,y}$ be a fixed
+  segment from $x$ to $y$; since $\diam B\le2R$, $c_{x,y}$ lies in $W$.
+  Then
+  \begin{align*}
+    \int_B|u-u_B|
+    &=\int_B\left|\frac{1}{\vol B}\int_B(u(x)-u(y))\,\vol_y\right|\vol_x\\
+    &\le\frac{1}{\vol B}\int_B\int_B|u(x)-u(y)|\,\vol_y\,\vol_x\\
+    &\le\frac{1}{\vol B}\int_B\int_B\int_0^1|xy|\,|du|(c_{x,y}(t))\,dt\,\vol_y\,\vol_x\\
+    &\le\frac{2R}{\vol B}\int_B\int_B\int_0^1|du|(c_{x,y}(t))\,dt\,\vol_y\,\vol_x,
+  \end{align*}
+  using $|u(x)-u(y)|\le\int_0^1|du|(c_{x,y}(t))\,|\dot c_{x,y}(t)|\,dt$ and
+  $|\dot c_{x,y}|\equiv|xy|$, then $|xy|\le\diam B\le2R$. Applying
+  \cref{thm:pet-ch7-segment-inequality} with $A=B=B(p,R)$, $W=B(p,2R)$,
+  $f=|du|$ and $D=2R$,
+  \[
+    \int_B\int_B\int_0^1|du|(c_{x,y}(t))\,dt\,\vol_x\,\vol_y
+    \le2C\,\vol B\int_W|du|\,\vol,
+  \]
+  so
+  \[
+    \|u-u_B\|_{1,B}
+    \le\frac{2R}{\vol B}\cdot2C\,\vol B\int_W|du|\,\vol
+    =4CR\,\frac{\vol W}{\vol B}\,\|du\|_{1,W}.
+  \]
+  Relative volume comparison (\cref{lem:pet-ch7-relative-volume-comparison})
+  bounds $\vol W/\vol B=\vol B(p,2R)/\vol
+  B(p,R)\le v(n,k,2D)/v(n,k,D)$, a constant depending only on $n,kD^2$, which
+  may be absorbed into the constant $C$ (replacing $4C$ by $4C^2$) to give the
+  stated inequality.
+\end{proof}
+
+\begin{remark}[Remark 7.1.12]
+  \label{rem:pet-ch7-upper-gradient}
+  \lean{PetersenLib.upperGradientPoincare}
+  \uses{cor:pet-ch7-weak-poincare}
+  \Cref{cor:pet-ch7-weak-poincare} holds for any measurable $u$ with a function
+  $G$ in place of $|du|$, provided $|u(x)-u(y)|\le\int_0^1G(c(t))\,|\dot
+  c(t)|\,dt$ for all $c\in\Omega_{x,y}$ (paths from $x$ to $y$); such $G$ is an
+  \emph{upper gradient} for $u$.
+  \source{petersen:page-0302}
+\end{remark}
+
+\begin{definition}[maximal function]
+  \label{def:pet-ch7-maximal-function}
+  \lean{PetersenLib.maximalFunction}
+  For $u:M\to\mathbb{R}$ and $D>0$, the \emph{maximal function} of $u$ (relative to
+  the scale $D$) is
+  \[
+    M(u)(x)=\sup_{R\in(0,D]}\frac{1}{\vol B(x,R)}\int_{B(x,R)}|u|\,\vol.
+  \]
+  \source{petersen:page-0302}
+\end{definition}
+
+\begin{theorem}[Theorem 7.1.14 — Maximal Function Theorem]
+  \label{thm:pet-ch7-maximal-function-theorem}
+  \lean{PetersenLib.maximalFunctionTheorem}
+  \uses{def:pet-ch7-maximal-function}
+  Assume $(M,g)$ has $\Ric\ge(n-1)k$. There is $C=C(n,kD^2)$ such that for all
+  $t>0$,
+  \[
+    t\,\vol\{M(u)>t\}\le C\int|u|\,\vol.
+  \]
+  \source{petersen:page-0303}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch7-maximal-function-theorem,lem:pet-ch7-relative-volume-comparison,rem:pet-ch7-ex-5}
+  For each $x\in\{M(u)>t\}$ there is $R_x\le D$ with
+  \[
+    t\,\vol B(x,R_x)<\int_{B(x,R_x)}|u|\,\vol.
+  \]
+  By the basic covering lemma (\cref{rem:pet-ch7-ex-5}: given a bounded
+  positive function $R:X\to(0,D]$ on a separable metric space there is a
+  countable $A\subset X$ with the balls $B(p,R(p))$, $p\in A$, pairwise
+  disjoint and $X=\bigcup_{p\in A}B(p,5R(p))$), we may cover $\{M(u)>t\}$ by
+  balls $B(x_i,5R_{x_i})$ with the $B(x_i,R_{x_i})$ pairwise disjoint.
+  Relative volume comparison (\cref{lem:pet-ch7-relative-volume-comparison})
+  applied to the two radii $R\le5R$ gives
+  \[
+    \frac{\vol B(x,5R)}{\vol B(x,R)}\le\frac{v(n,k,5D)}{v(n,k,D)}=:C=C(n,kD^2)
+  \]
+  for all $x$ and $R\le D$. Hence
+  \begin{align*}
+    t\,\vol\{M(u)>t\}
+    &\le\sum_it\,\vol B(x_i,5R_{x_i})
+    \le C\sum_it\,\vol B(x_i,R_{x_i})\\
+    &<C\sum_i\int_{B(x_i,R_{x_i})}|u|\,\vol
+    \le C\int|u|\,\vol,
+  \end{align*}
+  the last step using pairwise disjointness of the $B(x_i,R_{x_i})$.
+\end{proof}
+
+\begin{theorem}[Theorem 7.1.15]
+  \label{thm:pet-ch7-weak-poincare-sobolev-estimate}
+  \lean{PetersenLib.weakPoincareSobolevEstimate}
+  \uses{cor:pet-ch7-weak-poincare,thm:pet-ch7-maximal-function-theorem}
+  Assume $(M,g)$ has $\Ric\ge(n-1)k$, $k\le0$, and $\diam M\le D$. For smooth
+  $u:M\to[0,\infty)$,
+  \[
+    t^{\frac{n}{n-1}}\,\vol\{u-u_{B(x,R)}>t\}
+    \le C R^{\frac{n}{n-1}}\,\vol M\,\|du\|_1^{\frac{n}{n-1}},
+  \]
+  where $C=C(n,kD^2)$.
+  \source{petersen:page-0303,petersen:page-0304,petersen:page-0305}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch7-weak-poincare-sobolev-estimate,cor:pet-ch7-weak-poincare,thm:pet-ch7-maximal-function-theorem,lem:pet-ch7-relative-volume-comparison}
+  We prove the case $R=D$; the general case follows by the same argument
+  restricted to $B(x,R)$. Fix $x\in M$, set $R_i=2^{-i}D$ and $B_i=B(x,R_i)$,
+  so $M=B_0$. Continuity of $u$ gives $u(x)=\lim_iu_{B_i}$, so
+  \[
+    |u(x)-u_{B_0}|
+    \le\sum_{i=0}^\infty|u_{B_i}-u_{B_{i+1}}|
+    \le\sum_{i=0}^\infty\|u-u_{B_i}\|_{1,B_{i+1}}
+    \le\sum_{i=0}^\infty\frac{\vol B_i}{\vol B_{i+1}}\|u-u_{B_i}\|_{1,B_i}.
+  \]
+  Relative volume comparison (\cref{lem:pet-ch7-relative-volume-comparison})
+  bounds $\vol B_i/\vol B_{i+1}\le C$, and
+  \cref{cor:pet-ch7-weak-poincare} bounds $\|u-u_{B_i}\|_{1,B_i}\le
+  4C^2R_i\|du\|_{1,B_{i-1}}$, so
+  \[
+    |u(x)-u_{B_0}|\le2C^3\sum_{i=0}^\infty R_i\,\|du\|_{1,B_{i-1}}.
+  \]
+  It thus suffices to bound $\vol\{\sum_iR_i\|du\|_{1,B_{i-1}}>t\}$. For
+  $r>0$ split the sum at $R_i\le r$ versus $R_i>r$. The tail with $R_i\le r$ is
+  controlled by the maximal function:
+  \[
+    \sum_{R_i\le r}R_i\|du\|_{1,B_{i-1}}
+    \le\Big(\sum_{R_i\le r}R_i\Big)M(|du|)(x)\le2r\,M(|du|)(x).
+  \]
+  The head with $R_i>r$ is controlled crudely by $\vol M/\vol B_{i-1}\le
+  C(D/R_{i-1})^n$ (relative volume comparison,
+  \cref{lem:pet-ch7-relative-volume-comparison}), giving a geometric series in
+  $i$ dominated by its first term, of size $\le C\,r^{1-n}D^n\|du\|_1$ up to a
+  constant depending only on $n,kD^2$. Choosing
+  $r=D\big(\|du\|_1/M(|du|)(x)\big)^{1/n}$ balances the two contributions and
+  yields
+  \[
+    \sum_{i=0}^\infty R_i\|du\|_{1,B_{i-1}}
+    \le CD\,\big(M(|du|)(x)\big)^{\frac{n-1}{n}}\,\|du\|_1^{1/n}.
+  \]
+  Consequently
+  \[
+    \vol\Big\{\sum_iR_i\|du\|_{1,B_{i-1}}>t\Big\}
+    \le\vol\Big\{CD^{\frac{n}{n-1}}\|du\|_1^{\frac{1}{n-1}}M(|du|)(x)>t^{\frac{n}{n-1}}\Big\}
+    \le t^{-\frac{n}{n-1}}CD^{\frac{n}{n-1}}\|du\|_1^{\frac1{n-1}}\int_M|du|\,\vol,
+  \]
+  the last inequality by \cref{thm:pet-ch7-maximal-function-theorem} applied to
+  $|du|$ with threshold $t^{n/(n-1)}\big(CD^{n/(n-1)}\|du\|_1^{1/(n-1)}\big)^{-1}$.
+  Since $\int_M|du|\,\vol=\vol M\cdot\|du\|_1$, this is
+  $t^{-n/(n-1)}CD^{n/(n-1)}\vol M\,\|du\|_1^{n/(n-1)}$, which combined with
+  $|u(x)-u_{B_0}|\le2C^3\sum_iR_i\|du\|_{1,B_{i-1}}$ gives the theorem after
+  absorbing constants.
+\end{proof}
+
+\begin{theorem}[Theorem 7.1.13 — The Poincaré--Sobolev Inequality]
+  \label{thm:pet-ch7-poincare-sobolev}
+  \lean{PetersenLib.poincareSobolevInequality}
+  \uses{thm:pet-ch7-weak-poincare-sobolev-estimate}
+  Assume $(M,g)$ has $\Ric\ge(n-1)k$, $k\le0$. For all smooth $u:M\to[0,\infty)$
+  and $\nu\in[1,\tfrac{n}{n-1}]$,
+  \[
+    \|u-u_{B(x,R)}\|_{\nu,B(x,R)}\le C(n,kD^2)\,R\,\|du\|_{1,B(x,R)},
+  \]
+  where $R\le D$.
+  \source{petersen:page-0302,petersen:page-0305,petersen:page-0306,petersen:page-0307}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch7-poincare-sobolev,thm:pet-ch7-weak-poincare-sobolev-estimate}
+  It suffices to treat $\nu=\tfrac{n}{n-1}$ and $B(x,R)=M$ with $D$ an upper
+  bound for $\diam M$ (the general case is the same argument applied inside
+  $B(x,R)$, and smaller $\nu\le n/(n-1)$ follows from Hölder's inequality on
+  the probability measure $\vol(\cdot)/\vol B(x,R)$). Throughout, $C$ denotes a
+  constant depending only on $n,kD^2$, possibly changing from line to line.
+
+  First, two elementary reductions. For any constant $c$,
+  \[
+    \|u-u_M\|_p\le|c-u_M|+\|u-c\|_p\le2\|u-c\|_p,
+  \]
+  using $|c-u_M|=|(u-c)_M|\le\|u-c\|_p$ (Jensen); hence it suffices to bound
+  $\inf_c\|u-c\|_p$ for a well-chosen $c$.
+
+  Choose $m$ with $\vol\{u\ge m\}\ge\tfrac12\vol M$ and $\vol\{u\le m\}\ge
+  \tfrac12\vol M$ (a median of $u$), and split $u-m=v^+-v^-$ with
+  $v^+=\max\{u-m,0\}$, $v^-=\max\{m-u,0\}$; both satisfy $\vol\{v^\pm=0\}\ge
+  \tfrac12\vol M$, and $|dv^+|+|dv^-|\le|du|$ pointwise (with $|dv^\pm|:=0$
+  where $v^\pm=0$). Since
+  $\|u-m\|_{n/(n-1)}\le\|v^+\|_{n/(n-1)}+\|v^-\|_{n/(n-1)}$, it suffices to
+  bound $\|v\|_{n/(n-1)}\le CD\|dv\|_1$ for $v=v^\pm$.
+
+  We first record: for $c$ with $\vol\{v=0\}\ge\tfrac12\vol M$,
+  \[
+    \vol\{v>t\}\le2\,\vol\{|v-c|>t/2\}
+  \]
+  for every $t>0$ and every such $c$ (if $t/2\le c$, then $\{c-v>t/2\}\subset
+  \{v=0\}$ has volume $\ge\tfrac12\vol M$, so
+  $\vol\{|v-c|>t/2\}\ge\vol\{c-v>t/2\}\ge\tfrac12\vol M\ge\tfrac12\vol\{v>t\}$;
+  if $t/2>c\ge0$, then $\{v>t\}\subset\{v-c>t/2\}\subset\{|v-c|>t/2\}$
+  directly). Taking $c=0$ in particular gives $\vol\{v>t\}\le2\vol\{v>t/2\}$
+  trivially, but the useful form below is with $c$ ranging freely.
+
+  For $0<a<b$ define the truncation
+  \[
+    v_a^b(x)=\begin{cases}b-a,&v(x)\ge b,\\v(x)-a,&a<v(x)\le b,\\0,&v(x)\le a,\end{cases}
+  \]
+  which has upper gradient $|dv|\cdot\chi_{\{a<v\le b\}}$ and satisfies
+  $\vol\{v_a^b=0\}\ge\vol\{v\le a\}\ge\tfrac12\vol M$ whenever $a\ge0$ is such
+  that $\{v\le a\}$ still has volume $\ge\tfrac12\vol M$ (true here since
+  $\vol\{v=0\}\ge\tfrac12\vol M$ and $a\ge0$). Applying
+  \cref{thm:pet-ch7-weak-poincare-sobolev-estimate} to $v_a^b$ and the bound of
+  the previous paragraph with $c=0$,
+  \[
+    t^{\frac{n}{n-1}}\vol\{v_a^b>t\}
+    \le2\cdot t^{\frac{n}{n-1}}\vol\{|v_a^b|>t/2\}
+    \le C D^{\frac{n}{n-1}}\vol M\,\big\||dv|\chi_{\{a<v\le b\}}\big\|_1^{\frac{n}{n-1}}.
+  \]
+
+  Now decompose the integral of $v^{n/(n-1)}$ dyadically: with $k$ ranging over
+  integers,
+  \[
+    \int v^{\frac{n}{n-1}}\,\vol
+    \le\sum_k2^{\frac{kn}{n-1}}\vol\{2^{k-1}<v\le2^k\}
+    \le\sum_k2^{\frac{kn}{n-1}}\vol\{v>2^{k-1}\}.
+  \]
+  Since $\{v>2^{k-1}\}\subset\{v_{2^{k-2}}^{2^{k-1}}>2^{k-2}\}$, taking
+  $t=2^{k-2}$ in the truncated estimate above gives
+  \[
+    2^{\frac{kn}{n-1}}\vol\{v>2^{k-1}\}
+    \le C\,2^{\frac{kn}{n-1}}2^{-\frac{kn}{n-1}}D^{\frac{n}{n-1}}\vol M\,
+      \big\||dv|\chi_{\{2^{k-2}<v\le2^{k-1}\}}\big\|_1^{\frac{n}{n-1}}
+    =CD^{\frac{n}{n-1}}\vol M\,\big\||dv|\chi_{\{2^{k-2}<v\le2^{k-1}\}}\big\|_1^{\frac{n}{n-1}}
+  \]
+  up to the absolute constant from the truncated estimate. Since the level
+  sets $\{2^{k-2}<v\le2^{k-1}\}$ are pairwise disjoint in $k$, and
+  $p\mapsto\ell^p$ norms decrease in $p$, summing over $k$ and using
+  $\big(\sum_ka_k\big)^{n/(n-1)}\ge\sum_ka_k^{n/(n-1)}$ for $a_k\ge0$ in reverse
+  (i.e. $\sum_ka_k^{n/(n-1)}\le\big(\sum_ka_k\big)^{n/(n-1)}$, which holds since
+  $n/(n-1)\ge1$) with $a_k=\||dv|\chi_{\{2^{k-2}<v\le2^{k-1}\}}\|_1$ gives
+  \[
+    \sum_kCD^{\frac{n}{n-1}}\vol M\,a_k^{\frac{n}{n-1}}
+    \le CD^{\frac{n}{n-1}}\vol M\Big(\sum_ka_k\Big)^{\frac{n}{n-1}}
+    =CD^{\frac{n}{n-1}}\vol M\,\|dv\|_1^{\frac{n}{n-1}},
+  \]
+  using $\sum_ka_k=\big\||dv|\sum_k\chi_{\{2^{k-2}<v\le2^{k-1}\}}\big\|_1=\|dv\|_1$
+  (the indicator functions partition the support of $v$). Hence
+  \[
+    \int v^{\frac{n}{n-1}}\,\vol\le CD^{\frac{n}{n-1}}\vol M\,\|dv\|_1^{\frac{n}{n-1}},
+  \]
+  i.e. $\|v\|_{n/(n-1)}\le CD\|dv\|_1$, as required for $v=v^+,v^-$; combining
+  with $\|u-m\|_{n/(n-1)}\le\|v^+\|_{n/(n-1)}+\|v^-\|_{n/(n-1)}$ and
+  $|dv^+|+|dv^-|\le|du|$ gives $\|u-u_M\|_{n/(n-1)}\le2\|u-m\|_{n/(n-1)}\le
+  CD\|du\|_1$, the theorem.
+\end{proof}
+
+\begin{remark}[Remark 7.1.16]
+  \label{rem:pet-ch7-dirichlet-poincare}
+  \lean{PetersenLib.exerciseDirichletPoincareReference}
+  \uses{thm:pet-ch7-poincare-sobolev}
+  See \cref{rem:pet-ch7-ex-17} for the Poincaré inequality for functions with
+  Dirichlet boundary conditions vanishing on a ball's boundary.
+  \source{petersen:page-0307}
+\end{remark}
+
+\begin{proposition}[Proposition 7.1.17]
+  \label{prop:pet-ch7-sobolev-hierarchy}
+  \lean{PetersenLib.sobolevInterpolationHierarchy}
+  \uses{thm:pet-ch7-poincare-sobolev}
+  Suppose every smooth function on $(M,g)$ satisfies $\|u-u_M\|_{s-1}\le
+  S\|du\|_1$ for some fixed $s>1$. Then for $1\le p<s$,
+  \[
+    \|u\|_{\frac{sp}{s-p}}\le\frac{p(s-1)}{s-p}S\|du\|_p+\|u\|_p.
+  \]
+  \source{petersen:page-0307}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch7-sobolev-hierarchy}
+  For $p=1$ this follows from
+  \[
+    \|u-u_M\|_{s-1}\ge\|u\|_{s-1}-|u_M|\ge\|u\|_{s-1}-\|u\|_1,
+  \]
+  the first inequality by the reverse triangle inequality for the norm
+  $\|\cdot\|_{s-1}$ and the second since $|u_M|\le\|u\|_1$.
+
+  For $p>1$, apply the hypothesis to $u^q$ (for $q>1$ to be chosen):
+  \[
+    \|u\|_{\frac{q}{s-1}}^{q}=\|u^q\|_{s-1}
+    \le S\|du^q\|_1+\|u^q\|_1
+    =Sq\,\|u^{q-1}du\|_1+\|u^{q-1}u\|_1.
+  \]
+  By Hölder with exponents $p$ and $p/(p-1)$,
+  \[
+    \|u^{q-1}du\|_1\le\|u\|_{\frac{(q-1)p}{p-1}}^{q-1}\|du\|_p,\qquad
+    \|u^{q-1}u\|_1=\|u^q\|_1\le\|u\|_{\frac{qp}{p-1}}^{q-1}\|u\|_p,
+  \]
+  so choosing $q=\dfrac{p(s-1)}{s-p}$, for which $\dfrac{q}{s-1}=\dfrac{sp}{s-p}$
+  and $\dfrac{(q-1)p}{p-1}$ likewise resolves to $\dfrac{sp}{s-p}$, gives
+  \[
+    \|u\|_{\frac{sp}{s-p}}^{q}\le\|u\|_{\frac{sp}{s-p}}^{q-1}
+      \Big(Sq\,\|du\|_p+\|u\|_p\Big),
+  \]
+  and dividing by $\|u\|_{sp/(s-p)}^{q-1}$ (when nonzero; the case
+  $\|u\|_{sp/(s-p)}=0$ is trivial) gives
+  \[
+    \|u\|_{\frac{sp}{s-p}}\le Sq\,\|du\|_p+\|u\|_p
+    =\frac{p(s-1)}{s-p}S\|du\|_p+\|u\|_p. \qedhere
+  \]
+\end{proof}
+
+\begin{theorem}[Theorem 7.1.18 — Rellich Compactness]
+  \label{thm:pet-ch7-rellich-compactness}
+  \lean{PetersenLib.rellichCompactness}
+  \uses{thm:pet-ch7-weak-poincare-sobolev-estimate}
+  Assume $(M^n,g)$ is a compact Riemannian $n$-manifold. Then the inclusion
+  $W^{1,2}(M)\subset L^2(M)$ (where $W^{1,2}(M)$ is the Hilbert-space closure
+  of $C^\infty(M)$ in the norm $\|u\|_2^2+\|du\|_2^2$) is compact.
+  \source{petersen:page-0308}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch7-rellich-compactness,thm:pet-ch7-weak-poincare-sobolev-estimate}
+  Let $(u_i)$ be a sequence of smooth functions with $\|u_i\|_2^2+\|du_i\|_2^2$
+  bounded. By reflexivity of the Hilbert space $W^{1,2}(M)$, a bounded
+  sequence has a weakly convergent subsequence $u_i\rightharpoonup u$; in
+  particular $u_{i,B(x,R)}\to u_{B(x,R)}$ for each fixed $x\in M$, $R>0$ (pairing
+  weakly against the indicator of $B(x,R)$, which lies in $L^2(M)\subset
+  (W^{1,2}(M))^*$ since $M$ is compact). By the Lebesgue differentiation
+  theorem, $u_{B(x,R)}\to u(x)$ as $R\to0$ for almost every $x$.
+
+  By \cref{thm:pet-ch7-weak-poincare-sobolev-estimate},
+  \[
+    \vol\{|u_i-u_{i,B(x,R)}|>\varepsilon\}
+    \le C\Big(\frac{R}{\varepsilon}\Big)^{\frac{n}{n-1}}\vol M\,\|du_i\|_1^{\frac{n}{n-1}}
+    \le C'\Big(\frac{R}{\varepsilon}\Big)^{\frac{n}{n-1}}
+  \]
+  with $C'$ independent of $i$ (using the uniform bound on $\|du_i\|_2$, hence
+  on $\|du_i\|_1$ by Cauchy–Schwarz on the compact $M$). Letting $R\to0$ shows
+  $\vol\{|u_i(x)-u(x)|>\varepsilon\}\to0$ as $i\to\infty$, for every fixed
+  $\varepsilon>0$; passing to a further subsequence gives pointwise almost
+  everywhere convergence $u_i\to u$. Since $\|u_i\|_{n/(n-2)}$ (for $n>2$; a
+  similar bound holds for $n\le2$) is bounded by the Sobolev embedding
+  following from \cref{thm:pet-ch7-poincare-sobolev} and
+  \cref{prop:pet-ch7-sobolev-hierarchy}, Egorov's theorem upgrades the almost
+  everywhere convergence to convergence in $L^2(M)$, as needed.
+\end{proof}
+
+\section{Applications of Ricci Curvature Comparison}
+
+\subsection{Finiteness of Fundamental Groups}
+
+Our first application of volume comparison controls the fundamental group. We
+begin with a result on how fundamental groups can be presented.
+
+\begin{lemma}[Lemma 7.2.1 — Gromov, 1980]
+  \label{lem:pet-ch7-gromov-generators}
+  \lean{PetersenLib.gromovShortGenerators}
+  A compact Riemannian manifold $M$ admits generators $\{c_1,\dots,c_m\}$ for
+  $\Gamma=\pi_1(M)$ such that all relations are of the form
+  $c_ic_jc_k^{-1}=1$ for suitable $i,j,k$, with each generator represented by a
+  loop of length $\le3\diam(M)$.
+  \source{petersen:page-0308,petersen:page-0309}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch7-gromov-generators}
+  For $\varepsilon\in(0,\operatorname{inj}(M))$ choose a triangulation of $M$
+  whose adjacent vertices are joined by curves of length $<\varepsilon$; let
+  $\{x_1,\dots,x_k\}$ be the vertices and $\{e_{ij}\}$ the edges. Fix a
+  basepoint $x$, the projection of a lift $\tilde x\in\tilde M$, and join $x$
+  to each $x_i$ by a segment $\sigma_i$. For adjacent vertices set
+  $\sigma_{ij}=\sigma_ie_{ij}\sigma_j^{-1}$.
+
+  Every loop based at $x$ is homotopic to a loop in the 1-skeleton of the
+  triangulation, i.e.\ built from the edges $e_{ij}$; since
+  $e_{ij}e_{jk}=e_{ij}\sigma_j^{-1}\sigma_je_{jk}$, such loops are products of
+  loops $\sigma_{ij}$, so $\Gamma$ is generated by the $\sigma_{ij}$.
+
+  If three vertices $x_i,x_j,x_k$ are mutually adjacent they span a $2$-simplex
+  $\triangle_{ijk}$, and $\sigma_{ij}\sigma_{jk}\sigma_{ik}^{-1}$ is
+  homotopically trivial (it bounds $\triangle_{ijk}$). We claim these are the
+  only relations needed: if $\sigma$ is a loop in the $1$-skeleton that is
+  homotopically trivial in $M$, it also contracts in the $2$-skeleton, so a
+  homotopy is a union of $2$-simplices $\triangle_{ijk}$, expressing the
+  relation $\sigma=1$ as a product of elementary relations
+  $\sigma_{ij}\sigma_{jk}\sigma_{ik}^{-1}=1$.
+
+  Each generator $\sigma_{ij}$ has length $\le|\sigma_i|+|e_{ij}|+|\sigma_j|\le
+  2\diam(M)+\varepsilon$, which for $\varepsilon$ small is $\le3\diam(M)$,
+  proving the stated bound.
+\end{proof}
+
+\begin{example}[Example 7.2.2]
+  \label{ex:pet-ch7-lens-spaces-example}
+  \lean{PetersenLib.exampleLensSpacesGrowingFundamentalGroup}
+  \uses{lem:pet-ch7-gromov-generators}
+  Consider $M_k=S^3/\mathbb{Z}_k$, the constant curvature $3$-sphere quotient by
+  the cyclic group of order $k$. As $k\to\infty$, $\vol M_k\to0$ while the
+  curvature stays $1$ and $\diam M_k=\pi/2$. Thus $\pi_1(M_k)=\mathbb{Z}_k$ grows
+  only at the expense of shrinking volume; writing $\mathbb{Z}_k$ via generators as
+  in \cref{lem:pet-ch7-gromov-generators} requires the number of generators to
+  go to infinity with $k$, foreshadowing \cref{thm:pet-ch7-anderson-finiteness}.
+  \source{petersen:page-0309}
+\end{example}
+
+\begin{definition}[the class $\mathfrak{M}(n,k,v,D)$]
+  \label{def:pet-ch7-manifold-class}
+  \lean{PetersenLib.ManifoldClass}
+  For $n\in\mathbb{N}$, $k\in\mathbb{R}$, $v,D\in(0,\infty)$, let
+  $\mathfrak{M}(n,k,v,D)$ denote the class of compact Riemannian $n$-manifolds
+  $(M,g)$ with $\Ric\ge(n-1)k$, $\vol M\ge v$, $\diam M\le D$.
+  \source{petersen:page-0309}
+\end{definition}
+
+\begin{theorem}[Theorem 7.2.3 — Anderson, 1990]
+  \label{thm:pet-ch7-anderson-finiteness}
+  \lean{PetersenLib.andersonFundamentalGroupFiniteness}
+  \uses{def:pet-ch7-manifold-class,lem:pet-ch7-gromov-generators}
+  For fixed $n,k,v,D$, there are only finitely many isomorphism types of
+  fundamental group among the manifolds in $\mathfrak{M}(n,k,v,D)$.
+  \source{petersen:page-0309}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch7-anderson-finiteness,lem:pet-ch7-gromov-generators,lem:pet-ch7-absolute-volume-comparison}
+  Choose generators $\{c_1,\dots,c_m\}$ as in
+  \cref{lem:pet-ch7-gromov-generators}. Since the number of possible relations
+  among $m$ generators of the stated form is bounded by $2^m$, it suffices to
+  bound $m$ in terms of $n,k,v,D$ alone. Fix $x\in M$ and view the $c_i$ as
+  deck transformations of the universal cover $\tilde M\to M$; the lemma gives
+  $|xc_i(x)|\le3D$. Choose a Dirichlet fundamental domain
+  \[
+    F=\{z\in\tilde M\mid|xz|\le|c(z)|\text{ for all }c\in\pi_1(M)\},
+  \]
+  a closed set with $\pi:F\to M$ onto and $\vol F=\vol M$. The translates
+  $c_i(F)$ are pairwise disjoint up to measure zero, all have volume $\vol M$,
+  and all lie in $B(x,6D)$ (since $|xc_i(x)|\le3D$ and $\diam F\le3D$, so
+  points of $c_i(F)$ are within $3D+3D=6D$ of $x$). Hence, by absolute volume
+  comparison (\cref{lem:pet-ch7-absolute-volume-comparison}),
+  \[
+    m\le\frac{\vol B(x,6D)}{\vol F}\le\frac{v(n,k,6D)}{v},
+  \]
+  a bound depending only on $n,k,v,D$.
+\end{proof}
+
+\begin{lemma}[Lemma 7.2.4 — Anderson, 1990]
+  \label{lem:pet-ch7-anderson-short-loops}
+  \lean{PetersenLib.andersonShortLoopSubgroupFinite}
+  \uses{def:pet-ch7-manifold-class}
+  For fixed $n,k,v,D$ there are $L=L(n,k,v,D)$, $N=N(n,k,v,D)$ such that for
+  every $M\in\mathfrak{M}(n,k,v,D)$, any subgroup of $\pi_1(M)$ generated by
+  loops of length $\le L$ has order $\le N$.
+  \source{petersen:page-0310}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch7-anderson-short-loops,lem:pet-ch7-absolute-volume-comparison}
+  Let $\Gamma\subset\pi_1(M)$ be generated by loops $\{c_1,\dots,c_\ell\}$ of
+  length $\le L$, based at $\pi(x)$ for some lift $x\in\tilde M$, and let $F$
+  be a Dirichlet fundamental domain containing $x$ as in the proof of
+  \cref{thm:pet-ch7-anderson-finiteness}; distinct deck transformations move
+  $F$ to sets that are disjoint up to measure zero.
+
+  Let $U(r)\subset\Gamma$ be those elements expressible as a product of at
+  most $r$ of the $c_i$'s. Since $|xc_i(x)|\le L$, every $c\in U(r)$ satisfies
+  $|xc(x)|\le rL$, so $c(F)\subset B(x,rL+D)$ (as $\diam F\le D$). The sets
+  $c(F)$, $c\in U(r)$, being pairwise disjoint up to measure zero and of
+  volume $\vol F\ge v$, absolute volume comparison
+  (\cref{lem:pet-ch7-absolute-volume-comparison}) gives
+  \[
+    |U(r)|\le\frac{\vol B(x,rL+D)}{\vol F}\le\frac{v(n,k,rL+D)}{v}.
+  \]
+  Set $N=v(n,k,2D)/v+1$ and $L=D/N$. If $\Gamma$ had more than $N$ elements,
+  taking $r=N$ would give $rL+D=D+D=2D$, so
+  \[
+    N+1\le|U(N)|+1\le\Gamma
+    \quad\text{forces}\quad
+    N< |U(N)|\le\frac{v(n,k,2D)}{v}=N-1,
+  \]
+  a contradiction (more precisely: if $|\Gamma|>N$ then some element of
+  $\Gamma$ lies outside $U(N)$ only if $U(N)\ne\Gamma$, but
+  $|U(N)|\le v(n,k,2D)/v=N-1<N<|\Gamma|$ already contradicts $U(N)=\Gamma$
+  when $\Gamma$ is generated by the $c_i$ and has more than $N$ elements
+  reachable within $N$ products). Hence $|\Gamma|\le N$.
+\end{proof}
+
+\subsection{Maximal Diameter Rigidity}
+
+Given Myers' diameter estimate, it is natural to ask what happens when the
+diameter attains its maximal value; only the sphere has this property.
+
+\begin{theorem}[Theorem 7.2.5 — S. Y. Cheng, 1975]
+  \label{thm:pet-ch7-cheng-rigidity}
+  \lean{PetersenLib.chengMaximalDiameterRigidity}
+  \uses{lem:pet-ch7-laplacian-comparison-calabi,thm:pet-ch7-strong-maximum-principle}
+  If $(M,g)$ is complete with $\Ric\ge(n-1)k>0$ and $\diam=\pi/\sqrt k$, then
+  $(M,g)$ is isometric to $S^n_k$ (the space form of curvature $k$).
+  \source{petersen:page-0310,petersen:page-0311,petersen:page-0312}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch7-cheng-rigidity,lem:pet-ch7-laplacian-comparison-calabi,thm:pet-ch7-strong-maximum-principle,prop:pet-ch7-volume-form-laplacian-trace}
+  Fix $p,q\in M$ with $|pq|=\pi/\sqrt k$ and set $r(x)=|xp|$,
+  $\tilde r(x)=|xq|$. We establish successively:
+  \begin{enumerate}
+    \item[(1)] $r+\tilde r=\pi/\sqrt k$ on $M$.
+    \item[(2)] $r,\tilde r$ are smooth on $M-\{p,q\}$.
+    \item[(3)] $\Hess r=\dfrac{\snk_k'(r)}{\snk_k(r)}\,g_r$ on $M-\{p,q\}$,
+      where $g_r$ is the metric restricted to the distribution orthogonal to
+      $\partial_r$.
+    \item[(4)] $g=dr^2+\snk_k^2(r)\,ds^2_{n-1}$, which forces $M\cong S^n_k$.
+  \end{enumerate}
+
+  \emph{Proof of (1).} The triangle inequality gives $r+\tilde r\ge\pi/\sqrt k$
+  everywhere, with equality on any segment joining $p,q$. By
+  \cref{lem:pet-ch7-laplacian-comparison-calabi} applied at $p$ and at $q$
+  (with $\snk_k'(t)/\snk_k(t)=\sqrt k\cot(\sqrt kt)$ for $k>0$),
+  \[
+    \Delta(r+\tilde r)\le(n-1)\sqrt k\cot(\sqrt kr)+(n-1)\sqrt k\cot(\sqrt k\tilde r)
+    \le(n-1)\sqrt k\Big(\cot(\sqrt kr)+\cot\big(\pi-\sqrt kr\big)\Big)=0,
+  \]
+  using $\tilde r\ge\pi/\sqrt k-r$ and monotonicity of $\cot$ on $(0,\pi)$ to
+  replace $\tilde r$ by $\pi/\sqrt k-r$ in the second term, then
+  $\cot(\pi-\theta)=-\cot\theta$. Thus $r+\tilde r$ is superharmonic on
+  $M-\{p,q\}$ and attains its global minimum $\pi/\sqrt k$ on the segment; the
+  minimum principle (\cref{thm:pet-ch7-strong-maximum-principle} applied to
+  $-(r+\tilde r)$) forces $r+\tilde r\equiv\pi/\sqrt k$ on $M$.
+
+  \emph{Proof of (2).} If $x\in M-\{p,q\}$, join $x$ to $p$ and to $q$ by
+  segments $c_1,c_2$. By (1), concatenating $c_1$ and $c_2$ gives a curve from
+  $p$ to $q$ of length $\pi/\sqrt k=|pq|$, hence a segment, which must be
+  smooth; so $c_1,c_2$ are subsegments of a single segment through $x$. The
+  standard characterization of smoothness of distance functions (via absence
+  of conjugate/cut points) then gives smoothness of $r,\tilde r$ at $x$.
+
+  \emph{Proof of (3).} Since $r+\tilde r\equiv\pi/\sqrt k$, $\Delta
+  r=-\Delta\tilde r$. Applying \cref{lem:pet-ch7-laplacian-comparison-calabi}
+  to both $r$ and $\tilde r=\pi/\sqrt k-r$,
+  \[
+    (n-1)\frac{\snk_k'(r)}{\snk_k(r)}
+    \ge\Delta r=-\Delta\tilde r
+    \ge-(n-1)\frac{\snk_k'(\tilde r)}{\snk_k(\tilde r)}
+    =-(n-1)\frac{\snk_k'(\pi/\sqrt k-r)}{\snk_k(\pi/\sqrt k-r)}
+    =(n-1)\frac{\snk_k'(r)}{\snk_k(r)},
+  \]
+  the last equality since $\snk_k(\pi/\sqrt k-r)=\snk_k(r)$ and
+  $\snk_k'(\pi/\sqrt k-r)=-\snk_k'(r)$ (symmetry of $\sin(\sqrt k\,\cdot)$
+  about $\pi/(2\sqrt k)$ for $k>0$). Hence equality holds throughout:
+  $\Delta r=(n-1)\snk_k'(r)/\snk_k(r)$, and moreover, since the chain of
+  inequalities of (tr2) from \cref{prop:pet-ch7-volume-form-laplacian-trace}
+  (equivalently, the Bochner/Riccati inequality underlying
+  \cref{lem:pet-ch7-laplacian-comparison-calabi})
+  \[
+    -(n-1)k=\partial_r(\Delta r)+\frac{(\Delta r)^2}{n-1}\le\partial_r(\Delta
+    r)+|\Hess r|^2\le-\Ric(\partial_r,\partial_r)\le-(n-1)k
+  \]
+  is now an equality throughout, we get in particular $(\Delta
+  r)^2=(n-1)|\Hess r|^2$ — precisely the equality case, recalled from the
+  proof of \cref{prop:pet-ch7-volume-form-laplacian-trace}, of the
+  Cauchy--Schwarz inequality $(\operatorname{tr}A)^2\le(n-1)|A|^2$ applied to
+  $A=\Hess r$ restricted to
+  the $(n-1)$-dimensional distribution orthogonal to $\partial_r$ (on which
+  $\Hess r(\partial_r,\cdot)=0$ since $|\nabla r|\equiv1$). Equality forces
+  $A$ to be a scalar multiple of the identity on that distribution:
+  \[
+    \Hess r=\frac{\Delta r}{n-1}\,g_r=\frac{\snk_k'(r)}{\snk_k(r)}\,g_r.
+  \]
+
+  \emph{Proof that (3) implies (4), and that (4) forces $M\cong S^n_k$.} These
+  are established by the general theory of rotationally symmetric metrics
+  determined by their radial Hessian (the ODE $\Hess
+  r=(\snk_k'/\snk_k)g_r$ integrates, in polar coordinates about $p$, exactly
+  to the metric $dr^2+\snk_k^2(r)ds^2_{n-1}$ on $M-\{p,q\}$, which extends
+  smoothly across $p$ and $q$ by the smoothness criterion for rotationally
+  symmetric metrics), giving the isometry with the space form $S^n_k$.
+\end{proof}
+
+\begin{example}[Example 7.2.6 — Anderson, 1990]
+  \label{ex:pet-ch7-anderson-cp2-example}
+  \lean{PetersenLib.andersonAlmostMaximalDiameterExampleFour}
+  \uses{thm:pet-ch7-cheng-rigidity}
+  For $n=4$, consider metrics $dr^2+\rho^2\sigma_1^2+\phi^2(\sigma_2^2+\sigma_3^2)$
+  on $I\times S^3$, with
+  \[
+    \rho(r)=\begin{cases}\dfrac{\sin(ar)}{a}&r\le r_0,\\c_1\sin(r+\delta)&r\ge
+    r_0,\end{cases}\qquad
+    \phi(r)=\begin{cases}br^2+c&r\le r_0,\\c_2\sin(r+\delta)&r\ge
+    r_0,\end{cases}
+  \]
+  reflected in $r=\pi/2-\delta$ to produce a metric on $\mathbb{CP}^2\#\overline{\mathbb{CP}^2}$.
+  For any small $r_0>0$ the parameters can be tuned so $\rho,\phi$ are $C^1$
+  and generate a metric with $\Ric\ge3$; as $r_0\to0$ the parameter interval
+  $I\to[0,\pi]$, so the diameters converge to $\pi$, showing that
+  \cref{thm:pet-ch7-cheng-rigidity} does not admit a topological rigidity
+  refinement when $n=4$.
+  \source{petersen:page-0312,petersen:page-0313}
+\end{example}
+
+\begin{example}[Example 7.2.7 — Otsu, 1991]
+  \label{ex:pet-ch7-otsu-example}
+  \lean{PetersenLib.otsuAlmostMaximalDiameterExample}
+  \uses{ex:pet-ch7-anderson-cp2-example}
+  For $n\ge5$, standard doubly warped products $dr^2+\rho^2ds_2^2+\phi^2ds^2_{n-3}$
+  on $I\times S^2\times S^{n-3}$, with $\rho,\phi$ chosen analogously to
+  \cref{ex:pet-ch7-anderson-cp2-example}, yield metrics on $S^2\times
+  S^{n-2}$ with $\Ric\ge n-1$ and diameter $\to\pi$. In both examples the
+  functions $\rho,\phi$ are only $C^1$ at the outset, but being concave they
+  can be smoothed near the break points while remaining concave, changing
+  values and first derivatives negligibly and only increasing the (already
+  nonpositive) second derivative in absolute value, so the lower Ricci bound
+  persists after smoothing.
+  \source{petersen:page-0313}
+\end{example}
+
+\section{Manifolds of Nonnegative Ricci Curvature}
+
+We prove the splitting theorem of Cheeger and Gromoll, analogous in many ways
+to the maximal diameter theorem, with far-reaching consequences for compact
+manifolds of nonnegative Ricci curvature — for instance it shows that
+$S^3\times S^1$ admits no Ricci flat metric. Throughout this section $(M,g)$
+is complete and noncompact.
+
+\subsection{Rays and Lines}
+
+\begin{definition}[ray, line]
+  \label{def:pet-ch7-ray-line}
+  \lean{PetersenLib.IsRay,PetersenLib.IsLine}
+  A \emph{ray} $r:[0,\infty)\to(M,g)$ is a unit-speed geodesic with
+  $|r(t)r(s)|=|t-s|$ for all $t,s\ge0$; it may be viewed as a semi-infinite
+  segment, or a segment from $r(0)$ to infinity. A \emph{line}
+  $l:\mathbb{R}\to(M,g)$ is a unit-speed geodesic with $|l(t)l(s)|=|t-s|$ for all
+  $t,s\in\mathbb{R}$.
+  \source{petersen:page-0313}
+\end{definition}
+
+\begin{definition}[connected/disconnected at infinity]
+  \label{def:pet-ch7-connected-infinity}
+  \lean{PetersenLib.IsConnectedAtInfinity}
+  A complete manifold $(M,g)$ is \emph{connected at infinity} if for every
+  compact $K\subset M$ there is a compact $C\supset K$ such that any two
+  points of $M-C$ can be joined by a curve in $M-K$. Otherwise $(M,g)$ is
+  \emph{disconnected at infinity}.
+  \source{petersen:page-0314}
+\end{definition}
+
+\begin{lemma}[Lemma 7.3.1]
+  \label{lem:pet-ch7-ray-line-existence}
+  \lean{PetersenLib.rayExistenceLineIfDisconnectedAtInfinity}
+  \uses{def:pet-ch7-ray-line,def:pet-ch7-connected-infinity}
+  If $p\in(M,g)$ then a ray emanating from $p$ always exists. If $M$ is
+  disconnected at infinity, $(M,g)$ contains a line.
+  \source{petersen:page-0313,petersen:page-0314}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch7-ray-line-existence}
+  Fix $p\in M$ and a sequence $q_i\to\infty$; let $v_i\in T_pM$ be unit
+  vectors with $\sigma_i(t)=\exp_p(tv_i)$, $t\in[0,d(p,q_i)]$, a segment from
+  $p$ to $q_i$. Passing to a subsequence, $v_i\to v\in T_pM$. Then
+  $\sigma(t)=\exp_p(tv)$, $t\in[0,\infty)$, is a segment: by continuity of
+  $\exp_p$, $\sigma_i\to\sigma$ pointwise, so
+  $|\sigma(s)\sigma(t)|=\lim_i|\sigma_i(s)\sigma_i(t)|=|s-t|$ for all
+  $s,t\ge0$ where both sides are eventually defined (using $d(p,q_i)\to\infty$).
+  This $\sigma$ is the desired ray.
+
+  If $M$ is disconnected at infinity, there is a compact $K$ and sequences
+  $p_i,q_i\to\infty$ such that every curve from $p_i$ to $q_i$ meets $K$.
+  Joining $p_i,q_i$ by segments $\sigma_i:(-a_i,b_i)\to M$ with $a_i,b_i\to
+  \infty$ and $\sigma_i(0)\in K$ (possible since $\sigma_i$ must cross $K$, and
+  reparametrizing so the crossing time is $0$), the same subconvergence
+  argument as above (using compactness of $K$ to extract a convergent
+  subsequence of basepoints and directions) produces a line
+  $\sigma(t)=\lim_i\sigma_i(t)$, $t\in\mathbb{R}$.
+\end{proof}
+
+\begin{example}[Example 7.3.2]
+  \label{ex:pet-ch7-paraboloid-no-lines}
+  \lean{PetersenLib.paraboloidContainsNoLines}
+  \uses{def:pet-ch7-ray-line}
+  Surfaces of revolution $dr^2+\rho^2(r)ds^2_{n-1}$ with $\rho:[0,\infty)\to
+  [0,\infty)$, $\dot\rho(t)<1$, $\ddot\rho(t)<0$ for $t>0$, contain no lines;
+  such manifolds look like paraboloids.
+  \source{petersen:page-0314}
+\end{example}
+
+\begin{example}[Example 7.3.3]
+  \label{ex:pet-ch7-cylinder-contains-line}
+  \lean{PetersenLib.sphereCrossRAlwaysContainsLine}
+  \uses{lem:pet-ch7-ray-line-existence}
+  Any complete metric on $S^{n-1}\times\mathbb{R}$ contains a line, since the
+  manifold is disconnected at infinity.
+  \source{petersen:page-0315}
+\end{example}
+
+\begin{example}[Example 7.3.4]
+  \label{ex:pet-ch7-schwarzschild-no-line}
+  \lean{PetersenLib.schwarzschildContainsNoLine}
+  \uses{def:pet-ch7-ray-line}
+  The Schwarzschild metric on $S^{n-2}\times\mathbb{R}^2$ contains no lines, as
+  follows from the splitting theorem (\cref{thm:pet-ch7-splitting-theorem})
+  since the space is not metrically a product.
+  \source{petersen:page-0315}
+\end{example}
+
+\subsection{Busemann Functions}
+
+For the remainder of §7.3, $(M,g)$ is a complete noncompact manifold with
+$\Ric\ge0$. Given a unit-speed ray $c:[0,\infty)\to(M,g)$, define
+$b_t(x)=|xc(t)|-t$.
+
+\begin{proposition}[Proposition 7.3.6]
+  \label{prop:pet-ch7-busemann-approximants}
+  \lean{PetersenLib.busemannApproximantsProperties}
+  \uses{def:pet-ch7-ray-line,lem:pet-ch7-laplacian-comparison-calabi}
+  The functions $b_t$, $t\ge0$, satisfy:
+  \begin{enumerate}
+    \item[(1)] for fixed $x$, $t\mapsto b_t(x)$ is decreasing and bounded in
+      absolute value by $|xc(0)|$;
+    \item[(2)] $|b_t(x)-b_t(y)|\le|xy|$;
+    \item[(3)] $\Delta b_t(x)\le\dfrac{n-1}{b_t(x)+t}$ everywhere.
+  \end{enumerate}
+  \source{petersen:page-0316}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch7-busemann-approximants}
+  (2) is the triangle inequality applied to $|xc(t)|,|yc(t)|,|xy|$, giving
+  $|b_t(x)-b_t(y)|=\big||xc(t)|-|yc(t)|\big|\le|xy|$. (3) follows since
+  $b_t(x)+t=|xc(t)|$ is (up to the additive constant $t$) the distance
+  function from $c(t)$, to which \cref{lem:pet-ch7-laplacian-comparison-calabi}
+  applies with $k=0$: $\Delta(b_t+t)(x)\le(n-1)\snk_0'(r)/\snk_0(r)=(n-1)/r$
+  with $r=|xc(t)|=b_t(x)+t$.
+
+  For (1), the triangle inequality gives
+  \[
+    |b_t(x)|=\big||xc(t)|-|c(0)c(t)|\big|\le|xc(0)|.
+  \]
+  For $s<t$,
+  \[
+    b_t(x)-b_s(x)=|xc(t)|-t-|xc(s)|+s
+    =|xc(t)|-|xc(s)|-|c(t)c(s)|
+    \le|c(t)c(s)|-|c(t)c(s)|=0,
+  \]
+  using $|xc(t)|-|xc(s)|\le|c(t)c(s)|$ (triangle inequality) and
+  $t-s=|c(t)c(s)|$ (since $c$ is a ray). Thus $t\mapsto b_t(x)$ is
+  nonincreasing, hence decreasing (as an infimum bounded below by
+  $-|xc(0)|$).
+\end{proof}
+
+\begin{definition}[Busemann function]
+  \label{def:pet-ch7-busemann-function}
+  \lean{PetersenLib.busemannFunction}
+  \uses{prop:pet-ch7-busemann-approximants}
+  By \cref{prop:pet-ch7-busemann-approximants}, $b_t$ converges pointwise as
+  $t\to\infty$ to a $1$-Lipschitz function
+  \[
+    b_\infty(x)=\lim_{t\to\infty}b_t(x),\qquad |b_\infty(x)-b_\infty(y)|\le|xy|,
+    \qquad |b_\infty(x)|\le|xc(0)|,
+  \]
+  satisfying $b_\infty(c(r))=\lim_{t\to\infty}(|c(r)c(t)|-t)=-r$. This
+  $b_\infty$, denoted $b_c$, is the \emph{Busemann function} for $c$, thought
+  of as a renormalized distance function from ``$c(\infty)$.''
+  \source{petersen:page-0316}
+\end{definition}
+
+\begin{example}[Example 7.3.7]
+  \label{ex:pet-ch7-euclidean-busemann}
+  \lean{PetersenLib.euclideanBusemannFunction}
+  \uses{def:pet-ch7-busemann-function}
+  If $M=(\mathbb{R}^n,g_{\mathbb{R}^n})$, every Busemann function has the form
+  $b_c(x)=\dot c(0)\cdot(c(0)-x)$.
+  \source{petersen:page-0316}
+\end{example}
+
+\begin{definition}[horosphere, asymptote]
+  \label{def:pet-ch7-horosphere-asymptote}
+  \lean{PetersenLib.Horosphere,PetersenLib.IsAsymptoteFor}
+  \uses{def:pet-ch7-busemann-function}
+  The level sets $b_c^{-1}(t)$ are \emph{horospheres} (hyperplanes in $\mathbb{R}^n$;
+  spheres tangent to the boundary in the Poincaré model of hyperbolic space).
+  Given a ray $c$ and $p\in M$, a family of unit-speed segments
+  $\sigma_i:[0,L_i]\to M$ from $p$ to $c(t_i)$, $t_i\to\infty$, subconverges (as
+  in \cref{lem:pet-ch7-ray-line-existence}) to a ray $\tilde c:[0,\infty)\to
+  M$, $\tilde c(0)=p$, called an \emph{asymptote} for $c$ from $p$; asymptotes
+  need not be unique.
+  \source{petersen:page-0317}
+\end{definition}
+
+\begin{proposition}[Proposition 7.3.8]
+  \label{prop:pet-ch7-busemann-asymptote-relation}
+  \lean{PetersenLib.busemannAsymptoteRelation}
+  \uses{def:pet-ch7-horosphere-asymptote}
+  With $c,p,\tilde c$ as in \cref{def:pet-ch7-horosphere-asymptote}, the
+  Busemann functions satisfy
+  \begin{enumerate}
+    \item[(1)] $b_c(x)\le b_c(p)+b_{\tilde c}(x)$ for all $x\in M$;
+    \item[(2)] $b_c(\tilde c(t))=b_c(p)+b_{\tilde c}(\tilde c(t))=b_c(p)-t$ for
+      all $t\ge0$.
+  \end{enumerate}
+  \source{petersen:page-0317,petersen:page-0318}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch7-busemann-asymptote-relation}
+  Let $\sigma_i:[0,L_i]\to M$ be segments from $p$ to $c(t_i)$ converging to
+  $\tilde c$. For (2): since $\sigma_i$ is a segment,
+  $|pc(t_i)|=|p\sigma_i(s)|+|\sigma_i(s)c(t_i)|$ for any fixed $s\le L_i$, and
+  $\sigma_i(s)\to\tilde c(s)$ as $i\to\infty$. Hence
+  \[
+    b_c(p)=\lim_i(|pc(t_i)|-t_i)
+    =\lim_i(|p\sigma_i(s)|+|\sigma_i(s)c(t_i)|-t_i)
+    =|p\tilde c(s)|+\lim_i(|\tilde c(s)c(t_i)|-t_i)
+    =s+b_c(\tilde c(s)),
+  \]
+  i.e.\ $b_c(p)-s=b_c(\tilde c(s))$; since $\tilde c$ is unit speed with
+  $\tilde c(0)=p$, $b_{\tilde c}(\tilde c(s))=-s$
+  (\cref{def:pet-ch7-busemann-function}), so $b_c(p)+b_{\tilde
+  c}(\tilde c(s))=b_c(p)-s=b_c(\tilde c(s))$, proving (2).
+
+  For (1), fix $x\in M$ and $t\ge0$; using the triangle inequality through
+  $\tilde c(t)$ and then through $p$,
+  \[
+    |xc(s)|-s\le|x\tilde c(t)|+|\tilde c(t)c(s)|-s.
+  \]
+  Letting $s\to\infty$ and using $b_c(x)=\lim_s(|xc(s)|-s)$ on the left and
+  $\lim_s(|\tilde c(t)c(s)|-s)=b_c(\tilde c(t))$ on the right,
+  \[
+    b_c(x)\le|x\tilde c(t)|+b_c(\tilde c(t))
+    =|x\tilde c(t)|-t+t+b_c(\tilde c(t)).
+  \]
+  As $t\to\infty$, $|x\tilde c(t)|-t\to b_{\tilde c}(x)$, and by (2)
+  $b_c(\tilde c(t))+t=b_c(p)$ is constant in $t$, giving
+  $b_c(x)\le b_{\tilde c}(x)+b_c(p)$, which is (1).
+\end{proof}
+
+\begin{lemma}[Lemma 7.3.9]
+  \label{lem:pet-ch7-busemann-superharmonic}
+  \lean{PetersenLib.busemannFunctionSuperharmonic}
+  \uses{prop:pet-ch7-busemann-asymptote-relation,prop:pet-ch7-busemann-approximants}
+  If $\Ric(M,g)\ge0$, then $\Delta b_c\le0$ everywhere.
+  \source{petersen:page-0318}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch7-busemann-superharmonic}
+  Fix $p\in M$ and an asymptote $\tilde c$ for $c$ from $p$. By
+  \cref{prop:pet-ch7-busemann-asymptote-relation}(1), $b_c(p)+b_{\tilde c}$ is
+  a support function from above for $b_c$ at $p$ (they agree at $p$ by (2),
+  and dominate $b_c$ elsewhere by (1)), so it suffices to show $\Delta
+  b_{\tilde c}\le0$ at $p$. The functions $b_t(x)=|x\tilde c(t)|-t$ are
+  themselves support functions from above for $b_{\tilde c}$ at $p$ (by
+  \cref{prop:pet-ch7-busemann-approximants}(1), since $b_{\tilde c}=\lim_tb_t$
+  is a decreasing limit and $b_{\tilde c}(p)=\lim_tb_t(p)$, while for general
+  $x$ near $p$, $b_t(x)\ge b_{\tilde c}(x)$ since the sequence $b_t(x)$
+  decreases to $b_{\tilde c}(x)$). Each $b_t$ is smooth at $p$ (being, up to a
+  constant, the distance function from $\tilde c(t)\ne p$) with
+  \[
+    \Delta b_t(p)\le\frac{n-1}{t}\to0
+  \]
+  as $t\to\infty$, by \cref{prop:pet-ch7-busemann-approximants}(3). Hence
+  $\Delta b_{\tilde c}(p)\le0$ in the support sense, giving $\Delta
+  b_c(p)\le0$.
+\end{proof}
+
+\begin{theorem}[Theorem 7.3.5 — The Splitting Theorem, Cheeger and Gromoll, 1971]
+  \label{thm:pet-ch7-splitting-theorem}
+  \lean{PetersenLib.cheegerGromollSplittingTheorem}
+  \uses{lem:pet-ch7-busemann-superharmonic,thm:pet-ch7-strong-maximum-principle,thm:pet-ch7-harmonic-regularity}
+  If $(M,g)$ contains a line and has $\Ric\ge0$, then $(M,g)$ is isometric to
+  a product $(H\times\mathbb{R},\,g_0+dt^2)$.
+  \source{petersen:page-0315,petersen:page-0318,petersen:page-0319}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch7-splitting-theorem,lem:pet-ch7-busemann-superharmonic,thm:pet-ch7-strong-maximum-principle,thm:pet-ch7-harmonic-regularity,prop:pet-ch7-busemann-approximants,def:pet-ch7-busemann-function,prop:pet-ch7-volume-form-laplacian-trace}
+  The strategy is to find a distance function $r:M\to\mathbb{R}$ (i.e.\
+  $|\nabla r|\equiv1$) that is linear ($\Hess r=0$); then $M=U_0\times\mathbb{R}$
+  with $U_0=\{r=0\}$ and $g=g_0+dt^2$, as in the maximal diameter theorem
+  (\cref{thm:pet-ch7-cheng-rigidity}), where two distance functions at maximal
+  distance were used and shown to sum to a constant, hence (via the maximum
+  principle) each be smooth away from two points with an explicit Hessian
+  determined by the rigidity case of Cauchy--Schwarz. Here the two ends of a
+  line play the role of the two maximally-distant points.
+
+  Let $c:\mathbb{R}\to M$ be a line, and let $b^+,b^-$ be the Busemann functions
+  for the rays $c|_{[0,\infty)}$ and $t\mapsto c(-t)$ respectively:
+  \[
+    b^+(x)=\lim_{t\to\infty}(|xc(t)|-t),\qquad
+    b^-(x)=\lim_{t\to\infty}(|xc(-t)|-t).
+  \]
+  By the triangle inequality, $b^+(x)+b^-(x)=\lim_{t\to\infty}(|xc(t)|+|xc(-t)|-2t)\ge0$
+  for all $x$ (each term $|xc(t)|+|xc(-t)|-2t\ge|c(t)c(-t)|-2t=0$ since $c$ is
+  a line), with equality on $c(\mathbb{R})$ since $c$ realizes the distance
+  $|c(t)c(-t)|=2t$. By \cref{lem:pet-ch7-busemann-superharmonic},
+  $\Delta(b^++b^-)\le0$, so $b^++b^-$ is superharmonic with a global minimum
+  (value $0$, attained on the line $c$). By
+  \cref{thm:pet-ch7-strong-maximum-principle} applied to $-(b^++b^-)$,
+  $b^++b^-\equiv0$ on $M$. Hence $b^+=-b^-$ and, since
+  $\Delta b^+\le0\le-\Delta b^-=\Delta b^+$ (using $\Delta b^-\le0$ from
+  \cref{lem:pet-ch7-busemann-superharmonic} applied to the opposite ray), we
+  get $\Delta b^+=\Delta b^-=0$ everywhere.
+
+  Next, $b^\pm$ have unit gradient. Let $p\in M$ and let $\tilde c^\pm$ be
+  asymptotes for $c^\pm=c|_{\pm[0,\infty)}$ from $p$. Set
+  $b_t^{\pm,\pm}(x)=|x\tilde c^\pm(t)|-t$; by the same support-function
+  argument used to prove \cref{lem:pet-ch7-busemann-superharmonic},
+  \[
+    b^+(x)\ge b^+(x)-b^+(p)=-b^-(x)+b^-(p)\ge-b_t^{-,-}(x)+b_t^{-,-}(p)
+  \]
+  wherever these support relations hold, with equality at $x=p$; since
+  $b_t^{\pm,\pm}$ are smooth at $p$ with unit gradient (being, up to sign and
+  additive constant, distance functions from points $\ne p$) and $b^+,b^-$
+  agree with them to first order at $p$ from opposite sides, $\nabla
+  b^+(p)=-\nabla b^-(p)$ and both $b^\pm$ are differentiable at $p$ with unit
+  gradient. As $p$ was arbitrary, $b^\pm$ are everywhere differentiable with
+  $|\nabla b^\pm|\equiv1$, and being harmonic in the weak sense, are smooth by
+  \cref{thm:pet-ch7-harmonic-regularity}.
+
+  Finally, apply (tr2) of \cref{prop:pet-ch7-volume-form-laplacian-trace} to
+  $r=b^+$ (the same rigidity argument used in
+  \cref{thm:pet-ch7-cheng-rigidity}(3)), with $k=0$ and $\Delta
+  r\equiv0$:
+  \[
+    0=\partial_r\Delta b^++\frac{(\Delta b^+)^2}{n-1}
+    \le\partial_r\Delta b^++|\Hess b^+|^2
+    =|\Hess b^+|^2\le-\Ric(\nabla b^+,\nabla b^+)\le0,
+  \]
+  forcing $|\Hess b^+|^2=0$, i.e.\ $\Hess b^+\equiv0$: $b^+$ is the sought
+  linear distance function, and $M=\{b^+=0\}\times\mathbb{R}$ isometrically, with
+  the $\mathbb{R}$ factor parametrized by $b^+$.
+\end{proof}
+
+\subsection{Structure Results in Nonnegative Ricci Curvature}
+
+The splitting theorem gives several structural consequences for compact
+manifolds of nonnegative Ricci curvature.
+
+\begin{corollary}[Corollary 7.3.10]
+  \label{cor:pet-ch7-no-ricci-flat-sphere-product}
+  \lean{PetersenLib.noRicciFlatMetricOnSphereProductLowDim}
+  \uses{thm:pet-ch7-splitting-theorem}
+  $S^k\times S^l$ admits no Ricci flat metric when $k=2,3$.
+  \source{petersen:page-0319}
+\end{corollary}
+\begin{proof}
+  \uses{cor:pet-ch7-no-ricci-flat-sphere-product}
+  The universal cover of $S^k\times S^l$ is $S^k\times\mathbb{R}^l\times(\text{a
+  further cover of }S^l)$; take instead the cover $S^k\times\mathbb{R}$ obtained by
+  unrolling one $S^1\subset S^l$ factor when $l\ge1$ (or directly $S^k\times
+  \mathbb{R}$ when $l=1$). This space is disconnected at infinity, so any metric of
+  nonnegative Ricci curvature on it must split
+  (\cref{thm:pet-ch7-splitting-theorem}, applied after
+  \cref{lem:pet-ch7-ray-line-existence} produces a line). If the original
+  metric on $S^k\times S^l$ is Ricci flat, the splitting produces a Ricci
+  flat metric on a compact, simply connected $k$-manifold $H$ homotopy
+  equivalent to $S^k$. For $k\le3$ a Ricci flat metric is flat, but a compact
+  flat manifold has infinite (virtually abelian) fundamental group by
+  Bieberbach theory, contradicting simple connectivity unless $H$ is a point —
+  impossible since $H$ is homotopy equivalent to $S^k$, $k\ge2$.
+\end{proof}
+
+\begin{theorem}[Theorem 7.3.11 — Structure Theorem for Nonnegative Ricci Curvature, Cheeger and Gromoll, 1971]
+  \label{thm:pet-ch7-structure-theorem}
+  \lean{PetersenLib.nonnegativeRicciStructureTheorem}
+  \uses{thm:pet-ch7-splitting-theorem,lem:pet-ch7-ray-line-existence}
+  Suppose $(M,g)$ is compact with $\Ric\ge0$. Then:
+  \begin{enumerate}
+    \item[(1)] the universal cover $(\tilde M,\tilde g)$ splits isometrically
+      as $N\times\mathbb{R}^k$, with $N$ compact and containing no lines;
+    \item[(2)] $\Iso(\tilde M)=\Iso(N)\times\Iso(\mathbb{R}^k)$;
+    \item[(3)] there is a finite normal subgroup $G\subset\pi_1(M)$ with
+      $\pi_1(M)/G\cong\pi_1(M)\cap\Iso(\mathbb{R}^k)$, and a finite-index subgroup
+      $\mathbb{Z}^k\subset\pi_1(M)\cap\Iso(\mathbb{R}^k)$.
+  \end{enumerate}
+  \source{petersen:page-0319,petersen:page-0320}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch7-structure-theorem}
+  \emph{(1).} Applying \cref{thm:pet-ch7-splitting-theorem} repeatedly as long
+  as lines exist writes $\tilde M=N\times\mathbb{R}^k$ with $N$ containing no lines
+  (the process terminates since $\dim\le n$). If $c(t)=(c_1(t),c_2(t))\in
+  N\times\mathbb{R}^k$ is a geodesic, both $c_i$ are geodesics, and if $c$ is a line
+  then each nonconstant $c_i$ is a line; since $N$ has no lines, $c_1$ is
+  constant, so every line in $\tilde M$ has the form $c(t)=(x,\sigma(t))$
+  with $x\in N$, $\sigma$ a line in $\mathbb{R}^k$.
+
+  \emph{(2).} Let $F\in\Iso(\tilde M)$. Since every tangent vector to $\mathbb{R}^k$
+  is the velocity of a line in $\{x\}\times\mathbb{R}^k$ and $F$ carries lines to
+  lines, and (1) shows every line lies in some $\{x\}\times\mathbb{R}^k$, $F$
+  carries $\{x\}\times\mathbb{R}^k$ to $\{F_1(x)\}\times\mathbb{R}^k$ for a well-defined
+  map $F_1:N\to N$. Thus $F=(F_1,F_2)$ with $F_1:N\to N$ an isometry; since
+  $DF$ preserves the tangent spaces to the $\mathbb{R}^k$ factors it also preserves
+  the orthogonal complements (the tangent spaces to $N$), so $F_2:\mathbb{R}^k\to
+  \mathbb{R}^k$ is an isometry. Hence $\Iso(\tilde M)=\Iso(N)\times\Iso(\mathbb{R}^k)$.
+
+  \emph{(3), part on $N$ compact (used implicitly in (1)):} $\pi_1(M)$ acts on
+  $\tilde M$ discretely and cocompactly by deck transformations; projecting to
+  $\Iso(N)$ via (2), the subgroup $\pi_1(M)\cap\Iso(N)$ acts cocompactly on
+  $N$ (for any sequence $p_i\in N$ one can find deck transformations $F_i$
+  with $F_i(p_i)$ in a fixed compact set, since the action on $\tilde M$ is
+  cocompact). If $N$ were noncompact it would contain a ray $c$; choosing
+  $t_i\to\infty$ and $F_i\in\pi_1(M)\cap\Iso(N)$ with $F_i(c(t_i))$ in a
+  compact set, a subsequential limit of $DF_i(\dot c(t_i))$ gives a unit
+  vector $v$ such that the geodesics $c_i(t)=F_i(c(t+t_i))$ converge to
+  $\exp(tv)$; since each $c_i$ is a ray on $[a,\infty)$ once $t_i\ge-a$, the
+  limit $\exp(tv)$ is a ray on every $[a,\infty)$, i.e.\ a line in $N$ — a
+  contradiction. Hence $N$ is compact.
+
+  \emph{(3).} Let $G=\ker\big(\pi_1(M)\to\pi_1(M)\cap\Iso(\mathbb{R}^k)\big)$, the
+  kernel of the projection to the $\mathbb{R}^k$-factor of the isometry (using (2)).
+  Then $G$ acts freely and discretely on $\tilde M$ without moving the
+  $\mathbb{R}^k$-factor, hence freely and discretely on the compact $N$, so $G$ is
+  finite; by construction $\pi_1(M)/G\cong\pi_1(M)\cap\Iso(\mathbb{R}^k)$.
+
+  The translation subgroup $\mathbb{R}^k\subset\Iso(\mathbb{R}^k)$ is normal with factor
+  group $O(k)$. The intersection $\Lambda=\pi_1(M)\cap\mathbb{R}^k$ is a finitely
+  generated abelian group acting discretely and cocompactly on $\mathbb{R}^k$ (it
+  has finite index in $\pi_1(M)\cap\Iso(\mathbb{R}^k)$, which itself acts
+  cocompactly since $\pi_1(M)$ acts cocompactly on $\tilde M=N\times\mathbb{R}^k$
+  and $N$ is compact), so $\Lambda\cong\mathbb{Z}^m$ for some $m$. If $m<k$, $\Lambda$
+  spans a proper subspace of $\mathbb{R}^k$ and cannot act cocompactly. If $m>k$,
+  $\Lambda$ contains two elements linearly independent over $\mathbb{Q}$ but not
+  over $\mathbb{R}$; the subgroup they generate has orbits dense in a line, so
+  cannot act discretely — a contradiction. Hence $m=k$ and $\Lambda\cong\mathbb{Z}^k$
+  has finite index in $\pi_1(M)\cap\Iso(\mathbb{R}^k)$.
+\end{proof}
+
+\begin{remark}[Remark 7.3.12]
+  \label{rem:pet-ch7-wilking-remark}
+  \lean{PetersenLib.wilkingConverseRemark}
+  \uses{thm:pet-ch7-structure-theorem}
+  Wilking has shown conversely that any group $G$ admitting a finite normal
+  subgroup $H\subset G$ with $G/H$ acting discretely and cocompactly on a
+  Euclidean space is the fundamental group of a compact manifold with
+  nonnegative sectional curvature.
+  \source{petersen:page-0320}
+\end{remark}
+
+\begin{corollary}[Corollary 7.3.13]
+  \label{cor:pet-ch7-flat-manifold-Kpi1}
+  \lean{PetersenLib.flatIfAsphericalNonnegRicci}
+  \uses{thm:pet-ch7-structure-theorem}
+  Suppose $(M,g)$ is compact with $\Ric\ge0$. If $M$ is a $K(\pi,1)$ (its
+  universal cover is contractible), then the universal cover is Euclidean
+  space and $(M,g)$ is flat.
+  \source{petersen:page-0320,petersen:page-0321}
+\end{corollary}
+\begin{proof}
+  \uses{cor:pet-ch7-flat-manifold-Kpi1}
+  By \cref{thm:pet-ch7-structure-theorem}(1), $\tilde M=\mathbb{R}^k\times C$ with
+  $C$ compact. This space is contractible only if $C$ is contractible, and
+  the only compact contractible manifold is a point; hence $\tilde
+  M=\mathbb{R}^k=\mathbb{R}^n$, with the flat metric forced by the product splitting
+  degenerating to a single Euclidean factor.
+\end{proof}
+
+\begin{corollary}[Corollary 7.3.14]
+  \label{cor:pet-ch7-finite-fundamental-group-positive-ricci}
+  \lean{PetersenLib.finitePi1IfPositiveRicciSomewhere}
+  \uses{thm:pet-ch7-structure-theorem}
+  If $(M,g)$ is compact with $\Ric\ge0$ and $\Ric>0$ on some tangent space
+  $T_pM$, then $\pi_1(M)$ is finite.
+  \source{petersen:page-0321}
+\end{corollary}
+\begin{proof}
+  \uses{cor:pet-ch7-finite-fundamental-group-positive-ricci}
+  Positivity of $\Ric$ on an entire tangent space prevents the universal
+  cover from splitting off any $\mathbb{R}^k$ factor with $k\ge1$ (the splitting
+  theorem would force $\Ric(\partial_t,\partial_t)=0$ along the $\mathbb{R}$-direction
+  of any such factor). Hence in \cref{thm:pet-ch7-structure-theorem}(1),
+  $k=0$ and $\tilde M=N$ is compact, so $\pi_1(M)$ acts discretely and
+  cocompactly on the compact space $\tilde M$, forcing $\pi_1(M)$ finite.
+\end{proof}
+
+\begin{corollary}[Corollary 7.3.15]
+  \label{cor:pet-ch7-first-betti-number-bound}
+  \lean{PetersenLib.firstBettiNumberBoundNonnegRicci}
+  \uses{thm:pet-ch7-structure-theorem}
+  If $(M,g)$ is compact with $\Ric\ge0$, then $b_1(M)\le\dim M=n$, with
+  equality iff $(M,g)$ is a flat torus.
+  \source{petersen:page-0321}
+\end{corollary}
+\begin{proof}
+  \uses{cor:pet-ch7-first-betti-number-bound}
+  There is a natural surjection $h:\pi_1(M)\to H_1(M,\mathbb{Z})\cong\mathbb{Z}^{b_1}\times
+  T$ ($T$ finite abelian) sending loops to cycles. Since the finite normal
+  subgroup $G$ of \cref{thm:pet-ch7-structure-theorem}(3) is finite, $h(G)$
+  lies in the torsion part $T$, so $h$ descends to a surjection
+  $\pi_1(M)/G=\pi_1(M)\cap\Iso(\mathbb{R}^k)\twoheadrightarrow\mathbb{Z}^{b_1}$. The image of
+  the finite-index subgroup $\mathbb{Z}^k\subset\pi_1(M)\cap\Iso(\mathbb{R}^k)$ then also
+  has finite index in $\mathbb{Z}^{b_1}$ (a finite-index subgroup maps onto a
+  finite-index subgroup of the image under a surjection with finite-index
+  domain restriction), giving $b_1\le k\le n$.
+
+  If $b_1=n$, then $k=n$ forces $\tilde M=\mathbb{R}^n$ (no compact factor $N$
+  remains, i.e.\ $N$ is a point), so $G$ is trivial and $h:\mathbb{Z}^n\to\mathbb{Z}^{b_1}=
+  \mathbb{Z}^n$ restricted to the finite-index $\mathbb{Z}^n\subset\pi_1(M)$ must be
+  injective (else its image would fail to have finite index in $\mathbb{Z}^n$). So
+  $\ker h$ meets the finite-index subgroup $\mathbb{Z}^n\subset\pi_1(M)$ trivially,
+  hence $\ker h$ is finite; but any finite-order isometry of $\mathbb{R}^n$ has a
+  fixed point, and elements of $\ker h\subset\pi_1(M)$ act freely (as deck
+  transformations), so $\ker h$ is trivial. Thus $\pi_1(M)\cong\mathbb{Z}^n\times T$
+  with $T$ (now seen to be) trivial, so $M=\mathbb{R}^n/\mathbb{Z}^n$ is a torus (not
+  necessarily the standard square torus, since the $\mathbb{Z}^n$-action on
+  $\mathbb{R}^n$ need not be the standard one).
+\end{proof}
+
+\begin{theorem}[Theorem 7.3.16]
+  \label{thm:pet-ch7-homogeneous-splitting}
+  \lean{PetersenLib.homogeneousNonnegRicciSplitting}
+  \uses{thm:pet-ch7-splitting-theorem,thm:pet-ch7-structure-theorem}
+  Let $(M,g)$ be a homogeneous Riemannian manifold with $\Ric\ge0$. Then
+  $(M,g)=(N\times\mathbb{R}^k,\,g_N+g_{\mathbb{R}^k})$ with $(N,g_N)$ compact homogeneous.
+  \source{petersen:page-0321,petersen:page-0322}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch7-homogeneous-splitting}
+  First split $(M,g)=(N\times\mathbb{R}^k,g_N+g_{\mathbb{R}^k})$
+  (\cref{thm:pet-ch7-splitting-theorem}, iterated as in
+  \cref{thm:pet-ch7-structure-theorem}(1)) so that $N$ contains no lines. As
+  in \cref{thm:pet-ch7-structure-theorem}(2), the isometry group of $M$
+  splits as $\Iso(N)\times\Iso(\mathbb{R}^k)$, and since $\Iso(M)$ acts transitively
+  and preserves the product structure, $\Iso(N)$ acts transitively on $N$: it
+  makes $N$ homogeneous.
+
+  It remains to show any noncompact homogeneous space contains a line (which
+  by construction of $N$ then forces $N$ to be compact, as in
+  \cref{thm:pet-ch7-structure-theorem}(3)). Let $c:[0,\infty)\to M$ be a
+  unit-speed ray (\cref{lem:pet-ch7-ray-line-existence}) and, using
+  homogeneity, choose isometries $F_s$ with $F_s(c(s))=c(0)$ for each $s\ge0$.
+  Define $c_s:[-s,\infty)\to M$ by $c_s(t)=F_s(c(t+s))$; then $c_s(0)=c(0)$
+  and $\dot c_s(0)=DF_s(\dot c(s))$. Since $F_s$ is an isometry taking the
+  segment $c|_{[0,s]}$ (from $c(0)$ to $c(s)$, realizing the distance $s$) to
+  a segment from $F_s(c(0))$ to $c(0)$ of the same length, and $c_s$ is a
+  reparametrized ray by construction, in the limit (extracting a convergent
+  subsequence of $\dot c_s(0)$ as $s\to\infty$, using that each $c_s$ is a
+  ray on $[-s,\infty)$ so any fixed compact interval $[-a,\infty)$ eventually
+  lies in the domain) the extension of $c$ backward along the limiting
+  direction remains distance-realizing on every finite interval, producing a
+  full line through $c(0)$.
+\end{proof}
+
+\section{Further Study}
+
+The interested reader may consult additional treatments of the material in
+this chapter in the wider literature: surveys of comparison geometry more
+generally; Anderson's article containing further examples of manifolds with
+nonnegative Ricci curvature; the papers constructing examples with almost
+maximal diameter (\cref{ex:pet-ch7-anderson-cp2-example,ex:pet-ch7-otsu-example});
+the original paper of Cheeger and Gromoll on the splitting theorem
+(\cref{thm:pet-ch7-splitting-theorem}) together with a later elementary proof
+of it; and the articles of Colding, Perel'man, and Zhu tracing the subsequent
+development of the subject.
+\source{petersen:page-0322}
+
+\section{Exercises}
+
+\begin{remark}[Exercise 7.5.1]
+  \label{rem:pet-ch7-ex-1}
+  \lean{PetersenLib.exercise7_5_1}
+  \uses{prop:pet-ch7-volume-form-laplacian-trace,def:pet-ch7-polar-density}
+  With notation as in §7.1.1 and using $\vol=\lambda\,dr\wedge\vol_{n-1}$, show
+  that $\mu=\lambda^{1/(n-1)}$ satisfies
+  \[
+    \partial_r^2\mu\le-\frac{\mu}{n-1}\Ric(\partial_r,\partial_r),\qquad
+    \mu(0,\theta)=0,\qquad \lim_{r\to0}\partial_r\mu(r,\theta)=1,
+  \]
+  and that this yields the desired volume-form estimates.
+  \source{petersen:page-0322}
+\end{remark}
+
+\begin{remark}[Exercise 7.5.2 — Calabi and Yau]
+  \label{rem:pet-ch7-ex-2}
+  \lean{PetersenLib.exercise7_5_2}
+  \uses{thm:pet-ch7-structure-theorem}
+  Let $(M,g)$ be complete noncompact with $\Ric\ge0$, $p\in M$.
+  \begin{enumerate}
+    \item[(1)] Show that for each $R>1$ there is $x\in M$ with
+    \[
+      \vol B(p,1)\le\vol B(x,R+1)-\vol B(x,R-1)
+      \le\frac{(R+1)^n-(R-1)^n}{(R+1)^n}\vol B(p,2R).
+    \]
+    \item[(2)] Show there is $C>0$ with $\vol B(p,R)\ge CR$.
+  \end{enumerate}
+  \source{petersen:page-0322}
+\end{remark}
+
+\begin{remark}[Exercise 7.5.3]
+  \label{rem:pet-ch7-ex-3}
+  \lean{PetersenLib.exercise7_5_3}
+  \uses{def:pet-ch7-support-function}
+  Let $f:I\to\mathbb{R}$ be continuous on an interval $I\subset\mathbb{R}$. Show that (1)
+  $f$ is convex, (2) $f$ has a linear support function from below of the form
+  $a(x-x_0)+f(x_0)$ at every $x_0\in I$, and (3) $f''\ge0$ in the support
+  sense at every $x_0\in I$, are equivalent.
+  \source{petersen:page-0322,petersen:page-0323}
+\end{remark}
+
+\begin{remark}[Exercise 7.5.4]
+  \label{rem:pet-ch7-ex-4}
+  \lean{PetersenLib.exercise7_5_4}
+  \uses{thm:pet-ch7-poincare-sobolev}
+  Show that on a compact Riemannian manifold there is no finite $S(s)$ with
+  $\|f-f_M\|_\infty\le S\|df\|_1$ for $1<s<\dim M$.
+  \source{petersen:page-0323}
+\end{remark}
+
+\begin{remark}[Exercise 7.5.5 — Basic Covering Lemma]
+  \label{rem:pet-ch7-ex-5}
+  \lean{PetersenLib.exercise7_5_5}
+  \uses{thm:pet-ch7-maximal-function-theorem}
+  Given a separable metric space $(X,d)$ and a bounded positive function
+  $R:X\to(0,D]$, show there is a countable $A\subset X$ such that the balls
+  $B(p,R(p))$, $p\in A$, are pairwise disjoint and $X=\bigcup_{p\in
+  A}B(p,5R(p))$. (Hint: choose the points successively so that
+  $R(p_{k+1})\ge\tfrac12\sup_{p\in X\setminus\bigcup_iB(p_i,2R(p_i))}R(p)$.)
+  \source{petersen:page-0323}
+\end{remark}
+
+\begin{remark}[Exercise 7.5.6]
+  \label{rem:pet-ch7-ex-6}
+  \lean{PetersenLib.exercise7_5_6}
+  \uses{thm:pet-ch7-cheng-rigidity}
+  Assume $r(x)=|xp|$ is smooth on $B(p,R)$. Show that if
+  $\Hess r=(\snk'(r)/\snk(r))g_r$ in polar coordinates, then all sectional
+  curvatures on $B(p,R)$ equal $k$.
+  \source{petersen:page-0323}
+\end{remark}
+
+\begin{remark}[Exercise 7.5.7]
+  \label{rem:pet-ch7-ex-7}
+  \lean{PetersenLib.exercise7_5_7}
+  \uses{thm:pet-ch7-poincare-sobolev}
+  Construct convex surfaces in $\mathbb{R}^3$ by capping off cylinders
+  $[-R,R]\times S^1$ to show the Sobolev--Poincaré constants increase as $R$
+  increases. (Hint: consider test functions constant except on $[-1,1]\times
+  S^1$.)
+  \source{petersen:page-0323}
+\end{remark}
+
+\begin{remark}[Exercise 7.5.8]
+  \label{rem:pet-ch7-ex-8}
+  \lean{PetersenLib.exercise7_5_8}
+  \uses{lem:pet-ch7-absolute-volume-comparison}
+  Show that if $(M,g)$ has $\Ric\ge(n-1)k$ and $\vol B(p,R)=v(n,k,R)$ for some
+  $p\in M$, then the metric has constant curvature $k$ on $B(p,R)$.
+  \source{petersen:page-0323}
+\end{remark}
+
+\begin{remark}[Exercise 7.5.9]
+  \label{rem:pet-ch7-ex-9}
+  \lean{PetersenLib.exercise7_5_9}
+  \uses{lem:pet-ch7-laplacian-comparison-calabi}
+  Let $X$ be a vector field and $F_t(p)=\exp_p(tX|_p)$.
+  \begin{enumerate}
+    \item[(1)] For $v\in T_pM$, show $J(t)=DF_t(v)$ is a Jacobi field along
+      $c(t)=\exp(tX)$ with $J(0)=v$, $\dot J(0)=\nabla_vX$.
+    \item[(2)] For an orthonormal basis $e_i$ of $T_pM$ and $J_i(t)=DF_t(e_i)$,
+      show $(\det[DF_t])^2=\det[g(J_i(t),J_j(t))]$.
+    \item[(3)] Show that as long as $\det(DF_t)\ne0$,
+      \[
+        \frac{d^2(\det(DF_t))^{1/n}}{dt^2}
+        \le-\frac{(\det(DF_t))^{1/n}}{n}\Ric(\dot c,\dot c).
+      \]
+      (Hint: use $(\operatorname{tr}A)^2\le n\operatorname{tr}(A^*A)$ for
+      $n\times n$ matrices $A$.)
+  \end{enumerate}
+  \source{petersen:page-0323}
+\end{remark}
+
+\begin{remark}[Exercise 7.5.10]
+  \label{rem:pet-ch7-ex-10}
+  \lean{PetersenLib.exercise7_5_10}
+  \uses{lem:pet-ch7-relative-volume-comparison}
+  Show that a complete manifold $(M,g)$ with $\Ric\ge0$ and
+  $\lim_{r\to\infty}\vol B(p,r)/(\omega_nr^n)=1$ for some $p\in M$ must be
+  isometric to Euclidean space.
+  \source{petersen:page-0324}
+\end{remark}
+
+\begin{remark}[Exercise 7.5.11]
+  \label{rem:pet-ch7-ex-11}
+  \lean{PetersenLib.exercise7_5_11}
+  \uses{lem:pet-ch7-hessian-touching-comparison}
+  Show that any function on an $n$-dimensional Riemannian manifold satisfies
+  $|\Hess u|^2\ge\tfrac1n|\Delta u|^2$, with equality iff
+  $\Hess u=\tfrac{\Delta u}{n}g$. What can be said about $M$ when
+  $\Hess u=\tfrac{\Delta u}{n}g$?
+  \source{petersen:page-0324}
+\end{remark}
+
+\begin{remark}[Exercise 7.5.12]
+  \label{rem:pet-ch7-ex-12}
+  \lean{PetersenLib.exercise7_5_12}
+  \uses{def:pet-ch7-linear-harmonic-function}
+  Show that if $u,v:M\to\mathbb{R}$ are compactly supported and smooth on open dense
+  sets, then
+  \[
+    \int u\,\Delta v\,\vol=\int v\,\Delta u\,\vol
+    =-\int g(du,dv)\,\vol=-\int g(\nabla u,\nabla v)\,\vol.
+  \]
+  \source{petersen:page-0324}
+\end{remark}
+
+\begin{remark}[Exercise 7.5.13]
+  \label{rem:pet-ch7-ex-13}
+  \lean{PetersenLib.exercise7_5_13}
+  \uses{thm:pet-ch7-strong-maximum-principle}
+  Show that if $\Delta u=\lambda u$ on a closed Riemannian manifold, then
+  $\lambda\le0$, and $\lambda=0$ forces $u$ constant.
+  \source{petersen:page-0324}
+\end{remark}
+
+\begin{remark}[Exercise 7.5.14]
+  \label{rem:pet-ch7-ex-14}
+  \lean{PetersenLib.exercise7_5_14}
+  \uses{thm:pet-ch7-cheng-rigidity}
+  Show that $u_k=\cos(\sqrt kr)$ on $S^n_k=S^n(1/\sqrt k)$ satisfies $\Delta
+  u_k=-nk\,u_k$ and $\int u_k\,\vol=0$.
+  \source{petersen:page-0324}
+\end{remark}
+
+\begin{remark}[Exercise 7.5.15 — Lichnerowicz]
+  \label{rem:pet-ch7-ex-15}
+  \lean{PetersenLib.exercise7_5_15}
+  \uses{thm:pet-ch7-cheng-rigidity}
+  Let $(M^n,g)$ be closed with $\Ric\ge(n-1)k>0$. Use the Bochner formula to
+  show that every $u$ with $\Delta u=-\lambda u$, $\lambda>0$, satisfies
+  $\lambda\ge nk$. Deduce, via the spectral theorem for $\Delta$, that every
+  $u$ with $\int u\,\vol=0$ satisfies the Poincaré inequality
+  $\int u^2\,\vol\le\tfrac1{nk}\int|du|^2\,\vol$.
+  \source{petersen:page-0324}
+\end{remark}
+
+\begin{remark}[Exercise 7.5.16 — Obata]
+  \label{rem:pet-ch7-ex-16}
+  \lean{PetersenLib.exercise7_5_16}
+  \uses{rem:pet-ch7-ex-15,thm:pet-ch7-cheng-rigidity}
+  Let $(M^n,g)$ be closed with $\Ric\ge(n-1)k>0$. Using the Bochner formula as
+  in \cref{rem:pet-ch7-ex-15}, show that if $\Delta u=-nk\,u$ for some
+  function $u$, then $\Hess u=-ku\,g$. Conclude $(M^n,g)=S^n_k$.
+  \source{petersen:page-0324}
+\end{remark}
+
+\begin{remark}[Exercise 7.5.17 — P. Li and Schoen]
+  \label{rem:pet-ch7-ex-17}
+  \lean{PetersenLib.exercise7_5_17}
+  \uses{thm:pet-ch7-poincare-sobolev}
+  Let $(M,g)$ be complete with $\Ric\ge-(n-1)k^2$, $k\ge0$; $p\in M$; $R>0$
+  with $\partial B(p,2R)\ne\emptyset$; $q\in\partial B(p,2R)$;
+  $r(x)=|xq|$.
+  \begin{enumerate}
+    \item[(1)] Show $\Delta r\le(n-1)(R^{-1}+k)$ on $B(p,R)$.
+    \item[(2)] Let $f(x)=a\exp(-ar(x))$, $a>0$. Show
+      $\Delta f\ge a\exp(-3aR)\big(a-(n-1)(R^{-1}+k)\big)$.
+    \item[(3)] Let $u\ge0$ be smooth with compact support in $B(p,R)$, and
+      choose $a=n(R^{-1}+k)$. Using
+      $\int_{B(p,R)}u\,\Delta f\,\vol=-\int_{B(p,R)}g(du,df)\,\vol$, show
+      $\int_{B(p,R)}u\,\vol\le C\int_{B(p,R)}|du|\,\vol$, where
+      $C=\dfrac{R}{1+kR}\exp\big(2n(1+kR)\big)$.
+    \item[(4)] Extend the inequality of (3) to all smooth $u$ with compact
+      support in $B(p,R)$.
+    \item[(5)] For $s\ge1$ and $u$ with compact support in $B(p,R)$, show
+      $\int_{B(p,R)}|u|^s\,\vol\le(sC)^s\int_{B(p,R)}|du|\,\vol$.
+  \end{enumerate}
+  \source{petersen:page-0324,petersen:page-0325}
+\end{remark}
+
+\begin{remark}[Exercise 7.5.18 — Cheeger]
+  \label{rem:pet-ch7-ex-18}
+  \lean{PetersenLib.exercise7_5_18}
+  \uses{lem:pet-ch7-relative-volume-comparison}
+  Suppose $(M^n,g)$ has $\Ric\ge(n-1)k$.
+  \begin{enumerate}
+    \item[(1)] For $p_1,\dots,p_k\in M$, show
+      $r\mapsto\vol\big(\bigcup_{i=1}^kB(p_i,r)\big)/v(n,k,r)$ is
+      nonincreasing and converges to $k$ as $r\to0$.
+    \item[(2)] For $A\subset M$, show
+      $r\mapsto\vol\big(\bigcup_{p\in A}B(p,r)\big)/v(n,k,r)$ is
+      nonincreasing, by applying (1) to a dense finite subset of $A$.
+  \end{enumerate}
+  \source{petersen:page-0325}
+\end{remark}
+
+\begin{remark}[Exercise 7.5.19]
+  \label{rem:pet-ch7-ex-19}
+  \lean{PetersenLib.exercise7_5_19}
+  \uses{lem:pet-ch7-absolute-volume-comparison}
+  For $p\in M$ and $\Gamma\subset T_pM$ a set of unit vectors, define the
+  polar cone $B^\Gamma(p,R)=\{(t,\theta)\in M\mid t\le R,\ \theta\in\Gamma\}$.
+  If $\Ric M\ge(n-1)k$, show
+  \[
+    \vol B^\Gamma(p,R)\le\vol\Gamma\cdot\int_0^R(\snk_k(t))^{n-1}\,dt.
+  \]
+  \source{petersen:page-0326}
+\end{remark}
+
+\begin{remark}[Exercise 7.5.20]
+  \label{rem:pet-ch7-ex-20}
+  \lean{PetersenLib.exercise7_5_20}
+  \uses{thm:pet-ch7-structure-theorem}
+  Let $G$ be a compact connected Lie group with a biinvariant metric and
+  $\Ric\ge0$.
+  \begin{enumerate}
+    \item[(1)] If $G$ has finite center, show $\pi_1(G)$ is finite.
+    \item[(2)] Show a finite cover of $G$ has the form $G'\times T^k$ with
+      $G'$ compact simply connected and $T^k$ a torus.
+    \item[(3)] If $\pi_1(G)$ is finite, show the center of $G$ is finite.
+  \end{enumerate}
+  \source{petersen:page-0326}
+\end{remark}
+
+\begin{remark}[Exercise 7.5.21]
+  \label{rem:pet-ch7-ex-21}
+  \lean{PetersenLib.exercise7_5_21}
+  \uses{thm:pet-ch7-structure-theorem}
+  Let $(M,g)$ be $n$-dimensional and isometric to Euclidean space outside a
+  compact $K\subset M$, i.e.\ $M-K$ is isometric to $\mathbb{R}^n-C$ for some
+  compact $C\subset\mathbb{R}^n$. If $\Ric\ge0$, show $M=\mathbb{R}^n$.
+  \source{petersen:page-0326}
+\end{remark}
+
+\begin{remark}[Exercise 7.5.22]
+  \label{rem:pet-ch7-ex-22}
+  \lean{PetersenLib.exercise7_5_22}
+  \uses{thm:pet-ch7-cheng-rigidity}
+  Show that if $\Ric\ge n-1$ then $\diam\le\pi$, by showing that if
+  $|pq|>\pi$, then $e_{p,q}(x)=|px|+|xq|-|pq|$ has negative Laplacian at a
+  local minimum.
+  \source{petersen:page-0326}
+\end{remark}

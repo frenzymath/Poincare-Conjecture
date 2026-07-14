@@ -1,0 +1,97 @@
+import OpenGALib.MetricGeometry.ProperExhaustion
+import OpenGALib.Riemannian.Connection.ChartCurvature
+import OpenGALib.Riemannian.Connection.ChartFrameBridge
+import OpenGALib.Riemannian.Connection.CurvaturePointwise
+import OpenGALib.Riemannian.Connection.ChartCurvatureForm
+import OpenGALib.Riemannian.Connection.ChristoffelBridge
+import OpenGALib.Riemannian.Geodesic.ChartFlow
+import OpenGALib.Riemannian.Geodesic.CovariantDerivative
+import OpenGALib.Riemannian.Geodesic.Existence
+import OpenGALib.Riemannian.Geodesic.FiberScaling
+import OpenGALib.Riemannian.Geodesic.FlowC1Dependence
+import OpenGALib.Riemannian.Geodesic.FlowC2Dependence
+import OpenGALib.Riemannian.Geodesic.FlowDependence
+import OpenGALib.Riemannian.Geodesic.Homogeneity
+import OpenGALib.Riemannian.Geodesic.InitialVelocity
+import OpenGALib.Riemannian.Exponential.LocalDiffeo
+import OpenGALib.Riemannian.Exponential.Ray
+import OpenGALib.Riemannian.Exponential.StrictDerivative
+import OpenGALib.Riemannian.Exponential.StrictDerivativeBall
+import OpenGALib.Riemannian.Exponential.C2Ball
+import OpenGALib.Riemannian.Exponential.RayODE
+import OpenGALib.Riemannian.Exponential.GaussLemma
+import OpenGALib.Riemannian.Exponential.Minimizing
+import OpenGALib.Riemannian.Exponential.MinimizingPiecewise
+import OpenGALib.Riemannian.Exponential.MinimizingPathPiecewise
+import OpenGALib.Riemannian.Exponential.MinimizingEquality
+import OpenGALib.Riemannian.Exponential.MinimizingEqualityManifold
+import OpenGALib.Riemannian.Exponential.MinimizingEqualityPiecewise
+import OpenGALib.Riemannian.Exponential.TotallyNormal
+import OpenGALib.Riemannian.Exponential.TotallyNormalDiffeo
+import OpenGALib.Riemannian.Exponential.C2LocalDiffeo
+import OpenGALib.Riemannian.Exponential.NormalBallEDist
+import OpenGALib.Riemannian.Exponential.RayGeodesic
+import OpenGALib.Riemannian.Exponential.MinimizingStep
+import OpenGALib.Riemannian.Exponential.MinimizingGeodesic
+import OpenGALib.Riemannian.Exponential.GrowthInduction
+import OpenGALib.Riemannian.Exponential.ConvexNeighborhood
+import OpenGALib.Riemannian.Exponential.ConvexNeighborhoodContinuity
+import OpenGALib.Riemannian.Exponential.ConvexNeighborhoodAssembly
+import OpenGALib.Riemannian.Exponential.ConvexNeighborhoodStrict
+import OpenGALib.Riemannian.Exponential.ConvexNeighborhood42
+import OpenGALib.Riemannian.Exponential.ConvexNeighborhoodProp
+import OpenGALib.Riemannian.Exponential.ConvexNeighborhoodInterior
+import OpenGALib.Riemannian.Exponential.ConvexNeighborhoodVelocity
+import OpenGALib.Riemannian.Exponential.ConvexNeighborhoodAdmissible
+import OpenGALib.Riemannian.Exponential.UniformSegmentLength
+import OpenGALib.Riemannian.Exponential.MovingBaseGauss
+import OpenGALib.Riemannian.Exponential.ConvexNeighborhoodJoin
+import OpenGALib.Riemannian.Exponential.ConvexNeighborhoodConvex
+import OpenGALib.Riemannian.Geodesic.FlowReadback
+import OpenGALib.Topology.FiberBundleT2
+import OpenGALib.Riemannian.Geodesic.HopfRinow
+import OpenGALib.Riemannian.Geodesic.HopfRinow.ConstantSpeed
+import OpenGALib.Riemannian.Geodesic.HopfRinow.EVariationLePathELength
+import OpenGALib.Riemannian.Geodesic.HopfRinow.MetricBridge
+import OpenGALib.Riemannian.Geodesic.MaximalInterval
+import OpenGALib.Riemannian.Geodesic.SymmetryLemma
+import OpenGALib.Riemannian.Geodesic.UniformExistence
+import OpenGALib.Riemannian.Geodesic.Uniqueness
+import OpenGALib.Riemannian.Geodesic.VariationalEquation
+import OpenGALib.Riemannian.Metric.RiemannianDistance
+import OpenGALib.Riemannian.Manifold.DoCarmoCh0
+import OpenGALib.Riemannian.Manifold.DoCarmoCh1
+import OpenGALib.Riemannian.Manifold.DoCarmoCh2
+import OpenGALib.Riemannian.Manifold.DoCarmoCh4
+import OpenGALib.Riemannian.Manifold.DoCarmoCh4Sectional
+import OpenGALib.Riemannian.Manifold.DoCarmoCh4SectionalPair
+import OpenGALib.Riemannian.Manifold.DoCarmoCh4Ricci
+import OpenGALib.Riemannian.Manifold.DoCarmoCh4Tensor
+import OpenGALib.Riemannian.Manifold.DoCarmoCh6
+import OpenGALib.Riemannian.Manifold.DoCarmoCh6Fundamental
+import OpenGALib.Riemannian.Manifold.DoCarmoCh6Gauss
+import OpenGALib.Riemannian.Manifold.DoCarmoCh6Locality
+import OpenGALib.Riemannian.Manifold.DoCarmoCh6Pointwise
+import OpenGALib.Riemannian.Manifold.DoCarmoCh6ConstantCurvature
+import OpenGALib.Riemannian.Manifold.DoCarmoCh6Eigen
+import OpenGALib.Riemannian.Manifold.DoCarmoCh6Geodesic
+import OpenGALib.Riemannian.Manifold.DoCarmoCh6Koszul
+import OpenGALib.Riemannian.Manifold.DoCarmoCh6Isometry
+import OpenGALib.Riemannian.Manifold.DoCarmoCh6Sphere
+import OpenGALib.Riemannian.Manifold.DoCarmoCh6GaussMap
+import OpenGALib.Riemannian.Manifold.EuclideanFlat
+import OpenGALib.Riemannian.Manifold.EuclideanOpens
+import OpenGALib.Riemannian.Manifold.DoCarmoCh8Conformal
+import OpenGALib.Riemannian.Manifold.DoCarmoCh8Hyperbolic
+import OpenGALib.Riemannian.Manifold.DoCarmoCh8HyperbolicManifold
+import OpenGALib.Riemannian.Manifold.DoCarmoCh8HyperbolicChristoffel
+import OpenGALib.Riemannian.Manifold.DoCarmoCh8HyperbolicCurvature
+import OpenGALib.Riemannian.Manifold.DoCarmoCh8HyperbolicGeodesic
+
+/-!
+# OpenGALib — Hopf–Rinow closed-loop slice
+
+This branch keeps only the formal-verification cone of the Hopf–Rinow theorem,
+the result wired to the Astrolabe knowledge-graph frontend in `web/`.
+The full library lives on the development branch.
+-/

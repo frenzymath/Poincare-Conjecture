@@ -1,0 +1,1840 @@
+\chapter{Derivatives}
+\label{chap:pet-derivatives}
+
+Faithful transcription of Petersen, \emph{Riemannian Geometry} (GTM 171, 3rd ed.),
+Chapter 2. The chapter develops the various notions of derivative of a tensor on
+a manifold: the Lie derivative (defined via flows, and characterized
+algebraically through the Lie bracket and a Leibniz rule), the affine and
+Riemannian connections and covariant differentiation (culminating in the
+Fundamental Theorem of Riemannian Geometry, which characterizes the Levi-Civita
+connection by torsion-freeness and compatibility with the metric), the unified
+algebraic treatment of Lie and covariant derivatives as "natural derivations"
+coming from the action of $\mathrm{GL}(V)$ and $\mathrm{End}(V)$ on the tensor
+algebra, and the classical coordinate (Christoffel symbol) formulas for the
+connection. Along the way the chapter defines, and relates to each other, the
+gradient, Hessian, divergence and Laplacian of a function, and closes with an
+extensive list of exercises.
+
+\section{Lie Derivatives}
+
+\subsection{Directional Derivatives}
+
+\begin{definition}[directional derivative]
+  \label{def:pet-ch2-directional-derivative}
+  \lean{PetersenLib.directionalDerivative,PetersenLib.gradient}
+  \leanok
+  Given a function $f:M\to\mathbb{R}$ and a vector field $Y$ on $M$, the
+  \emph{directional derivative} of $f$ in the direction of $Y$ is written
+  interchangeably as
+  \[
+    \nabla_Yf=D_Yf=L_Yf=df(Y)=Y(f).
+  \]
+  If $M$ carries a Riemannian metric $g$, the \emph{gradient} $\operatorname{grad}f=\nabla f$
+  is the vector field with $g(v,\nabla f)=df(v)$ for all $v\in TM$; in local
+  coordinates $\nabla f=g^{ij}\partial_i(f)\partial_j$, where $[g^{ij}]$ is the inverse of
+  $[g_{ij}]$.
+  \source{petersen:page-0060}
+\end{definition}
+
+\begin{remark}[the gradient is not metric-independent]
+  \label{rem:pet-ch2-gradient-not-invariant}
+  \lean{PetersenLib.gradient_not_coordinate_invariant}
+  \uses{def:pet-ch2-directional-derivative}
+  On $\mathbb{R}^n$ with Cartesian coordinates, $\nabla f=g^{ij}\partial_i(f)\partial_j=\sum_i\partial_i(f)\partial_i$,
+  but this expression is not invariantly defined: in polar coordinates on
+  $\mathbb{R}^2$, $\partial_r(f)\partial_r+\partial_\theta(f)\partial_\theta$ (formed the same naive way) does
+  \emph{not} equal the true gradient. A rule of thumb is that invariantly
+  defined objects satisfy the Einstein summation convention with all indices
+  paired: $df=\partial_i(f)dx^i$ is invariant, $g=g_{ij}dx^idx^j$ and
+  $\nabla f=g^{ij}\partial_i(f)\partial_j$ are invariant (given a metric), but a bare
+  $\partial_i(f)\partial_i$ is not.
+  \source{petersen:page-0060}
+\end{remark}
+
+\subsection{Lie Derivatives}
+
+\begin{definition}[Lie derivative of a function]
+  \label{def:pet-ch2-lie-derivative-function}
+  \lean{PetersenLib.lieDerivativeFunction}
+  \leanok
+  Let $X$ be a vector field and $F^t$ its locally defined flow on $M$, so
+  $\gamma(t)=F^t(p)$ is the integral curve of $X$ through $p$ at $t=0$. For
+  $f:M\to\mathbb{R}$, the \emph{Lie derivative} $L_Xf$ is the vector field's first-order
+  effect on $f$ under the flow:
+  \[
+    f\big(F^t(p)\big)=f(p)+t(L_Xf)(p)+o(t),
+    \qquad
+    (L_Xf)(p)=\lim_{t\to0}\frac{f(F^t(p))-f(p)}{t},
+  \]
+  or without reference to $p$, $f\circ F^t=f+tL_Xf+o(t)$. Thus $L_Xf=D_Xf=df(X)$
+  (\cref{def:pet-ch2-directional-derivative}).
+  \source{petersen:page-0061}
+\end{definition}
+
+\begin{definition}[Lie derivative of a vector field]
+  \label{def:pet-ch2-lie-derivative-vector-field}
+  \lean{PetersenLib.lieDerivativeVectorField}
+  \leanok
+  \uses{def:pet-ch2-lie-derivative-function}
+  For a vector field $Y$, the value $Y|_{F^t(p)}$ cannot be compared directly to
+  $Y|_p$; instead consider the curve $t\mapsto DF^{-t}\big(Y|_{F^t(p)}\big)\in T_pM$.
+  Its first-order Taylor expansion at $t=0$,
+  \[
+    DF^{-t}\big(Y|_{F^t(p)}\big)=Y|_p+t(L_XY)|_p+o(t),
+  \]
+  defines the \emph{Lie derivative} $(L_XY)|_p\in T_pM$, equivalently
+  $(L_XY)|_p=\lim_{t\to0}\frac{DF^{-t}(Y|_{F^t(p)})-Y|_p}{t}$.
+  \source{petersen:page-0061}
+\end{definition}
+
+\begin{proposition}[Prop. 2.1.1 — Lie derivative of a vector field is the bracket]
+  \label{prop:pet-ch2-lie-derivative-bracket}
+  \lean{PetersenLib.lieDerivative_vectorField_eq_bracket}
+  \leanok
+  \uses{def:pet-ch2-lie-derivative-vector-field}
+  If $X,Y$ are vector fields on $M$, then $L_XY=[X,Y]$.
+  \source{petersen:page-0061,petersen:page-0062}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch2-lie-derivative-bracket}
+  \leanok
+  Writing the defining expansion as $Y|_{F^t}-DF^t(Y)=tDF^t(L_XY)+o(t)$, take the
+  directional derivative of a function $f$ along $Y|_{F^t}-DF^t(Y)$:
+  \[
+    D_{Y|_{F^t}-DF^t(Y)}f
+    = D_{Y|_{F^t}}f-D_{DF^t(Y)}f
+    = (D_Yf)\circ F^t-D_Y\big(f\circ F^t\big).
+  \]
+  Expanding both terms to first order in $t$,
+  \[
+    (D_Yf)\circ F^t = D_Yf+tD_XD_Yf+o(t),
+    \qquad
+    D_Y(f\circ F^t) = D_Y(f+tD_Xf+o(t)) = D_Yf+tD_YD_Xf+o(t),
+  \]
+  so
+  \[
+    D_{Y|_{F^t}-DF^t(Y)}f = t\big(D_XD_Yf-D_YD_Xf\big)+o(t) = tD_{[X,Y]}f+o(t).
+  \]
+  On the other hand $D_{Y|_{F^t}-DF^t(Y)}f = tD_{DF^t(L_XY)}f+o(t)$, and as $t\to0$,
+  $DF^t(L_XY)\to L_XY$, so comparing first-order terms as directional
+  derivatives of an arbitrary $f$ gives $L_XY=[X,Y]$.
+\end{proof}
+
+\begin{definition}[Lie derivative of a $(0,k)$-tensor]
+  \label{def:pet-ch2-lie-derivative-tensor}
+  \lean{PetersenLib.lieDerivativeTensor}
+  \leanok
+  \uses{def:pet-ch2-lie-derivative-vector-field}
+  For a $(0,k)$-tensor $T$, the pullback $(F^t)^*T$ satisfies
+  \[
+    \big((F^t)^*T\big)(Y_1,\dots,Y_k)=T\big(DF^t(Y_1),\dots,DF^t(Y_k)\big)
+    =T(Y_1,\dots,Y_k)+t(L_XT)(Y_1,\dots,Y_k)+o(t),
+  \]
+  defining the \emph{Lie derivative} $L_XT$, equivalently
+  $(L_XT)(Y_1,\dots,Y_k)=\lim_{t\to0}\frac{(F^t)^*T-T}{t}(Y_1,\dots,Y_k)$.
+  \source{petersen:page-0062}
+\end{definition}
+
+\begin{proposition}[Prop. 2.1.2 — algebraic formula for $L_XT$]
+  \label{prop:pet-ch2-lie-derivative-tensor-formula}
+  \lean{PetersenLib.lieDerivativeTensor_formula}
+  \leanok
+  \uses{def:pet-ch2-lie-derivative-tensor,prop:pet-ch2-lie-derivative-bracket}
+  If $X$ is a vector field and $T$ a $(0,k)$-tensor, then
+  \[
+    (L_XT)(Y_1,\dots,Y_k)
+    = D_X\big(T(Y_1,\dots,Y_k)\big)-\sum_{i=1}^kT(Y_1,\dots,L_XY_i,\dots,Y_k).
+  \]
+  \source{petersen:page-0062,petersen:page-0063}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch2-lie-derivative-tensor-formula}
+  \leanok
+  It suffices to treat $k=1$; the general case follows the same pattern with
+  more indices. From \cref{def:pet-ch2-lie-derivative-vector-field},
+  $Y|_{F^t}=DF^t(Y)+tDF^t(L_XY)+o(t)$, so
+  \[
+    \big((F^t)^*T\big)(Y) = T(DF^t(Y))
+    = T\big(Y|_{F^t}-tDF^t(L_XY)\big)+o(t)
+    = T(Y)\circ F^t - tT(DF^t(L_XY))+o(t)
+  \]
+  \[
+    = T(Y)+tD_X\big(T(Y)\big)-tT\big(DF^t(L_XY)\big)+o(t).
+  \]
+  Hence
+  \[
+    (L_XT)(Y)=\lim_{t\to0}\frac{\big((F^t)^*T\big)(Y)-T(Y)}{t}
+    = \lim_{t\to0}\Big(D_X(T(Y))-T\big(DF^t(L_XY)\big)\Big)
+    = D_X(T(Y))-T(L_XY),
+  \]
+  using $DF^t(L_XY)\to L_XY$ as $t\to0$.
+\end{proof}
+
+
+\begin{definition}[product of tensors]
+  \label{def:pet-ch2-tensor-product}
+  \lean{PetersenLib.TensorOperator.mul}
+  \leanok
+  \uses{def:pet-ch2-lie-derivative-tensor}
+  For a $(0,k_1)$-tensor $T_1$ and a $(0,k_2)$-tensor $T_2$, their
+  \emph{product} is the $(0,k_1+k_2)$-tensor
+  \[
+    (T_1\cdot T_2)(X_1,\dots,X_{k_1},Y_1,\dots,Y_{k_2})
+    =T_1(X_1,\dots,X_{k_1})\cdot T_2(Y_1,\dots,Y_{k_2}).
+  \]
+  \source{petersen:page-0063}
+\end{definition}
+
+\begin{proposition}[Prop. 2.1.3 — product rule]
+  \label{prop:pet-ch2-lie-derivative-product-rule}
+  \lean{PetersenLib.lieDerivative_product_rule}
+  \leanok
+  \uses{prop:pet-ch2-lie-derivative-tensor-formula}
+  If $T_1,T_2$ are $(0,k_i)$-tensors, then
+  $L_X(T_1\cdot T_2)=(L_XT_1)\cdot T_2+T_1\cdot(L_XT_2)$, where
+  $(T_1\cdot T_2)(X_1,\dots,X_{k_1},Y_1,\dots,Y_{k_2})
+  =T_1(X_1,\dots,X_{k_1})\cdot T_2(Y_1,\dots,Y_{k_2})$.
+  \source{petersen:page-0063}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch2-lie-derivative-product-rule}
+  \leanok
+  By \cref{prop:pet-ch2-lie-derivative-tensor-formula},
+  $L_X(T_1\cdot T_2)$ evaluated on $(X_1,\dots,X_{k_1},Y_1,\dots,Y_{k_2})$ is the
+  directional derivative $D_X$ of $T_1(X_\bullet)\cdot T_2(Y_\bullet)$ minus the
+  sum, over each slot, of the tensor with $L_X$ applied to that slot's vector
+  field. Applying the ordinary product rule for $D_X$ to
+  $T_1(X_\bullet)\cdot T_2(Y_\bullet)$ and regrouping the sum over the
+  $X$-slots against $T_2$ and the sum over the $Y$-slots against $T_1$
+  reproduces exactly $(L_XT_1)\cdot T_2+T_1\cdot(L_XT_2)$, again by
+  \cref{prop:pet-ch2-lie-derivative-tensor-formula} applied to each factor.
+\end{proof}
+
+\begin{proposition}[Prop. 2.1.4 — Lie derivative in the direction $fX$]
+  \label{prop:pet-ch2-lie-derivative-scaling}
+  \lean{PetersenLib.lieDerivative_scale_direction}
+  \leanok
+  \uses{prop:pet-ch2-lie-derivative-tensor-formula}
+  If $T$ is a $(0,k)$-tensor and $f:M\to\mathbb{R}$, then
+  \[
+    (L_{fX}T)(Y_1,\dots,Y_k)
+    = f(L_XT)(Y_1,\dots,Y_k)+\sum_{i=1}^k(L_{Y_i}f)\,T(Y_1,\dots,X,\dots,Y_k),
+  \]
+  with $X$ replacing $Y_i$ in the $i$th slot.
+  \source{petersen:page-0063,petersen:page-0064}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch2-lie-derivative-scaling}
+  \leanok
+  By \cref{prop:pet-ch2-lie-derivative-tensor-formula},
+  \[
+    (L_{fX}T)(Y_1,\dots,Y_k)
+    = D_{fX}\big(T(Y_1,\dots,Y_k)\big)-\sum_{i=1}^kT(Y_1,\dots,[fX,Y_i],\dots,Y_k)
+  \]
+  \[
+    = fD_X\big(T(Y_1,\dots,Y_k)\big)-\sum_{i=1}^kT(Y_1,\dots,f[X,Y_i]-(L_{Y_i}f)X,\dots,Y_k)
+  \]
+  using $[fX,Y_i]=f[X,Y_i]-(D_{Y_i}f)X$. Distributing the tensor over the
+  sum inside each slot and using multilinearity of $T$ splits this into
+  \[
+    f\Big(D_X\big(T(Y_1,\dots,Y_k)\big)-\sum_iT(Y_1,\dots,[X,Y_i],\dots,Y_k)\Big)
+    +\sum_i(L_{Y_i}f)\,T(Y_1,\dots,X,\dots,Y_k),
+  \]
+  and the first bracket is $f(L_XT)(Y_1,\dots,Y_k)$ again by
+  \cref{prop:pet-ch2-lie-derivative-tensor-formula}.
+\end{proof}
+
+\begin{lemma}[Lem. 2.1.5 — locality at a zero of $X$]
+  \label{lem:pet-ch2-lie-derivative-local-vanishing}
+  \lean{PetersenLib.lieDerivative_local_at_zero}
+  \leanok
+  \uses{prop:pet-ch2-lie-derivative-tensor-formula}
+  If a vector field $X$ vanishes at $p$, then $(L_XT)|_p$ depends only on the
+  value $T|_p$ of the $(0,k)$-tensor $T$ at $p$.
+  \source{petersen:page-0064}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch2-lie-derivative-local-vanishing}
+  \leanok
+  By \cref{prop:pet-ch2-lie-derivative-tensor-formula},
+  $(L_XT)(Y_1,\dots,Y_k)=D_X(T(Y_1,\dots,Y_k))-\sum_iT(Y_1,\dots,L_XY_i,\dots,Y_k)$.
+  At $p$ with $X|_p=0$ the directional derivative term $D_X(T(Y_\bullet))|_p$
+  vanishes (it only involves $X|_p$), leaving
+  $(L_XT)(Y_1,\dots,Y_k)|_p=-\sum_iT(Y_1,\dots,L_XY_i,\dots,Y_k)|_p$, an
+  expression built from $T|_p$ (evaluated on the vectors $Y_j|_p$ and
+  $(L_XY_i)|_p$) alone.
+\end{proof}
+
+\begin{definition}[iterated Lie derivative $(L_XL)_YT$]
+  \label{def:pet-ch2-generalized-lie-derivative}
+  \lean{PetersenLib.generalizedLieDerivative}
+  \leanok
+  \uses{def:pet-ch2-lie-derivative-tensor}
+  For vector fields $X,Y$ and a tensor (or multilinear map on vector fields)
+  $T$,
+  \[
+    (L_XL)_YT := L_X(L_YT)-L_{L_XY}T-L_Y(L_XT) = [L_X,L_Y]T-L_{[X,Y]}T.
+  \]
+  \source{petersen:page-0064}
+\end{definition}
+
+\begin{proposition}[Prop. 2.1.6 — the Generalized Jacobi Identity]
+  \label{prop:pet-ch2-generalized-jacobi-identity}
+  \lean{PetersenLib.generalizedJacobiIdentity}
+  \leanok
+  \uses{def:pet-ch2-generalized-lie-derivative}
+  For all vector fields $X,Y$ and tensors $T$, $(L_XL)_YT=0$.
+  \source{petersen:page-0065,petersen:page-0066}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch2-generalized-jacobi-identity}
+  \leanok
+  \emph{Functions.} $(L_XL)_Yf=[L_X,L_Y]f-L_{[X,Y]}f=[D_X,D_Y]f-D_{[X,Y]}f=0$,
+  the last equality being the definition of the Lie bracket as a commutator of
+  directional derivatives.
+
+  \emph{Vector fields.} For $T=Z$ a vector field,
+  using \cref{prop:pet-ch2-lie-derivative-bracket},
+  \[
+    (L_XL)_YZ=[L_X,L_Y]Z-L_{[X,Y]}Z
+    =[X,[Y,Z]]-[Y,[X,Z]]-[[X,Y],Z]
+    =[X,[Y,Z]]+[Z,[X,Y]]+[Y,[Z,X]]=0
+  \]
+  by the ordinary Jacobi identity for the Lie bracket.
+
+  \emph{One-forms.} For $T=\omega$ a one-form, first note that
+  \[
+    \big([L_X,L_Y]\omega\big)(Z)=[L_X,L_Y]\big(\omega(Z)\big)-\omega\big([L_X,L_Y]Z\big).
+  \]
+  Indeed, by \cref{prop:pet-ch2-lie-derivative-tensor-formula},
+  \[
+    \big(L_X(L_Y\omega)\big)(Z)
+    = L_X\big((L_Y\omega)(Z)\big)-(L_Y\omega)(L_XZ)
+    = L_X\big(L_Y(\omega(Z))\big)-L_X\big(\omega(L_YZ)\big)
+    -L_Y\big(\omega(L_XZ)\big)+\omega(L_YL_XZ),
+  \]
+  and symmetrically
+  \[
+    \big(L_Y(L_X\omega)\big)(Z)
+    = L_Y\big(L_X(\omega(Z))\big)-L_Y\big(\omega(L_XZ)\big)-L_X\big(\omega(L_YZ)\big)+\omega(L_XL_YZ).
+  \]
+  Subtracting, all cross terms cancel and
+  \[
+    \big([L_X,L_Y]\omega\big)(Z)=(L_X(L_Y\omega))(Z)-(L_Y(L_X\omega))(Z)
+    = [L_X,L_Y]\big(\omega(Z)\big)-\omega\big([L_X,L_Y]Z\big).
+  \]
+  Consequently
+  \[
+    \big((L_XL)_Y\omega\big)(Z)
+    = \big([L_X,L_Y]\omega\big)(Z)-\big(L_{[X,Y]}\omega\big)(Z)
+    = [L_X,L_Y]\big(\omega(Z)\big)-\omega\big([L_X,L_Y]Z\big)
+    -L_{[X,Y]}\big(\omega(Z)\big)+\omega\big(L_{[X,Y]}Z\big).
+  \]
+  The function terms $[L_X,L_Y](\omega(Z))-L_{[X,Y]}(\omega(Z))$ vanish by the
+  function case, and $-\omega([L_X,L_Y]Z)+\omega(L_{[X,Y]}Z)
+  =-\omega\big((L_XL)_YZ\big)$ vanishes by the vector-field case; hence
+  $(L_XL)_Y\omega=0$.
+
+  \emph{General tensors.} A general $(0,k)$-tensor is (locally, on a spanning
+  set) a sum of tensor products of functions, vector fields, and one-forms.
+  Since $L_X$ acts as a derivation on tensor products
+  (\cref{prop:pet-ch2-lie-derivative-product-rule}), $(L_XL)_Y$ inherits a
+  Leibniz-type expansion over such products, and each factor contributes zero
+  by the three cases above; hence $(L_XL)_YT=0$ for all tensors $T$.
+\end{proof}
+
+\begin{definition}[exterior derivative via Lie derivatives]
+  \label{def:pet-ch2-exterior-derivative-lie-formula}
+  \lean{PetersenLib.exteriorDerivative_lieFormula}
+  \leanok
+  \uses{def:pet-ch2-lie-derivative-tensor}
+  For a $k$-form $\omega$,
+  \[
+    d\omega(X_0,\dots,X_k)
+    =\frac12\sum_{i=0}^k(-1)^i(L_{X_i}\omega)(X_0,\dots,\hat X_i,\dots,X_k)
+    +\frac12\sum_{i=0}^k(-1)^iL_{X_i}\big(\omega(X_0,\dots,\hat X_i,\dots,X_k)\big).
+  \]
+  For a $1$-form this specializes to
+  $d\omega(X,Y)=D_X(\omega(Y))-D_Y(\omega(X))-\omega([X,Y])$.
+  \source{petersen:page-0066}
+\end{definition}
+
+\subsection{Lie Derivatives and the Metric}
+
+\begin{definition}[Hessian via the Lie derivative]
+  \label{def:pet-ch2-hessian-lie-derivative}
+  \lean{PetersenLib.hessianLieDerivative}
+  \leanok
+  \uses{def:pet-ch2-lie-derivative-tensor,def:pet-ch2-directional-derivative}
+  The \emph{Hessian} of $f:(M,g)\to\mathbb{R}$ is the $(0,2)$-tensor
+  $\operatorname{Hess}f(X,Y)=\frac12(L_{\nabla f}g)(X,Y)$.
+  \source{petersen:page-0066}
+\end{definition}
+
+\begin{proposition}[Hessian at a critical point is metric-independent]
+  \label{prop:pet-ch2-hessian-critical-point}
+  \lean{PetersenLib.hessian_criticalPoint_metricIndependent}
+  \uses{def:pet-ch2-hessian-lie-derivative}
+  If $df|_p=0$, choose coordinates $x^i$ around $p$ with $g_{ij}|_p=\delta_{ij}$.
+  Then $\operatorname{Hess}f|_p$ computed from $g$ equals $\operatorname{Hess}f|_p$
+  computed from the flat metric $\delta_{ij}dx^idx^j$ in the same coordinates.
+  \source{petersen:page-0066,petersen:page-0067}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch2-hessian-critical-point}
+  Since $df|_p=0$, also $\nabla f|_p=0$, so
+  \[
+    L_{\nabla f}\big(g_{ij}dx^idx^j\big)\big|_p
+    = L_{\nabla f}(g_{ij})|_p\cdot dx^idx^j+g_{ij}|_p\,L_{\nabla f}(dx^i)dx^j+g_{ij}|_p\,dx^iL_{\nabla f}(dx^j).
+  \]
+  By \cref{lem:pet-ch2-lie-derivative-local-vanishing}, applied to the field
+  $\nabla f$ vanishing at $p$, the coefficient function $g_{ij}$ (a $(0,0)$
+  contribution) does not affect the value at $p$ beyond its value
+  $g_{ij}|_p=\delta_{ij}$, and using this substitution,
+  \[
+    L_{\nabla f}(g_{ij}dx^idx^j)|_p
+    = \delta_{ij}L_{\nabla f}(dx^i)dx^j+\delta_{ij}dx^iL_{\nabla f}(dx^j)
+    = L_{\nabla f}(\delta_{ij}dx^idx^j)|_p,
+  \]
+  i.e.\ $L_{\nabla f}g|_p=L_{\nabla f}(\delta_{ij}dx^idx^j)|_p$, so
+  $\operatorname{Hess}f|_p=\frac12(L_{\nabla f}g)|_p$ agrees with the Hessian
+  computed from the Euclidean metric $\delta_{ij}dx^idx^j$ in the same fixed
+  coordinate system.
+\end{proof}
+
+\begin{definition}[divergence via the Lie derivative]
+  \label{def:pet-ch2-divergence-lie-derivative}
+  \lean{PetersenLib.divergenceLieDerivative}
+  \leanok
+  \uses{def:pet-ch2-lie-derivative-tensor}
+  The \emph{divergence} of a vector field $X$ is the function $\operatorname{div}X$
+  measuring how the volume form changes along the flow of $X$:
+  $L_X\,\mathrm{vol}=(\operatorname{div}X)\,\mathrm{vol}$.
+  \source{petersen:page-0067}
+\end{definition}
+
+\begin{remark}[$L_X\mathrm{vol}$ is exact]
+  \label{rem:pet-ch2-lie-derivative-volume-exact}
+  \lean{PetersenLib.lieDerivative_volume_exact}
+  \uses{def:pet-ch2-divergence-lie-derivative}
+  $L_X\mathrm{vol}=d\,i_X\mathrm{vol}$, where $i_XT$ evaluates $T$ on $X$ in
+  its first variable.
+  \source{petersen:page-0067}
+\end{remark}
+
+\begin{definition}[Laplacian]
+  \label{def:pet-ch2-laplacian}
+  \lean{PetersenLib.laplacian}
+  \leanok
+  \uses{def:pet-ch2-divergence-lie-derivative,def:pet-ch2-directional-derivative}
+  The \emph{Laplacian} of $f$ is $\Delta f=\operatorname{div}\nabla f$.
+  \source{petersen:page-0067}
+\end{definition}
+
+\begin{proposition}[divergence as a trace of $L_Xg$]
+  \label{prop:pet-ch2-divergence-trace-formula}
+  \lean{PetersenLib.divergence_trace_formula}
+  \leanok
+  \uses{def:pet-ch2-divergence-lie-derivative}
+  For a positively oriented orthonormal frame $E_1,\dots,E_n$,
+  $\operatorname{div}X=\sum_i\frac12(L_Xg)(E_i,E_i)$; consequently
+  $\Delta f=\operatorname{div}\nabla f=\sum_i\operatorname{Hess}f(E_i,E_i)$.
+  \source{petersen:page-0067}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch2-divergence-trace-formula}
+  \leanok
+  Using \cref{prop:pet-ch2-lie-derivative-tensor-formula} on
+  $\mathrm{vol}(E_1,\dots,E_n)$,
+  \[
+    \operatorname{div}X = (L_X\mathrm{vol})(E_1,\dots,E_n)
+    = L_X\big(\mathrm{vol}(E_1,\dots,E_n)\big)-\sum_i\mathrm{vol}(E_1,\dots,L_XE_i,\dots,E_n)
+    = -\sum_ig(L_XE_i,E_i),
+  \]
+  since $\mathrm{vol}(E_1,\dots,E_n)\equiv1$ is constant and, in the sum,
+  replacing one frame slot $E_i$ by the general vector $L_XE_i$ evaluates the
+  volume form as the component of $L_XE_i$ along that direction, namely
+  $g(L_XE_i,E_i)$. Finally
+  \[
+    -\sum_ig(L_XE_i,E_i)
+    = \frac12\sum_i\Big(D_X\big(g(E_i,E_i)\big)-g(L_XE_i,E_i)-g(E_i,L_XE_i)\Big)
+    = \sum_i\frac12(L_Xg)(E_i,E_i),
+  \]
+  using $D_X(g(E_i,E_i))=0$ (since $g(E_i,E_i)\equiv1$) and
+  \cref{prop:pet-ch2-lie-derivative-tensor-formula}.
+\end{proof}
+
+\begin{proposition}[Hessian agrees with the Euclidean Hessian]
+  \label{prop:pet-ch2-hessian-euclidean-agreement}
+  \lean{PetersenLib.hessian_euclidean_agreement}
+  \uses{def:pet-ch2-hessian-lie-derivative}
+  For $f:\mathbb{R}^n\to\mathbb{R}$ with the canonical metric, the Hessian of
+  \cref{def:pet-ch2-hessian-lie-derivative} equals the classical Hessian:
+  $L_{\nabla f}(\delta_{ij}dx^idx^j)=2\sum_i\partial_{ij}f\,dx^idx^j$, i.e.
+  $\operatorname{Hess}f=\sum_i\partial_{ij}f\,dx^idx^j$.
+  \source{petersen:page-0067,petersen:page-0068}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch2-hessian-euclidean-agreement}
+  Write $\nabla f=\sum_i(\partial_if)\partial_i$. On the Cartesian coordinate frame,
+  $L_{\partial_i}\partial_j=[\partial_i,\partial_j]=0$
+  (\cref{prop:pet-ch2-lie-derivative-bracket}), so the only contribution to
+  $L_{\nabla f}(dx^i)$ comes from the varying coefficient $\partial_if$ of
+  $\nabla f=(\partial_if)\partial_i$, via \cref{prop:pet-ch2-lie-derivative-scaling}:
+  \[
+    L_{\nabla f}(\delta_{ij}dx^idx^j)
+    = \sum_iL_{(\partial_if)\partial_i}(dx^i)dx^i
+    = \sum_i\Big((L_{\partial_if}dx^i)dx^i+dx^i(L_{\partial_if}dx^i)\Big)
+  \]
+  \[
+    = \sum_i\Big(\partial_if\,(L_{\partial_i}dx^i)dx^i+dx^i(\partial_if\,dx^i)\Big)
+    = \sum_id(\partial_if)dx^i+\sum_id(\partial_if)dx^i
+    = 2\sum_i\partial_{ij}f\,dx^idx^j,
+  \]
+  using that $L_{\partial_i}dx^i=0$ (dual to the vanishing bracket) so the
+  $(\partial_if)$-derivative term dominates, that $d(\partial_if)=\partial_{ij}f\,dx^j$,
+  and collecting the two symmetric contributions. Hence
+  $\operatorname{Hess}f=\frac12L_{\nabla f}g=\sum_i\partial_{ij}f\,dx^idx^j$.
+\end{proof}
+
+\subsection{Lie Groups}
+
+\begin{lemma}[Lem. 2.1.7 — differential of $\operatorname{Ad}$]
+  \label{lem:pet-ch2-ad-differential}
+  \lean{PetersenLib.ad_eq_differential_of_Ad}
+  For a Lie group $G$ with inner automorphism $\operatorname{Ad}_h:x\mapsto hxh^{-1}$
+  and its differential $\operatorname{Ad}_h:\mathfrak g\to\mathfrak g$ at $e$, the
+  differential of $h\mapsto\operatorname{Ad}_h$ is $U\mapsto\operatorname{ad}_U(X)=[U,X]$.
+  \source{petersen:page-0068}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch2-ad-differential}
+  Write $\operatorname{Ad}_h(x)=R_{h^{-1}}L_h(x)$, so
+  $\operatorname{Ad}_h=DR_{h^{-1}}DL_h$ at $e$. Let $F^t$ be the flow of the
+  left-invariant field $U$; then $F^t(x)=xF^t(e)=L_x(F^t(e))$, since both sides
+  agree at $t=0$ and have $U$ as tangent everywhere (left-invariance), and
+  consequently $DF^t=DR_{F^t(e)}$. Hence, for $X\in\mathfrak g$,
+  \[
+    \operatorname{ad}_U(X)|_e
+    = \frac{d}{dt}\Big(DR_{F^t(e)}DL_{F^t(e)}(X|_e)\Big)\Big|_{t=0}
+    = \frac{d}{dt}\Big(DR_{F^t(e)}\big(X|_{F^t(e)}\big)\Big)\Big|_{t=0}
+    = \frac{d}{dt}\Big(DF^{-t}\big(X|_{F^t(e)}\big)\Big)\Big|_{t=0}
+  \]
+  \[
+    = L_UX = [U,X],
+  \]
+  using $\operatorname{Ad}_h(X)=DR_{h^{-1}}DL_h(X)$ and
+  \cref{def:pet-ch2-lie-derivative-vector-field,prop:pet-ch2-lie-derivative-bracket}.
+\end{proof}
+
+\begin{lemma}[Lem. 2.1.8 — bracket on $\mathfrak{gl}(V)$]
+  \label{lem:pet-ch2-gl-bracket-commutator}
+  \lean{PetersenLib.gl_bracket_eq_commutator}
+  \leanok
+  \uses{lem:pet-ch2-ad-differential}
+  Let $G=\mathrm{GL}(V)$. The Lie bracket on $\mathfrak{gl}(V)=T_I\mathrm{GL}(V)$
+  of left-invariant vector fields is given by commutation of linear maps:
+  $[X,Y]_{\mathfrak l}=XY-YX$.
+  \source{petersen:page-0068,petersen:page-0069}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch2-gl-bracket-commutator}
+  Since $x\mapsto hxh^{-1}$ is linear on $\mathrm{Hom}(V,V)$,
+  $\operatorname{Ad}_h(X)=hXh^{-1}$. The flow of $U\in\mathfrak{gl}(V)$ is
+  $F^t(g)=g(I+tU+o(t))$, so by \cref{lem:pet-ch2-ad-differential},
+  \[
+    [U,X] = \frac{d}{dt}\Big(F^t(I)\,X\,F^{-t}(I)\Big)\Big|_{t=0}
+    = \frac{d}{dt}\Big((I+tU+o(t))X(I-tU+o(t))\Big)\Big|_{t=0}
+    = \frac{d}{dt}\big(X+tUX-tXU+o(t)\big)\Big|_{t=0}
+    = UX-XU.
+  \]
+\end{proof}
+
+\section{Connections}
+
+\subsection{Covariant Differentiation}
+
+\begin{definition}[covariant derivative on $\mathbb{R}^n$]
+  \label{def:pet-ch2-covariant-derivative-euclidean}
+  \lean{PetersenLib.covariantDerivativeEuclidean}
+  \leanok
+  \uses{def:pet-ch2-directional-derivative}
+  Writing $X=X^i\partial_i$ in Cartesian coordinates, the \emph{covariant
+  derivative} of $X$ in the direction $Y$ is
+  $\nabla_YX=(\nabla_YX^i)\partial_i=d(X^i)(Y)\partial_i$, so a vector field with
+  constant coefficients has zero covariant derivative. This formula is not
+  invariant under change of coordinates: e.g.\ the polar-coordinate frame
+  fields $\partial_r=\frac1r(x\partial_x+y\partial_y)$, $\partial_\theta=-y\partial_x+x\partial_y$
+  are not constant, yet ought to have a coordinate-independent covariant
+  derivative.
+  \source{petersen:page-0069}
+\end{definition}
+
+\begin{definition}[dual $1$-form $\theta_X$]
+  \label{def:pet-ch2-dual-one-form}
+  \lean{PetersenLib.dualOneForm}
+  \leanok
+  For a vector field $X$ on $(M,g)$, the dual $1$-form is
+  $\theta_X:=i_Xg$, i.e.\ $\theta_X(Y)=g(X,Y)$. $X$ is locally a gradient field
+  iff $d\theta_X=0$; in general $d\theta_X$ measures the extent to which $X$
+  fails to be a gradient field.
+  \source{petersen:page-0069}
+\end{definition}
+
+\begin{definition}[Killing field]
+  \label{def:pet-ch2-killing-field}
+  \lean{PetersenLib.IsKillingField}
+  \leanok
+  \uses{def:pet-ch2-lie-derivative-tensor}
+  A vector field $X$ on $(M,g)$ is a \emph{Killing field} if $L_Xg=0$;
+  equivalently, if $F^t$ is the local flow of $X$, the $F^t$ are local
+  isometries.
+  \source{petersen:page-0069}
+\end{definition}
+
+\begin{remark}[Killing fields on $\mathbb{R}^n$]
+  \label{rem:pet-ch2-killing-field-euclidean}
+  \lean{PetersenLib.killingField_euclidean_characterization}
+  \uses{def:pet-ch2-killing-field}
+  If $X=X^i\partial_i$ on $\mathbb{R}^n$, $X$ is Killing iff $\partial_iX^j+\partial_jX^i=0$ for
+  all $i,j$. This forces $\partial_j\partial_iX^i=0$ for all $i,j$ (differentiating
+  the skew-symmetry relation and permuting indices cyclically shows the
+  third-order-derivative expression equals its own negative), so
+  $X^i=\alpha^i_jx^j+\beta^i$ with $\alpha^i_j=\partial_jX^i=-\partial_iX^j=-\alpha^j_i$
+  skew. In particular $\partial_\theta$ is a Killing field on $\mathbb{R}^2$, matching that
+  its flow is rotation by an orthogonal matrix; more generally the flow of a
+  Killing field on $\mathbb{R}^n$ is $F^t(x)=\exp(At)x+t\beta$ with $A=[\alpha^i_j]$
+  skew-symmetric. A vector field on $\mathbb{R}^n$ is constant iff it is both Killing
+  and a gradient field.
+  \source{petersen:page-0070}
+\end{remark}
+
+\begin{proposition}[Prop. 2.2.1 — implicit formula on $\mathbb{R}^n$]
+  \label{prop:pet-ch2-covariant-derivative-implicit-euclidean}
+  \lean{PetersenLib.covariantDerivative_implicit_euclidean}
+  \leanok
+  \uses{def:pet-ch2-covariant-derivative-euclidean,def:pet-ch2-dual-one-form}
+  The covariant derivative on $\mathbb{R}^n$ satisfies
+  $2g(\nabla_YX,Z)=(L_Xg)(Y,Z)+(d\theta_X)(Y,Z)$.
+  \source{petersen:page-0070,petersen:page-0071}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch2-covariant-derivative-implicit-euclidean}
+  \leanok
+  Both sides are tensorial in $Y,Z$, so it suffices to check on Cartesian
+  coordinate fields $\partial_k,\partial_\ell$. Write $X=a^i\partial_i$. Since
+  $L_{\partial_i}\partial_k=[\partial_i,\partial_k]=0$
+  (\cref{prop:pet-ch2-lie-derivative-bracket}) and, by
+  \cref{prop:pet-ch2-lie-derivative-scaling}, $L_{a^i\partial_i}\partial_k=-(\partial_ka^i)\partial_i$,
+  \[
+    (L_Xg)(\partial_k,\partial_\ell)+(d\theta_X)(\partial_k,\partial_\ell)
+    = D_X\delta_{k\ell}-g(L_X\partial_k,\partial_\ell)-g(\partial_k,L_X\partial_\ell)
+    +\partial_kg(X,\partial_\ell)-\partial_\ell g(X,\partial_k)-g(X,[\partial_k,\partial_\ell])
+  \]
+  \[
+    = -g\big(-(\partial_ka^i)\partial_i,\partial_\ell\big)-g\big(\partial_k,-(\partial_\ell a^i)\partial_i\big)
+    +\partial_ka^\ell-\partial_\ell a^k
+    = \partial_ka^\ell+\partial_\ell a^k+\partial_ka^\ell-\partial_\ell a^k
+    = 2\partial_ka^\ell
+  \]
+  \[
+    = 2g\big((\partial_ka^\ell)\partial_\ell,\partial_\ell\big)
+    = 2g(\nabla_{\partial_k}X,\partial_\ell),
+  \]
+  using $D_X\delta_{k\ell}=0$, $g(X,\partial_\ell)=a^\ell$, and
+  \cref{def:pet-ch2-covariant-derivative-euclidean}.
+\end{proof}
+
+\begin{definition}[affine connection]
+  \label{def:pet-ch2-affine-connection}
+  \lean{PetersenLib.AffineConnection}
+  \leanok
+  On a manifold $M$, an \emph{affine connection} is an assignment
+  $X\mapsto\nabla X$, $\nabla:TM\times\mathfrak X(M)\to TM$, such that: (1)
+  $v\mapsto\nabla_vX$ is a $(1,1)$-tensor, i.e.\ linear,
+  $\nabla_{\alpha v+\beta w}X=\alpha\nabla_vX+\beta\nabla_wX$; and (2)
+  $X\mapsto\nabla_YX$ is a derivation, $\nabla_Y(X_1+X_2)=\nabla_YX_1+\nabla_YX_2$
+  and $\nabla_Y(fX)=(D_Yf)X+f\nabla_YX$ for $f:M\to\mathbb{R}$.
+  \source{petersen:page-0071,petersen:page-0073}
+\end{definition}
+
+\begin{definition}[Riemannian connection]
+  \label{def:pet-ch2-riemannian-connection}
+  \lean{PetersenLib.RiemannianConnection}
+  \leanok
+  \uses{def:pet-ch2-affine-connection}
+  If $(M,g)$ is Riemannian, an affine connection $\nabla$
+  (\cref{def:pet-ch2-affine-connection}) is a \emph{Riemannian connection} if
+  in addition: (3) it is torsion free, $\nabla_XY-\nabla_YX=[X,Y]$; and (4) it
+  is metric, $D_Zg(X,Y)=g(\nabla_ZX,Y)+g(X,\nabla_ZY)$.
+  \source{petersen:page-0071,petersen:page-0073}
+\end{definition}
+
+\begin{remark}[Koszul's formula]
+  \label{rem:pet-ch2-koszul-formula}
+  \lean{PetersenLib.koszulFormula}
+  \leanok
+  \uses{prop:pet-ch2-covariant-derivative-implicit-euclidean,def:pet-ch2-dual-one-form,def:pet-ch2-lie-derivative-tensor}
+  On a general Riemannian manifold, the expression
+  $(L_Xg)(Y,Z)+(d\theta_X)(Y,Z)$ generalizing
+  \cref{prop:pet-ch2-covariant-derivative-implicit-euclidean} expands, by the
+  formulas of \cref{prop:pet-ch2-lie-derivative-tensor-formula} for $L_Xg$ and
+  \cref{def:pet-ch2-exterior-derivative-lie-formula} for $d\theta_X$, to
+  \[
+    (L_Xg)(Y,Z)+(d\theta_X)(Y,Z)
+    = D_Xg(Y,Z)-g([X,Y],Z)-g(Y,[X,Z])
+  \]
+  \[
+    +D_Y\theta_X(Z)-D_Z\theta_X(Y)-\theta_X([Y,Z])
+    = D_Xg(Y,Z)+D_Yg(X,Z)-D_Zg(X,Y)
+    -g([X,Y],Z)-g([Y,Z],X)+g([Z,X],Y).
+  \]
+  \source{petersen:page-0072}
+\end{remark}
+
+
+\begin{lemma}[extension of a tangent vector to a vector field]
+  \label{lem:pet-ch2-extend-tangent-vector}
+  \lean{PetersenLib.exists_smoothVectorField_eq}
+  \leanok
+  On a smooth ($\sigma$-compact, Hausdorff) manifold, every tangent vector
+  $v\in T_pM$ is the value at $p$ of a globally defined smooth vector field.
+\end{lemma}
+\begin{proof}
+  \leanok
+  Extend the constant coefficient vector field through a chart at $p$ and
+  multiply by a smooth bump function supported in the chart and equal to $1$
+  near $p$; the resulting field is globally smooth and takes the value $v$
+  at $p$.
+\end{proof}
+
+\begin{lemma}[Riemannian connections satisfy Koszul's formula]
+  \label{lem:pet-ch2-riemannian-connection-koszul}
+  \lean{PetersenLib.RiemannianConnection.koszul}
+  \leanok
+  \uses{def:pet-ch2-riemannian-connection,rem:pet-ch2-koszul-formula}
+  Every Riemannian connection $\nabla$ on $(M,g)$ satisfies
+  $2g(\nabla_YX,Z)=D_Xg(Y,Z)+D_Yg(X,Z)-D_Zg(X,Y)
+  -g([X,Y],Z)-g([Y,Z],X)+g([Z,X],Y)$.
+\end{lemma}
+\begin{proof}
+  \leanok
+  Expand the three derivative terms by the metric property and the three
+  bracket terms by torsion-freeness; all terms cancel except
+  $2g(\nabla_YX,Z)$, using the symmetry of $g$.
+\end{proof}
+
+\begin{theorem}[Thm. 2.2.2 — the Fundamental Theorem of Riemannian Geometry]
+  \label{thm:pet-ch2-fundamental-theorem}
+  \lean{PetersenLib.fundamentalTheoremRiemannianGeometry}
+  \leanok
+  \uses{def:pet-ch2-riemannian-connection,rem:pet-ch2-koszul-formula,lem:pet-ch2-extend-tangent-vector,lem:pet-ch2-riemannian-connection-koszul}
+  On $(M,g)$ there is exactly one Riemannian connection $\nabla$
+  (\cref{def:pet-ch2-riemannian-connection}), given implicitly by Koszul's
+  formula (\cref{rem:pet-ch2-koszul-formula}):
+  \[
+    2g(\nabla_YX,Z)=D_Xg(Y,Z)+D_Yg(X,Z)-D_Zg(X,Y)
+    -g([X,Y],Z)-g([Y,Z],X)+g([Z,X],Y).
+  \]
+  \source{petersen:page-0071,petersen:page-0072,petersen:page-0073}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch2-fundamental-theorem}
+  \leanok
+  \emph{Existence, properties (1)–(2).} Define $\nabla_YX$ by
+  $2g(\nabla_YX,Z):=(L_Xg)(Y,Z)+(d\theta_X)(Y,Z)$, tensorial and linear in
+  $Y,Z$ by construction (\cref{rem:pet-ch2-koszul-formula}), hence linear in
+  $Y$ (property (1)). For the derivation property in $X$, since
+  $L_{fX}g+d\theta_{fX}=fL_Xg+df\wedge\theta_X+\theta_X\cdot df+d(f\theta_X)
+  =fL_Xg+df\cdot\theta_X+\theta_X\cdot df+df\wedge\theta_X+fd\theta_X
+  =f(L_Xg+d\theta_X)+2df\cdot\theta_X$, evaluating on $(Y,Z)$ gives
+  $2g(\nabla_Y(fX),Z)=f\cdot2g(\nabla_YX,Z)+2df(Y)g(X,Z)
+  =2g\big(f\nabla_YX+(D_Yf)X,Z\big)$, so
+  $\nabla_Y(fX)=f\nabla_YX+(D_Yf)X$ (property (2)).
+
+  \emph{Torsion-free (3).} By \cref{rem:pet-ch2-koszul-formula} applied twice
+  and antisymmetrizing in $X,Y$, all the symmetric $D$-terms cancel and the
+  bracket terms combine as
+  \[
+    2g(\nabla_XY-\nabla_YX,Z)
+    = D_Yg(X,Z)+D_Yg(Z,X)-D_Zg(Y,X)-g([Y,X],Z)-g([X,Z],Y)+g([Z,X],Y)
+  \]
+  \[
+    -D_Xg(Y,Z)-D_Yg(Z,X)+D_Zg(X,Y)+g([X,Y],Z)+g([Y,Z],X)-g([Z,Y],X)
+    = 2g([X,Y],Z),
+  \]
+  so $\nabla_XY-\nabla_YX=[X,Y]$.
+
+  \emph{Metric (4).} Symmetrizing \cref{rem:pet-ch2-koszul-formula} in $X,Y$
+  instead,
+  \[
+    2g(\nabla_ZX,Y)+2g(X,\nabla_ZY)
+    = D_Xg(Z,Y)+D_Zg(Y,X)-D_Yg(X,Z)-g([X,Z],Y)-g([Z,Y],X)+g([Y,Z],X)
+  \]
+  \[
+    +D_Yg(Z,X)+D_Zg(X,Y)-D_Yg(X,Z)-g([Y,Z],X)-g([Z,X],Y)+g([X,Y],Z)
+    = 2D_Zg(X,Y),
+  \]
+  so $D_Zg(X,Y)=g(\nabla_ZX,Y)+g(X,\nabla_ZY)$.
+
+  \emph{Uniqueness.} If $\tilde\nabla$ also satisfies (1)–(4), then applying
+  metricity and torsion-freeness of $\tilde\nabla$ to expand
+  $D_Xg(Y,Z)+D_Yg(Z,X)-D_Zg(X,Y)$ term by term and substituting brackets
+  $[X,Y]=\tilde\nabla_XY-\tilde\nabla_YX$ etc.\ into
+  \cref{rem:pet-ch2-koszul-formula} produces, after cancellation of all
+  cross-terms, $2g(\nabla_YX,Z)=2g(\tilde\nabla_YX,Z)$ for all $Z$, i.e.\
+  $\nabla_YX=\tilde\nabla_YX$; explicitly, substituting the metricity identity
+  four times and the torsion identity twice into the right-hand side of
+  Koszul's formula collapses it to $2g(\tilde\nabla_YX,Z)$, matching the
+  left-hand side that defines $\nabla$.
+\end{proof}
+
+\begin{lemma}[Lem. 2.2.3 — locality on open sets]
+  \label{lem:pet-ch2-locality-open-set}
+  \lean{PetersenLib.connection_local_openSet}
+  \leanok
+  \uses{def:pet-ch2-affine-connection}
+  Let $\nabla$ be an affine connection on $M$, $p\in M$, $v\in T_pM$, and
+  $X,Y$ vector fields with $X=Y$ on a neighborhood $U\ni p$. Then
+  $\nabla_vX=\nabla_vY$.
+  \source{petersen:page-0073,petersen:page-0074}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch2-locality-open-set}
+  \leanok
+  Choose $\lambda:M\to\mathbb{R}$ with $\lambda\equiv0$ off $U$ and $\lambda\equiv1$
+  near $p$, so $\lambda X=\lambda Y$ on $M$. By the derivation property,
+  $\nabla_v(\lambda X)=\lambda(p)\nabla_vX+d\lambda(v)X(p)=\nabla_vX$ since
+  $d\lambda|_p=0$ and $\lambda(p)=1$; likewise $\nabla_v(\lambda Y)=\nabla_vY$.
+  Since $\lambda X=\lambda Y$ as global fields,
+  $\nabla_vX=\nabla_v(\lambda X)=\nabla_v(\lambda Y)=\nabla_vY$.
+\end{proof}
+
+\begin{lemma}[Lem. 2.2.4 — locality along a curve]
+  \label{lem:pet-ch2-locality-along-curve}
+  \lean{PetersenLib.connection_local_alongCurve}
+  \uses{def:pet-ch2-affine-connection}
+  Let $\nabla$ be an affine connection, $X$ a vector field, and $c:I\to M$
+  smooth with $\dot c(0)=v\in T_pM$. If $X\circ c=Y\circ c$ for another vector
+  field $Y$, then $\nabla_vX=\nabla_vY$.
+  \source{petersen:page-0074}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch2-locality-along-curve}
+  Choose a frame $E_1,\dots,E_n$ near $p$ and write $X=X^iE_i$, $Y=Y^iE_i$.
+  Since $X\circ c=Y\circ c$, the coefficient functions satisfy
+  $X^i\circ c=Y^i\circ c$. Then, by the derivation and linearity properties
+  of $\nabla$,
+  \[
+    \nabla_vY = \nabla_v(Y^iE_i) = Y^i(p)\nabla_vE_i+E_i(p)\,dY^i(v)
+    = X^i(p)\nabla_vE_i+E_i(p)\,dX^i(v) = \nabla_vX,
+  \]
+  using $Y^i(p)=X^i(p)$ (from $c(0)=p$) and $dY^i(v)=dX^i(v)$ (since
+  $Y^i\circ c=X^i\circ c$ as functions of the curve parameter, so their
+  derivatives at $0$ along $\dot c(0)=v$ agree).
+\end{proof}
+
+\begin{definition}[normal coordinates and normal frame at $p$]
+  \label{def:pet-ch2-normal-coordinates-frame}
+  \lean{PetersenLib.isNormalCoordinatesAt,PetersenLib.isNormalFrameAt}
+  \uses{def:pet-ch2-riemannian-connection}
+  A coordinate system is \emph{normal} at $p$ if $g_{ij}|_p=\delta_{ij}$ and
+  $\partial_kg_{ij}|_p=0$. An orthonormal frame $E_1,\dots,E_n$ is \emph{normal}
+  at $p$ if $(\nabla_vE_i)|_p=0$ for all $i$ and $v\in T_pM$. Such coordinates
+  and frames always exist at every point.
+  \source{petersen:page-0074}
+\end{definition}
+
+\subsection{Covariant Derivatives of Tensors}
+
+\begin{definition}[covariant derivative of an $(s,t)$-tensor field]
+  \label{def:pet-ch2-covariant-derivative-tensor}
+  \lean{PetersenLib.covariantDerivativeTensor}
+  \leanok
+  \uses{def:pet-ch2-riemannian-connection}
+  For an $(s,t)$-tensor field $S$, the \emph{covariant derivative} $\nabla S$
+  is the $(s,t+1)$-tensor field determined by requiring the Leibniz rule
+  $\nabla_X(S(Y))=(\nabla_XS)(Y)+S(\nabla_XY)$: for $s=0,1$,
+  \[
+    \nabla S(X,Y_1,\dots,Y_r)=(\nabla_XS)(Y_1,\dots,Y_r)
+    =\nabla_X\big(S(Y_1,\dots,Y_r)\big)-\sum_{i=1}^rS(Y_1,\dots,\nabla_XY_i,\dots,Y_r),
+  \]
+  where $\nabla_X$ acts as $D_X$ on functions and as covariant differentiation
+  on vector fields; equivalently $\nabla_XS=[\nabla_X,S]$ when $S$ is
+  $(1,1)$. For general $s$, extend by the product rule
+  $\nabla_X(X_1\otimes X_2)=(\nabla_XX_1)\otimes X_2+X_1\otimes(\nabla_XX_2)$.
+  \source{petersen:page-0075}
+\end{definition}
+
+\begin{definition}[parallel tensor]
+  \label{def:pet-ch2-parallel-tensor}
+  \lean{PetersenLib.IsParallel}
+  \leanok
+  \uses{def:pet-ch2-covariant-derivative-tensor}
+  A tensor $S$ is \emph{parallel} if $\nabla S=0$. On Euclidean space, a
+  tensor written in Cartesian coordinates is parallel iff it has constant
+  coefficients.
+  \source{petersen:page-0075}
+\end{definition}
+
+\begin{proposition}[Prop. 2.2.5 — the metric and volume form are parallel]
+  \label{prop:pet-ch2-metric-volume-parallel}
+  \lean{PetersenLib.metric_and_volume_parallel}
+  \leanok
+  \uses{def:pet-ch2-parallel-tensor}
+  On a Riemannian $n$-manifold, $\nabla g=0$ and $\nabla\mathrm{vol}=0$.
+  \source{petersen:page-0076}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch2-metric-volume-parallel}
+  \leanok
+  By the metric property (4) of \cref{def:pet-ch2-riemannian-connection},
+  $(\nabla g)(X,Y_1,Y_2)=\nabla_X(g(Y_1,Y_2))-g(\nabla_XY_1,Y_2)-g(Y_1,\nabla_XY_2)=0$.
+  For the volume form, evaluate on an orthonormal frame $E_1,\dots,E_n$:
+  \[
+    (\nabla_X\mathrm{vol})(E_1,\dots,E_n)
+    = \nabla_X\big(\mathrm{vol}(E_1,\dots,E_n)\big)-\sum_i\mathrm{vol}(E_1,\dots,\nabla_XE_i,\dots,E_n)
+    = -\sum_ig(E_i,\nabla_XE_i)
+  \]
+  \[
+    = -\frac12\sum_iD_X\big(g(E_i,E_i)\big) = 0,
+  \]
+  using that $\mathrm{vol}(E_1,\dots,E_n)\equiv1$ and $g(E_i,E_i)\equiv1$ are
+  constant, and again that replacing one frame slot projects onto that
+  direction.
+\end{proof}
+
+\begin{proposition}[Prop. 2.2.6 — Hessian via the covariant derivative]
+  \label{prop:pet-ch2-hessian-covariant-derivative}
+  \lean{PetersenLib.hessian_via_covariantDerivative}
+  \leanok
+  \uses{def:pet-ch2-covariant-derivative-tensor,def:pet-ch2-hessian-lie-derivative}
+  For $f:(M,g)\to\mathbb{R}$, $(\nabla df)(X,Y)=g(\nabla_X\nabla f,Y)=\operatorname{Hess}f(X,Y)$.
+  \source{petersen:page-0076,petersen:page-0077}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch2-hessian-covariant-derivative}
+  \leanok
+  By \cref{def:pet-ch2-covariant-derivative-tensor},
+  $(\nabla df)(X,Y)=(\nabla_Xdf)(Y)=D_XD_Yf-df(\nabla_XY)=D_XD_Yf-D_{\nabla_XY}f$,
+  so
+  \[
+    (\nabla_Xdf)(Y)-(\nabla_Ydf)(X)=[D_X,D_Y]f-D_{[X,Y]}f=0
+  \]
+  since $\nabla$ is torsion free (\cref{def:pet-ch2-riemannian-connection}(3)),
+  showing $\nabla df$ is symmetric. Next, using the metric property,
+  \[
+    (\nabla_Xdf)(Y)=D_Xg(\nabla f,Y)-g(\nabla f,\nabla_XY)=g(\nabla_X\nabla f,Y).
+  \]
+  On the other hand, expanding via the metric property and the torsion-free
+  bracket identity as in \cref{prop:pet-ch2-covariant-derivative-implicit-euclidean},
+  \[
+    g(\nabla_X\nabla f,Y)
+    = \tfrac12g(\nabla_X\nabla f,Y)+\tfrac12g(X,\nabla_Y\nabla f)
+    + \tfrac12D_{\nabla f}g(X,Y)-\tfrac12g([\nabla f,X],Y)-\tfrac12g(X,[\nabla f,Y])
+  \]
+  \[
+    = \tfrac12(L_{\nabla f}g)(X,Y),
+  \]
+  matching $\operatorname{Hess}f(X,Y)=\frac12(L_{\nabla f}g)(X,Y)$ from
+  \cref{def:pet-ch2-hessian-lie-derivative}.
+\end{proof}
+
+\subsection{The Adjoint of the Covariant Derivative}
+
+\begin{definition}[adjoint of the covariant derivative]
+  \label{def:pet-ch2-covariant-derivative-adjoint}
+  \lean{PetersenLib.covariantDerivativeAdjoint}
+  \uses{def:pet-ch2-covariant-derivative-tensor}
+  For an $(s,t)$-tensor $S$ with $t>0$, and an orthonormal frame
+  $E_1,\dots,E_n$, the \emph{adjoint} $\nabla^*S$ is the $(s,t-1)$-tensor
+  \[
+    (\nabla^*S)(X_2,\dots,X_t)=-\sum_i(\nabla_{E_i}S)(E_i,X_2,\dots,X_t).
+  \]
+  \source{petersen:page-0077}
+\end{definition}
+
+\begin{proposition}[Prop. 2.2.7 — divergence as adjoint of $\theta_X$]
+  \label{prop:pet-ch2-divergence-adjoint-formula}
+  \lean{PetersenLib.divergence_eq_neg_adjoint_dualForm}
+  \uses{def:pet-ch2-covariant-derivative-adjoint,def:pet-ch2-divergence-lie-derivative,def:pet-ch2-dual-one-form}
+  If $X$ is a vector field with dual $1$-form $\theta_X$, then
+  $\operatorname{div}X=-\nabla^*\theta_X$.
+  \source{petersen:page-0077}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch2-divergence-adjoint-formula}
+  Select an orthonormal frame $E_i$. By
+  \cref{def:pet-ch2-covariant-derivative-adjoint,def:pet-ch2-covariant-derivative-tensor},
+  \[
+    -\nabla^*\theta_X = \sum_i(\nabla_{E_i}\theta_X)(E_i)
+    = \sum_iD_{E_i}g(X,E_i)-\sum_ig(X,\nabla_{E_i}E_i)
+    = \sum_ig(\nabla_{E_i}X,E_i)
+  \]
+  \[
+    = \sum_i\tfrac12(L_Xg)(E_i,E_i) = \operatorname{div}X,
+  \]
+  where the third equality follows exactly as in
+  \cref{prop:pet-ch2-hessian-covariant-derivative}, pairing the connection
+  with the metric, and the last equality is
+  \cref{prop:pet-ch2-divergence-trace-formula}.
+\end{proof}
+
+\begin{proposition}[Prop. 2.2.8 — $\nabla^*$ is the $L^2$-adjoint of $\nabla$]
+  \label{prop:pet-ch2-adjoint-integral-identity}
+  \lean{PetersenLib.adjoint_L2_identity}
+  \uses{def:pet-ch2-covariant-derivative-adjoint}
+  If $S$ is a compactly supported $(s,t)$-tensor and $T$ a compactly supported
+  $(s,t+1)$-tensor, then $\int g(\nabla S,T)\,\mathrm{vol}=\int g(S,\nabla^*T)\,\mathrm{vol}$.
+  \source{petersen:page-0078}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch2-adjoint-integral-identity}
+  For notational simplicity take $s=t=1$; the general case is identical with
+  more indices. Define the $1$-form $\omega(X)=g(i_XT,S)$. At $p$, choose an
+  orthonormal frame $E_i$ normal at $p$ (\cref{def:pet-ch2-normal-coordinates-frame}),
+  so $\nabla_vE_i|_p=0$ for all $v$. Then at $p$,
+  \[
+    -\nabla^*\omega = \sum_i(\nabla_{E_i}\omega)(E_i)
+    = \sum_i\nabla_{E_i}g\big(T(E_i,E_j),S(E_j)\big)
+    = \sum_ig\big(\nabla_{E_i}T(E_i,E_j),S(E_j)\big)+g\big(T(E_i,E_j),\nabla_{E_i}S(E_j)\big)
+  \]
+  \[
+    = -g(\nabla^*T,S)+g(T,\nabla S).
+  \]
+  Since this pointwise identity holds at every $p$ (using a frame normal at
+  that point), integrating and applying the divergence theorem
+  $\int\operatorname{div}(\theta^\sharp)\,\mathrm{vol}=\int d\,i_{\theta^\sharp}\mathrm{vol}=0$
+  (\cref{rem:pet-ch2-lie-derivative-volume-exact}, Stokes' theorem, valid since
+  $\omega$ has compact support as $S,T$ do) to $-\nabla^*\omega=\operatorname{div}(\omega^\sharp)$
+  gives $\int(-g(\nabla^*T,S)+g(T,\nabla S))\,\mathrm{vol}=0$, i.e.\
+  $\int g(\nabla S,T)\,\mathrm{vol}=\int g(S,\nabla^*T)\,\mathrm{vol}$.
+\end{proof}
+
+\subsection{Exterior Derivatives}
+
+\begin{definition}[exterior derivative via the covariant derivative]
+  \label{def:pet-ch2-exterior-derivative-covariant}
+  \lean{PetersenLib.exteriorDerivative_covariantFormula}
+  \uses{def:pet-ch2-covariant-derivative-tensor}
+  For a $k$-form $\omega$, $(d\omega)(X_0,\dots,X_k)=\sum_i(-1)^i(\nabla_{X_i}\omega)(X_0,\dots,\hat X_i,\dots,X_k)$.
+  More generally, for a $(1,k)$-tensor $T$ skew-symmetric in its $k$
+  covariant slots, define the $(1,k+1)$-tensor
+  $(d^\nabla T)(X_0,\dots,X_k)=\sum_i(-1)^i(\nabla_{X_i}T)(X_0,\dots,\hat X_i,\dots,X_k)$;
+  for $k=0$, $T=Y$ a vector field, $(d^\nabla Y)(X)=\nabla_XY$; for $k=1$,
+  \[
+    (d^\nabla T)(X,Y)=(\nabla_XT)(Y)-(\nabla_YT)(X)
+    =\nabla_X(T(Y))-\nabla_Y(T(X))-T([X,Y]).
+  \]
+  \source{petersen:page-0078,petersen:page-0079}
+\end{definition}
+
+\subsection{The Second Covariant Derivative}
+
+\begin{definition}[second covariant derivative]
+  \label{def:pet-ch2-second-covariant-derivative}
+  \lean{PetersenLib.secondCovariantDerivative}
+  \leanok
+  \uses{def:pet-ch2-covariant-derivative-tensor}
+  For an $(s,t)$-tensor field $S$, the \emph{second covariant derivative}
+  $\nabla^2S$ is the $(s,t+2)$-tensor field
+  \[
+    (\nabla^2_{X_1,X_2}S)(Y_1,\dots,Y_t)
+    = (\nabla_{X_1}(\nabla S))(X_2,Y_1,\dots,Y_t)
+    = (\nabla_{X_1}(\nabla_{X_2}S))(Y_1,\dots,Y_t)-(\nabla_{\nabla_{X_1}X_2}S)(Y_1,\dots,Y_t).
+  \]
+  \source{petersen:page-0079}
+\end{definition}
+
+\begin{remark}[Hessian as second covariant derivative; Laplacian as trace]
+  \label{rem:pet-ch2-hessian-second-covariant-derivative}
+  \lean{PetersenLib.hessian_eq_secondCovariantDerivative}
+  \uses{def:pet-ch2-second-covariant-derivative,def:pet-ch2-laplacian,def:pet-ch2-covariant-derivative-adjoint}
+  For $f:M\to\mathbb{R}$, $\nabla^2_{X,Y}f=\nabla_X\nabla_Yf-\nabla_{\nabla_XY}f
+  =\nabla_Xdf(Y)-df(\nabla_XY)=(\nabla_Xdf)(Y)=\operatorname{Hess}f(X,Y)$, and
+  $\nabla^2f$ is symmetric in $X,Y$ (unlike the second covariant derivative of
+  a general tensor, whose failure of symmetry is central to curvature).
+  Consequently $\Delta f=-\nabla^*\nabla f=\sum_i\nabla^2_{E_i,E_i}f$.
+  \source{petersen:page-0079}
+\end{remark}
+
+\subsection{The Lie Derivative of the Covariant Derivative}
+
+\begin{definition}[Lie derivative of the connection]
+  \label{def:pet-ch2-lie-derivative-connection}
+  \lean{PetersenLib.lieDerivativeConnection}
+  \leanok
+  \uses{def:pet-ch2-lie-derivative-vector-field,def:pet-ch2-riemannian-connection}
+  \[
+    (L_X\nabla)_UV := (L_X\nabla)(U,V)
+    = L_X(\nabla_UV)-\nabla_{L_XU}V-\nabla_UL_XV
+    = [X,\nabla_UV]-\nabla_{[X,U]}V-\nabla_U[X,V].
+  \]
+  \source{petersen:page-0079,petersen:page-0080}
+\end{definition}
+
+\begin{remark}[symmetry and tensoriality of $L_X\nabla$]
+  \label{rem:pet-ch2-lie-derivative-connection-symmetric}
+  \lean{PetersenLib.lieDerivativeConnection_symmetric}
+  \leanok
+  \uses{def:pet-ch2-lie-derivative-connection}
+  $(L_X\nabla)(U,V)$ is tensorial in $U$ (since $\nabla_UV$ is tensorial in
+  $U$), and it is symmetric in $U,V$; hence it is tensorial in both
+  variables.
+  \source{petersen:page-0080}
+\end{remark}
+\begin{proof}
+  \uses{rem:pet-ch2-lie-derivative-connection-symmetric}
+  \leanok
+  Since $[U,V]=\nabla_UV-\nabla_VU$ (torsion-freeness,
+  \cref{def:pet-ch2-riemannian-connection}(3)),
+  \[
+    (L_X\nabla)(U,V)-(L_X\nabla)(V,U)
+    = L_X\big(\nabla_UV-\nabla_VU\big)-\nabla_{[X,U]}V+\nabla_{[X,V]}U-\nabla_U[X,V]+\nabla_V[X,U]
+  \]
+  \[
+    = L_X([U,V])-\nabla_{[X,U]}V+\nabla_{[X,V]}U-\nabla_U[X,V]+\nabla_V[X,U]
+    = L_X(L_UV) = 0,
+  \]
+  by the definition of $L_X\nabla$ applied to both orderings, the torsion
+  identity, and the Generalized Jacobi Identity
+  (\cref{prop:pet-ch2-generalized-jacobi-identity}) applied to $T=V$: expanding
+  $(L_XL)_UV=L_X(L_UV)-L_{L_XU}V-L_U(L_XV)=0$ and comparing with the
+  difference above (using $L_XU=[X,U]$, $L_XV=[X,V]$ by
+  \cref{prop:pet-ch2-lie-derivative-bracket}) shows the difference equals
+  $(L_XL)_UV=0$.
+\end{proof}
+
+\subsection{The Covariant Derivative of the Covariant Derivative}
+
+\begin{definition}[covariant derivative of the connection]
+  \label{def:pet-ch2-covariant-derivative-connection}
+  \lean{PetersenLib.covariantDerivativeConnection}
+  \leanok
+  \uses{def:pet-ch2-covariant-derivative-tensor,def:pet-ch2-second-covariant-derivative}
+  \[
+    (\nabla_X\nabla)_YT := \nabla_X(\nabla_YT)-\nabla_{\nabla_XY}T-\nabla_Y(\nabla_XT).
+  \]
+  This is not tensorial in $X$. It relates to the second covariant derivative
+  of $T$ (\cref{def:pet-ch2-second-covariant-derivative}) by
+  $\nabla^2_{X,Y}T=(\nabla_X\nabla)_YT+\nabla_Y(\nabla_XT)$.
+  \source{petersen:page-0080}
+\end{definition}
+
+\section{Natural Derivations}
+
+\subsection{Endomorphisms as Derivations}
+
+\begin{definition}[derivation on tensors]
+  \label{def:pet-ch2-tensor-derivation}
+  \lean{PetersenLib.IsTensorDerivation}
+  \leanok
+  A \emph{derivation} on tensors is a type-preserving linear map
+  $T\mapsto DT$ that commutes with contractions and satisfies the product rule
+  $D(T_1\otimes T_2)=(DT_1)\otimes T_2+T_1\otimes(DT_2)$.
+  \source{petersen:page-0080}
+\end{definition}
+
+\begin{definition}[the natural $\mathrm{GL}(V)$-action on $T(V)$]
+  \label{def:pet-ch2-gl-action-tensor-algebra}
+  \lean{PetersenLib.glActionOnTensorAlgebra}
+  \leanok
+  For a finite-dimensional vector space $V$, let $T(V)$ be its tensor algebra,
+  graded by $(s,t)$-tensors spanned by
+  $v_1\otimes\cdots\otimes v_s\otimes\phi_1\otimes\cdots\otimes\phi_t$
+  ($v_i\in V$, $\phi_j\in V^*$). The natural homomorphism
+  $\mathrm{GL}(V)\to\mathrm{GL}(T(V))$ acts by $g\cdot\alpha=\alpha$ for
+  $\alpha\in\mathbb{R}$ (a $(0,0)$-tensor); $g\cdot v=g(v)$ for $v\in V$;
+  $g\cdot\phi=\phi\circ g^{-1}$ for $\phi\in V^*$; and, on general tensors,
+  \[
+    g\cdot(v_1\otimes\cdots\otimes v_s\otimes\phi_1\otimes\cdots\otimes\phi_t)
+    = g(v_1)\otimes\cdots\otimes g(v_s)\otimes(\phi_1\circ g^{-1})\otimes\cdots\otimes(\phi_t\circ g^{-1}).
+  \]
+  \source{petersen:page-0080,petersen:page-0081}
+\end{definition}
+
+\begin{definition}[induced derivation of $L\in\mathrm{End}(V)$]
+  \label{def:pet-ch2-endomorphism-derivation}
+  \lean{PetersenLib.endomorphismDerivation}
+  \leanok
+  \uses{def:pet-ch2-gl-action-tensor-algebra,def:pet-ch2-tensor-derivation}
+  Differentiating the $\mathrm{GL}(V)$-action of
+  \cref{def:pet-ch2-gl-action-tensor-algebra} gives a linear map
+  $\mathrm{End}(V)\to\mathrm{End}(T(V))$, $L\mapsto LT$: on vectors $Lv=L(v)$;
+  on $1$-forms $L\phi=-\phi\circ L$; and on general tensors,
+  \[
+    L(v_1\otimes\cdots\otimes v_s\otimes\phi_1\otimes\cdots\otimes\phi_t)
+    = \sum_{i=1}^sv_1\otimes\cdots\otimes L(v_i)\otimes\cdots\otimes v_s\otimes\phi_1\otimes\cdots\otimes\phi_t
+  \]
+  \[
+    -\sum_{j=1}^tv_1\otimes\cdots\otimes v_s\otimes\phi_1\otimes\cdots\otimes(\phi_j\circ L)\otimes\cdots\otimes\phi_t.
+  \]
+  \source{petersen:page-0081}
+\end{definition}
+
+\begin{proposition}[Prop. 2.3.1 — Lie algebra homomorphism]
+  \label{prop:pet-ch2-endomorphism-lie-algebra-hom}
+  \lean{PetersenLib.endomorphismDerivation_lieAlgebraHom}
+  \leanok
+  \uses{def:pet-ch2-endomorphism-derivation}
+  The linear map $\mathrm{End}(V)\to\mathrm{End}(T(V))$, $L\mapsto LT$, is a
+  Lie algebra homomorphism that preserves symmetries of tensors.
+  \source{petersen:page-0081}
+\end{proposition}
+
+\begin{proposition}[Prop. 2.3.2 — $(1,1)$-tensors act as derivations]
+  \label{prop:pet-ch2-endomorphism-is-derivation}
+  \lean{PetersenLib.endomorphismAction_isDerivation}
+  \leanok
+  \uses{def:pet-ch2-endomorphism-derivation,def:pet-ch2-tensor-derivation}
+  Any $(1,1)$-tensor $L$ defines a derivation on tensors
+  (\cref{def:pet-ch2-tensor-derivation}).
+  \source{petersen:page-0081,petersen:page-0082}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch2-endomorphism-is-derivation}
+  \leanok
+  Linearity and the product rule are immediate from
+  \cref{def:pet-ch2-endomorphism-derivation}. It remains to check that $L$
+  commutes with contractions. In a local frame $X_i$ with coframe $\sigma^i$,
+  write a $(1,1)$-tensor $T=T^i_jX_i\otimes\sigma^j$; its contraction is
+  $\operatorname{tr}T=T^i_i$, a scalar, so $L(\operatorname{tr}T)=0$ (scalars
+  are annihilated by $L$). On the other hand, writing $L(X_i)=L^k_iX_k$,
+  \[
+    L(T) = T^i_jL(X_i)\otimes\sigma^j-T^i_jX_i\otimes(\sigma^j\circ L)
+    = T^i_jL^k_iX_k\otimes\sigma^j-T^i_jL^j_kX_i\otimes\sigma^k
+  \]
+  \[
+    = T^i_jL^k_iX_k\otimes\sigma^j-T^k_jL^j_iX_i\otimes\sigma^j
+    = \big(T^i_jL^k_i-T^k_jL^j_i\big)X_k\otimes\sigma^j,
+  \]
+  where the second sum was reindexed $(i,k)\mapsto(k,i)$. Contracting
+  ($k=j$),
+  \[
+    \operatorname{tr}(LT) = T^i_kL^k_i-T^k_kL^k_i\big|_{j=k}
+    = T^i_kL^k_i-T^i_kL^k_i = 0,
+  \]
+  matching $L(\operatorname{tr}T)=0$. The same computation, tracing over one
+  fixed upper and one fixed lower index, applies to a general tensor
+  $T^{j\cdots k}_{h\cdots i}$.
+\end{proof}
+
+\begin{definition}[inner product on the tensor algebra]
+  \label{def:pet-ch2-tensor-algebra-inner-product}
+  \lean{PetersenLib.tensorAlgebraInnerProduct}
+  \leanok
+  If $V$ has an inner product with orthonormal basis $e_1,\dots,e_n$ and dual
+  basis $e^1,\dots,e^n$, the inner product on $T(V)$ declares
+  $e_{i_1}\otimes\cdots\otimes e_{i_p}\otimes e^{j_1}\otimes\cdots\otimes e^{j_q}$
+  an orthonormal basis of the $(p,q)$-tensors.
+  \source{petersen:page-0082}
+\end{definition}
+
+\begin{proposition}[Prop. 2.3.3 — adjoints and skew-adjoint endomorphisms]
+  \label{prop:pet-ch2-endomorphism-adjoint-type-change}
+  \lean{PetersenLib.endomorphismDerivation_adjoint_skew}
+  \leanok
+  \uses{def:pet-ch2-endomorphism-derivation,def:pet-ch2-tensor-algebra-inner-product}
+  Assume $V$ has an inner product. (1) The adjoint of $L:V\to V$ extends to
+  the adjoint of $L:T(V)\to T(V)$. (2) If $L\in\mathfrak{so}(V)$ (skew-adjoint),
+  then $L$ commutes with type change of tensors.
+  \source{petersen:page-0082}
+\end{proposition}
+
+\subsection{Derivatives}
+
+\begin{proposition}[Prop. 2.3.4 — $L_U$ decomposes through $\nabla$]
+  \label{prop:pet-ch2-lie-derivative-as-endomorphism-derivation}
+  \lean{PetersenLib.lieDerivative_eq_covariant_minus_endomorphism}
+  \leanok
+  \uses{def:pet-ch2-lie-derivative-vector-field,def:pet-ch2-covariant-derivative-tensor,def:pet-ch2-endomorphism-derivation}
+  Viewing $\nabla U$ as the $(1,1)$-tensor $X\mapsto\nabla_XU$, the Lie
+  derivative in the direction $U$ decomposes as $L_U=\nabla_U-(\nabla U)$,
+  where $(\nabla U)$ acts by the endomorphism derivation of
+  \cref{def:pet-ch2-endomorphism-derivation}.
+  \source{petersen:page-0082,petersen:page-0083}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch2-lie-derivative-as-endomorphism-derivation}
+  \leanok
+  Both sides are derivations on tensors, so it suffices to check the identity
+  on functions and on vector fields. On functions, $L_Uf=D_Uf=\nabla_Uf$ while
+  $(\nabla U)$ acts as zero on scalars, matching $\nabla_U-(\nabla U)$. On a
+  vector field $Y$, $L_UY=[U,Y]=\nabla_UY-\nabla_YU$
+  (\cref{prop:pet-ch2-lie-derivative-bracket}, torsion-freeness), and
+  $(\nabla U)(Y)=\nabla_YU$ by definition of the induced endomorphism action
+  on vectors (\cref{def:pet-ch2-endomorphism-derivation}), so
+  $\big(\nabla_U-(\nabla U)\big)(Y)=\nabla_UY-\nabla_YU=L_UY$.
+\end{proof}
+
+\section{The Connection in Tensor Notation}
+
+\begin{definition}[coordinate formulas for the metric]
+  \label{def:pet-ch2-metric-coordinate-formulas}
+  \lean{PetersenLib.metricCoordinateFormulas}
+  \leanok
+  In local coordinates $g=g_{ij}dx^idx^j$; for $X=X^i\partial_i$, $Y=Y^j\partial_j$,
+  $g(X,Y)=g_{ij}X^iY^j$, and the dual $1$-form (\cref{def:pet-ch2-dual-one-form})
+  is $\theta_X=g_{ij}dx^i(X)dx^j=g_{ij}X^idx^j$. The inverse matrix $[g^{ij}]$ of
+  $[g_{ij}]$ satisfies $\delta^i_j=g^{ik}g_{kj}$.
+  \source{petersen:page-0083}
+\end{definition}
+
+\begin{definition}[vector field dual to a $1$-form]
+  \label{def:pet-ch2-vector-dual-to-form}
+  \lean{PetersenLib.vectorDualToForm}
+  \leanok
+  \uses{def:pet-ch2-metric-coordinate-formulas}
+  The vector field $X$ dual to $\omega=\omega_idx^i$, defined implicitly by
+  $g(X,Y)=\omega(Y)$, is $X=g^{ij}\omega_j\partial_i$: from $\theta_X=g_{ij}X^idx^j=\omega_jdx^j=\omega$
+  one gets $g_{ij}X^i=\omega_j$, and multiplying by $g^{kj}$ and using symmetry
+  of $g_{ij}$ gives $g^{kj}\omega_j=g^{kj}g_{ij}X^i=\delta^k_iX^i=X^k$.
+  \source{petersen:page-0083}
+\end{definition}
+
+\begin{remark}[gradient in coordinates]
+  \label{rem:pet-ch2-gradient-coordinate-formula}
+  \lean{PetersenLib.gradient_coordinate_formula}
+  \leanok
+  \uses{def:pet-ch2-directional-derivative,def:pet-ch2-vector-dual-to-form}
+  Applying \cref{def:pet-ch2-vector-dual-to-form} to $\omega=df=\partial_jf\,dx^j$
+  gives $\nabla f=g^{ij}\partial_jf\,\partial_i$, matching
+  \cref{def:pet-ch2-directional-derivative}.
+  \source{petersen:page-0084}
+\end{remark}
+
+\begin{definition}[Christoffel symbols of the second kind]
+  \label{def:pet-ch2-christoffel-symbols-second-kind}
+  \lean{PetersenLib.christoffelSymbolsSecondKind}
+  \leanok
+  \uses{def:pet-ch2-covariant-derivative-tensor,def:pet-ch2-metric-coordinate-formulas}
+  In local coordinates, expand
+  $\nabla_YX=Y^i\big(\partial_i(X^j)\big)\partial_j+Y^iX^j\Gamma^k_{ij}\partial_k$, where
+  $\Gamma^k_{ij}$, the \emph{Christoffel symbols of the second kind}, are
+  defined by $\nabla_{\partial_i}\partial_j=\Gamma^k_{ij}\partial_k$.
+  \source{petersen:page-0084}
+\end{definition}
+
+\begin{proposition}[$\Gamma^k_{ij}$ in terms of the metric]
+  \label{prop:pet-ch2-christoffel-formula}
+  \lean{PetersenLib.christoffelSymbols_metric_formula}
+  \leanok
+  \uses{def:pet-ch2-christoffel-symbols-second-kind,rem:pet-ch2-koszul-formula}
+  $\displaystyle\Gamma^k_{ij}=\tfrac12g^{k\ell}\big(\partial_ig_{\ell j}+\partial_jg_{\ell i}-\partial_\ell g_{ij}\big)$.
+  \source{petersen:page-0084,petersen:page-0085}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch2-christoffel-formula}
+  \leanok
+  Apply Koszul's formula (\cref{rem:pet-ch2-koszul-formula}) to
+  $X=\partial_i,Y=\partial_j,Z=\partial_\ell$, using that all Lie brackets of
+  coordinate fields vanish: the left-hand side is
+  $2g(\nabla_{\partial_j}\partial_i,\partial_\ell)=2g(\Gamma^k_{ij}\partial_k,\partial_\ell)=2\Gamma^k_{ij}g_{k\ell}$,
+  and the right-hand side reduces to
+  $\partial_ig_{j\ell}+\partial_jg_{i\ell}-\partial_\ell g_{ij}$. Multiplying by
+  $g^{\ell m}$ and summing over $\ell$,
+  \[
+    2\Gamma^m_{ij}=2\Gamma^k_{ij}g_{k\ell}g^{\ell m}=(\partial_ig_{j\ell}+\partial_jg_{i\ell}-\partial_\ell g_{ij})g^{\ell m},
+  \]
+  giving $\Gamma^m_{ij}=\tfrac12g^{\ell m}(\partial_ig_{j\ell}+\partial_jg_{i\ell}-\partial_\ell g_{ij})$, which is the
+  claimed formula after renaming indices.
+\end{proof}
+
+\begin{definition}[Christoffel symbols of the first kind]
+  \label{def:pet-ch2-christoffel-symbols-first-kind}
+  \lean{PetersenLib.christoffelSymbolsFirstKind}
+  \leanok
+  \uses{def:pet-ch2-christoffel-symbols-second-kind}
+  $\Gamma_{ij,k}:=\tfrac12(\partial_jg_{ik}+\partial_ig_{jk}-\partial_kg_{ij})=g(\nabla_{\partial_i}\partial_j,\partial_k)$;
+  classically also written $[ij,k]$, with $\Gamma^k_{ij}=\begin{Bmatrix}k\\i,j\end{Bmatrix}$.
+  \source{petersen:page-0085}
+\end{definition}
+
+\begin{remark}[Christoffel symbols are not tensorial]
+  \label{rem:pet-ch2-christoffel-non-tensorial}
+  \lean{PetersenLib.christoffelSymbols_not_tensorial}
+  \uses{def:pet-ch2-christoffel-symbols-first-kind}
+  The Christoffel symbols may vanish in one coordinate system but not
+  another, so they are not tensorial. In the plane, they vanish in Cartesian
+  coordinates but not in polar coordinates: $\Gamma_{\theta\theta,r}
+  =\tfrac12(\partial_\theta g_{\theta r}+\partial_\theta g_{\theta r}-\partial_rg_{\theta\theta})
+  =-\tfrac12\partial_r(r^2)=-r$, since $g_{\theta\theta}=r^2$ and $g_{\theta r}=0$.
+  \source{petersen:page-0085}
+\end{remark}
+
+\begin{remark}[normal coordinates and the Christoffel symbols]
+  \label{rem:pet-ch2-christoffel-normal-coordinates}
+  \lean{PetersenLib.christoffelSymbols_vanish_normalCoordinates}
+  \uses{def:pet-ch2-normal-coordinates-frame,def:pet-ch2-christoffel-symbols-second-kind}
+  In coordinates normal at $p$ (\cref{def:pet-ch2-normal-coordinates-frame}),
+  $g_{ij}|_p=\delta_{ij}$ and $\Gamma^k_{ij}|_p=0$; consequently, at $p$, the
+  covariant derivative is computed exactly as in Euclidean space:
+  $(\nabla_YX)|_p=\big(Y^i\partial_i(X^j)\big)|_p\,\partial_j|_p$.
+  \source{petersen:page-0085}
+\end{remark}
+
+\begin{proposition}[torsion-free and metric properties in coordinates]
+  \label{prop:pet-ch2-christoffel-symmetry-metric-property}
+  \lean{PetersenLib.christoffel_symmetric_metric_property}
+  \leanok
+  \uses{def:pet-ch2-christoffel-symbols-first-kind,def:pet-ch2-christoffel-symbols-second-kind}
+  Torsion-freeness (\cref{def:pet-ch2-riemannian-connection}(3)) is equivalent
+  to $\Gamma^k_{ij}=\Gamma^k_{ji}$, and the metric property
+  (\cref{def:pet-ch2-riemannian-connection}(4)) becomes
+  $\partial_kg_{ij}=\Gamma_{ki,j}+\Gamma_{kj,i}$.
+  \source{petersen:page-0086}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch2-christoffel-symmetry-metric-property}
+  \leanok
+  Since $[\partial_i,\partial_j]=0$, torsion-freeness gives
+  $\Gamma^k_{ij}\partial_k=\nabla_{\partial_i}\partial_j=\nabla_{\partial_j}\partial_i=\Gamma^k_{ji}\partial_k$,
+  i.e.\ $\Gamma^k_{ij}=\Gamma^k_{ji}$. The metric property applied to
+  $\partial_kg_{ij}=D_{\partial_k}g(\partial_i,\partial_j)$ gives
+  $\partial_kg_{ij}=g(\nabla_{\partial_k}\partial_i,\partial_j)+g(\partial_i,\nabla_{\partial_k}\partial_j)
+  =\Gamma_{ki,j}+\Gamma_{kj,i}$ by \cref{def:pet-ch2-christoffel-symbols-first-kind}.
+\end{proof}
+
+\begin{proposition}[Hessian in Christoffel-symbol coordinates]
+  \label{prop:pet-ch2-hessian-coordinate-formula}
+  \lean{PetersenLib.hessian_coordinate_formula}
+  \uses{def:pet-ch2-hessian-lie-derivative,def:pet-ch2-christoffel-symbols-second-kind}
+  $\operatorname{Hess}f(\partial_i,\partial_j)=\partial_i\partial_jf-\Gamma^k_{ij}\partial_kf$.
+  \source{petersen:page-0086,petersen:page-0087}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch2-hessian-coordinate-formula}
+  By \cref{def:pet-ch2-hessian-lie-derivative} and
+  \cref{prop:pet-ch2-lie-derivative-tensor-formula} applied to
+  $g=g_{ij}dx^idx^j$ with $X=\nabla f=g^{k\ell}(\partial_kf)\partial_\ell$,
+  \[
+    2\operatorname{Hess}f(\partial_i,\partial_j)
+    = D_{\nabla f}g_{ij}-g(L_{\nabla f}\partial_i,\partial_j)-g(\partial_i,L_{\nabla f}\partial_j).
+  \]
+  By \cref{prop:pet-ch2-lie-derivative-scaling} applied to the bracket
+  $[\nabla f,\partial_i]$, $L_{\nabla f}\partial_i=-\partial_i(g^{k\ell}\partial_kf)\partial_\ell$,
+  and $D_{\nabla f}g_{ij}=g^{k\ell}(\partial_kf)(\partial_\ell g_{ij})$. Substituting and
+  using the metric-inverse identity
+  $0=\partial_k\delta^i_j=(\partial_kg^{i\ell})g_{\ell j}+g^{i\ell}(\partial_kg_{\ell j})$
+  to rewrite $\partial_k(g^{ij})$ in terms of $\partial_kg_{ij}$, the expression
+  collapses (after collecting the resulting terms and applying
+  \cref{prop:pet-ch2-christoffel-formula}) to
+  \[
+    2\operatorname{Hess}f(\partial_i,\partial_j)
+    = 2\partial_i\partial_jf-g^{k\ell}\big(\partial_ig_{\ell j}+\partial_jg_{\ell i}-\partial_\ell g_{ij}\big)\partial_kf
+    = 2\big(\partial_i\partial_jf-\Gamma^k_{ij}\partial_kf\big),
+  \]
+  matching \cref{prop:pet-ch2-christoffel-formula}.
+\end{proof}
+
+\begin{definition}[index notation for the covariant derivative]
+  \label{def:pet-ch2-covariant-derivative-index-notation}
+  \lean{PetersenLib.covariantDerivativeIndexNotation}
+  \uses{def:pet-ch2-covariant-derivative-tensor}
+  Writing a $(1,k)$-tensor $S=S^i_{j_1\cdots j_k}E_i\otimes\sigma^{j_1}\otimes\cdots\otimes\sigma^{j_k}$
+  in a frame $E_i$ with coframe $\sigma^j$, its covariant derivative
+  $\nabla S=S^i_{j_1\cdots j_kj_{k+1}}E_i\otimes\sigma^{j_1}\otimes\cdots\otimes\sigma^{j_{k+1}}$
+  has coefficients computed by expanding
+  $\nabla_{E_{k+1}}S=D_{E_{k+1}}(S^i_{j_1\cdots j_k})E_i\otimes\sigma^{j_1}\otimes\cdots\otimes\sigma^{j_k}
+  +S^i_{j_1\cdots j_k}\nabla_{E_{k+1}}(E_i\otimes\sigma^{j_1}\otimes\cdots\otimes\sigma^{j_k})$
+  and the product rule on each factor of the frame/coframe tensor product. The
+  index-first convention $\nabla_jS:=\nabla_{E_j}S$,
+  $\nabla_jS^i_{j_1\cdots j_k}:=(\nabla S)^i_{j_1\cdots j_kj}$, avoids placing
+  the differentiation variable last.
+  \source{petersen:page-0087,petersen:page-0088}
+\end{definition}
+
+\section{Exercises}
+
+\begin{remark}[Exercise 2.5.1 — uniqueness of the Euclidean connection]
+  \label{rem:pet-ch2-ex-1}
+  \lean{PetersenLib.exercise2_5_1}
+  \leanok
+  \uses{def:pet-ch2-covariant-derivative-euclidean,def:pet-ch2-affine-connection}
+  Show that the connection on Euclidean space is the only affine connection
+  such that $\nabla X=0$ for all constant vector fields $X$.
+  \source{petersen:page-0088}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.2 — regularity needed for skew-symmetry and Jacobi]
+  \label{rem:pet-ch2-ex-2}
+  \lean{PetersenLib.exercise2_5_2}
+  Show that the skew-symmetry property $[X,Y]=-[Y,X]$ does not necessarily
+  hold for $C^1$ vector fields, and that the Jacobi identity holds for $C^2$
+  vector fields.
+  \source{petersen:page-0088}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.3 — the torsion tensor]
+  \label{rem:pet-ch2-ex-3}
+  \lean{PetersenLib.exercise2_5_3}
+  \leanok
+  \uses{def:pet-ch2-affine-connection}
+  Let $\nabla$ be an affine connection. Show that
+  $T(X,Y)=\nabla_XY-\nabla_YX-[X,Y]$ defines a $(2,1)$-tensor.
+  \source{petersen:page-0088}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.4 — extending a tangent to a field]
+  \label{rem:pet-ch2-ex-4}
+  \lean{PetersenLib.exercise2_5_4}
+  Show that if $c:I\to M$ has nonzero speed at $t_0\in I$, there is a vector
+  field $X$ with $X|_{c(t)}=\dot c(t)$ for $t$ near $t_0$.
+  \source{petersen:page-0088}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.5 — product rules for divergence, Laplacian, Hessian]
+  \label{rem:pet-ch2-ex-5}
+  \lean{PetersenLib.exercise2_5_5}
+  \uses{def:pet-ch2-divergence-lie-derivative,def:pet-ch2-laplacian,def:pet-ch2-hessian-lie-derivative}
+  For $f,h$ functions and $X$ a vector field on $(M,g)$, show
+  $\operatorname{div}(fX)=D_Xf+f\operatorname{div}X$,
+  $\Delta(fh)=h\Delta f+f\Delta h+2g(\nabla f,\nabla h)$, and
+  $\operatorname{Hess}(fh)=h\operatorname{Hess}f+f\operatorname{Hess}h+df\otimes dh+dh\otimes df$.
+  \source{petersen:page-0088}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.6 — chain rule for Laplacian and Hessian]
+  \label{rem:pet-ch2-ex-6}
+  \lean{PetersenLib.exercise2_5_6}
+  \uses{def:pet-ch2-laplacian,def:pet-ch2-hessian-lie-derivative}
+  For $f$ on $(M,g)$ and $\phi:\mathbb{R}\to\mathbb{R}$, show
+  $\Delta(\phi(f))=\dot\phi(f)\Delta f+\ddot\phi(f)|df|^2$ and
+  $\operatorname{Hess}(\phi(f))=\dot\phi(f)\operatorname{Hess}f+\ddot\phi(f)\,df^2$.
+  \source{petersen:page-0089}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.7 — $d\theta_X$ via the connection]
+  \label{rem:pet-ch2-ex-7}
+  \lean{PetersenLib.exercise2_5_7}
+  \leanok
+  \uses{def:pet-ch2-dual-one-form,def:pet-ch2-covariant-derivative-tensor}
+  For a vector field $X$ with dual $1$-form $\theta_X$, show
+  $d\theta_X(Y,Z)=g(\nabla_YX,Z)-g(Y,\nabla_ZX)$.
+  \source{petersen:page-0089}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.8 — derivatives of the inverse metric coefficients]
+  \label{rem:pet-ch2-ex-8}
+  \lean{PetersenLib.exercise2_5_8}
+  \uses{def:pet-ch2-metric-coordinate-formulas,def:pet-ch2-christoffel-symbols-second-kind}
+  Show that $\partial_kg^{ij}$ can be written in terms of $g^{i\ell}$, $g^{j\ell}$
+  and the Christoffel symbols; specifically
+  $\partial_kg^{ij}=-g^{i\ell}\Gamma^j_{k\ell}-g^{j\ell}\Gamma^i_{k\ell}$.
+  \source{petersen:page-0089}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.9 — covariant differentiation commutes with contraction and type change]
+  \label{rem:pet-ch2-ex-9}
+  \lean{PetersenLib.exercise2_5_9}
+  \uses{def:pet-ch2-covariant-derivative-tensor}
+  For a vector field $X$: (1) show $\operatorname{tr}(\nabla_XS)=\nabla_X(\operatorname{tr}S)$
+  for a $(1,1)$-tensor $S$; (2) for $T(Y,Z)=g(S(Y),Z)$, show
+  $(\nabla_XT)(Y,Z)=g((\nabla_XS)(Y),Z)$; (3) show contraction and covariant
+  differentiation commute in general; (4) show type change and covariant
+  differentiation commute.
+  \source{petersen:page-0089}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.10 — Lie differentiation commutes with contraction]
+  \label{rem:pet-ch2-ex-10}
+  \lean{PetersenLib.exercise2_5_10}
+  \uses{def:pet-ch2-lie-derivative-tensor}
+  For a vector field $X$: (1) show $\operatorname{tr}(L_XS)=L_X(\operatorname{tr}S)$
+  for a $(1,1)$-tensor $S$; (2) for $T(Y,Z)=g(S(Y),Z)$, show
+  $(L_XT)(Y,Z)=(L_Xg)(S(Y),Z)+g((L_XS)(Y),Z)$; (3) show contraction and Lie
+  differentiation commute.
+  \source{petersen:page-0089}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.11 — local gradient fields via self-adjointness]
+  \label{rem:pet-ch2-ex-11}
+  \lean{PetersenLib.exercise2_5_11}
+  \uses{def:pet-ch2-covariant-derivative-tensor}
+  Show that $X$ is locally a gradient field iff $Z\mapsto\nabla_ZX$ is
+  self-adjoint.
+  \source{petersen:page-0089}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.12 — isometries and pushforward of the connection]
+  \label{rem:pet-ch2-ex-12}
+  \lean{PetersenLib.exercise2_5_12}
+  \uses{def:pet-ch2-covariant-derivative-tensor}
+  For $F:M\to M$ a diffeomorphism, the pushforward of a vector field is
+  $(F_*X)|_p=DF(X|_{F^{-1}(p)})$. Let $F$ be an isometry on $(M,g)$: (1) show
+  $F_*(\nabla_YX)=\nabla_{F_*Y}F_*X$ for all vector fields; (2) deduce that
+  isometries of $(\mathbb{R}^n,g_{\mathrm{eu}})$ are $F(x)=Ox+b$ with $O\in O(n)$,
+  $b\in\mathbb{R}^n$, by showing $F$ maps constant vector fields to constant vector
+  fields.
+  \source{petersen:page-0089,petersen:page-0090}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.13 — affine vector fields]
+  \label{rem:pet-ch2-ex-13}
+  \lean{PetersenLib.exercise2_5_13}
+  \uses{def:pet-ch2-lie-derivative-connection,def:pet-ch2-killing-field}
+  A vector field $X$ is \emph{affine} if $L_X\nabla=0$. (1) Show Killing
+  fields are affine; (2) give an example of an affine field on $\mathbb{R}^n$ that
+  is not Killing.
+  \source{petersen:page-0090}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.14 — the left-invariant connection on a Lie group]
+  \label{rem:pet-ch2-ex-14}
+  \lean{PetersenLib.exercise2_5_14}
+  \uses{def:pet-ch2-affine-connection}
+  For a Lie group $G$, show there is a unique affine connection with
+  $\nabla X=0$ for all left-invariant vector fields $X$, and that this
+  connection is torsion free iff the Lie algebra is Abelian.
+  \source{petersen:page-0090}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.15 — chain rule for the Hessian]
+  \label{rem:pet-ch2-ex-15}
+  \lean{PetersenLib.exercise2_5_15}
+  \uses{def:pet-ch2-hessian-lie-derivative}
+  Show $\operatorname{Hess}(\phi(f))=\phi''\,df^2+\phi'\operatorname{Hess}f$.
+  \source{petersen:page-0090}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.16 — derivations are $L_X+L$]
+  \label{rem:pet-ch2-ex-16}
+  \lean{PetersenLib.exercise2_5_16}
+  \uses{def:pet-ch2-lie-derivative-tensor,def:pet-ch2-tensor-derivation,def:pet-ch2-endomorphism-derivation}
+  For a vector field $X$ and $(1,1)$-tensor $L$: (1) show $L_X+L$ is a
+  derivation on tensors; (2) show every derivation has this form with $X$
+  unique; (3) show derivations are determined by their action on functions and
+  vector fields; (4) show $L_{fX}=fL_X-X\otimes df$, where $X\otimes df$ is
+  the rank-$1$ $(1,1)$-tensor $Y\mapsto X\,df(Y)$.
+  \source{petersen:page-0090}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.17 — constant-length fields are orthogonal to their covariant derivative]
+  \label{rem:pet-ch2-ex-17}
+  \lean{PetersenLib.exercise2_5_17}
+  \leanok
+  \uses{def:pet-ch2-covariant-derivative-tensor}
+  Show that if $X$ has constant length on $(M,g)$, then $\nabla_ZX\perp X$ for
+  all $Z$.
+  \source{petersen:page-0090}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.18 — Lie and covariant derivatives agree where $T$ vanishes]
+  \label{rem:pet-ch2-ex-18}
+  \lean{PetersenLib.exercise2_5_18}
+  \uses{def:pet-ch2-lie-derivative-tensor,def:pet-ch2-covariant-derivative-tensor,def:pet-ch2-hessian-lie-derivative}
+  Show that if a tensor field $T$ on $(M,g)$ vanishes at $p$, then
+  $L_XT|_p=\nabla_XT|_p$ for any vector field $X$; conclude that the $(1,1)$
+  version of the Hessian of a function is independent of the metric at a
+  critical point, and interpret $L_XT|_p$.
+  \source{petersen:page-0090}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.19 — existence of a normal frame]
+  \label{rem:pet-ch2-ex-19}
+  \lean{PetersenLib.exercise2_5_19}
+  \uses{def:pet-ch2-normal-coordinates-frame}
+  For $p\in(M,g)$ and orthonormal $e_1,\dots,e_n\in T_pM$, show there is an
+  orthonormal frame $E_1,\dots,E_n$ near $p$ with $E_i(p)=e_i$ and
+  $(\nabla E_i)|_p=0$.
+  \source{petersen:page-0090}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.20 — existence of normal coordinates]
+  \label{rem:pet-ch2-ex-20}
+  \lean{PetersenLib.exercise2_5_20}
+  \uses{def:pet-ch2-normal-coordinates-frame}
+  Show there are coordinates $x^1,\dots,x^n$ at $p$ with $\partial_i=e_i$ and
+  $(\nabla\partial_i)|_p=0$, so $g_{ij}|_p=\delta_{ij}$ and
+  $\partial_kg_{ij}|_p=0$ — \emph{normal coordinates} at $p$.
+  \source{petersen:page-0090,petersen:page-0091}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.21 — transformation of Christoffel symbols]
+  \label{rem:pet-ch2-ex-21}
+  \lean{PetersenLib.exercise2_5_21}
+  \uses{def:pet-ch2-christoffel-symbols-second-kind,def:pet-ch2-christoffel-symbols-first-kind}
+  For coordinates $x^i,\tilde x^i$ at $p$, show the Christoffel symbols
+  transform by
+  \[
+    \tilde\Gamma^k_{ij}
+    = \frac{\partial^2x^s}{\partial\tilde x^i\partial\tilde x^j}\frac{\partial\tilde x^k}{\partial x^s}
+    + \frac{\partial x^s}{\partial\tilde x^i}\frac{\partial x^t}{\partial\tilde x^j}\frac{\partial\tilde x^k}{\partial x^\ell}\Gamma^\ell_{st},
+  \]
+  equivalently, isolating the second-partial term,
+  $\dfrac{\partial^2x^r}{\partial\tilde x^i\partial\tilde x^j}
+  = \Gamma^k_{ij}\dfrac{\partial x^r}{\partial\tilde x^k}
+  -\dfrac{\partial x^r}{\partial\tilde x^k}\dfrac{\partial x^s}{\partial\tilde x^\ell}\tilde\Gamma^k_{ij}$
+  in the appropriately contracted sense, and
+  \[
+    \tilde\Gamma_{ij,k}
+    = \frac{\partial^2x^s}{\partial\tilde x^i\partial\tilde x^j}\frac{\partial x^\ell}{\partial\tilde x^k}g_{s\ell}
+    + \frac{\partial x^s}{\partial\tilde x^i}\frac{\partial x^t}{\partial\tilde x^j}\frac{\partial x^\ell}{\partial\tilde x^k}\Gamma_{st,\ell}.
+  \]
+  \source{petersen:page-0091}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.22 — Christoffel symbols of an induced metric]
+  \label{rem:pet-ch2-ex-22}
+  \lean{PetersenLib.exercise2_5_22}
+  \uses{def:pet-ch2-metric-coordinate-formulas,def:pet-ch2-christoffel-symbols-first-kind}
+  For $M^n\subset\mathbb{R}^{n+m}$ with induced metric and parametrization
+  $u^s(x^1,\dots,x^n)$, $s=1,\dots,n+m$, show
+  $g_{ij}=\sum_su^s_iu^s_j$ and
+  $\Gamma_{ij,k}=\sum_su^s_ku^s_{ij}$, where $u^s_i=\partial u^s/\partial x^i$
+  and $u^s_{ij}=\partial^2u^s/\partial x^i\partial x^j$.
+  \source{petersen:page-0091}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.23 — volume form and Laplacian in coordinates]
+  \label{rem:pet-ch2-ex-23}
+  \lean{PetersenLib.exercise2_5_23}
+  \uses{def:pet-ch2-metric-coordinate-formulas,def:pet-ch2-laplacian}
+  On an oriented $(M,g)$: (1) if $v_1,\dots,v_n$ is positively oriented, show
+  $\mathrm{vol}(v_1,\dots,v_n)=\sqrt{\det(g(v_i,v_j))}$; (2) in positively
+  oriented coordinates, show
+  $\mathrm{vol}=\sqrt{\det(g_{ij})}\,dx^1\wedge\cdots\wedge dx^n$; (3) conclude
+  $\Delta u=\frac1{\sqrt{\det(g_{ij})}}\partial_k\big(\sqrt{\det(g_{ij})}\,g^{k\ell}\partial_\ell u\big)$,
+  which at a point with normal coordinates reduces to $\Delta f(p)=\sum_i\partial_i^2f$.
+  \source{petersen:page-0091,petersen:page-0092}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.24 — covariant derivative components of $(0,2)$- and $(1,1)$-tensors]
+  \label{rem:pet-ch2-ex-24}
+  \lean{PetersenLib.exercise2_5_24}
+  \uses{def:pet-ch2-christoffel-symbols-second-kind,def:pet-ch2-covariant-derivative-index-notation}
+  Show that a $(0,2)$-tensor $T_{ik}$ has
+  $(\nabla T)_{jk\ell}=\partial_jT_{k\ell}-\Gamma^m_{jk}T_{m\ell}-\Gamma^m_{j\ell}T_{km}$,
+  and a $(1,1)$-tensor $T^k_i$ has
+  $(\nabla T)^k_{ji}=\partial_jT^k_i-\Gamma^\ell_{ji}T^k_\ell+\Gamma^k_{j\ell}T^\ell_i$.
+  \source{petersen:page-0092}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.25 — second fundamental form for isometric immersions]
+  \label{rem:pet-ch2-ex-25}
+  \lean{PetersenLib.exercise2_5_25}
+  \uses{def:pet-ch2-covariant-derivative-tensor}
+  Let $F:(M,g_M)\hookrightarrow(\tilde M,g_{\tilde M})$ be an isometric
+  immersion. Show that the tangential component of
+  $\nabla^{\tilde M}_XY$ (for $X,Y$ tangent to $M$) is $\nabla^M_XY$, that the
+  normal component $\mathrm{I\!I}(X,Y)=\nabla^{\tilde M}_XY-\nabla^M_XY$ is
+  symmetric in $X,Y$, and conclude $\mathrm{I\!I}$ is tensorial.
+  \source{petersen:page-0092}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.26 — normal connection along an immersed submanifold]
+  \label{rem:pet-ch2-ex-26}
+  \lean{PetersenLib.exercise2_5_26}
+  \uses{def:pet-ch2-covariant-derivative-tensor}
+  With $F$ as in \cref{rem:pet-ch2-ex-25} and $T^\perp M$ the normal bundle,
+  for a normal field $V$ along $M$ and tangent field $X$: (1) show
+  $\nabla^{\tilde M}_XV$ is defined; (2) decompose it as
+  $\nabla^{\tilde M}_XV=\nabla^\perp_XV+T_XV$ into normal and tangential
+  parts, and show $g_M(T_XY,V)=-g_M(Y,T_XV)$; (3) show $\nabla^\perp_XV$ is
+  linear and a derivation in $V$, tensorial in $X$.
+  \source{petersen:page-0092,petersen:page-0093}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.27 — divergence theorem and the maximum principle]
+  \label{rem:pet-ch2-ex-27}
+  \lean{PetersenLib.exercise2_5_27}
+  \uses{def:pet-ch2-laplacian,def:pet-ch2-divergence-lie-derivative}
+  On an oriented $(M,g)$: (1) if $f$ has compact support,
+  $\int_M\Delta f\cdot\mathrm{vol}=0$; (2)
+  $\operatorname{div}(fX)=g(\nabla f,X)+f\operatorname{div}X$; (3)
+  $\Delta(f_1f_2)=(\Delta f_1)f_2+2g(\nabla f_1,\nabla f_2)+f_1\Delta f_2$; (4)
+  Green's formula
+  $\int_Mf_1\Delta f_2\,\mathrm{vol}=-\int_Mg(\nabla f_1,\nabla f_2)\,\mathrm{vol}$
+  for compactly supported $f_1$; (5) conclude the weak maximum principle: a
+  compactly supported subharmonic or superharmonic function is constant; more
+  generally a subharmonic (superharmonic) function attaining a global maximum
+  (minimum) is constant, without a compact-support hypothesis (the strong
+  maximum principle).
+  \source{petersen:page-0093}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.28 — incompressible vector fields]
+  \label{rem:pet-ch2-ex-28}
+  \lean{PetersenLib.exercise2_5_28}
+  \uses{def:pet-ch2-divergence-lie-derivative,def:pet-ch2-covariant-derivative-tensor}
+  A vector field $X$ (and its flow) is \emph{incompressible} if
+  $\operatorname{div}X=0$. (1) Show $X$ is incompressible iff its local flows
+  are volume preserving; (2) show a unit vector field $X$ on $\mathbb{R}^2$ that is
+  incompressible has $\nabla X=0$; (3) find an incompressible unit vector
+  field $X$ on $\mathbb{R}^3$ with $\nabla X\ne0$.
+  \source{petersen:page-0093}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.29 — geodesic unit fields and integrability]
+  \label{rem:pet-ch2-ex-29}
+  \lean{PetersenLib.exercise2_5_29}
+  \uses{def:pet-ch2-dual-one-form,def:pet-ch2-covariant-derivative-tensor}
+  Let $X$ be a unit vector field on $(M,g)$ with $\nabla_XX=0$. (1) Show $X$
+  is locally a gradient field iff the orthogonal distribution $X^\perp$ is
+  integrable; (2) show $X^\perp$ is integrable near $p$ if it has an integral
+  submanifold through $p$ (hint: show $L_X\theta_X=0$); (3) find such an $X$
+  on $S^3$ that is not a gradient field.
+  \source{petersen:page-0093}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.30 — parallel complementary distributions]
+  \label{rem:pet-ch2-ex-30}
+  \lean{PetersenLib.exercise2_5_30}
+  \uses{def:pet-ch2-covariant-derivative-tensor}
+  Let $E,F$ be orthogonal-complement distributions on $(M,g)$, each parallel
+  ($X,Y$ tangent to $E$ implies $\nabla_XY$ tangent to $E$, similarly for
+  $F$). (1) Show $E,F$ are integrable; (2) show every $p\in M$ has a product
+  neighborhood $U=V_E\times V_F$ with
+  $(U,g)=(V_E\times V_F,g|_{V_E}+g|_{V_F})$, the integral submanifolds through
+  $p$.
+  \source{petersen:page-0094}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.31 — parallel vector fields and product metrics]
+  \label{rem:pet-ch2-ex-31}
+  \lean{PetersenLib.exercise2_5_31}
+  \uses{def:pet-ch2-parallel-tensor,rem:pet-ch2-ex-30}
+  Let $X$ be a parallel vector field on $(M,g)$. Show $X$ has constant
+  length, that $X$ generates parallel distributions (one containing $X$, the
+  other its orthogonal complement), and conclude that locally
+  $(U,g)=(V\times I,g|_V+dt^2)$ with $V$ perpendicular to $X$.
+  \source{petersen:page-0094}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.32 — Leibniz rule for the inner product of tensors]
+  \label{rem:pet-ch2-ex-32}
+  \lean{PetersenLib.exercise2_5_32}
+  \uses{def:pet-ch2-covariant-derivative-tensor,def:pet-ch2-tensor-algebra-inner-product}
+  For tensors $S,T$ of the same type, show
+  $D_Xg(S,T)=g(\nabla_XS,T)+g(S,\nabla_XT)$.
+  \source{petersen:page-0094}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.33 — almost complex structures, Nijenhuis tensor, K\"ahler condition]
+  \label{rem:pet-ch2-ex-33}
+  \lean{PetersenLib.exercise2_5_33}
+  \uses{def:pet-ch2-tensor-derivation,def:pet-ch2-covariant-derivative-tensor,def:pet-ch2-lie-derivative-tensor}
+  An \emph{almost complex structure} is a $(1,1)$-tensor $J$ with $J^2=-I$; a
+  \emph{Hermitian structure} on $(M,g)$ is such $J$ with
+  $g(J(X),J(Y))=g(X,Y)$, and its \emph{K\"ahler form} is
+  $\omega(X,Y)=g(J(X),Y)$. (1) Show the \emph{Nijenhuis tensor}
+  $N(X,Y)=[J(X),J(Y)]-J([J(X),Y])-J([X,J(Y)])-[X,Y]$ is a tensor; (2) show
+  $N=0$ if $J$ comes from a complex structure (the converse is the
+  Newlander–Nirenberg theorem); (3) show $\omega$ is a $2$-form; (4) show
+  $d\omega=0$ if $\nabla J=0$; (5) conversely show that if $d\omega=0$ and $J$
+  is a complex structure, then $\nabla J=0$ — such $(M,g,J)$ is called
+  \emph{K\"ahler}.
+  \source{petersen:page-0094}
+\end{remark}
+
+\begin{remark}[Exercise 2.5.34 — index notation for the covariant derivative]
+  \label{rem:pet-ch2-ex-34}
+  \lean{PetersenLib.exercise2_5_34}
+  \uses{def:pet-ch2-covariant-derivative-index-notation,def:pet-ch2-divergence-lie-derivative,def:pet-ch2-covariant-derivative-adjoint}
+  Write $\nabla_iT$ for the covariant derivative in the direction of the
+  $i$th coordinate field, and $\nabla^iT=g^{ij}\nabla_jT$. (1) For a function
+  $f$, show $df=\nabla_if\,dx^i$ and $\nabla f=\nabla^if\,\partial_i$; (2) for a
+  vector field $X$, show $(\nabla_iX)^i=\operatorname{div}X$; (3) for a
+  $(0,2)$-tensor $T$, show $(\nabla^iT)_{ij}=-(\nabla^*T)_j$.
+  \source{petersen:page-0094}
+\end{remark}

@@ -1,0 +1,1447 @@
+\chapter{Sectional Curvature Comparison II}
+\label{chap:pet-sectional-curvature-comparison-ii}
+
+Faithful transcription of Petersen, \emph{Riemannian Geometry} (GTM 171, 3rd ed.),
+Chapter 12. The chapter develops the global consequences of a lower sectional
+curvature bound through the critical point theory of distance functions
+initiated by Grove and Shiohama (§12.1) and Toponogov's comparison theorem
+(§12.2), with applications to the quarter-pinched and diameter sphere theorems
+(§12.3), the Cheeger--Gromoll/Gromoll--Meyer soul theorem for open manifolds of
+nonnegative curvature (§12.4), Gromov's finiteness of Betti numbers (§12.5),
+and the Grove--Petersen homotopy finiteness theorem (§12.6), together with a
+guide to further reading (§12.7) and the chapter's exercises (§12.8). Each
+numbered statement keeps Petersen's lemma/proposition/theorem number in the
+environment title; proofs keep his explicit cross-references to earlier
+chapters so the dependency graph is recoverable from the text.
+
+\section{Critical Point Theory}
+
+The idea of triangle comparison for surfaces goes back to Alexandrov, who
+influenced Toponogov, although Pizzetti had already established local triangle
+comparison on surfaces at the start of the 20th century. In the generalized
+critical point theory of this section, the object is to define generalized
+gradients of continuous functions and use them to show that certain regions of
+a manifold carry no topology. The motivating case is the following classical
+fact about smooth proper functions.
+
+\begin{lemma}[Lem. 12.1.1 — deformation retraction along a gradient flow]
+  \label{lem:pet-ch12-smooth-deformation-retraction}
+  \lean{PetersenLib.gradientFlowDeformationRetraction}
+  Let $(M,g)$ be a Riemannian manifold and $f:M\to\mathbb{R}$ a proper smooth
+  function. If $f$ has no critical values in the closed interval $[a,b]$, then
+  $f^{-1}((-\infty,b])$ and $f^{-1}((-\infty,a])$ are diffeomorphic; more
+  precisely, there is a deformation retraction of $f^{-1}((-\infty,b])$ onto
+  $f^{-1}((-\infty,a])$, so the inclusion
+  $f^{-1}((-\infty,a])\hookrightarrow f^{-1}((-\infty,b])$ is a homotopy
+  equivalence.
+  \source{petersen:page-0457,petersen:page-0458}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch12-smooth-deformation-retraction}
+  Since $f$ has no critical points on the compact set $f^{-1}([a,b])$,
+  $\nabla f$ is nonzero there. Let $\psi:M\to[0,1]$ be a bump function equal to
+  $1$ on $f^{-1}([a,b])$ and $0$ outside a compact neighborhood of it, and set
+  \[
+    X=-\psi\cdot\frac{\nabla f}{|\nabla f|^2}.
+  \]
+  Since $X$ has compact support it is complete; let $F^t$ be its flow. For
+  fixed $q\in M$, $\tfrac{d}{dt}f(F^t(q))=g(X,\nabla f)$, which equals $-1$
+  wherever $\psi=1$, so as long as the integral curve $t\mapsto F^t(q)$ remains
+  in $f^{-1}([a,b])$, $t\mapsto f(F^t(q))$ is affine with slope $-1$.
+  Consequently $F^{b-a}:M\to M$ carries $f^{-1}((-\infty,b])$
+  diffeomorphically into $f^{-1}((-\infty,a])$, and
+  \[
+    r_t:f^{-1}((-\infty,b])\to f^{-1}((-\infty,b]),\qquad
+    r_t(p)=\begin{cases}p&f(p)\le a\\F^{t(f(p)-a)}(p)&a\le f(p)\le b\end{cases}
+  \]
+  is a well-defined homotopy with $r_0=\mathrm{id}$ and $r_1$ a retraction of
+  $f^{-1}((-\infty,b])$ onto $f^{-1}((-\infty,a])$, exhibiting the inclusion of
+  the latter into the former as a homotopy equivalence. (Properness of $f$ is
+  used essentially to make $X$ complete: deleting a single point from
+  $f^{-1}([a,b])$ leaves $f$ still without critical values there, yet the
+  conclusion visibly fails.)
+\end{proof}
+
+We generalize \cref{lem:pet-ch12-smooth-deformation-retraction} to distance
+functions, which need not be $C^1$. Suppose $(M,g)$ is complete and
+$K\subset M$ is compact; then $r(x)=|xK|=\min\{|xp|\mid p\in K\}$ is proper.
+Wherever $r$ is smooth it has unit gradient and hence is noncritical there,
+but $r$ may also have local maxima, where one still wants a notion of
+noncriticality. This is provided by the following generalized gradient.
+
+\begin{definition}[segment direction sets; regular, critical, and
+  $\alpha$-regular points]
+  \label{def:pet-ch12-alpha-regular}
+  \lean{PetersenLib.SegmentDirectionSet,PetersenLib.IsAlphaRegularAt,PetersenLib.IsRegularAt}
+  Let $(M,g)$ be complete, $K\subset M$ compact, and $r(x)=|xK|$. For
+  $x\in M$ let $\overrightarrow{xK}\subset T_xM$ denote the set of initial
+  unit velocities of unit-speed minimizing segments from $x$ to $K$ (i.e.\ of
+  length $r(x)$); when $K=\{q\}$ this is written $\overrightarrow{xq}$. If $r$
+  is smooth at $x$ then $\overrightarrow{xK}$ has a single element and
+  $-\nabla r(x)=\overrightarrow{xK}$. In general $x$ is \emph{regular}, or
+  \emph{noncritical}, for $r$ if $\overrightarrow{xK}$ lies in an open
+  hemisphere of the unit sphere of $T_xM$, equivalently there is a unit
+  $v\in T_xM$ with $\angle(v,\overrightarrow{xK})<\pi/2$ for every
+  $\overrightarrow{xK}\in\overrightarrow{xK}$ (any such $v$ is the center of
+  such a hemisphere); otherwise $x$ is a \emph{critical point} of $r$. More
+  generally, for $\alpha\in(0,\pi]$, $x$ is \emph{$\alpha$-regular} for $r$ if
+  there is a unit $v\in T_xM$ with $\angle(v,\overrightarrow{xK})<\alpha$ for
+  every $\overrightarrow{xK}\in\overrightarrow{xK}$ (so regular means
+  $\pi/2$-regular), and $R_\alpha(x,K)\subset T_xM$ is the set of all such
+  unit directions $v$ at an $\alpha$-regular point $x$.
+  \source{petersen:page-0458}
+\end{definition}
+
+It was Berger who first showed that a local maximum of $r$ must be critical
+in this sense; his result is a consequence of the following proposition.
+
+\begin{proposition}[Prop. 12.1.2 — properties of regular points]
+  \label{prop:pet-ch12-regular-point-properties}
+  \lean{PetersenLib.regularPointProperties}
+  \uses{def:pet-ch12-alpha-regular}
+  Suppose $(M,g)$ is complete, $K\subset M$ compact, $r(x)=|xK|$. Then:
+  \begin{enumerate}
+    \item $\overrightarrow{xK}$ is closed, hence compact, for every $x\in M$.
+    \item The set of $\alpha$-regular points is open in $M$.
+    \item $R_\alpha(x,K)$ is convex for every $\alpha\le\pi/2$.
+    \item If $U\subset M$ is open and every point of $U$ is $\alpha$-regular,
+      there is a unit vector field $X$ on $U$ with $X|_x\in R_\alpha(x,K)$ for
+      all $x\in U$; moreover, if $c$ is an integral curve of $X$ and $s<t$,
+      \[
+        |c(s)K|-|c(t)K|\ge\cos(\alpha)(t-s).
+      \]
+  \end{enumerate}
+  \source{petersen:page-0459,petersen:page-0460}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch12-regular-point-properties}
+  \emph{(1)} If $\overrightarrow{xK_i}\in\overrightarrow{xK}$ is a sequence of
+  initial velocities of minimizing segments from $x$ to $K$ converging to a
+  unit $v\in T_xM$, then $\exp_x(tv)$, $t\in[0,r(x)]$, is the limit of these
+  segments and hence itself a segment realizing $|xK|$; since $K$ is closed,
+  $\exp_x(r(x)v)\in K$, so $v\in\overrightarrow{xK}$. Thus
+  $\overrightarrow{xK}$ is closed, hence compact as a closed subset of the
+  unit sphere in $T_xM$.
+
+  \emph{(2)} Suppose $x_i\to x$ with each $x_i$ not $\alpha$-regular; we show
+  $x$ is not $\alpha$-regular. Fix a unit $v\in T_xM$ and choose $v_i\in
+  T_{x_i}M$ with $v_i\to v$. By hypothesis there is, for each $i$, some
+  $\overrightarrow{x_iK}\in\overrightarrow{x_iK}$ with
+  $\angle(v_i,\overrightarrow{x_iK})\ge\alpha$; passing to a subsequence these
+  converge to a unit $w\in T_xM$ with $\angle(v,w)\ge\alpha$. The segments
+  $t\mapsto\exp_{x_i}(t\,\overrightarrow{x_iK})$, $t\in[0,|x_iK|]$, then
+  converge to $\exp_x(tw)$, $t\in[0,|xK|]$, forcing the latter to be a segment
+  from $x$ to $K$, i.e.\ $w\in\overrightarrow{xK}$. As $v$ was an arbitrary
+  unit vector, no $v$ works, so $x$ is not $\alpha$-regular.
+
+  \emph{(3)} For $w\in T_xM$ the open cone
+  $C_\alpha(w)=\{v\in T_xM\mid\angle(v,w)<\alpha\}$ is convex whenever
+  $\alpha\le\pi/2$ (an elementary property of the round unit sphere). Since
+  $R_\alpha(x,K)=\bigcap_{\overrightarrow{xK}\in\overrightarrow{xK}}
+  C_\alpha(\overrightarrow{xK})$ is an intersection of such cones, it is
+  convex.
+
+  \emph{(4)} For $p\in U$ choose $v_p\in R_\alpha(p,K)$ and extend it to a
+  unit vector field $V_p$; by the proof of (2), $V_p(x)\in R_\alpha(x,K)$ for
+  $x$ near $p$, so $V_p$ is a generalized gradient direction on a neighborhood
+  $U_p$ of $p$. Choose a locally finite subcover $\{U_i\}$ of $U$ by such
+  neighborhoods with subordinate partition of unity $\{\lambda_i\}$; by
+  convexity (part (3)), $V=\sum_i\lambda_iV_i$ is nonzero on $U$ and
+  $X=V/|V|$ still satisfies $X|_x\in R_\alpha(x,K)$ for every $x\in U$.
+
+  For the length estimate it is convenient to work with $-r$. Where $r$ is
+  smooth at $c(s)=x$, $\tfrac{d}{ds}(-r\circ c)(s)=g(X,-\nabla r)
+  =\cos\angle(X,\overrightarrow{xK})>\cos\alpha$, directly from
+  $X|_x\in R_\alpha(x,K)$. In general $-r\circ c$ is Lipschitz, hence
+  absolutely continuous and almost-everywhere differentiable. At a point
+  $x=c(0)$ where $\nabla r$ may fail to exist, choose a variation
+  $\tilde c(s,t)$ with $t\mapsto\tilde c(0,t)$ a unit-speed segment from $K$
+  to $x$, $\tilde c(s,0)=\tilde c(0,0)\in K$, $|\partial_t\tilde c(s,t)|$
+  independent of $t$ (equal to the $t$-curve's length), and
+  $\tilde c(s,1)=c(s)$. With $E(\tilde c_s)=\tfrac12\int_0^1|\partial_t\tilde
+  c|^2\,dt$ the energy, Cauchy--Schwarz gives
+  \[
+    \tfrac12\big(r(c(s))\big)^2
+    \le\tfrac12\Big(\int_0^1|\partial_t\tilde c|\,dt\Big)^2
+    \le E(\tilde c_s),
+  \]
+  with equality at $s=0$, so $E(\tilde c_s)$ is a support function from above
+  for $\tfrac12(r\circ c)^2$ at $s=0$. If $r\circ c$ is differentiable at
+  $s=0$, differentiating and applying the first-variation formula for energy
+  along the geodesic $t\mapsto\tilde c(0,t)$ gives
+  \[
+    r(x)\,\tfrac{d(r\circ c)}{ds}\Big|_{s=0}=\tfrac{dE}{ds}\Big|_{s=0}
+    =g\big(\partial_t\tilde c(0,1),\partial_s\tilde c(0,1)\big)
+    =g\big(\partial_t\tilde c(0,1),X\big)
+    =-r(x)\cos\angle\big(X,\overrightarrow{xK}\big),
+  \]
+  using $\partial_t\tilde c(0,1)=-r(x)\overrightarrow{xK}$ (the reversed
+  terminal velocity of the segment from $K$ to $x$) for the last step; thus
+  \[
+    -\frac{d|c(s)K|}{ds}\Big|_{s=0}=\cos\angle\big(X,\overrightarrow{xK}\big)>\cos\alpha,
+  \]
+  the inequality holding since $X|_x\in R_\alpha(x,K)$. As this estimate holds
+  at every point of differentiability of the absolutely continuous function
+  $r\circ c$, integrating from $s$ to $t$ gives
+  $|c(s)K|-|c(t)K|\ge\cos(\alpha)(t-s)$.
+\end{proof}
+
+We can now generalize \cref{lem:pet-ch12-smooth-deformation-retraction} to
+distance functions.
+
+\begin{lemma}[Lem. 12.1.3 — Grove--Shiohama retraction lemma]
+  \label{lem:pet-ch12-retraction-lemma}
+  \lean{PetersenLib.grovShiohamaRetraction}
+  \uses{def:pet-ch12-alpha-regular,prop:pet-ch12-regular-point-properties}
+  Let $(M,g)$ be complete and $r(x)=|xK|$ the distance to a compact submanifold
+  $K\subset M$. If every point of $r^{-1}([a,b])$ is $\alpha$-regular for
+  $\alpha<\pi/2$, then $r^{-1}((-\infty,b])$ deformation retracts onto
+  $r^{-1}((-\infty,a])$.
+  \source{petersen:page-0461}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch12-retraction-lemma,prop:pet-ch12-regular-point-properties}
+  By \cref{prop:pet-ch12-regular-point-properties}(4) there is a compactly
+  supported vector field $X$ on $r^{-1}([a,b])$ whose flow $F^t$ satisfies
+  \[
+    r(p)-r(F^t(p))>t\cos(\alpha),\qquad t\ge0,\ p,F^t(p)\in r^{-1}([a,b]).
+  \]
+  For each $p\in r^{-1}(b)$ there is a first time $t_p\le(b-a)/\cos\alpha$ with
+  $F^{t_p}(p)\in r^{-1}(a)$, and $p\mapsto t_p$ is continuous. Hence
+  \[
+    r_t:r^{-1}((-\infty,b])\to r^{-1}((-\infty,b]),\qquad
+    r_t(p)=\begin{cases}p & r(p)\le a\\ F^{t\cdot t_p}(p) & a\le r(p)\le b\end{cases}
+  \]
+  is a well-defined homotopy from the identity to a retraction of
+  $r^{-1}((-\infty,b])$ onto $r^{-1}((-\infty,a])$.
+\end{proof}
+
+\begin{remark}[Rem. 12.1.4 — smooth approximation of the retraction]
+  \label{rem:pet-ch12-retraction-remark}
+  \lean{PetersenLib.grovShiohamaSmoothApproximation}
+  \uses{lem:pet-ch12-retraction-lemma}
+  The original Grove--Shiohama construction shows more: on the region where the
+  distance function has no critical points it can be approximated by smooth
+  functions without critical points, a fact that has been important elsewhere.
+  \source{petersen:page-0461}
+\end{remark}
+
+\begin{corollary}[Cor. 12.1.5 — diffeomorphism to the normal bundle]
+  \label{cor:pet-ch12-normal-bundle-diffeomorphism}
+  \lean{PetersenLib.diffeomorphicToNormalBundle}
+  \uses{lem:pet-ch12-retraction-lemma,def:pet-ch12-alpha-regular}
+  Suppose $K$ is a compact submanifold of a complete Riemannian manifold $(M,g)$
+  and $|xK|$ is regular everywhere on $M-K$. Then $M$ is diffeomorphic to the
+  normal bundle of $K$ in $M$. In particular, if $K=\{p\}$, $M$ is diffeomorphic
+  to $\mathbb{R}^n$.
+  \source{petersen:page-0461,petersen:page-0462}
+\end{corollary}
+\begin{proof}
+  \uses{cor:pet-ch12-normal-bundle-diffeomorphism}
+  On $M-K$ there is a vector field $-X$ along which $|xK|$ increases, and near
+  $K$ the distance function is smooth with $X=-x\vec K$. By the normal
+  exponential map $\exp^+:T^+K\to M$ (a diffeomorphism from a neighborhood of the
+  zero section onto a neighborhood of $K$, Cor.\ 5.5.3 of the source) and the
+  fact that $t\mapsto\exp(tv)$ coincides for small $t$ with the integral curve of
+  $-X$ starting in direction $v$, each $v\in T^+K$ determines a unique integral
+  curve $c_v:(0,\infty)\to M$ of $-X$ with $\lim_{t\to0}\dot c_v(t)=v$. Define
+  $F:T^+K\to M$ by $F(0_p)=p$ and $F(tv)=c_v(t)$ for $|v|=1$; this is
+  differentiable and agrees with $\exp^+$ for small $t$. It is injective because
+  integral curves of $-X$ cannot cross, and surjective because such integral
+  curves must leave every sublevel of the proper function $|xK|$, hence are
+  defined for all $t>0$. Finally $F$ is a diffeomorphism onto a neighborhood of
+  $K$ by the normal exponential map, and elsewhere the flow of $-X$ acts by local
+  diffeomorphisms, so $DF$ is everywhere nonsingular.
+\end{proof}
+
+\section{Distance Comparison}
+
+Preparation for the Toponogov comparison theorem: given a Riemannian manifold
+$(M,g)$, a \emph{hinge} consists of two segments $\overline{px}$, $\overline{xy}$
+meeting at an interior angle $\alpha=\angle(\overrightarrow{xp},\overrightarrow{xy})$
+at $x$, and a \emph{triangle} consists of three segments $\overline{xy}$,
+$\overline{yz}$, $\overline{zx}$ meeting pairwise at $x,y,z$; geodesics may be
+used in place of segments, allowing degenerate hinges or triangles with
+coincident vertices.
+
+\begin{definition}[hinge]
+  \label{def:pet-ch12-hinge}
+  \lean{PetersenLib.Hinge}
+  A \emph{hinge} in $(M,g)$ consists of two segments (or geodesics)
+  $\overline{px}$ and $\overline{xy}$ that form an interior angle
+  $\alpha=\angle(\overrightarrow{xp},\overrightarrow{xy})$ at the common vertex
+  $x$, where the specified directions are tangent to the given segments.
+  \source{petersen:page-0462}
+\end{definition}
+
+\begin{definition}[triangle]
+  \label{def:pet-ch12-triangle}
+  \lean{PetersenLib.GeodesicTriangle}
+  A \emph{triangle} in $(M,g)$ consists of three segments (or geodesics)
+  $\overline{xy}$, $\overline{yz}$, $\overline{zx}$ meeting pairwise at the three
+  vertices $x,y,z$.
+  \source{petersen:page-0462,petersen:page-0463}
+\end{definition}
+
+\begin{lemma}[Lem. 12.2.1 — existence of comparison hinges/triangles]
+  \label{lem:pet-ch12-comparison-hinge-triangle-exist}
+  \lean{PetersenLib.existsComparisonHingeOrTriangle}
+  \uses{def:pet-ch12-hinge,def:pet-ch12-triangle}
+  Suppose $(M,g)$ is complete with $\sec\ge k$. Then for each hinge or triangle
+  in $M$ there is a comparison hinge or triangle in the space form $S_k^n$ where
+  the corresponding segments have the same lengths and, in the hinge case, the
+  angle at the corresponding vertex is the same.
+  \source{petersen:page-0463}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch12-comparison-hinge-triangle-exist}
+  If $k>0$, $\mathrm{diam}\,M\le\pi/\sqrt k=\mathrm{diam}\,S_k^n$ (Cor.\ 6.3.2 of the
+  source), so every segment involved has length $\le\pi/\sqrt k$.
+
+  \emph{Hinge case.} Given segments $\overline{px}$, $\overline{xy}$ with interior
+  angle $\alpha$ at $x$, choose a segment $\overline{p_kx_k}$ in $S_k^n$ of length
+  $|px|$; at $x_k$ choose a direction $\overrightarrow{x_ky_k}$ with
+  $\angle(\overrightarrow{x_kp_k},\overrightarrow{x_ky_k})=\alpha$, and along the
+  unique geodesic in this direction select $y_k$ with $|x_ky_k|=|xy|$.
+
+  \emph{Triangle case.} Choose $x_k,y_k$ with $|xy|=|x_ky_k|$, and consider the
+  distance spheres $\partial B(x_k,|xz|)$ and $\partial B(y_k,|yz|)$; since all
+  triangle inequalities among $x,y,z$ hold, these spheres are nonempty and
+  intersect, and any $z_k$ in the intersection completes the comparison triangle.
+  If any of the distances equals $\pi/\sqrt k$, Cheng's diameter theorem
+  (Thm.\ 7.2.5 of the source) forces $M=S_k^n$, in which case there is nothing
+  further to prove.
+\end{proof}
+
+\begin{proposition}[Prop. 12.2.3 — law of cosines in $S_k^n$]
+  \label{prop:pet-ch12-law-of-cosines}
+  \lean{PetersenLib.lawOfCosinesSpaceForm}
+  Let a triangle in $S_k^n$ have side lengths $a,b,c$ and let $\alpha$ be the
+  angle opposite $a$. Then
+  \[
+    k=0:\ a^2=b^2+c^2-2bc\cos\alpha;\qquad
+    k=-1:\ \cosh a=\cosh b\cosh c-\sinh b\sinh c\cos\alpha;
+  \]
+  \[
+    k=1:\ \cos a=\cos b\cos c+\sin b\sin c\cos\alpha.
+  \]
+  \source{petersen:page-0464,petersen:page-0465,petersen:page-0466}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch12-law-of-cosines}
+  Let $p\in S_k^n$ and let $\sigma:[0,c]\to S_k^n$ be a unit-speed segment with
+  $\sigma(0)$ at distance $b$ from $p$. Let $f_k$ be the modified distance
+  function to $p$ (Cor.\ 4.3.4, Thm.\ 5.7.5 of the source), whose Hessian is
+  $\mathrm{Hess}\,f_k=(1-kf_k)g$ (Ex.\ 4.3.2). Put $\rho=f_k\circ\sigma$, so
+  $\dot\rho=g(\dot\sigma,\nabla f_k)$ and $\ddot\rho=1-k\rho$. Let $\alpha$ be the
+  interior angle at $\sigma(0)$ between $\sigma$ and the segment joining $p$ to
+  $\sigma(0)$, so $-\cos\alpha=g(\dot\sigma(0),\nabla r)$ where $r=|{\cdot}p|$.
+
+  \emph{Case $k=0$.} Here $\rho=\tfrac12r^2\circ\sigma$, $\ddot\rho=1$, so
+  $\rho(t)=\tfrac12b^2-b t\cos\alpha+\tfrac12t^2$. Setting $t=c$, $a=|p\sigma(c)|$
+  gives $\tfrac12a^2=\tfrac12b^2-bc\cos\alpha+\tfrac12c^2$.
+
+  \emph{Case $k=-1$.} Here $\rho=\cosh(r\circ\sigma)-1$, so
+  $\ddot\rho-\rho=1$, with $\rho(0)=\cosh b-1$, $\dot\rho(0)=-\sinh b\cos\alpha$.
+  The general solution is $\rho(t)=(\rho(0)+1)\cosh t+\dot\rho(0)\sinh t-1$;
+  setting $t=c$, $a=|p\sigma(c)|$ gives
+  $\cosh a-1=\cosh b\cosh c-\sinh b\sinh c\cos\alpha-1$.
+
+  \emph{Case $k=1$.} Here $\rho=1-\cos(r\circ\sigma)$, so $\ddot\rho+\rho=1$,
+  with $\rho(0)=1-\cos b$, $\dot\rho(0)=-\sin b\cos\alpha$. The general solution
+  is $\rho(t)=(\rho(0)-1)\cos t+\dot\rho(0)\sin t+1$; setting $t=c$,
+  $a=|p\sigma(c)|$ gives $1-\cos a=-\cos b\cos c-\sin b\sin c\cos\alpha+1$, i.e.\
+  $\cos a=\cos b\cos c+\sin b\sin c\cos\alpha$.
+\end{proof}
+
+\begin{lemma}[Lem. 12.2.4 — Hessian comparison]
+  \label{lem:pet-ch12-hessian-comparison}
+  \lean{PetersenLib.hessianComparisonSupportSense}
+  Let $(M,g)$ be complete, $p\in M$, $r(x)=|xp|$. If $\sec M\ge k$, then in the
+  support sense everywhere $\mathrm{Hess}_kr\le(1-kt)g$, where $\mathrm{Hess}_k$
+  denotes the Hessian of the modified distance function $f_k=f_k\circ r$.
+  \source{petersen:page-0466,petersen:page-0467}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch12-hessian-comparison}
+  This is Thm.\ 6.4.3 of the source when $r$ is smooth; the extension to points
+  where $r$ is not smooth follows the same support-function argument as
+  Lem.\ 7.1.9 of the source.
+\end{proof}
+
+\begin{theorem}[Thm. 12.2.2 — Toponogov comparison theorem, 1959]
+  \label{thm:pet-ch12-toponogov}
+  \lean{PetersenLib.toponogovComparisonTheorem}
+  \uses{def:pet-ch12-hinge,def:pet-ch12-triangle,lem:pet-ch12-comparison-hinge-triangle-exist}
+  Let $(M,g)$ be a complete Riemannian manifold with $\sec\ge k$.
+  \begin{itemize}
+    \item \emph{Hinge version.} For any hinge with vertices $p,x,y\in M$ forming
+      angle $\alpha$ at $x$, and any comparison hinge in $S_k^n$ with vertices
+      $p_k,x_k,y_k$ (\cref{lem:pet-ch12-comparison-hinge-triangle-exist}),
+      $|py|\le|p_ky_k|$.
+    \item \emph{Triangle version.} For any triangle in $M$, the interior angles
+      are no smaller than the corresponding interior angles of a comparison
+      triangle in $S_k^n$.
+  \end{itemize}
+  \source{petersen:page-0463,petersen:page-0464,petersen:page-0467,petersen:page-0468,petersen:page-0469,petersen:page-0470}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch12-toponogov,prop:pet-ch12-law-of-cosines,lem:pet-ch12-hessian-comparison}
+  \emph{The hinge version implies the triangle version.} By
+  \cref{prop:pet-ch12-law-of-cosines}, in $S_k^n$ increasing $|py|$ while
+  holding $|px|,|xy|$ fixed strictly increases the angle at $x$; the hinge
+  estimate applied to each pair of sides of a triangle in $M$, compared against
+  the same side lengths in $S_k^n$, then yields angle comparisons on all three
+  vertices.
+
+  \emph{Hinge version.} Fix $p\in M$ and a geodesic $c:[0,L]\to M$, and select
+  $\bar p\in S_k^n$, a segment $\bar c:[0,L]\to S_k^n$, with matching initial
+  data: if $r=|{\cdot}p|$ is smooth at $c(0)$, take $|pc(0)|\le|\bar p\bar c(0)|$
+  and $g(\nabla r,\dot c(0))\le g_k(\nabla \bar r,\dot{\bar c}(0))$; if $r$ is not
+  smooth at $c(0)$, slide $c$ down a segment joining $p$ to $c(0)$ and pass to
+  the limit, which lets one assume the strict inequality
+  $|pc(0)|<|\bar p\bar c(0)|$ throughout. The claim is $|pc(t)|\le|\bar p\bar
+  c(t)|$ for all $t\in[0,L]$.
+
+  \emph{Case $k=0$.} Put $\rho(t)=\tfrac12(r\circ c(t))^2$,
+  $\bar\rho(t)=\tfrac12(\bar r\circ\bar c(t))^2$. For small $t$ these are smooth
+  with $\rho(0)<\bar\rho(0)$, $\dot\rho(0)\le\dot{\bar\rho}(0)$, and by
+  \cref{lem:pet-ch12-hessian-comparison} (restricted to $\dot c,\dot{\bar c}$)
+  $\ddot\rho=1\ge\ddot{\bar\rho}$ in the support sense. Hence
+  $\psi=\bar\rho-\rho$ satisfies $\psi(0)>0$, $\dot\psi(0)\ge0$,
+  $\ddot\psi\ge0$ in the support sense, so $\psi$ is convex, positive and
+  increasing for small $t$, hence positive and increasing for all $t$; this
+  gives $\bar\rho\ge\rho$, i.e.\ the hinge estimate.
+
+  \emph{Case $k=-1$.} Put $\rho=\cosh(r\circ c)-1$,
+  $\bar\rho=\cosh(\bar r\circ\bar c)-1$. As before $\rho(0)<\bar\rho(0)$,
+  $\dot\rho(0)\le\dot{\bar\rho}(0)$, $\ddot\rho=\bar\rho+1$,
+  $\ddot{\bar\rho}\le\rho+1$ in the support sense, so
+  $\psi=\bar\rho-\rho$ satisfies $\psi(0)>0$, $\dot\psi(0)\ge0$,
+  $\ddot\psi\ge\psi$ in the support sense. As long as $\psi>0$ it is convex; a
+  convex function that starts positive and increasing cannot acquire a positive
+  maximum, so $\psi$ keeps increasing and stays positive for all $t$.
+
+  \emph{Case $k=1$.} Put $\rho=1-\cos(r\circ c)$,
+  $\bar\rho=1-\cos(\bar r\circ\bar c)$, so $\psi=\bar\rho-\rho$ satisfies
+  $\psi(0)>0$, $\dot\psi(0)\ge0$, $\ddot\psi\ge-\psi$ in the support sense. First
+  perturb $c$ (assuming the interior angle at $c(0)$ positive — otherwise the
+  hinge estimate is trivial) to arrange the strict inequality $\psi(0)>0$
+  strictly. Compare $\psi$ to $\zeta$ solving
+  $\ddot\zeta=-(1+\varepsilon)\zeta$, $\zeta(0)=\psi(0)>0$,
+  $\dot\zeta(0)=\dot\psi(0)$. For small $t$,
+  \[
+    \frac{d^2}{dt^2}(\psi-\zeta)\ge-\psi+(1+\varepsilon)\zeta=(\zeta-\psi)+\varepsilon\zeta>0,
+  \]
+  so $\psi\ge\zeta$ for small $t$. On the interval
+  $t<\big(\pi-\arctan(\dot\psi(0)\sqrt{1+\varepsilon}/\psi(0))\big)/\sqrt{1+\varepsilon}$
+  where $\zeta>0$, suppose the ratio $\psi/\zeta$, which starts at $1$ and
+  exceeds $1$ for small $t$, dips below $1$; it would then have a positive local
+  maximum at some $t_0$. Using support functions $\psi_\delta\le\psi$ from below
+  with $\ddot\psi_\delta\ge-\psi-\delta$, at such a maximum
+  \[
+    0\ge\frac{d^2}{dt^2}\Big(\frac{\psi_\delta}{\zeta}\Big)(t_0)
+    \ge\frac{-\psi_\delta(t_0)-\delta}{\zeta(t_0)}+\frac{\psi_\delta(t_0)}{\zeta(t_0)}(1+\varepsilon)
+    =\frac{\varepsilon\psi_\delta(t_0)-\delta}{\zeta(t_0)},
+  \]
+  using that the middle (first-derivative) term vanishes at a maximum of
+  $\psi_\delta/\zeta$ and $\zeta$ solves the comparison ODE. As $\delta\to0$
+  this becomes positive since $\psi_\delta(t_0)>0$, a contradiction. Hence
+  $\psi\ge\zeta$ throughout the interval where $\zeta>0$. Letting
+  $\varepsilon\to0$ and then $\psi(0)\to0$ (continuity) extends the estimate
+  $\psi\ge0$ to all $t\le\pi$, which is the hinge estimate for $k=1$.
+\end{proof}
+
+\begin{remark}[Rem. 12.2.5 — role of segments in the proof]
+  \label{rem:pet-ch12-toponogov-segment-remark}
+  \lean{PetersenLib.toponogovSegmentRemark}
+  \uses{thm:pet-ch12-toponogov}
+  The proof never uses that the objects being compared in $M$ are segments; it
+  only requires that the geodesics used in $S_k^n$ are segments. For $k\le0$
+  this is automatic. For $k>0$ it means the comparison geodesic must have length
+  $<\pi/\sqrt k$, the condition used in the $k=1$ case of the proof.
+  \source{petersen:page-0470}
+\end{remark}
+
+\section{Sphere Theorems}
+
+Throughout this section, after rescaling, one works with a closed Riemannian
+$n$-manifold $(M,g)$ with $\sec\ge1$. Established consequences of the preceding
+results (proved elsewhere in the source) include: $\mathrm{diam}(M,g)\le\pi$,
+with equality only for $M=S^n(1)$; if $n$ is odd, $M$ is orientable; if $n$ is
+even and $M$ orientable, $M$ is simply connected with
+$\mathrm{inj}(M)\ge\pi/\sqrt{\max\sec}$; if $M$ is simply connected and
+$\max\sec<4$, then $\mathrm{inj}(M)\ge\pi/\sqrt{\max\sec}$ and $M$ is homotopy
+equivalent to a sphere.
+
+\begin{theorem}[Thm. 12.3.1 — quarter-pinched sphere theorem, Rauch--Berger--Klingenberg]
+  \label{thm:pet-ch12-quarter-pinched-sphere}
+  \lean{PetersenLib.quarterPinchedSphereTheorem}
+  \uses{thm:pet-ch12-toponogov}
+  If $M$ is a simply connected closed Riemannian manifold with
+  $1\le\sec\le4-\delta$, then $M$ is homeomorphic to a sphere.
+  \source{petersen:page-0471}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch12-quarter-pinched-sphere,thm:pet-ch12-toponogov,def:pet-ch12-alpha-regular}
+  The pinching gives $\mathrm{inj}(M)\ge\pi/\sqrt{4-\delta}$, so large discs
+  exist around every point. Select $p,q\in M$ with $|pq|=\mathrm{diam}\,M$; then
+  $\mathrm{diam}\,M\ge\mathrm{inj}\,M>\pi/2$. We show every $x\in M$ lies in
+  $B(p,\pi/\sqrt{4-\delta})$ or $B(q,\pi/\sqrt{4-\delta})$, so $M$ is covered by
+  two discs and hence homeomorphic to a sphere.
+
+  Fix $x\in M$ and consider the triangle $p,x,q$. Suppose $|xq|>\pi/2$; we show
+  $|px|<\pi/2$. Since $q$ maximizes distance from $p$, $q$ is not a regular
+  point for the distance function to $p$, so for a segment $\overline{xq}$
+  there is a segment $\overline{pq}$ with interior angle
+  $\alpha=\angle(\overrightarrow{qx},\overrightarrow{qp})\le\pi/2$ at $q$. The
+  hinge version of \cref{thm:pet-ch12-toponogov} gives
+  \[
+    \cos|px|\ge\cos|xq|\cos|pq|+\sin|xq|\sin|pq|\cos\alpha\ge\cos|xq|\cos|pq|.
+  \]
+  Since $|xq|,|pq|>\pi/2$, the right-hand side is positive, forcing
+  $\cos|px|>0$, i.e.\ $|px|<\pi/2$. By symmetry the same argument with $p,q$
+  interchanged shows that if $|px|>\pi/2$ then $|xq|<\pi/2$, so every $x$ lies
+  in one of the two balls.
+\end{proof}
+
+\begin{theorem}[Thm. 12.3.2 — Berger 1962 and Grove--Shiohama diameter sphere theorem, 1977]
+  \label{thm:pet-ch12-diameter-sphere}
+  \lean{PetersenLib.diameterSphereTheorem}
+  \uses{thm:pet-ch12-toponogov}
+  If $(M,g)$ is closed with $\sec\ge1$ and $\mathrm{diam}>\pi/2$, then $M$ is
+  homeomorphic to a sphere.
+  \source{petersen:page-0472,petersen:page-0473}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch12-diameter-sphere,thm:pet-ch12-toponogov,def:pet-ch12-alpha-regular}
+  \emph{Berger's index proof.} Select $p,q$ with $|pq|=\mathrm{diam}\,M>\pi/2$.
+  It suffices to find a point at which all geodesic loops have length $>\pi$; we
+  claim $p$ works. If not, there is a geodesic loop $c$ at $p$ of length
+  $L(c)\le\pi$. Since $p$ maximizes distance from $q$, there is a segment
+  $\overline{qp}$ forming a hinge with $c$ of interior angle $\le\pi/2$ at $p$,
+  so by the hinge version of \cref{thm:pet-ch12-toponogov}
+  \[
+    0>\cos|pq|\ge\cos|pq|\cos L(c)+\sin|pq|\sin L(c)\cos\alpha\ge\cos|pq|\cos L(c),
+  \]
+  impossible unless $L(c)=0$. Having such a point, the conclusion follows as in
+  the proof of Thm.\ 6.5.4 of the source.
+
+  \emph{Grove--Shiohama proof.} Fix $p,q$ with $|pq|=\mathrm{diam}\,M>\pi/2$; the
+  claim is that $|xp|$ has $q$ as its only critical point. Let
+  $x\in M-\{p,q\}$ and let $\alpha$ be the interior angle at $x$ between
+  segments $\overline{xp}$, $\overline{xq}$; suppose $\alpha\le\pi/2$. The hinge
+  version gives
+  \[
+    0>\cos|pq|\ge\cos|px|\cos|xq|+\sin|px|\sin|xq|\cos\alpha\ge\cos|px|\cos|xq|,
+  \]
+  so $\cos|px|,\cos|xq|$ have opposite signs; if $\cos|px|>0$ then
+  $\cos|pq|>\cos|xq|$, so $|xq|>|pq|=\mathrm{diam}\,M$, a contradiction (and
+  symmetrically if $\cos|xq|>0$). Hence every $x\ne p,q$ has interior angle
+  $>\pi/2$ between segments to $p$ and to $q$, so $x$ is a regular point for
+  $|xp|$ unless $x=q$.
+
+  Construct a vector field $X$ equal to the gradient of $|xp|$ near $p$ and the
+  negative gradient of $|xq|$ near $q$, along which $|xp|$ increases everywhere;
+  each $x\in M-\{p,q\}$ lies on a unique integral curve $c_x(t)$ of $X$. For $x$
+  ranging over a small sphere $\partial B(p,\varepsilon)\cong S^{n-1}$, the
+  integral curve reaches $\partial B(q,\varepsilon)\cong S^{n-1}$ at a time
+  $t_x$ depending continuously (in fact smoothly) on $x$, giving a
+  diffeomorphism
+  \[
+    \partial B(p,\varepsilon)\times[0,1]\to M-(B(p,\varepsilon)\cup B(q,\varepsilon)),
+    \qquad(x,t)\mapsto c_x(t\cdot t_x).
+  \]
+  Gluing this to the two discs $B(p,\varepsilon)$, $B(q,\varepsilon)$ yields a
+  continuous bijection $M\to S^n$, exhibiting $M$ as homeomorphic to a sphere
+  (smoothness across the two boundary spheres is not guaranteed by this
+  construction).
+\end{proof}
+
+\begin{theorem}[Thm. 12.3.3 — Brendle--Schoen 2008 and Petersen--Tao 2009]
+  \label{thm:pet-ch12-cross-pinching}
+  \lean{PetersenLib.crossPinchingClassification}
+  Let $(M,g)$ be simply connected of dimension $n$. There is $\varepsilon(n)>0$
+  such that if $1\le\sec\le4+\varepsilon$, then $M$ is diffeomorphic to a sphere
+  or to one of the compact rank-one symmetric spaces (CROSS) $\mathbb{CP}^{n/2}$,
+  $\mathbb{HP}^{n/4}$, $\mathbb{OP}^2$.
+  \source{petersen:page-0474}
+\end{theorem}
+
+\begin{theorem}[Thm. 12.3.4 — Grove--Gromoll 1987 and Wilking 2001]
+  \label{thm:pet-ch12-diameter-classification}
+  \lean{PetersenLib.diameterHalfPiClassification}
+  If $(M,g)$ is closed with $\sec\ge1$ and $\mathrm{diam}\ge\pi/2$, then one of
+  the following holds:
+  \begin{enumerate}
+    \item $M$ is homeomorphic to a sphere;
+    \item $M$ is isometric to a finite quotient $S^n(1)/\Gamma$ with $\Gamma$
+      acting reducibly (an invariant subspace exists);
+    \item $M$ is isometric to $\mathbb{CP}^m$, $\mathbb{HP}^m$, or
+      $\mathbb{CP}^m/\mathbb{Z}_2$ for $m$ odd;
+    \item $M$ is isometric to $\mathbb{OP}^2$.
+  \end{enumerate}
+  \source{petersen:page-0474}
+\end{theorem}
+
+\section{The Soul Theorem}
+
+\begin{lemma}[Lem. 12.4.2 — Gromov's critical point estimate, 1981]
+  \label{lem:pet-ch12-gromov-critical-point-estimate}
+  \lean{PetersenLib.gromovCriticalPointEstimate}
+  \uses{thm:pet-ch12-toponogov,def:pet-ch12-alpha-regular}
+  If $(M,g)$ is a complete open manifold with $\sec\ge0$, then for every $p\in M$
+  the distance function $|xp|$ has no critical points outside some ball
+  $B(p,R)$. In particular $M$ has the topology of a compact manifold with
+  boundary.
+  \source{petersen:page-0475}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch12-gromov-critical-point-estimate,thm:pet-ch12-toponogov}
+  Let $x$ be critical for $|xp|$ and let $y$ satisfy
+  $\angle(\overrightarrow{px},\overrightarrow{py})\le\pi/3$. The hinge version
+  of \cref{thm:pet-ch12-toponogov} (case $k=0$) applied at $p$ gives
+  \[
+    |xy|^2\le|py|^2+|xp|^2-2|py||xp|\cos\tfrac\pi3=|py|^2+|xp|^2-|py||xp|.
+  \]
+  Since $x$ is critical for $p$, choose segments $\overline{px}$,
+  $\overline{xy}$ with angle $\le\pi/2$ at $x$; the hinge version at $x$ gives
+  \[
+    |py|^2\le|xp|^2+|xy|^2\le2|xp|^2+|py|^2-|py||xp|,
+  \]
+  which forces $|py|\le2|xp|$. There are at most a fixed number
+  $\le v(n-1,1,\pi)/v(n-1,0,\pi/6)\le6^{n-1}$ of unit vectors at $p$ pairwise
+  making angle $>\pi/3$ (disjoint balls of radius $\pi/6$ around them embed in
+  the unit sphere). Consequently there are at most $6^{n-1}$ critical points
+  $x_i$ for $|xp|$ with $|x_{i+1}p|>2|x_ip|$ along any such chain, so no critical
+  points occur outside some ball $B(p,R)$.
+\end{proof}
+
+\begin{definition}[totally convex]
+  \label{def:pet-ch12-totally-convex}
+  \lean{PetersenLib.IsTotallyConvex}
+  A subset $A\subset M$ of a Riemannian manifold is \emph{totally convex} if
+  every geodesic in $M$ joining two points of $A$ lies entirely in $A$.
+  \source{petersen:page-0476}
+\end{definition}
+
+\begin{example}[Ex. 12.4.3 — souls of the flat cylinder]
+  \label{ex:pet-ch12-totally-convex-cylinder}
+  \lean{PetersenLib.flatCylinderSouls}
+  \uses{def:pet-ch12-totally-convex}
+  On the flat cylinder $\mathbb{R}\times S^1$, every circle $\{p\}\times S^1$ is
+  a geodesic and totally convex; no point of $M$ is totally convex, and every
+  such circle is a soul.
+  \source{petersen:page-0476}
+\end{example}
+
+\begin{example}[Ex. 12.4.4 — soul of a paraboloid of revolution]
+  \label{ex:pet-ch12-totally-convex-paraboloid}
+  \lean{PetersenLib.paraboloidSoul}
+  \uses{def:pet-ch12-totally-convex}
+  Let $(M,g)$ be a smooth rotationally symmetric metric
+  $dr^2+\rho^2(r)d\theta^2$ on $\mathbb{R}^2$ with $\rho'<0$ (a paraboloid of
+  revolution). Every geodesic from the origin $r=0$ is a ray to infinity, so the
+  origin is a totally convex soul; most other points admit geodesic loops.
+  \source{petersen:page-0476}
+\end{example}
+
+\begin{lemma}[Lem. 12.4.5 — superlevel sets of concave functions]
+  \label{lem:pet-ch12-concave-superlevel-convex}
+  \lean{PetersenLib.concaveSuperlevelTotallyConvex}
+  \uses{def:pet-ch12-totally-convex}
+  If $f:(M,g)\to\mathbb{R}$ is concave, meaning $\mathrm{Hess}\,f\le0$ weakly
+  everywhere, then every superlevel set $A=\{x\in M\mid f(x)\ge a\}$ is totally
+  convex.
+  \source{petersen:page-0476}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch12-concave-superlevel-convex}
+  For a geodesic $c$ in $M$, $f\circ c$ has nonpositive weak second derivative,
+  hence is concave on $\mathbb{R}$; the minimum of a concave function on any
+  compact interval is attained at an endpoint. If both endpoints of a segment
+  in $M$ lie in $A$, i.e.\ $f\ge a$ there, this shows $f\ge a$ along the whole
+  segment, so the segment lies in $A$.
+\end{proof}
+
+\begin{lemma}[Lem. 12.4.6 — properness and concavity of the Busemann infimum]
+  \label{lem:pet-ch12-busemann-proper-concave}
+  \lean{PetersenLib.busemannInfimumProperConcave}
+  \uses{def:pet-ch12-totally-convex,lem:pet-ch12-concave-superlevel-convex}
+  Let $(M,g)$ be complete, noncompact, $\sec\ge0$, and $p\in M$. Let
+  $R_p=\{c:[0,\infty)\to M\mid c(0)=p\}$ be the set of rays from $p$, and set
+  $f=\inf_{c\in R_p}b_c$, where $b_c$ is the Busemann function of $c$. Then $f$
+  is proper and concave.
+  \source{petersen:page-0477}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch12-busemann-proper-concave,lem:pet-ch12-concave-superlevel-convex}
+  \emph{Concavity of Busemann functions.} In nonnegative Ricci curvature
+  Busemann functions are superharmonic (§7.3.2 of the source); the same
+  Hessian-estimate argument, using that $r(x)=|xy|$ satisfies
+  $\mathrm{Hess}\,r=0$ radially and $\mathrm{Hess}\,r\le r^{-1}g$ transverse to
+  the radial direction at smooth points (and hence in the support sense
+  everywhere, by the usual extension to nonsmooth points), shows that each
+  $b_c$ has nonpositive Hessian in the weak sense, i.e.\ is concave.
+
+  \emph{Concavity of $f$.} An infimum of concave functions is concave, so $f$ is
+  concave.
+
+  \emph{Properness.} Suppose some superlevel set
+  $A=\{x\in M\mid f(x)\ge a\}$ is noncompact; since larger superlevel sets are
+  contained in smaller ones we may take $a\le0$. As $f(p)=0$ (every $b_c$
+  vanishes at $p$), $p\in A$. Take $p_i\in A$ with $p_i\to\infty$; passing to a
+  subsequence, the segments $\overline{pp_i}$ converge to a ray $c\in R_p$ (the
+  standard construction of a ray as a limit of segments). By
+  \cref{lem:pet-ch12-concave-superlevel-convex}, $A$ is totally convex, so each
+  segment $\overline{pp_i}$, and hence in the limit the ray $c$, lies in the
+  closed set $A$. But then
+  \[
+    a\le f(c(t))\le b_c(c(t))=-t\to-\infty,
+  \]
+  a contradiction. Hence every superlevel set of $f$ is compact, i.e.\ $f$ is
+  proper.
+\end{proof}
+
+\begin{lemma}[Lem. 12.4.7 — interior, boundary, and the supporting hyperplane property]
+  \label{lem:pet-ch12-totally-convex-boundary-structure}
+  \lean{PetersenLib.totallyConvexBoundaryStructure}
+  \uses{def:pet-ch12-totally-convex}
+  If $A\subset(M,g)$ is closed and totally convex, then $A$ has an interior
+  $\mathrm{int}\,A$ and a boundary $\partial A=A-\mathrm{int}\,A$, where
+  $\mathrm{int}\,A$ is a totally convex submanifold of $M$ with closure $A$.
+  Moreover for each $x\in\partial A$ there is an inward vector
+  $w\in T_xM$ such that every segment $\overline{xy}$ with $y\in\mathrm{int}\,A$
+  satisfies $\angle(w,\overline{xy})<\pi/2$ (the \emph{supporting hyperplane
+  property}); in particular the distance function to a subset of
+  $\mathrm{int}\,A$ has no critical points on $\partial A$.
+  \source{petersen:page-0477,petersen:page-0478,petersen:page-0479,petersen:page-0480}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch12-totally-convex-boundary-structure}
+  Let $\varepsilon(p):M\to(0,\infty)$ be the convexity radius function of
+  Thm.\ 6.4.8 of the source, so that $r_p=|{\cdot}p|$ is smooth and strictly
+  convex on $B(p,\varepsilon(p))-\{p\}$.
+
+  \emph{Identifying $N=\mathrm{int}\,A$.} Let $k$ be the largest integer such
+  that $A$ contains a $k$-dimensional submanifold of $M$ (so $k=0$ forces $A$ to
+  be a single point, since two points of $A$ would force a segment, hence a
+  $1$-dimensional submanifold, into $A$). Let $N\subset A$ be the union of all
+  $k$-dimensional submanifolds of $M$ contained in $A$. To see $N$ is an
+  embedded $k$-manifold, fix $p\in N$ with $N_p\subset A$ a $k$-dimensional
+  embedded submanifold through $p$, and $\delta\in(0,\varepsilon(p))$,
+  $\delta<\mathrm{inj}_p$, with $B(p,\delta)\cap N_p=N_p$. If some
+  $q\in A\cap B(p,\delta)-N_p$ existed, joining every point of
+  $B(p,\delta)\cap N_p$ to $q$ by its unique segment produces, away from $q$, a
+  $(k+1)$-dimensional submanifold in $A$, contradicting maximality of $k$; hence
+  $B(p,\delta)\cap A=N_p$, showing $N$ is embedded near $p$. The same argument
+  (using a $(k-1)$-dimensional submanifold of $N$ through $p$ perpendicular to a
+  segment to $q\in A$ with $|pq|<\mathrm{inj}_p$, and coning over it towards
+  $q$) shows every such segment $\overline{pq}$ lies in $N$ except possibly at
+  $q$; hence $N$ is dense in $A$, justifying $\mathrm{int}\,A:=N$,
+  $\partial A:=A-N$.
+
+  \emph{Supporting hyperplane property.} Since $N$ is totally geodesic, its
+  tangent spaces are preserved by parallel translation along curves in $N$, so
+  for $p\in\partial A$ one obtains a well-defined $k$-plane $T_pA\subset T_pM$
+  by parallel transport from $N$ along curves ending at $p$. Define the tangent
+  cone
+  \[
+    C_pA=\{v\in T_pM\mid\exp_p(tv)\in N\text{ for some (hence all small) }t>0\}
+    \subset T_pA,
+  \]
+  which is open in $T_pA$. If $C_pA$ contained antipodal vectors $\pm v$ then
+  short segments through $p$ with both endpoints in $N$ would force $p\in N$,
+  contradiction; so $C_pA$ contains no antipodal pair.
+
+  For $p\in\partial A$ in the (dense) set of boundary points admitting
+  $q\in A$ with $|pq|=\varepsilon$ realizing $\varepsilon=\min\{|px|\mid x\in
+  A,\,x\ne p\}$ for small $\varepsilon$ so that $r_q=|{\cdot}q|$ is smooth and
+  convex near $p$: set $A'=A\cap\overline B(q,\varepsilon)$,
+  $N'=A\cap B(q,\varepsilon)\subset N$, so $p\in\partial A'$,
+  $C_pA'\subset C_pA$, $T_pA=T_pA'$. Since $r_q$ is smooth at $p$,
+  $C_p\overline B(q,\varepsilon)=\{v\in T_pM\mid\angle(v,-\nabla
+  r_q)<\pi/2\}$, so
+  $C_pA'=\{v\in T_pA\mid\angle(v,-\nabla r_q)<\pi/2\}$. If this were a strict
+  subset of $C_pA$, openness of $C_pA$ in $T_pA$ would force $C_pA$ to contain
+  antipodal vectors, contradiction; so $C_pA=C_pA'$ is exactly the open half
+  space $\{v\in T_pA\mid\angle(v,-\nabla r_q)<\pi/2\}$, giving the supporting
+  hyperplane property with $w=-\nabla r_q$ at such $p$.
+
+  For general $p\in\partial A$, approximate by $p_i\to p$ of the above type,
+  with $C_{p_i}A=\{v\in T_{p_i}A\mid\angle(v,-w_i)<\pi/2\}$; these half-spaces
+  accumulate on a half space $\{v\in T_pA\mid\angle(v,-w)<\pi/2\}$ for some
+  limit $w$, and by continuity $C_pA\subset\{v\in T_pA\mid\angle(v,-w)\le\pi/2\}$;
+  since $C_pA$ is open in $T_pA$ it is contained in the open half space, giving
+  the supporting hyperplane property at $p$ with this $w$. The stated
+  non-criticality of the distance function to a subset of $\mathrm{int}\,A$ on
+  $\partial A$ is immediate from this property, since any inward direction
+  $\overline{xy}$, $y\in\mathrm{int}\,A$, then makes angle $<\pi/2$ with the
+  supporting direction $w$, so the distance function cannot be minimized (nor
+  have vanishing gradient) at $x$.
+\end{proof}
+
+\begin{lemma}[Lem. 12.4.8 — concavity and uniqueness of distance to the boundary]
+  \label{lem:pet-ch12-distance-to-boundary-concave}
+  \lean{PetersenLib.distanceToBoundaryConcave}
+  \uses{def:pet-ch12-totally-convex,lem:pet-ch12-totally-convex-boundary-structure}
+  Let $(M,g)$ have $\sec\ge0$ and let $A\subset M$ be totally convex. The
+  function $r:A\to\mathbb{R}$, $r(x)=|x\partial A|$, is concave on $A$. When
+  $\sec>0$, any maximum of $r$ is unique.
+  \source{petersen:page-0480,petersen:page-0481}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch12-distance-to-boundary-concave,lem:pet-ch12-totally-convex-boundary-structure}
+  Fix $q\in\mathrm{int}\,A$ and $p\in\partial A$ with $|pq|=r(q)$, and a segment
+  $\overline{pq}\subset A$. In exponential coordinates at $p$ let $H$ be the
+  image of the hyperplane perpendicular to $\overline{pq}$, so $H$ is
+  perpendicular to $\overline{pq}$, has vanishing second fundamental form at
+  $p$, and $H\cap\mathrm{int}\,A=\varnothing$ (by the supporting hyperplane
+  property of \cref{lem:pet-ch12-totally-convex-boundary-structure}). Then
+  $f(x)=|xH|$ is a support function from above for $r$ along $\overline{pq}$.
+
+  Fix $p'\ne p,q$ on $\overline{pq}$, so $f$ is smooth at $p'$ (as in §5.7.3 of
+  the source, unless $p'=q$). Since $\overline{pq}$ is an integral curve of
+  $\nabla f$, evaluating the fundamental (Riccati) equation of §3.2.5 of the
+  source on a parallel field $E$ along $\overline{pq}$ tangent to $H$ at $p$
+  gives
+  \[
+    \frac{d}{dt}\mathrm{Hess}\,f(E,E)=-R(E,\nabla f,\nabla f,E)-\mathrm{Hess}^2f(E,E)\le0,
+  \]
+  and since $\mathrm{Hess}\,f(E,E)=0$ at $p$, $\mathrm{Hess}\,f(E,E)\le0$ (and
+  $<0$ if $\sec>0$) along $\overline{pq}$, so $f$ is a smooth support function
+  for $r$ on an open dense subset of $\overline{pq}$.
+
+  If $f$ is not smooth at $q$, take instead the hypersurface $H'$ perpendicular
+  to $\overline{p'q}$ at $p'$ with vanishing second fundamental form there; for
+  $p'$ close to $q$, $|{\cdot}H'|$ is smooth at $q$ with nonpositive (negative)
+  Hessian there, and $|pp'|+|{\cdot}H'|$ is a support function for $r$ at $q$:
+  the two functions agree at $q$, and for $x$ with $r(x)>|pp'|$ one finds
+  $z\in H'$ with $r(x)=r(z)+|xH'|$, so it suffices that $r(z)\le|pp'|$ for
+  $z\in H'$. Since $f$ (hence $r$) is concave near $p'$, and a segment
+  $\overline{p'z}\subset H'$ is perpendicular to $\overline{p'q}$, concavity of
+  $r$ along $\overline{p'z}$ gives $r(z)\le r(p')=|pp'|$.
+
+  Finally, for $\phi:[0,\infty)\to[0,\infty)$ concave with $\phi(0)=0$,
+  $\phi'>0$, $\phi\circ r$ is concave (strictly, if $\phi$ is strictly concave
+  and $\sec>0$); a strictly concave function has at most one maximum, by the
+  same uniqueness argument as for the center of mass (§6.2.2 of the source).
+\end{proof}
+
+\begin{theorem}[Thm. 12.4.1 — soul theorem, Gromoll--Meyer 1969 and Cheeger--Gromoll 1972]
+  \label{thm:pet-ch12-soul-theorem}
+  \lean{PetersenLib.soulTheorem}
+  \uses{lem:pet-ch12-busemann-proper-concave,lem:pet-ch12-distance-to-boundary-concave,cor:pet-ch12-normal-bundle-diffeomorphism}
+  If $(M,g)$ is a complete noncompact Riemannian manifold with $\sec\ge0$, then
+  $M$ contains a soul $S\subset M$: a closed totally convex submanifold such
+  that $M$ is diffeomorphic to the normal bundle of $S$. When $\sec>0$, the soul
+  is a point and $M$ is diffeomorphic to $\mathbb{R}^n$.
+  \source{petersen:page-0475,petersen:page-0481,petersen:page-0482}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch12-soul-theorem,lem:pet-ch12-busemann-proper-concave,lem:pet-ch12-concave-superlevel-convex,lem:pet-ch12-distance-to-boundary-concave,lem:pet-ch12-totally-convex-boundary-structure,cor:pet-ch12-normal-bundle-diffeomorphism}
+  Let $f$ be the proper concave function of
+  \cref{lem:pet-ch12-busemann-proper-concave}, and put
+  $C_1=\{x\in M\mid f(x)=\max f\}$. Since $f$ is proper and concave, $C_1$ is
+  nonempty, compact, and (as a superlevel set,
+  \cref{lem:pet-ch12-concave-superlevel-convex}) totally convex. If $\sec>0$,
+  \cref{lem:pet-ch12-distance-to-boundary-concave} applied to superlevel sets
+  $A=\{f\ge a\}$, whose boundary is $f^{-1}(a)$ and on which $f(x)=|x\partial A|$
+  up to an additive constant, shows the maximum of such a distance function is
+  unique, so $C_1$ is a single point.
+
+  If $C_1$ is a submanifold (with empty boundary as a totally convex set), stop
+  and set $S=C_1$: every point of $M$ lies on the boundary of some superlevel
+  set of $f$, so by the supporting hyperplane property of
+  \cref{lem:pet-ch12-totally-convex-boundary-structure} the distance function
+  $|xC_1|$ has no critical points on $M-C_1$.
+
+  Otherwise $C_1$ is a compact totally convex set with nonempty boundary, and by
+  \cref{lem:pet-ch12-distance-to-boundary-concave} the distance function
+  $|x\partial C_1|$ is concave on $C_1$; let
+  $C_2=\{x\in C_1\mid|x\partial C_1|=\max\}$, again nonempty, compact, totally
+  convex, with a unique point if $\sec>0$. Iterating produces
+  $C_1\supset C_2\supset\cdots$, terminating in at most $n=\dim M$ steps at a
+  submanifold (with empty boundary as a totally convex subset) $S=C_k$: indeed
+  if $\dim C_i=\dim C_{i+1}$, then $\mathrm{int}\,C_{i+1}$ is open in
+  $\mathrm{int}\,C_i$, so for $p\in\mathrm{int}\,C_{i+1}$ there is $\delta$ with
+  $B(p,\delta)\cap\mathrm{int}\,C_{i+1}=B(p,\delta)\cap\mathrm{int}\,C_i$; a
+  segment $c$ from $p$ to $\partial C_i$ has $|x\partial C_i|$ strictly
+  increasing along it near $p$, yet $c$ runs through
+  $B(p,\delta)\cap\mathrm{int}\,C_i=B(p,\delta)\cap\mathrm{int}\,C_{i+1}$ on
+  which $|x\partial C_i|$ is by construction constant (equal to its max on
+  $C_i$) near $p$, a contradiction; hence $\dim C_i>\dim C_{i+1}$ strictly at
+  each step until a step is a submanifold with empty boundary.
+
+  Set $S=C_k$. At every stage, any point outside $C_{i+1}$ lies on the boundary
+  of a superlevel set of $f$ (for $i=0$) or of $|x\partial C_i|$ ($i\ge1$), so
+  by the supporting hyperplane property
+  (\cref{lem:pet-ch12-totally-convex-boundary-structure}) the distance function
+  $|xS|$ has no critical points on $M-S$. By
+  \cref{cor:pet-ch12-normal-bundle-diffeomorphism}, $M$ is diffeomorphic to the
+  normal bundle of $S$; if $\sec>0$, $S$ is a point (by the uniqueness of
+  maxima established above at every stage) and the normal bundle of a point is
+  $\mathbb{R}^n$.
+\end{proof}
+
+\begin{theorem}[Thm. 12.4.9 — Sharafutdinov 1978 and Perel'man 1993]
+  \label{thm:pet-ch12-soul-uniqueness-submetry}
+  \lean{PetersenLib.sharafutdinovSubmetryToSoul}
+  \uses{thm:pet-ch12-soul-theorem}
+  Let $S$ be a soul of a complete Riemannian manifold with $\sec\ge0$, arising
+  from the construction of \cref{thm:pet-ch12-soul-theorem}.
+  \begin{enumerate}
+    \item (Sharafutdinov) There is a distance-nonincreasing map
+      $\mathrm{Sh}:M\to S$ with $\mathrm{Sh}|_S=\mathrm{id}$; in particular all
+      souls of $M$ are isometric to each other.
+    \item (Perel'man) $\mathrm{Sh}$ is a submetry; consequently $S$ is a point
+      whenever all sectional curvatures based at some single point of $M$ are
+      positive.
+  \end{enumerate}
+  \source{petersen:page-0482}
+\end{theorem}
+
+\section{Finiteness of Betti Numbers}
+
+\begin{lemma}[Lem. 12.5.2 — bounded corank]
+  \label{lem:pet-ch12-corank-bound}
+  \lean{PetersenLib.corankBound}
+  \uses{thm:pet-ch12-toponogov,def:pet-ch12-alpha-regular}
+  Fix a Riemannian $n$-manifold $M$ with $\sec\ge0$. The \emph{corank} of
+  $A\subset M$ is the largest $k$ such that there are balls
+  $B(p_1,r_1),\dots,B(p_k,r_k)$ with: (a) a critical point $x_i$ for $p_i$ with
+  $|p_ix_i|=10r_i$; (b) $r_i\ge3r_{i-1}$ for $i\ge2$; (c)
+  $A\subset\bigcap_iB(p_i,r_i)$. The corank of any $A\subset M$ is bounded by
+  $100^n$.
+  \source{petersen:page-0485,petersen:page-0486,petersen:page-0487}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch12-corank-bound,thm:pet-ch12-toponogov}
+  Suppose $A$ has corank $k>100^n$, witnessed by
+  $B(p_1,r_1),\dots,B(p_k,r_k)$ and critical points $x_1,\dots,x_k$. Fix
+  $z\in A$. Since $v(n-1,1,\pi)/v(n-1,1,1/12)\le(12\pi)^{n-1}\le40^n<k$, two of
+  the segments $\overline{zx_i}$, $\overline{zx_j}$ ($i<j$) form an angle
+  $<1/6$ at $z$. From $|zp_i|\le r_i$, $|zp_j|\le r_j$ and $r_j\ge3r_i$,
+  \[
+    |zx_i|\le10r_i+|zp_i|\le11r_i,\qquad|zx_j|\ge10r_j-r_j\ge9r_j>|zx_i|.
+  \]
+  The hinge version of \cref{thm:pet-ch12-toponogov} at $z$ gives
+  \[
+    |x_ix_j|^2\le|zx_j|^2+|zx_i|^2-2|zx_i||zx_j|\cos\tfrac16
+    =|zx_j|^2+|zx_i|^2-\tfrac{31}{16}|zx_i||zx_j|\le\big(|zx_j|-\tfrac34|zx_i|\big)^2,
+  \]
+  i.e.\ $|x_ix_j|\le|zx_j|-\tfrac34|zx_i|$. The triangle inequality gives
+  \[
+    |p_ix_j|\ge|zx_j|-|zp_i|\ge10r_j-|zp_j|-|zp_i|\ge8r_j\ge24r_i\ge2|p_ix_i|,
+  \]
+  hence $|x_ix_j|\ge|p_ix_j|$. Since $x_i$ is critical for $p_i$, the hinge
+  version at $x_i$ gives
+  \[
+    |p_ix_j|^2\le|p_ix_i|^2+|x_ix_j|^2\le\big(|x_ix_j|+\tfrac12|p_ix_i|\big)^2,
+  \]
+  so $|p_ix_j|\le|x_ix_j|+5r_i$, and then
+  $|zx_j|\le|p_ix_j|+|zp_i|\le|x_ix_j|+6r_i$. On the other hand
+  $|zx_i|\ge10r_i-|zp_i|\ge9r_i$, so
+  $|x_ix_j|\le|zx_j|-\tfrac34|zx_i|\le|zx_j|-\tfrac{27}4r_i$, giving
+  \[
+    |x_ix_j|+\tfrac{27}4r_i\le|zx_j|\le|x_ix_j|+6r_i,
+  \]
+  a contradiction since $27/4>6$. Hence the corank is at most $100^n$.
+\end{proof}
+
+\begin{lemma}[Lem. 12.5.3 — Mayer--Vietoris rank inequality]
+  \label{lem:pet-ch12-mayer-vietoris-rank}
+  \lean{PetersenLib.mayerVietorisRankInequality}
+  Let $B_i^j$, $i=1,\dots,m$, $j=0,\dots,n+1$, be bounded open subsets of an
+  $n$-manifold $M$ with $\overline{B_i^j}\subset B_i^{j+1}$. Then
+  \[
+    \mathrm{rank}_*\Big(\bigcup_iB_i^0\subset\bigcup_iB_i^{n+1}\Big)
+    \le\sum_{l=0}^{n}\sum_{i_0<\cdots<i_l}
+    \mathrm{rank}_*\Big(\bigcap_{s=0}^lB_{i_s}^0\subset\bigcap_{s=0}^lB_{i_s}^{n+1-l}\Big).
+  \]
+  \source{petersen:page-0488,petersen:page-0489,petersen:page-0490}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch12-mayer-vietoris-rank}
+  Form the generalized Mayer--Vietoris double complex of singular chains with
+  coefficients $\mathbb{F}$: $C_{p,q}^j=\bigoplus_{i_0<\cdots<i_q}C_p\big(\bigcap_{s=0}^qB_{i_s}^j\big)$,
+  with the usual boundary $\partial:C_{p,q}^j\to C_{p-1,q}^j$ and the
+  Mayer--Vietoris differential $\delta:C_{p,q}^j\to C_{p,q-1}^j$ induced (with
+  alternating signs) by the inclusions
+  $C_p\big(\bigcap_{s=0}^qB_{i_s}^j\big)\to C_p\big(\bigcap_{s\ne l}B_{i_s}^j\big)$;
+  these satisfy $\partial\delta=\delta\partial$, so
+  $\bar\partial:=(-1)^p\delta$ anticommutes with $\partial$, and
+  $D=\partial+\bar\partial$ is a boundary map on
+  $\bigoplus_{l=0}^kC^j_{l,k-l}$. Augment by the natural chain map
+  $\bar\partial:C^j_{p,0}\to C_p\big(\bigcup_iB_i^j\big)$, and set
+  $C_p^j=\mathrm{im}\,\bar\partial$. Any $D$-cycle $(c_{l,k-l}^j)$ gives a
+  $\bar\partial$-cycle $\bar\partial c_{k,0}^j$, since
+  $\partial\bar\partial c_{k,0}^j=-\bar\partial\partial c_{k,0}^j=\bar\partial\delta
+  c_{k-1,1}^j=0$; conversely every $\bar\partial$-cycle lifts to a $D$-cycle by
+  successively solving $\partial c_{l,k-l}^j=-\bar\partial c_{l-1,k-l+1}^j$
+  using exactness of the $\bar\partial$-columns, so $D$-homology is isomorphic
+  to $\bar\partial$-homology, i.e.\ to the ordinary singular homology of
+  $\bigcup_iB_i^j$; this correspondence represents homology classes of
+  $\bigcup_iB_i^j$ by chains supported in the pairwise intersections
+  $\bigcap_sB_{i_s}^j$.
+
+  Fix a finite-dimensional subspace $Z_k\subset\bigoplus_{l=0}^kC^0_{l,k-l}$ of
+  $D$-cycles containing no nontrivial $D$-boundary, and let
+  $Z_k^0=\bar\partial Z_k\subset C_k^0$ be the isomorphic image in
+  $\bar\partial$-cycles. We construct a filtration
+  $Z_k^0\supset Z_k^1\supset\cdots\supset Z_k^{k+1}$ together with linear maps
+  $L^l:Z_k^l\to C^0_{l,k-l}$ whose images consist of $\bar\partial$-cycles,
+  inductively: set $L^0(z)=z_{0,k}$ (trivially $\partial z_{0,k}=0$) and
+  $Z_k^1=\{z\in Z_k^0\mid f^1(z_{0,k})\in\partial C^1_{1,k}\}$, where
+  $f^l:C_*(\bigcup_iB_i^{l-1})\to C_*(\bigcup_iB_i^l)$ is induced by inclusion.
+  Given $L^l$ with $\bar\partial L^l(z)=f^l\cdots f^1(\bar\partial z_{l,k-l})$
+  and $\partial L^l(z)=0$, choose inverses
+  $\bar\partial^{-1}:\partial C^j_{p,q}\to C^j_{p,q}$ with
+  $\bar\partial\bar\partial^{-1}=\mathrm{id}$, set
+  $Z_k^{l+1}=\{z\in Z_k^l\mid f^{l+1}L^l(z)\in\partial C^{l+1}_{k+1,k-l}\}$, and
+  \[
+    L^{l+1}(z)=f^{l+1}\cdots f^1(z_{l+1,k-l-1})+\bar\partial^{-1}f^{l+1}L^l(z),
+  \]
+  which one checks (using that $(z_{l,k-l})$ is a $D$-cycle) again satisfies the
+  same two identities with $l$ replaced by $l+1$. At each step, restriction
+  $z\mapsto z_{l,k-l}$ is linear and factors through the rank of
+  $\bigcap_{i_0<\cdots<i_{k-l}}B_{i_s}^l\subset\bigcap_sB_{i_s}^{l+1}$, giving
+  \[
+    \dim(Z_k^l/Z_k^{l+1})\le\sum_{i_0<\cdots<i_{k-l}}
+    \mathrm{rank}_*\Big(\bigcap_{s=0}^{k-l}B_{i_s}^l\subset\bigcap_{s=0}^{k-l}B_{i_s}^{l+1}\Big).
+  \]
+  Finally, when $z\in Z_k^{k+1}$, $f^{k+1}L^k(z)$ is a $\partial$-boundary and
+  $\bar\partial f^{k+1}L^k(z)=f^{k+1}\cdots f^1(z)$, so
+  $f^{k+1}\cdots f^1(z)\in C_k^{k+1}$ is a $\bar\partial$-boundary. Choosing
+  $Z_k^0$ to map isomorphically onto its image in
+  $H_k\big(\bigcup_iB_i^{k+1}\big)$ (possible since $Z_k^0$ was chosen with no
+  nontrivial $D$-boundary), the rank of
+  $\mathrm{rank}_*(\bigcup_iB_i^0\subset\bigcup_iB_i^{n+1})$ in degree $k$ is
+  bounded by $\dim Z_k^0=\sum_{l=0}^k\dim(Z_k^l/Z_k^{l+1})+\dim Z_k^{k+1}$,
+  and summing over $k=0,\dots,n$ and using $\dim Z_k^{k+1}=0$ (since such classes
+  vanish in $\bigcup_iB_i^{n+1}$-homology) gives the stated bound.
+\end{proof}
+
+\begin{lemma}[Lem. 12.5.4 — content ratio bound]
+  \label{lem:pet-ch12-content-ratio-bound}
+  \lean{PetersenLib.contentRatioBound}
+  \uses{lem:pet-ch12-corank-bound,lem:pet-ch12-mayer-vietoris-rank}
+  Let $M$ be a Riemannian $n$-manifold with $\sec\ge0$, let
+  $\mathrm{cont}\,B(p,r)=\mathrm{rank}_*(B(p,r/2)\subset B(p,r))$ be the
+  \emph{content} of a ball, and let $\mathcal{C}(k)$ be the largest content of
+  any ball of corank $\ge k$ (\cref{lem:pet-ch12-corank-bound}). There is
+  $C(n)$, depending only on $n$, with $\mathcal{C}(k)\le
+  C(n)\,\mathcal{C}(k+1)$.
+  \source{petersen:page-0491,petersen:page-0492}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch12-content-ratio-bound,lem:pet-ch12-corank-bound,lem:pet-ch12-mayer-vietoris-rank}
+  Call a ball $B(p,R)$ \emph{compressible} if it contains a ball $B(x,r)$ with
+  $r\le R/2$ and $\mathrm{cont}\,B(x,r)\ge\mathrm{cont}\,B(p,R)$; otherwise
+  \emph{incompressible}. $\mathcal{C}(k)$ is realized by some incompressible
+  $B(p,R)\in\mathcal{B}(k)$. For $x\in B(p,R/4)$, $r\le R/100$, consider the
+  chain $B(x,R/10)\subset B(p,R/5)\subset B(x,R/2)\subset B(p,R)$. If $x$ had no
+  critical point in $B(x,R/2)-B(x,R/10)$, then
+  $\mathrm{rank}_*(B(x,R/10)\subset B(x,R/2))=\mathrm{rank}_*(B(p,R/5)\subset
+  B(x,R/2))\ge\mathrm{rank}_*(B(p,R/5)\subset B(p,R))$, giving
+  $\mathrm{cont}\,B(p,R)\le\mathrm{cont}\,B(x,R/2)$, contradicting
+  incompressibility. So there is a critical point $y$ for $x$ in
+  $B(x,R/2)-B(x,R/10)$; adjoining $B(x,|xy|/10)$ to the balls witnessing
+  $B(p,R)\in\mathcal{B}(k)$ shows $B(x,r)\in\mathcal{B}(k+1)$ for every such $x,r$.
+
+  Cover $B(p,R/5)$ by balls $B(p_i,10^{-n-3}R)$, $i=1,\dots,m$, with the balls
+  $B(p_i,10^{-n-3}R/2)$ pairwise disjoint, so
+  $m\le v(n,0,R)/v(n,0,10^{-n-3}R/2)=2^n\cdot10^{n(n+3)}$. Since
+  $B(p_i,R/2)\subset B(p,R)$,
+  \[
+    \mathrm{cont}\,B(p,R)\le\mathrm{rank}_*\Big(\bigcup_iB(p_i,10^{-n-3}R)\subset\bigcup_iB(p_i,R/2)\Big).
+  \]
+  Applying \cref{lem:pet-ch12-mayer-vietoris-rank} to the family
+  $B_i^j=B(p_i,10^{j-n-3}R)$, $j=0,\dots,n+1$, and using that any nonempty
+  intersection $\bigcap_{\ell=0}^sB(p_{i_\ell},10^{j-n-3}R)$ satisfies
+  $\bigcap_{\ell=0}^sB(p_{i_\ell},10^{j-n-3}R)\subset
+  B(p_{i_0},10^{j-n-2}R/2)\subset\bigcap_{\ell=0}^sB(p_{i_\ell},10^{j-n-2}R)$
+  (triangle inequality), each summand is bounded by
+  $\mathrm{cont}\,B(p_{i_0},10^{j-n-2}R/2)\le\mathcal{C}(k+1)$, since
+  $B(p_{i_0},10^{j-n-2}R/2)\in\mathcal{B}(k+1)$ by the previous paragraph. The
+  number of such intersections (indices $j\le n$, subsets of size
+  $\le2^n\cdot10^{n(n+3)}$) is bounded by a constant $C(n)$ depending only on
+  $n$, giving $\mathcal{C}(k)=\mathrm{cont}\,B(p,R)\le C(n)\mathcal{C}(k+1)$.
+\end{proof}
+
+\begin{theorem}[Thm. 12.5.1 — Gromov's finiteness theorem, 1978 and 1981]
+  \label{thm:pet-ch12-betti-number-finiteness}
+  \lean{PetersenLib.gromovFinitenessTheorem}
+  \uses{thm:pet-ch12-toponogov,lem:pet-ch12-corank-bound,lem:pet-ch12-content-ratio-bound}
+  There is $C(n)$ such that any complete $M$ with $\sec\ge0$ satisfies:
+  \begin{enumerate}
+    \item $\pi_1(M)$ can be generated by $\le C(n)$ elements;
+    \item for every field $\mathbb{F}$,
+      $\sum_{i=0}^n b_i(M,\mathbb{F})=\sum_{i=0}^n\dim H_i(M,\mathbb{F})\le C(n)$.
+  \end{enumerate}
+  \source{petersen:page-0483,petersen:page-0484,petersen:page-0492}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch12-betti-number-finiteness,thm:pet-ch12-toponogov,lem:pet-ch12-corank-bound,lem:pet-ch12-content-ratio-bound,lem:pet-ch12-gromov-critical-point-estimate}
+  \emph{Part (1).} Let $\pi_1(M)$ act by deck transformations on the universal
+  cover $\tilde M$, fix $p$, and inductively pick generators $g_1,g_2,\dots$
+  with $|pg_k(p)|\le|pg(p)|$ for all $g\in\pi_1(M)-\{g_1,\dots,g_{k-1}\}$. If
+  $k<l$ and $\angle(\overline{pg_k(p)},\overline{pg_l(p)})<\pi/3$, the hinge
+  version of \cref{thm:pet-ch12-toponogov} gives
+  \[
+    |g_l(p)g_k(p)|^2<|pg_k(p)|^2+|pg_l(p)|^2-|pg_k(p)||pg_l(p)|\le|pg_l(p)|^2,
+  \]
+  so $|p(g_l^{-1}g_k)(p)|<|pg_l(p)|$, contradicting the choice of $g_l$. Hence
+  the directions $\overline{pg_k(p)}$ pairwise make angle $\ge\pi/3$, so as in
+  \cref{lem:pet-ch12-gromov-critical-point-estimate} there are at most
+  $6^{n-1}$ of them, giving a bounded generating set.
+
+  \emph{Part (2).} By \cref{lem:pet-ch12-corank-bound} the corank of any set is
+  $\le100^n=:K$. Applying \cref{lem:pet-ch12-content-ratio-bound} repeatedly,
+  $\mathrm{cont}\,M=\mathcal{C}(0)\le\mathcal{C}(k)\cdot C(n)^k$ for $k\le K$. If
+  $\mathcal{B}(k)$ contains an incompressible ball, the proof of
+  \cref{lem:pet-ch12-content-ratio-bound} produces a ball in $\mathcal{B}(k+1)$;
+  taking $k=K$ (the largest corank actually attained in $M$), every ball in
+  $\mathcal{B}(K)$ must be compressible, hence (compressing repeatedly) have
+  minimal content $1$, so $\mathcal{C}(K)=1$. For $R$ large enough,
+  $B(p,R)$ contains all the topology of $M$, so
+  $\mathrm{cont}\,B(p,R)=\sum_ib_i(M,\mathbb{F})$, while by
+  \cref{lem:pet-ch12-gromov-critical-point-estimate} the corank of $B(p,R)$ is
+  $0$ for $R$ large. Hence
+  $\sum_ib_i(M,\mathbb{F})=\mathrm{cont}\,M=\mathcal{C}(0)\le C(n)^K$.
+\end{proof}
+
+\section{Homotopy Finiteness}
+
+\begin{lemma}[Lem. 12.6.2 — existence of a uniform regularity angle]
+  \label{lem:pet-ch12-alpha-regular-existence}
+  \lean{PetersenLib.uniformAlphaRegularityRadius}
+  \uses{thm:pet-ch12-toponogov,def:pet-ch12-alpha-regular}
+  For an integer $n>1$ and $v,D,k>0$, there are
+  $\alpha=\alpha(n,D,v,k)\in(0,\pi/2)$ and $\delta=\delta(n,D,v,k)>0$ such that
+  if $(M,g)$ is a Riemannian $n$-manifold with $\mathrm{diam}\le D$,
+  $\mathrm{vol}\ge v$, $\sec\ge-k^2$, and $p,q\in M$ satisfy $|pq|\le\delta$,
+  then $p$ is $\alpha$-regular for $q$ or $q$ is $\alpha$-regular for $p$.
+  \source{petersen:page-0493,petersen:page-0494,petersen:page-0495,petersen:page-0496}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch12-alpha-regular-existence,thm:pet-ch12-toponogov}
+  Argue by contradiction (a suggestion of Cheeger); take $k=-1$ for simplicity.
+  Suppose $p,q$ are mutually not $\alpha$-regular with $|pq|\le\delta$. Then the
+  sets $\overrightarrow{pq}\subset T_pM$, $\overrightarrow{qp}\subset T_qM$ of
+  unit directions of segments from $p$ to $q$ (resp.\ $q$ to $p$) are
+  $(\pi-\alpha)$-dense in the unit spheres. Since $t\mapsto\mathrm{vol}\,B(A,t)/v(n-1,1,t)$
+  is nonincreasing for $A\subset S^{n-1}$, for a $(\pi-\alpha)$-dense
+  $A\subset S^{n-1}$,
+  \[
+    \mathrm{vol}(S^{n-1}-B(A,\alpha))\le\mathrm{vol}\,S^{n-1}\cdot
+    \frac{v(n-1,1,\pi-\alpha)-v(n-1,1,\alpha)}{v(n-1,1,\pi-\alpha)}.
+  \]
+  Choose $\alpha<\pi/2$ so small that this bound, multiplied by
+  $\int_0^D\mathrm{sn}_k(t)^{n-1}\,dt$, equals $v/6$; then the two cones
+  $B^{S^{n-1}-B(\overrightarrow{pq},\alpha)}(p,D)$ and
+  $B^{S^{n-1}-B(\overrightarrow{qp},\alpha)}(q,D)$ (of directions avoiding the
+  respective dense sets) each have volume $\le v/6$. Choose $r>0$ with
+  $v(n,-1,r)=v/6$.
+
+  We show that for $\delta$ small,
+  \[
+    M=B(p,r)\cup B(q,r)\cup B^{S^{n-1}-B(\overrightarrow{pq},\alpha)}(p,D)
+    \cup B^{S^{n-1}-B(\overrightarrow{qp},\alpha)}(q,D),
+  \]
+  which forces $v\le\mathrm{vol}\,M\le4\cdot v/6<v$, a contradiction. If
+  $x\notin B^{S^{n-1}-B(\overrightarrow{pq},\alpha)}(p,D)$, there is a hinge
+  $\overline{xp}$, $\overline{pq}$ of angle $\le\alpha$ at $p$, so the hinge
+  version of \cref{thm:pet-ch12-toponogov} (case $k=-1$) gives
+  $\cosh|xq|\le\cosh|pq|\cosh|xp|-\sinh|pq|\sinh|xp|\cos\alpha$; if also
+  $x\notin B^{S^{n-1}-B(\overrightarrow{qp},\alpha)}(q,D)$, symmetrically
+  $\cosh|xp|\le\cosh|pq|\cosh|xq|-\sinh|pq|\sinh|xq|\cos\alpha$. If in addition
+  $|xp|,|xq|>r$, adding $\cosh|xp|$ (resp.\ $\cosh|xq|$) to both estimates and
+  using $|xp|,|xq|\le D$ gives
+  \[
+    \cosh|xq|\le\cosh|xp|+f(|pq|),\qquad\cosh|xp|\le\cosh|xq|+f(|pq|),
+  \]
+  where $f(t)=(\cosh t-1)\cosh D-\sinh t\sinh r\cos\alpha=(-\sinh
+  r\cos\alpha)\,t+O(t^2)$. Since $f(0)=0$ and $f'(0)<0$, there is
+  $\delta(D,r,\alpha)>0$ with $f(|pq|)<0$ for $|pq|\le\delta$, which makes both
+  displayed inequalities contradictory ($\cosh|xq|<\cosh|xp|$ and
+  $\cosh|xp|<\cosh|xq|$ simultaneously). Hence no such $x$ with $|xp|,|xq|>r$
+  exists outside both cones, i.e.\ the four sets cover $M$, completing the
+  contradiction and proving the lemma.
+\end{proof}
+
+\begin{corollary}[Cor. 12.6.3 — $\alpha$-regularity of the diagonal]
+  \label{cor:pet-ch12-diagonal-alpha-regular}
+  \lean{PetersenLib.diagonalAlphaRegular}
+  \uses{lem:pet-ch12-alpha-regular-existence}
+  With $\alpha,\delta$ as in \cref{lem:pet-ch12-alpha-regular-existence}, in
+  $M\times M$ with the product metric let $\Delta=\{(x,x)\mid x\in M\}$. Any
+  point within distance $\delta/\sqrt2$ of $\Delta$ is $\alpha$-regular for
+  $\Delta$.
+  \source{petersen:page-0496}
+\end{corollary}
+\begin{proof}
+  \uses{cor:pet-ch12-diagonal-alpha-regular,lem:pet-ch12-alpha-regular-existence}
+  Geodesics in $M\times M$ are pairs $(c_1,c_2)$ of geodesics in $M$; since
+  $T_{(p,p)}\Delta=\{(v,v)\}$ has normal space
+  $T^\perp_{(p,p)}\Delta=\{(v,-v)\}$, a segment $(c_1,c_2):[a,b]\to M\times M$
+  from $(p,q)$ realizing $|(p,q)\Delta|$ satisfies
+  $\dot c_1(b)=-\dot c_2(b)$, so $c_1,c_2$ join at $c_1(b)=c_2(b)$ into a
+  geodesic from $p$ to $q$ in $M$, necessarily a segment (a shorter curve from
+  $p$ to $q$ would bisect into a shorter curve from $(p,q)$ to $\Delta$). This
+  gives a bijection between segments $\overline{pq}$ in $M$ and segments from
+  $(p,q)$ to $\Delta$, with $\sqrt2\,|(p,q)\Delta|=|pq|$. Hence if
+  $|(p,q)\Delta|\le\delta/\sqrt2$ then $|pq|\le\delta$, and by
+  \cref{lem:pet-ch12-alpha-regular-existence} $p$ is $\alpha$-regular for $q$ or
+  vice versa; translating this regularity through the above bijection makes
+  $(p,q)$ $\alpha$-regular for $\Delta$.
+\end{proof}
+
+\begin{corollary}[Cor. 12.6.4 — nearby maps are homotopic]
+  \label{cor:pet-ch12-close-maps-homotopic}
+  \lean{PetersenLib.closeMapsAreHomotopic}
+  \uses{cor:pet-ch12-diagonal-alpha-regular,lem:pet-ch12-retraction-lemma}
+  With $\delta$ as in \cref{lem:pet-ch12-alpha-regular-existence}, if
+  $f_0,f_1:X\to M$ are continuous with $|f_0(x)f_1(x)|<\delta$ for all $x\in X$,
+  then $f_0,f_1$ are homotopic.
+  \source{petersen:page-0496,petersen:page-0497}
+\end{corollary}
+\begin{proof}
+  \uses{cor:pet-ch12-close-maps-homotopic,cor:pet-ch12-diagonal-alpha-regular,lem:pet-ch12-retraction-lemma}
+  By \cref{cor:pet-ch12-diagonal-alpha-regular}, every point of $M\times M$
+  within distance $\delta/\sqrt2$ of $\Delta$ is $\alpha$-regular for $\Delta$,
+  so \cref{lem:pet-ch12-retraction-lemma} (with $K=\Delta$) provides a
+  continuous deformation retraction of this neighborhood onto $\Delta$, moving
+  each point a distance $\le\big(\sqrt2/\cos\alpha\big)|(p,q)\Delta|$; write
+  $C=\sqrt2/\cos\alpha$. Translating through the bijection of
+  \cref{cor:pet-ch12-diagonal-alpha-regular} between segments to $\Delta$ and
+  segments in $M$, one obtains, for each pair $p,q\in M$ with $|pq|<\delta$, a
+  curve $t\mapsto H(p,q,t)$, $0\le t\le1$, from $p$ to $q$ of length
+  $\le C|pq|$, depending continuously on $(p,q,t)$. Given $f_0,f_1$ as
+  hypothesized, $(x,t)\mapsto H(f_0(x),f_1(x),t)$ is then a homotopy from $f_0$
+  to $f_1$.
+\end{proof}
+
+\begin{lemma}[Lem. 12.6.5 — extending nearby points to a simplex]
+  \label{lem:pet-ch12-simplex-extension}
+  \lean{PetersenLib.simplexExtensionLemma}
+  \uses{cor:pet-ch12-close-maps-homotopic}
+  With $C=\sqrt2/\cos\alpha$ and $\delta$ as above, suppose
+  $p_0,\dots,p_k\in B(p,r)\subset M$ and $2r(C^k-1)/(C-1)<\delta$. Then there is
+  a continuous map $f:\Delta^k\to B\big(p,r+2rC(C^k-1)/(C-1)\big)$ with
+  $f(e_i)=p_i$, natural with respect to restriction to faces.
+  \source{petersen:page-0497,petersen:page-0498,petersen:page-0499}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch12-simplex-extension,cor:pet-ch12-close-maps-homotopic}
+  Induct on $k$; for $k=0$ there is nothing to show. Assume the map
+  $f:\Delta^k\to B\big(p,2rC(C^k-1)/(C-1)+r\big)$ with $f(e_i)=p_i$,
+  $i=0,\dots,k$, has been constructed for $k+1$ points $p_0,\dots,p_k$, and let
+  $p_{k+1}\in B(p,r)$ be given. Define, using the map $H$ of
+  \cref{cor:pet-ch12-close-maps-homotopic} (with the roles of $f_0,f_1$ played
+  by the constant map at $p_{k+1}$ and by $f$ composed with radial projection
+  from the new vertex),
+  \[
+    \tilde f(x^0,\dots,x^{k+1})=H\Big(f\Big(\tfrac{x^0}{\sum_{i\le k}x^i},\dots,\tfrac{x^k}{\sum_{i\le k}x^i}\Big),\,p_{k+1},\,x^{k+1}\Big).
+  \]
+  This is well defined and continuous provided
+  $\big|p_{k+1}\,f(\cdots)\big|\le\big|p\,f(\cdots)\big|+|pp_{k+1}|\le
+  \big(2rC\tfrac{C^k-1}{C-1}+r\big)+r=2r\tfrac{C^{k+1}-1}{C-1}<\delta$, which
+  holds by hypothesis, so \cref{cor:pet-ch12-close-maps-homotopic} applies.
+  Moreover $|p\tilde f(\cdot)|\le|pp_{k+1}|+|p_{k+1}\tilde f(\cdot)|\le
+  r+2rC\tfrac{C^{k+1}-1}{C-1}$, completing the induction; restriction to any
+  face spanned by a subset of the vertices agrees with the map constructed
+  directly on that face, since the construction only uses the coordinates of
+  the vertices involved.
+\end{proof}
+
+\begin{lemma}[Lem. 12.6.6 — homotopy equivalence from Gromov--Hausdorff closeness]
+  \label{lem:pet-ch12-gh-close-homotopy-equivalent}
+  \lean{PetersenLib.ghCloseImpliesHomotopyEquivalent}
+  \uses{lem:pet-ch12-simplex-extension,cor:pet-ch12-close-maps-homotopic}
+  There is $\varepsilon=\varepsilon(n,k,v,D)>0$ such that if $(M,g_1)$,
+  $(N,g_2)$ are Riemannian $n$-manifolds with $\mathrm{diam}\le D$,
+  $\mathrm{vol}\ge v$, $\sec\ge-k^2$, and Gromov--Hausdorff distance
+  $d_{GH}(M,N)<\varepsilon$, then $M$ and $N$ are homotopy equivalent.
+  \source{petersen:page-0499,petersen:page-0500}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch12-gh-close-homotopy-equivalent,lem:pet-ch12-simplex-extension,cor:pet-ch12-close-maps-homotopic}
+  Realize $M,N$ as $\varepsilon$-Hausdorff-close subsets of a common metric
+  space; $\varepsilon$ will be fixed through the construction. Triangulate both
+  manifolds so every simplex lies in a ball of radius $\varepsilon$. Map the
+  vertices $\{p_i\}\subset M$ of the triangulation to $\{q_i\}\subset N$ with
+  $|p_iq_i|<\varepsilon$; a simplex $(p_{i_0},\dots,p_{i_n})$ lies in some
+  $B(x,\varepsilon)$, so $\{q_{i_0},\dots,q_{i_n}\}\subset B(q_{i_0},4\varepsilon)$.
+  If $8\varepsilon(C^n-1)/(C-1)<\delta$, \cref{lem:pet-ch12-simplex-extension}
+  defines a map $f$ on each simplex, and these agree on common faces (by
+  naturality of the construction), giving a continuous $f:M\to N$.
+
+  For $x$ in the face spanned by $(p_{i_0},\dots,p_{i_n})$,
+  \[
+    |xf(x)|\le|xp_{i_0}|+|p_{i_0}f(x)|\le2\varepsilon+\varepsilon+|q_{i_0}f(x)|
+    \le3\varepsilon+4\varepsilon+8\varepsilon C\tfrac{C^n-1}{C-1}
+    =7\varepsilon+8\varepsilon C\tfrac{C^n-1}{C-1}.
+  \]
+  Construct $g:N\to M$ symmetrically with the same bound
+  $|yg(y)|\le7\varepsilon+8\varepsilon C(C^n-1)/(C-1)$. Then
+  \[
+    |y(f\circ g)(y)|\le|yg(y)|+|g(y)(f\circ g)(y)|\le14\varepsilon+16\varepsilon
+    C\tfrac{C^n-1}{C-1},
+  \]
+  and symmetrically for $|x(g\circ f)(x)|$. As long as
+  $14\varepsilon+16\varepsilon C(C^n-1)/(C-1)<\delta$,
+  \cref{cor:pet-ch12-close-maps-homotopic} shows $f\circ g\simeq\mathrm{id}_N$
+  and $g\circ f\simeq\mathrm{id}_M$, so $f,g$ are homotopy inverses and
+  $M\simeq N$. Since $C=\sqrt2/\cos\alpha$ and $\delta$ are given explicitly by
+  \cref{lem:pet-ch12-alpha-regular-existence} in terms of $n,k,v,D$, this
+  produces an explicit $\varepsilon(n,k,v,D)$.
+\end{proof}
+
+\begin{theorem}[Thm. — Grove--Petersen homotopy finiteness theorem, 1988]
+  \label{thm:pet-ch12-homotopy-finiteness}
+  \lean{PetersenLib.groveePetersenHomotopyFiniteness}
+  \uses{lem:pet-ch12-gh-close-homotopy-equivalent}
+  For an integer $n>1$ and $v,D,k>0$, the class of Riemannian $n$-manifolds with
+  $\mathrm{diam}\le D$, $\mathrm{vol}\ge v$, $\sec\ge-k^2$ contains only finitely
+  many homotopy types.
+  \source{petersen:page-0493,petersen:page-0501}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch12-homotopy-finiteness,lem:pet-ch12-gh-close-homotopy-equivalent}
+  The class in question is precompact in the Gromov--Hausdorff distance, since
+  an upper diameter bound together with a lower sectional (hence Ricci)
+  curvature bound gives, via Gromov's compactness criterion, a uniform bound on
+  the number of $\varepsilon$-balls needed to cover any member of the class,
+  for every $\varepsilon>0$. Covering this precompact class by finitely many
+  Gromov--Hausdorff balls of radius $\varepsilon(n,k,v,D)$ as in
+  \cref{lem:pet-ch12-gh-close-homotopy-equivalent}, every two members of the
+  class lying in the same such ball are homotopy equivalent by that lemma.
+  Hence the class contains at most as many homotopy types as the (finite)
+  number of covering balls.
+\end{proof}
+
+\section{Further Study}
+
+Several texts partially cover or expand the material of this chapter: the
+surveys by Grove, by Abresch--Meyer, Colding, Greene, and Zhu, by Cheeger, and
+by Karcher. The most notable omission from this chapter is the Abresch--Gromoll
+theorem and other applications of the excess function; the surveys by Zhu and
+by Cheeger cover this material.
+
+\section{Exercises}
+
+\begin{remark}[Exercise 12.8.1]
+  \label{rem:pet-ch12-ex-12-8-1}
+  \lean{PetersenLib.exercise_12_8_1}
+  \uses{thm:pet-ch12-quarter-pinched-sphere,def:pet-ch12-alpha-regular}
+  Let $(M,g)$ be a closed simply connected positively curved manifold. Show
+  that if $M$ contains a totally geodesic closed hypersurface, then $M$ is
+  homeomorphic to a sphere. (Hint: first show the hypersurface is orientable,
+  then that the signed distance function to it has only two critical points, a
+  maximum and a minimum; this also shows it suffices to assume
+  $H^1(M,\mathbb{Z}_2)=0$.)
+  \source{petersen:page-0501}
+\end{remark}
+
+\begin{remark}[Exercise 12.8.2]
+  \label{rem:pet-ch12-ex-12-8-2}
+  \lean{PetersenLib.exercise_12_8_2}
+  \uses{thm:pet-ch12-soul-theorem}
+  Let $(M,g)$ be complete noncompact with $\sec\ge0$ and soul $S\subset M$.
+  \begin{enumerate}
+    \item If $X\in TS$ and $V\in T^\perp S$, show $\sec(X,V)=0$.
+    \item If $S$ has codimension $1$ with trivial normal bundle, show
+      $(M,g)=(S\times\mathbb{R},g_S+dr^2)$.
+    \item If $S$ has codimension $1$ with nontrivial normal bundle, show a
+      double cover splits as in (2).
+  \end{enumerate}
+  \source{petersen:page-0502}
+\end{remark}
+
+\begin{remark}[Exercise 12.8.3]
+  \label{rem:pet-ch12-ex-12-8-3}
+  \lean{PetersenLib.exercise_12_8_3}
+  \uses{thm:pet-ch12-toponogov}
+  Show that the solution of $\ddot\xi=-(1+\varepsilon)\xi$,
+  $\xi(0)=\psi(0)>0$, $\dot\xi(0)=\dot\psi(0)>0$ is
+  \[
+    \xi(t)=\sqrt{\psi(0)^2+\frac{\dot\psi(0)^2}{1+\varepsilon}}\,
+    \sin\Big(\sqrt{1+\varepsilon}\,t+\arctan\Big(\frac{\psi(0)\sqrt{1+\varepsilon}}{\dot\psi(0)}\Big)\Big).
+  \]
+  \source{petersen:page-0502}
+\end{remark}
+
+\begin{remark}[Exercise 12.8.4]
+  \label{rem:pet-ch12-ex-12-8-4}
+  \lean{PetersenLib.exercise_12_8_4}
+  \uses{thm:pet-ch12-toponogov}
+  Show that the converse of Toponogov's theorem holds: if for some $k$ the
+  conclusion of \cref{thm:pet-ch12-toponogov} holds when hinges (or triangles)
+  are compared to the same objects in $S_k^2$, then $\sec\ge k$.
+  \source{petersen:page-0502}
+\end{remark}
+
+\begin{remark}[Exercise 12.8.5]
+  \label{rem:pet-ch12-ex-12-8-5}
+  \lean{PetersenLib.exercise_12_8_5}
+  \uses{thm:pet-ch12-toponogov}
+  Let $(M,g)$ be complete. Show that if all sectional curvatures on $B(p,2R)$
+  are $\ge k$, then Toponogov's comparison theorem
+  (\cref{thm:pet-ch12-toponogov}) holds for hinges and triangles in $B(p,R)$.
+  \source{petersen:page-0502}
+\end{remark}
+
+\begin{remark}[Exercise 12.8.6]
+  \label{rem:pet-ch12-ex-12-8-6}
+  \lean{PetersenLib.exercise_12_8_6}
+  \uses{thm:pet-ch12-toponogov}
+  Let $(M,g)$ be complete with $\sec\ge k$ and $f(x)=|xq|-|xp|$, with $|xq|$,
+  $|xp|$ smooth at $x$. Show that \cref{thm:pet-ch12-toponogov} bounds
+  $|\nabla f|_x$ from below in terms of the distance from $x$ to a segment from
+  $q$ to $p$.
+  \source{petersen:page-0502}
+\end{remark}
+
+\begin{remark}[Exercise 12.8.7 — Heintze and Karcher]
+  \label{rem:pet-ch12-ex-12-8-7}
+  \lean{PetersenLib.exercise_12_8_7}
+  \uses{thm:pet-ch12-toponogov,lem:pet-ch12-alpha-regular-existence}
+  Let $c\subset(M,g)$ be a geodesic in a Riemannian $n$-manifold with
+  $\sec\ge-k^2$, and let $T(c,R)$ be the normal tube of radius $R$ around $c$
+  (points joined to $c$ by a perpendicular segment of length $\le R$). In
+  adapted tube coordinates $(r,s,\theta)$ the metric satisfies, as $r\to0$,
+  \[
+    g(r)=\begin{pmatrix}1&&\\&\ddots&\\&&0\end{pmatrix}
+    +\begin{pmatrix}0&&\\&\ddots&\\&&1\end{pmatrix}r^2+O(r^3),
+  \]
+  with the first matrix having a single $0$ in the $s$-direction entry and the
+  second a single $0$ there. Use the lower curvature bound to bound the volume
+  density on the tube from above, and conclude
+  $\mathrm{vol}\,T(c,R)\le f(n,k,R,L(c))$ for a continuous $f$ with
+  $f\to0$ as $L(c)\to0$. Use this to prove Lem.\ 11.4.9 of the source and
+  \cref{lem:pet-ch12-alpha-regular-existence}, showing Toponogov's theorem is
+  not needed for the latter.
+  \source{petersen:page-0502,petersen:page-0503}
+\end{remark}
+
+\begin{remark}[Exercise 12.8.8]
+  \label{rem:pet-ch12-ex-12-8-8}
+  \lean{PetersenLib.exercise_12_8_8}
+  \uses{thm:pet-ch12-soul-theorem}
+  Show that any vector bundle over $S^2$ admits a complete metric of
+  nonnegative sectional curvature. (Hint: $k$-dimensional bundles over $S^2$
+  are classified by $\pi_1(SO(k))$; there is one $1$-dimensional bundle, the
+  $2$-dimensional bundles are parametrized by $\mathbb{Z}$, and for $k>2$ there
+  are two $k$-dimensional bundles.)
+  \source{petersen:page-0503}
+\end{remark}
+
+\begin{remark}[Exercise 12.8.9]
+  \label{rem:pet-ch12-ex-12-8-9}
+  \lean{PetersenLib.exercise_12_8_9}
+  \uses{thm:pet-ch12-toponogov}
+  Use Toponogov's theorem (\cref{thm:pet-ch12-toponogov}) to show that the
+  Busemann function $b_r$ is convex when $\sec\ge0$.
+  \source{petersen:page-0503}
+\end{remark}

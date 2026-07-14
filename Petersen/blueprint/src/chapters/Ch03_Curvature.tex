@@ -1,0 +1,1905 @@
+\chapter{Curvature}
+\label{chap:pet-curvature}
+
+Faithful transcription of Petersen, \emph{Riemannian Geometry} (GTM 171, 3rd ed.),
+Chapter 3. Curvature is introduced as the failure of second covariant derivatives to
+commute — the connection itself already plays the role of a gradient of the metric,
+and curvature plays the role of its Laplacian/Hessian. From the curvature tensor the
+chapter extracts the curvature operator, sectional curvature, Ricci curvature, and
+scalar curvature, proves their basic symmetries (the two Bianchi identities and
+Riemann's 1854 characterization of constant curvature), and records the coordinate
+formula for curvature in terms of Christoffel symbols. The second part of the
+chapter develops the \emph{fundamental equations of Riemannian geometry}: the
+radial, tangential (Gauss), and normal (Codazzi--Mainardi) curvature equations for
+a hypersurface cut out by a function $f$, specialized to distance functions,
+Jacobi fields, and parallel fields, culminating in the qualitative theory of
+conjugate and focal points. Much of the theory carries over unchanged to the
+pseudo-Riemannian setting; only formulas involving contractions need modification.
+
+\section{Curvature}
+
+\subsection{The Curvature Tensor}
+
+\begin{definition}[curvature tensor]
+  \label{def:pet-ch3-curvature-tensor}
+  \lean{PetersenLib.curvatureTensor}
+  \leanok
+  Let $(M,g)$ be a Riemannian manifold with Riemannian connection $\nabla$. The
+  \emph{curvature tensor} is the $(1,3)$-tensor defined on vector fields $X,Y,Z$ by
+  \[
+    R(X,Y)Z=\nabla^2_{X,Y}Z-\nabla^2_{Y,X}Z
+    =\nabla_X\nabla_YZ-\nabla_Y\nabla_XZ-\nabla_{[X,Y]}Z
+    =[\nabla_X,\nabla_Y]Z-\nabla_{[X,Y]}Z.
+  \]
+  The first expression is also called the \emph{Ricci identity} and is written
+  $R_{X,Y}Z=\nabla^2_{X,Y}Z-\nabla^2_{Y,X}Z$. The same formula defines the
+  curvature of an arbitrary tensor $T$:
+  \[
+    R(X,Y)T=R_{X,Y}T=\nabla^2_{X,Y}T-\nabla^2_{Y,X}T.
+  \]
+  \source{petersen:page-0096}
+\end{definition}
+
+\begin{lemma}[tensoriality of the curvature tensor]
+  \label{lem:pet-ch3-curvature-tensor-tensorial}
+  \lean{PetersenLib.curvatureTensor_tensorial}
+  \leanok
+  \uses{def:pet-ch3-curvature-tensor}
+  $R(X,Y)Z$ is $C^\infty(M)$-linear in $Z$ (as it already is in $X,Y$, being built
+  from second covariant derivatives): for $f\in C^\infty(M)$,
+  $R(X,Y)(fZ)=fR(X,Y)Z$.
+  \source{petersen:page-0096}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch3-curvature-tensor-tensorial}
+  \leanok
+  Since both second covariant derivatives are already tensorial in $X$ and $Y$, it
+  suffices to check tensoriality in $Z$. Using the product rule for the second
+  covariant derivative,
+  \begin{align*}
+    R(X,Y)(fZ)&=\nabla^2_{X,Y}(fZ)-\nabla^2_{Y,X}(fZ)\\
+    &=f\nabla^2_{X,Y}Z-f\nabla^2_{Y,X}Z\\
+    &\quad+(\nabla^2_{X,Y}f)Z-(\nabla^2_{Y,X}f)Z\\
+    &\quad+(\nabla_Yf)\nabla_XZ+(\nabla_Xf)\nabla_YZ\\
+    &\quad-(\nabla_Xf)\nabla_YZ-(\nabla_Yf)\nabla_XZ\\
+    &=f\big(\nabla^2_{X,Y}Z-\nabla^2_{Y,X}Z\big)=fR(X,Y)Z,
+  \end{align*}
+  where the two mixed terms cancel outright and the Hessian terms cancel because
+  the Hessian of a function is symmetric, $\nabla^2_{X,Y}f=\nabla^2_{Y,X}f$.
+\end{proof}
+
+\begin{remark}[the Ricci identity as a derivation]
+  \label{rem:pet-ch3-ricci-identity-derivation}
+  \lean{PetersenLib.curvatureTensor_derivation}
+  \leanok
+  \uses{lem:pet-ch3-curvature-tensor-tensorial}
+  Because the Hessian of a function is symmetric, $R_{X,Y}$ acts trivially on
+  functions; this is the content of the Ricci identity
+  $\nabla^2_{X,Y}-\nabla^2_{Y,X}=R_{X,Y}=R(X,Y)$, where on the right $R(X,Y)$ is
+  regarded as a $(1,1)$-tensor acting on tensors as a derivation. In particular, if
+  $T$ is a $(0,k)$-tensor,
+  \[
+    (R_{X,Y}T)(X_1,\dots,X_k)=-T(R(X,Y)X_1,\dots,X_k)-\dots-T(X_1,\dots,R(X,Y)X_k).
+  \]
+  \source{petersen:page-0097}
+\end{remark}
+
+\begin{definition}[$(0,4)$-curvature tensor]
+  \label{def:pet-ch3-curvature-04-tensor}
+  \lean{PetersenLib.curvatureTensorFour}
+  \leanok
+  \uses{def:pet-ch3-curvature-tensor}
+  Using the metric $g$, the curvature tensor is changed to a $(0,4)$-tensor by
+  \[
+    R(X,Y,Z,W)=g(R(X,Y)Z,W).
+  \]
+  \source{petersen:page-0097}
+\end{definition}
+
+\begin{proposition}[Prop. 3.1.1 — symmetries of the curvature tensor]
+  \label{prop:pet-ch3-curvature-symmetries}
+  \lean{PetersenLib.curvatureTensor_symmetries}
+  \leanok
+  \uses{def:pet-ch3-curvature-04-tensor}
+  The Riemannian curvature tensor $R(X,Y,Z,W)$ satisfies:
+  \begin{enumerate}
+    \item[(1)] skew-symmetry in the first two and in the last two entries:
+    $R(X,Y,Z,W)=-R(Y,X,Z,W)=R(Y,X,W,Z)$;
+    \item[(2)] symmetry between the first two and the last two entries:
+    $R(X,Y,Z,W)=R(Z,W,X,Y)$;
+    \item[(3)] Bianchi's first identity: $R(X,Y)Z+R(Z,X)Y+R(Y,Z)X=0$;
+    \item[(4)] Bianchi's second identity:
+    $(\nabla_ZR)_{X,Y}W+(\nabla_XR)_{Y,Z}W+(\nabla_YR)_{Z,X}W=0$.
+  \end{enumerate}
+  \source{petersen:page-0097,petersen:page-0098,petersen:page-0099,petersen:page-0100}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch3-curvature-symmetries}
+  \leanok
+  \textbf{(1), first half.} Skew-symmetry $R(X,Y,Z,W)=-R(Y,X,Z,W)$ holds because
+  $R(X,Y)Z=-R(Y,X)Z$ directly from the definition of $R$.
+
+  \textbf{(1), second half.} Recall $[X,Y]$ is defined implicitly by
+  $D_XD_Yf-D_YD_Xf-D_{[X,Y]}f=0$ for functions $f$, i.e.\ $R(X,Y)f=0$. Using this
+  on $f=\tfrac12g(Z,Z)$,
+  \begin{align*}
+    0&=R_{X,Y}\tfrac12g(Z,Z)\\
+    &=\tfrac12D_XD_Yg(Z,Z)-\tfrac12D_YD_Xg(Z,Z)-\tfrac12D_{[X,Y]}g(Z,Z)\\
+    &=D_Xg(\nabla_YZ,Z)-D_Yg(\nabla_XZ,Z)-g(\nabla_{[X,Y]}Z,Z)\\
+    &=g(\nabla_X\nabla_YZ,Z)-g(\nabla_Y\nabla_XZ,Z)-g(\nabla_{[X,Y]}Z,Z)\\
+    &\quad+g(\nabla_XZ,\nabla_YZ)-g(\nabla_XZ,\nabla_YZ)\\
+    &=g\big(\nabla^2_{X,Y}Z,Z\big)-g\big(\nabla^2_{Y,X}Z,Z\big)=R(X,Y,Z,Z).
+  \end{align*}
+  Polarizing $R(X,Y,Z,Z)=0$ in $Z$ (replace $Z$ by $Z+W$):
+  \[
+    0=R(X,Y,Z+W,Z+W)=R(X,Y,Z,Z)+R(X,Y,W,W)+R(X,Y,Z,W)+R(X,Y,W,Z),
+  \]
+  so $R(X,Y,Z,W)=-R(X,Y,W,Z)$, i.e.\ $R(X,Y,Z,W)=R(Y,X,W,Z)$ using the first half.
+
+  \textbf{(3).} Recall the Lie derivative of the connection,
+  $(\mathcal L_X\nabla)_YZ=\mathcal L_X(\nabla_YZ)-\nabla_{\mathcal L_XY}Z-\nabla_Y\mathcal L_XZ$.
+  Since $\mathcal L_XY=[X,Y]$ and $\mathcal L_XZ=[X,Z]$ for vector fields, and using
+  $\nabla_XZ-\nabla_ZX=[X,Z]$ (torsion-freeness),
+  \begin{align*}
+    (\mathcal L_X\nabla)_YZ
+    &=\nabla_X\nabla_YZ-\nabla_{\nabla_XY-\nabla_YX}Z-\nabla_Y(\nabla_XZ-\nabla_ZX)\\
+    &=\nabla_X\nabla_YZ-\nabla_{\nabla_XY}Z-\nabla_Y\nabla_XZ
+      +\nabla_{\nabla_YX}Z+\nabla_Y\nabla_ZX\\
+    &=R_{X,Y}Z+\nabla^2_{Y,Z}X.
+  \end{align*}
+  The (algebraic) Jacobi identity for the Lie derivative of the Lie bracket,
+  $(\mathcal L_X\mathcal L)_YZ=(\mathcal L_X\nabla)_YZ-(\mathcal L_X\nabla)_ZY=0$
+  (this is the statement $\mathcal L_X[Y,Z]=[\mathcal L_XY,Z]+[Y,\mathcal L_XZ]$
+  rewritten via torsion-freeness), gives
+  \begin{align*}
+    0&=(\mathcal L_X\nabla)_YZ-(\mathcal L_X\nabla)_ZY\\
+    &=\big(R_{X,Y}Z+\nabla^2_{Y,Z}X\big)-\big(R_{X,Z}Y+\nabla^2_{Z,Y}X\big)\\
+    &=R_{X,Y}Z-R_{X,Z}Y+\big(\nabla^2_{Y,Z}X-\nabla^2_{Z,Y}X\big)\\
+    &=R_{X,Y}Z-R_{X,Z}Y+R_{Y,Z}X=R_{X,Y}Z+R_{Z,X}Y+R_{Y,Z}X,
+  \end{align*}
+  which is Bianchi's first identity.
+
+  \textbf{(2).} This is a direct combinatorial consequence of (1) and (3). Applying
+  (3) twice and (1) repeatedly,
+  \begin{align*}
+    R(X,Y,Z,W)&=-R(Z,X,Y,W)-R(Y,Z,X,W)\\
+    &=R(Z,X,W,Y)+R(Y,Z,W,X)\\
+    &=-R(W,Z,X,Y)-R(X,W,Z,Y)-R(W,Y,Z,X)-R(Z,W,Y,X)\\
+    &=2R(Z,W,X,Y)+R(X,W,Y,Z)+R(W,Y,X,Z)\\
+    &=2R(Z,W,X,Y)-R(Y,X,W,Z)=2R(Z,W,X,Y)-R(X,Y,Z,W),
+  \end{align*}
+  where the fourth line applies (3) to the triple $(X,W,Y)$ inside
+  $R(X,W,Z,Y)+R(W,Y,Z,X)$ together with (1), and the last two lines use (1)
+  again. Hence $2R(X,Y,Z,W)=2R(Z,W,X,Y)$.
+
+  \textbf{(4).} The covariant derivative of the $(1,3)$-tensor $R$ is given by
+  the Leibniz rule
+  \[
+    (\nabla_XR)_{Y,Z}W
+    =\nabla_X\big(R(Y,Z)W\big)-R(\nabla_XY,Z)W-R(Y,\nabla_XZ)W-R(Y,Z)\nabla_XW.
+  \]
+  Expand every curvature term in the cyclic sum
+  $(\nabla_XR)_{Y,Z}W+(\nabla_YR)_{Z,X}W+(\nabla_ZR)_{X,Y}W$ by the definition
+  $R(A,B)C=\nabla_A\nabla_BC-\nabla_B\nabla_AC-\nabla_{[A,B]}C$. Four kinds of
+  terms appear, and each kind cancels:
+  \begin{itemize}
+    \item[(i)] the twelve third-order terms $\nabla_U\nabla_V\nabla_SW$ cancel
+    in pairs across the cyclic sum: for instance
+    $+\nabla_X\nabla_Y(\nabla_ZW)$ arising from $\nabla_X\big(R(Y,Z)W\big)$
+    cancels against $-\nabla_X\nabla_Y(\nabla_ZW)$ arising from
+    $-R(X,Y)\nabla_ZW$ inside $(\nabla_ZR)_{X,Y}W$;
+    \item[(ii)] by torsion-freeness $\nabla_XY-\nabla_YX=[X,Y]$ and linearity
+    of $\nabla$ in its direction, the direction-slot corrections combine as
+    $-\nabla_{\nabla_XY}(\nabla_ZW)+\nabla_{\nabla_YX}(\nabla_ZW)
+    =-\nabla_{[X,Y]}(\nabla_ZW)$, which cancels the term
+    $+\nabla_{[X,Y]}(\nabla_ZW)$ produced by $-R(X,Y)\nabla_ZW$; cyclically for
+    the other two pairs;
+    \item[(iii)] likewise the field-slot corrections combine as
+    $\nabla_Z(\nabla_{\nabla_XY}W)-\nabla_Z(\nabla_{\nabla_YX}W)
+    =\nabla_Z(\nabla_{[X,Y]}W)$, which cancels the term
+    $-\nabla_Z(\nabla_{[X,Y]}W)$ coming from $\nabla_Z\big(R(X,Y)W\big)$;
+    cyclically for the other two pairs;
+    \item[(iv)] the remaining bracket-direction terms pair up, using
+    torsion-freeness and antisymmetry of the bracket, as
+    $\nabla_{[\nabla_XY,Z]}W+\nabla_{[Z,\nabla_YX]}W
+    =\nabla_{[\nabla_XY-\nabla_YX,\,Z]}W=\nabla_{[[X,Y],Z]}W$ and cyclically,
+    so their total is
+    $\nabla_{[[X,Y],Z]+[[Y,Z],X]+[[Z,X],Y]}W=0$ by the Jacobi identity.
+  \end{itemize}
+  Hence the cyclic sum vanishes, which is Bianchi's second identity.
+\end{proof}
+
+\begin{example}[Example 3.1.2 — Euclidean space is flat]
+  \label{ex:pet-ch3-euclidean-flat}
+  \lean{PetersenLib.euclideanSpace_curvature_eq_zero}
+  \leanok
+  \uses{def:pet-ch3-curvature-tensor}
+  $(\mathbb R^n,g_{\mathrm{eu}})$ has $R\equiv0$, since $\nabla_i\partial_j=0$ for the
+  standard Cartesian coordinate vector fields.
+  \source{petersen:page-0100}
+\end{example}
+
+\subsection{The Curvature Operator}
+
+\begin{definition}[inner product on bivectors]
+  \label{def:pet-ch3-bivector-inner-product}
+  \lean{PetersenLib.bivectorInnerProduct}
+  \leanok
+  On the space $\Lambda^2T_pM$ of bivectors, with $e_1,\dots,e_n$ an orthonormal
+  basis of $T_pM$, the inner product making $\{e_i\wedge e_j\}_{i<j}$ an
+  orthonormal basis is denoted $g$ as well, and satisfies
+  \[
+    g(x\wedge y,v\wedge w)=g(x,v)g(y,w)-g(x,w)g(y,v)
+    =\det\begin{pmatrix}g(x,v)&g(x,w)\\g(y,v)&g(y,w)\end{pmatrix}.
+  \]
+  \source{petersen:page-0100}
+\end{definition}
+
+\begin{definition}[bivectors as skew-symmetric maps]
+  \label{def:pet-ch3-bivector-skew-map}
+  \lean{PetersenLib.bivectorSkewMap}
+  \leanok
+  \uses{def:pet-ch3-bivector-inner-product}
+  A bivector $x\wedge y$ is interpreted as the skew-symmetric transformation
+  \[
+    (x\wedge y)(v)=g(x,v)y-g(y,v)x,
+  \]
+  a counter-clockwise $90°$ rotation in $\operatorname{span}\{x,y\}$ when $x,y$ are
+  orthonormal, satisfying
+  $g(x\wedge y,v\wedge w)=g(x,v)g(y,w)-g(x,w)g(y,v)=g((x\wedge y)(v),w)$.
+  \source{petersen:page-0100}
+\end{definition}
+
+\begin{lemma}[Jacobi identity for bivector maps]
+  \label{lem:pet-ch3-bivector-jacobi-identity}
+  \lean{PetersenLib.bivectorSkewMap_jacobi}
+  \leanok
+  \uses{def:pet-ch3-bivector-skew-map}
+  $(x\wedge y)(z)+(y\wedge z)(x)+(z\wedge x)(y)=0$.
+  \source{petersen:page-0100}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch3-bivector-jacobi-identity}
+  \leanok
+  Expand each term via the definition of the skew map:
+  \[
+    (x\wedge y)(z)=g(x,z)y-g(y,z)x,\quad
+    (y\wedge z)(x)=g(y,x)z-g(z,x)y,\quad
+    (z\wedge x)(y)=g(z,y)x-g(x,y)z.
+  \]
+  Summing and grouping by the vector factored out gives
+  $\big(g(x,z)-g(z,x)\big)y+\big(g(y,x)-g(x,y)\big)z+\big(g(z,y)-g(y,z)\big)x=0$,
+  since $g$ is symmetric.
+\end{proof}
+
+\begin{definition}[curvature operator]
+  \label{def:pet-ch3-curvature-operator}
+  \lean{PetersenLib.curvatureOperator}
+  \leanok
+  \uses{def:pet-ch3-curvature-04-tensor,def:pet-ch3-bivector-inner-product,def:pet-ch3-bivector-skew-map}
+  By the symmetry properties of $R$, it defines a symmetric bilinear map
+  $R:\Lambda^2TM\times\Lambda^2TM\to\mathbb R$,
+  \[
+    R\Big(\sum X_i\wedge Y_i,\sum V_j\wedge W_j\Big)=\sum R(X_i,Y_i,W_j,V_j)
+  \]
+  (note the reversal of $V_j,W_j$). Consequently there is a unique self-adjoint
+  operator $\mathfrak R:\Lambda^2TM\to\Lambda^2TM$, the \emph{curvature operator},
+  with
+  \[
+    g\Big(\mathfrak R\Big(\sum X_i\wedge Y_i\Big),\sum V_j\wedge W_j\Big)
+    =\sum R(X_i,Y_i,W_j,V_j).
+  \]
+  \source{petersen:page-0101}
+\end{definition}
+
+\subsection{Sectional Curvature}
+
+\begin{definition}[directional curvature operator]
+  \label{def:pet-ch3-directional-curvature-operator}
+  \lean{PetersenLib.directionalCurvatureOperator}
+  \leanok
+  \uses{def:pet-ch3-curvature-tensor,prop:pet-ch3-curvature-symmetries}
+  For $v\in T_pM$, the \emph{directional} (or \emph{tidal force}) \emph{curvature
+  operator} is $R_v(w)=R(w,v)v:T_pM\to T_pM$. It is self-adjoint and $v$ is always
+  a zero eigenvector, by the symmetry properties of $R$.
+  \source{petersen:page-0101}
+\end{definition}
+
+\begin{definition}[sectional curvature]
+  \label{def:pet-ch3-sectional-curvature}
+  \lean{PetersenLib.sectionalCurvature}
+  \leanok
+  \uses{def:pet-ch3-directional-curvature-operator,def:pet-ch3-bivector-inner-product}
+  The \emph{sectional curvature} of $v,w\in T_pM$ is the normalized biquadratic form
+  \[
+    \sec(v,w)=\frac{g(R_v(w),w)}{g(v,v)g(w,w)-g(v,w)^2}
+    =\frac{g(R(w,v)v,w)}{g(v\wedge w,v\wedge w)}.
+  \]
+  Since the denominator is the squared area of the parallelogram spanned by
+  $v,w$, $\sec(v,w)$ depends only on the plane $\pi=\operatorname{span}\{v,w\}$.
+  \source{petersen:page-0101}
+\end{definition}
+
+\begin{proposition}[Riemann, 1854]
+  \label{prop:pet-ch3-riemann-constant-curvature-equivalence}
+  \lean{PetersenLib.riemann_constantCurvature_equivalence}
+  \leanok
+  \uses{def:pet-ch3-sectional-curvature,def:pet-ch3-curvature-operator,prop:pet-ch3-curvature-symmetries,lem:pet-ch3-bivector-jacobi-identity}
+  The following are equivalent, for fixed $p\in M$ and $k\in\mathbb R$:
+  \begin{enumerate}
+    \item[(1)] $\sec(\pi)=k$ for all $2$-planes $\pi\subset T_pM$;
+    \item[(2)] $R(v_1,v_2)v_3=-k(v_1\wedge v_2)(v_3)$ for all $v_1,v_2,v_3\in T_pM$;
+    \item[(3)] $R_v(w)=k\cdot(w-g(w,v)v)=k\cdot\operatorname{prj}_{v^\perp}(w)$ for all
+    $w\in T_pM$ and unit $v$;
+    \item[(4)] $\mathfrak R(\omega)=k\cdot\omega$ for all $\omega\in\Lambda^2T_pM$.
+  \end{enumerate}
+  \source{petersen:page-0101,petersen:page-0102,petersen:page-0103}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch3-riemann-constant-curvature-equivalence}
+  \leanok
+  (2) $\Rightarrow$ (3): setting $v_1=v$ unit, $v_2=w$, $v_3=v$ in (2) and using
+  $(v\wedge w)(v)=g(v,v)w-g(w,v)v=w-g(w,v)v$ gives (3). (3) $\Rightarrow$ (1):
+  for unit $v$, pairing (3) with $w$ gives the diagonal identity
+  $g(R_v(w),w)=k\,(g(w,w)-g(w,v)^2)=k\,g(v\wedge w,v\wedge w)$. Both sides
+  are homogeneous in $v$, so rescaling an arbitrary $v\ne0$ to a unit vector
+  (and noting both sides vanish for $v=0$) extends the identity
+  $R(x,y,x,y)=-k\,g(x\wedge y,x\wedge y)$ to all pairs $x,y$. For linearly
+  independent $v,w$ the strict Cauchy--Schwarz inequality gives
+  $g(v\wedge w,v\wedge w)>0$, and dividing yields $\sec(v,w)=k$, i.e.\ (1).
+
+  (1) $\Rightarrow$ (2): introduce the multilinear maps
+  \[
+    R_k(v_1,v_2)v_3=-k(v_1\wedge v_2)(v_3),\qquad
+    R_k(v_1,v_2,v_3,v_4)=-kg((v_1\wedge v_2)(v_3),v_4)=kg(v_1\wedge v_2,v_3\wedge v_4).
+  \]
+  These satisfy properties (1),(2),(3) of \cref{prop:pet-ch3-curvature-symmetries}
+  (skew-symmetries directly from $g$ being symmetric and bilinear; the
+  pair-symmetry from the explicit formula $kg(v_1\wedge v_2,v_3\wedge v_4)$; the
+  first Bianchi identity from \cref{lem:pet-ch3-bivector-jacobi-identity}). Let
+  $D(v_1,v_2,v_3,v_4)=R(v_1,v_2,v_3,v_4)-R_k(v_1,v_2,v_3,v_4)$; then $D$ also
+  satisfies properties (1)--(3) of \cref{prop:pet-ch3-curvature-symmetries}, being
+  a difference of two tensors that do. The hypothesis $\sec\equiv k$ gives
+  $D(v,w,w,v)=0$ for all $v,w$ --- for linearly independent pairs by the
+  hypothesis (the denominator $g(v\wedge w,v\wedge w)$ is positive by strict
+  Cauchy--Schwarz), and for dependent pairs because both $R(v,w,w,v)$ and
+  $g(v\wedge w,v\wedge w)$ vanish on degenerate pairs. Polarizing in $w=w_1+w_2$,
+  \[
+    0=D(v,w_1+w_2,w_1+w_2,v)=D(v,w_1,w_2,v)+D(v,w_2,w_1,v)=2D(v,w_1,w_2,v),
+  \]
+  using property (1) of $D$ to identify $D(v,w_1,w_1,v)=D(v,w_2,w_2,v)=0$ and to
+  see $D(v,w_2,w_1,v)=D(v,w_1,w_2,v)$; hence
+  $0=D(v,w_1,w_2,v)=-D(v,w_1,v,w_2)$ (skew-symmetry in the last two slots). Thus
+  $D(X,Y,Z,W)=0$ whenever $W=X$; using properties (1),(2) of $D$ this forces $D$
+  to be alternating in all four variables (each transposition of adjacent
+  variables produces a sign, verified via the skew- and pair-symmetries), which
+  together with Bianchi's first identity (property (3)) forces $D=0$: for an
+  alternating $4$-tensor, $D(X,Y,Z)_{\text{cyc}}=0$ becomes $3D(X,Y,Z,W)=0$ for a
+  fixed $W$. Hence $R=R_k$, which is (2).
+
+  (2) $\Rightarrow$ (4): the operator $\omega\mapsto k\cdot\omega$ on
+  $\Lambda^2T_pM$ is linear and self-adjoint, and by (2) it satisfies the
+  defining property of \cref{def:pet-ch3-curvature-operator} on wedges:
+  \begin{align*}
+    g\big(k\cdot(x\wedge y),v\wedge w\big)
+    =k\,g(x\wedge y,v\wedge w)
+    =-k\,g\big((x\wedge y)(w),v\big)
+    =R(x,y,w,v),
+  \end{align*}
+  using the antisymmetry $g(x\wedge y,w\wedge v)=-g(x\wedge y,v\wedge w)$.
+  Since the wedges span $\Lambda^2T_pM$ (expand a skew map in an orthonormal
+  basis), the operator with this defining property is unique, so
+  $\mathfrak R(\omega)=k\cdot\omega$, giving (4).
+
+  (4) $\Rightarrow$ (1): for any $v,w$, the defining property gives
+  $g(\mathfrak R(v\wedge w),v\wedge w)=R(v,w,w,v)$, while (4) gives
+  $g(k\cdot(v\wedge w),v\wedge w)=k\,g(v\wedge w,v\wedge w)$; hence the
+  diagonal identity $R(v,w,v,w)=-k\,g(v\wedge w,v\wedge w)$ holds for all
+  pairs, and dividing by $g(v\wedge w,v\wedge w)>0$ on linearly independent
+  pairs gives (1) as before.
+\end{proof}
+
+\begin{definition}[constant curvature]
+  \label{def:pet-ch3-constant-curvature}
+  \lean{PetersenLib.HasConstantCurvature}
+  \leanok
+  \uses{prop:pet-ch3-riemann-constant-curvature-equivalence}
+  $(M,g)$ has \emph{constant curvature} $k\in\mathbb R$ if one (equivalently, by
+  \cref{prop:pet-ch3-riemann-constant-curvature-equivalence}, all) of the four
+  equivalent conditions holds at every $p\in M$ with the same $k$.
+  \source{petersen:page-0103}
+\end{definition}
+
+\subsection{Ricci Curvature}
+
+\begin{definition}[Ricci curvature]
+  \label{def:pet-ch3-ricci-curvature}
+  \lean{PetersenLib.RicciCurvature}
+  \leanok
+  \uses{def:pet-ch3-curvature-tensor}
+  For an orthonormal basis $e_1,\dots,e_n$ of $T_pM$, the \emph{Ricci curvature} is
+  the trace
+  \[
+    \operatorname{Ric}(v,w)=\operatorname{tr}(x\mapsto R(x,v)w)
+    =\sum_{i=1}^ng(R(e_i,v)w,e_i)=\sum_{i=1}^ng(R(v,e_i)e_i,w)
+    =\sum_{i=1}^ng(R(e_i,w)v,e_i),
+  \]
+  a symmetric bilinear form, equivalently the symmetric $(1,1)$-tensor
+  $\operatorname{Ric}(v)=\sum_{i=1}^nR(v,e_i)e_i$.
+  \source{petersen:page-0103}
+\end{definition}
+
+\begin{definition}[Einstein manifold]
+  \label{def:pet-ch3-einstein-manifold}
+  \lean{PetersenLib.IsEinstein}
+  \leanok
+  \uses{def:pet-ch3-ricci-curvature}
+  Write $\operatorname{Ric}\ge k$ if every eigenvalue of $\operatorname{Ric}(v)$ is $\ge
+  k$, equivalently $\operatorname{Ric}(v,v)\ge kg(v,v)$ for all $v$. $(M,g)$ is an
+  \emph{Einstein manifold with Einstein constant $k$} if $\operatorname{Ric}(v)=k\cdot v$
+  for all $v$, equivalently $\operatorname{Ric}(v,w)=k\cdot g(v,w)$.
+  \source{petersen:page-0103,petersen:page-0104}
+\end{definition}
+
+\begin{proposition}[Ricci curvature via sectional curvature]
+  \label{prop:pet-ch3-ricci-sectional-relation}
+  \lean{PetersenLib.ricciCurvature_eq_sum_sectionalCurvature}
+  \leanok
+  \uses{def:pet-ch3-ricci-curvature,def:pet-ch3-sectional-curvature}
+  If $v\in T_pM$ is a unit vector completed to an orthonormal basis
+  $\{v,e_2,\dots,e_n\}$, then
+  $\operatorname{Ric}(v,v)=\sum_{i=2}^n\sec(v,e_i)$.
+  \source{petersen:page-0104}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch3-ricci-sectional-relation}
+  \leanok
+  From \cref{def:pet-ch3-ricci-curvature} with the orthonormal basis
+  $\{v,e_2,\dots,e_n\}$,
+  \[
+    \operatorname{Ric}(v,v)=g(R(v,v)v,v)+\sum_{i=2}^ng(R(e_i,v)v,e_i)
+    =0+\sum_{i=2}^n\sec(v,e_i),
+  \]
+  using $R(v,v)v=0$ and $\sec(v,e_i)=g(R(e_i,v)v,e_i)$ for orthonormal $v,e_i$
+  (denominator $1$ in \cref{def:pet-ch3-sectional-curvature}).
+\end{proof}
+
+\begin{corollary}[Ricci determines sec in dimensions $2$ and $3$]
+  \label{cor:pet-ch3-ricci-determines-sec-low-dim}
+  \lean{PetersenLib.einstein_iff_hasConstantCurvature_of_finrank_three}
+  \leanok
+  \uses{prop:pet-ch3-ricci-sectional-relation,def:pet-ch3-einstein-manifold,def:pet-ch3-constant-curvature}
+  For $n=2$, and also for $n=3$, $\operatorname{Ric}$ determines $\sec$
+  completely: for $n=3$ and orthonormal $\{e_1,e_2,e_3\}$,
+  \[
+    \begin{pmatrix}1&0&1\\1&1&0\\0&1&1\end{pmatrix}
+    \begin{pmatrix}\sec(e_1,e_2)\\\sec(e_2,e_3)\\\sec(e_1,e_3)\end{pmatrix}
+    =\begin{pmatrix}\operatorname{Ric}(e_1,e_1)\\\operatorname{Ric}(e_2,e_2)\\\operatorname{Ric}(e_3,e_3)\end{pmatrix},
+  \]
+  a system with determinant $2$; hence a $3$-manifold is Einstein if and only
+  if it has constant sectional curvature.
+  \source{petersen:page-0104}
+\end{corollary}
+\begin{proof}
+  \uses{cor:pet-ch3-ricci-determines-sec-low-dim}
+  \leanok
+  From \cref{prop:pet-ch3-ricci-sectional-relation}, for $n=3$ and
+  orthonormal $\{e_1,e_2,e_3\}$,
+  $\sec(e_1,e_2)+\sec(e_1,e_3)=\operatorname{Ric}(e_1,e_1)$,
+  $\sec(e_1,e_2)+\sec(e_2,e_3)=\operatorname{Ric}(e_2,e_2)$,
+  $\sec(e_1,e_3)+\sec(e_2,e_3)=\operatorname{Ric}(e_3,e_3)$, i.e.\ the displayed
+  linear system, whose matrix has determinant $2\ne0$; hence $\sec$ is
+  recoverable from $\operatorname{Ric}$, so $\operatorname{Ric}=cg$ for a constant $c$
+  forces all $\sec(e_i,e_j)$ (and hence, by polarization/continuity over all
+  planes) to equal the same constant.
+\end{proof}
+
+\begin{remark}[constant curvature is Einstein]
+  \label{rem:pet-ch3-constant-curvature-einstein}
+  \lean{PetersenLib.constantCurvature_isEinstein}
+  \leanok
+  \uses{def:pet-ch3-constant-curvature,def:pet-ch3-einstein-manifold,prop:pet-ch3-ricci-sectional-relation}
+  If $(M,g)$ has constant curvature $k$, it is Einstein with Einstein constant
+  $(n-1)k$: for unit $v$, \cref{prop:pet-ch3-ricci-sectional-relation} gives
+  $\operatorname{Ric}(v,v)=\sum_{i=2}^n\sec(v,e_i)=(n-1)k$.
+  \source{petersen:page-0104}
+\end{remark}
+
+\begin{remark}[Einstein metrics that are not of constant curvature]
+  \label{rem:pet-ch3-einstein-not-constant-curvature-examples}
+  \lean{PetersenLib.einstein_examples}
+  \uses{def:pet-ch3-einstein-manifold}
+  Three basic types of Einstein metrics without constant curvature: the product
+  metric $S^n(1)\times S^n(1)$ with Einstein constant $n-1$; the Fubini--Study
+  metric on $\mathbb{CP}^n$ with Einstein constant $2n+2$; and the generalized
+  Schwarzschild metric $dr^2+\phi^2(r)d\theta^2+\rho^2(r)ds^2_{n-2}$ on
+  $\mathbb R^2\times S^{n-2}$ ($n\ge4$), a doubly warped product with Einstein
+  constant $0$. By \cref{prop:pet-ch3-ricci-sectional-relation} the search for
+  such metrics must start in dimension $\ge4$.
+  \source{petersen:page-0104}
+\end{remark}
+
+\subsection{Scalar Curvature}
+
+\begin{definition}[scalar curvature]
+  \label{def:pet-ch3-scalar-curvature}
+  \lean{PetersenLib.scalarCurvature}
+  \leanok
+  \uses{def:pet-ch3-ricci-curvature,def:pet-ch3-curvature-operator}
+  The \emph{scalar curvature} is $\operatorname{scal}=\operatorname{tr}(\operatorname{Ric})=2\operatorname{tr}\mathfrak R$,
+  a function $\operatorname{scal}:M\to\mathbb R$.
+  \source{petersen:page-0104,petersen:page-0105}
+\end{definition}
+
+\begin{remark}[formulas for the scalar curvature]
+  \label{rem:pet-ch3-scalar-curvature-formulas}
+  \lean{PetersenLib.scalarCurvature_formulas}
+  \leanok
+  \uses{def:pet-ch3-scalar-curvature}
+  In an orthonormal basis $e_1,\dots,e_n$,
+  \[
+    \operatorname{scal}=\sum_{j}g(\operatorname{Ric}(e_j),e_j)
+    =\sum_{i,j}g(R(e_i,e_j)e_j,e_i)=\sum_{i,j}g(\mathfrak R(e_i\wedge e_j),e_i\wedge e_j)
+    =2\sum_{i<j}g(\mathfrak R(e_i\wedge e_j),e_i\wedge e_j)=2\sum_{i<j}\sec(e_i,e_j).
+  \]
+  When $n=2$, $\operatorname{scal}(p)=2\sec(T_pM)$.
+  \source{petersen:page-0105}
+\end{remark}
+
+\begin{notation}[divergence/adjoint of a tensor]
+  \label{notation:pet-ch3-divergence-adjoint}
+  \lean{PetersenLib.divergenceAdjoint}
+  \leanok
+  For a $(0,k)$-tensor $T$ and an orthonormal frame $E_1,\dots,E_n$ on $(M,g)$, the
+  adjoint of the covariant derivative is the $(0,k-1)$-tensor
+  \[
+    (\nabla^*T)(X_1,\dots,X_{k-1})=-\sum_{i=1}^n(\nabla_{E_i}T)(E_i,X_1,\dots,X_{k-1}),
+  \]
+  independent of the choice of orthonormal frame.
+  \source{petersen:page-0105,petersen:page-0106}
+\end{notation}
+
+\begin{proposition}[Prop. 3.1.5 — the contracted Bianchi identity]
+  \label{prop:pet-ch3-contracted-bianchi}
+  \lean{PetersenLib.contractedBianchiIdentity}
+  \leanok
+  \uses{def:pet-ch3-scalar-curvature,def:pet-ch3-ricci-curvature,notation:pet-ch3-divergence-adjoint,prop:pet-ch3-curvature-symmetries}
+  On any Riemannian manifold, $d\operatorname{tr}(\operatorname{Ric})=d\operatorname{scal}=-2\nabla^*\operatorname{Ric}$.
+  \source{petersen:page-0106}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch3-contracted-bianchi}
+  \leanok
+  Fix $p\in M$ and $W\in T_pM$, and let $E_1,\dots,E_n$ be an orthonormal frame
+  with $(\nabla_{E_i}E_j)(p)=0$ for all $i,j$ (e.g.\ obtained by parallel
+  transport of an orthonormal basis of $T_pM$ along radial geodesics, or via
+  normal coordinates). At $p$, $\operatorname{scal}=\sum_{i,j}R(E_i,E_j,E_j,E_i)$, and
+  differentiating in direction $W$ (the extra terms from differentiating the
+  frame vanish at $p$ since $(\nabla_{E_i}E_j)(p)=0$),
+  \[
+    d\operatorname{scal}(W)\big|_p=\sum_{i,j}(\nabla_WR)(E_i,E_j,E_j,E_i).
+  \]
+  Bianchi's second identity, applied as a $(0,4)$-tensor with $Z=W$, $X=E_i$,
+  $Y=E_j$, $V=E_j$, $U=E_i$, gives
+  $(\nabla_WR)(E_i,E_j,E_j,E_i)=-(\nabla_{E_i}R)(E_j,W,E_j,E_i)-(\nabla_{E_j}R)(W,E_i,E_j,E_i)$.
+  Summing over $i,j$ and relabelling $i\leftrightarrow j$ in the second sum, then
+  using that $\nabla_{E_i}R$ inherits the algebraic symmetries of $R$ from
+  \cref{prop:pet-ch3-curvature-symmetries} (in particular
+  $(\nabla_{E_i}R)(W,E_j,E_i,E_j)=(\nabla_{E_i}R)(E_j,W,E_j,E_i)$, using
+  skew-symmetry in each pair), the two sums coincide, so
+  \[
+    d\operatorname{scal}(W)\big|_p=-2\sum_{i,j}(\nabla_{E_i}R)(E_j,W,E_j,E_i).
+  \]
+  For fixed $i$, $\sum_j(\nabla_{E_i}R)(E_j,W,E_j,E_i)$ is, by
+  \cref{def:pet-ch3-ricci-curvature} and its formula
+  $\operatorname{Ric}(W,E_i)=\sum_jg(R(E_j,W)E_i,E_j)=\sum_jR(E_j,W,E_i,E_j)$,
+  equal to $-\operatorname{Ric}(W,E_i)=-\operatorname{Ric}(E_i,W)$ (via
+  skew-symmetry $R(E_j,W,E_j,E_i)=-R(E_j,W,E_i,E_j)$), and since contractions
+  commute with covariant differentiation this identity differentiates to
+  $\sum_j(\nabla_{E_i}R)(E_j,W,E_j,E_i)=-(\nabla_{E_i}\operatorname{Ric})(E_i,W)$. Hence
+  \[
+    d\operatorname{scal}(W)\big|_p=-2\sum_i\big(-(\nabla_{E_i}\operatorname{Ric})(E_i,W)\big)
+    =2\sum_i(\nabla_{E_i}\operatorname{Ric})(E_i,W)=-2(\nabla^*\operatorname{Ric})(W)\big|_p,
+  \]
+  by \cref{notation:pet-ch3-divergence-adjoint}. As $p,W$ were arbitrary this is
+  $d\operatorname{scal}=-2\nabla^*\operatorname{Ric}$.
+\end{proof}
+
+\begin{lemma}[Lemma 3.1.4 (Schur, 1886)]
+  \label{lem:pet-ch3-schur-lemma}
+  \lean{PetersenLib.schurLemma}
+  \leanok
+  \uses{def:pet-ch3-sectional-curvature,def:pet-ch3-einstein-manifold,prop:pet-ch3-contracted-bianchi,prop:pet-ch3-riemann-constant-curvature-equivalence}
+  Let $(M,g)$ have dimension $n\ge3$ and satisfy, for a function $f:M\to\mathbb
+  R$, either
+  \begin{enumerate}
+    \item[(1)] $\sec(\pi)=f(p)$ for all $2$-planes $\pi\subset T_pM$, $p\in M$, or
+    \item[(2)] $\operatorname{Ric}(v)=(n-1)f(p)v$ for all $v\in T_pM$, $p\in M$.
+  \end{enumerate}
+  Then $f$ is constant; the metric has constant curvature, respectively is
+  Einstein.
+  \source{petersen:page-0105,petersen:page-0106}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch3-schur-lemma}
+  \leanok
+  If (1) holds, \cref{prop:pet-ch3-riemann-constant-curvature-equivalence} at
+  each $p$ (with $k=f(p)$) gives $R_v(w)=f(p)(w-g(w,v)v)$ for unit $v$, and
+  summing over an orthonormal completion as in
+  \cref{prop:pet-ch3-ricci-sectional-relation} gives
+  $\operatorname{Ric}(v)=(n-1)f(p)v$, which is (2). So it suffices to treat (2).
+
+  Since $\operatorname{Ric}(v)=(n-1)f(p)v$, taking the trace,
+  $\operatorname{scal}=n(n-1)f$, so $d\operatorname{scal}=n(n-1)df$. On the other hand,
+  writing $\operatorname{Ric}=(n-1)f\cdot g$ as a $(0,2)$-tensor and using the product rule
+  for $\nabla$ together with $\nabla g=0$,
+  \[
+    -\nabla^*\operatorname{Ric}(X)=\sum_i(\nabla_{E_i}\operatorname{Ric})(E_i,X)
+    =(n-1)\sum_i\big[(\nabla_{E_i}f)g(E_i,X)+f(\nabla_{E_i}g)(E_i,X)\big]
+    =(n-1)\sum_idf(E_i)g(E_i,X)=(n-1)df(X),
+  \]
+  using $\sum_ig(E_i,X)E_i=X$ in an orthonormal frame. So
+  $\nabla^*\operatorname{Ric}=-(n-1)df$, and \cref{prop:pet-ch3-contracted-bianchi} gives
+  \[
+    n(n-1)df=d\operatorname{scal}=-2\nabla^*\operatorname{Ric}=2(n-1)df.
+  \]
+  Hence $(n-1)(n-2)df=0$; since $n\ge3$, $n-1\ne0$, so $(n-2)df=0$, and $n\ge3$
+  forces $df=0$, i.e.\ $f$ is constant.
+\end{proof}
+
+\begin{corollary}[Corollary 3.1.6]
+  \label{cor:pet-ch3-einstein-ricci-scalar-characterization}
+  \lean{PetersenLib.einstein_iff_ricci_eq_scal_div_n_metric}
+  \leanok
+  \uses{def:pet-ch3-einstein-manifold,def:pet-ch3-scalar-curvature,lem:pet-ch3-schur-lemma}
+  An $n(>2)$-dimensional Riemannian manifold $(M,g)$ is Einstein if and only if
+  $\operatorname{Ric}=\dfrac{\operatorname{scal}}{n}g$.
+  \source{petersen:page-0106}
+\end{corollary}
+\begin{proof}
+  \uses{cor:pet-ch3-einstein-ricci-scalar-characterization}
+  \leanok
+  If $(M,g)$ is Einstein with constant $k$, then $\operatorname{Ric}=kg$, and taking the
+  trace, $\operatorname{scal}=nk$, so $k=\operatorname{scal}/n$ and $\operatorname{Ric}=(\operatorname{scal}/n)g$.
+  Conversely, if $\operatorname{Ric}=(\operatorname{scal}/n)g$, set $f=\operatorname{scal}/(n(n-1))$, so
+  $\operatorname{Ric}(v)=(n-1)f(p)v$ for all $v$; condition (2) of
+  \cref{lem:pet-ch3-schur-lemma} gives $f$ constant (as $n>2$), hence
+  $\operatorname{scal}=n(n-1)f$ is a constant and $\operatorname{Ric}=(\operatorname{scal}/n)g$ with constant
+  $\operatorname{scal}/n$, i.e.\ $(M,g)$ is Einstein.
+\end{proof}
+
+\subsection{Curvature in Local Coordinates}
+
+\begin{proposition}[curvature tensor in coordinates]
+  \label{prop:pet-ch3-curvature-coordinate-formula}
+  \lean{PetersenLib.curvatureTensor_coordinates}
+  \leanok
+  \uses{def:pet-ch3-curvature-tensor}
+  In local coordinates, writing $X=X^i\partial_i$, $Y=Y^j\partial_j$,
+  $Z=Z^k\partial_k$ and $R(\partial_i,\partial_j)\partial_k=R^l_{ijk}\partial_l$, so
+  $R(X,Y)Z=X^iY^jZ^kR^l_{ijk}\partial_l$, the coefficients are
+  \[
+    R^l_{ijk}=\partial_i\Gamma^l_{jk}-\partial_j\Gamma^l_{ik}
+    +\Gamma^s_{jk}\Gamma^l_{is}-\Gamma^s_{ik}\Gamma^l_{js}.
+  \]
+  At a point $p$ where $\Gamma^k_{ij}|_p=0$ this simplifies to
+  $R^l_{ijk}|_p=\partial_i\Gamma^l_{jk}|_p-\partial_j\Gamma^l_{ik}|_p$. Using the
+  formula for the Christoffel symbols in terms of $g$, $R^l_{ijk}$ depends on the
+  metric coefficients $g_{ij}$ and their first two derivatives.
+  \source{petersen:page-0107}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch3-curvature-coordinate-formula}
+  \leanok
+  Using $\nabla_{\partial_i}\partial_k=\Gamma^s_{ik}\partial_s$,
+  \begin{align*}
+    R^l_{ijk}\partial_l&=R(\partial_i,\partial_j)\partial_k
+    =\nabla_{\partial_i}\nabla_{\partial_j}\partial_k-\nabla_{\partial_j}\nabla_{\partial_i}\partial_k\\
+    &=\nabla_{\partial_i}\big(\Gamma^s_{jk}\partial_s\big)-\nabla_{\partial_j}\big(\Gamma^s_{ik}\partial_s\big)\\
+    &=\partial_i(\Gamma^l_{jk})\partial_l+\Gamma^s_{jk}\nabla_{\partial_i}\partial_s
+      -\partial_j(\Gamma^l_{ik})\partial_l-\Gamma^s_{ik}\nabla_{\partial_j}\partial_s\\
+    &=\big(\partial_i\Gamma^l_{jk}-\partial_j\Gamma^l_{ik}\big)\partial_l
+      +\Gamma^s_{jk}\Gamma^l_{is}\partial_l-\Gamma^s_{ik}\Gamma^l_{js}\partial_l\\
+    &=\big(\partial_i\Gamma^l_{jk}-\partial_j\Gamma^l_{ik}+\Gamma^s_{jk}\Gamma^l_{is}-\Gamma^s_{ik}\Gamma^l_{js}\big)\partial_l,
+  \end{align*}
+  which is the claimed formula. The simplification at a point where all
+  Christoffel symbols vanish is immediate by dropping the quadratic terms.
+\end{proof}
+
+\begin{remark}[Remark 3.1.7 — index notation for $\operatorname{Ric}$ and $\operatorname{scal}$]
+  \label{rem:pet-ch3-ricci-scalar-index-notation}
+  \lean{PetersenLib.ricciScalar_indexNotation}
+  \leanok
+  \uses{def:pet-ch3-ricci-curvature,def:pet-ch3-scalar-curvature,prop:pet-ch3-curvature-coordinate-formula}
+  In coordinates one writes $\operatorname{Ric}_{ij}=R_{ij}=R^k_{ik}=g^{kl}R_{kijl}$ and
+  $\operatorname{scal}=R=g^{ij}R_{ij}$, both obtained by contracting indices of the curvature
+  tensor; to avoid confusing the full curvature tensor with the scalar curvature
+  it is also denoted $\mathfrak{Rm}$.
+  \source{petersen:page-0108}
+\end{remark}
+
+\begin{remark}[Remark 3.1.8 — lowering the last index of $R^l_{ijk}$]
+  \label{rem:pet-ch3-curvature-index-conventions}
+  \lean{PetersenLib.curvatureTensor_indexLowering}
+  \leanok
+  \uses{def:pet-ch3-curvature-04-tensor,prop:pet-ch3-curvature-coordinate-formula}
+  Consistently with $R(X,Y,Z,W)=g(R(X,Y)Z,W)$, the fully lower-index curvature
+  components are $R_{ijkl}=g_{sl}R^s_{ijk}=R(\partial_i,\partial_j,\partial_k,\partial_l)$.
+  \source{petersen:page-0108}
+\end{remark}
+
+\section{The Equations of Riemannian Geometry}
+
+\subsection{Curvature Equations}
+
+\begin{definition}[the tensors $S$ and $\operatorname{Hess}^2f$]
+  \label{def:pet-ch3-hessian-square-notation}
+  \lean{PetersenLib.hessianOperator}
+  \leanok
+  For a smooth function $f$ (possibly only on an open $O\subset M$), write
+  $S(X)=\nabla_X\nabla f$ for the $(1,1)$-tensor corresponding to
+  $\operatorname{Hess}f$, and $\operatorname{Hess}^2f$ for the $(0,2)$-tensor
+  corresponding to $S^2=S\circ S$.
+  \source{petersen:page-0108}
+\end{definition}
+
+\begin{definition}[second fundamental form]
+  \label{def:pet-ch3-second-fundamental-form}
+  \lean{PetersenLib.secondFundamentalForm}
+  \leanok
+  For a hypersurface $H^{n-1}\subset M^n$ with fixed unit normal field
+  $N:H\to T^\perp H=\{v\in T_pM\mid p\in H,\,v\perp T_pH\}$, the \emph{second
+  fundamental form} is the $(0,2)$-tensor $\Pi(X,Y)=g(\nabla_XN,Y)$ on $H$.
+  \source{petersen:page-0108,petersen:page-0109}
+\end{definition}
+\begin{proof}
+  \uses{def:pet-ch3-second-fundamental-form}
+  \leanok
+  For $X,Y\in TH$, $[X,Y]\in TH$ as well, so all three are perpendicular to $N$.
+  Since $\nabla$ is torsion-free, $\nabla_XY-\nabla_YX=[X,Y]\in TH$, and
+  \[
+    g(\nabla_XN,Y)=D_Xg(N,Y)-g(N,\nabla_XY)=-g(N,\nabla_XY)=-g(N,\nabla_YX)=g(\nabla_YN,X),
+  \]
+  so $\Pi$ is symmetric. Moreover $g(\nabla_XN,N)=\tfrac12D_X|N|^2=0$, so
+  $\nabla_XN$ is automatically tangent to $H$ for $X\in TH$, and $\Pi(X,Y)$ is
+  well defined by this formula for $X,Y\in TH$.
+\end{proof}
+
+\begin{proposition}[Proposition 3.2.1]
+  \label{prop:pet-ch3-normal-hessian-relation}
+  \lean{PetersenLib.normal_hessian_relation}
+  \leanok
+  \uses{def:pet-ch3-second-fundamental-form,def:pet-ch3-hessian-square-notation}
+  Let $H\subset f^{-1}(a)$ be open and consist entirely of regular points of $f$.
+  Then:
+  \begin{enumerate}
+    \item[(1)] $N=\nabla f/|\nabla f|$ is a unit normal to $H$;
+    \item[(2)] $\Pi(X,Y)=\dfrac1{|\nabla f|}\operatorname{Hess}f(X,Y)$ for
+    $X,Y\in TH$;
+    \item[(3)] $\operatorname{Hess}f(\nabla f,X)=\tfrac12D_X|\nabla f|^2$ for
+    $X\in TM$.
+  \end{enumerate}
+  \source{petersen:page-0108,petersen:page-0109}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch3-normal-hessian-relation}
+  \leanok
+  (1) $N=\nabla f/|\nabla f|$ has unit length by construction, and is
+  perpendicular to $H$ since $D_Xf=0$ for $X$ tangent to $H$ (as $H\subset
+  f^{-1}(a)$).
+
+  (2) For $X,Y\in TH$,
+  \begin{align*}
+    \Pi(X,Y)&=g\Big(\nabla_X\frac{\nabla f}{|\nabla f|},Y\Big)
+    =g\Big(\frac1{|\nabla f|}\nabla_X\nabla f,Y\Big)+g\Big(D_X\Big(\frac1{|\nabla
+    f|}\Big)\nabla f,Y\Big)\\
+    &=\frac1{|\nabla f|}\operatorname{Hess}f(X,Y),
+  \end{align*}
+  since $\nabla f\perp TH$ so $g(\nabla f,Y)=0$.
+
+  (3) By symmetry of $\operatorname{Hess}f$,
+  \[
+    \operatorname{Hess}f(\nabla f,X)=g(\nabla_{\nabla f}\nabla f,X)
+    =g(\nabla_X\nabla f,\nabla f)=\tfrac12D_X|\nabla f|^2.
+  \]
+\end{proof}
+
+\begin{theorem}[Theorem 3.2.2 — the radial curvature equation]
+  \label{thm:pet-ch3-radial-curvature-equation}
+  \lean{PetersenLib.radialCurvatureEquation}
+  \leanok
+  \uses{def:pet-ch3-hessian-square-notation,def:pet-ch3-curvature-tensor}
+  With $S,\operatorname{Hess}^2f$ as in \cref{def:pet-ch3-hessian-square-notation}:
+  \begin{align}
+    (\nabla_{\nabla f}S)(X)+S^2(X)-\nabla_X(S(\nabla f))&=-R(X,\nabla f)\nabla f,\\
+    \nabla_{\nabla f}\operatorname{Hess}f+\operatorname{Hess}^2f-\operatorname{Hess}\Big(\tfrac12|\nabla
+    f|^2\Big)&=-R(\cdot,\nabla f,\nabla f,\cdot),\\
+    \mathcal L_{\nabla f}\operatorname{Hess}f-\operatorname{Hess}^2f-\operatorname{Hess}\Big(\tfrac12|\nabla
+    f|^2\Big)&=-R(\cdot,\nabla f,\nabla f,\cdot).
+  \end{align}
+  \source{petersen:page-0110}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch3-radial-curvature-equation}
+  \leanok
+  For the first formula, using $\nabla_X\nabla f=S(X)$ and the definition of $R$,
+  \begin{align*}
+    -R(X,\nabla f)\nabla f&=-\nabla^2_{X,\nabla f}\nabla f+\nabla^2_{\nabla f,X}\nabla f\\
+    &=-(\nabla_XS)(\nabla f)+(\nabla_{\nabla f}S)(X)\\
+    &=-\nabla_X(S(\nabla f))+\nabla_{\nabla_X\nabla f}\nabla f+(\nabla_{\nabla f}S)(X)\\
+    &=-\nabla_X(S(\nabla f))+S^2(X)+(\nabla_{\nabla f}S)(X),
+  \end{align*}
+  using the product rule $(\nabla_XS)(\nabla f)=\nabla_X(S(\nabla f))-S(\nabla_X\nabla
+  f)=\nabla_X(S(\nabla f))-S(S(X))$. This is the first formula.
+
+  For the second, since $\nabla(\tfrac12|\nabla f|^2)=\nabla_{\nabla f}\nabla f$ (the
+  gradient of $\tfrac12|\nabla f|^2$), and covariant differentiation commutes
+  with the type change from $(1,1)$- to $(0,2)$-tensors, so that
+  $(\nabla_N\operatorname{Hess}f)(X,Y)=g((\nabla_NS)(X),Y)$, applying $g(-,Y)$ to
+  the first formula (with $N=\nabla f$) and using
+  $g(\nabla_X(S(\nabla f)),Y)=D_X(g(S(\nabla f),Y))-g(S(\nabla f),\nabla_XY)$ reduces
+  precisely to the $g$-paired version of the first identity, namely
+  $\nabla_{\nabla f}\operatorname{Hess}f+\operatorname{Hess}^2f-\operatorname{Hess}(\tfrac12|\nabla
+  f|^2)=-R(\cdot,\nabla f,\nabla f,\cdot)$.
+
+  For the third, compute the Lie derivative of $\operatorname{Hess}f$ along
+  $\nabla f$ directly:
+  \begin{align*}
+    (\mathcal L_{\nabla f}\operatorname{Hess}f)(X,Y)
+    &=(\nabla_{\nabla f}\operatorname{Hess}f)(X,Y)+\operatorname{Hess}f(\nabla_X\nabla
+    f,Y)+\operatorname{Hess}f(X,\nabla_Y\nabla f)\\
+    &=(\nabla_{\nabla f}\operatorname{Hess}f)(X,Y)+2\operatorname{Hess}^2f(X,Y),
+  \end{align*}
+  using $\operatorname{Hess}f(\nabla_X\nabla f,Y)=\operatorname{Hess}f(S(X),Y)=\operatorname{Hess}^2f(X,Y)$
+  and symmetry of $\operatorname{Hess}^2f$. Substituting the second formula gives the
+  third.
+\end{proof}
+
+\begin{remark}[Remark 3.2.3 — tangential/normal decomposition]
+  \label{rem:pet-ch3-tangential-normal-decomposition}
+  \lean{PetersenLib.tangentialNormalDecomposition}
+  \leanok
+  \uses{thm:pet-ch3-radial-curvature-equation}
+  The third formula of \cref{thm:pet-ch3-radial-curvature-equation} computes a
+  suitable curvature using only gradients of functions and Lie derivatives — no
+  covariant derivatives are needed. The next two fundamental equations, known as
+  the \emph{Gauss equation} and the \emph{Peterson--Codazzi--Mainardi equation},
+  use the notation
+  $X=X^\top+X^\perp=X-g(X,N)N+g(X,N)N$
+  decomposing a vector into parts tangential and normal to a hypersurface $H$
+  with normal $N$.
+  \source{petersen:page-0110}
+\end{remark}
+
+\begin{theorem}[Theorem 3.2.4 — the tangential (Gauss) curvature equation]
+  \label{thm:pet-ch3-tangential-curvature-equation}
+  \lean{PetersenLib.tangentialCurvatureEquation}
+  \leanok
+  \uses{def:pet-ch3-second-fundamental-form,rem:pet-ch3-tangential-normal-decomposition}
+  For $X,Y,Z,W$ tangent to a hypersurface $H$ with induced metric $g_H$ and
+  induced curvature $R^H$,
+  \[
+    g(R(X,Y)Z,W)=g_H\big(R^H(X,Y)Z,W\big)-\Pi(X,W)\Pi(Y,Z)+\Pi(X,Z)\Pi(Y,W).
+  \]
+  \source{petersen:page-0111}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch3-tangential-curvature-equation}
+  For $X,Y$ tangent to $H$, uniqueness of the Riemannian connection on $H$ gives
+  $\nabla^H_XY=(\nabla_XY)^\top=\nabla_XY-g(\nabla_XY,N)N=\nabla_XY+\Pi(X,Y)N$
+  (one checks $(\nabla_XY)^\top$ satisfies the defining properties of the
+  Riemannian connection on $H$, e.g.\ via the Koszul formula). Using
+  $\nabla_XY=\nabla^H_XY-\Pi(X,Y)N$, expand $R(X,Y)Z$ for $X,Y,Z$ tangent to $H$:
+  \begin{align*}
+    R(X,Y)Z&=\nabla_X\nabla_YZ-\nabla_Y\nabla_XZ-\nabla_{[X,Y]}Z\\
+    &=\nabla_X\big(\nabla^H_YZ-\Pi(Y,Z)N\big)-\nabla_Y\big(\nabla^H_XZ-\Pi(X,Z)N\big)
+      -\nabla^H_{[X,Y]}Z+\Pi([X,Y],Z)N\\
+    &=\nabla_X\nabla^H_YZ-\nabla_Y\nabla^H_XZ-\nabla^H_{[X,Y]}Z\\
+    &\quad-\nabla_X\big(\Pi(Y,Z)N\big)+\nabla_Y\big(\Pi(X,Z)N\big)+\Pi([X,Y],Z)N\\
+    &=R^H(X,Y)Z-\Pi(X,\nabla^H_YZ)N+\Pi(Y,\nabla^H_XZ)N\\
+    &\quad-\big(D_X\Pi(Y,Z)\big)N-\Pi(Y,Z)\nabla_XN+\big(D_Y\Pi(X,Z)\big)N+\Pi(X,Z)\nabla_YN\\
+    &\quad+\Pi([X,Y],Z)N+\Pi(\nabla_XY,Z)N-\Pi(\nabla_YX,Z)N,
+  \end{align*}
+  using $[X,Y]=\nabla_XY-\nabla_YX$ and expanding
+  $\nabla_X(\Pi(Y,Z)N)=(D_X\Pi(Y,Z))N+\Pi(Y,Z)\nabla_XN$. The terms
+  $-\Pi(X,\nabla^H_YZ)N+\Pi(\nabla_XY,Z)N$ and
+  $\Pi(Y,\nabla^H_XZ)N-\Pi(\nabla_YX,Z)N$ and $\Pi([X,Y],Z)N$ combine, using
+  bilinearity of $\Pi$ and $\nabla_XY=\nabla^H_XY+\Pi(X,Y)N$, so that all
+  quadratic-in-$\Pi$ tangential-index terms cancel, leaving
+  \[
+    R(X,Y)Z=R^H(X,Y)Z-\Pi(Y,Z)\nabla_XN+\Pi(X,Z)\nabla_YN
+    +\big(-(\nabla_X\Pi)(Y,Z)+(\nabla_Y\Pi)(X,Z)\big)N,
+  \]
+  where $(\nabla_X\Pi)(Y,Z)=D_X\Pi(Y,Z)-\Pi(\nabla^H_XY,Z)-\Pi(Y,\nabla^H_XZ)$ is the
+  covariant derivative of $\Pi$ along $H$. Pairing with $g(-,W)$ for $W$ tangent
+  to $H$, using $g(\nabla_XN,W)=\Pi(X,W)$ (\cref{def:pet-ch3-second-fundamental-form})
+  and $g(N,W)=0$, gives
+  \[
+    g(R(X,Y)Z,W)=g_H(R^H(X,Y)Z,W)-\Pi(Y,Z)\Pi(X,W)+\Pi(X,Z)\Pi(Y,W).
+  \]
+\end{proof}
+
+\begin{theorem}[Theorem 3.2.5 — the normal (Codazzi--Mainardi) curvature equation]
+  \label{thm:pet-ch3-normal-curvature-equation}
+  \lean{PetersenLib.normalCurvatureEquation}
+  \leanok
+  \uses{thm:pet-ch3-tangential-curvature-equation}
+  For $X,Y,Z$ tangent to a hypersurface $H$,
+  \[
+    g(R(X,Y)Z,N)=-(\nabla_X\Pi)(Y,Z)+(\nabla_Y\Pi)(X,Z).
+  \]
+  \source{petersen:page-0111}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch3-normal-curvature-equation}
+  Pair the expansion of $R(X,Y)Z$ obtained in the proof of
+  \cref{thm:pet-ch3-tangential-curvature-equation} with $g(-,N)$ instead of
+  $g(-,W)$. Since $R^H(X,Y)Z\in TH$, $g(R^H(X,Y)Z,N)=0$; since
+  $g(\nabla_XN,N)=g(\nabla_YN,N)=0$ (\cref{def:pet-ch3-second-fundamental-form}),
+  the $\Pi(Y,Z)\nabla_XN$ and $\Pi(X,Z)\nabla_YN$ terms drop out; and $g(N,N)=1$
+  picks out the coefficient of $N$, giving
+  $g(R(X,Y)Z,N)=-(\nabla_X\Pi)(Y,Z)+(\nabla_Y\Pi)(X,Z)$.
+\end{proof}
+
+\begin{remark}[curvature equations by dimension]
+  \label{rem:pet-ch3-curvature-equations-by-dimension}
+  \lean{PetersenLib.curvatureEquationsByDimension}
+  \leanok
+  \uses{thm:pet-ch3-radial-curvature-equation,thm:pet-ch3-tangential-curvature-equation,thm:pet-ch3-normal-curvature-equation}
+  Together the three fundamental equations compute curvature by induction on
+  dimension: knowing curvature on $H$ and the shape operator $S$ determines
+  curvature on $M$ at points of $H$. If $\dim M=1$ then $\dim H=0$, matching
+  $R\equiv0$ on all $1$-dimensional spaces. If $\dim M=2$ then $\dim H=1$, so
+  $R^H\equiv0$ and $X,Y,Z$ are proportional; only the radial curvature equation
+  is relevant. If $\dim M=3$ then $\dim H=2$: writing an orthonormal frame
+  $\{X,Y,N\}$ with $X\perp Y$, the full curvature tensor depends on
+  $g(R(X,N)N,Y)$, $g(R(X,N)N,X)$, $g(R(Y,N)N,Y)$ (radial equation),
+  $g(R(X,Y)Y,X)$ (tangential equation), and $g(R(X,Y)Y,N)$, $g(R(Y,X)X,N)$
+  (normal equation).
+  \source{petersen:page-0112}
+\end{remark}
+
+\begin{corollary}[Gauss's Theorema Egregium]
+  \label{cor:pet-ch3-gauss-egregium}
+  \lean{PetersenLib.gaussTheoremaEgregium}
+  \leanok
+  \uses{thm:pet-ch3-tangential-curvature-equation,ex:pet-ch3-euclidean-flat}
+  When $M^3=\mathbb R^3$ (so $R\equiv0$) and $E_1,E_2$ is an orthonormal basis of
+  $T_pH$ for a surface $H\subset\mathbb R^3$,
+  \[
+    \sec(T_pH)=R^H(E_1,E_2,E_2,E_1)=\Pi(E_1,E_1)\Pi(E_2,E_2)-\Pi(E_1,E_2)^2=\det[\Pi],
+  \]
+  i.e.\ the extrinsic quantity $\det[\Pi]$ equals the intrinsic sectional
+  curvature $\sec(T_pH)$.
+  \source{petersen:page-0112}
+\end{corollary}
+\begin{proof}
+  \uses{cor:pet-ch3-gauss-egregium}
+  Apply \cref{thm:pet-ch3-tangential-curvature-equation} with $X=W=E_1$,
+  $Y=Z=E_2$ and $R\equiv0$ (\cref{ex:pet-ch3-euclidean-flat}):
+  \[
+    0=g_H(R^H(E_1,E_2)E_2,E_1)-\Pi(E_1,E_1)\Pi(E_2,E_2)+\Pi(E_1,E_2)^2,
+  \]
+  and since $E_1,E_2$ are orthonormal, $\sec(T_pH)=g_H(R^H(E_1,E_2)E_2,E_1)$.
+\end{proof}
+
+\subsection{Distance Functions}
+
+\begin{definition}[distance function]
+  \label{def:pet-ch3-distance-function}
+  \lean{PetersenLib.IsDistanceFunction}
+  \leanok
+  For $O\subset(M,g)$ open, $r:O\to\mathbb R$ is a \emph{distance function} if
+  $|\nabla r|\equiv1$ on $O$, i.e.\ a solution of the \emph{Hamilton--Jacobi} (or
+  \emph{eikonal}) equation $|\nabla r|^2=1$.
+  \source{petersen:page-0113}
+\end{definition}
+
+\begin{example}[Example 3.2.6]
+  \label{ex:pet-ch3-distance-to-points}
+  \lean{PetersenLib.distanceFunction_points}
+  \leanok
+  \uses{def:pet-ch3-distance-function}
+  On $(\mathbb R^n,g_{\mathrm{can}})$, $r(x)=|x-y|$ is smooth on $\mathbb
+  R^n\setminus\{y\}$ with $|\nabla r|\equiv1$. For two points $y,z$,
+  $r(x)=|x\{y,z\}|=\min\{|x-y|,|x-z|\}$ is smooth away from $\{y,z\}$ and the
+  hyperplane equidistant from $y,z$.
+  \source{petersen:page-0113}
+\end{example}
+
+\begin{example}[Example 3.2.7]
+  \label{ex:pet-ch3-distance-to-submanifold}
+  \lean{PetersenLib.distanceFunction_submanifold}
+  \uses{def:pet-ch3-distance-function}
+  For a submanifold $H\subset\mathbb R^n$, $r(x)=|xH|=\inf\{|x-y|\mid y\in H\}$ is
+  a distance function on some open $O$. When $H$ is an orientable hypersurface
+  with unit normal $N$, coordinatize $\mathbb R^n$ by $x=tN+y$, $t\in\mathbb
+  R,y\in H$; there is $\varepsilon:H\to(0,\infty)$ so that
+  $O=\{tN+y\mid y\in H,|t|<\varepsilon(y)\}$ has unique coordinates $(t,y)$, and
+  $r(x)=t$ (the \emph{signed distance}) or $f(x)=|xH|=|t|$ are distance functions
+  on $O$, resp.\ $O\setminus H$. More generally, on $I\times H$ with a metric
+  $dr^2+g_r$ ($g_r$ depending on $r$), the projection $I\times H\to I$ is a
+  distance function; special cases include rotationally symmetric metrics,
+  doubly warped products, and submersion metrics on $I\times S^{2n-1}$.
+  \source{petersen:page-0113}
+\end{example}
+
+\begin{lemma}[Lemma 3.2.8]
+  \label{lem:pet-ch3-distance-function-submersion}
+  \lean{PetersenLib.distanceFunction_iff_riemannianSubmersion}
+  \leanok
+  \uses{def:pet-ch3-distance-function}
+  For $O$ open in a Riemannian manifold, $r:O\to I\subset\mathbb R$ is a distance
+  function if and only if it is a Riemannian submersion.
+  \source{petersen:page-0114}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch3-distance-function-submersion}
+  \leanok
+  In general $Dr(v)=dr(v)\partial_t=g(\nabla r,v)\partial_t$, so $v\perp\ker Dr$
+  iff $v$ is proportional to $\nabla r$. For $v=\alpha\nabla r$,
+  $Dr(v)=\alpha\,Dr(\nabla r)=\alpha g(\nabla r,\nabla r)\partial_t$. Since
+  $\partial_t$ has length $1$ in $I$, $|v|=|\alpha||\nabla r|$ and
+  $|Dr(v)|=|\alpha||\nabla r|^2$. Thus $Dr$ is a linear isometry on
+  $(\ker Dr)^\perp$ iff $|\nabla r|=1$, i.e.\ $r$ is a Riemannian submersion iff
+  $|\nabla r|\equiv1$.
+\end{proof}
+
+\begin{definition}[distance-function notation: $\partial_r,O_r,g_r,S$]
+  \label{def:pet-ch3-distance-function-notation}
+  \lean{PetersenLib.distanceFunctionNotation}
+  \leanok
+  \uses{lem:pet-ch3-distance-function-submersion,def:pet-ch3-second-fundamental-form}
+  Fix a distance function $r:O\to\mathbb R$. Write $\partial_r=\nabla r$; the
+  level sets are $O_r=\{x\in O\mid r(x)=r\}$ with induced metric $g_r$, and
+  $\nabla',R'$ denote the connection and curvature of $(O_r,g_r)$. Since
+  $|\nabla r|=1$, $\operatorname{Hess}r=\Pi$, and $S$ denotes the common
+  $(1,1)$-tensor for both: $S=\nabla\partial_r$ measures how the induced metric
+  on $O_r$ changes, by measuring how the unit normal to $O_r$ changes.
+  \source{petersen:page-0114}
+\end{definition}
+
+\begin{example}[Example 3.2.9]
+  \label{ex:pet-ch3-zero-shape-operator-hyperplane}
+  \lean{PetersenLib.zeroShapeOperator_iff_hyperplane}
+  \uses{def:pet-ch3-distance-function-notation}
+  Let $H\subset\mathbb R^n$ be an orientable hypersurface with unit normal $N$
+  and shape operator $S(v)=\nabla_vN$. If $S=0$ on $H$, $N$ is constant on $H$
+  and $H$ is open in the hyperplane $\{x+p\mid x\cdot N_p=0\}$ for fixed $p\in
+  H$. Explicitly, for the isometric immersion
+  $(x^1,\dots,x^{n-1})\mapsto(c(x^1),x^2,\dots,x^{n-1})$ of a unit-speed curve $c$
+  into $\mathbb R^n$, the unit normal is $N=(-\dot c^2(x^1),\dot c^1(x^1),0,\dots,0)$,
+  and $S\equiv0$ iff $\dot c^1\equiv\dot c^2\equiv0$ iff $c$ is a straight line
+  iff $H$ is open in a hyperplane.
+  \source{petersen:page-0114,petersen:page-0115}
+\end{example}
+\begin{proof}
+  \uses{ex:pet-ch3-zero-shape-operator-hyperplane}
+  Since $N$ has unit length in Cartesian coordinates,
+  \[
+    \nabla N=-d(\dot c^2)\partial_1+d(\dot c^1)\partial_2
+    =-\ddot c^2dx^1\partial_1+\ddot c^1dx^1\partial_2
+    =(-\ddot c^2\partial_1+\ddot c^1\partial_2)dx^1,
+  \]
+  so $S\equiv0$ iff $\ddot c^1\equiv\ddot c^2\equiv0$, i.e.\ $c$ is a straight
+  line, i.e.\ the image of the immersion is (an open subset of) a hyperplane.
+  Conversely, if $S=0$ on a general orientable hypersurface $H\subset\mathbb
+  R^n$, then $N$ is a parallel, hence constant, vector field on $H$, and $H$ is
+  tangent everywhere to the fixed hyperplane $x\cdot N_p=\text{const}$ through
+  any of its points $p$, hence is an open subset of that hyperplane.
+\end{proof}
+
+\begin{remark}[intrinsic versus extrinsic geometry]
+  \label{rem:pet-ch3-intrinsic-extrinsic}
+  \lean{PetersenLib.intrinsicExtrinsicGeometry}
+  \uses{ex:pet-ch3-zero-shape-operator-hyperplane}
+  Intrinsic geometry of $(M,g)$ is everything computable without reference to an
+  ambient isometric immersion; extrinsic geometry studies how an isometric
+  immersion $(M,g)\to(\bar M,\bar g)$ bends $(M,g)$ inside $(\bar M,\bar g)$. The
+  curvature tensor on $(M,g)$ measures intrinsic bending, while the shape
+  operator measures extrinsic bending.
+  \source{petersen:page-0115}
+\end{remark}
+
+\subsection{The Curvature Equations for Distance Functions}
+
+\begin{corollary}[Corollary 3.2.10]
+  \label{cor:pet-ch3-radial-equation-distance-function}
+  \lean{PetersenLib.radialEquation_distanceFunction}
+  \leanok
+  \uses{def:pet-ch3-distance-function-notation,thm:pet-ch3-radial-curvature-equation,prop:pet-ch3-normal-hessian-relation}
+  For a distance function $r:O\to\mathbb R$, $\nabla_{\partial_r}\partial_r=0$ and
+  $\nabla_{\partial_r}S+S^2=-R_{\partial_r}$, where $R_{\partial_r}(X)=R(X,\partial_r)\partial_r$.
+  \source{petersen:page-0115}
+\end{corollary}
+\begin{proof}
+  \uses{cor:pet-ch3-radial-equation-distance-function}
+  \leanok
+  The first fact is part (3) of \cref{prop:pet-ch3-normal-hessian-relation}
+  applied to $f=r$: $\operatorname{Hess}r(\nabla r,X)=\tfrac12D_X|\nabla r|^2=0$
+  since $|\nabla r|\equiv1$, i.e.\ $g(\nabla_{\partial_r}\partial_r,X)=0$ for all
+  $X$, so $\nabla_{\partial_r}\partial_r=0$. The second is the first formula of
+  \cref{thm:pet-ch3-radial-curvature-equation} for $f=r$: since
+  $\nabla_{\partial_r}\partial_r=0$, the term
+  $\nabla_X(S(\nabla f))=\nabla_X(S(\partial_r))=\nabla_X(\nabla_{\partial_r}\partial_r)=0$
+  drops out, leaving $(\nabla_{\partial_r}S)(X)+S^2(X)=-R(X,\partial_r)\partial_r$.
+\end{proof}
+
+\begin{proposition}[Proposition 3.2.11]
+  \label{prop:pet-ch3-distance-function-curvature-equations}
+  \lean{PetersenLib.distanceFunction_curvatureEquations}
+  \leanok
+  \uses{cor:pet-ch3-radial-equation-distance-function,thm:pet-ch3-radial-curvature-equation}
+  For a distance function $r:(O,g)\to\mathbb R$ with $\partial_r=\nabla r$:
+  \begin{enumerate}
+    \item[(1)] $\mathcal L_{\partial_r}g=2\operatorname{Hess}r$;
+    \item[(2)] $(\nabla_{\partial_r}\operatorname{Hess}r)(X,Y)+\operatorname{Hess}^2r(X,Y)=-R(X,\partial_r,\partial_r,Y)$;
+    \item[(3)] $(\mathcal L_{\partial_r}\operatorname{Hess}r)(X,Y)-\operatorname{Hess}^2r(X,Y)=-R(X,\partial_r,\partial_r,Y)$.
+  \end{enumerate}
+  \source{petersen:page-0115,petersen:page-0116}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch3-distance-function-curvature-equations}
+  \leanok
+  (1) is the standard identity $\operatorname{Hess}f=\tfrac12\mathcal
+  L_{\nabla f}g$ applied to $f=r$. (2) and (3) follow directly from
+  \cref{thm:pet-ch3-radial-curvature-equation} (second and third formulas)
+  applied to $f=r$, using $|\nabla r|\equiv1$ so that
+  $\operatorname{Hess}(\tfrac12|\nabla r|^2)=\operatorname{Hess}(\tfrac12)=0$.
+\end{proof}
+
+\subsection{Jacobi Fields}
+
+\begin{definition}[Jacobi field]
+  \label{def:pet-ch3-jacobi-field}
+  \lean{PetersenLib.IsJacobiField}
+  \leanok
+  \uses{def:pet-ch3-distance-function-notation}
+  For a smooth distance function $r$, a \emph{Jacobi field} is a smooth vector
+  field $J$ independent of $r$, i.e.\ satisfying the \emph{Jacobi equation}
+  $\mathcal L_{\partial_r}J=0$.
+  \source{petersen:page-0116}
+\end{definition}
+
+\begin{remark}[construction of Jacobi fields]
+  \label{rem:pet-ch3-jacobi-field-construction}
+  \lean{PetersenLib.jacobiField_construction}
+  \leanok
+  \uses{def:pet-ch3-jacobi-field}
+  The Jacobi equation is a first-order linear PDE solvable by characteristics: in
+  local coordinates $(r,x^2,\dots,x^n)$, $J=J^r\partial_r+J^i\partial_i$, and
+  $\mathcal L_{\partial_r}J=\partial_r(J^r)\partial_r+\partial_r(J^i)\partial_i$, so the Jacobi
+  equation is equivalent to $J^r,J^i$ being independent of $r$; hence a Jacobi
+  field is determined by its values on a hypersurface $H\subset M$ transverse to
+  $\partial_r$ where $(x^2,\dots,x^n)|_H$ is a coordinate system. Coordinate
+  vector fields are themselves Jacobi fields.
+  \source{petersen:page-0116}
+\end{remark}
+
+\begin{lemma}[first-order form of the Jacobi equation]
+  \label{lem:pet-ch3-jacobi-field-equivalent-equation}
+  \lean{PetersenLib.jacobiField_equivalentEquation}
+  \leanok
+  \uses{def:pet-ch3-jacobi-field}
+  $\mathcal L_{\partial_r}J=0$ is equivalent to $\nabla_{\partial_r}J=S(J)$, and
+  consequently $\operatorname{Hess}r(J,J)=g(\nabla_{\partial_r}J,J)=\tfrac12\partial_rg(J,J)$.
+  \source{petersen:page-0116}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch3-jacobi-field-equivalent-equation}
+  \leanok
+  For vector fields, $\mathcal L_{\partial_r}J=[\partial_r,J]=\nabla_{\partial_r}J-\nabla_J\partial_r$
+  (torsion-freeness), and $\nabla_J\partial_r=S(J)$ by definition of $S$. Hence
+  $\mathcal L_{\partial_r}J=0$ iff $\nabla_{\partial_r}J=S(J)$. Then $g(\nabla_{\partial_r}J,J)=g(S(J),J)=\operatorname{Hess}r(J,J)$,
+  while $g(\nabla_{\partial_r}J,J)=\tfrac12D_{\partial_r}g(J,J)=\tfrac12\partial_rg(J,J)$.
+\end{proof}
+
+\begin{proposition}[second-order Jacobi equation]
+  \label{prop:pet-ch3-jacobi-second-order-equation}
+  \lean{PetersenLib.jacobiField_secondOrderEquation}
+  \leanok
+  \uses{lem:pet-ch3-jacobi-field-equivalent-equation,cor:pet-ch3-radial-equation-distance-function,def:pet-ch3-directional-curvature-operator}
+  A Jacobi field $J$ satisfies $\nabla_{\partial_r}\nabla_{\partial_r}J=-R(J,\partial_r)\partial_r$.
+  \source{petersen:page-0117}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch3-jacobi-second-order-equation}
+  \leanok
+  Using the Jacobi equation $\nabla_{\partial_r}J=S(J)$ and the product rule,
+  \[
+    \nabla_{\partial_r}\nabla_{\partial_r}J=\nabla_{\partial_r}(S(J))
+    =(\nabla_{\partial_r}S)(J)+S(\nabla_{\partial_r}J)=(\nabla_{\partial_r}S)(J)+S^2(J).
+  \]
+  By \cref{cor:pet-ch3-radial-equation-distance-function},
+  $(\nabla_{\partial_r}S)(J)+S^2(J)=-R_{\partial_r}(J)=-R(J,\partial_r)\partial_r$
+  (\cref{def:pet-ch3-directional-curvature-operator}).
+\end{proof}
+
+\begin{proposition}[fundamental equations on Jacobi fields]
+  \label{prop:pet-ch3-jacobi-field-curvature-equations}
+  \lean{PetersenLib.jacobiField_curvatureEquations}
+  \leanok
+  \uses{def:pet-ch3-jacobi-field,prop:pet-ch3-distance-function-curvature-equations}
+  For Jacobi fields $J_1,J_2$, equations (1) and (3) of
+  \cref{prop:pet-ch3-distance-function-curvature-equations} become
+  \[
+    \partial_rg(J_1,J_2)=2\operatorname{Hess}r(J_1,J_2),\qquad
+    \partial_r\big(\operatorname{Hess}r(J_1,J_2)\big)-\operatorname{Hess}^2r(J_1,J_2)=-R(J_1,\partial_r,\partial_r,J_2).
+  \]
+  \source{petersen:page-0117}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch3-jacobi-field-curvature-equations}
+  \leanok
+  For a function $\phi=g(J_1,J_2)$ on $M$, $\mathcal
+  L_{\partial_r}\phi=D_{\partial_r}\phi=\partial_r\phi$ always; also
+  $\mathcal L_{\partial_r}(g(J_1,J_2))=(\mathcal L_{\partial_r}g)(J_1,J_2)+g(\mathcal
+  L_{\partial_r}J_1,J_2)+g(J_1,\mathcal L_{\partial_r}J_2)=(\mathcal
+  L_{\partial_r}g)(J_1,J_2)$ since $J_1,J_2$ are Jacobi fields. Combined with (1)
+  of \cref{prop:pet-ch3-distance-function-curvature-equations} this gives the
+  first displayed equation. Likewise
+  $\mathcal L_{\partial_r}(\operatorname{Hess}r(J_1,J_2))=(\mathcal
+  L_{\partial_r}\operatorname{Hess}r)(J_1,J_2)=\partial_r(\operatorname{Hess}r(J_1,J_2))$,
+  and substituting into (3) gives the second equation.
+\end{proof}
+
+\begin{remark}[reduction on a product neighborhood]
+  \label{rem:pet-ch3-jacobi-field-product-neighborhood}
+  \lean{PetersenLib.jacobiField_productNeighborhood}
+  \leanok
+  \uses{prop:pet-ch3-jacobi-field-curvature-equations}
+  On a product neighborhood $\Omega=(a,b)\times H\subset M$ with $r(t,z)=t$, the
+  metric is $g=dr^2+g_r$, a one-parameter family of metrics on $H$; a vector
+  field on $H$ extends uniquely to a Jacobi field on $\Omega$. Since
+  $\operatorname{Hess}r(\partial_r,J)=g(\nabla_{\partial_r}\partial_r,J)=0$ and
+  $g_r(\partial_r,J)=0$, restricting to $H$ gives $\partial_rg=\partial_rg_r=2\operatorname{Hess}r$,
+  and the fundamental equations become, on $H$,
+  \[
+    \partial_rg_r=2\operatorname{Hess}r,\qquad
+    \partial_r\operatorname{Hess}r-\operatorname{Hess}^2r=-R(\cdot,\partial_r,\partial_r,\cdot).
+  \]
+  \source{petersen:page-0117}
+\end{remark}
+
+\begin{lemma}[the radial curvature term via sectional curvature]
+  \label{lem:pet-ch3-jacobi-field-sectional-curvature-formula}
+  \lean{PetersenLib.jacobiField_sectionalCurvatureFormula}
+  \leanok
+  \uses{rem:pet-ch3-jacobi-field-product-neighborhood,def:pet-ch3-sectional-curvature}
+  For $X$ tangent to $H$ (so $g(X,\partial_r)=0$),
+  $R(X,\partial_r,\partial_r,X)=\sec(X,\partial_r)g_r(X,X)$; hence for a Jacobi
+  field $J$ on $H$,
+  \[
+    \partial_r\big(\operatorname{Hess}r(J,J)\big)-\operatorname{Hess}^2r(J,J)=-\sec(J,\partial_r)g_r(J,J).
+  \]
+  This still couples the Hessian equation to the metric $g_r$.
+  \source{petersen:page-0118}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch3-jacobi-field-sectional-curvature-formula}
+  \leanok
+  Since $g(X,\partial_r)=0$ and $g(\partial_r,\partial_r)=1$,
+  \[
+    R(X,\partial_r,\partial_r,X)=\sec(X,\partial_r)\big(g(X,X)g(\partial_r,\partial_r)-g(X,\partial_r)^2\big)
+    =\sec(X,\partial_r)g(X,X)=\sec(X,\partial_r)g_r(X,X),
+  \]
+  by \cref{def:pet-ch3-sectional-curvature}. Substituting $X=J$ into the second
+  equation of \cref{rem:pet-ch3-jacobi-field-product-neighborhood} evaluated on
+  $(J,J)$ gives the displayed identity.
+\end{proof}
+
+\begin{example}[Example 3.2.12]
+  \label{ex:pet-ch3-two-dim-sectional-curvature-formula}
+  \lean{PetersenLib.twoDimensional_sectionalCurvature_formula}
+  \leanok
+  \uses{lem:pet-ch3-jacobi-field-sectional-curvature-formula}
+  If $\dim M=2$, write $g=dr^2+\rho^2(r,\theta)d\theta^2$ with $\theta$
+  coordinatizing the level sets of $r$. Then $\partial_\theta$ is a Jacobi field
+  of length $\rho$, and $\sec(T_pM)=-\partial_r^2\rho/\rho$.
+  \source{petersen:page-0118,petersen:page-0119}
+\end{example}
+\begin{proof}
+  \uses{ex:pet-ch3-two-dim-sectional-curvature-formula}
+  \leanok
+  Since $\partial_\theta$ is a Jacobi field (a coordinate vector field, by
+  \cref{rem:pet-ch3-jacobi-field-construction}), the first formula of
+  \cref{prop:pet-ch3-jacobi-field-curvature-equations} gives
+  $2\operatorname{Hess}r(\partial_\theta,\partial_\theta)=\partial_r\rho^2=2\rho\partial_r\rho$, so
+  $\operatorname{Hess}r(\partial_\theta,\partial_\theta)=\rho\partial_r\rho$. Since $[\partial_r,\partial_\theta]=0$
+  and $S$ is self-adjoint with $S(\partial_r)=0$,
+  $S(\partial_\theta)=\dfrac{\partial_r\rho}{\rho}\partial_\theta$. By
+  \cref{lem:pet-ch3-jacobi-field-sectional-curvature-formula} applied to
+  $J=\partial_\theta$ (so $g_r(J,J)=\rho^2$),
+  \begin{align*}
+    -\sec(\partial_\theta,\partial_r)\rho^2
+    &=\partial_r\big(\operatorname{Hess}r(\partial_\theta,\partial_\theta)\big)-\operatorname{Hess}^2r(\partial_\theta,\partial_\theta)\\
+    &=\partial_r(\rho\partial_r\rho)-(\partial_r\rho)^2=\rho\partial_r^2\rho,
+  \end{align*}
+  giving $\sec(T_pM)=\sec(\partial_\theta,\partial_r)=-\partial_r^2\rho/\rho$.
+\end{proof}
+
+\subsection{Parallel Fields}
+
+\begin{definition}[parallel field]
+  \label{def:pet-ch3-parallel-field}
+  \lean{PetersenLib.IsParallelField}
+  \leanok
+  \uses{def:pet-ch3-distance-function-notation}
+  For a smooth distance function $r$, a \emph{parallel field} is a vector field
+  $X$ with $\nabla_{\partial_r}X=0$. Parallel fields are almost never Jacobi
+  fields.
+  \source{petersen:page-0119}
+\end{definition}
+
+\begin{proposition}[curvature equation on parallel fields]
+  \label{prop:pet-ch3-parallel-field-curvature-equation}
+  \lean{PetersenLib.parallelField_curvatureEquation}
+  \leanok
+  \uses{def:pet-ch3-parallel-field,prop:pet-ch3-distance-function-curvature-equations,lem:pet-ch3-jacobi-field-sectional-curvature-formula}
+  For parallel fields $X,Y$, $\partial_rg(X,Y)=0$; equation (2) of
+  \cref{prop:pet-ch3-distance-function-curvature-equations} becomes
+  $\partial_r(\operatorname{Hess}r(X,Y))+\operatorname{Hess}^2r(X,Y)=-R(X,\partial_r,\partial_r,Y)$,
+  and on a unit parallel field $X$ orthogonal to $\partial_r$,
+  \[
+    \partial_r\big(\operatorname{Hess}r(X,X)\big)+\operatorname{Hess}^2r(X,X)=-\sec(X,\partial_r),
+  \]
+  decoupled from the metric since $g_r(X,X)$ is then constant in $r$.
+  \source{petersen:page-0119}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch3-parallel-field-curvature-equation}
+  \leanok
+  For parallel $X,Y$, $\partial_rg(X,Y)=g(\nabla_{\partial_r}X,Y)+g(X,\nabla_{\partial_r}Y)=0$.
+  Since $X,Y$ are constant in $r$, they contribute no extra terms to (2) of
+  \cref{prop:pet-ch3-distance-function-curvature-equations} beyond the covariant
+  derivative form already displayed. Projecting $X$ onto $H$ and rescaling gives
+  a unit parallel field orthogonal to $\partial_r$ with $g_r(X,X)\equiv1$
+  constant; by \cref{lem:pet-ch3-jacobi-field-sectional-curvature-formula} (whose
+  proof used only orthogonality to $\partial_r$, not the Jacobi equation),
+  $R(X,\partial_r,\partial_r,X)=\sec(X,\partial_r)g_r(X,X)=\sec(X,\partial_r)$, giving the
+  displayed decoupled equation.
+\end{proof}
+
+\subsection{Conjugate Points}
+
+\begin{definition}[conjugate point, focal point]
+  \label{def:pet-ch3-conjugate-focal-point}
+  \lean{PetersenLib.ConjugatePoint}
+  \leanok
+  \uses{prop:pet-ch3-distance-function-curvature-equations,prop:pet-ch3-parallel-field-curvature-equation}
+  Along an integral curve of $\partial_r$ with bounded curvature, if
+  $\operatorname{Hess}r$ blows up, equation (2) forces it to be decreasing as $r$
+  increases, so it can only tend to $-\infty$; by equation (1), the only possible
+  degeneration along the curve is that the metric $g$ stops being positive
+  definite. When this happens $r$ develops a \emph{conjugate} or \emph{focal
+  point} along the curve. A \emph{conjugate point} occurs when
+  $\operatorname{Hess}r$ becomes undefined while solving its differential
+  equation; a \emph{focal point} occurs when integral curves of $\nabla r$ meet.
+  The two frequently coincide but need not: there are metrics with conjugate
+  points that are not focal points.
+  \source{petersen:page-0120}
+\end{definition}
+
+\begin{remark}[conjugate versus focal points for an ellipse]
+  \label{rem:pet-ch3-conjugate-vs-focal-example}
+  \lean{PetersenLib.conjugateVsFocal_ellipse}
+  \uses{def:pet-ch3-conjugate-focal-point}
+  For the lower half of an ellipse, conjugate points occur along its evolute.
+  For the entire ellipse, the focal set is the segment between the two focal
+  points of the ellipse, since the normal lines from the top and bottom arcs
+  intersect along this segment.
+  \source{petersen:page-0120}
+\end{remark}
+
+\begin{remark}[external force versus internal reaction]
+  \label{rem:pet-ch3-external-force-internal-reaction}
+  \lean{PetersenLib.externalForceInternalReaction}
+  \leanok
+  \uses{def:pet-ch3-conjugate-focal-point,prop:pet-ch3-distance-function-curvature-equations}
+  Rewriting equations (2) and (3) of
+  \cref{prop:pet-ch3-distance-function-curvature-equations} as
+  \[
+    (\nabla_{\partial_r}\operatorname{Hess}r)(X,X)=-R(X,\partial_r,\partial_r,X)-\operatorname{Hess}^2r(X,X),\qquad
+    (\mathcal L_{\partial_r}\operatorname{Hess}r)(X,X)=-R(X,\partial_r,\partial_r,X)+\operatorname{Hess}^2r(X,X),
+  \]
+  the curvature term is a fixed \emph{external force}, while
+  $\operatorname{Hess}^2r$ (of fixed sign) is an \emph{internal reaction} that
+  forces $\operatorname{Hess}r$ to blow up or collapse in finite time. If
+  $\sec\le0$, $\mathcal L_{\partial_r}\operatorname{Hess}r\ge0$: positive
+  $\operatorname{Hess}r$ stays positive. If $\sec\ge0$,
+  $\nabla_{\partial_r}\operatorname{Hess}r\le0$: nonpositive
+  $\operatorname{Hess}r$ stays nonpositive.
+  \source{petersen:page-0120}
+\end{remark}
+
+\section{Further Study}
+
+Two classical references are singled out for further reading on the tensorial
+aspects of Riemannian and pseudo-Riemannian geometry: an older but thorough
+treatment recommended to anyone learning the subject, and an authoritative
+multi-volume guide (particularly its second volume; the first is best used as a
+reference for foundational material).
+
+\section{Exercises}
+
+\begin{remark}[Exercise 3.4.1]
+  \label{rem:pet-ch3-ex-1}
+  \lean{PetersenLib.exercise3_4_1}
+  \uses{def:pet-ch3-curvature-tensor}
+  Let $M$ be an $n$-dimensional submanifold of $\mathbb R^{n+m}$ with the induced
+  metric, given locally by a parametrization $u^s(x^1,\dots,x^n)$,
+  $s=1,\dots,n+m$. Show that in these coordinates $R^l_{ijk}$ depends only on the
+  first and second partials of $u^s$.
+  \source{petersen:page-0121}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.2]
+  \label{rem:pet-ch3-ex-2}
+  \lean{PetersenLib.exercise3_4_2}
+  \leanok
+  \uses{def:pet-ch3-hessian-square-notation}
+  For $f:(M,g)\to\mathbb R$ smooth on a connected Riemannian manifold, consider:
+  (1) $|\nabla f|$ is constant; (2) $\nabla_{\nabla f}\nabla f=0$; (3) $|\nabla
+  f|$ is constant on the level sets of $f$. Show $(1)\Leftrightarrow(2)\Rightarrow(3)$,
+  and give an example showing the last implication is not an equivalence.
+  \source{petersen:page-0121}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.3]
+  \label{rem:pet-ch3-ex-3}
+  \lean{PetersenLib.exercise3_4_3}
+  \leanok
+  \uses{def:pet-ch3-hessian-square-notation,thm:pet-ch3-radial-curvature-equation}
+  For $f$ with $S(X)=\nabla_X\nabla f$, show that
+  $\mathcal L_{\nabla f}S=\nabla_{\nabla f}S$ and
+  $\mathcal L_{\nabla f}S+S^2-\nabla_X(S(\nabla f))=-R_{\nabla f}$. Reconcile this
+  with \cref{thm:pet-ch3-radial-curvature-equation} for the $(0,2)$-version of
+  the Hessian.
+  \source{petersen:page-0121}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.4]
+  \label{rem:pet-ch3-ex-4}
+  \lean{PetersenLib.exercise3_4_4}
+  \uses{thm:pet-ch3-tangential-curvature-equation,thm:pet-ch3-normal-curvature-equation}
+  For a distance function $r=f:M\to\mathbb R$, show the tangential and mixed
+  curvature equations can be written as
+  \[
+    (R(X,Y)Z)^\top=R_H(X,Y)Z-(S(X)\wedge S(Y))(Z),\qquad
+    g(R(X,Y)Z,N)=-g((\nabla_XS)(Y),Z)+g((\nabla_YS)(X),Z),
+  \]
+  and $R(X,Y)N=(d^\nabla S)(X,Y)$.
+  \source{petersen:page-0121,petersen:page-0122}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.5]
+  \label{rem:pet-ch3-ex-5}
+  \lean{PetersenLib.exercise3_4_5}
+  \leanok
+  \uses{prop:pet-ch3-curvature-symmetries}
+  Prove both Bianchi identities at a point $p\in M$ using a coordinate system
+  where $\nabla_{\partial_i}\partial_j=0$ at $p$.
+  \source{petersen:page-0122}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.6]
+  \label{rem:pet-ch3-ex-6}
+  \lean{PetersenLib.exercise3_4_6}
+  \leanok
+  \uses{def:pet-ch3-constant-curvature}
+  Show that a Riemannian manifold with constant curvature has parallel curvature
+  tensor.
+  \source{petersen:page-0122}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.7]
+  \label{rem:pet-ch3-ex-7}
+  \lean{PetersenLib.exercise3_4_7}
+  \leanok
+  \uses{def:pet-ch3-ricci-curvature,def:pet-ch3-scalar-curvature}
+  Show that a Riemannian manifold with parallel Ricci tensor has constant scalar
+  curvature. (The converse fails, and a metric with parallel curvature tensor
+  need not be Einstein.)
+  \source{petersen:page-0122}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.8]
+  \label{rem:pet-ch3-ex-8}
+  \lean{PetersenLib.exercise3_4_8}
+  \leanok
+  \uses{prop:pet-ch3-contracted-bianchi,notation:pet-ch3-divergence-adjoint}
+  With $R$ the $(0,4)$-curvature tensor and $\operatorname{Ric}$ the
+  $(0,2)$-Ricci tensor, show
+  $(\nabla^*R)(Z,X,Y)=(\nabla_X\operatorname{Ric})(Y,Z)-(\nabla_Y\operatorname{Ric})(X,Z)$.
+  Conclude $\nabla^*R=0$ if $\nabla\operatorname{Ric}=0$, and that $\nabla^*R=0$
+  iff the $(1,1)$-Ricci tensor satisfies $(\nabla_X\operatorname{Ric})(Y)=(\nabla_Y\operatorname{Ric})(X)$
+  for all $X,Y$.
+  \source{petersen:page-0122}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.9]
+  \label{rem:pet-ch3-ex-9}
+  \lean{PetersenLib.exercise3_4_9}
+  \uses{def:pet-ch3-sectional-curvature}
+  For Riemannian manifolds $(M,g_M),(N,g_N)$ with product metric
+  $(M\times N,g_M+g_N)$, and $X$ a vector field on $M$, $Y$ on $N$ regarded on
+  $M\times N$, show $\nabla_XY=0$; conclude $\sec(X,Y)=0$, so product metrics
+  always have vanishing curvatures.
+  \source{petersen:page-0122}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.10]
+  \label{rem:pet-ch3-ex-10}
+  \lean{PetersenLib.exercise3_4_10}
+  \leanok
+  \uses{def:pet-ch3-constant-curvature}
+  Show that $(M,g)$ has constant curvature at $p$ iff $R(v,w)z=0$ for all pairwise
+  orthogonal $v,w,z\in T_pM$. Hint: a symmetric bilinear form $B$ on an inner
+  product space with $B(v,w)=0$ whenever $v\perp w$ is a multiple of the inner
+  product.
+  \source{petersen:page-0122}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.11]
+  \label{rem:pet-ch3-ex-11}
+  \lean{PetersenLib.exercise3_4_11}
+  \uses{thm:pet-ch3-tangential-curvature-equation}
+  For $X,Y,Z$ tangent to $M$ (a submanifold with second fundamental form $T$ and
+  normal connection $\nabla^\perp$), show
+  \[
+    R^M(X,Y)Z=R^M(X,Y)Z+T_XT_YZ-T_YT_XZ+(\nabla^\perp_XT)_YZ-(\nabla^\perp_YT)_XZ,
+  \]
+  where $(\nabla^\perp_XT)_YZ=\nabla^\perp_X(T_YZ)-T_{\nabla^M_XY}Z-T_Y\nabla^M_XZ$;
+  the tangential parts recover the Gauss equations, the normal parts the
+  Peterson--Codazzi--Mainardi equations.
+  \source{petersen:page-0122}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.12]
+  \label{rem:pet-ch3-ex-12}
+  \lean{PetersenLib.exercise3_4_12}
+  \leanok
+  \uses{def:pet-ch3-second-fundamental-form,def:pet-ch3-ricci-curvature}
+  For $H^{n-1}\subset\mathbb R^n$, show
+  $\operatorname{Ric}^H=\operatorname{tr}(\Pi)\cdot\Pi-\Pi^2$.
+  \source{petersen:page-0123}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.13]
+  \label{rem:pet-ch3-ex-13}
+  \lean{PetersenLib.exercise3_4_13}
+  \uses{def:pet-ch3-second-fundamental-form,def:pet-ch3-constant-curvature,rem:pet-ch3-ex-10}
+  A hypersurface is \emph{totally geodesic} if its second fundamental form
+  vanishes. (1) Show that the space forms $S^n_k$ have the property that any
+  tangent vector is normal to a totally geodesic hypersurface. (2) Show that a
+  Riemannian $n$-manifold, $n>2$, with this property has constant curvature.
+  Hint: show $R(X,Y)Z=0$ for pairwise orthogonal $X,Y,Z$ and use
+  \cref{rem:pet-ch3-ex-10}.
+  \source{petersen:page-0123}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.14]
+  \label{rem:pet-ch3-ex-14}
+  \lean{PetersenLib.exercise3_4_14}
+  \uses{def:pet-ch3-second-fundamental-form}
+  For tangent fields $X,Y$ and normal fields $V,W$ of a submanifold, define the
+  normal curvature $R^\perp(X,Y,V,W)$. (1) Show $R^\perp$ is tensorial and
+  skew-symmetric in $X,Y$ and in $V,W$. (2) Show
+  $R^M(X,Y,V,W)=R^\perp(X,Y,V,W)+g_M(T_XV,T_YW)-g_M(T_YV,T_XW)$ (the
+  \emph{Ricci equations}).
+  \source{petersen:page-0123}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.15]
+  \label{rem:pet-ch3-ex-15}
+  \lean{PetersenLib.exercise3_4_15}
+  \leanok
+  \uses{def:pet-ch3-curvature-operator,def:pet-ch3-ricci-curvature}
+  For a $3$-manifold, if the curvature operator in diagonal form is
+  $\operatorname{diag}(\alpha,\beta,\gamma)$, show the Ricci curvature is diagonal
+  with entries $\alpha+\beta,\beta+\gamma,\alpha+\gamma$, and that
+  $\alpha,\beta,\gamma$ must be sectional curvatures.
+  \source{petersen:page-0123}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.16]
+  \label{rem:pet-ch3-ex-16}
+  \lean{PetersenLib.exercise3_4_16}
+  \leanok
+  \uses{def:pet-ch3-ricci-curvature,def:pet-ch3-scalar-curvature,notation:pet-ch3-divergence-adjoint}
+  For the $(0,2)$-tensor $T=\operatorname{Ric}+b\cdot\operatorname{scal}\cdot
+  g+cg$, $b,c\in\mathbb R$: (1) show $\nabla^*T=0$ if $b=-\tfrac12$ — the tensor
+  $G=\operatorname{Ric}-\tfrac{\operatorname{scal}}2g+cg$ is the \emph{Einstein
+  tensor}, $c$ the \emph{cosmological constant}; (2) if $c=0$, show $G=0$ in
+  dimension $2$; (3) for $n>2$, show $G=0$ implies the metric is Einstein; (4)
+  for $n>2$, show $G=0$ and $c=0$ implies the metric is Ricci flat.
+  \source{petersen:page-0123,petersen:page-0124}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.17]
+  \label{rem:pet-ch3-ex-17}
+  \lean{PetersenLib.exercise3_4_17}
+  \uses{def:pet-ch3-sectional-curvature}
+  Let $T_{\mathbb C}M=TM\otimes\mathbb C$; for $v=v_1+iv_2\in T_{\mathbb C}M$
+  ($v_1,v_2\in TM$), $\bar v=v_1-iv_2$, and any tensorial object on $TM$
+  complexifies, e.g.\ for a $(1,1)$-tensor $S$,
+  $S_{\mathbb C}(v_1+iv_2)=S(v_1)+iS(v_2)$. A Riemannian $g$ induces a Hermitian
+  structure $g(v,w)=g_{\mathbb C}(v,\bar w)=g(v_1,w_1)+g(v_2,w_2)+i(g(v_2,w_1)-g(v_1,w_2))$.
+  A vector $v$ is \emph{isotropic} if $g(v,\bar v)=0$, i.e.\
+  $g(v_1,v_1)=g(v_2,v_2)$ and $g(v_1,v_2)=0$; more generally isotropic subspaces
+  are those on which $g_{\mathbb C}$ vanishes. The \emph{complex sectional
+  curvature} of Hermitian-orthonormal $v,w$ is $R_{\mathbb C}(v,w,\bar w,\bar v)$,
+  called \emph{isotropic} when $v,w$ span an isotropic plane. (1) Show $v_1+iv_2$
+  is isotropic if $v_1,v_2$ are orthogonal of equal length. (2) Show that if an
+  isotropic plane is spanned by Hermitian-orthonormal isotropic $v=v_1+iv_2$,
+  $w=w_1+iw_2$, then $v_1,v_2,w_1,w_2$ are orthonormal. (3) Show
+  $R_{\mathbb C}(v,w,\bar w,\bar v)$ is always real. (4) Show that if the metric
+  is strictly quarter-pinched ($\sec\in(\tfrac14k,k)$, $k>0$), the complex
+  sectional curvatures are positive. (5) Show the complex sectional curvatures
+  are nonnegative (resp.\ positive) if the curvature operator is (resp.\
+  strictly). Hint: compare
+  $g(\mathfrak R(x\wedge u-y\wedge v),x\wedge u-y\wedge v)+g(\mathfrak R(x\wedge
+  v+y\wedge u),x\wedge v+y\wedge u)$ to a suitable complex curvature.
+  \source{petersen:page-0124,petersen:page-0125}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.18]
+  \label{rem:pet-ch3-ex-18}
+  \lean{PetersenLib.exercise3_4_18}
+  \uses{def:pet-ch3-sectional-curvature,def:pet-ch3-scalar-curvature,def:pet-ch3-curvature-operator,def:pet-ch3-ricci-curvature}
+  Scaling $(M,g)$ to $(M,\lambda^2g)$: (1) show the connection and $(1,3)$-curvature
+  tensor are unchanged; (2) $\sec,\operatorname{scal},\mathfrak R$ are all
+  multiplied by $\lambda^{-2}$; (3) $\operatorname{Ric}$ as a $(1,1)$-tensor is
+  multiplied by $\lambda^{-2}$; (4) $\operatorname{Ric}$ as a $(0,2)$-tensor is
+  unchanged.
+  \source{petersen:page-0125}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.19]
+  \label{rem:pet-ch3-ex-19}
+  \lean{PetersenLib.exercise3_4_19}
+  \leanok
+  \uses{def:pet-ch3-curvature-tensor}
+  Call $X$ an \emph{affine vector field} if $\mathcal L_X\nabla=0$. Show such a
+  field satisfies $\nabla^2_{U,V}X=-R(X,U)V$.
+  \source{petersen:page-0125}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.20 — Integrability for PDEs]
+  \label{rem:pet-ch3-ex-20}
+  \lean{PetersenLib.exercise3_4_20}
+  \uses{prop:pet-ch3-curvature-coordinate-formula}
+  For $P^i_k(x,u)$, $x=(x^1,\dots,x^n)$, $u=(u^1,\dots,u^m)$, consider
+  $\partial u^i/\partial x^k=P^i_k(x,u(x))$, $u(x_0)=u_0$. (1) Show
+  $\partial^2u^i/\partial x^k\partial x^j=\partial P^i_k/\partial
+  x^j+(\partial P^i_k/\partial u^l)P^l_j$, and conclude solvability requires the
+  \emph{integrability conditions}
+  $\partial P^i_k/\partial x^j+(\partial P^i_k/\partial u^l)P^l_j=\partial
+  P^i_j/\partial x^k+(\partial P^i_j/\partial u^l)P^l_k$. (2) Conversely show
+  the integrability conditions suffice (equivalent to the Frobenius theorem). (3)
+  For the system $\partial U^i_k/\partial x^j=\Gamma^i_{kj}U^i_j$ on a Riemannian
+  $n$-manifold, show the integrability conditions are equivalent to
+  $R^i_{kij}=0$. (4) Show a flat Riemannian manifold admits Cartesian
+  coordinates, via $\partial u^i/\partial x^k=U^i_k$ with appropriate initial
+  values, checking $g^{kl}(\partial u^i/\partial x^k)(\partial u^j/\partial x^l)$
+  is constant using \cref{prop:pet-ch3-curvature-coordinate-formula}.
+  \source{petersen:page-0125,petersen:page-0126}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.21 — fundamental theorem of (hyper-)surface theory]
+  \label{rem:pet-ch3-ex-21}
+  \lean{PetersenLib.exercise3_4_21}
+  \uses{prop:pet-ch3-curvature-coordinate-formula,thm:pet-ch3-tangential-curvature-equation,thm:pet-ch3-normal-curvature-equation}
+  For a Riemannian immersion $F=(u^1,\dots,u^{n+1}):M^n\hookrightarrow\mathbb
+  R^{n+1}$, $U^i_k=\partial u^i/\partial x^k$: (1) show
+  $\partial U^i_j/\partial x^k=\Gamma^i_{kj}U^i_j-\Pi_{jk}N^i$ for a unit normal
+  $N=N^i\partial/\partial u^i$ and $\Pi_{jk}=\Pi(\partial_j,\partial_k)=g(\nabla_jN,\partial_k)$;
+  (2) show the integrability conditions are equivalent to the Gauss and Codazzi
+  equations, $R_{ikij}=\Pi_{ij}\Pi_{kl}-\Pi_{ik}\Pi_{jl}$; (3) conversely, given
+  $g_{ij}$ and symmetric $\Pi_{ij}$ satisfying Gauss--Codazzi, show a local
+  Riemannian immersion with second fundamental form $\Pi_{ij}$ exists; (4) for a
+  metric of constant curvature $R^{-2}>0$, show there is a local Riemannian
+  immersion into $\mathbb R^{n+1}$ landing in a sphere of radius $R$ (with unit
+  normal $N=\pm R^{-1}F$).
+  \source{petersen:page-0126,petersen:page-0127}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.22]
+  \label{rem:pet-ch3-ex-22}
+  \lean{PetersenLib.exercise3_4_22}
+  \uses{rem:pet-ch3-ex-21}
+  Repeat \cref{rem:pet-ch3-ex-21} for an immersion $F:M^n\hookrightarrow\mathbb
+  R^{n,1}$ with normal $N$ satisfying $|N|^2=-1$, obtaining a local
+  characterization of the hyperbolic spaces $H^n(R)$ as the local model of
+  constant curvature $-R^{-2}$ (with unit normal $N=\pm R^{-1}F$).
+  \source{petersen:page-0127}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.23 — Kulkarni--Nomizu product]
+  \label{rem:pet-ch3-ex-23}
+  \lean{PetersenLib.exercise3_4_23}
+  \leanok
+  \uses{prop:pet-ch3-curvature-symmetries,def:pet-ch3-constant-curvature}
+  For symmetric $(0,2)$-tensors $h,k$, define
+  $h\owedge k(v_1,v_2,v_3,v_4)=\tfrac12(h(v_1,v_4)k(v_2,v_3)+h(v_2,v_3)k(v_1,v_4))
+  -\tfrac12(h(v_1,v_3)k(v_2,v_4)+h(v_2,v_4)k(v_1,v_3))$. (1) Show $h\owedge
+  k=k\owedge h$. (2) Show $h\owedge h=0$ if $h$ has rank $1$. (3) Show that if
+  $n>2$, $k$ is nondegenerate, and $h\owedge k=0$, then $h=0$. (4) Show $h\owedge
+  k$ satisfies properties (1)--(3) of \cref{prop:pet-ch3-curvature-symmetries}.
+  (5) Show $\nabla_X(h\owedge k)=(\nabla_Xh)\owedge k+h\owedge(\nabla_Xk)$. (6)
+  Show $(M,g)$ has constant curvature $c$ iff the $(0,4)$-curvature tensor
+  satisfies $R=c\cdot(g\owedge g)$.
+  \source{petersen:page-0127}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.24 — Schouten tensor]
+  \label{rem:pet-ch3-ex-24}
+  \lean{PetersenLib.exercise3_4_24}
+  \leanok
+  \uses{def:pet-ch3-ricci-curvature,def:pet-ch3-scalar-curvature,rem:pet-ch3-ex-23}
+  Define $P=\dfrac2{n-2}\operatorname{Ric}-\dfrac{\operatorname{scal}}{(n-1)(n-2)}g$
+  for $n>2$. (1) Show $P\equiv0$ implies $\operatorname{Ric}=0$. (2) Show the
+  decomposition
+  $P=\dfrac{\operatorname{scal}}{n(n-1)}g+\dfrac2{n-2}(\operatorname{Ric}-\tfrac{\operatorname{scal}}ng)$
+  is orthogonal. (3) For $n=2$, show $R=\tfrac{\operatorname{scal}}2g\owedge g$.
+  (4) For $n=3$, show
+  $R=\tfrac{\operatorname{scal}}6g\owedge g+2(\operatorname{Ric}-\tfrac{\operatorname{scal}}3g)\owedge
+  g=P\owedge g$. (5) For $n>2$, show $(M,g)$ has constant curvature iff
+  $R=P\owedge g$ and $\operatorname{Ric}=\tfrac{\operatorname{scal}}ng$. (6) Show
+  $\operatorname{Ric}(X,Y)=\sum_i(P\owedge g)(X,E_i,E_i,Y)$ for any orthonormal
+  frame $E_i$.
+  \source{petersen:page-0127,petersen:page-0128}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.25 — Weyl tensor]
+  \label{rem:pet-ch3-ex-25}
+  \lean{PetersenLib.exercise3_4_25}
+  \leanok
+  \uses{rem:pet-ch3-ex-24}
+  Define $W$ implicitly by
+  $R=\dfrac{\operatorname{scal}}{n(n-1)}g\owedge g+\dfrac2{n-2}(\operatorname{Ric}-\tfrac{\operatorname{scal}}ng)\owedge
+  g+W=P\owedge g+W$ (with $P$ as in \cref{rem:pet-ch3-ex-24}). (1) Show $n=3$
+  implies $W=0$. (2) Show $\sum_iW(X,E_i,E_i,Y)=0$ for any orthonormal frame
+  $E_i$. (3) Show the decomposition $R=P\owedge g+W$ is orthogonal.
+  \source{petersen:page-0128}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.26]
+  \label{rem:pet-ch3-ex-26}
+  \lean{PetersenLib.exercise3_4_26}
+  \uses{rem:pet-ch3-ex-24,notation:pet-ch3-divergence-adjoint}
+  Show $\nabla^*P=-\dfrac1{n-1}d\operatorname{scal}$ and
+  $\nabla^*W(Z,X,Y)=\dfrac{n-3}2\big((\nabla_XP)(Y,Z)-(\nabla_YP)(X,Z)\big)$.
+  \source{petersen:page-0129}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.27 — structure constants]
+  \label{rem:pet-ch3-ex-27}
+  \lean{PetersenLib.exercise3_4_27}
+  \leanok
+  \uses{def:pet-ch3-curvature-tensor}
+  For an orthonormal frame $E_1,\dots,E_n$ define structure constants $c^k_{ij}$
+  by $[E_i,E_j]=c^k_{ij}E_k$ (functions on $M$), and $\Gamma^k_{ij},R^l_{ijk}$ by
+  $\nabla_{E_i}E_j=\Gamma^k_{ij}E_k$, $R(E_i,E_j)E_k=R^l_{ijk}E_l$. Compute
+  $\Gamma,R$ in terms of the $c^k_{ij}$; note that on a Lie group with a
+  left-invariant metric the $c^k_{ij}$ may be taken constant.
+  \source{petersen:page-0129}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.28 — Cartan formalism]
+  \label{rem:pet-ch3-ex-28}
+  \lean{PetersenLib.exercise3_4_28}
+  \uses{def:pet-ch3-curvature-tensor}
+  For a frame $E_1,\dots,E_n$, write the connection as $\nabla E_i=\omega^j_iE_j$
+  (connection $1$-forms $\omega^j_i$), i.e.\ $\nabla_vE_i=\omega^j_i(v)E_j$; for
+  an orthonormal frame with dual coframe $\omega^i$: (1) show $\omega^i_j=-\omega^j_i$
+  and $d\omega^i=\omega^i_j\wedge\omega^j_i$, and that these two equations
+  conversely determine the connection forms from the orthonormal frame. (2)
+  Viewing $\omega^j_i$ as an $\mathfrak{so}(n)$-valued $1$-form, define the
+  curvature forms $\Omega^i_j$ ($\mathfrak{so}(n)$-valued $2$-forms) by
+  $R(X,Y)E_i=\Omega^i_j(X,Y)E_j$; show
+  $d\omega^j_i=\omega^k_i\wedge\omega^j_k+\Omega^i_j$. (3) For surfaces, with
+  orthonormal frame $E_1,E_2$ and coframe $\omega^1,\omega^2$, show
+  $d\omega^1=\omega^2\wedge\omega^1_2$, $d\omega^2=-\omega^1\wedge\omega^1_2$,
+  $d\omega^1_2=\Omega^1_2=\sec\cdot d\mathrm{vol}$.
+  \source{petersen:page-0129,petersen:page-0130}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.29]
+  \label{rem:pet-ch3-ex-29}
+  \lean{PetersenLib.exercise3_4_29}
+  \leanok
+  \uses{lem:pet-ch3-bivector-jacobi-identity,prop:pet-ch3-curvature-symmetries}
+  Assume $R(X,Y,Z,W)$ is an algebraic curvature tensor, i.e.\ satisfies
+  properties (1)--(3) of \cref{prop:pet-ch3-curvature-symmetries}. (1) Show
+  \begin{align*}
+    6R(X,Y,V,W)&=\frac{\partial^2}{\partial s\,\partial t}R(X+sW,Y+tV,Y+tW,X+sW)\Big|_{s=t=0}\\
+    &\quad-\frac{\partial^2}{\partial s\,\partial t}R(X+sV,Y+tW,Y+tW,X+sV)\Big|_{s=t=0}.
+  \end{align*}
+  (2) Show $6R(X,Y,V,W)$ equals the explicit sum-of-twelve-terms expansion
+  \begin{align*}
+    &R(X+W,Y+V,Y+V,X+W)-R(X,Y+V,Y+V,X)-R(W,Y+V,Y+V,W)\\
+    &\quad-R(X+W,V,V,X+W)-R(X+W,Y,Y,X+W)+R(X,V,V,X)+R(W,V,V,W)\\
+    &\quad+R(X,Y,Y,X)+R(W,Y,Y,W)-R(X+V,Y+W,Y+W,X+V)\\
+    &\quad+R(X,Y+W,Y+W,X)+R(V,Y+W,Y+W,V)+R(X+V,Y,Y,X+V)+R(X+V,W,W,X+V)\\
+    &\quad-R(X,Y,Y,X)-R(V,Y,Y,V)-R(X,W,W,X)-R(V,W,W,V)
+  \end{align*}
+  (four terms are redundant, obtainable from polarizing $R(X,Y,Y,X)$).
+  \source{petersen:page-0130,petersen:page-0131}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.30]
+  \label{rem:pet-ch3-ex-30}
+  \lean{PetersenLib.exercise3_4_30}
+  \uses{rem:pet-ch3-ex-29,def:pet-ch3-curvature-operator}
+  Using \cref{rem:pet-ch3-ex-29}, show the norm of the curvature operator on
+  $\Lambda^2T_pM$ is bounded, $|\mathfrak R|_p\le c(n)|\sec|_p$, for a constant
+  $c(n)$ depending only on dimension, where $|\sec|_p$ is the largest absolute
+  value of a sectional curvature at $p$.
+  \source{petersen:page-0131}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.31]
+  \label{rem:pet-ch3-ex-31}
+  \lean{PetersenLib.exercise3_4_31}
+  \leanok
+  \uses{def:pet-ch3-curvature-tensor}
+  Let $G$ be a Lie group with a left-invariant nondegenerate metric
+  $(\cdot,\cdot)$ on $\mathfrak g$; for $X\in\mathfrak g$ let
+  $\operatorname{ad}_X^*$ be the adjoint of $\operatorname{ad}_XY=[X,Y]$ with
+  respect to $(\cdot,\cdot)$, so $(\operatorname{ad}_X^*Y,Z)=(Y,[X,Z])$. For
+  left-invariant fields:
+  (1) the Levi-Civita connection is
+  $\nabla_XY=\tfrac12([X,Y]-\operatorname{ad}_X^*Y-\operatorname{ad}_Y^*X)\in\mathfrak g$;
+  it is torsion-free and metric-compatible.
+  (2) $R(X,Y,Z,W)=-(\nabla_YZ,\nabla_XW)+(\nabla_XZ,\nabla_YW)-(\nabla_{[X,Y]}Z,W)$.
+  (3)
+  $R(X,Y,Y,X)=\tfrac14|\operatorname{ad}_X^*Y+\operatorname{ad}_Y^*X|^2-(\operatorname{ad}_X^*X,\operatorname{ad}_Y^*Y)-\tfrac34|[X,Y]|^2-\tfrac12([[X,Y],Y],X)-\tfrac12([[Y,X],X],Y)$.
+  We treat the positive-definite (Riemannian) case. (Petersen's printed part~(1)
+  has $+\operatorname{ad}_X^*Y$; with the adjoint convention above the correct
+  sign is $-\operatorname{ad}_X^*Y$, as the biinvariant specialisation
+  $\nabla_XY=\tfrac12[X,Y]$ confirms.)
+  \source{petersen:page-0131}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.32]
+  \label{rem:pet-ch3-ex-32}
+  \lean{PetersenLib.exercise3_4_32}
+  \leanok
+  \uses{rem:pet-ch3-ex-31,def:pet-ch3-curvature-operator}
+  Let $G$ be a Lie group with a biinvariant (possibly indefinite, nondegenerate)
+  metric $(\cdot,\cdot)$ on $\mathfrak g$. Using left-invariant fields, show: (1)
+  $\nabla_XY=\tfrac12[X,Y]$; (2) $R(X,Y)Z=\tfrac14[Z,[X,Y]]$; (3)
+  $R(X,Y,Z,W)=-\tfrac14([X,Y],[Z,W])$, so sectional curvatures are nonnegative
+  when $(\cdot,\cdot)$ is positive definite; (4) the curvature operator is
+  nonnegative when $(\cdot,\cdot)$ is positive definite, by showing
+  $g\big(\mathfrak R(\sum_{i=1}^kX_i\wedge Y_i),\sum_{i=1}^kX_i\wedge
+  Y_i\big)=\tfrac14\sum_{i=1}^k|[X_i,Y_i]|^2$; (5) for $(\cdot,\cdot)$ positive
+  definite, $\operatorname{Ric}(X,X)=0$ iff $X$ commutes with every left-invariant
+  vector field, so $G$ has positive Ricci curvature if its center is discrete.
+  \source{petersen:page-0131,petersen:page-0132}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.33]
+  \label{rem:pet-ch3-ex-33}
+  \lean{PetersenLib.exercise3_4_33}
+  \leanok
+  \uses{rem:pet-ch3-ex-32,def:pet-ch3-ricci-curvature}
+  For a Lie group with nondegenerate Killing form $B$, using $-B$ as the
+  left-invariant metric: (1) show this metric is biinvariant; (2) show
+  $\operatorname{Ric}=-\tfrac14B$.
+  \source{petersen:page-0132}
+\end{remark}
+
+\begin{remark}[Exercise 3.4.34]
+  \label{rem:pet-ch3-ex-34}
+  \lean{PetersenLib.exercise3_4_34}
+  \leanok
+  \uses{rem:pet-ch3-ex-33}
+  Using the Cartan formalism of \cref{rem:pet-ch3-ex-28} in the setting of
+  \cref{rem:pet-ch3-ex-33}, compute all quantities in terms of the structure
+  constants of $\mathfrak g$: with a biinvariant metric, in an orthonormal basis
+  they satisfy $c^k_{ij}=-c^k_{ji}=c^i_{jk}$, the first equality being
+  skew-symmetry of the bracket, the second biinvariance of the metric.
+  \source{petersen:page-0132}
+\end{remark}

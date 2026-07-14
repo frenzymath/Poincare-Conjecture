@@ -1,0 +1,1788 @@
+\chapter{Sectional Curvature Comparison I}
+\label{chap:pet-sectional-curvature-comparison-i}
+
+Faithful transcription of Petersen, \emph{Riemannian Geometry} (GTM 171, 3rd ed.),
+Chapter 6. Having classified the complete spaces of constant curvature, the chapter
+compares manifolds of variable curvature to these model spaces. The first global
+result is the Hadamard--Cartan theorem: a simply connected complete manifold with
+$\sec\le0$ is diffeomorphic to $\mathbb{R}^n$. In positive curvature there are strong
+topological restrictions — the Bonnet--Myers diameter bound and Synge's theorem
+that an orientable even-dimensional manifold with $\sec>0$ is simply connected — and
+the chapter culminates in the classical quarter-pinched sphere theorem of Rauch,
+Berger, and Klingenberg. The technical engine throughout is the differentiation of
+vector fields along a single curve, which is used to define parallel fields and
+Jacobi fields and to establish Synge's second variation formula of the energy
+functional; basic Riccati and Rauch comparison estimates for Hessians of distance
+functions are then used to bound injectivity, conjugate, and convexity radii.
+
+\section{The Connection Along Curves}
+
+\begin{definition}[covariant derivative along a curve]
+  \label{def:pet-ch6-vector-field-along-curve}
+  \lean{PetersenLib.derivAlongCurve}
+  For a curve $c:I\to M$, a \emph{vector field along $c$} is a map $V:I\to TM$
+  with $V(t)\in T_{c(t)}M$ for all $t\in I$. Thinking of $V$ as the variational
+  field of a variation $\bar c:(-\varepsilon,\varepsilon)\times I\to M$ with
+  $\bar c(0,t)=c(t)$, $\frac{\partial\bar c}{\partial s}(0,t)=V(t)$, the
+  \emph{covariant derivative of $V$ along $c$} is defined by
+  $\dot V(t)=\frac{d}{dt}V(t)=\frac{\partial^2\bar c}{\partial t\,\partial s}(0,t)$.
+  In local coordinates, writing $V(t)=V^k(t)\partial_k$ and
+  $\bar c^k(s,t)=\tfrac{\partial\bar c^k}{\partial s}(0,t)$, one computes
+  \[
+    \frac{\partial^2\bar c}{\partial t\,\partial s}(0,t)
+    =\dot V^k(t)\partial_k+V^i(t)\dot c^j(t)\Gamma^k_{ij}\partial_k,
+  \]
+  which is manifestly independent of the choice of variation and of the
+  coordinate system, and agrees with $\nabla_{\dot c(t_0)}X$ whenever
+  $V(t)=X_{c(t)}$ for a vector field $X$ near $c(t_0)$. In general $\dot V(t_0)$
+  need not vanish when $\dot c(t_0)=0$ (e.g.\ for a constant curve $c$, where $V$
+  is simply a curve in the fixed space $T_{c(t_0)}M$). Selecting a two-parameter
+  variation as needed for a second field $W$ along $c$, the local formula also
+  yields the product rule $\frac{d}{dt}g(V,W)=g(\dot V,W)+g(V,\dot W)$ and
+  linearity $\frac{d}{dt}(V+W)=\dot V+\dot W$,
+  $\frac{d}{dt}(\lambda V)=\dot\lambda V+\lambda\dot V$ for $\lambda:I\to\mathbb{R}$.
+  When $M\subset\tilde M$, the derivative along $c$ in $M$ is obtained by
+  computing $\dot V\in T\tilde M$ and orthogonally projecting onto $TM$.
+  \source{petersen:page-0248,petersen:page-0249}
+\end{definition}
+
+\begin{definition}[third and higher partial derivatives]
+  \label{def:pet-ch6-higher-order-partials}
+  \lean{PetersenLib.thirdPartialDerivative}
+  \uses{def:pet-ch6-vector-field-along-curve}
+  Using \cref{def:pet-ch6-vector-field-along-curve}, higher mixed partials of a
+  multi-parameter map $c$ are defined recursively: to compute
+  $\frac{\partial^3c}{\partial s\,\partial t\,\partial u}(s_0,t_0,u_0)$, set
+  $V(s)=\frac{\partial^2c}{\partial t\,\partial u}(s,t_0,u_0)$ and define the
+  third partial as $\frac{dV}{ds}(s_0)$. Because this recursive definition fixes
+  a specific order of differentiation, there is no a priori reason for third
+  partials to be symmetric in all three variables; it remains true, however,
+  that $\frac{\partial^3c}{\partial s\,\partial t\,\partial u}
+  =\frac{\partial^3c}{\partial s\,\partial u\,\partial t}$ (the last two
+  variables, which enter only through the already-defined second mixed
+  partial, may be swapped).
+  \source{petersen:page-0249}
+\end{definition}
+
+\begin{example}[Example 6.1.1 — mixed partials on $S^2(1)$]
+  \label{ex:pet-ch6-sphere-third-partials}
+  \lean{PetersenLib.sphereThirdPartialsExample}
+  \uses{def:pet-ch6-higher-order-partials}
+  Parametrize $S^2(1)\subset\mathbb{R}^3$ as a surface of revolution about the
+  $x$-axis by $c(t,\theta)=(\cos t,\sin t\cos\theta,\sin t\sin\theta)$, and
+  compute all derivatives in $\mathbb{R}^3$ before projecting onto $S^2(1)$. The
+  curves $t\mapsto c(t,\theta)$ are geodesics, since
+  $\partial_tc=(-\sin t,\cos t\cos\theta,\cos t\sin\theta)\in TS^2(1)$ while
+  $\partial_t^2c=(-\cos t,-\sin t\cos\theta,-\sin t\sin\theta)=-c$ is normal to
+  $S^2(1)$ and so projects to zero. Next,
+  $\partial_\theta\partial_tc=(0,-\cos t\sin\theta,\cos t\cos\theta)$ is already
+  tangent to $S^2(1)$, hence equals the intrinsic mixed partial. Finally
+  \[
+    \partial_t\partial_\theta\partial_tc=(0,\sin t\sin\theta,-\sin t\cos\theta)
+    =\partial_\theta\partial_t^2c
+  \]
+  in $\mathbb{R}^3$, and both are tangent to $S^2(1)$; the first is
+  $\partial_t\partial_\theta\partial_tc$ as computed intrinsically in $S^2(1)$,
+  while the second has no intrinsic meaning as written, since $\partial_t^2c$
+  must first be projected to $S^2(1)$ (where it vanishes) before differentiating
+  in $\theta$. Hence intrinsically
+  $\partial_\theta\partial_t^2c=0\ne\partial_t\partial_\theta\partial_tc$ along
+  $t=0$, illustrating that third partials computed with different orderings of
+  differentiation need not agree. Along the equator $t=0$,
+  $\partial_\theta\partial_tc=0$.
+  \source{petersen:page-0250}
+\end{example}
+
+\begin{lemma}[Lemma 6.1.2 — third partials and curvature]
+  \label{lem:pet-ch6-third-partial-commutator}
+  \lean{PetersenLib.thirdPartialCurvatureFormula}
+  \uses{def:pet-ch6-higher-order-partials}
+  For a map $c(u,s,t)$ with values in $M$,
+  \[
+    \frac{\partial^3c}{\partial u\,\partial s\,\partial t}
+    -\frac{\partial^3c}{\partial s\,\partial u\,\partial t}
+    =R\!\left(\frac{\partial c}{\partial u},\frac{\partial c}{\partial s}\right)
+    \frac{\partial c}{\partial t}.
+  \]
+  \source{petersen:page-0251}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch6-third-partial-commutator}
+  Fix $p=c(u,s,t)$ and choose coordinates with $g_{ij}|_p=\delta_{ij}$,
+  $\Gamma^k_{ij}|_p=0$, so that $\frac{\partial}{\partial u}(\partial_i)|_p=0$.
+  Then at $p$,
+  \[
+    \frac{\partial^3c}{\partial u\,\partial s\,\partial t}
+    =\frac{\partial}{\partial u}\!\left(\frac{\partial^2c^l}{\partial s\,\partial t}\partial_l
+    +\frac{\partial c^i}{\partial s}\frac{\partial c^j}{\partial t}\Gamma^k_{ij}\partial_k\right)
+    =\frac{\partial^3c^l}{\partial u\,\partial s\,\partial t}\partial_l
+    +\frac{\partial c^i}{\partial s}\frac{\partial c^j}{\partial u}
+    \frac{\partial}{\partial t}(\Gamma^k_{ij})\partial_k,
+  \]
+  using $\frac{\partial\Gamma^k_{ij}}{\partial u}
+  =\frac{\partial c^l}{\partial u}\partial_l\Gamma^k_{ij}$ and swapping the roles of
+  $j,u$ in the chain rule term against $\frac{\partial}{\partial u}=\frac{\partial
+  c^j}{\partial u}\partial_j$ acting on $\Gamma^k_{ij}$ (this uses only that
+  $\Gamma^k_{ij}|_p=0$, so the second-derivative-of-$\Gamma$ terms drop and only
+  the first derivative of $\Gamma$ along $u$ survives). Similarly
+  \[
+    \frac{\partial^3c}{\partial s\,\partial u\,\partial t}
+    =\frac{\partial^3c^l}{\partial s\,\partial u\,\partial t}\partial_l
+    +\frac{\partial c^i}{\partial s}\frac{\partial c^j}{\partial u}
+    \frac{\partial c^k}{\partial t}(\partial_k\Gamma^l_{ij})\partial_l.
+  \]
+  Since ordinary third partials of the coordinate functions $c^l$ are symmetric
+  in $u,s$, subtracting and relabelling the dummy index in the first expression
+  gives
+  \[
+    \frac{\partial^3c}{\partial u\,\partial s\,\partial t}\bigg|_p
+    -\frac{\partial^3c}{\partial s\,\partial u\,\partial t}\bigg|_p
+    =\frac{\partial c^i}{\partial s}\frac{\partial c^j}{\partial u}
+    \frac{\partial c^k}{\partial t}(\partial_k\Gamma^l_{ij}-\partial_j\Gamma^l_{ik})\partial_l
+    =\frac{\partial c^i}{\partial s}\frac{\partial c^j}{\partial u}
+    \frac{\partial c^k}{\partial t}R^l_{kji}\partial_l,
+  \]
+  using the coordinate formula for the curvature tensor from section 3.1.6 of the
+  source (at a point where $\Gamma^k_{ij}|_p=0$, $R^l_{kji}=\partial_k\Gamma^l_{ij}
+  -\partial_j\Gamma^l_{ik}$). This is exactly
+  $R\!\left(\frac{\partial c}{\partial u},\frac{\partial c}{\partial s}\right)
+  \frac{\partial c}{\partial t}$.
+  \source{petersen:page-0251}
+\end{proof}
+
+\begin{definition}[parallel field along a curve]
+  \label{def:pet-ch6-parallel-field}
+  \lean{PetersenLib.IsParallelAlong}
+  \uses{def:pet-ch6-vector-field-along-curve}
+  A vector field $V$ along $c$ is \emph{parallel along $c$} if $\dot V\equiv0$.
+  The tangent field $\dot c$ along a geodesic is parallel, and (by
+  \cref{ex:pet-ch6-sphere-third-partials}) the unit field perpendicular to a
+  great circle in $S^2(1)$ is parallel. If $V,W$ are parallel along $c$ then
+  $g(V,W)$ is constant along $c$ by the product rule, so parallel fields neither
+  change length nor relative angle, generalizing parallel translation in
+  Euclidean space.
+  \source{petersen:page-0252}
+\end{definition}
+
+\begin{theorem}[Theorem 6.1.3 — existence and uniqueness of parallel fields]
+  \label{thm:pet-ch6-parallel-field-existence-uniqueness}
+  \lean{PetersenLib.parallelField_existence_uniqueness}
+  \uses{def:pet-ch6-parallel-field}
+  If $t_0\in I$ and $v\in T_{c(t_0)}M$, there is a unique parallel field $V(t)$
+  defined on all of $I$ with $V(t_0)=v$.
+  \source{petersen:page-0252}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch6-parallel-field-existence-uniqueness}
+  Choose vector fields $E_1(t),\dots,E_n(t)$ along $c$ forming a basis for
+  $T_{c(t)}M$ for every $t\in I$, and write $\nabla_{\dot c}E_i=\sum_j
+  \alpha_i^j(t)E_j(t)$. For $V(t)=V^i(t)E_i(t)$,
+  \[
+    \dot V=\sum_i\dot V^i(t)E_i(t)+\sum_iV^i(t)\nabla_{\dot c}E_i
+    =\sum_j\Big(\dot V^j(t)+\sum_iV^i(t)\alpha_i^j(t)\Big)E_j(t),
+  \]
+  so $V$ is parallel iff $V^1,\dots,V^n$ solve the linear first-order system
+  $\dot V^j(t)=-\sum_i\alpha_i^j(t)V^i(t)$, $j=1,\dots,n$. Linear systems of
+  ordinary differential equations have, for any prescribed initial values
+  $V^1(t_0),\dots,V^n(t_0)$, a unique solution defined on the whole interval
+  $I$ (this global existence, in contrast to the nonlinear geodesic equation,
+  is a standard consequence of linearity of the equations).
+  \source{petersen:page-0252,petersen:page-0253}
+\end{proof}
+
+\begin{definition}[Jacobi field]
+  \label{def:pet-ch6-jacobi-field}
+  \lean{PetersenLib.IsJacobiField,PetersenLib.jacobiEquation}
+  \uses{def:pet-ch6-vector-field-along-curve}
+  Let $\bar c(s,t)$ be a \emph{geodesic variation} of a geodesic $c(t)=\bar
+  c(0,t)$, i.e.\ $t\mapsto\bar c(s,t)$ is a geodesic for every $s$. By
+  \cref{lem:pet-ch6-third-partial-commutator} applied with $u=t$ (using that
+  $\frac{\partial^2\bar c}{\partial t^2}\equiv0$),
+  \[
+    0=\frac{\partial}{\partial s}\frac{\partial^2\bar c}{\partial t^2}
+    =R\!\left(\frac{\partial c}{\partial s},\frac{\partial c}{\partial t}\right)
+    \frac{\partial c}{\partial t}+\frac{\partial^2}{\partial t^2}\frac{\partial c}{\partial s},
+  \]
+  so the variational field $J(t)=\frac{\partial\bar c}{\partial s}(0,t)$ solves
+  the linear second-order \emph{Jacobi equation} $\ddot J+R(J,\dot c)\dot c=0$.
+  A \emph{Jacobi field} along $c$ is any solution of this equation; given
+  $J(0),\dot J(0)$ there is a unique such solution (linearity of a second-order
+  ODE). Conversely, every pair $(J(0),\dot J(0))$ with $J(0)=0$ arises from the
+  geodesic variation $\bar c(s,t)=\exp_p(t(\dot c(0)+sJ(0)))$: since
+  $\bar c(s,0)=p$ for all $s$, $J(0)=\frac{\partial\bar c}{\partial s}(0,0)=0$,
+  and
+  \[
+    \dot J(0)=\frac{\partial^2\bar c}{\partial t\,\partial s}(0,0)
+    =\frac{\partial^2\bar c}{\partial s\,\partial t}(0,0)
+    =\frac{\partial}{\partial s}\big(\dot c(0)+sJ(0)\big)\Big|_{s=0}.
+  \]
+  \source{petersen:page-0253,petersen:page-0254}
+\end{definition}
+
+\begin{remark}[Jacobi fields and $D\exp_p$]
+  \label{rem:pet-ch6-jacobi-dexp-relation}
+  \lean{PetersenLib.jacobiField_dexp_relation}
+  \uses{def:pet-ch6-jacobi-field}
+  For the geodesic variation $\bar c(s,t)=\exp_p(t(\dot c(0)+sJ(0)))$ of
+  \cref{def:pet-ch6-jacobi-field},
+  \[
+    J(t)=\frac{\partial}{\partial s}\exp_p\big(t(\dot c(0)+sJ(0))\big)\Big|_{s=0}
+    =D\exp_p\big(tJ(0)\big),
+  \]
+  where $tJ(0)\in T_{tv}T_pM$ for $v=\dot c(0)$. Consequently, $D\exp_p$ is
+  nonsingular at $t_0v$ if and only if for every $J(t_0)\in
+  T_{\exp_p(t_0v)}M$ there is a Jacobi field $J$ along $t\mapsto\exp_p(tv)$
+  with $J(0)=0$ and value $J(t_0)$ at $t=t_0$.
+  \source{petersen:page-0254,petersen:page-0255}
+\end{remark}
+
+\begin{remark}[Jacobi fields and the Hessian of $r$]
+  \label{rem:pet-ch6-jacobi-hessian-r}
+  \lean{PetersenLib.jacobiField_hess_r}
+  \uses{def:pet-ch6-jacobi-field}
+  Let $c(t)$ be a unit speed geodesic with $c(0)=p$ and $J$ a Jacobi field
+  along $c$ with $J(0)=0$; write $r(x)=|xp|$. As long as $tc'(0)$ lies in the
+  interior of the domain on which $r$ is smooth (so that $\dot c(t)=\nabla
+  r|_{c(t)}$), realizing $J$ via a geodesic variation $\bar c(s,t)$ as in
+  \cref{def:pet-ch6-jacobi-field} gives
+  \[
+    \operatorname{Hess}r(J(t),J(t))=g(\nabla_{J(t)}\nabla r,J(t))
+    =g\!\left(\frac{\partial^2\bar c}{\partial t\,\partial s},J\right)\Big|_{(0,t)}
+    =g(\dot J(t),J(t)).
+  \]
+  \source{petersen:page-0255}
+\end{remark}
+
+\begin{theorem}[Theorem 6.1.4 — Synge's second variation formula, 1926]
+  \label{thm:pet-ch6-synge-second-variation}
+  \lean{PetersenLib.secondVariationEnergy}
+  \uses{def:pet-ch6-vector-field-along-curve}
+  If $\bar c:(-\varepsilon,\varepsilon)\times[a,b]\to M$ is a smooth variation
+  of a geodesic $c(t)=\bar c(0,t)$, then
+  \[
+    \frac{d^2E(c_s)}{ds^2}\bigg|_{s=0}
+    =\int_a^b\Big|\frac{\partial^2c}{\partial t\,\partial s}\Big|^2dt
+    -\int_a^bg\!\left(R\!\left(\frac{\partial c}{\partial s},\frac{\partial c}{\partial t}\right)
+    \frac{\partial c}{\partial t},\frac{\partial c}{\partial s}\right)dt
+    +g\!\left(\frac{\partial^2c}{\partial s^2},\frac{\partial c}{\partial t}\right)\bigg|_a^b.
+  \]
+  \source{petersen:page-0255}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch6-synge-second-variation,lem:pet-ch6-third-partial-commutator}
+  By the first variation formula,
+  \[
+    \frac{dE(c_s)}{ds}=-\int_a^bg\!\left(\frac{\partial c}{\partial s},
+    \frac{\partial^2c}{\partial t^2}\right)dt
+    +g\!\left(\frac{\partial c}{\partial s},\frac{\partial c}{\partial t}\right)\Big|_{(s,a)}^{(s,b)}.
+  \]
+  Differentiating in $s$ and using the product rule from
+  \cref{def:pet-ch6-vector-field-along-curve},
+  \begin{align*}
+    \frac{\partial^2E(c_s)}{\partial s^2}
+    &=-\int_a^bg\!\left(\frac{\partial^2c}{\partial s^2},\frac{\partial^2c}{\partial t^2}\right)dt
+    -\int_a^bg\!\left(\frac{\partial c}{\partial s},
+    \frac{\partial^3c}{\partial s\,\partial t^2}\right)dt\\
+    &\quad+g\!\left(\frac{\partial^2c}{\partial s^2},\frac{\partial c}{\partial t}\right)\Big|_{(s,a)}^{(s,b)}
+    +g\!\left(\frac{\partial c}{\partial s},\frac{\partial^2c}{\partial s\,\partial t}\right)\Big|_{(s,a)}^{(s,b)}.
+  \end{align*}
+  Setting $s=0$, using that $c(0,t)$ is a geodesic (so
+  $\frac{\partial^2c}{\partial t^2}=0$ at $s=0$), and applying
+  \cref{lem:pet-ch6-third-partial-commutator} to rewrite
+  $\frac{\partial^3c}{\partial s\,\partial t^2}
+  =\frac{\partial^3c}{\partial t\,\partial s\,\partial t}
+  -R\!\left(\frac{\partial c}{\partial s},\frac{\partial c}{\partial t}\right)\frac{\partial c}{\partial t}$
+  gives
+  \begin{align*}
+    \frac{\partial^2E(c_s)}{\partial s^2}\bigg|_{s=0}
+    &=-\int_a^bg\!\left(\frac{\partial c}{\partial s},R\!\left(\frac{\partial c}{\partial s},
+    \frac{\partial c}{\partial t}\right)\frac{\partial c}{\partial t}\right)dt
+    +\int_a^bg\!\left(\frac{\partial^2c}{\partial t\,\partial s},\frac{\partial^2c}{\partial t\,\partial s}\right)dt\\
+    &\quad-\int_a^b\frac{\partial}{\partial t}g\!\left(\frac{\partial c}{\partial s},
+    \frac{\partial^2c}{\partial s\,\partial t}\right)dt
+    +g\!\left(\frac{\partial^2c}{\partial s^2},\frac{\partial c}{\partial t}\right)\Big|_a^b
+    +g\!\left(\frac{\partial c}{\partial s},\frac{\partial^2c}{\partial s\,\partial t}\right)\Big|_a^b.
+  \end{align*}
+  The fundamental theorem of calculus cancels the last integral against the
+  last boundary term, leaving exactly the claimed formula.
+  \source{petersen:page-0255,petersen:page-0256}
+\end{proof}
+
+\begin{remark}[special cases of the second variation formula]
+  \label{rem:pet-ch6-second-variation-special-cases}
+  \lean{PetersenLib.secondVariationEnergy_properVariation,PetersenLib.secondVariationEnergy_parallelField}
+  \uses{thm:pet-ch6-synge-second-variation,def:pet-ch6-parallel-field}
+  For a \emph{proper} variation (fixed endpoints) the boundary term in
+  \cref{thm:pet-ch6-synge-second-variation} drops out, and with $V=\frac{\partial
+  c}{\partial s}(0,\cdot)$,
+  \[
+    \frac{d^2E(c_s)}{ds^2}\bigg|_{s=0}=\int_a^b|\dot V|^2dt-\int_a^bg(R(V,\dot c)\dot c,V)dt.
+  \]
+  If instead $V$ is parallel, the first integral drops out:
+  \[
+    \frac{d^2E(c_s)}{ds^2}\bigg|_{s=0}=-\int_a^bg(R(V,\dot c)\dot c,V)dt
+    +g\!\left(\frac{\partial^2c}{\partial s^2},\dot c\right)\bigg|_a^b,
+  \]
+  and if in addition $s\mapsto\bar c(s,t)$ is a geodesic for each $t$, the
+  remaining boundary term also vanishes.
+  \source{petersen:page-0256}
+\end{remark}
+
+\section{Nonpositive Sectional Curvature}
+
+\begin{lemma}[Lemma 6.2.1]
+  \label{lem:pet-ch6-nonsingular-exp-covering}
+  \lean{PetersenLib.exp_nonsingular_isCoveringMap}
+  If $\exp_p:T_pM\to M$ is nonsingular everywhere (no critical points), then it
+  is a covering map.
+  \source{petersen:page-0257}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch6-nonsingular-exp-covering}
+  By definition $\exp_p$ is then an immersion, so pulling back the metric on
+  $M$ makes $\exp_p$ a local Riemannian isometry on $T_pM$. A local isometry
+  from a complete Riemannian manifold is a covering map, so it suffices that
+  the pullback metric on $T_pM$ is complete; this holds because it is
+  geodesically complete at the origin, straight lines through the origin
+  remaining geodesics for the pullback metric.
+  \source{petersen:page-0257}
+\end{proof}
+
+\begin{theorem}[Theorem 6.2.2 — Mangoldt 1881, Hadamard 1889, Cartan 1925]
+  \label{thm:pet-ch6-cartan-hadamard}
+  \lean{PetersenLib.cartanHadamard}
+  \uses{lem:pet-ch6-nonsingular-exp-covering}
+  If $(M,g)$ is complete, connected, and has $\sec\le0$, then the universal
+  cover of $M$ is diffeomorphic to $\mathbb{R}^n$.
+  \source{petersen:page-0257}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch6-cartan-hadamard,def:pet-ch6-jacobi-field,rem:pet-ch6-jacobi-dexp-relation,lem:pet-ch6-nonsingular-exp-covering}
+  It suffices to show $|D\exp_p(w)|>0$ for every nonzero $w\in T_pT_pM$;
+  \cref{lem:pet-ch6-nonsingular-exp-covering} then shows $\exp_p$ is a
+  covering map, and $T_pM\cong\mathbb{R}^n$ is simply connected, so it is the
+  universal cover. Fix $p$, $w\ne0$, and (using
+  \cref{rem:pet-ch6-jacobi-dexp-relation}) the Jacobi field $J$ along
+  $c(t)=\exp_p(tw)$ with $J(0)=0$, $\dot J(0)=w$, so $|D\exp_p(w)|=|J(1)|$.
+  Then
+  \[
+    \frac{d}{dt}\Big(\tfrac12|J(t)|^2\Big)=g(\dot J,J),\qquad
+    \frac{d^2}{dt^2}\Big(\tfrac12|J(t)|^2\Big)
+    =g(\ddot J,J)+|\dot J|^2=-g(R(J,\dot c)\dot c,J)+|\dot J|^2\ge|\dot J|^2,
+  \]
+  the last step using $\sec\le0$, i.e.\ $g(R(x,y)y,x)\le0$ for all $x,y$.
+  Integrating from $0$ (where $g(\dot J(0),J(0))=0$),
+  $g(\dot J(t),J(t))\ge\int_0^t|\dot J|^2\,dt\ge0$, with equality for all $t$
+  forcing $\dot J\equiv0$ hence $w=\dot J(0)=0$, contrary to hypothesis. So for
+  $w\ne0$ this derivative is $>0$ on $(0,1]$ (it cannot vanish identically),
+  and integrating once more, $\tfrac12|J(t)|^2>0$ for $t\in(0,1]$; in
+  particular $|J(1)|>0$, as required.
+  \source{petersen:page-0257,petersen:page-0258}
+\end{proof}
+
+\begin{remark}[failure for Ricci or scalar curvature bounds]
+  \label{rem:pet-ch6-cartan-hadamard-fails-ricci}
+  \lean{PetersenLib.cartanHadamard_fails_forRicci}
+  \uses{thm:pet-ch6-cartan-hadamard}
+  No analogue of \cref{thm:pet-ch6-cartan-hadamard} holds under $\operatorname{Ric}\le0$
+  or $\operatorname{scal}\le0$ in place of $\sec\le0$: there exist Ricci-flat metrics on
+  $\mathbb{R}^2\times S^{n-2}$ and scalar-flat metrics on $\mathbb{R}\times S^{n-1}$.
+  \source{petersen:page-0258}
+\end{remark}
+
+\begin{definition}[strictly convex function]
+  \label{def:pet-ch6-convex-function}
+  \lean{PetersenLib.IsConvexOn,PetersenLib.IsStrictlyConvexOn}
+  A function on a Riemannian manifold is \emph{(strictly) convex} if its
+  restriction to every geodesic is (strictly) convex as a function of the
+  affine parameter.
+  \source{petersen:page-0259}
+\end{definition}
+
+\begin{remark}[$\operatorname{Hess}f_0\succ0$ in nonpositive curvature]
+  \label{rem:pet-ch6-hessian-f0-positive-definite}
+  \lean{PetersenLib.hess_f0_posDef_nonpositiveCurvature}
+  \uses{rem:pet-ch6-jacobi-hessian-r,def:pet-ch6-convex-function,thm:pet-ch6-cartan-hadamard}
+  Let $(M,g)$ be complete, simply connected, and of nonpositive curvature, so
+  by \cref{thm:pet-ch6-cartan-hadamard} the distance $r(x)=|xp|$ is smooth on
+  $M-\{p\}$ and $f_0(x)=\tfrac12r(x)^2$ is smooth everywhere, with
+  $\operatorname{Hess}f_0=dr^2+r\operatorname{Hess}r$. If $J$ is a Jacobi field along a unit
+  speed geodesic from $p$ with $J(0)=0$, then by
+  \cref{rem:pet-ch6-jacobi-hessian-r} and the estimate in the proof of
+  \cref{thm:pet-ch6-cartan-hadamard},
+  \[
+    \operatorname{Hess}r(J(b),J(b))=g(\dot J(b),J(b))\ge\int_0^b|\dot J|^2dt>0
+  \]
+  for $b>0$ and $J(b)\ne0$ (any $J(b)$ arises this way), so $\operatorname{Hess}r$, hence
+  $\operatorname{Hess}f_0$, is positive definite. Consequently $f_0\circ c$ is (strictly)
+  convex along any geodesic $c$, since
+  $\frac{d^2}{dt^2}f_0\circ c=\operatorname{Hess}f_0(\dot c,\dot c)>0$; thus $f_0$ is a
+  strictly convex function in the sense of
+  \cref{def:pet-ch6-convex-function}.
+  \source{petersen:page-0259}
+\end{remark}
+
+\begin{remark}[maxima of convex functions and unique minima]
+  \label{rem:pet-ch6-max-of-convex-functions}
+  \lean{PetersenLib.max_isConvex,PetersenLib.strictlyConvex_uniqueMinimum}
+  \uses{def:pet-ch6-convex-function}
+  The maximum of finitely many convex functions is convex (this reduces to
+  the one-dimensional statement by restricting to geodesics). Any proper,
+  nonnegative, strictly convex function $f$ on a complete manifold has a
+  unique minimum: properness and boundedness below give a minimum, and if
+  there were two minima, strict convexity restricted to a geodesic joining
+  them would force smaller values on the interior of the segment than at
+  either endpoint, a contradiction.
+  \source{petersen:page-0259}
+\end{remark}
+
+\begin{definition}[$L^\infty$ center of mass]
+  \label{def:pet-ch6-linfty-center-of-mass}
+  \lean{PetersenLib.centerOfMassLinfty}
+  \uses{rem:pet-ch6-hessian-f0-positive-definite,rem:pet-ch6-max-of-convex-functions}
+  Let $(M,g)$ be complete, simply connected, of nonpositive curvature, and
+  $p_1,\dots,p_k\in M$. By
+  \cref{rem:pet-ch6-hessian-f0-positive-definite,rem:pet-ch6-max-of-convex-functions}
+  the function $x\mapsto\max\{f_{0,p_1}(x),\dots,f_{0,p_k}(x)\}$ is proper,
+  nonnegative, and strictly convex, hence has a unique minimum, denoted
+  $\operatorname{cm}_\infty\{p_1,\dots,p_k\}$ and called the \emph{$L^\infty$ center of
+  mass} of $\{p_1,\dots,p_k\}$: it is the center of the smallest closed ball
+  containing $\{p_1,\dots,p_k\}$.
+  \source{petersen:page-0259,petersen:page-0260}
+\end{definition}
+
+\begin{theorem}[Theorem 6.2.3 — Cartan, 1925]
+  \label{thm:pet-ch6-cartan-fixed-point}
+  \lean{PetersenLib.cartan_finiteOrderIsometry_fixedPoint}
+  \uses{def:pet-ch6-linfty-center-of-mass}
+  If $(M,g)$ is a complete simply connected Riemannian manifold of nonpositive
+  curvature, then any isometry $F:M\to M$ of finite order has a fixed point.
+  \source{petersen:page-0260}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch6-cartan-fixed-point}
+  Let $k$ be the order of $F$ (the smallest positive integer with $F^k=\mathrm
+  {id}$), fix $p\in M$, and set
+  $q=\operatorname{cm}_\infty\{p,F(p),\dots,F^{k-1}(p)\}$, the unique minimizer of
+  $f(x)=\max\{f_{0,p}(x),\dots,f_{0,F^{k-1}(p)}(x)\}$. Since $F$ is an
+  isometry,
+  \begin{align*}
+    f(F(q))&=\tfrac12\big(\max\{|F(q)p|,\dots,|F(q)F^{k-1}(p)|\}\big)^2\\
+    &=\tfrac12\big(\max\{|F(q)F^k(p)|,\dots,|F(q)F^{k-1}(p)|\}\big)^2
+    =\tfrac12\big(\max\{|qF^{k-1}(p)|,\dots,|qF^{k-2}(p)|\}\big)^2=f(q),
+  \end{align*}
+  (reindexing the finite orbit $\{p,\dots,F^{k-1}(p)\}=\{F(p),\dots,F^k(p)\}$).
+  So $F(q)$ is also a minimum of the strictly convex function $f$; by
+  uniqueness of the minimizer (\cref{def:pet-ch6-linfty-center-of-mass}),
+  $F(q)=q$.
+  \source{petersen:page-0260}
+\end{proof}
+
+\begin{corollary}[Corollary 6.2.4]
+  \label{cor:pet-ch6-torsion-free-fundamental-group}
+  \lean{PetersenLib.fundamentalGroup_torsionFree_nonpositiveCurvature}
+  \uses{thm:pet-ch6-cartan-fixed-point}
+  If $(M,g)$ is a complete Riemannian manifold of nonpositive curvature, then
+  $\pi_1(M)$ is torsion free: every nontrivial element has infinite order.
+  \source{petersen:page-0261}
+\end{corollary}
+\begin{proof}
+  \uses{cor:pet-ch6-torsion-free-fundamental-group,thm:pet-ch6-cartan-fixed-point}
+  A nontrivial finite-order element of $\pi_1(M)$ acts on the universal cover
+  $\tilde M$ (complete, simply connected, of the same nonpositive curvature) as
+  a nontrivial deck transformation of finite order. By
+  \cref{thm:pet-ch6-cartan-fixed-point} this deck transformation has a fixed
+  point; but a nontrivial deck transformation of a covering acts freely, a
+  contradiction. Hence no nontrivial element of $\pi_1(M)$ has finite order.
+  \source{petersen:page-0261}
+\end{proof}
+
+\begin{lemma}[Lemma 6.2.5]
+  \label{lem:pet-ch6-hessian-lower-bound}
+  \lean{PetersenLib.hess_f0_ge_metric_nonpositiveCurvature}
+  \uses{rem:pet-ch6-hessian-f0-positive-definite}
+  If $(M,g)$ has nonpositive curvature, then any modified distance function
+  $f_0=\tfrac12r^2$ satisfies $\operatorname{Hess}f_0\ge g$.
+  \source{petersen:page-0261}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch6-hessian-lower-bound,rem:pet-ch6-jacobi-hessian-r}
+  Writing $g=dr^2+g_r$ and $\operatorname{Hess}f_0=dr^2+r\operatorname{Hess}r$, the claim reduces
+  to $r\operatorname{Hess}r\ge g_r$, i.e.\ to
+  $t\cdot g(\dot J(t),\dot J(t))=t\cdot\operatorname{Hess}r(J(t),J(t))\ge g(J(t),J(t))$
+  for a Jacobi field $J$ along a unit speed geodesic from $p$ with $J(0)=0$,
+  $\dot J(0)\perp\dot c(0)$. Consider
+  $\lambda(t)=|J(t)|^2/g(\dot J(t),J(t))$ (equivalently
+  $t-\lambda(t)\ge0$ is to be shown). By l'H\^opital's rule, using
+  $g(\ddot J,J)+|\dot J|^2=-g(R(J,\dot c)\dot c,J)+|\dot J|^2$,
+  \[
+    \lambda(0)=\frac{2g(\dot J(0),J(0))}{-g(R(J(0),\dot c(0))\dot c(0),J(0))+|\dot J(0)|^2}
+    =\frac{0}{|\dot J(0)|^2}=0.
+  \]
+  Its derivative is
+  \[
+    \dot\lambda(t)=\frac{2\big(g(J,\dot J)\big)^2-|\dot J|^2|J|^2+g(R(J,\dot c)\dot c,J)|J|^2}
+    {\big(g(J,\dot J)\big)^2}.
+  \]
+  Since $\sec\le0$, $g(R(J,\dot c)\dot c,J)\le0$, so the numerator is at most
+  $2(g(J,\dot J))^2-|\dot J|^2|J|^2$; by Cauchy--Schwarz,
+  $(g(J,\dot J))^2\le|J|^2|\dot J|^2$, so
+  \[
+    \dot\lambda(t)\le\frac{2\big(g(J,\dot J)\big)^2-\big(g(J,\dot J)\big)^2}{\big(g(J,\dot J)\big)^2}=1.
+  \]
+  Integrating from $\lambda(0)=0$ gives $\lambda(t)\le t$, i.e.\
+  $t\cdot g(\dot J(t),J(t))\ge|J(t)|^2$, which is the desired inequality; the
+  claim about $\operatorname{Hess}f_0$ follows.
+  \source{petersen:page-0261,petersen:page-0262}
+\end{proof}
+
+\begin{remark}[triangle and quadrilateral comparison]
+  \label{rem:pet-ch6-triangle-comparison}
+  \lean{PetersenLib.triangleComparison_nonpositiveCurvature}
+  \uses{lem:pet-ch6-hessian-lower-bound}
+  Integrating $\frac{d}{dt}(f_{0,p}\circ c)\ge1$ along a unit speed geodesic
+  $c$ (using \cref{lem:pet-ch6-hessian-lower-bound}) yields, for a triangle in
+  $M$ with side lengths $a,b,c$ and angle $\alpha$ opposite $a$,
+  \[
+    a^2\ge b^2+c^2-2bc\cos\alpha.
+  \]
+  Consequently the angle sum in any geodesic triangle is $\le\pi$, and in any
+  geodesic quadrilateral is $\le2\pi$. If $\sec<0$, these inequalities are
+  strict unless the base point $p$ lies on the geodesic $c$; in particular the
+  angle sum in any nondegenerate quadrilateral is $<2\pi$.
+  \source{petersen:page-0262}
+\end{remark}
+
+\begin{definition}[axis, period, displacement function]
+  \label{def:pet-ch6-axis-displacement}
+  \lean{PetersenLib.IsAxis,PetersenLib.axisPeriod,PetersenLib.displacementFunction}
+  For an isometry $F:M\to M$, an \emph{axis} for $F$ is a geodesic
+  $c:\mathbb{R}\to M$ such that $F\circ c$ is a reparametrization of $c$; since
+  isometries map geodesics to geodesics, $F\circ c(t)=c(\pm t+a)$ for some
+  $a\in\mathbb{R}$. If the sign is $-$, $c(a/2)$ is fixed by $F$. When
+  $F\circ c(t)=c(t+a)$, $a$ is the \emph{period} of $F$ with respect to $c$
+  (depending on the parametrization). The \emph{displacement function} of $F$
+  is $x\mapsto\delta_F(x)=|xF(x)|$.
+  \source{petersen:page-0263}
+\end{definition}
+
+\begin{lemma}[Lemma 6.2.7]
+  \label{lem:pet-ch6-axis-existence}
+  \lean{PetersenLib.axis_of_positiveMinimalDisplacement}
+  \uses{def:pet-ch6-axis-displacement}
+  If $F:M\to M$ is an isometry of a complete Riemannian manifold and
+  $\delta_F$ has a positive minimum, then $F$ has an axis.
+  \source{petersen:page-0263}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch6-axis-existence}
+  Let $\delta_F$ have a minimum at $p$ and $c:[0,1]\to M$ a unit-speed segment
+  from $p$ to $F(p)$; then $F\circ c$ is a segment of the same speed from
+  $F(p)$ to $F^2(p)$. For fixed $t\in[0,1]$,
+  \begin{align*}
+    \delta_F(p)&\le\delta_F(c(t))=|c(t)(F\circ c)(t)|
+    \le|c(t)c(1)|+|c(1)(F\circ c)(t)|\\
+    &=|c(t)c(1)|+|(F\circ c)(0)(F\circ c)(t)|
+    =|c(t)c(1)|+|c(0)c(t)|=|c(0)c(1)|=|pF(p)|=\delta_F(p),
+  \end{align*}
+  using that $F$ is an isometry to identify $(F\circ c)(0)=F(p)=c(1)$. Hence
+  equality holds throughout, so $c|_{[t,1]}$ followed by $F\circ c|_{[0,t]}$
+  realizes the distance $|c(t)(F\circ c)(t)|$ via the concatenated path of
+  the same total length as the triangle inequality bound, forcing this
+  concatenation to be a segment, hence a geodesic. Thus $c|_{[0,1]}$ and
+  $F\circ c|_{[0,1]}$ fit together as the extension of $c$ to $[0,2]$, i.e.\
+  $(F\circ c)(t)=c(1+t)$. Repeating forwards and backwards extends $c$ to an
+  axis for $F$ on all of $\mathbb{R}$, of period $1$.
+  \source{petersen:page-0263}
+\end{proof}
+
+\begin{definition}[deck transformation]
+  \label{def:pet-ch6-deck-transformation}
+  \lean{PetersenLib.DeckTransformation}
+  For the universal cover $\pi:\tilde M\to M$, a \emph{deck transformation} is
+  a map $F:\tilde M\to\tilde M$ with $\pi\circ F=\pi$; it is determined by the
+  value $F(p)\in\pi^{-1}(q)$ for a chosen $p\in\pi^{-1}(q)$, and the
+  fundamental group $\pi_1(M,q)$ acts by deck transformations: a loop
+  $[\alpha]\in\pi_1(M,q)$ and lift $\tilde\alpha$ with
+  $\tilde\alpha(0)=p$ produce the deck transformation with
+  $F(p)=\tilde\alpha(1)$. In the Riemannian setting, deck transformations are
+  isometries of $\tilde M$ since $\pi$ is a local isometry.
+  \source{petersen:page-0264}
+\end{definition}
+
+\begin{lemma}[Lemma 6.2.8]
+  \label{lem:pet-ch6-deck-transformation-dilation}
+  \lean{PetersenLib.deckTransformation_minimalDisplacement_closedGeodesic}
+  \uses{def:pet-ch6-deck-transformation,def:pet-ch6-axis-displacement,lem:pet-ch6-axis-existence}
+  If $F:\tilde M\to\tilde M$ is a nontrivial deck transformation on the
+  universal cover over a compact base $M$, then $\delta_F$ has a positive
+  minimum; the axis through the minimizing point projects to a closed
+  geodesic in $M$ of minimal length in its free homotopy class, and
+  $\delta_F(x)\ge2\operatorname{inj}_{\pi(x)}(M)$.
+  \source{petersen:page-0264}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch6-deck-transformation-dilation}
+  \emph{Loops generated by $F$.} If $x_i\in\tilde M$ ($i=0,1$) are joined to
+  $F(x_i)$ by curves $c_i:[0,1]\to\tilde M$, the loops $\pi\circ c_i$ are
+  freely homotopic in $M$: extend $H(s,0):[0,1]\to M$ from $x_0$ to $x_1$,
+  set $H(s,1)=F(H(s,0))$ (lifted arbitrarily) and $H(i,t)=c_i(t)$; simple
+  connectivity of $\tilde M$ extends this boundary data on $\partial[0,1]^2$
+  to a map $H:[0,1]^2\to\tilde M$, and $\pi\circ H$ is the required homotopy
+  since $\pi(H(s,1))=\pi(F(H(s,0)))=\pi(H(s,0))$. Conversely, if a loop at
+  $\pi(x_1)$ freely homotopic to $\pi\circ c_0$ lifts (via the homotopy
+  $\tilde H$ with $\tilde H(0,\cdot)=c_0$) then, since both $\tilde H(s,0)$
+  and $\tilde H(s,1)$ lift $H(s,0)$ and $F\circ\tilde H(\cdot,0)$ agrees with
+  $\tilde H(\cdot,1)$ at $s=0$, uniqueness of lifts gives
+  $F\circ\tilde H(s,0)=\tilde H(s,1)$; at $s=1$ this shows the loop lifts to a
+  curve from $x_1$ to $F(x_1)$.
+
+  \emph{No small loops.} Since $F$ is nontrivial, none of these loops is
+  homotopically trivial; hence $\delta_F(x)\ge2\operatorname{inj}_{\pi(x)}(M)$, as a
+  shorter segment from $x$ to $F(x)$ would generate a loop of length
+  $<2\operatorname{inj}_{\pi(x)}(M)$ contained in and hence contractible within
+  $B(\pi(x),\operatorname{inj}_{\pi(x)}(M))$.
+
+  \emph{Minimizing the displacement.} Take $q_i\in\tilde M$ with
+  $\delta_F(q_i)\to\inf\delta_F\ge\operatorname{inj}M$ and segments
+  $\tilde c_i:[0,1]\to\tilde M$ from $q_i$ to $F(q_i)$; let
+  $c_i=\pi\circ\tilde c_i$. Compactness of $M$ and $|c_i|=\delta_F(q_i)$ allow
+  passing to a subsequence with $\dot c_i(0)\to v\in T_qM$, $q=\lim c_i(0)$,
+  $|v|=\inf\delta_F$, so $c_i\to c(t)=\exp_q(tv)$ by continuity of $\exp$.
+  For large $i$, $|c_i(t)c(t)|<\operatorname{inj}(M)$, so $c_i$ and $c$ are freely
+  homotopic via the unique short geodesics joining corresponding points; by
+  the characterization above, the lift $\tilde c$ of $c$ satisfies
+  $F(\tilde c(0))=\tilde c(1)$, and
+  $\delta_F(\tilde c(0))\le L(\tilde c)=L(c)=|v|=\inf\delta_F$, so equality
+  holds and $c$ has minimal length in its free homotopy class. The first
+  variation formula then shows $c$ is a closed geodesic.
+  \source{petersen:page-0264,petersen:page-0265}
+\end{proof}
+
+\begin{theorem}[Theorem 6.2.6 — Preissmann, 1943]
+  \label{thm:pet-ch6-preissmann}
+  \lean{PetersenLib.preissmannTheorem}
+  \uses{lem:pet-ch6-deck-transformation-dilation,def:pet-ch6-axis-displacement,rem:pet-ch6-triangle-comparison}
+  If $(M,g)$ is a compact manifold of negative curvature, then every Abelian
+  subgroup of $\pi_1(M)$ is cyclic. In particular, no compact product manifold
+  $M\times N$ admits a metric of negative curvature.
+  \source{petersen:page-0263}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch6-preissmann,lem:pet-ch6-deck-transformation-dilation,rem:pet-ch6-triangle-comparison}
+  By \cref{lem:pet-ch6-deck-transformation-dilation} every nontrivial deck
+  transformation $F$ on the universal cover $\tilde M$ has an axis. In
+  negative curvature axes are unique: if $c_1\ne c_2$ were both axes for $F$
+  and intersected once, $F$-invariance would force a second intersection and
+  hence coincidence of the geodesics; so distinct axes are disjoint. Joining
+  $p_1\in c_1$, $p_2\in c_2$ by a segment $\sigma$, the quadrilateral
+  $p_1,p_2,F(p_1),F(p_2)$ (with $F\circ\sigma$ the fourth side, since $F$
+  preserves $c_1,c_2$) has adjacent angles along the two axes summing to
+  $\pi$ each, hence total angle sum $2\pi$; by
+  \cref{rem:pet-ch6-triangle-comparison} this forces the quadrilateral to be
+  degenerate, i.e.\ all four points collinear — contradicting $c_1\ne c_2$.
+  So every nontrivial deck transformation has a unique axis.
+
+  Now let $G$ commute with $F$, and let $c$ be the axis of $F$ with period
+  $l$: $(G\circ c)(t+l)=(G\circ F\circ c)(t)=(F\circ G\circ c)(t)$ shows
+  $G\circ c$ is again an axis for $F$, hence (by uniqueness) $G\circ c=c$, so
+  $c$ is also an axis for $G$. Thus every element of the subgroup $H$
+  generated by $F,G$ has $c$ as an axis, giving a homomorphism $H\to\mathbb{R}$
+  sending an isometry to its period along $c$, with trivial kernel (a
+  nontrivial deck transformation cannot fix $c$ pointwise). The image
+  $A\subset\mathbb{R}$ is an additive subgroup with $a=\inf\{x\in A\mid x>0\}>0$,
+  since no nonzero period along $c$ can be smaller than
+  $\operatorname{inj}(M)/|\dot c|$ by
+  \cref{lem:pet-ch6-deck-transformation-dilation}; a nonzero-infimum additive
+  subgroup of $\mathbb{R}$ is cyclic, $A=\{na\mid n\in\mathbb{Z}\}$, so $H$ (and hence
+  any Abelian subgroup of $\pi_1(M)$, which is generated by commuting
+  elements) is cyclic. A compact product $M\times N$ has $\pi_1(M\times
+  N)=\pi_1(M)\times\pi_1(N)$, which is Abelian but not cyclic unless one
+  factor is simply connected; if $\dim M,\dim N\ge1$ neither factor is
+  contractible in a compact manifold with a metric, so $\pi_1(M)\times
+  \pi_1(N)$ fails to be cyclic in general, precluding negative curvature.
+  \source{petersen:page-0265}
+\end{proof}
+
+\section{Positive Curvature}
+
+\begin{lemma}[Lemma 6.3.1 — Bonnet, 1855, and Synge, 1926]
+  \label{lem:pet-ch6-bonnet-synge-diameter}
+  \lean{PetersenLib.bonnetSynge_longGeodesicsNotMinimizing}
+  \uses{rem:pet-ch6-second-variation-special-cases}
+  If $(M,g)$ satisfies $\sec\ge k>0$, then geodesics of length $>\pi/\sqrt k$
+  cannot be locally minimizing.
+  \source{petersen:page-0266}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch6-bonnet-synge-diameter,rem:pet-ch6-second-variation-special-cases}
+  Let $c:[0,l]\to M$ be unit speed with $l>\pi/\sqrt k$. Let $E$ be a unit
+  parallel field perpendicular to $c$ and $V(t)=\sin(\tfrac\pi lt)E(t)$; $V$
+  vanishes at $t=0,l$, giving a proper variation. By
+  \cref{rem:pet-ch6-second-variation-special-cases},
+  \[
+    \frac{d^2E}{ds^2}\bigg|_{s=0}
+    =\Big(\frac\pi l\Big)^2\int_0^l\cos^2\Big(\frac\pi lt\Big)dt
+    -\int_0^l\sin^2\Big(\frac\pi lt\Big)\sec(E,\dot c)\,dt
+    \le\Big(\frac\pi l\Big)^2\int_0^l\cos^2\Big(\frac\pi lt\Big)dt
+    -k\int_0^l\sin^2\Big(\frac\pi lt\Big)dt.
+  \]
+  Since $l>\pi/\sqrt k$, $(\pi/l)^2<k$, so the right side is
+  $<k\int_0^l\cos^2(\tfrac\pi lt)dt-k\int_0^l\sin^2(\tfrac\pi lt)dt=0$ (the two
+  integrals are equal by symmetry). So nearby curves in the variation are
+  strictly shorter than $c$.
+  \source{petersen:page-0266,petersen:page-0267}
+\end{proof}
+
+\begin{corollary}[Corollary 6.3.2 — Hopf and Rinow, 1931, and Myers, 1932]
+  \label{cor:pet-ch6-hopf-rinow-myers-diameter}
+  \lean{PetersenLib.hopfRinowMyers_diameterBound}
+  \uses{lem:pet-ch6-bonnet-synge-diameter}
+  If $(M,g)$ is complete and satisfies $\sec\ge k>0$, then $M$ is compact and
+  $\operatorname{diam}(M,g)\le\pi/\sqrt k=\operatorname{diam}S^n_k$; in particular $\pi_1(M)$ is
+  finite.
+  \source{petersen:page-0267}
+\end{corollary}
+\begin{proof}
+  \uses{cor:pet-ch6-hopf-rinow-myers-diameter,lem:pet-ch6-bonnet-synge-diameter}
+  By \cref{lem:pet-ch6-bonnet-synge-diameter}, no geodesic of length
+  $>\pi/\sqrt k$ realizes the distance between its endpoints; since $M$ is
+  complete every pair of points is joined by a minimizing geodesic, so
+  $\operatorname{diam}(M,g)\le\pi/\sqrt k$. In particular $M$ is bounded and complete,
+  hence compact (Hopf--Rinow). The universal cover of $M$ satisfies the same
+  curvature hypothesis and is likewise complete, hence compact; a compact
+  cover forces the deck group $\pi_1(M)$ to be finite.
+  \source{petersen:page-0267}
+\end{proof}
+
+\begin{theorem}[Theorem 6.3.3 — Myers, 1941]
+  \label{thm:pet-ch6-myers-ricci-diameter}
+  \lean{PetersenLib.myersRicciDiameterBound}
+  \uses{cor:pet-ch6-hopf-rinow-myers-diameter}
+  If $(M,g)$ is a complete Riemannian manifold with $\operatorname{Ric}\ge(n-1)k>0$,
+  then $\operatorname{diam}(M,g)\le\pi/\sqrt k$, and $(M,g)$ has finite fundamental
+  group.
+  \source{petersen:page-0267}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch6-myers-ricci-diameter,rem:pet-ch6-second-variation-special-cases}
+  As in \cref{cor:pet-ch6-hopf-rinow-myers-diameter}, it suffices to show no
+  geodesic $c:[0,l]\to M$ of length $l>\pi/\sqrt k$ is minimal. Let
+  $\dot c(0)=E_1,E_2,\dots,E_n$ be an orthonormal basis of $T_{c(0)}M$, extend
+  $E_2,\dots,E_n$ by parallel translation, and set
+  $V_i(t)=\sin(\tfrac\pi lt)E_i(t)$, $i=2,\dots,n$. Summing the second
+  variation formula (\cref{rem:pet-ch6-second-variation-special-cases}) over
+  $i$,
+  \begin{align*}
+    \sum_{i=2}^n\frac{d^2E}{ds^2}\bigg|_{s=0}
+    &=(n-1)\Big(\frac\pi l\Big)^2\int_0^l\cos^2\Big(\frac\pi lt\Big)dt
+    -\int_0^l\sin^2\Big(\frac\pi lt\Big)\operatorname{Ric}(\dot c,\dot c)\,dt\\
+    &<(n-1)k\int_0^l\cos^2\Big(\frac\pi lt\Big)dt-(n-1)k\int_0^l\sin^2\Big(\frac\pi lt\Big)dt=0,
+  \end{align*}
+  using $\sum_{i=2}^ng(R(E_i,\dot c)\dot c,E_i)=\operatorname{Ric}(\dot c,\dot c)\ge(n-1)k$
+  and $(\pi/l)^2<k$ as before. So at least one $V_i$ gives a negative second
+  variation, and $c$ is not locally minimizing. The diameter and finiteness
+  of $\pi_1(M)$ then follow exactly as in
+  \cref{cor:pet-ch6-hopf-rinow-myers-diameter}.
+  \source{petersen:page-0267,petersen:page-0268}
+\end{proof}
+
+\begin{example}[Example 6.3.4 — punctured sphere]
+  \label{ex:pet-ch6-punctured-sphere-infinite-pi1}
+  \lean{PetersenLib.puncturedSphereExample}
+  The incomplete manifold $S^2-\{\pm p\}$ has constant curvature $1$ and
+  infinite fundamental group; its universal cover also has diameter $\pi$.
+  This shows completeness cannot be dropped in
+  \cref{cor:pet-ch6-hopf-rinow-myers-diameter,thm:pet-ch6-myers-ricci-diameter}.
+  \source{petersen:page-0268}
+\end{example}
+
+\begin{example}[Example 6.3.5 — doubly warped product with $\operatorname{Ric}>0$]
+  \label{ex:pet-ch6-doubly-warped-ricci-positive}
+  \lean{PetersenLib.dwpRicciPositiveOnS1TimesR3}
+  \uses{thm:pet-ch6-myers-ricci-diameter}
+  $S^1\times\mathbb{R}^3$ admits a complete doubly warped product metric
+  $dr^2+\rho^2(r)d\theta^2+\phi^2(r)ds_r^2$ with $\operatorname{Ric}>0$ everywhere,
+  showing incompleteness is not needed to violate the topological conclusions
+  of \cref{thm:pet-ch6-myers-ricci-diameter} on noncompact manifolds — Myers'
+  theorem itself forces compactness once $\operatorname{Ric}$ is bounded below by a
+  positive constant, but here $\operatorname{Ric}$ is merely positive (not bounded
+  away from $0$). With $\rho(t)=t^{-1/4}$, $\phi(t)=t^{3/4}$ for $t>1$ the
+  Ricci curvature is positive; extending to $[0,\infty)$ so the metric is
+  $C^\infty$ at $0$, one may arrange $\rho,\phi$ to be $C^1$ and piecewise
+  smooth at $t=1$ with $-1<\dot\rho\le0$, $0<\dot\phi\le1$, and, on $[0,1]$,
+  $\dot\rho\le0$; smoothing $\rho$ at $t=1$ while preserving positivity of
+  $\operatorname{Ric}$ then yields the example.
+  \source{petersen:page-0268}
+\end{example}
+
+\begin{remark}[closed parallel fields around closed geodesics]
+  \label{rem:pet-ch6-closed-parallel-field-construction}
+  \lean{PetersenLib.closedParallelFieldAroundClosedGeodesic}
+  \uses{def:pet-ch6-parallel-field}
+  Let $c:[0,l]\to M$ be a closed unit speed geodesic, $p=c(0)=c(l)$, and
+  $P:T_pM\to T_pM$ parallel translation once around $c$, a linear isometry
+  fixing $\dot c(0)$ (since $P(\dot c(0))=\dot c(l)=\dot c(0)$), hence
+  preserving $\dot c(0)^\perp\subset T_pM$. A linear isometry
+  $L:\mathbb{R}^k\to\mathbb{R}^k$ with $\det L=(-1)^{k+1}$ has $1$ as an eigenvalue.
+  Consequently: (1) if $M$ is orientable and even-dimensional, $P$ preserves
+  orientation ($\det P=1$) and $\dot c(0)^\perp$ is odd-dimensional, so
+  $P|_{\dot c(0)^\perp}$ has $\det=(-1)^{(\dim M-1)+1}=1$... more precisely,
+  since $\dim(\dot c(0)^\perp)=\dim M-1$ is odd, $P|_{\dot c(0)^\perp}$ fixes
+  a vector, giving a closed parallel field around $c$; (2) if $M$ is
+  nonorientable, odd-dimensional, and $c$ is orientation-reversing, then
+  $\dot c(0)^\perp$ is even-dimensional and $P|_{\dot c(0)^\perp}$ has
+  $\det=-1$, again fixing a vector and yielding a closed parallel field.
+  \source{petersen:page-0268,petersen:page-0269}
+\end{remark}
+
+\begin{theorem}[Theorem 6.3.6 — Synge, 1936]
+  \label{thm:pet-ch6-synge-theorem}
+  \lean{PetersenLib.syngeTheorem}
+  \uses{lem:pet-ch6-deck-transformation-dilation,rem:pet-ch6-closed-parallel-field-construction,rem:pet-ch6-second-variation-special-cases}
+  Let $M$ be a compact manifold with $\sec>0$. (1) If $M$ is even-dimensional
+  and orientable, $M$ is simply connected. (2) If $M$ is odd-dimensional,
+  $M$ is orientable.
+  \source{petersen:page-0269}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch6-synge-theorem,lem:pet-ch6-deck-transformation-dilation,rem:pet-ch6-closed-parallel-field-construction,rem:pet-ch6-second-variation-special-cases}
+  Argue by contradiction: suppose the universal cover $\pi:\tilde M\to M$ is
+  nontrivial, and choose a nontrivial deck transformation $F$, orientation
+  reversing along a closed geodesic in the odd-dimensional case. By
+  \cref{lem:pet-ch6-deck-transformation-dilation} there is a unit speed axis
+  $\tilde c$ for $F$ projecting to $c=\pi\circ\tilde c$, the shortest curve in
+  its free homotopy class in $M$, restricted to $[a,b]$ of length
+  $b-a=\min\delta_F$; $c$ is a closed geodesic. In both hypothesis cases,
+  \cref{rem:pet-ch6-closed-parallel-field-construction} produces a unit
+  parallel field $E$ along $c$, closed and perpendicular to $\dot c$. Using
+  $E$ as a (non-proper, but with cancelling endpoint terms since $c$ is
+  closed) variational field in
+  \cref{rem:pet-ch6-second-variation-special-cases},
+  \[
+    \frac{d^2E(c_s)}{ds^2}\bigg|_{s=0}
+    =-\int_a^bg(R(E,\dot c)\dot c,E)\,dt=-\int_a^b\sec(E,\dot c)\,dt<0.
+  \]
+  So nearby closed curves in this variation are strictly shorter than $c$,
+  contradicting minimality of $c$ in its free homotopy class.
+  \source{petersen:page-0269}
+\end{proof}
+
+\begin{remark}[the Hopf problem]
+  \label{rem:pet-ch6-hopf-problem}
+  \lean{PetersenLib.hopfProblemRemark}
+  \uses{thm:pet-ch6-synge-theorem}
+  \Cref{thm:pet-ch6-synge-theorem} shows $\mathbb{RP}^2\times\mathbb{RP}^2$, which has
+  positive Ricci curvature, admits no metric of positive sectional curvature
+  (it is even-dimensional, orientable, but not simply connected). Whether
+  $S^2\times S^2$ admits positive sectional curvature is open (the Hopf
+  problem); \cref{thm:pet-ch6-preissmann} ruled out negative curvature on any
+  product manifold via fundamental group considerations, but such
+  considerations alone do not resolve the positive-curvature case.
+  \source{petersen:page-0269}
+\end{remark}
+
+\section{Basic Comparison Estimates}
+
+\begin{proposition}[Proposition 6.4.1 — Riccati comparison principle]
+  \label{prop:pet-ch6-riccati-comparison-principle}
+  \lean{PetersenLib.riccatiComparisonPrinciple}
+  If $\rho_1,\rho_2:(0,b)\to\mathbb{R}$ are smooth with
+  $\dot\rho_1+\rho_1^2\le\dot\rho_2+\rho_2^2$, then
+  $\rho_2-\rho_1\ge\limsup_{t\to0}(\rho_2(t)-\rho_1(t))$.
+  \source{petersen:page-0270}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch6-riccati-comparison-principle}
+  Let $F(t)=\int(\rho_1+\rho_2)\,dt$ be an antiderivative of $\rho_1+\rho_2$
+  on $(0,b)$. Then
+  $\frac{d}{dt}\big((\rho_2-\rho_1)e^F\big)
+  =(\dot\rho_2-\dot\rho_1+\rho_2^2-\rho_1^2)e^F\ge0$
+  by hypothesis, so $(\rho_2-\rho_1)e^F$ is nondecreasing on $(0,b)$; since
+  $e^F>0$, the claim follows by comparing to the $\limsup$ as $t\to0^+$.
+  \source{petersen:page-0270}
+\end{proof}
+
+\begin{corollary}[Corollary 6.4.2 — Riccati comparison estimate]
+  \label{cor:pet-ch6-riccati-comparison-estimate}
+  \lean{PetersenLib.riccatiComparisonEstimate}
+  \uses{prop:pet-ch6-riccati-comparison-principle}
+  Let $\rho:(0,b)\to\mathbb{R}$ be smooth with $\rho(t)=\tfrac1t+O(t)$ and $k\in\mathbb{R}$.
+  (1) If $\dot\rho+\rho^2\le-k$, then $\rho(t)\le\operatorname{sn}_k'(t)/\operatorname{sn}_k(t)$, and
+  moreover $b<\pi/\sqrt k$ when $k>0$. (2) If $-k\le\dot\rho+\rho^2$, then
+  $\operatorname{sn}_k'(t)/\operatorname{sn}_k(t)\le\rho(t)$ for all $t<b$ when $k\le0$, and for
+  $t<\min\{b,\pi/\sqrt k\}$ when $k>0$.
+  \source{petersen:page-0270,petersen:page-0271}
+\end{corollary}
+\begin{proof}
+  \uses{cor:pet-ch6-riccati-comparison-estimate,prop:pet-ch6-riccati-comparison-principle}
+  The function $\rho_k(t)=\operatorname{sn}_k'(t)/\operatorname{sn}_k(t)$ solves $\dot\rho_k+\rho_k^2=-k$
+  and satisfies $\rho_k(t)=\tfrac1t+O(t)$ for every $k$; when $k>0$ it is
+  defined only on $(0,\pi/\sqrt k)$, with
+  $\lim_{t\to\pi/\sqrt k}\rho_k(t)=-\infty$. Applying
+  \cref{prop:pet-ch6-riccati-comparison-principle} to $\rho,\rho_k$ (in the
+  order appropriate to each case) and using
+  $\lim_{t\to0}(\rho(t)-\rho_k(t))=0$ (both are $\tfrac1t+O(t)$) gives the
+  stated one-sided inequalities on the common domain of definition. In case
+  (1), if $b>\pi/\sqrt k$ with $k>0$, the inequality $\rho\le\rho_k$ on
+  $(0,\pi/\sqrt k)$ together with $\rho_k\to-\infty$ would force $\rho$ to be
+  non-smooth (blow up) before reaching $\pi/\sqrt k$, contradicting
+  smoothness of $\rho$ on $(0,b)$; hence $b<\pi/\sqrt k$. In case (2), the
+  comparison function $\rho_k$ is defined only up to $\pi/\sqrt k$ when
+  $k>0$, forcing the stated restriction on the range of $t$.
+  \source{petersen:page-0271}
+\end{proof}
+
+\begin{theorem}[Theorem 6.4.3 — Rauch comparison]
+  \label{thm:pet-ch6-rauch-comparison}
+  \lean{PetersenLib.rauchComparisonHessian}
+  \uses{cor:pet-ch6-riccati-comparison-estimate,rem:pet-ch6-jacobi-hessian-r}
+  Assume $(M,g)$ satisfies $k\le\sec\le K$, and write $g=dr^2+g_r$ for the
+  metric in exponential polar coordinates around $p$ on the star-shaped
+  region $T_pM-\{0\}$. Then
+  \[
+    \frac{\operatorname{sn}_k'(r)}{\operatorname{sn}_k(r)}g_r\le\operatorname{Hess}r\le\frac{\operatorname{sn}_K'(r)}{\operatorname{sn}_K(r)}g_r,
+  \]
+  and consequently the modified distance functions $f_k,f_K$ satisfy
+  $\operatorname{Hess}f_k\le(1-kf_k)g$ and $\operatorname{Hess}f_K\ge(1-Kf_K)g$.
+  \source{petersen:page-0271}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch6-rauch-comparison,cor:pet-ch6-riccati-comparison-estimate,rem:pet-ch6-jacobi-hessian-r}
+  Fix a unit speed geodesic $c(t)$, $c(0)=p$, along which $r$ is smooth on
+  $[0,b]$. \emph{Upper bound.} For a Jacobi field $J$ along $c$ with $J(0)=0$,
+  $\dot J(0)\perp\dot c(0)$ (so $J\perp\dot c$ throughout), set
+  $\rho(t)=g(J,\dot J)/|J|^2=\operatorname{Hess}r(J/|J|,J/|J|)$ (by
+  \cref{rem:pet-ch6-jacobi-hessian-r}). Then
+  \[
+    \dot\rho=\frac{-R(J,\dot c,\dot c,J)|J|^2+|\dot J|^2|J|^2-2(g(J,\dot J))^2}{|J|^4}
+    \ge-K+\frac{|\dot J|^2|J|^2-2(g(J,\dot J))^2}{|J|^4}\ge-K-\rho^2,
+  \]
+  the last step by Cauchy--Schwarz. \emph{Lower bound.} Let $E$ be a unit
+  parallel field along $c$ perpendicular to $\dot c$, $\rho=g(S(E),E)=
+  \operatorname{Hess}r(E,E)$ for the shape operator $S=\nabla\nabla r$; by the Riccati
+  equation for $S$ (part (2) of proposition 3.2.11 of the source),
+  $\dot\rho=-R(E,\dot c,\dot c,E)-g(S(E),S(E))\le-k-(g(S(E),E))^2=-k-\rho^2$.
+  In both cases $\rho(t)=\tfrac1t+O(t)$ as $t\to0$, so
+  \cref{cor:pet-ch6-riccati-comparison-estimate} gives the two Hessian
+  bounds on $g_r$; the bounds for the modified distance functions follow
+  immediately from $\operatorname{Hess}f_k=(1-kf_k')\,\cdot$-type identities relating
+  $f_k$ to $r$ (corollary 4.3.4 of the source).
+  \source{petersen:page-0272}
+\end{proof}
+
+\begin{remark}[Remark 6.4.4 — the index-form proof technique]
+  \label{rem:pet-ch6-index-form-remark}
+  \lean{PetersenLib.rauchComparisonViaIndexForm}
+  \uses{thm:pet-ch6-rauch-comparison}
+  A more traditional proof of the lower-bound half of
+  \cref{thm:pet-ch6-rauch-comparison} uses the index form (exercise 6.7.25),
+  and can also be adapted to the upper-bound case.
+  \source{petersen:page-0272}
+\end{remark}
+
+\begin{example}[Example 6.4.5 — conjugate points in $S^n_K$]
+  \label{ex:pet-ch6-conjugate-point-space-form}
+  \lean{PetersenLib.conjugatePointSpaceFormExample}
+  On $S^n_K$, $K>0$, polar coordinates around $p$ give
+  $dr^2+\operatorname{sn}_K^2(r)\,d\sigma_{n-1}^2$; at distance $\pi/\sqrt K$ from $p$,
+  every direction hits a conjugate point.
+  \source{petersen:page-0273}
+\end{example}
+
+\begin{theorem}[Theorem 6.4.6]
+  \label{thm:pet-ch6-conjugate-radius-bound}
+  \lean{PetersenLib.conjugateRadiusLowerBound}
+  \uses{thm:pet-ch6-rauch-comparison,ex:pet-ch6-conjugate-point-space-form}
+  If $(M,g)$ has $\sec\le K$, $K>0$, then
+  $\exp_p:B(0,\pi/\sqrt K)\to M$ has no critical points.
+  \source{petersen:page-0273}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch6-conjugate-radius-bound,thm:pet-ch6-rauch-comparison,rem:pet-ch6-jacobi-hessian-r}
+  Let $c(t)=\exp_p(tv)$ be unit speed and $J$ a Jacobi field along $c$ with
+  $J(0)=0$, $\dot J(0)\perp\dot c(0)$; suppose toward a contradiction that
+  $J>0$ on $(0,b)$ with $J(b)=0$ for some $b\le\pi/\sqrt K$. From the proof of
+  \cref{thm:pet-ch6-rauch-comparison} (upper bound case with $k=K$),
+  $g(\dot J(t),J(t))/|J(t)|^2\ge\operatorname{sn}_K'(t)/\operatorname{sn}_K(t)$ for
+  $t<\min\{b,\pi/\sqrt K\}$, equivalently
+  $\frac{d}{dt}\big(|J(t)|/\operatorname{sn}_K(t)\big)\ge0$. Since $D\exp_p$ is the
+  identity at the origin, $|J(t)|=t|\dot J(0)|+O(t^2)$, so by l'H\^opital,
+  \[
+    \lim_{t\to0}\frac{|J(t)|}{\operatorname{sn}_K(t)}
+    =\lim_{t\to0}\frac{g(\dot J(t),J(t))}{|J(t)|}
+    =\lim_{t\to0}\frac{\operatorname{Hess}r(J(t),J(t))}{|J(t)|}
+    =\lim_{t\to0}\frac{t^{-1}|J(t)|^2+O(t^3)}{|J(t)|}=|\dot J(0)|.
+  \]
+  Hence $|J(t)|\ge|\dot J(0)|\operatorname{sn}_K(t)>0$ for
+  $t<\min\{b,\pi/\sqrt K\}\le\pi/\sqrt K$, contradicting $J(b)=0$ with
+  $b\le\pi/\sqrt K$ (taking $b<\pi/\sqrt K$ forces the contradiction directly;
+  $b=\pi/\sqrt K$ is excluded since $J(t)>0$ persists up to that limit).
+  \source{petersen:page-0273}
+\end{proof}
+
+\begin{remark}[injectivity radius in nonpositive curvature]
+  \label{rem:pet-ch6-injectivity-radius-nonpositive}
+  \lean{PetersenLib.injectivityRadius_nonpositiveCurvature}
+  \uses{thm:pet-ch6-cartan-hadamard}
+  If $\sec\le0$ there are no conjugate points, so
+  $\operatorname{inj}(p)=\tfrac12\cdot(\text{length of shortest geodesic loop at }p)$.
+  On a closed manifold with $\sec\le0$,
+  $\operatorname{inj}(M)=\inf_p\operatorname{inj}(p)=\tfrac12\cdot(\text{length of shortest closed
+  geodesic})$: the infimum is attained by compactness and continuity of
+  $p\mapsto\operatorname{inj}(p)$; if $p$ realizes it via a geodesic loop $c:[0,1]\to M$,
+  splitting $c$ at its midpoint $c(\tfrac12)$ gives
+  $\operatorname{inj}(c(\tfrac12))\le\operatorname{inj}(p)$, forcing $c$ to also be a geodesic loop
+  from $c(\tfrac12)$, hence smooth at $p$ and a closed geodesic.
+  \source{petersen:page-0274}
+\end{remark}
+
+\begin{lemma}[Lemma 6.4.7 — Klingenberg]
+  \label{lem:pet-ch6-klingenberg-injectivity-estimate}
+  \lean{PetersenLib.klingenbergInjectivityEstimate}
+  \uses{thm:pet-ch6-conjugate-radius-bound,rem:pet-ch6-injectivity-radius-nonpositive}
+  Let $(M,g)$ be compact with $\sec\le K$, $K>0$. Then
+  \[
+    \operatorname{inj}(p)\ge\min\Big\{\frac{\pi}{\sqrt K},\ \tfrac12\cdot
+    (\text{length of shortest geodesic loop at }p)\Big\},
+  \]
+  and $\operatorname{inj}(M)\ge\pi/\sqrt K$, or
+  $\operatorname{inj}(M)=\tfrac12\cdot(\text{length of shortest closed geodesic})$.
+  \source{petersen:page-0274}
+\end{lemma}
+
+\begin{theorem}[Theorem 6.4.8]
+  \label{thm:pet-ch6-convexity-radius-criterion}
+  \lean{PetersenLib.convexityRadiusCriterion}
+  \uses{thm:pet-ch6-rauch-comparison}
+  Suppose $R>0$ satisfies (1) $R\le\tfrac12\operatorname{inj}(x)$ for all $x\in B(p,R)$,
+  and (2) $R\le\tfrac12\cdot\pi/\sqrt K$, where
+  $K=\sup\{\sec(\pi)\mid\pi\subset T_xM,\,x\in B(p,R)\}$. Then $r(x)=|xp|$ is
+  convex on $B(p,R)$, and any two points of $B(p,R)$ are joined by a unique
+  segment lying in $B(p,R)$.
+  \source{petersen:page-0274}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch6-convexity-radius-criterion,thm:pet-ch6-rauch-comparison}
+  Condition (1) ensures any two points of $B(p,R)$ are joined by a unique
+  segment in $M$, and that $r$ is smooth on $B(p,2R)-\{p\}$; condition (2)
+  and \cref{thm:pet-ch6-rauch-comparison} give $\operatorname{Hess}r\ge0$ on $B(p,R)$.
+  For $x\in B(p,R)$ fixed, let $C_x=\{y\in B(p,R):\text{the segment
+  }[x,y]\subset B(p,R)\}$; $x\in C_x$ and $C_x$ is open by continuity of the
+  segment on its endpoints. If $y\in B(p,R)\cap\partial C_x$, the segment
+  $c:[0,1]\to M$ from $x$ to $y$ lies in $\overline{B(p,R)}$ by continuity;
+  $\varphi(t)=r(c(t))$ satisfies $\varphi(0),\varphi(1)<R$ and
+  $\ddot\varphi=\operatorname{Hess}r(\dot c,\dot c)\ge0$, so $\varphi$ is convex and
+  $\max\varphi\le\max\{\varphi(0),\varphi(1)\}<R$, forcing $c\subset B(p,R)$,
+  i.e.\ $y\in C_x$; thus $C_x$ is also closed in $B(p,R)$, hence (by
+  connectedness of $B(p,R)$) $C_x=B(p,R)$.
+  \source{petersen:page-0274,petersen:page-0275}
+\end{proof}
+
+\begin{definition}[convexity radius]
+  \label{def:pet-ch6-convexity-radius}
+  \lean{PetersenLib.convexityRadius}
+  \uses{thm:pet-ch6-convexity-radius-criterion,lem:pet-ch6-klingenberg-injectivity-estimate}
+  The \emph{convexity radius} at $p$, $\operatorname{conv.rad}(p)$, is the supremum of
+  $R$ satisfying the two hypotheses of
+  \cref{thm:pet-ch6-convexity-radius-criterion}, and globally
+  $\operatorname{conv.rad}(M,g)=\inf_p\operatorname{conv.rad}(p)$. By
+  \cref{thm:pet-ch6-convexity-radius-criterion,lem:pet-ch6-klingenberg-injectivity-estimate},
+  $\operatorname{conv.rad}(M,g)\ge\min\{\operatorname{inj}(M,g)/2,\ \pi/(2\sqrt K)\}$ where
+  $K=\sup\sec(M,g)$; in nonpositive curvature this simplifies to
+  $\operatorname{conv.rad}(M,g)=\operatorname{inj}(M,g)/2$.
+  \source{petersen:page-0275}
+\end{definition}
+
+\section{More on Positive Curvature}
+
+\begin{theorem}[Theorem 6.5.1 — Klingenberg, 1959]
+  \label{thm:pet-ch6-klingenberg-even-dim-injectivity}
+  \lean{PetersenLib.klingenbergEvenDimInjectivity}
+  \uses{lem:pet-ch6-klingenberg-injectivity-estimate,thm:pet-ch6-synge-theorem}
+  If $(M,g)$ is a compact orientable even-dimensional manifold with
+  $0<\sec\le1$, then $\operatorname{inj}(M,g)\ge\pi$. If $M$ is not orientable,
+  $\operatorname{inj}(M,g)\ge\pi/2$.
+  \source{petersen:page-0276}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch6-klingenberg-even-dim-injectivity,lem:pet-ch6-klingenberg-injectivity-estimate,rem:pet-ch6-closed-parallel-field-construction}
+  The nonorientable case follows from the orientable case applied to the
+  orientation double cover, which then has $\operatorname{inj}\ge\pi$, so the base has
+  $\operatorname{inj}\ge\pi/2$. For the orientable case, by
+  \cref{lem:pet-ch6-klingenberg-injectivity-estimate} and $K\le1$, if
+  $\operatorname{inj}M<\pi$ then $\operatorname{inj}M$ is realized by a closed geodesic
+  $c:[0,2\operatorname{inj}M]\to M$, $2\operatorname{inj}M<2\pi$. Since $M$ is orientable and
+  even-dimensional, \cref{rem:pet-ch6-closed-parallel-field-construction}
+  and the argument in the proof of \cref{thm:pet-ch6-synge-theorem} produce
+  for all small $\varepsilon>0$ curves $c_\varepsilon:[0,2\operatorname{inj}M]\to M$
+  converging to $c$ as $\varepsilon\to0$ with $L(c_\varepsilon)<L(c)$. As
+  $c_\varepsilon\subset B(c_\varepsilon(0),\operatorname{inj}M)$, there is a unique
+  segment from $c_\varepsilon(0)$ to any $c_\varepsilon(t)$; let
+  $c_\varepsilon(t_\varepsilon)$ be the farthest point on $c_\varepsilon$ from
+  $c_\varepsilon(0)$ and $\sigma_\varepsilon$ the (perpendicular at
+  $c_\varepsilon(t_\varepsilon)$) segment joining them. As $\varepsilon\to0$,
+  $t_\varepsilon\to\operatorname{inj}M$ and $\sigma_\varepsilon$ subconverges to a
+  segment from $c(0)$ to $c(\operatorname{inj}M)$ perpendicular to $c$ there. Since the
+  conjugate radius is $\ge\pi>\operatorname{inj}M$ and $c$ is a geodesic loop realizing
+  the injectivity radius at $c(0)$, there are only two segments from $c(0)$
+  to $c(\operatorname{inj}M)$ (namely the two halves of $c$, neither perpendicular to
+  $c$ at the interior point $c(\operatorname{inj}M)$ unless $\operatorname{inj}M=\pi$), a
+  contradiction with the existence of the perpendicular limiting segment.
+  \source{petersen:page-0276}
+\end{proof}
+
+\begin{remark}[odd-dimensional counterexamples]
+  \label{rem:pet-ch6-klingenberg-odd-dim-counterexample}
+  \lean{PetersenLib.klingenbergOddDimCounterexample}
+  \uses{thm:pet-ch6-klingenberg-even-dim-injectivity}
+  No analogue of \cref{thm:pet-ch6-klingenberg-even-dim-injectivity} holds in
+  odd dimensions: the orientable quotients $S^3/\mathbb{Z}_k$ have a closed
+  geodesic (image of the Hopf fiber) of length $2\pi/k\to0$; the Berger
+  spheres $(S^3,g_\varepsilon)$ have Hopf fiber a closed geodesic of length
+  $2\pi\varepsilon$ with curvatures in $[\varepsilon^2,4-3\varepsilon^2]$, so
+  after rescaling the upper bound to $1$ the curvatures lie in
+  $[\varepsilon^2/(4-3\varepsilon^2),1]$ and the Hopf fiber has length
+  $2\pi\varepsilon\sqrt{4-3\varepsilon^2}<2\pi$ once $\varepsilon<1/\sqrt3$,
+  with lower curvature bound then below $1/3$.
+  \source{petersen:page-0276,petersen:page-0277}
+\end{remark}
+
+\begin{definition}[$l$-connected pair]
+  \label{def:pet-ch6-l-connected}
+  \lean{PetersenLib.IsLConnected}
+  $A\subset X$ is \emph{$l$-connected} if the relative homotopy groups
+  $\pi_k(X,A)$ vanish for $k<l$; by Hurewicz's theorem the relative homology
+  groups $H_k(X,A)$ then also vanish for $k\le l$, so from the long exact
+  sequences of the pair, $\pi_k(A)\to\pi_k(X)$ and $H_k(A)\to H_k(X)$ are
+  isomorphisms for $k<l$ and surjective for $k=l$.
+  \source{petersen:page-0277}
+\end{definition}
+
+\begin{definition}[index of a critical point]
+  \label{def:pet-ch6-critical-point-index}
+  \lean{PetersenLib.criticalPointIndex}
+  A critical point $p\in M$ of a smooth function $f:M\to\mathbb{R}$ has \emph{index}
+  $m$ if $\operatorname{Hess}f$ is negative definite on an $m$-dimensional subspace of
+  $T_pM$. If $m\ge1$, $p$ cannot be a local minimum of $f$, since $f$
+  decreases along directions where the Hessian is negative definite.
+  \source{petersen:page-0277}
+\end{definition}
+
+\begin{theorem}[Theorem 6.5.2]
+  \label{thm:pet-ch6-morse-connectivity}
+  \lean{PetersenLib.morseTheoreticConnectivity}
+  \uses{def:pet-ch6-l-connected,def:pet-ch6-critical-point-index}
+  Let $f:M\to\mathbb{R}$ be smooth and proper. If $b$ is not a critical value and
+  every critical point in $f^{-1}([a,b])$ has index $\ge m$, then
+  $f^{-1}((-\infty,a))\subset f^{-1}((-\infty,b))$ is $(m-1)$-connected.
+  \source{petersen:page-0277}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch6-morse-connectivity}
+  If $f^{-1}([a,b])$ has no critical points, the negative gradient flow
+  deforms $f^{-1}((-\infty,b))$ onto $f^{-1}((-\infty,a))$. Otherwise cover
+  the (compact, by properness) critical set in $f^{-1}([a,b])$ by finitely
+  many coordinate boxes $\overline U_i\subset V_i\approx[-1,1]^n$ in which the
+  first $m$ coordinates $x^1,\dots,x^m$ span a subspace where $\operatorname{Hess}f$ is
+  negative definite at the critical point. Given
+  $\phi:N^{k-1}\to f^{-1}([a,b])$ with $k\le m$ (fixed on
+  $\partial f^{-1}((-\infty,a))$ if nonempty): (i) on $M-\bigcup U_i$, flow
+  along $-\lambda(x)\nabla f|_x$ for $\lambda\ge0$ vanishing exactly on
+  $\bigcup U_i$, deforming $\phi$ rel $\overline U_i$ so that
+  $\max_{V_i}f\circ\phi$ decreases and is not attained on $\partial V_i$;
+  (ii) on each $V_i$, letting $S_i=\{x^1=\cdots=x^m=0\}\subset V_i$, since
+  $k\le m$ a transversality argument produces a homotopy $\phi_t$ avoiding
+  $S_i$ for $t>0$ and constant outside $V_i$, still with $\max_{V_i}
+  f\circ\phi_t$ not attained on $\partial V_i$ for small $t$; (iii) once
+  $\phi$ avoids $S_i$, the flow of the radial field
+  $\sum_{j=1}^mx^j\partial_j$ on $V_i$ decreases $\max_{V_i}f\circ\phi$ and
+  pushes $\phi$ out of $\overline U_i$. Iterating these three deformations
+  moves $\phi$ into $f^{-1}((-\infty,a])$, proving $(m-1)$-connectivity.
+  \source{petersen:page-0277,petersen:page-0278}
+\end{proof}
+
+\begin{definition}[the path space $\Omega_{A,B}(M)$ and index of a geodesic]
+  \label{def:pet-ch6-path-space-AB}
+  \lean{PetersenLib.pathSpaceAB,PetersenLib.geodesicIndexAB}
+  \uses{def:pet-ch6-critical-point-index}
+  For $A,B\subset M$, $\Omega_{A,B}(M)=\{c:[0,1]\to M\mid c(0)\in A,\,c(1)\in
+  B\}$. When $A,B$ are compact submanifolds, the energy functional
+  $E:\Omega_{A,B}(M)\to[0,\infty)$ behaves as a proper smooth function, its
+  critical points are geodesics meeting $A,B$ orthogonally at the endpoints,
+  and its variational fields along such a geodesic are those tangent to $A,B$
+  at the respective endpoints. The \emph{index} of such a geodesic is $\ge k$
+  if there is a $k$-dimensional space of such variational fields on which the
+  second variation of energy is negative (in the sense of
+  \cref{def:pet-ch6-critical-point-index} applied to $E$ on
+  $\Omega_{A,B}(M)$).
+  \source{petersen:page-0278}
+\end{definition}
+
+\begin{theorem}[Theorem 6.5.3]
+  \label{thm:pet-ch6-submanifold-connectivity}
+  \lean{PetersenLib.submanifoldIndexConnectivity}
+  \uses{def:pet-ch6-path-space-AB,thm:pet-ch6-morse-connectivity}
+  Let $M$ be a complete Riemannian manifold and $A\subset M$ a compact
+  submanifold. If every geodesic in $\Omega_{A,A}(M)$ perpendicular to $A$ at
+  both endpoints has index $\ge k$, then $A\subset M$ is $k$-connected.
+  \source{petersen:page-0278}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch6-submanifold-connectivity,thm:pet-ch6-morse-connectivity}
+  Identifying $A=E^{-1}(0)$ inside $\Omega_{A,A}(M)$, the deformation scheme
+  of \cref{thm:pet-ch6-morse-connectivity} (carried out in a suitable
+  infinite-dimensional or finite-dimensional-approximation setting for
+  $\Omega_{A,A}(M)$) shows $A\subset\Omega_{A,A}(M)$ is $(k-1)$-connected.
+  Since $\pi_l(\Omega_{A,A}(M),A)=\pi_{l+1}(M,A)$, this gives
+  $\pi_{l+1}(M,A)=0$ for $l<k$, i.e.\ $A\subset M$ is $k$-connected.
+  \source{petersen:page-0278}
+\end{proof}
+
+\begin{theorem}[Theorem 6.5.4 — Berger, 1958]
+  \label{thm:pet-ch6-berger-sphere-theorem}
+  \lean{PetersenLib.bergerSphereTheorem}
+  \uses{thm:pet-ch6-submanifold-connectivity,lem:pet-ch6-bonnet-synge-diameter,def:pet-ch6-l-connected}
+  Let $M$ be a closed $n$-manifold with $\sec\ge1$. If $\operatorname{inj}_p>\pi/2$ for
+  some $p\in M$, then $M$ is $(n-1)$-connected, hence a homotopy sphere.
+  \source{petersen:page-0279}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch6-berger-sphere-theorem,thm:pet-ch6-submanifold-connectivity,lem:pet-ch6-bonnet-synge-diameter}
+  Apply \cref{thm:pet-ch6-submanifold-connectivity} with $A=\{p\}$. Every
+  geodesic loop at $p$ is either constant or has length $>\pi$ (since
+  $\operatorname{inj}_p>\pi/2$); by \cref{lem:pet-ch6-bonnet-synge-diameter} such a
+  geodesic has, for each unit parallel field $E$ perpendicular to it, a
+  proper variation with negative second derivative (modifying $E$ by the
+  factor $\sin(\pi t/l)$ as in that proof). Since there is an
+  $(n-1)$-dimensional space of such parallel fields, the index of the
+  geodesic is $\ge n-1$, so $\{p\}\subset M$ is $(n-1)$-connected by
+  \cref{thm:pet-ch6-submanifold-connectivity}, i.e.\ $M$ is
+  $(n-1)$-connected. Choosing $F:M\to S^n$ of degree $1$, $(n-1)$-connectivity
+  of $M$ (and of $S^n$) makes $F$ an isomorphism on $\pi_k$ for $k<n$; by
+  Hurewicz, $\pi_n(M)\cong H_n(M)$ and $\pi_n(S^n)\cong H_n(S^n)$, and since
+  $\deg F=1$, $F_*:H_n(M)\to H_n(S^n)$ is an isomorphism, so $F_*$ is an
+  isomorphism on $\pi_n$ as well. A theorem of Whitehead then shows $F$ is a
+  homotopy equivalence.
+  \source{petersen:page-0279}
+\end{proof}
+
+\begin{theorem}[Theorem 6.5.5 — Klingenberg, 1961]
+  \label{thm:pet-ch6-klingenberg-pinching-injectivity}
+  \lean{PetersenLib.klingenbergPinchingInjectivity}
+  \uses{thm:pet-ch6-klingenberg-even-dim-injectivity,lem:pet-ch6-klingenberg-injectivity-estimate}
+  A compact simply connected Riemannian $n$-manifold $(M,g)$ with
+  $1\le\sec<4$ has $\operatorname{inj}>\pi/2$.
+  \source{petersen:page-0279}
+\end{theorem}
+\begin{proof}
+  \uses{thm:pet-ch6-klingenberg-pinching-injectivity,thm:pet-ch6-klingenberg-even-dim-injectivity,lem:pet-ch6-klingenberg-injectivity-estimate}
+  By rescaling it suffices to show simply connected manifolds with
+  $1<\sec\le4$ have $\operatorname{inj}\ge\pi/2$; the even-dimensional case is
+  \cref{thm:pet-ch6-klingenberg-even-dim-injectivity}, so assume $n\ge3$ odd.
+  The strict lower curvature bound gives $\delta>0$ such that geodesics of
+  length $\ge\pi-\delta$ have index $\ge n-1\ge2$ (as in
+  \cref{thm:pet-ch6-berger-sphere-theorem}); hence any loop of constant speed
+  based at $p$, viewed in $\Omega_{p,p}(M)$, is homotopic (uniformly, by
+  replacing loops with piecewise-geodesic shortenings with breakpoints chosen
+  independently of the homotopy parameter) to one of length $<\pi$.
+
+  Suppose toward a contradiction $\operatorname{inj}_p<\pi/2$. By
+  \cref{lem:pet-ch6-klingenberg-injectivity-estimate} there is a geodesic
+  loop $c_1$ at $p$ of length $<\pi$ realizing $\operatorname{inj}_p$. Simple
+  connectivity gives a homotopy of constant-speed loops
+  $c_s(t)$, $s\in[0,1]$, $c_s(0)=c_s(1)=p$, all of length $<\pi$, with
+  $c_0\equiv p$ and $c_1$ the closed geodesic. Each $c_s\subset B(p,\pi/2)$.
+  Pull back the metric on $B(0,\pi/2)\subset T_pM$ so that
+  $\exp_p:B(0,\pi/2)\to B(p,\pi/2)$ is a local isometry; each $c_s$ lifts
+  uniquely to $\tilde c_s:[0,b_s]\to \tilde B(0,\pi/2)$ with $\tilde c_s(0)=0$,
+  where either $\tilde c_s(b_s)\in\partial B(0,\pi/2)$ or $b_s=1$
+  (piecewise-geodesic $c_s$ lift by lifting velocities at break points). Let
+  $A=\{s: c_s\text{ lifts to a loop }\tilde c_s:[0,1]\to B(0,\pi/2)\text{ at
+  }0\}$. Then $0\in A$ (loops near the trivial loop lift near $0$, where
+  $\exp_p$ is a diffeomorphism); $A$ is closed, since if $s_i\to s$ in $A$,
+  the limit $\tilde c_{s_i}(1)=0$ persists in the limit lift $\tilde c_s$
+  (which stays in the interior since $L(c_s)<\pi$); $A$ is open, since for
+  $s_0\in A$, choosing $\epsilon>0$ with $\exp_p:B(\tilde
+  c_{s_0}(t),\epsilon)\to B(c_{s_0}(t),\epsilon)$ an isometry for all $t$ and
+  contained in $B(0,\pi/2)$, nearby loops $c_s\subset\bigcup_tB(c_{s_0}(t),
+  \epsilon)$ lift uniquely into $\bigcup_tB(\tilde c_{s_0}(t),\epsilon)$ and
+  close up. So $A=[0,1]$; but $c_1$, the closed geodesic of length $<\pi$,
+  lifts to a straight line from $0$ that is not a loop (as $\exp_p$
+  restricted to the segment is injective on $B(0,\pi/2)$, and a nontrivial
+  closed geodesic loop of length $<\pi$ realizing $\operatorname{inj}_p$ cannot close up
+  strictly inside $B(0,\pi/2)$ under the local isometry) — a contradiction.
+  \source{petersen:page-0279,petersen:page-0280}
+\end{proof}
+
+\begin{corollary}[Corollary 6.5.6 — Rauch, Berger, and Klingenberg, 1951--61]
+  \label{cor:pet-ch6-rauch-berger-klingenberg-sphere}
+  \lean{PetersenLib.rauchBergerKlingenbergSphereTheorem}
+  \uses{thm:pet-ch6-berger-sphere-theorem,thm:pet-ch6-klingenberg-pinching-injectivity}
+  Let $M$ be a closed simply connected $n$-manifold with $4>\sec\ge1$. Then
+  $M$ is $(n-1)$-connected, hence a homotopy sphere.
+  \source{petersen:page-0280}
+\end{corollary}
+\begin{proof}
+  \uses{cor:pet-ch6-rauch-berger-klingenberg-sphere,thm:pet-ch6-berger-sphere-theorem,thm:pet-ch6-klingenberg-pinching-injectivity}
+  By \cref{thm:pet-ch6-klingenberg-pinching-injectivity}, $\operatorname{inj}(M,g)>\pi/2$
+  everywhere; apply \cref{thm:pet-ch6-berger-sphere-theorem} at any $p\in M$.
+  \source{petersen:page-0280}
+\end{proof}
+
+\begin{corollary}[Corollary 6.5.7]
+  \label{cor:pet-ch6-ricci-simply-connected}
+  \lean{PetersenLib.ricciDiameterInjectivitySimplyConnected}
+  \uses{thm:pet-ch6-submanifold-connectivity,thm:pet-ch6-myers-ricci-diameter}
+  If $M$ is a closed $n$-manifold with $\operatorname{Ric}\ge(n-1)$ and $\operatorname{inj}_p>\pi/2$
+  for some $p\in M$, then $M$ is simply connected.
+  \source{petersen:page-0280}
+\end{corollary}
+\begin{proof}
+  \uses{cor:pet-ch6-ricci-simply-connected,thm:pet-ch6-submanifold-connectivity,thm:pet-ch6-myers-ricci-diameter}
+  As in \cref{thm:pet-ch6-berger-sphere-theorem}, but using the Ricci
+  curvature computation of \cref{thm:pet-ch6-myers-ricci-diameter} (summing
+  the second variation over an orthonormal frame of parallel fields) instead
+  of the sectional curvature bound: every nonconstant geodesic loop at $p$
+  has length $>\pi$ and, since $\operatorname{Ric}\ge n-1$, index $\ge1$ (at least one
+  parallel-field variation is negative), so by
+  \cref{thm:pet-ch6-submanifold-connectivity} with $A=\{p\}$, $\{p\}\subset M$
+  is $1$-connected, i.e.\ $M$ is simply connected.
+  \source{petersen:page-0280}
+\end{proof}
+
+\begin{lemma}[Lemma 6.5.8 — the Connectedness Principle, Wilking, 2003]
+  \label{lem:pet-ch6-wilking-connectedness-principle}
+  \lean{PetersenLib.wilkingConnectednessPrinciple}
+  \uses{def:pet-ch6-l-connected,rem:pet-ch6-second-variation-special-cases}
+  Let $M^n$ be compact with $\sec>0$. (a) If $N^{n-k}\subset M^n$ is a closed
+  totally geodesic codimension-$k$ submanifold, then $N\subset M$ is
+  $(n-2k+1)$-connected. (b) If $N_1^{n-k_1},N_2^{n-k_2}\subset M$ are closed
+  totally geodesic submanifolds with $k_1\le k_2$, $k_1+k_2\le n$, then
+  $N_1\cap N_2$ is a nonempty totally geodesic submanifold and
+  $N_1\cap N_2\to N_2$ is $(n-k_1-k_2)$-connected.
+  \source{petersen:page-0280,petersen:page-0281}
+\end{lemma}
+\begin{proof}
+  \uses{lem:pet-ch6-wilking-connectedness-principle,thm:pet-ch6-submanifold-connectivity,rem:pet-ch6-second-variation-special-cases}
+  \emph{(a)} Let $c\in\Omega_{N,N}(M)$ be a geodesic and $E$ a parallel field
+  along $c$ tangent to $N$ at both endpoints. Extend to a variation
+  $\tilde c(s,t)$ with $\tilde c(0,t)=c(t)$ and $s\mapsto\tilde c(s,t)$
+  geodesics with initial velocity $E|_{c(0)}$; total geodesy of $N$ keeps
+  $\tilde c(s,0),\tilde c(s,1)\in N$, so this variation lies in
+  $\Omega_{N,N}(M)$. By \cref{rem:pet-ch6-second-variation-special-cases}
+  (parallel field, geodesic variation, so both boundary terms vanish),
+  $\frac{d^2E(c_s)}{ds^2}|_{s=0}=-\int_0^1g(R(E,\dot c)\dot c,E)\,dt<0$ since
+  $\sec>0$ and $E\perp\dot c$. Let $V\subset T_{c(1)}M$ be the set of values
+  $E(1)$ over parallel fields $E$ along $c$ with $E(0)\in T_{c(0)}N$; then
+  $\dim V=\dim T_{c(0)}N=n-k$. The parallel fields giving negative variations
+  correspond to $V\cap T_{c(1)}N$, and since $V,T_{c(1)}N\subset
+  \dot c(1)^\perp$ (dimension $n-1$),
+  \[
+    2n-2k=\dim T_{c(1)}N+\dim V=\dim(V\cap T_{c(1)}N)+\dim(V+T_{c(1)}N)
+    \le\dim(V\cap T_{c(1)}N)+n-1,
+  \]
+  so $\dim(V\cap T_{c(1)}N)\ge n-2k+1$: every geodesic in $\Omega_{N,N}(M)$
+  perpendicular to $N$ at both endpoints has index $\ge n-2k+1$, and
+  \cref{thm:pet-ch6-submanifold-connectivity} gives $(n-2k+1)$-connectivity
+  of $N\subset M$.
+
+  \emph{(b)} $T_p(N_1\cap N_2)=T_pN_1\cap T_pN_2$ for $p\in N_1\cap N_2$ shows
+  $N_1\cap N_2$ is totally geodesic. For nonemptiness, take a shortest
+  geodesic $c$ from $N_1$ to $N_2$ (perpendicular to both at its endpoints);
+  the dimension bound $k_1+k_2\le n$ produces (as in part (a), applied with
+  the two submanifolds at the two endpoints) an
+  $(n-k_1-k_2+1)$-dimensional space of parallel fields along $c$ tangent to
+  $N_1,N_2$ at the endpoints, giving a negative second variation and hence a
+  strictly shorter nearby curve from $N_1$ to $N_2$ — impossible for a
+  shortest geodesic unless $c$ is trivial, i.e.\ $N_1\cap N_2\ne\emptyset$.
+  Identifying $N_1\cap N_2=E^{-1}(0)\subset\Omega_{N_1,N_2}(M)$, the same
+  index bound shows $N_1\cap N_2\subset\Omega_{N_1,N_2}(M)$ is
+  $(n-k_1-k_2)$-connected. Since $N_1\subset M$ is $(n-2k_1+1)$-connected by
+  part (a) and $k_1\le k_2$ (so $n-2k_1+1\ge n-k_1-k_2+1>n-k_1-k_2$), the pair
+  $\Omega_{N_1,N_2}(M)\subset\Omega_{M,N_2}(M)$ is also
+  $(n-k_1-k_2)$-connected, hence so is
+  $N_1\cap N_2\subset\Omega_{M,N_2}(M)$; since $\Omega_{M,N_2}(M)$ retracts
+  onto $N_2$, this is $(n-k_1-k_2)$-connectivity of $N_1\cap N_2\to N_2$.
+  \source{petersen:page-0281}
+\end{proof}
+
+\section{Further Study}
+
+\begin{remark}[Frankel's theorem]
+  \label{rem:pet-ch6-frankel-theorem}
+  \lean{PetersenLib.frankelTheoremRemark}
+  \uses{lem:pet-ch6-wilking-connectedness-principle}
+  Part (b) of \cref{lem:pet-ch6-wilking-connectedness-principle}, in the
+  special case that only nonemptiness of $N_1\cap N_2$ is retained, is
+  classically known as \emph{Frankel's theorem}: two closed totally geodesic
+  submanifolds $N_1,N_2$ of a manifold of positive curvature with
+  $\dim N_1+\dim N_2\ge\dim M$ must intersect.
+  \source{petersen:page-0282}
+\end{remark}
+
+\section{Exercises}
+
+\begin{remark}[Exercise 6.7.1]
+  \label{rem:pet-ch6-ex-6-7-1}
+  \lean{PetersenLib.exercise_6_7_1}
+  Show that in even dimensions the sphere and real projective space are the
+  only closed manifolds with constant positive curvature.
+  \source{petersen:page-0282}
+\end{remark}
+
+\begin{remark}[Exercise 6.7.2]
+  \label{rem:pet-ch6-ex-6-7-2}
+  \lean{PetersenLib.exercise_6_7_2}
+  \uses{def:pet-ch6-parallel-field}
+  Consider a rotationally symmetric metric $dr^2+\rho^2(r)d\theta^2$ and the
+  cone $dr^2+(\rho(a)+\dot\rho(a)(r-a))^2d\theta^2$ tangent to it at the
+  latitude $r=a$ (a genuine tangent cone when the surface is a surface of
+  revolution). (1) Show that $\nabla_{\partial_\theta}$ agrees along $r=a$ on
+  the two surfaces in the coordinates $(r,\theta)$, so parallel translation
+  along $r=a$ is the same on both. (2) Unwrapping the cone to the flat plane,
+  observe (by wrapping back up) that parallel translation along a latitude on
+  a cone need not close up into a closed parallel field. (3) Show that the
+  parallel field along $r=a$ closes up precisely when $\dot\rho(a)=0$.
+  \source{petersen:page-0282}
+\end{remark}
+
+\begin{remark}[Exercise 6.7.3 — Fermi--Walker transport]
+  \label{rem:pet-ch6-ex-6-7-3}
+  \lean{PetersenLib.exercise_6_7_3}
+  \uses{def:pet-ch6-vector-field-along-curve,def:pet-ch6-parallel-field}
+  Let $c:[a,b]\to M$ have nonvanishing speed and $T=\dot c/|\dot c|$. Call $V$
+  along $c$ a \emph{Fermi--Walker field} if
+  $\dot V=g(V,T)\dot T-g(V,\dot T)T=(T\wedge\dot T)(V)$. (1) Show that given
+  $V(t_0)$ there is a unique Fermi--Walker field with that value. (2) Show
+  $T$ itself is a Fermi--Walker field. (3) Show $g(V,W)$ is constant along
+  $c$ for Fermi--Walker fields $V,W$. (4) Show that if $c$ is a geodesic,
+  Fermi--Walker fields are parallel.
+  \source{petersen:page-0283}
+\end{remark}
+
+\begin{remark}[Exercise 6.7.4]
+  \label{rem:pet-ch6-ex-6-7-4}
+  \lean{PetersenLib.exercise_6_7_4}
+  \uses{thm:pet-ch6-conjugate-radius-bound}
+  Let $(M,g)$ be complete of constant curvature $k$ and $L:T_pM\to
+  T_pS^n_k$ a linear isometry. If $k\le0$, show
+  $\exp_p\circ L^{-1}\circ\exp_p^{-1}:S^n_k\to M$ is a Riemannian covering
+  map. If $k>0$, show
+  $\exp_p\circ L^{-1}\circ\exp_p^{-1}:S^n_k-\{-\tilde p\}\to M$ extends to a
+  Riemannian covering map $S^n_k\to M$.
+  \source{petersen:page-0283}
+\end{remark}
+
+\begin{remark}[Exercise 6.7.5]
+  \label{rem:pet-ch6-ex-6-7-5}
+  \lean{PetersenLib.exercise_6_7_5}
+  \uses{def:pet-ch6-parallel-field}
+  Let $c(s,t):[0,1]^2\to(M,g)$ satisfy
+  $R(\partial c/\partial s,\partial c/\partial t)=0$. Show that for each
+  $v\in T_{c(0,0)}M$ there is a parallel field $V:[0,1]^2\to TM$ along $c$
+  (i.e.\ $\partial V/\partial s=\partial V/\partial t=0$ everywhere) with
+  $V(0,0)=v$.
+  \source{petersen:page-0283}
+\end{remark}
+
+\begin{remark}[Exercise 6.7.6]
+  \label{rem:pet-ch6-ex-6-7-6}
+  \lean{PetersenLib.exercise_6_7_6}
+  \uses{lem:pet-ch6-third-partial-commutator}
+  Using
+  $R(\partial c/\partial s,\partial c/\partial t)\partial c/\partial u
+  =\partial^3c/\partial s\,\partial t\,\partial u
+  -\partial^3c/\partial t\,\partial s\,\partial u$, show that the two
+  skew-symmetries and the first Bianchi identity for the curvature tensor
+  (proposition 3.1.1 of the source) hold.
+  \source{petersen:page-0283}
+\end{remark}
+
+\begin{remark}[Exercise 6.7.7]
+  \label{rem:pet-ch6-ex-6-7-7}
+  \lean{PetersenLib.exercise_6_7_7}
+  \uses{def:pet-ch6-jacobi-field}
+  Let $c$ be a geodesic and $X$ a Killing field. Show $X|_c$ is a Jacobi
+  field.
+  \source{petersen:page-0284}
+\end{remark}
+
+\begin{remark}[Exercise 6.7.8]
+  \label{rem:pet-ch6-ex-6-7-8}
+  \lean{PetersenLib.exercise_6_7_8}
+  \uses{def:pet-ch6-jacobi-field,rem:pet-ch6-jacobi-dexp-relation}
+  Let $c:[0,1]\to M$ be a geodesic. Show $\exp_{c(0)}$ has a critical point at
+  $\dot c(0)$ iff there is a nontrivial Jacobi field $J$ along $c$ with
+  $J(0)=0$, $\dot J(0)\perp\dot c(0)$, $J(1)=0$.
+  \source{petersen:page-0284}
+\end{remark}
+
+\begin{remark}[Exercise 6.7.9]
+  \label{rem:pet-ch6-ex-6-7-9}
+  \lean{PetersenLib.exercise_6_7_9}
+  \uses{def:pet-ch6-jacobi-field,lem:pet-ch6-hessian-lower-bound}
+  Fix $p$, $v\in\operatorname{seg}_p^0$, $c(t)=\exp_p(tv)$, and the geodesic variation
+  $\bar c(s,t)=\exp_p(t(v+sw))$ with Jacobi field $J$. Show
+  $\nabla f_0|_{c(1)}=\dot c(1)$ and
+  $\operatorname{Hess}f_0(J(1),J(1))=g(\dot J(1),\dot J(1))$ for $f_0=\tfrac12r^2$; use
+  this to prove \cref{lem:pet-ch6-hessian-lower-bound} without first
+  estimating $\operatorname{Hess}r$.
+  \source{petersen:page-0284}
+\end{remark}
+
+\begin{remark}[Exercise 6.7.10]
+  \label{rem:pet-ch6-ex-6-7-10}
+  \lean{PetersenLib.exercise_6_7_10}
+  \uses{def:pet-ch6-jacobi-field}
+  Let $c$ be a geodesic and $J_1,J_2$ Jacobi fields along $c$. (1) Show
+  $g(\dot J_1,J_2)-g(J_1,\dot J_2)$ is constant. (2) Show
+  $g(J_1(t),\dot c(t))=g(J_1(0),\dot c(0))+g(\dot J_1(0),\dot c(0))t$.
+  \source{petersen:page-0284}
+\end{remark}
+
+\begin{remark}[Exercise 6.7.11]
+  \label{rem:pet-ch6-ex-6-7-11}
+  \lean{PetersenLib.exercise_6_7_11}
+  \uses{def:pet-ch6-jacobi-field}
+  Let $J$ be a nontrivial Jacobi field along a unit speed geodesic $c$ with
+  $J(0)=0$, $\dot J(0)\perp\dot c(0)$, and suppose $\sec\le K$. (1) With
+  $\lambda=|J|^2/g(J,\dot J)$, show $\dot\lambda\le1+K\lambda^2$, $\lambda(0)=0$
+  while $\lambda$ is defined. (2) Show that if $J(b)=0$ for some $b>0$, then
+  $g(J(t),\dot J(t))=0$ for some $t\in(0,b)$; give an explicit example.
+  \source{petersen:page-0284}
+\end{remark}
+
+\begin{remark}[Exercise 6.7.12]
+  \label{rem:pet-ch6-ex-6-7-12}
+  \lean{PetersenLib.exercise_6_7_12}
+  \uses{def:pet-ch6-jacobi-field}
+  Let $\mathfrak J$ be a self-adjoint space of Jacobi fields along a geodesic
+  $c$ ($g(\dot J_1,J_2)=g(J_1,\dot J_2)$ for $J_1,J_2\in\mathfrak J$), and
+  $\tilde{\mathfrak J}(t)=\{J(t):J\in\mathfrak J,\,J(t)=0\}
+  +\{J(t):J\in\mathfrak J\}\subset T_{c(t)}M$ — read as the ambient span,
+  with the two summands orthogonal. (1) Show the two summands are orthogonal.
+  (2) Show $\{J\in\mathfrak J:J(t)=0\}$ is naturally isomorphic to the first
+  summand. (3) Show $\dim\tilde{\mathfrak J}=\dim\tilde{\mathfrak J}(t)$ for
+  all $t$.
+  \source{petersen:page-0284}
+\end{remark}
+
+\begin{remark}[Exercise 6.7.13]
+  \label{rem:pet-ch6-ex-6-7-13}
+  \lean{PetersenLib.exercise_6_7_13}
+  \uses{def:pet-ch6-vector-field-along-curve}
+  Call $(M,g)$ \emph{$k$-point homogeneous} if for all $(p_1,\dots,p_k)$,
+  $(q_1,\dots,q_k)$ with $|p_ip_j|=|q_iq_j|$ there is an isometry $F$ with
+  $F(p_i)=q_i$ ($k=1$: homogeneous). (1) Show a homogeneous space has
+  constant scalar curvature. (2) Show $k$-point homogeneous
+  ($k>1$) implies $(k-1)$-point homogeneous. (3) Show two-point homogeneous
+  implies Einstein. (4) Show three-point homogeneous implies constant
+  curvature. (5) Show $\mathbb{RP}^2$ is not three-point homogeneous by
+  exhibiting two noncongruent equilateral triangles of side length $\pi/3$.
+  \source{petersen:page-0285}
+\end{remark}
+
+\begin{remark}[Exercise 6.7.14]
+  \label{rem:pet-ch6-ex-6-7-14}
+  \lean{PetersenLib.exercise_6_7_14}
+  Starting with a geodesic on a two-dimensional space form, discuss how the
+  equidistant curves change as they move away from the geodesic.
+  \source{petersen:page-0285}
+\end{remark}
+
+\begin{remark}[Exercise 6.7.15]
+  \label{rem:pet-ch6-ex-6-7-15}
+  \lean{PetersenLib.exercise_6_7_15}
+  \uses{def:pet-ch6-jacobi-field,thm:pet-ch6-rauch-comparison}
+  Let $r(x)=|xp|$ with $-K\le\sec\le K$, $g=dr^2+g_r$ on
+  $(0,R)\times S^{n-1}$, $2R<\operatorname{inj}_p$. (1) Show
+  $\operatorname{sn}_K^2(r)\,ds_{n-1}^2\le g_r\le\operatorname{sn}_{-K}^2(r)\,ds_{n-1}^2$. (2) Show there
+  is a universal constant $C$ with
+  $|\operatorname{Hess}\tfrac12r^2-g|\le CK^2R^2$ for $R<\pi/(2\sqrt K)$.
+  \source{petersen:page-0285}
+\end{remark}
+
+\begin{remark}[Exercise 6.7.16]
+  \label{rem:pet-ch6-ex-6-7-16}
+  \lean{PetersenLib.exercise_6_7_16}
+  Let $(M,g)$ be complete. Show every element of $\pi_1(M,p)$ contains a
+  shortest loop at $p$, and that this shortest loop is a geodesic loop.
+  \source{petersen:page-0285}
+\end{remark}
+
+\begin{remark}[Exercise 6.7.17]
+  \label{rem:pet-ch6-ex-6-7-17}
+  \lean{PetersenLib.exercise_6_7_17}
+  \uses{def:pet-ch6-path-space-AB}
+  Let $(M,g)$ be complete with $\operatorname{inj}_p<R$ where
+  $\exp_p:B(0,R)\to B(p,R)$ is nonsingular. Show the geodesic loop $c$ at $p$
+  realizing the injectivity radius has index $0$.
+  \source{petersen:page-0285}
+\end{remark}
+
+\begin{remark}[Exercise 6.7.18 — Frankel]
+  \label{rem:pet-ch6-ex-6-7-18}
+  \lean{PetersenLib.exercise_6_7_18}
+  \uses{rem:pet-ch6-frankel-theorem}
+  Let $M$ be $n$-dimensional with $\sec>0$ and $A,B$ closed totally geodesic
+  submanifolds. Show directly (via a shortest connecting segment and the
+  second variation formula, without invoking
+  \cref{lem:pet-ch6-wilking-connectedness-principle}) that $A\cap B\ne
+  \emptyset$ if $\dim A+\dim B\ge n$.
+  \source{petersen:page-0286}
+\end{remark}
+
+\begin{remark}[Exercise 6.7.19]
+  \label{rem:pet-ch6-ex-6-7-19}
+  \lean{PetersenLib.exercise_6_7_19}
+  \uses{def:pet-ch6-path-space-AB,lem:pet-ch6-wilking-connectedness-principle}
+  Let $M$ be complete, $A\subset M$ compact, without invoking
+  \cref{lem:pet-ch6-wilking-connectedness-principle}. (1) Show non-stationary
+  curves in $\Omega_{A,A}(M)$ deform to shorter curves in $\Omega_{A,A}(M)$.
+  (2) Show stationary curves are geodesics perpendicular to $A$ at the
+  endpoints. (3) If $M$ has $\sec>0$, $A$ is totally geodesic, and $2\dim
+  A\ge\dim M$, show all stationary curves deform to shorter curves in
+  $\Omega_{A,A}(M)$. (4) (Wilking) Conclude that $\pi_1(M,A)$ is trivial.
+  \source{petersen:page-0286}
+\end{remark}
+
+\begin{remark}[Exercise 6.7.20]
+  \label{rem:pet-ch6-ex-6-7-20}
+  \lean{PetersenLib.exercise_6_7_20}
+  \uses{thm:pet-ch6-preissmann,def:pet-ch6-axis-displacement}
+  Generalize \cref{thm:pet-ch6-preissmann} to show any solvable subgroup of
+  $\pi_1$ of a compact negatively curved manifold is cyclic. Hint: use
+  torsion-freeness and, by contradiction and solvability, a subgroup
+  generated by deck transformations $F,G$ with $F\circ G=G^k\circ F$,
+  $k\ne0$; show that if $c$ is an axis for $G$, $F\circ c$ is an axis for
+  $G^k$, and use uniqueness of axes for $G^k$ for a contradiction.
+  \source{petersen:page-0286}
+\end{remark}
+
+\begin{remark}[Exercise 6.7.21]
+  \label{rem:pet-ch6-ex-6-7-21}
+  \lean{PetersenLib.exercise_6_7_21}
+  \uses{rem:pet-ch6-closed-parallel-field-construction}
+  Let $(M,g)$ be compact with $\sec>0$ and $F:M\to M$ an isometry of finite
+  order without fixed points. Show that if $\dim M$ is even, $F$ is
+  orientation reversing; if odd, orientation preserving. (Weinstein: this
+  holds even without the finite-order hypothesis.)
+  \source{petersen:page-0286}
+\end{remark}
+
+\begin{remark}[Exercise 6.7.22]
+  \label{rem:pet-ch6-ex-6-7-22}
+  \lean{PetersenLib.exercise_6_7_22}
+  \uses{thm:pet-ch6-cartan-fixed-point}
+  Use an analogue of \cref{thm:pet-ch6-cartan-fixed-point} to show a closed
+  manifold of constant curvature $1$ is either the standard sphere or has
+  diameter $\le\pi/2$; generalize to show a closed manifold with $\sec\ge1$
+  is either simply connected or has diameter $\le\pi/2$.
+  \source{petersen:page-0286}
+\end{remark}
+
+\begin{remark}[Exercise 6.7.23]
+  \label{rem:pet-ch6-ex-6-7-23}
+  \lean{PetersenLib.exercise_6_7_23}
+  \uses{thm:pet-ch6-rauch-comparison}
+  Let $(M,g)$ be complete $n$-dimensional with $|\sec|<K$, and fix $p$,
+  $\epsilon>0$, points $p_i$ with $r^i(x)=|xp_i|$ smooth on $B(p,\epsilon)$,
+  $g(\nabla r^i,\nabla r^j)|_p=\delta^{ij}$, $|pp_i|\ge2\epsilon$. Let
+  $g^{ij}=g(\nabla r^i,\nabla r^j)$. (1) Show there is $C=C(n,K,\epsilon)$
+  with $|dg^{ij}|\le C$. (2) Show $C$ can be chosen so that
+  $C(n,\lambda^{-2}K,\lambda\epsilon)\to0$ as $\lambda\to\infty$. (3) Show
+  there is $\delta=\delta(n,C)>0$ with $g^{ij}$ invertible on $B(p,\delta)$
+  and its inverse $g_{ij}$ satisfying $|g_{ij}-\delta_{ij}|\le\tfrac12$,
+  $|dg_{ij}|\le C'(n,K,\epsilon)$. (4) Show
+  $(r^1(x)-r^1(p),\dots,r^n(x)-r^n(p))$ is a coordinate system on
+  $B(p,\delta)$ whose image contains $B(0,\delta/2)$.
+  \source{petersen:page-0286,petersen:page-0287}
+\end{remark}
+
+\begin{remark}[Exercise 6.7.24 — the index form]
+  \label{rem:pet-ch6-ex-6-7-24}
+  \lean{PetersenLib.exercise_6_7_24,PetersenLib.indexForm}
+  \uses{rem:pet-ch6-second-variation-special-cases,def:pet-ch6-jacobi-field}
+  For $V,W$ along a geodesic $c:[0,1]\to(M,g)$, the \emph{index form} is
+  \[
+    I_0^1(V,W)=I(V,W)=\int_0^1\big(g(\dot V,\dot W)-g(R(V,\dot c)\dot c,W)\big)\,dt,
+  \]
+  agreeing with the second variation of energy when $V,W$ come from a proper
+  variation. Assume $c$ locally minimizes energy, so $I(V,V)\ge0$ for proper
+  variational fields. (1) If $I(V,V)=0$ for such $V$, show $V$ is a Jacobi
+  field (expand $I(V+\epsilon W,V+\epsilon W)\ge0$ in $\epsilon$ for all
+  proper $W$). (2) If $V(0)=J(0)$, $V(1)=J(1)$ and $J$ is a Jacobi field,
+  show $I(V,J)=I(J,J)$. (3) \emph{(Index lemma)} If in addition no nontrivial
+  Jacobi field vanishes at both endpoints of $c$, show $I(V,V)\ge I(J,J)$
+  with equality iff $V=J$ (via $0\le I(V-J,V-J)=I(V,V)-I(J,J)$). (4) If a
+  nontrivial Jacobi field $J$ vanishes at $0$ and $1$, show
+  $c:[0,1+\epsilon]\to M$ is not locally minimizing for $\epsilon>0$, by
+  patching $J$ on $[0,1-\epsilon]$ to a Jacobi field $K$ on $[1-\epsilon,
+  1+\epsilon]$ with $K(1-\epsilon)=J(1-\epsilon)$, $K(1+\epsilon)=0$, and
+  comparing $I_0^1(J,J)=0$ against $I_0^{1-\epsilon}(J,J)+I_{1-\epsilon}^{1+
+  \epsilon}(K,K)$, which is strictly smaller since $K\ne J$ on
+  $[1-\epsilon,1]$.
+  \source{petersen:page-0287,petersen:page-0288}
+\end{remark}
+
+\begin{remark}[Exercise 6.7.25 — index comparison]
+  \label{rem:pet-ch6-ex-6-7-25}
+  \lean{PetersenLib.exercise_6_7_25}
+  \uses{rem:pet-ch6-ex-6-7-24,thm:pet-ch6-rauch-comparison}
+  Let $J$ be a nontrivial Jacobi field along a unit speed geodesic $c$ with
+  $J(0)=0$, $\dot J(0)\perp\dot c(0)$, on a manifold with $\sec\ge k$, and
+  suppose no Jacobi field on $c|_{[0,b]}$ vanishes at both endpoints. (1)
+  Show $I_0^b(J,J)=g(J(b),\dot J(b))$. (2) With $V(t)=\frac{\operatorname{sn}_k(t)}
+  {\operatorname{sn}_k(b)}E(t)$ for a parallel field $E$ with $E(b)=J(b)$, show
+  $I_0^b(V,V)\le\frac{\operatorname{sn}_k'(b)}{\operatorname{sn}_k(b)}|J(b)|^2$. (3) Conclude
+  $g(J(b),\dot J(b))\le\frac{\operatorname{sn}_k'(b)}{\operatorname{sn}_k(b)}|J(b)|^2$, and use this to
+  prove the lower-curvature-bound half of
+  \cref{thm:pet-ch6-rauch-comparison}.
+  \source{petersen:page-0288}
+\end{remark}
+
+\begin{remark}[Exercise 6.7.26]
+  \label{rem:pet-ch6-ex-6-7-26}
+  \lean{PetersenLib.exercise_6_7_26}
+  \uses{thm:pet-ch6-cartan-fixed-point,def:pet-ch6-convexity-radius}
+  Let $\mathbf G\subset\operatorname{Iso}(M,g)$, with $\operatorname{Iso}(M,g)$ given the
+  compact-open topology. (1) If $M$ is complete, simply connected,
+  nonpositively curved, and $\mathbf G$ is compact, show $\mathbf G$ has a
+  fixed point (imitate \cref{thm:pet-ch6-cartan-fixed-point}). (2) Call
+  $\mathbf G$ \emph{$(p,\epsilon)$-small} if $\mathbf Gp\subset\bar
+  B(p,\epsilon)$; show that for sufficiently small $\epsilon(p)$ the closure
+  $\bar{\mathbf G}$ of a $(p,\epsilon)$-small group is compact and
+  $(p,\epsilon)$-small (without assuming $M$ complete). (3) Show a
+  $(p,\epsilon)$-small $\mathbf G$ is $(q,2|pq|+\epsilon)$-small. (4) If
+  $\epsilon$ is much smaller than the convexity radius on $\bar
+  B(p,4\epsilon)$, show $\mathbf G$ has a fixed point. (5) Show that for
+  every $p$ there is $\epsilon>0$ such that no subgroup of $\operatorname{Iso}(M,g)$ can
+  be $(p,\epsilon)$-small (by making $\mathbf G$ act freely on a suitable
+  subset of a product $M\times\cdots\times M$). (6) Conclude
+  $\operatorname{Iso}(M,g)$ has no small subgroups (no neighborhood of the identity
+  contains a nontrivial subgroup).
+  \source{petersen:page-0288,petersen:page-0289}
+\end{remark}
+
+\begin{remark}[Exercise 6.7.27]
+  \label{rem:pet-ch6-ex-6-7-27}
+  \lean{PetersenLib.exercise_6_7_27}
+  \uses{def:pet-ch6-parallel-field}
+  Construct a Riemannian metric on $TM$ for a Riemannian manifold $(M,g)$
+  such that $\pi:TM\to M$ is a Riemannian submersion restricting to the given
+  Euclidean metric on each fiber, by declaring parallel fields along curves
+  in $M$ to give horizontal lifts.
+  \source{petersen:page-0289}
+\end{remark}
+
+\begin{remark}[Exercise 6.7.28]
+  \label{rem:pet-ch6-ex-6-7-28}
+  \lean{PetersenLib.exercise_6_7_28}
+  \uses{def:pet-ch6-parallel-field}
+  For a Riemannian manifold $(M,g)$ let $FM\to M$ be the orthonormal frame
+  bundle. Find a Riemannian metric on $FM$ making $\pi:FM\to M$ a Riemannian
+  submersion with fibers isometric to $O(n)$, by declaring parallel
+  orthonormal frames along curves in $M$ to give horizontal lifts.
+  \source{petersen:page-0289}
+\end{remark}

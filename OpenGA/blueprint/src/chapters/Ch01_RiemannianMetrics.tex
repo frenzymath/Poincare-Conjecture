@@ -1,0 +1,374 @@
+\chapter{Riemannian Metrics}
+\label{chap:dc-riemannian-metrics}
+
+Faithful transcription of do Carmo, \emph{Riemannian Geometry}. Each numbered
+statement keeps do Carmo's number, kind and (name); proofs keep his explicit
+cross-references ("by \cref{prop:dc-ch0-5-4}", "the conditions of
+\cref{def:dc-ch1-2-1}") so the dependency graph is recoverable from the text.
+
+\section{Introduction}
+
+Historical motivation. Riemannian geometry developed from the differential
+geometry of surfaces $S\subset\mathbb{R}^3$, where the inner product $\langle v,w\rangle$
+of vectors tangent to $S$ at $p$ is inherited from $\mathbb{R}^3$. This inner
+product is equivalently the \emph{first fundamental form} $I_p(v)=\langle v,v\rangle$,
+$v\in T_pS$, and it lets one measure lengths of curves, areas, angles, and define
+\emph{geodesics} — curves that locally minimize length (cf. Chap. 3). Gauss (1827)
+defined curvature $K(p)=\det(dg_p)$ via the Gauss map $g:S\to S^2$, showed it
+equals the product $K=k_1k_2$ of Euler's principal curvatures, and that $K$
+depends only on the first fundamental form $I$; moreover the angle excess of a
+geodesic triangle equals the integral of $K$ over the triangle. Riemann (1854)
+generalized this to an $n$-dimensional differentiable manifold carrying a
+fundamental quadratic form (cf. Chap. 4). For the remainder of the book,
+manifolds are Hausdorff with countable basis, "differentiable" means $C^\infty$,
+and $M^n=M$ has dimension $n$.
+
+\section{Riemannian Metrics}
+
+\begin{definition}[Riemannian metric]
+  \label{def:dc-ch1-2-1}
+  \dcref{ch1:2.1}
+  \lean{Riemannian.RiemannianMetric}
+  \leanok
+  A \emph{Riemannian metric} (or \emph{Riemannian structure}) on a differentiable manifold
+  $M$ associates to each $p\in M$ an inner product $\langle\ ,\ \rangle_p$ (a
+  symmetric, bilinear, positive-definite form) on $T_pM$, varying differentiably:
+  if $\mathbf{x}:U\subset\mathbb{R}^n\to M$ is a coordinate system around $p$ with
+  $q=\mathbf{x}(x_1,\dots,x_n)\in\mathbf{x}(U)$ and
+  $\frac{\partial}{\partial x_i}(q)=d\mathbf{x}_{(x_1,\dots,x_n)}(0,\dots,1,\dots,0)$,
+  then
+  
+  $$
+  g_{ij}(x_1,\dots,x_n)=\Big\langle\frac{\partial}{\partial x_i}(q),\frac{\partial}{\partial x_j}(q)\Big\rangle_q
+  $$
+  
+  is a differentiable function on $U$. The definition is independent of the chart;
+  equivalently, $\langle X,Y\rangle$ is differentiable for any differentiable
+  vector fields $X,Y$ on $V\subset M$. The functions $g_{ij}=g_{ji}$ are the *local
+  representation of the metric*. A differentiable manifold with a given Riemannian
+  metric is a \emph{Riemannian manifold}.
+\end{definition}
+
+\begin{definition}[isometry]
+  \label{def:dc-ch1-2-2}
+  \dcref{ch1:2.2}
+  \uses{def:dc-ch1-2-1}
+  \lean{Riemannian.DCPreservesMetric}
+  \leanok
+  Let $M,N$ be Riemannian manifolds. A diffeomorphism $f:M\to N$ is an \emph{isometry} if
+  
+  $$
+  \langle u,v\rangle_p=\langle df_p(u),df_p(v)\rangle_{f(p)},\qquad\text{(1)}
+  $$
+  
+  for all $p\in M$, $u,v\in T_pM$.
+\end{definition}
+
+\begin{definition}[local isometry]
+  \label{def:dc-ch1-2-3}
+  \dcref{ch1:2.3}
+  \uses{def:dc-ch1-2-1,def:dc-ch1-2-2}
+  \lean{Riemannian.DCIsLocalIsometryAt}
+  \leanok
+  Let $M,N$ be Riemannian manifolds. A differentiable map $f:M\to N$ is a *local
+  isometry at* $p\in M$ if there is a neighborhood $U\subset M$ of $p$ such that
+  $f:U\to f(U)$ is a diffeomorphism satisfying (1). $M$ is \emph{locally isometric} to
+  $N$ if for every $p\in M$ there is a neighborhood $U$ of $p$ and a local isometry
+  $f:U\to f(U)\subset N$.
+\end{definition}
+
+\begin{example}[Euclidean space]
+  \label{ex:dc-ch1-2-4}
+  \dcref{ch1:2.4}
+  \uses{def:dc-ch1-2-1}
+  \lean{Riemannian.DCEuclideanMetric}
+  \leanok
+  \emph{The almost trivial example.} $M=\mathbb{R}^n$ with $\frac{\partial}{\partial x_i}$
+  identified with $e_i=(0,\dots,1,\dots,0)$, and metric $\langle e_i,e_j\rangle=\delta_{ij}$.
+  This $\mathbb{R}^n$ is *Euclidean space of dimension $n$*; its Riemannian geometry
+  is metric Euclidean geometry.
+\end{example}
+
+\begin{example}[immersed manifolds]
+  \label{ex:dc-ch1-2-5}
+  \dcref{ch1:2.5}
+  \uses{def:dc-ch1-2-1,ex:dc-ch1-2-4}
+  \lean{Riemannian.DCInducedForm, Riemannian.DCInducedMetric}
+  \leanok
+  Let $f:M^n\to N^{n+k}$ be an immersion ($f$ differentiable, $df_p$ injective for
+  all $p$). If $N$ is Riemannian, $f$ induces a metric on $M$ by
+  $\langle u,v\rangle_p=\langle df_p(u),df_p(v)\rangle_{f(p)}$; this is positive
+  definite because $df_p$ is injective, and the other conditions of \cref{def:dc-ch1-2-1}
+  are easily verified. This is the *metric induced by $f$*, and $f$ is an *isometric
+  immersion*. In particular, if $h:M^{n+k}\to N^k$ is differentiable and $q\in N$
+  is a regular value, then $h^{-1}(q)$ is a submanifold of dimension $n$ carrying
+  the metric induced by inclusion. E.g. with $h:\mathbb{R}^n\to\mathbb{R}$,
+  $h(x)=\sum_i x_i^2-1$, the value $0$ is regular and $h^{-1}(0)=S^{n-1}$; the
+  induced metric is the \emph{canonical metric} of $S^{n-1}$.
+\end{example}
+\begin{proof}
+  \leanok
+  \uses{ex:dc-ch1-2-4}
+  Define $\langle u,v\rangle_p=\langle df_p(u),df_p(v)\rangle_{f(p)}$, the pullback of
+  the target inner product along $df_p$. It is bilinear and symmetric because the inner
+  product on $N$ is. If $u\ne0$ then $df_p(u)\ne0$ since $df_p$ is injective (the immersion
+  hypothesis), so $\langle u,u\rangle_p=\langle df_p(u),df_p(u)\rangle_{f(p)}>0$;
+  positive-definiteness gives the required boundedness of the unit sublevel set. Finally the
+  form varies differentiably with $p$: read in a tangent chart it is $G(f(p))$ precomposed
+  on each side with the differential $df_p$ expressed in coordinates, where $G$ is the target
+  metric read in coordinates; both are differentiable functions of $p$ ($df_p$ by
+  differentiating $f$, $G$ because $N$'s metric is differentiable), so their composition is.
+  Thus $\langle\ ,\ \rangle$ satisfies the conditions of \cref{def:dc-ch1-2-1}.
+\end{proof}
+
+\begin{example}[Lie groups]
+  \label{ex:dc-ch1-2-6}
+  \dcref{ch1:2.6}
+  \uses{prop:dc-ch0-5-4}
+  \notready
+  A \emph{Lie group} is a group $G$ with a differentiable structure such that
+  $(x,y)\mapsto xy^{-1}$ is differentiable; then left and right translations
+  $L_x(y)=xy$, $R_x(y)=yx$ are diffeomorphisms. A metric on $G$ is \emph{left invariant}
+  if $L_x$ is an isometry for all $x$, i.e. $\langle u,v\rangle_y=\langle d(L_x)_yu,d(L_x)_yv\rangle_{L_x(y)}$;
+  analogously \emph{right invariant}; and \emph{bi-invariant} if both. A vector field $X$ is
+  \emph{left invariant} if $dL_xX=X$ for all $x$; such fields are determined by their
+  value at $e$. For left invariant $X,Y$,
+  
+  $$
+  dL_x[X,Y]f=[X,Y](f\circ L_x)=X(dL_xY)f-Y(dL_xX)f=(XY-YX)f=[X,Y]f,
+  $$
+  
+  so $[X,Y]$ is again left invariant; putting $[X_e,Y_e]=[X,Y]_e$ makes
+  $T_eG=\mathcal{G}$ the \emph{Lie algebra} of $G$. A left invariant metric is obtained
+  from any inner product $\langle\ ,\ \rangle_e$ on $\mathcal{G}$ by
+  
+  $$
+  \langle u,v\rangle_x=\langle(dL_{x^{-1}})_x(u),(dL_{x^{-1}})_x(v)\rangle_e,\qquad\text{(2)}
+  $$
+  
+  which is clearly left invariant; right invariant metrics are constructed
+  analogously. If $G$ is compact, Exercise 7 shows $G$ has a bi-invariant metric.
+  
+  If $G$ has a bi-invariant metric, the induced inner product on $\mathcal{G}$
+  satisfies, for all $U,V,X\in\mathcal{G}$,
+  
+  $$
+  \langle[U,X],V\rangle=-\langle U,[V,X]\rangle.\qquad\text{(3)}
+  $$
+
+  To see (3), note that for $a\in G$, $R_{a^{-1}}L_a$ is the inner automorphism
+  fixing $e$, with differential $\mathrm{Ad}(a)=dR_{a^{-1}}dL_a:\mathcal{G}\to\mathcal{G}$,
+  so $\mathrm{Ad}(a)Y=dR_{a^{-1}}Y$. Let $x_t$ be the flow of $X$. From
+  \cref{prop:dc-ch0-5-4}, $[Y,X]=\lim_{t\to0}\frac1t(dx_t(Y)-Y)$. Since $X$ is left
+  invariant, $L_y\circ x_t=x_t\circ L_y$, giving $x_t(y)=R_{x_t(e)}(y)$, hence
+  $dx_t=dR_{x_t(e)}$ and $[Y,X]=\lim_{t\to0}\frac1t(\mathrm{Ad}((x_t(e))^{-1})Y-Y)$.
+  With $\langle\ ,\ \rangle$ bi-invariant,
+  $\langle U,V\rangle=\langle dR_{x_t(e)}U,dR_{x_t(e)}V\rangle$; differentiating in
+  $t$ at $t=0$ gives $0=\langle[U,X],V\rangle+\langle U,[V,X]\rangle$, which is (3).
+  Conversely, (3) characterizes bi-invariant metrics: a positive bilinear form on
+  $\mathcal{G}$ satisfying (3) yields, via (2), a bi-invariant metric. This last
+  fact is not proved here.
+\end{example}
+
+\begin{proposition}[existence of a left-invariant metric]
+  \label{prop:dc-ch1-2-6-leftinv}
+  \uses{def:dc-ch1-2-1}
+  \lean{Riemannian.DCLeftInvariantForm, Riemannian.DCLeftInvariantMetric}
+  \leanok
+  Let $G$ be a Lie group with Lie algebra $\mathcal{G}=T_eG$, and let
+  $\langle\ ,\ \rangle_e$ be a positive-definite symmetric inner product on
+  $\mathcal{G}$. Then formula (2),
+  $\langle u,v\rangle_x=\langle(dL_{x^{-1}})_x u,(dL_{x^{-1}})_x v\rangle_e$,
+  defines a left-invariant Riemannian metric on $G$.
+\end{proposition}
+\begin{proof}
+  \leanok
+  \uses{def:dc-ch1-2-1}
+  Symmetry and bilinearity are inherited pointwise from $\langle\ ,\ \rangle_e$.
+  For positive definiteness, note $(dL_{x^{-1}})_x$ is a linear isomorphism: $L_x$
+  is a smooth inverse of $L_{x^{-1}}$, so by the chain rule
+  $(dL_x)_e\circ(dL_{x^{-1}})_x=d(L_x\circ L_{x^{-1}})_x=d(\mathrm{id})_x=1$; hence
+  $(dL_{x^{-1}})_x u\neq0$ whenever $u\neq0$, and then
+  $\langle u,u\rangle_x=\langle(dL_{x^{-1}})_x u,(dL_{x^{-1}})_x u\rangle_e>0$.
+  For smoothness, the map $(x,y)\mapsto x^{-1}y$ is smooth on $G$, so by the
+  parametrized derivative $x\mapsto(dL_{x^{-1}})_x$ is a smooth section of
+  $\mathrm{Hom}(TG,T_eG)$; the metric, obtained by composing the fixed bilinear form
+  $\langle\ ,\ \rangle_e$ with it in both slots, therefore varies smoothly. Left
+  invariance is immediate from the definition.
+\end{proof}
+
+\begin{example}[the product metric]
+  \label{ex:dc-ch1-2-7}
+  \dcref{ch1:2.7}
+  \uses{def:dc-ch1-2-1,ex:dc-ch1-2-5}
+  \lean{Riemannian.DCProductForm, Riemannian.DCProductMetric}
+  \leanok
+  Let $M_1,M_2$ be Riemannian manifolds and $\pi_1,\pi_2$ the natural projections
+  on $M_1\times M_2$. The \emph{product metric} is
+
+  $$
+  \langle u,v\rangle_{(p,q)}=\langle d\pi_1\cdot u,d\pi_1\cdot v\rangle_p+\langle d\pi_2\cdot u,d\pi_2\cdot v\rangle_q,
+  $$
+
+  for all $(p,q)\in M_1\times M_2$, $u,v\in T_{(p,q)}(M_1\times M_2)$. E.g. the torus
+  $S^1\times\cdots\times S^1=T^n$ with the induced metric from $\mathbb{R}^2$ on each
+  $S^1$ and then the product metric is the \emph{flat torus}.
+\end{example}
+\begin{proof}
+  \leanok
+  \uses{ex:dc-ch1-2-5}
+  Each summand $\langle d\pi_i\cdot u,d\pi_i\cdot v\rangle$ is the pullback of the factor
+  metric $g_i$ along the projection $\pi_i$ (\cref{ex:dc-ch1-2-5}), so it is symmetric and
+  bilinear, and — since $\pi_i$ is a smooth submersion — varies differentiably with the base
+  point; the product form is their sum in the single bundle of bilinear forms over
+  $M_1\times M_2$, hence is again symmetric, bilinear and differentiable. For positivity, if
+  $u\ne0$ then $d\pi_1\cdot u=u_1$ and $d\pi_2\cdot u=u_2$ are not both zero, so one summand
+  $\langle d\pi_i\cdot u,d\pi_i\cdot u\rangle_{}\ge0$ is strictly positive and the other is
+  $\ge0$; thus $\langle u,u\rangle_{(p,q)}>0$. The conditions of \cref{def:dc-ch1-2-1} hold.
+\end{proof}
+
+\begin{definition}[parametrized curve]
+  \label{def:dc-ch1-2-8}
+  \dcref{ch1:2.8}
+  \lean{Riemannian.DCIsCurve}
+  \leanok
+  A differentiable map $c:I\to M$ of an open interval $I\subset\mathbb{R}$ into a
+  differentiable manifold $M$ is a \emph{(parametrized) curve}. A parametrized curve may
+  have self-intersections and "corners".
+\end{definition}
+
+\begin{definition}[vector field along a curve; length]
+  \label{def:dc-ch1-2-9}
+  \dcref{ch1:2.9}
+  \uses{def:dc-ch1-2-1,def:dc-ch1-2-8}
+  \lean{Riemannian.DCIsVectorFieldAlong, Riemannian.DCArcLength}
+  \leanok
+  A *vector field $V$ along a curve* $c:I\to M$ is a differentiable map associating
+  to each $t\in I$ a tangent vector $V(t)\in T_{c(t)}M$ (differentiable means
+  $t\mapsto V(t)f$ is differentiable for every differentiable $f$ on $M$). The
+  field $dc(\frac{d}{dt})$, denoted $\frac{dc}{dt}$, is the \emph{velocity field} of $c$.
+  The restriction of $c$ to $[a,b]\subset I$ is a \emph{segment}; on a Riemannian
+  manifold its \emph{length} is
+  
+  $$
+  \ell_a^b(c)=\int_a^b\Big\langle\frac{dc}{dt},\frac{dc}{dt}\Big\rangle^{1/2}\,dt.
+  $$
+\end{definition}
+
+\begin{lemma}[isometries preserve length]
+  \label{lem:dc-ch1-2-9-isom}
+  \uses{def:dc-ch1-2-2,def:dc-ch1-2-9}
+  \lean{Riemannian.DCPreservesMetric.dcArcLength}
+  \leanok
+  Let $f:M\to N$ be an isometry (\cref{def:dc-ch1-2-2}) and $c:I\to M$ a differentiable
+  curve. Then $f\circ c$ has the same length as $c$ on every segment $[a,b]\subset I$:
+  $$
+  \ell_a^b(f\circ c)=\ell_a^b(c).
+  $$
+\end{lemma}
+\begin{proof}
+  \leanok
+  By the chain rule the velocity field of the composite curve is
+  $\frac{d(f\circ c)}{dt}=df_{c(t)}\big(\frac{dc}{dt}\big)$. Since $f$ is an isometry,
+  $\big\langle df_{c(t)}u,df_{c(t)}v\big\rangle_{f(c(t))}=\langle u,v\rangle_{c(t)}$ for all
+  $u,v\in T_{c(t)}M$, so applying this to $u=v=\frac{dc}{dt}$ shows the two integrands
+  $\big\langle\frac{d(f\circ c)}{dt},\frac{d(f\circ c)}{dt}\big\rangle^{1/2}$ and
+  $\big\langle\frac{dc}{dt},\frac{dc}{dt}\big\rangle^{1/2}$ agree at every $t$; the length
+  integrals therefore coincide.
+\end{proof}
+
+\begin{proposition}[existence of Riemannian metrics]
+  \label{prop:dc-ch1-2-10}
+  \dcref{ch1:2.10}
+  \lean{Riemannian.exists_riemannianMetric}
+  \uses{def:dc-ch1-2-1}
+  \leanok
+  A differentiable manifold $M$ (Hausdorff with countable basis) has a Riemannian
+  metric.
+\end{proposition}
+\begin{proof}
+  \leanok
+  \uses{thm:dc-ch0-5-6,ex:dc-ch1-2-4}
+  Since $M$ is Hausdorff with a countable basis, \cref{thm:dc-ch0-5-6} provides a
+  differentiable partition of unity $\{f_\alpha\}$ subordinate to a covering
+  $\{V_\alpha\}$ of $M$ by coordinate neighborhoods: the family $\{V_\alpha\}$ is
+  locally finite, $f_\alpha\ge0$, $\mathrm{supp}\,f_\alpha\subset V_\alpha$, and
+  $\sum_\alpha f_\alpha\equiv1$.
+
+  Fix a coordinate chart $\mathbf{x}_\alpha:V_\alpha\to\mathbb{R}^n$. Pulling back the
+  Euclidean inner product of \cref{ex:dc-ch1-2-4} along the differential
+  $d(\mathbf{x}_\alpha)_p$ defines, for each $p\in V_\alpha$, a form
+  $$
+  \langle u,v\rangle_p^\alpha=\big\langle d(\mathbf{x}_\alpha)_p\,u,\,d(\mathbf{x}_\alpha)_p\,v\big\rangle,
+  \qquad u,v\in T_pM.
+  $$
+  It is symmetric and bilinear because the Euclidean inner product is, positive
+  definite because $d(\mathbf{x}_\alpha)_p$ is a linear isomorphism, and its local
+  coefficients $g_{ij}^\alpha$ vary differentiably in $p$ because $\mathbf{x}_\alpha$
+  is a diffeomorphism; so $\langle\ ,\ \rangle^\alpha$ meets the conditions of
+  \cref{def:dc-ch1-2-1} on $V_\alpha$.
+
+  Set
+  $$
+  \langle u,v\rangle_p=\sum_\alpha f_\alpha(p)\,\langle u,v\rangle_p^\alpha ,
+  $$
+  a sum that is finite in a neighborhood of each point by local finiteness, with the
+  terms $f_\alpha(p)=0$ (in particular those with $p\notin V_\alpha$) omitted.
+  Symmetry and bilinearity are inherited termwise. For positive definiteness, let
+  $u\ne0$: each summand $f_\alpha(p)\langle u,u\rangle_p^\alpha$ is $\ge0$, and since
+  $\sum_\alpha f_\alpha(p)=1$ some $f_{\alpha_0}(p)>0$, whence
+  $\langle u,u\rangle_p\ge f_{\alpha_0}(p)\,\langle u,u\rangle_p^{\alpha_0}>0$.
+  Finally, for differentiable fields $X,Y$ the function
+  $p\mapsto\langle X,Y\rangle_p=\sum_\alpha f_\alpha(p)\langle X,Y\rangle_p^\alpha$ is
+  differentiable, being a locally finite sum of products of differentiable functions.
+  Thus $\langle\ ,\ \rangle$ satisfies the conditions of \cref{def:dc-ch1-2-1} and is
+  a Riemannian metric on $M$.
+\end{proof}
+
+\subsection{Volume on an oriented manifold (between 2.10 and 2.11)}
+For a positive parametrization $\mathbf{x}:U\to M$ about $p$, take a positive
+orthonormal basis $\{e_1,\dots,e_n\}$ of $T_pM$ and write
+$X_i(p)=\frac{\partial}{\partial x_i}(p)=\sum_j a_{ij}e_j$. Then
+$g_{ik}(p)=\langle X_i,X_k\rangle(p)=\sum_j a_{ij}a_{kj}$, and since
+$\mathrm{vol}(X_1,\dots,X_n)=\det(a_{ij})\cdot\mathrm{vol}(e_1,\dots,e_n)$,
+
+$$
+\mathrm{vol}(X_1(p),\dots,X_n(p))=\det(a_{ij})=\sqrt{\det(g_{ij})}(p).
+$$
+
+For another positive parametrization $\mathbf{y}:V\to M$ with $h_{ij}=\langle Y_i,Y_j\rangle$,
+
+$$
+\sqrt{\det(g_{ij})}(p)=J\sqrt{\det(h_{ij})}(p),\qquad J=\det\big(\tfrac{\partial y_i}{\partial x_j}\big)>0.\qquad\text{(4)}
+$$
+
+For a region $R\subset M$ (open, connected, compact closure) contained in a
+positively-parametrized coordinate neighborhood $\mathbf{x}(U)$ with the boundary
+of $\mathbf{x}^{-1}(R)$ of measure zero, define the \emph{volume}
+
+$$
+\mathrm{vol}(R)=\int_{\mathbf{x}^{-1}(R)}\sqrt{\det(g_{ij})}\,dx_1\dots dx_n.\qquad\text{(5)}
+$$
+
+By the change-of-variables theorem and (4) this is independent of the chart
+(orientability guarantees $\mathrm{vol}(R)$ does not change sign).
+
+\begin{remark}[volume form]
+  \label{rem:dc-ch1-2-11}
+  \dcref{ch1:2.11}
+  The reader familiar with differential forms will note that equation (4) implies
+  the integrand in the volume formula (5) is a positive differential form of degree
+  $n$, the \emph{volume form (volume element)} $\nu$ on $M$. For a compact region $R$ not
+  contained in one coordinate neighborhood, take a partition of unity $\{\varphi_i\}$
+  subordinate to a finite covering by coordinate neighborhoods $\mathbf{x}(U_i)$ and
+  set $\mathrm{vol}(R)=\sum_i\int_{\mathbf{x}_i^{-1}(R)}\varphi_i\nu$, independent of
+  the partition.
+\end{remark}
+
+\begin{remark}[volume from a volume element]
+  \label{rem:dc-ch1-2-12}
+  \dcref{ch1:2.12}
+  The existence of a globally defined positive differential form of degree $n$
+  (volume element) yields a notion of volume on a differentiable manifold. A
+  Riemannian metric is only one of the ways a volume element can be obtained.
+\end{remark}
