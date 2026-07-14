@@ -31,6 +31,10 @@ for p in "${PROJECTS[@]}"; do
   cp "$p/dashboard.html" "docs/$p/dashboard.html"
 done
 
+# Landing page: regenerate the proof-structure overview, build the index, then
+# reorder so the project cards sit right after the hero (before the diagram).
+python3 scripts/gen_overview.py
 hgraph site --manifest site.yaml --out docs/index.html --overview site/overview.html
+python3 scripts/reorder_landing.py docs/index.html
 touch docs/.nojekyll   # tell Pages not to run Jekyll on the static output
 echo "built docs/ ($(du -sh docs | cut -f1))"
