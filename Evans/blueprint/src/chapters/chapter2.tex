@@ -1,0 +1,2526 @@
+% Source: Evans, "Partial Differential Equations" (2nd ed., AMS Graduate Studies in Mathematics vol. 19, 2010),
+% Chapter 2 "Four Important Linear PDE", PDF pages 27-99 of MathBooks/Evans Partial Differential Equations(1).pdf.
+% Transcribed page-by-page by vision subagents, then merged and restructured into
+% leanblueprint conventions (semantic \label, bracketed titles, \uses dependency edges) below.
+%
+% NOTE ON GAPS: several source pages were returned by the vision transcription subagent
+% as refusal placeholders rather than actual page content (mirroring the situation already
+% documented in chapter1.tex). Each such gap is marked below with a "% TODO-GAP" comment
+% describing, as precisely as can be inferred from the surrounding (successfully
+% transcribed) pages, what content is missing and should be re-transcribed and inserted.
+% No theorem/definition/proof statement below is invented from outside knowledge of the
+% book: formal environments are opened only where the book's own statement text was
+% actually present in the supplied transcription (occasionally including statements that
+% are exactly quoted or reproduced verbatim later in the chapter, in which case this is
+% noted with "% TODO-VERIFY" rather than "% TODO-GAP").
+
+
+In this chapter we introduce four fundamental linear partial differential equations for which various explicit formulas for solutions are available. These are
+$$\begin{align*}
+\text{the transport equation} \quad & u_t + b \cdot Du = 0 & \quad (\S 2.1), \\
+\text{Laplace's equation} \quad & \Delta u = 0 & \quad (\S 2.2), \\
+\text{the heat equation} \quad & u_t - \Delta u = 0 & \quad (\S 2.3), \\
+\text{the wave equation} \quad & u_{tt} - \Delta u = 0 & \quad (\S 2.4).
+\end{align*}$$
+
+Before going further, the reader should review the discussions of inequalities, integration by parts, Green's formulas, convolutions, etc.\ in Appendices B and C, and later refer back to these as necessary.
+
+\section{Transport Equation}
+\label{sec:transport-equation}
+
+Perhaps the simplest partial differential equation of all is the \textit{transport equation with constant coefficients}. This is the PDE
+$$u_t + b \cdot Du = 0 \quad \text{in } \R^n \times (0,\infty),$$
+where $b \in \R^n$ is a fixed vector and $u : \R^n \times [0,\infty) \to \R$ is the unknown, $u = u(x,t)$. Here $Du = D_xu = (u_{x_1}, \ldots, u_{x_n})$ denotes the gradient of $u$ with respect to the spatial variables only.
+
+Which functions $u$ solve (1)? To answer, let us suppose for the moment we are given some smooth solution $u$ and try to compute it. To do so, we first must recognize that the partial differential equation (1) asserts that a particular directional derivative of $u$ vanishes. We exploit this insight by fixing any point $(x,t) \in \R^n \times (0,\infty)$ and defining
+$$z(s) := u(x+sb, t+s) \quad (s \in \R).$$
+
+We then calculate
+$$\dot{z}(s) = Du(x+sb,t+s) \cdot b + u_t(x+sb,t+s) = 0 \quad \left(\dot{} = \frac{d}{ds}\right),$$
+the second equality holding owing to (1). Thus $z(\cdot)$ is a constant function of $s$, and consequently for each point $(x,t)$, $u$ is constant on the line through $(x,t)$ with the direction $(b,1) \in \R^{n+1}$. Hence if we know the value of $u$ at any point on each such line, we know its value everywhere in $\R^n \times (0,\infty)$.
+
+\subsection{Initial-Value Problem}
+\label{sec:transport-equation-initial-value-problem}
+
+For definiteness therefore, let us consider the initial-value problem
+$$(2) \quad \begin{cases} u_t + b \cdot Du = 0 & \text{in } \R^n \times (0,\infty) \\ u = g & \text{on } \R^n \times \{t = 0\}. \end{cases}$$
+
+Here $b \in \R^n$ and $g : \R^n \to \R$ are known, and the problem is to compute $u$. Given $(x,t)$ as above, the line through $(x,t)$ with direction $(b,1)$ is represented parametrically by $(x+sb,t+s)$ $(s \in \R)$. This line hits the plane $\Gamma := \R^n \times \{t=0\}$ when $s = -t$, at the point $(x-tb,0)$. Since $u$ is constant on the line and $u(x-tb,0) = g(x-tb)$, we deduce
+$$(3) \quad u(x,t) = g(x-tb) \quad (x \in \R^n, t \geq 0).$$
+
+So, \textit{if} (2) has a sufficiently regular solution $u$, it must certainly be given by (3). And conversely, it is easy to check directly that if $g$ is $C^1$, then $u$ defined by (3) is indeed a solution of (2).
+
+\begin{remark}[Weak solutions of the transport equation]
+\label{rem:transport-equation-weak-solution-discontinuous-data}
+\dcref{ch2:2.1.1-rem-1}
+\group{Transport Equation}
+If $g$ is not $C^1$, then there is obviously no $C^1$ solution of (2). But even in this case formula (3) certainly provides a strong, and in fact the only reasonable, candidate for a solution. We may thus informally declare $u(x,t) = g(x - tb)$ $(x \in \R^n, t \geq 0)$ to be a \textit{weak solution} of (2), even should $g$ not be $C^1$. This all makes sense even if $g$, and thus $u$, are discontinuous. Such a notion, that a nonsmooth or even discontinuous function may sometimes solve a PDE, will come up again later when we study nonlinear transport phenomena in \S3.4. $\square$
+\end{remark}
+
+\subsection{Nonhomogeneous Problem}
+\label{sec:transport-equation-nonhomogeneous-problem}
+
+Next let us look at the associated nonhomogeneous problem
+$$(4) \quad \begin{cases} u_t + b \cdot Du = f & \text{in } \R^n \times (0, \infty) \\ u = g & \text{on } \R^n \times \{t = 0\}. \end{cases}$$
+
+As before fix $(x,t) \in \R^{n+1}$ and, inspired by the calculation above, set $z(s) := u(x + sb, t + s)$ for $s \in \R$. Then
+$$\dot{z}(s) = Du(x + sb, t + s) \cdot b + u_t(x + sb, t + s) = f(x + sb, t + s).$$
+
+Consequently
+$$u(x,t) - g(x - bt) = z(0) - z(-t) = \int_{-t}^0 \dot{z}(s)\,ds$$
+$$= \int_{-t}^0 f(x + sb, t + s)\,ds$$
+$$= \int_0^t f(x + (s-t)b, s)\,ds;$$
+
+and so
+$$(5) \quad u(x,t) = g(x - tb) + \int_0^t f(x + (s-t)b, s)\,ds \quad (x \in \R^n, t \geq 0)$$
+
+solves the initial-value problem (4).
+
+We will later employ this formula to solve the one-dimensional wave equation, in \cref{sec:wave-dalembert-formula}.
+
+\begin{remark}[Method of characteristics]
+\label{rem:transport-equation-method-of-characteristics}
+\dcref{ch2:2.1.2-rem-1}
+\group{Transport Equation}
+Observe that we have derived our solutions (3), (5) by in effect converting the partial differential equations into ordinary differential equations. This procedure is a special case of the \textit{method of characteristics}, developed later in \S3.2. $\square$
+\end{remark}
+
+\section{Laplace's Equation}
+\label{sec:laplaces-equation}
+
+Among the most important of all partial differential equations are undoubtedly \textit{Laplace's equation}
+$$(1) \quad \Delta u = 0$$
+and \textit{Poisson's equation}
+$$(2) \quad -\Delta u = f.^*$$
+
+In both (1) and (2), $x \in U$ and the unknown is $u : \bar{U} \to \R$, $u = u(x)$, where $U \subset \R^n$ is a given open set. In (2) the function $f : U \to \R$ is also given. Remember from \S A.3 that the Laplacian of $u$ is $\Delta u = \sum_{i=1}^n u_{x_i x_i}$.
+
+\begin{definition}[Harmonic function]
+\label{def:harmonic-function}
+\dcref{ch2:2.2-def-1}
+\group{Fundamental Solutions}
+A $C^2$ function $u$ satisfying (1) is called a \textit{harmonic function}.
+\end{definition}
+
+\textbf{Physical interpretation.} Laplace's equation comes up in a wide variety of physical contexts. In a typical interpretation $u$ denotes the density of some quantity (e.g. a chemical concentration) in equilibrium. Then if $V$ is any smooth subregion within $U$, the net flux of $u$ through $\partial V$ is zero:
+$$\int_{\partial V} \mathbf{F} \cdot \nu \, dS = 0,$$
+$\mathbf{F}$ denoting the flux density and $\nu$ the unit outer normal field. In view of the Gauss--Green Theorem (\S C.2), we have
+$$\int_V \Div \mathbf{F} \, dx = \int_{\partial V} \mathbf{F} \cdot \nu \, dS = 0,$$
+and so
+$$(3) \quad \Div \mathbf{F} = 0 \quad \text{in } U,$$
+since $V$ was arbitrary. In many instances it is physically reasonable to assume the flux $\mathbf{F}$ is proportional to the gradient $Du$, but points in the opposite direction (since the flow is from regions of higher to lower concentration). Thus
+$$(4) \quad \mathbf{F} = -a Du \quad (a > 0).$$
+
+\begin{center}
+\rule{2in}{0.4pt}
+\end{center}
+{\small *I prefer to write (2) with the minus sign, to be consistent with the notation for general second-order elliptic operators in Chapter 6.}
+
+Substituting into (3), we obtain Laplace's equation
+$$\Div(Du) = \Delta u = 0.$$
+
+If $u$ denotes the
+$$\begin{cases}
+\text{chemical concentration} \\
+\text{temperature} \\
+\text{electrostatic potential,}
+\end{cases}$$
+equation (4) is
+$$\begin{cases}
+\text{Fick's law of diffusion} \\
+\text{Fourier's law of heat conduction} \\
+\text{Ohm's law of electrical conduction.}
+\end{cases}$$
+
+See Feynman--Leighton--Sands \cite{FeynmanLeightonSands1966} for a discussion of the ubiquity of Laplace's equation in mathematical physics. Laplace's equation arises as well in the study of analytic functions and the probabilistic investigation of Brownian motion.
+
+\subsection{Fundamental Solution}
+\label{sec:laplace-fundamental-solution}
+
+\subsubsection{Derivation of fundamental solution}
+\label{sec:laplace-fundamental-solution-derivation}
+
+One good strategy for investigating any partial differential equation is first to identify some explicit solutions and then, provided the PDE is linear, to assemble more complicated solutions out of the specific ones previously noted. Furthermore, in looking for explicit solutions it is often wise to restrict attention to classes of functions with certain symmetry properties. Since Laplace's equation is invariant under rotations (Problem 2), it consequently seems advisable to search first for \textit{radial} solutions, that is, functions of $r = |x|$.
+
+Let us therefore attempt to find a solution $u$ of Laplace's equation (1) in $U = \R^n$, having the form
+$$u(x) = v(r),$$
+where $r = |x| = (x_1^2 + \cdots + x_n^2)^{1/2}$ and $v$ is to be selected (if possible) so that $\Delta u = 0$ holds. First note for $i = 1, \ldots, n$ that
+$$\frac{\partial r}{\partial x_i} = \frac{1}{2}(x_1^2 + \cdots + x_n^2)^{-1/2} 2x_i = \frac{x_i}{r} \quad (x \neq 0).$$
+
+We thus have
+$$u_{x_i} = v'(r) \frac{x_i}{r}, \quad u_{x_i x_i} = v''(r) \frac{x_i^2}{r^2} + v'(r) \left(\frac{1}{r} - \frac{x_i^2}{r^3}\right)$$
+for $i = 1, \ldots, n$, and so
+$$\Delta u = v''(r) + \frac{n-1}{r}v'(r).$$
+
+Hence $\Delta u = 0$ if and only if
+$$(5) \quad v'' + \frac{n-1}{r}v' = 0.$$
+
+If $v' \neq 0$, we deduce
+$$(\log(v'))' = \frac{v''}{v'} = \frac{1-n}{r},$$
+and hence $v'(r) = \frac{a}{r^{n-1}}$ for some constant $a$. Consequently if $r > 0$, we have
+$$v(r) = \begin{cases} b \log r + c & (n = 2) \\ \frac{b}{r^{n-2}} + c & (n \geq 3), \end{cases}$$
+where $b$ and $c$ are constants.
+
+These considerations motivate the following
+
+\begin{definition}[Fundamental solution of Laplace's equation]
+\label{def:fundamental-solution-laplace}
+\dcref{ch2:2.2.1-def-1}
+\group{Fundamental Solutions}
+\uses{def:harmonic-function}
+The function
+$$(6) \quad \Phi(x) := \begin{cases} -\frac{1}{2\pi} \log|x| & (n = 2) \\ \frac{1}{n(n-2)\alpha(n)} |x|^{2-n} & (n \geq 3), \end{cases}$$
+defined for $x \in \R^n$, $x \neq 0$, is the \textit{fundamental solution} of Laplace's equation.
+\end{definition}
+
+The reason for the particular choices of the constants in (6) will be apparent in a moment. (Recall from \S A.2 that $\alpha(n)$ denotes the volume of the unit ball in $\R^n$.)
+
+We will sometimes slightly abuse notation and write $\Phi(x) = \Phi(|x|)$ to emphasize that the fundamental solution is radial. Observe also that we have the estimates
+$$(7) \quad |D\Phi(x)| \leq \frac{C}{|x|^{n-1}}, \quad |D^2\Phi(x)| \leq \frac{C}{|x|^n} \quad (x \neq 0)$$
+for some constant $C > 0$.
+
+\subsubsection{Poisson's equation}
+\label{sec:laplace-poissons-equation}
+
+By construction the function $x \mapsto \Phi(x)$ is harmonic for $x \neq 0$. If we shift the origin to a new point $y$, the PDE (1) is unchanged; and so $x \mapsto \Phi(x - y)$ is also harmonic as a function of $x$, $x \neq y$. Let us now take $f: \R^n \to \R$ and note that the mapping $x \mapsto \Phi(x - y)f(y)$ ($x \neq y$) is harmonic for each point $y \in \R^n$, and thus so is the sum of finitely many such expressions built for different points $y$.
+
+This reasoning might suggest that the convolution
+$$u(x) = \int_{\R^n} \Phi(x-y)f(y)\,dy$$
+$$(8) \qquad = \begin{cases}
+-\frac{1}{2\pi}\int_{\R^2}\log|x-y|f(y)\,dy & (n=2)\\
+\frac{1}{n(n-2)\alpha(n)}\int_{\R^n}\frac{f(y)}{|x-y|^{n-2}}\,dy & (n \geq 3)
+\end{cases}$$
+will solve Laplace's equation (1). \textit{However, this is wrong:} we cannot just compute
+$$(9) \quad \Delta u(x) = \int_{\R^n}\Delta_x\Phi(x-y)f(y)\,dy = 0.$$
+
+Indeed, as intimated by estimate (7), $D^2\Phi(x-y)$ is \textit{not} summable near the singularity at $y=x$, and so the differentiation under the integral sign above is unjustified (and incorrect). We must proceed more carefully in calculating $\Delta u$.
+
+Let us for simplicity now assume $f \in C_c^2(\R^n)$; that is, $f$ is twice continuously differentiable, with compact support.
+
+\begin{theorem}[Solving Poisson's equation]
+\label{thm:poisson-equation-solution-formula}
+\dcref{ch2:2.2-thm-1}
+\group{Fundamental Solutions}
+\uses{def:fundamental-solution-laplace}
+Define $u$ by (8). Then
+\begin{align*}
+\text{(i)} \quad & u \in C^2(\R^n)\\
+\text{and}\\
+\text{(ii)} \quad & -\Delta u = f \text{ in } \R^n.
+\end{align*}
+\end{theorem}
+
+We consequently see that (8) provides us with a formula for a solution of Poisson's equation (2) in $\R^n$.
+
+\begin{proof}
+1. We have
+$$u(x) = \int_{\R^n}\Phi(x-y)f(y)\,dy = \int_{\R^n}\Phi(y)f(x-y)\,dy;$$
+hence
+$$\frac{u(x+he_i)-u(x)}{h} = \int_{\R^n}\Phi(y)\left[\frac{f(x+he_i-y)-f(x-y)}{h}\right]dy,$$
+where $h \neq 0$ and $e_i = (0,\ldots,1,\ldots,0)$, the $1$ in the $i$th-slot. But
+$$\frac{f(x+he_i-y)-f(x-y)}{h} \to \frac{\partial f}{\partial x_i}(x-y)$$
+
+uniformly on $\R^n$ as $h \to 0$, and thus
+$$\frac{\partial u}{\partial x_i}(x) = \int_{\R^n} \Phi(y)\frac{\partial f}{\partial x_i}(x-y)\,dy \quad (i=1,\ldots,n).$$
+
+Similarly
+$$(10) \quad \frac{\partial^2 u}{\partial x_i \partial x_j}(x) = \int_{\R^n} \Phi(y)\frac{\partial^2 f}{\partial x_i \partial x_j}(x-y)\,dy \quad (i,j=1,\ldots,n).$$
+
+As the expression on the right hand side of (10) is continuous in the variable $x$, we see $u \in C^2(\R^n)$.
+
+2. Since $\Phi$ blows up at $0$, we will need for subsequent calculations to isolate this singularity inside a small ball. So fix $\varepsilon > 0$. Then
+$$(11) \quad \Delta u(x) = \int_{B(0,\varepsilon)} \Phi(y)\Delta_xf(x-y)\,dy + \int_{\R^n-B(0,\varepsilon)} \Phi(y)\Delta_xf(x-y)\,dy$$
+$$=: I_\varepsilon + J_\varepsilon.$$
+
+Now
+$$(12) \quad |I_\varepsilon| \leq C\|D^2f\|_{L^\infty(\R^n)} \int_{B(0,\varepsilon)} |\Phi(y)|\,dy \leq \begin{cases} C\varepsilon^2|\log\varepsilon| & (n=2) \\ C\varepsilon^2 & (n \geq 3). \end{cases}$$
+
+An integration by parts (see \S C.2) yields
+$$J_\varepsilon = \int_{\R^n-B(0,\varepsilon)} \Phi(y)\Delta_yf(x-y)\,dy$$
+$$= -\int_{\R^n-B(0,\varepsilon)} D\Phi(y)\cdot D_yf(x-y)\,dy$$
+$$(13) \quad + \int_{\partial B(0,\varepsilon)} \Phi(y)\frac{\partial f}{\partial \nu}(x-y)\,dS(y)$$
+$$=: K_\varepsilon + L_\varepsilon,$$
+$\nu$ denoting the \textit{inward} pointing unit normal along $\partial B(0,\varepsilon)$. We readily check
+$$(14) \quad |L_\varepsilon| \leq \|Df\|_{L^\infty(\R^n)} \int_{\partial B(0,\varepsilon)} |\Phi(y)|\,dS(y) \leq \begin{cases} C\varepsilon|\log\varepsilon| & (n=2) \\ C\varepsilon & (n \geq 3). \end{cases}$$
+
+3. We continue by integrating by parts once again in the term $K_\varepsilon$, to discover
+$$K_\varepsilon = \int_{\R^n-B(0,\varepsilon)} \Delta\Phi(y)f(x-y)\,dy - \int_{\partial B(0,\varepsilon)} \frac{\partial \Phi}{\partial \nu}(y)f(x-y)\,dS(y)$$
+$$= -\int_{\partial B(0,\varepsilon)} \frac{\partial \Phi}{\partial \nu}(y)f(x-y)\,dS(y),$$
+since $\Phi$ is harmonic away from the origin. Now $D\Phi(y) = \frac{-y}{n\alpha(n)|y|^n}$ $(y \neq 0)$ and $\nu = \frac{-y}{|y|} = -\frac{y}{\varepsilon}$ on $\partial B(0, \varepsilon)$. Consequently $\frac{\partial \Phi}{\partial \nu}(y) = \nu \cdot D\Phi(y) = \frac{1}{n\alpha(n)\varepsilon^{n-1}}$ on $\partial B(0, \varepsilon)$. Since $n\alpha(n)\varepsilon^{n-1}$ is the surface area of the sphere $\partial B(0, \varepsilon)$, we have
+$$K_\varepsilon = -\frac{1}{n\alpha(n)\varepsilon^{n-1}} \int_{\partial B(0,\varepsilon)} f(x-y) \, dS(y)$$
+$$(15)$$
+$$= -\int_{\partial B(x,\varepsilon)} f(y) \, dS(y) \to -f(x) \quad \text{as } \varepsilon \to 0.$$
+
+(Remember from \S A.3 that a slash through an integral denotes an average.)
+
+4. Combining now (11)--(15) and letting $\varepsilon \to 0$, we find $-\Delta u(x) = f(x)$, as asserted.
+\end{proof}
+
+\begin{remark}[Dirac measure notation]
+\label{rem:poisson-equation-dirac-delta-notation}
+\dcref{ch2:2.2.1-rem-1}
+\group{Fundamental Solutions}
+\uses{thm:poisson-equation-solution-formula}
+(i) We sometimes write
+$$-\Delta \Phi = \delta_0 \quad \text{in } \R^n,$$
+$\delta_0$ denoting the Dirac measure on $\R^n$ giving unit mass to the point $0$. Adopting this notation, we may formally compute:
+$$-\Delta u(x) = \int_{\R^n} -\Delta_x \Phi(x-y) f(y) \, dy$$
+$$= \int_{\R^n} \delta_x f(y) \, dy = f(x) \quad (x \in \R^n),$$
+in accordance with \cref{thm:poisson-equation-solution-formula}. This corrects the erroneous calculation (9).
+
+(ii) \cref{thm:poisson-equation-solution-formula} is in fact valid under far less stringent smoothness requirements for $f$: see Gilbarg--Trudinger \cite{GilbargTrudinger1983}. $\square$
+\end{remark}
+
+\subsection{Mean-Value Formulas}
+\label{sec:laplace-mean-value-formulas}
+
+Consider now an open set $U \subset \R^n$ and suppose $u$ is a harmonic function within $U$. We next derive the important \textit{mean-value formulas}, which declare that $u(x)$ equals both the average of $u$ over the sphere $\partial B(x, r)$ and the average of $u$ over the entire ball $B(x, r)$, provided $B(x, r) \subset U$. These implicit formulas involving $u$ generate a remarkable number of consequences, as we will momentarily see.
+
+\begin{theorem}[Mean-value formulas for Laplace's equation]
+\label{thm:mean-value-formulas-laplace}
+\dcref{ch2:2.2-thm-2}
+\group{Harmonic Functions}
+\uses{def:harmonic-function}
+If $u \in C^2(U)$ is harmonic, then
+$$u(x) = \int_{\partial B(x,r)} u \, dS = \int_{B(x,r)} u \, dy$$
+$$(16)$$
+for each ball $B(x, r) \subset U$, the slashed integrals denoting averages.
+\end{theorem}
+
+\begin{proof}
+1. Set
+$$\phi(r) := \int_{\partial B(x,r)} u(y) dS(y) = \int_{\partial B(0,1)} u(x + rz) dS(z).$$
+Then
+$$\phi'(r) = \int_{\partial B(0,1)} Du(x + rz) \cdot z \, dS(z),$$
+and consequently, using Green's formulas from \S C.2, we compute
+$$\phi'(r) = \int_{\partial B(x,r)} Du(y) \cdot \frac{y - x}{r} dS(y)$$
+$$= \int_{\partial B(x,r)} \frac{\partial u}{\partial \nu} dS(y)$$
+$$= \frac{r}{n} \int_{B(x,r)} \Delta u(y) dy = 0.$$
+
+Hence $\phi$ is constant, and so
+$$\phi(r) = \lim_{t \to 0} \phi(t) = \lim_{t \to 0} \int_{\partial B(x,t)} u(y) dS(y) = u(x).$$
+
+2. Observe next that our employing polar coordinates, as in \S C.3, gives
+$$\int_{B(x,r)} u \, dy = \int_0^r \left(\int_{\partial B(x,s)} u \, dS\right) ds$$
+$$= u(x) \int_0^r n\alpha(n) s^{n-1} \, ds = \alpha(n) r^n u(x). \qedhere$$
+\end{proof}
+
+\begin{theorem}[Converse to mean-value property]
+\label{thm:converse-mean-value-property-laplace}
+\dcref{ch2:2.2-thm-3}
+\group{Harmonic Functions}
+\uses{def:harmonic-function}
+If $u \in C^2(U)$ satisfies
+$$u(x) = \int_{\partial B(x,r)} u \, dS$$
+for each ball $B(x,r) \subset U$, then $u$ is harmonic.
+\end{theorem}
+
+\begin{proof}
+If $\Delta u \not\equiv 0$, there exists some ball $B(x,r) \subset U$ such that, say, $\Delta u > 0$ within $B(x,r)$. But then for $\phi$ as above,
+$$0 = \phi'(r) = \frac{r}{n} \int_{B(x,r)} \Delta u(y) \, dy > 0,$$
+a contradiction.
+\end{proof}
+
+\subsection{Properties of Harmonic Functions}
+\label{sec:laplace-properties-harmonic-functions}
+
+We now present a sequence of interesting deductions about harmonic functions, all based upon the mean-value formulas. Assume for the following that $U \subset \R^n$ is open and bounded.
+
+\subsubsection{Strong maximum principle, uniqueness}
+\label{sec:laplace-strong-maximum-principle}
+
+\begin{theorem}[Strong maximum principle]
+\label{thm:strong-maximum-principle-laplace}
+\dcref{ch2:2.2-thm-4}
+\group{Maximum Principles}
+\uses{thm:mean-value-formulas-laplace}
+Suppose $u \in C^2(U) \cap C(\overline{U})$ is harmonic within $U$.
+
+(i) Then
+$$\max_U u = \max_{\partial U} u.$$
+
+(ii) Furthermore, if $U$ is connected and there exists a point $x_0 \in U$ such that
+$$u(x_0) = \max_U u,$$
+then
+$$u \text{ is constant within } U.$$
+\end{theorem}
+
+Assertion (i) is the \textit{maximum principle} for Laplace's equation and (ii) is the \textit{strong maximum principle}. Replacing $u$ by $-u$, we recover also similar assertions with ``min'' replacing ``max''.
+
+\begin{proof}
+Suppose there exists a point $x_0 \in U$ with $u(x_0) = M := \max_U u$. Then for $0 < r < \dist(x_0, \partial U)$, the mean-value property asserts
+$$M = u(x_0) = \int_{B(x_0,r)} u \, dy \leq M.$$
+
+As equality holds only if $u \equiv M$ within $B(x_0, r)$, we see $u(y) = M$ for all $y \in B(x_0,r)$. Hence the set $\{x \in U \mid u(x) = M\}$ is both open and relatively closed in $U$, and thus equals $U$ if $U$ is connected. This proves assertion (ii), from which (i) follows.
+\end{proof}
+
+\begin{remark}[Strict positivity from boundary data]
+\label{rem:strong-maximum-principle-positivity}
+\dcref{ch2:2.2.3-rem-2}
+\group{Maximum Principles}
+\uses{thm:strong-maximum-principle-laplace}
+The strong maximum principle asserts in particular that if $U$ is connected and $u \in C^2(U) \cap C(\overline{U})$ satisfies
+$$\begin{cases} \Delta u = 0 & \text{in } U \\ u = g & \text{on } \partial U, \end{cases}$$
+where $g \geq 0$, then $u$ is positive \textit{everywhere} in $U$ if $g$ is positive \textit{somewhere} on $\partial U$. $\square$
+\end{remark}
+
+An important application of the maximum principle is establishing the uniqueness of solutions to certain boundary-value problems for Poisson's equation.
+
+\begin{theorem}[Uniqueness]
+\label{thm:uniqueness-poisson-dirichlet}
+\dcref{ch2:2.2-thm-5}
+\group{Maximum Principles}
+\uses{thm:strong-maximum-principle-laplace}
+Let $g \in C(\partial U)$, $f \in C(U)$. Then there exists at most one solution $u \in C^2(U) \cap C(\bar{U})$ of the boundary-value problem
+$$(17) \quad \begin{cases}
+-\Delta u = f & \text{in } U \\
+u = g & \text{on } \partial U
+\end{cases}$$
+\end{theorem}
+
+\begin{proof}
+If $u$ and $\bar{u}$ both satisfy (17), apply \cref{thm:strong-maximum-principle-laplace} to the harmonic functions $w := \pm(u - \bar{u})$.
+\end{proof}
+
+\subsubsection{Regularity}
+\label{sec:laplace-regularity}
+
+Now we prove that if $u \in C^2$ is harmonic, then necessarily $u \in C^\infty$. Thus \textit{harmonic functions are automatically infinitely differentiable}. This sort of assertion is called a \textit{regularity theorem}. The interesting point is that the algebraic structure of Laplace's equation $\Delta u = \sum_{i=1}^n u_{x_i x_i} = 0$ leads to the analytic deduction that all the partial derivatives of $u$ exist, even those which do not appear in the PDE.
+
+\begin{theorem}[Smoothness]
+\label{thm:harmonic-functions-smooth}
+\dcref{ch2:2.2-thm-6}
+\group{Harmonic Functions}
+\uses{thm:mean-value-formulas-laplace}
+If $u \in C(U)$ satisfies the mean-value property (16) for each ball $B(x,r) \subset U$, then
+$$u \in C^\infty(U).$$
+\end{theorem}
+
+Note carefully that $u$ may not be smooth, or even continuous, up to $\partial U$.
+
+\begin{proof}
+Let $\eta$ be a standard mollifier, as described in \S C.4, and recall that $\eta$ is a radial function. Set $u^\epsilon := \eta_\epsilon * u$ in $U_\epsilon = \{x \in U \mid \dist(x, \partial U) > \epsilon\}$. As shown in \S C.4, $u^\epsilon \in C^\infty(U_\epsilon)$.
+
+We will prove $u$ is smooth by demonstrating that in fact $u \equiv u^\epsilon$ on $U_\epsilon$. Indeed if $x \in U_\epsilon$, then
+$$u^\epsilon(x) = \int_U \eta_\epsilon(x-y)u(y) \, dy$$
+$$= \frac{1}{\epsilon^n} \int_{B(x,\epsilon)} \eta\left(\frac{|x-y|}{\epsilon}\right) u(y) \, dy$$
+$$= \frac{1}{\epsilon^n} \int_0^\epsilon \eta\left(\frac{r}{\epsilon}\right) \left(\int_{\partial B(x,r)} u \, dS\right) dr$$
+$$= \frac{1}{\epsilon^n} u(x) \int_0^\epsilon \eta\left(\frac{r}{\epsilon}\right) n\alpha(n)r^{n-1} \, dr \quad \text{by (16)}$$
+$$= u(x) \int_{B(0,\epsilon)} \eta_\epsilon \, dy = u(x).$$
+
+Thus $u^\epsilon \equiv u$ in $U_\epsilon$, and so $u \in C^\infty(U_\epsilon)$ for each $\epsilon > 0$.
+\end{proof}
+
+\subsubsection{Local estimates for derivatives}
+\label{sec:laplace-local-estimates-derivatives}
+
+Next we employ the mean-value formulas to derive careful estimates on the various partial derivatives of a harmonic function. The precise structure of these estimates will be needed below, when we prove analyticity.
+
+\begin{theorem}[Estimates on derivatives]
+\label{thm:harmonic-function-derivative-estimates}
+\dcref{ch2:2.2-thm-7}
+\group{Harmonic Functions}
+\uses{thm:mean-value-formulas-laplace}
+Assume $u$ is harmonic in $U$. Then
+$$(18) \quad |D^\alpha u(x_0)| \leq \frac{C_k}{r^{n+k}} \|u\|_{L^1(B(x_0,r))}$$
+for each ball $B(x_0,r) \subset U$ and each multiindex $\alpha$ of order $|\alpha| = k$. Here
+$$(19) \quad C_0 = \frac{1}{\alpha(n)}, \quad C_k = \frac{(2^{n+1}nk)^k}{\alpha(n)} \quad (k = 1,\ldots).$$
+\end{theorem}
+
+\begin{proof}
+1. We establish (18), (19) by induction on $k$, the case $k=0$ being immediate from the mean-value formula (16). For $k=1$, we note upon differentiating Laplace's equation that $u_{x_i}$ $(i=1,\ldots,n)$ is harmonic. Consequently
+$$|u_{x_i}(x_0)| = \left|\int_{B(x_0,r/2)} u_{x_i}\,dx\right|$$
+$$(20) \quad = \left|\frac{2^n}{\alpha(n)r^n}\int_{\partial B(x_0,r/2)} u\nu_i\,dS\right|$$
+$$\leq \frac{2n}{r}\|u\|_{L^\infty(\partial B(x_0,\frac{r}{2}))}.$$
+
+Now if $x \in \partial B(x_0,r/2)$, then $B(x,r/2) \subset B(x_0,r) \subset U$, and so
+$$|u(x)| \leq \frac{1}{\alpha(n)}\left(\frac{2}{r}\right)^n \|u\|_{L^1(B(x_0,r))}$$
+by (18), (19) for $k=0$. Combining the inequalities above, we deduce
+$$|D^\alpha u(x_0)| \leq \frac{2^{n+1}n}{\alpha(n)}\frac{1}{r^{n+1}}\|u\|_{L^1(B(x_0,r))}$$
+if $|\alpha| = 1$. This verifies (18), (19) for $k=1$.
+
+2. Assume now $k \geq 2$ and (18), (19) is valid for all balls in $U$ and each multiindex of order less than or equal to $k-1$. Fix $B(x_0,r) \subset U$ and let $\alpha$ be a multiindex with $|\alpha| = k$. Then $D^\alpha u = (D^\beta u)_{x_i}$ for some $i \in \{1, \ldots, n\}$, $|\beta| = k - 1$. By calculations similar to those in (20), we establish that
+$$|D^\alpha u(x_0)| \leq \frac{nk}{r}\|D^{\beta}u\|_{L^\infty(\partial B(x_0, \frac{k-1}{k}r))}.$$
+
+If $x \in \partial B(x_0, \frac{k-1}{k}r)$, then $B(x, \frac{r}{k}) \subset B(x_0, r) \subset U$. Thus (18), (19) for $k - 1$ imply
+$$|D^\beta u(x)| \leq \frac{(2^{n+1}n(k-1))^{k-1}}{\alpha(n)\left(\frac{r}{k}\right)^{n+k-1}}\|u\|_{L^1(B(x_0,r))}.$$
+
+Combining the two previous estimates yields the bound
+$$(21) \quad |D^\alpha u(x_0)| \leq \frac{(2^{n+1}nk)^k}{\alpha(n)r^{n+k}}\|u\|_{L^1(B(x_0,r))}.$$
+
+This confirms (18), (19) for $|\alpha| = k$.
+\end{proof}
+
+\subsubsection{Liouville's Theorem}
+\label{sec:laplace-liouvilles-theorem}
+
+Next we see that there are no nontrivial bounded harmonic functions on all of $\R^n$.
+
+\begin{theorem}[Liouville's Theorem]
+\label{thm:liouville-theorem-harmonic}
+\dcref{ch2:2.2-thm-8}
+\group{Harmonic Functions}
+\uses{thm:harmonic-function-derivative-estimates}
+Suppose $u : \R^n \to \R$ is harmonic and bounded. Then $u$ is constant.
+\end{theorem}
+
+\begin{proof}
+Fix $x_0 \in \R^n$, $r > 0$, and apply \cref{thm:harmonic-function-derivative-estimates} on $B(x_0, r)$:
+$$|Du(x_0)| \leq \frac{C_1}{r^{n+1}}\|u\|_{L^1(B(x_0,r))}$$
+$$\leq \frac{C_1\alpha(n)}{r}\|u\|_{L^\infty(\R^n)} \to 0,$$
+as $r \to \infty$. Thus $Du = 0$, and so $u$ is constant.
+\end{proof}
+
+\begin{theorem}[Representation formula]
+\label{thm:representation-formula-bounded-solutions}
+\dcref{ch2:2.2-thm-9}
+\group{Harmonic Functions}
+\uses{def:fundamental-solution-laplace,thm:liouville-theorem-harmonic}
+Let $f \in C^2_c(\R^n)$, $n \geq 3$. Then any bounded solution of
+$$-\Delta u = f \quad \text{in } \R^n$$
+has the form
+$$u(x) = \int_{\R^n} \Phi(x - y)f(y)dy + C \quad (x \in \R^n)$$
+for some constant $C$.
+\end{theorem}
+
+\begin{proof}
+Since $\Phi(x) \to 0$ as $|x| \to \infty$ for $n \geq 3$, $\tilde{u}(x) := \int_{\R^n} \Phi(x-y)f(y)\,dy$ is a bounded solution of $-\Delta u = f$ in $\R^n$. If $u$ is another solution, $w := u - \tilde{u}$ is constant, according to Liouville's Theorem.
+\end{proof}
+
+\begin{remark}
+\label{rem:representation-formula-n2-unbounded}
+\dcref{ch2:2.2.3-rem-3}
+\group{Harmonic Functions}
+\uses{def:fundamental-solution-laplace,thm:representation-formula-bounded-solutions}
+If $n = 2$, $\Phi(x) = -\frac{1}{2\pi}\log|x|$ is unbounded as $|x| \to \infty$, and so may be $\int_{\R^2} \Phi(x-y)f(y)\,dy$. $\square$
+\end{remark}
+
+\subsubsection{Analyticity}
+\label{sec:laplace-analyticity}
+
+Next we refine \cref{thm:harmonic-functions-smooth}:
+
+\begin{theorem}[Analyticity]
+\label{thm:harmonic-functions-analytic}
+\dcref{ch2:2.2-thm-10}
+\group{Harmonic Functions}
+\uses{thm:harmonic-function-derivative-estimates,thm:harmonic-functions-smooth}
+Assume $u$ is harmonic in $U$. Then $u$ is analytic in $U$.
+\end{theorem}
+
+\begin{proof}
+1. Fix any point $x_0 \in U$. We must show $u$ can be represented by a convergent power series in some neighborhood of $x_0$.
+
+Let $r := \frac14\dist(x_0,\partial U)$. Then $M := \frac{1}{\alpha(n)r^n}\|u\|_{L^1(B(x_0,2r))} < \infty$.
+
+2. Since $B(x,r) \subset B(x_0,2r) \subset U$ for each $x \in B(x_0,r)$, \cref{thm:harmonic-function-derivative-estimates} provides the bound
+$$\|D^\alpha u\|_{L^\infty(B(x_0,r))} \leq M\left(\frac{2^{n+1}n}{r}\right)^{|\alpha|}|\alpha|^{|\alpha|}.$$
+
+Now Stirling's formula ([RD, \S8.22]) asserts $\lim_{k\to\infty} \frac{k^{k+\frac12}}{k!e^k} = \frac{1}{(2\pi)^{1/2}}$. Hence
+$$|\alpha|^{|\alpha|} \leq Ce^{|\alpha|}|\alpha|!$$
+for some constant $C$ and all multiindices $\alpha$. Furthermore, the Multinomial Theorem implies
+$$n^k = (1+\cdots+1)^k = \sum_{|\alpha|=k} \frac{|\alpha|!}{\alpha!};$$
+whence
+$$|\alpha|! \leq n^{|\alpha|}\alpha!.$$
+
+Combining the previous inequalities now yields
+$$(22) \quad \|D^\alpha u\|_{L^\infty(B(x_0,r))} \leq CM\left(\frac{2^{n+1}n^2e}{r}\right)^{|\alpha|}\alpha!.$$
+
+3. The Taylor series for $u$ at $x_0$ is
+$$\sum_{\alpha} \frac{D^\alpha u(x_0)}{\alpha!}(x-x_0)^\alpha,$$
+the sum taken over all multiindices. We assert this power series converges, provided
+$$(23) \quad |x - x_0| < \frac{r}{2^{n+2}n^3 e}.$$
+
+To verify this, let us compute for each $N$ the remainder term:
+$$R_N(x) := u(x) - \sum_{k=0}^{N-1} \sum_{|\alpha|=k} \frac{D^\alpha u(x_0)(x - x_0)^\alpha}{\alpha!}$$
+$$= \sum_{|\alpha|=N} \frac{D^\alpha u(x_0 + t(x - x_0))(x - x_0)^\alpha}{\alpha!}$$
+for some $0 \le t \le 1$, $t$ depending on $x$. We establish this formula by writing out the first $N$ terms and the error in the Taylor expansion about $0$ for the function of one variable $g(t) := u(x_0 + t(x - x_0))$, at $t = 1$. Employing (22), (23), we can estimate
+$$|R_N(x)| \le CM \sum_{|\alpha|=N} \left(\frac{2^{n+1} n^2 e}{r}\right)^N \left(\frac{r}{2^{n+2}n^3 e}\right)^N$$
+$$\le CMn^N \frac{1}{(2n)^N} = \frac{CM}{2^N}$$
+$$\to 0 \quad \text{as } N \to \infty.$$
+
+\begin{figure}[h]\centering
+% [FIGURE: QED symbol (small square)]
+\end{figure}
+\end{proof}
+
+See \S4.6.2 for more on analytic functions and partial differential equations.
+
+\subsubsection{Harnack's inequality}
+\label{sec:laplace-harnacks-inequality}
+
+Recall from \S A.2 that we write $V \Subset U$ to mean $V \subset \bar{V} \subset U$ and $\bar{V}$ is compact.
+
+\begin{theorem}[Harnack's inequality]
+\label{thm:harnacks-inequality}
+\dcref{ch2:2.2-thm-11}
+\group{Harmonic Functions}
+\uses{thm:mean-value-formulas-laplace}
+For each connected open set $V \Subset U$, there exists a positive constant $C$, depending only on $V$, such that
+$$\sup_V u \le C \inf_V u$$
+for all nonnegative harmonic functions $u$ in $U$.
+\end{theorem}
+
+Thus in particular
+$$\frac{1}{C}u(y) \le u(x) \le Cu(y)$$
+for all points $x, y \in V$. These inequalities assert that \textit{the values of a nonnegative harmonic function within $V$ are all comparable}: $u$ cannot be very small (or very large) at any point of $V$ unless $u$ is very small (or very large) everywhere in $V$. The intuitive idea is that since $V$ is a positive distance away from $\partial U$, there is ``room for the averaging effects of Laplace's equation to occur''.
+
+\begin{proof}
+Let $r := \frac{1}{4} \dist(V, \partial U)$. Choose $x, y \in V$, $|x - y| \leq r$. Then
+$$u(x) = \int_{B(x,2r)} u \, dz \geq \frac{1}{\alpha(n)2^n r^n} \int_{B(y,r)} u \, dz$$
+$$= \frac{1}{2^n} \int_{B(y,r)} u \, dz = \frac{1}{2^n} u(y).$$
+
+Thus $2^n u(y) \geq u(x) \geq \frac{1}{2^n} u(y)$ if $x, y \in V$, $|x - y| \leq r$.
+
+Since $V$ is connected and $\bar{V}$ is compact, we can cover $\bar{V}$ by a chain of finitely many balls $\{B_i\}_{i=1}^N$, each of which has radius $r$ and $B_i \cap B_{i-1} \neq \emptyset$ for $i = 2, \ldots, N$. Then
+$$u(x) \geq \frac{1}{2^{nN}} u(y)$$
+for all $x, y \in V$.
+\end{proof}
+
+\subsection{Green's Function}
+\label{sec:laplace-greens-function}
+
+Assume now $U \subset \R^n$ is open, bounded, and $\partial U$ is $C^1$. We propose next to obtain a general representation formula for the solution of Poisson's equation
+$$-\Delta u = f \quad \text{in } U,$$
+subject to the prescribed boundary condition
+$$u = g \quad \text{on } \partial U.$$
+
+\subsubsection{Derivation of Green's function}
+\label{sec:laplace-greens-function-derivation}
+
+Suppose first of all $u \in C^2(\bar{U})$ is an arbitrary function. Fix $x \in U$, choose $\varepsilon > 0$ so small that $B(x, \varepsilon) \subset U$, and apply Green's formula from \S C.2 on the region $V_\varepsilon := U - B(x, \varepsilon)$ to $u(y)$ and $\Phi(y - x)$. We thereby compute
+$$(24) \quad \int_{V_\varepsilon} u(y) \Delta \Phi(y - x) - \Phi(y - x) \Delta u(y) \, dy$$
+$$= \int_{\partial V_\varepsilon} u(y) \frac{\partial \Phi}{\partial \nu}(y - x) - \Phi(y - x) \frac{\partial u}{\partial \nu}(y) \, dS(y),$$
+$\nu$ denoting the outer unit normal vector on $\partial U_\varepsilon$. Recall next $\Delta \Phi(x - y) = 0$ for $x \neq y$. We observe also
+$$\left|\int_{\partial B(x,\varepsilon)} \Phi(y - x) \frac{\partial u}{\partial \nu}(y) dS(y)\right| \leq C\varepsilon^{n-1} \max_{\partial B(0,\varepsilon)} |\Phi| = o(1)$$
+as $\varepsilon \to 0$. Furthermore the calculations in the proof of \cref{thm:poisson-equation-solution-formula} show
+$$\int_{\partial B(x,\varepsilon)} u(y) \frac{\partial \Phi}{\partial \nu}(y - x) dS(y) = \int_{\partial B(x,\varepsilon)} u(y) dS(y) \to u(x)$$
+as $\varepsilon \to 0$. Hence our sending $\varepsilon \to 0$ in (24) yields the formula:
+$$u(x) = \int_{\partial U} \Phi(y - x) \frac{\partial u}{\partial \nu}(y) - u(y) \frac{\partial \Phi}{\partial \nu}(y - x) dS(y)$$
+$$- \int_U \Phi(y - x) \Delta u(y) dy.$$
+$$(25)$$
+
+This identity is valid for any point $x \in U$ and any function $u \in C^2(\bar{U})$.
+
+Now formula (25) would permit us to solve for $u(x)$ if we knew the values of $\Delta u$ within $U$ and the values of $u, \partial u/\partial \nu$ along $\partial U$. However for our application to Poisson's equation with prescribed boundary values for $u$, the normal derivative $\partial u/\partial \nu$ along $\partial U$ is unknown to us. We must therefore somehow modify (25) to remove this term.
+
+The idea is now to introduce for fixed $x$ a \textit{corrector function} $\varphi^x = \varphi^x(y)$, solving the boundary-value problem:
+$$\begin{cases}
+\Delta \varphi^x = 0 & \text{in } U, \\
+\varphi^x = \Phi(y - x) & \text{on } \partial U.
+\end{cases}$$
+$$(26)$$
+
+Let us apply Green's formula once more, now to compute
+$$- \int_U \varphi^x(y) \Delta u(y) dy = \int_{\partial U} u(y) \frac{\partial \varphi^x}{\partial \nu}(y) - \varphi^x(y) \frac{\partial u}{\partial \nu}(y) dS(y)$$
+$$= \int_{\partial U} u(y) \frac{\partial \varphi^x}{\partial \nu}(y) - \Phi(y - x) \frac{\partial u}{\partial \nu}(y) dS(y).$$
+$$(27)$$
+
+We introduce next this
+
+\begin{definition}[Green's function]
+\label{def:greens-function}
+\dcref{ch2:2.2.4-def-1}
+\group{Green's Functions}
+\uses{def:fundamental-solution-laplace}
+\textit{Green's function} for the region $U$ is
+$$G(x, y) := \Phi(y - x) - \varphi^x(y) \quad (x, y \in U, x \neq y).$$
+\end{definition}
+
+Adopting this terminology and adding (27) to (25), we find
+$$(28) \quad u(x) = -\int_{\partial U} u(y) \frac{\partial G}{\partial \nu}(x, y) \, dS(y) - \int_U G(x,y)\Delta u(y) \, dy \quad (x \in U),$$
+where
+$$\frac{\partial G}{\partial \nu}(x,y) = D_y G(x,y) \cdot \nu(y)$$
+is the outer normal derivative of $G$ with respect to the variable $y$. Observe that the term $\partial u/\partial \nu$ does not appear in equation (28): we introduced the corrector $\phi^x$ precisely to achieve this.
+
+Suppose now $u \in C^2(\bar{U})$ solves the boundary-value problem
+$$(29) \quad \begin{cases}
+-\Delta u = f & \text{in } U \\
+u = g & \text{on } \partial U,
+\end{cases}$$
+for given continuous functions $f, g$. Plugging into (28), we obtain
+
+\begin{theorem}[Representation formula using Green's function]
+\label{thm:representation-formula-greens-function}
+\dcref{ch2:2.2-thm-12}
+\group{Green's Functions}
+\uses{def:greens-function}
+If $u \in C^2(\bar{U})$ solves problem (29), then
+$$(30) \quad u(x) = -\int_{\partial U} g(y) \frac{\partial G}{\partial \nu}(x,y) \, dS(y) + \int_U f(y)G(x,y) \, dy \quad (x \in U).$$
+\end{theorem}
+
+Here we have a formula for the solution of the boundary-value problem (29), provided we can construct Green's function $G$ for the given domain $U$. This is in general a difficult matter, and can be done only when $U$ has simple geometry. Subsequent subsections identify some special cases for which an explicit calculation of $G$ is possible.
+
+\begin{remark}[Green's function and the Dirac measure]
+\label{rem:greens-function-dirac-delta}
+\dcref{ch2:2.2.4-rem-3}
+\group{Green's Functions}
+\uses{def:greens-function}
+Fix $x \in U$. Then regarding $G$ as a function of $y$, we may symbolically write
+$$\begin{cases}
+-\Delta G = \delta_x & \text{in } U \\
+G = 0 & \text{on } \partial U,
+\end{cases}$$
+$\delta_x$ denoting the Dirac measure giving unit mass to the point $x$. $\square$
+\end{remark}
+
+Before moving on to specific examples, let us record the general assertion that $G$ is symmetric in the variables $x$ and $y$:
+
+\begin{theorem}[Symmetry of Green's function]
+\label{thm:greens-function-symmetry}
+\dcref{ch2:2.2-thm-13}
+\group{Green's Functions}
+\uses{def:greens-function}
+For all $x, y \in U$, $x \neq y$, we have
+$$G(y,x) = G(x,y).$$
+\end{theorem}
+
+\begin{proof}
+Fix $x,y \in U$, $x \neq y$. Write
+$$v(z) := G(x,z), \quad w(z) := G(y,z) \quad (z \in U).$$
+
+Then $\Delta v(z) = 0$ $(z \neq x)$, $\Delta w(z) = 0$ $(z \neq y)$ and $w = v = 0$ on $\partial U$. Thus our applying Green's identity on $V := U - [B(x,\varepsilon) \cup B(y,\varepsilon)]$ for sufficiently small $\varepsilon > 0$ yields
+$$(31) \quad \int_{\partial B(x,\varepsilon)} \frac{\partial v}{\partial \nu}w - \frac{\partial w}{\partial \nu}v \, dS(z) = \int_{\partial B(y,\varepsilon)} \frac{\partial w}{\partial \nu}v - \frac{\partial v}{\partial \nu}w \, dS(z),$$
+$\nu$ denoting the inward pointing unit vector field on $\partial B(x,\varepsilon) \cup \partial B(y,\varepsilon)$. Now $w$ is smooth near $x$; whence
+$$\left|\int_{\partial B(x,\varepsilon)} \frac{\partial w}{\partial \nu}v \, dS\right| \leq C\varepsilon^{n-1} \sup_{\partial B(x,\varepsilon)} |v| = o(1) \quad \text{as } \varepsilon \to 0.$$
+
+On the other hand, $v(z) = \Phi(z-x) - \phi^x(z)$, where $\phi^x$ is smooth in $U$. Thus
+$$\lim_{\varepsilon \to 0} \int_{\partial B(x,\varepsilon)} \frac{\partial v}{\partial \nu}w \, dS = \lim_{\varepsilon \to 0} \int_{\partial B(x,\varepsilon)} \frac{\partial \Phi}{\partial \nu}(x-z)w(z) \, dS = w(x),$$
+by calculations as in the proof of \cref{thm:poisson-equation-solution-formula}. Thus the left-hand side of (31) converges to $w(x)$ as $\varepsilon \to 0$. Likewise the right hand side converges to $v(y)$. Consequently
+$$G(y,x) = w(x) = v(y) = G(x,y). \qedhere$$
+\end{proof}
+
+\subsubsection{Green's function for a half-space}
+\label{sec:laplace-greens-function-half-space}
+
+In this and the next subsection we will build Green's functions for two regions with simple geometry, namely the half-space $\R^n_+$ and the unit ball $B(0,1)$. Everything depends upon our explicitly solving the corrector problem (26) in these regions, and this in turn depends upon some clever geometric reflection tricks.
+
+First let us consider the half-space
+$$\R^n_+ = \{x = (x_1,\ldots,x_n) \in \R^n \mid x_n > 0\}.$$
+
+Although this region is unbounded, and so the calculations in the previous section do not directly apply, we will attempt nevertheless to build Green's function using the ideas developed before. Later of course we must check directly that the corresponding representation formula is valid.
+
+\begin{definition}[Reflection in a half-space]
+\label{def:reflection-half-space}
+\dcref{ch2:2.2.4-def-2}
+\group{Green's Functions}
+If $x = (x_1, \ldots, x_{n-1}, x_n) \in \R^n_+$, its reflection \textit{in the plane} $\partial \R^n_+$ is the point
+$$\bar{x} = (x_1, \ldots, x_{n-1}, -x_n).$$
+\end{definition}
+
+We will solve problem (26) for the half-space by setting
+$$\phi^x(y) := \Phi(y - \bar{x}) = \Phi(y_1 - x_1, \ldots, y_{n-1} - x_{n-1}, y_n + x_n) \quad (x, y \in \R^n_+).$$
+
+The idea is that the corrector $\phi^x$ is built from $\Phi$ by ``reflecting the singularity'' from $x \in \R^n_+$ to $\bar{x} \notin \R^n_+$. We note
+$$\phi^x(y) = \Phi(y - x) \quad \text{if } y \in \partial \R^n_+,$$
+and thus
+$$\begin{cases}
+\Delta \phi^x = 0 & \text{in } \R^n_+ \\
+\phi^x = \Phi(y - x) & \text{on } \partial \R^n_+,
+\end{cases}$$
+as required.
+
+\begin{definition}[Green's function for the half-space]
+\label{def:greens-function-half-space}
+\dcref{ch2:2.2.4-def-3}
+\group{Green's Functions}
+\uses{def:greens-function,def:reflection-half-space}
+Green's function for the half-space $\R^n_+$ is
+$$G(x, y) := \Phi(y - x) - \Phi(y - \bar{x}) \quad (x, y \in \R^n_+, x \neq y).$$
+\end{definition}
+
+Then
+$$\frac{\partial G}{\partial y_n}(x, y) = \frac{\partial \Phi}{\partial y_n}(y - x) - \frac{\partial \Phi}{\partial y_n}(y - \bar{x})$$
+$$= \frac{-1}{n\alpha(n)} \left[ \frac{y_n - x_n}{|y - x|^n} - \frac{y_n + x_n}{|y - \bar{x}|^n} \right].$$
+
+Consequently if $y \in \partial \R^n_+$,
+$$\frac{\partial G}{\partial \nu}(x, y) = -\frac{\partial G}{\partial y_n}(x, y) = \frac{-2x_n}{n\alpha(n)|x - y|^n}.$$
+
+Suppose now $u$ solves the boundary-value problem
+$$(32) \quad \begin{cases}
+\Delta u = 0 & \text{in } \R^n_+ \\
+u = g & \text{on } \partial \R^n_+.
+\end{cases}$$
+
+Then from (30) we expect
+$$(33) \quad u(x) = \frac{2x_n}{n\alpha(n)} \int_{\partial \R^n_+} \frac{g(y)}{|x - y|^n} dy \quad (x \in \R^n_+)$$
+to be a representation formula for our solution. The function
+$$K(x, y) := \frac{2x_n}{n\alpha(n)|x - y|^n} \quad (x \in \R^n_+, y \in \partial \R^n_+)$$
+is \textit{Poisson's kernel} for $\R^n_+$, and (33) is \textit{Poisson's formula}.
+
+We must now check directly that formula (33) does indeed provide us with a solution of the boundary-value problem (32).
+
+\begin{theorem}[Poisson's formula for half-space]
+\label{thm:poissons-formula-half-space}
+\dcref{ch2:2.2-thm-14}
+\group{Green's Functions}
+\uses{def:greens-function-half-space}
+Assume $g \in C(\R^{n-1}) \cap L^{\infty}(\R^{n-1})$, and define $u$ by (33). Then
+
+(i) $u \in C^{\infty}(\R^n_+) \cap L^{\infty}(\R^n_+)$,
+
+(ii) $\Delta u = 0$ \textit{in} $\R^n_+$,
+
+and
+
+(iii) $\lim\limits_{\substack{x \to x^0 \\ x \in \R^n_+}} u(x) = g(x^0)$ \textit{for each point} $x^0 \in \partial \R^n_+$.
+\end{theorem}
+
+\begin{proof}
+1. For each fixed $x$, the mapping $y \mapsto G(x,y)$ is harmonic, except for $y = x$. As $G(x,y) = G(y,x)$ according to \cref{thm:greens-function-symmetry}, $x \mapsto G(x,y)$ is harmonic, except for $x = y$. Thus $x \mapsto \frac{\partial G}{\partial y_n}(x,y) = K(x,y)$ is harmonic for $x \in \R^n_+$, $y \in \partial \R^n_+$.
+
+2. A direct calculation, the details of which we omit, verifies
+$$(34) \quad 1 = \int_{\partial \R^n_+} K(x,y) \, dy$$
+for each $x \in \R^n_+$. As $g$ is bounded, $u$ defined by (33) is likewise bounded. Since $x \mapsto K(x,y)$ is smooth for $x \neq y$, we easily verify as well $u \in C^{\infty}(\R^n_+)$, with
+$$\Delta u(x) = \int_{\partial \R^n_+} \Delta_x K(x,y) g(y) \, dy = 0 \quad (x \in \R^n_+).$$
+
+3. Now fix $x^0 \in \partial \R^n_+$, $\varepsilon > 0$. Choose $\delta > 0$ so small that
+$$(35) \quad |g(y) - g(x^0)| < \varepsilon \quad \text{if} \quad |y - x^0| < \delta, \quad y \in \partial \R^n_+.$$
+
+Then if $|x - x^0| < \frac{\delta}{2}$, $x \in \R^n_+$,
+$$(36) \quad |u(x) - g(x^0)| = \left| \int_{\partial \R^n_+} K(x,y)[g(y) - g(x^0)] \, dy \right|$$
+$$\leq \int_{\partial \R^n_+ \cap B(x^0,\delta)} K(x,y)|g(y) - g(x^0)| \, dy$$
+$$+ \int_{\partial \R^n_+ - B(x^0,\delta)} K(x,y)|g(y) - g(x^0)| \, dy$$
+$$=: I + J.$$
+
+Now (34), (35) imply
+$$I \leq \varepsilon \int_{\partial \R^n_+} K(x,y) \, dy = \varepsilon.$$
+
+Furthermore if $|x-x^0| \leq \frac{\delta}{2}$ and $|y-x^0| \geq \delta$, we have
+$$|y-x^0| \leq |y-x| + \frac{\delta}{2} \leq |y-x| + \frac{1}{2}|y-x^0|;$$
+and so $|y-x| \geq \frac{1}{2}|y-x^0|$. Thus
+$$J \leq 2\|g\|_{L^\infty} \int_{\partial\R^n_+ - B(x^0,\delta)} K(x,y) \, dy$$
+$$\leq \frac{2^{n+2}\|g\|_{L^\infty} x_n}{n\alpha(n)} \int_{\partial\R^n_+ - B(x^0,\delta)} |y-x^0|^{-n} \, dy$$
+$$\to 0 \quad \text{as } x_n \to 0^+.$$
+
+Combining this calculation with estimate (36), we deduce $|u(x) - g(x^0)| \leq 2\varepsilon$, provided $|x-x^0|$ is sufficiently small.
+\end{proof}
+
+\subsubsection{Green's function for a ball}
+\label{sec:laplace-greens-function-ball}
+
+To construct Green's function for the unit ball $B(0,1)$ we will again employ a kind of reflection, this time through the sphere $\partial B(0,1)$.
+
+\begin{definition}[Dual point]
+\label{def:dual-point-unit-sphere}
+\dcref{ch2:2.2.4-def-4}
+\group{Green's Functions}
+If $x \in \R^n - \{0\}$, the point
+$$\bar{x} := \frac{x}{|x|^2}$$
+is called the point \textit{dual} to $x$ with respect to $\partial B(0,1)$. The mapping $x \mapsto \bar{x}$ is \textit{inversion through the unit sphere} $\partial B(0,1)$.
+\end{definition}
+
+We now employ inversion through the sphere to compute Green's function for the unit ball $U = B^0(0,1)$. Fix $x \in B^0(0,1)$. Remember that we must find a corrector function $\phi^x = \phi^x(y)$ solving
+$$(37) \quad \begin{cases} \Delta \phi^x = 0 & \text{in } B^0(0,1) \\ \phi^x = \Phi(y-x) & \text{on } \partial B(0,1); \end{cases}$$
+then Green's function will be
+$$(38) \quad G(x,y) = \Phi(y-x) - \phi^x(y).$$
+
+The idea now is to ``invert the singularity'' from $x \in B^0(0,1)$ to $\bar{x} \notin B(0,1)$. Assume for the moment $n \geq 3$. Now the mapping $y \mapsto \Phi(y-\bar{x})$ is harmonic for $y \neq \bar{x}$. Thus $y \mapsto |x|^{2-n}\Phi(y-\bar{x})$ is harmonic for $y \neq \bar{x}$, and so
+$$(39) \quad \phi^x(y) := \Phi(|x|(y-\bar{x}))$$
+is harmonic in $U$. Furthermore, if $y\in\partial B(0, 1)$ and $x \neq 0$,
+$$|x|^2|y - \bar{x}|^2 = |x|^2\left(|y|^2 - \frac{2y \cdot x}{|x|^2} + \frac{1}{|x|^2}\right)$$
+$$= |x|^2 - 2y \cdot x + 1 = |x - y|^2.$$
+
+Thus $(|x||y - \bar{x}|)^{-(n-2)} = |x - y|^{-(n-2)}$. Consequently
+$$(40) \quad \phi^x(y) = \Phi(y - x) \quad (y \in \partial B(0,1)),$$
+as required.
+
+\begin{definition}[Green's function for the unit ball]
+\label{def:greens-function-ball}
+\dcref{ch2:2.2.4-def-5}
+\group{Green's Functions}
+\uses{def:greens-function}
+Green's function for the unit ball is
+$$(41) \quad G(x, y) := \Phi(y - x) - \Phi(|x|(y - \bar{x})) \quad (x, y \in B(0, 1), x \neq y).$$
+\end{definition}
+
+The same formula is valid for $n = 2$ as well.
+
+Assume now $u$ solves the boundary-value problem
+$$(42) \quad \begin{cases} \Delta u = 0 & \text{in } B^0(0,1) \\ u = g & \text{in } \partial B(0,1). \end{cases}$$
+
+Then using (30), we see
+$$(43) \quad u(x) = -\int_{\partial B(0,1)} g(y) \frac{\partial G}{\partial \nu}(x, y) \, dS(y).$$
+
+According to formula (41),
+$$\frac{\partial G}{\partial y_i}(x, y) = \frac{\partial \Phi}{\partial y_i}(y - x) - \frac{\partial}{\partial y_i}\Phi(|x|(y - \bar{x})).$$
+
+But
+$$\frac{\partial \Phi}{\partial y_i}(x - y) = \frac{1}{n\alpha(n)} \frac{x_i - y_i}{|x - y|^n},$$
+and furthermore
+$$\frac{\partial \Phi}{\partial y_i}(|x|(y - \bar{x})) = \frac{-1}{n\alpha(n)} \frac{y_i|x|^2 - x_i}{(|x||y - \bar{x}|)^n} = -\frac{1}{n\alpha(n)} \frac{y_i|x|^2 - x_i}{|x - y|^n}$$
+if $y \in \partial B(0, 1)$. Accordingly
+$$\frac{\partial G}{\partial \nu}(x, y) = \sum_{i=1}^{n} y_i \frac{\partial G}{\partial y_i}(x, y)$$
+$$= \frac{-1}{n\alpha(n)|x - y|^n} \sum_{i=1}^{n} y_i((y_i - x_i) - y_i|x|^2 + x_i)$$
+$$= \frac{-1}{n\alpha(n)} \frac{1 - |x|^2}{|x - y|^n}.$$
+
+Hence formula $(43)$ yields the representation formula
+$$u(x) = \frac{1 - |x|^2}{n\alpha(n)} \int_{\partial B(0,1)} \frac{g(y)}{|x - y|^n} dS(y).$$
+
+Suppose now instead of $(42)$ $u$ solves the boundary-value problem
+$$(44) \quad \begin{cases} \Delta u = 0 & \text{in } B^0(0, r) \\ u = g & \text{on } \partial B(0,r) \end{cases}$$
+for $r > 0$. Then $\bar{u}(x) = u(rx)$ solves $(42)$, with $\bar{g}(x) = g(rx)$ replacing $g$. We change variables to obtain \textit{Poisson's formula}
+$$(45) \quad u(x) = \frac{r^2 - |x|^2}{n\alpha(n)r} \int_{\partial B(0,r)} \frac{g(y)}{|x - y|^n} dS(y) \quad (x \in B^0(0, r)).$$
+
+The function
+$$K(x,y) := \frac{r^2 - |x|^2}{n\alpha(n)r |x - y|^n} \quad (x \in B^0(0,r), \, y \in \partial B(0,r))$$
+is \textit{Poisson's kernel} for the ball $B(0,r)$.
+
+We have established $(45)$ under the assumption that a smooth solution of $(44)$ exists. We next assert that this formula in fact gives a solution:
+
+\begin{theorem}[Poisson's formula for ball]
+\label{thm:poissons-formula-ball}
+\dcref{ch2:2.2-thm-15}
+\group{Green's Functions}
+\uses{def:greens-function-ball}
+Assume $g \in C(\partial B(0,r))$ and define $u$ by (45). Then
+
+\textit{(i)} $u \in C^\infty(B^0(0,r))$,
+
+\textit{(ii)} $\Delta u = 0$ \textit{in} $B^0(0,r)$,
+
+and
+
+\textit{(iii)} $\lim\limits_{\substack{x \to x^0 \\ x \in B^0(0,r)}} u(x) = g(x^0)$ \textit{for each point} $x^0 \in \partial B(0,r)$.
+\end{theorem}
+
+The proof is similar to that for \cref{thm:poissons-formula-half-space}, and is left as an exercise.
+
+\subsection{Energy Methods}
+\label{sec:laplace-energy-methods}
+
+Most of our analysis of harmonic functions thus far has depended upon fairly explicit representation formulas entailing the fundamental solution, Green's functions, etc. In this concluding section we illustrate some ``energy'' methods, which is to say techniques involving the $L^2$-norms of various expressions. These ideas foreshadow later theoretical developments in Parts II and III.
+
+\subsubsection{Uniqueness}
+\label{sec:laplace-energy-uniqueness}
+
+Consider first the boundary-value problem
+$$(46) \quad \begin{cases} -\Delta u = f & \text{in } U \\ u = g & \text{on } \partial U \end{cases}$$
+
+We have already employed the maximum principle in \cref{sec:laplace-properties-harmonic-functions} to show uniqueness, but now set forth a simple alternative proof. Assume $U$ is open, bounded, and $\partial U$ is $C^1$.
+
+\begin{theorem}[Uniqueness]
+\label{thm:uniqueness-poisson-energy-method}
+\dcref{ch2:2.2-thm-16}
+\group{Energy Methods}
+There exists at most one solution $u \in C^2(\bar{U})$ of (46).
+\end{theorem}
+
+\begin{proof}
+Assume $\bar{u}$ is another solution and set $w := u - \bar{u}$. Then $\Delta w = 0$ in $U$, and so an integration by parts shows
+$$0 = -\int_U w\Delta w \, dx = \int_U |Dw|^2 \, dx.$$
+
+Thus $Dw \equiv 0$ in $U$, and, since $w = 0$ on $\partial U$, we deduce $w = u - \bar{u} \equiv 0$ in $U$.
+\end{proof}
+
+\subsubsection{Dirichlet's principle}
+\label{sec:laplace-dirichlets-principle}
+
+Next let us demonstrate that a solution of the boundary-value problem (46) for Poisson's equation can be characterized as the minimizer of an appropriate functional. For this, we define the \textit{energy} functional
+$$I[w] = \int_U \frac{1}{2}|Dw|^2 - wf \, dx,$$
+$w$ belonging to the \textit{admissible set}
+$$\mathcal{A} = \{w \in C^2(\bar{U}) \mid w = g \text{ on } \partial U\}.$$
+
+\begin{theorem}[Dirichlet's principle]
+\label{thm:dirichlets-principle}
+\dcref{ch2:2.2-thm-17}
+\group{Energy Methods}
+Assume $u \in C^2(\bar{U})$ solves (46). Then
+$$(47) \quad I[u] = \min_{w \in \mathcal{A}} I[w].$$
+Conversely, if $u \in \mathcal{A}$ satisfies (47), then $u$ solves the boundary-value problem (46).
+\end{theorem}
+
+In other words if $u \in \mathcal{A}$, the PDE $-\Delta u = f$ is equivalent to the statement that $u$ minimizes the energy $I[\cdot]$.
+
+\begin{proof}
+1. Choose $w \in \mathcal{A}$. Then (46) implies
+$$0 = \int_U (-\Delta u - f)(u - w) \, dx.$$
+
+An integration by parts yields
+$$0 = \int_U Du \cdot D(u - w) - f(u - w) \, dx,$$
+and there is no boundary term since $u - w = g - g = 0$ on $\partial U$. Hence
+$$\int_U |Du|^2 - uf \, dx = \int_U Du \cdot Dw - wf \, dx$$
+$$\leq \int_U \frac{1}{2}|Du|^2 \, dx + \int_U \frac{1}{2}|Dw|^2 - wf \, dx,$$
+where we employed the estimates
+$$|Du \cdot Dw| \leq |Du||Dw| \leq \frac{1}{2}|Du|^2 + \frac{1}{2}|Dw|^2,$$
+following from the Cauchy--Schwarz and Cauchy inequalities (\S B.2). Rearranging, we conclude
+$$(48) \quad I[u] \leq I[w] \quad (w \in \mathcal{A}).$$
+
+Since $u \in \mathcal{A}$, (47) follows from (48).
+
+2. Now, conversely, suppose (47) holds. Fix any $v \in C_c^\infty(U)$ and write
+$$i(\tau) := I[u + \tau v] \quad (\tau \in \R).$$
+
+Since $u + \tau v \in \mathcal{A}$ for each $\tau$, the scalar function $i(\cdot)$ has a minimum at zero, and thus
+$$i'(0) = 0 \quad \left(' = \frac{d}{d\tau}\right),$$
+provided this derivative exists. But
+$$i(\tau) = \int_U \frac{1}{2}|Du + \tau Dv|^2 - (u + \tau v)f \, dx$$
+$$= \int_U \frac{1}{2}|Du|^2 + \tau Du \cdot Dv + \frac{\tau^2}{2}|Dv|^2 - (u + \tau v)f \, dx.$$
+
+Consequently
+$$0 = i'(0) = \int_U Du \cdot Dv - vf \, dx = \int_U (-\Delta u - f)v \, dx.$$
+
+This identity is valid for each function $v \in C_c^\infty(U)$ and so $-\Delta u = f$ in $U$.
+\end{proof}
+
+Dirichlet's principle is an instance of the \textit{calculus of variations} applied to Laplace's equation. See Chapter 8 for more.
+
+\section{Heat Equation}
+\label{sec:heat-equation}
+
+Next we study the \textit{heat equation}
+$$(1) \qquad u_t - \Delta u = 0$$
+and the \textit{nonhomogeneous heat equation}
+$$(2) \qquad u_t - \Delta u = f,$$
+subject to appropriate initial and boundary conditions. Here $t > 0$ and $x \in U$, where $U \subset \R^n$ is open. The unknown is $u: \bar{U} \times [0, \infty) \to \R$, $u = u(x,t)$, and the Laplacian $\Delta$ is taken with respect to the spatial variables $x = (x_1, \ldots, x_n)$: $\Delta u = \Delta_x u = \sum_{i=1}^n u_{x_i x_i}$. In (2) the function $f: U \times [0, \infty) \to \R$ is given.
+
+A guiding principle is that any assertion about harmonic functions yields an analogous (but more complicated) statement about solutions of the heat equation. Accordingly our development will largely parallel the corresponding theory for Laplace's equation.
+
+\textbf{Physical interpretation.} The heat equation, also known as the \textit{diffusion equation}, describes in typical applications the evolution in time of the density $u$ of some quantity such as heat, chemical concentration, etc. If $V \subset U$ is any smooth subregion, the rate of change of the total quantity within $V$ equals the negative of the net flux through $\partial V$:
+$$\frac{d}{dt} \int_V u \, dx = -\int_{\partial V} \mathbf{F} \cdot \nu \, dS,$$
+$\mathbf{F}$ being the flux density. Thus
+$$(3) \qquad u_t = -\Div \mathbf{F},$$
+as $V$ was arbitrary. In many situations $\mathbf{F}$ is proportional to the gradient of $u$, but points in the opposite direction (since the flow is from regions of higher to lower concentration):
+$$\mathbf{F} = -a Du \quad (a > 0).$$
+
+Substituting into (3), we obtain the PDE
+$$u_t = a \Div(Du) = a \Delta u,$$
+which for $a = 1$ is the heat equation. The heat equation appears as well in the study of Brownian motion. $\square$
+
+\subsection{Fundamental Solution}
+\label{sec:heat-fundamental-solution}
+
+\subsubsection{Derivation of fundamental solution}
+\label{sec:heat-fundamental-solution-derivation}
+
+As noted in \S2.2.1 an important first step in studying any PDE is often to come up with some specific solutions.
+
+We observe that the heat equation involves one derivative with respect to the time variable $t$, but two derivatives with respect to the space variables $x_i$ $(i=1,\ldots,n)$. Consequently we see that if $u$ solves (1), then so does $u(\lambda x,\lambda^2 t)$ for $\lambda \in \R$. This scaling indicates the ratio $\frac{r^2}{t}$ $(r = |x|)$ is important for the heat equation and suggests that we search for a solution of (1) having the form $u(x,t) = v(\frac{r^2}{t}) = v(\frac{|x|^2}{t})$ $(t>0,\ x \in \R^n)$, for some function $v$ as yet undetermined.
+
+Although this approach eventually leads to what we want (see Problem 11), it is quicker to seek a solution $u$ having the special structure
+$$(4) \quad u(x,t) = \frac{1}{t^\alpha}v\left(\frac{x}{t^\beta}\right) \quad (x \in \R^n,\ t>0),$$
+where the constants $\alpha,\beta$ and the function $v : \R^n \to \R$ must be found. We come to (4) if we look for a solution $u$ of the heat equation invariant under the \textit{dilation scaling}
+$$u(x,t) \mapsto \lambda^\alpha u(\lambda^\beta x,\lambda t).$$
+
+That is, we ask
+$$u(x,t) = \lambda^\alpha u(\lambda^\beta x,\lambda t)$$
+for all $\lambda > 0$, $x \in \R^n$, $t>0$. Setting $\lambda = t^{-1}$, we derive (4) for $v(y) := u(y,1)$.
+
+Let us insert (4) into (1), and thereafter compute
+$$(5) \quad \alpha t^{-(\alpha+1)}v(y) + \beta t^{-(\alpha+1)}y\cdot Dv(y) + t^{-(\alpha+2\beta)}\Delta v(y) = 0$$
+for $y := t^{-\beta}x$. In order to transform (5) into an expression involving the variable $y$ alone, we take $\beta = \frac12$. Then the terms with $t$ are identical, and so (5) reduces to
+$$(6) \quad \alpha v + \frac12 y \cdot Dv + \Delta v = 0.$$
+
+We simplify further by guessing $v$ to be radial; that is, $v(y) = w(|y|)$ for some $w : \R \to \R$. Thereupon (6) becomes
+$$\alpha w + \frac12 rw' + w'' + \frac{n-1}{r}w' = 0,$$
+for $r = |y|$, $' = \frac{d}{dr}$. Now if we set $\alpha = \frac{n}{2}$, this simplifies to read
+$$(r^{n-1}w')' + \frac{1}{2}(r^n w)' = 0.$$
+
+Thus
+$$r^{n-1}w' + \frac{1}{2}r^n w = a$$
+for some constant $a$. Assuming $\lim_{r \to \infty} w, w' = 0$, we conclude $a = 0$; whence
+$$w' = -\frac{1}{2}rw.$$
+
+But then for some constant $b$
+$$(7) \quad w = be^{-r^2/4}.$$
+
+Combining (4), (7) and our choices for $\alpha, \beta$, we conclude that $\frac{b}{t^{n/2}}e^{-|y|^2/4t}$ solves the heat equation (1).
+
+This computation motivates the following
+
+\begin{definition}[Fundamental solution of the heat equation]
+\label{def:fundamental-solution-heat-equation}
+\dcref{ch2:2.3.1-def-1}
+\group{Heat Equation}
+The function
+$$\Phi(x,t) := \begin{cases} \frac{1}{(4\pi t)^{n/2}} e^{-|x|^2/4t} & (x \in \R^n, t > 0) \\ 0 & (x \in \R^n, t < 0) \end{cases}$$
+is called the fundamental solution of the heat equation.
+\end{definition}
+
+Notice that $\Phi$ is singular at the point $(0,0)$. We will sometimes write $\Phi(x,t) = \Phi(|x|,t)$ to emphasize that the fundamental solution is radial in the variable $x$. The choice of the normalizing constant $(4\pi)^{-n/2}$ is dictated by the following
+
+\begin{lemma}[Integral of fundamental solution]
+\label{lem:integral-fundamental-solution-heat}
+\dcref{ch2:2.3.1-lem-1}
+\group{Heat Equation}
+\uses{def:fundamental-solution-heat-equation}
+For each time $t > 0$,
+$$\int_{\R^n} \Phi(x,t) \, dx = 1.$$
+\end{lemma}
+
+\begin{proof}
+We calculate
+$$\int_{\R^n} \Phi(x,t) \, dx = \frac{1}{(4\pi t)^{n/2}} \int_{\R^n} e^{-|x|^2/4t} dx$$
+$$= \frac{1}{\pi^{n/2}} \int_{\R^n} e^{-|z|^2} dz$$
+$$= \frac{1}{\pi^{n/2}} \prod_{i=1}^{n} \int_{-\infty}^{\infty} e^{-z_i^2} dz_i = 1. \qedhere$$
+\end{proof}
+
+A different derivation of the fundamental solution of the heat equation appears in \S 4.3.2.
+
+\subsubsection{Initial-value problem}
+\label{sec:heat-initial-value-problem}
+
+We now employ $\Phi$ to fashion a solution to the \textit{initial-value} (or \textit{Cauchy}) \textit{problem}
+$$(8) \quad \begin{cases} u_t - \Delta u = 0 & \text{in } \R^n \times (0,\infty) \\ u = g & \text{on } \R^n \times \{t = 0\}. \end{cases}$$
+
+Let us note the function $(x,t) \mapsto \Phi(x,t)$ solves the heat equation away from the singularity at $(0,0)$, and thus so does $(x,t) \mapsto \Phi(x-y,t)$ for each fixed $y \in \R^n$. Consequently the convolution
+$$(9) \quad u(x,t) = \int_{\R^n} \Phi(x-y,t)g(y) dy$$
+$$= \frac{1}{(4\pi t)^{n/2}} \int_{\R^n} e^{-\frac{|x-y|^2}{4t}} g(y) dy \quad (x \in \R^n, t > 0)$$
+should also be a solution.
+
+\begin{theorem}[Solution of initial-value problem]
+\label{thm:heat-equation-initial-value-solution}
+\dcref{ch2:2.3-thm-1}
+\group{Heat Equation}
+\uses{def:fundamental-solution-heat-equation,lem:integral-fundamental-solution-heat}
+Assume $g \in C(\R^n) \cap L^\infty(\R^n)$, and define $u$ by (9). Then
+(i) $u \in C^\infty(\R^n \times (0,\infty))$,
+(ii) $u_t(x,t) - \Delta u(x,t) = 0$ $(x \in \R^n, t > 0)$,
+and
+(iii) $\lim_{\substack{(x,t) \to (x^0,0) \\ x \in \R^n, t > 0}} u(x,t) = g(x^0)$ for each point $x^0 \in \R^n$.
+\end{theorem}
+
+\begin{proof}
+1. Since the function $\frac{1}{t^{n/2}} e^{-\frac{|x|^2}{4t}}$ is infinitely differentiable, with uniformly bounded derivatives of all orders, on $\R^n \times [\delta, \infty)$ for each $\delta > 0$, we see that $u \in C^\infty(\R^n \times (0,\infty))$. Furthermore
+$$(10) \quad u_t(x,t) - \Delta u(x,t) = \int_{\R^n} [(\Phi_t - \Delta_x \Phi)(x-y,t)]g(y) dy$$
+$$= 0 \quad (x \in \R^n, t > 0),$$
+since $\Phi$ itself solves the heat equation.
+
+2. Fix $x^0 \in \R^n$, $\varepsilon > 0$. Choose $\delta > 0$ such that
+$$(11) \quad |g(y) - g(x^0)| < \varepsilon \quad \text{if } |y - x^0| < \delta, \quad y \in \R^n.$$
+
+Then if $|x - x^0| < \frac{\delta}{2}$, we have, according to the lemma,
+$$|u(x,t) - g(x^0)| = \left|\int_{\R^n} \Phi(x-y,t)[g(y) - g(x^0)] dy\right|$$
+$$\leq \int_{B(x^0,\delta)} \Phi(x-y,t)|g(y) - g(x^0)| dy$$
+$$+ \int_{\R^n - B(x^0,\delta)} \Phi(x-y,t)|g(y) - g(x^0)| dy$$
+$$=: I + J.$$
+
+Now
+$$I \leq \varepsilon \int_{\R^n} \Phi(x-y,t) dy = \varepsilon,$$
+owing to (11) and the lemma. Furthermore, if $|x - x^0| \leq \frac{\delta}{2}$ and $|y - x^0| \geq \delta$, then
+$$|y - x^0| \leq |y - x| + \frac{\delta}{2} \leq |y - x| + \frac{1}{2}|y - x^0|.$$
+
+Thus $|y - x| \geq \frac{1}{2}|y - x^0|$. Consequently
+$$J \leq 2\|g\|_{L^\infty} \int_{\R^n - B(x^0,\delta)} \Phi(x-y,t) dy$$
+$$\leq \frac{C}{t^{n/2}} \int_{\R^n - B(x^0,\delta)} e^{-\frac{|x-y|^2}{4t}} dy$$
+$$\leq \frac{C}{t^{n/2}} \int_{\R^n - B(x^0,\delta)} e^{-\frac{|y-x^0|^2}{16t}} dy$$
+$$= \frac{C}{t^{n/2}} \int_{\delta}^{\infty} e^{-\frac{r^2}{16t}} r^{n-1} dr \to 0 \quad \text{as } t \to 0^+.$$
+
+Hence if $|x - x^0| < \frac{\delta}{2}$ and $t > 0$ is small enough, $|u(x,t) - g(x^0)| < 2\varepsilon$.
+\end{proof}
+
+\begin{remark}[Dirac measure notation; infinite propagation speed]
+\label{rem:heat-equation-infinite-propagation-speed}
+\dcref{ch2:2.3.1-rem-1}
+\group{Heat Equation}
+\uses{thm:heat-equation-initial-value-solution}
+(i) In view of \cref{thm:heat-equation-initial-value-solution} we sometimes write
+$$\begin{cases} \Phi_t - \Delta\Phi = 0 & \text{in } \R^n \times (0,\infty) \\ \Phi = \delta_0 & \text{on } \R^n \times \{t = 0\}, \end{cases}$$
+$\delta_0$ denoting the Dirac measure on $\R^n$ giving unit mass to the point $0$.
+
+(ii) Notice that if $g$ is bounded, continuous, $g \geq 0$, $g \not\equiv 0$, then
+$$u(x,t) = \frac{1}{(4\pi t)^{n/2}} \int_{\R^n} e^{-\frac{|x-y|^2}{4t}} g(y) dy$$
+is in fact positive for \textit{all} points $x \in \R^n$ and times $t > 0$.
+
+for disturbances. If the initial temperature is nonnegative and is positive somewhere, the temperature at any later time (no matter how small) is everywhere positive. (We will learn in \S2.4.3 that the wave equation in contrast supports finite propagation speed for disturbances.) $\square$
+\end{remark}
+
+\subsubsection{Nonhomogeneous problem}
+\label{sec:heat-nonhomogeneous-problem}
+
+Now let us turn our attention to the \textit{nonhomogeneous} initial-value problem
+$$(12) \quad \begin{cases} u_t - \Delta u = f & \text{in } \R^n \times (0,\infty) \\ u = 0 & \text{on } \R^n \times \{t=0\}. \end{cases}$$
+
+How can we produce a formula for the solution? If we recall the motivation leading up to (9), we should note further that the mapping $(x,t) \mapsto \Phi(x-y,t-s)$ is a solution of the heat equation (for given $y \in \R^n$, $0<s<t$). Now for fixed $s$, the function
+$$u = u(x,t;s) = \int_{\R^n} \Phi(x-y,t-s)f(y,s)\,dy$$
+solves
+$$(12_s) \quad \begin{cases} u_t(\cdot;s) - \Delta u(\cdot;s) = 0 & \text{in } \R^n \times (s,\infty) \\ u(\cdot;s) = f(\cdot,s) & \text{on } \R^n \times \{t=s\}, \end{cases}$$
+which is just an initial-value problem of the form (8), with the starting time $t=0$ replaced by $t=s$, and $g$ replaced by $f(\cdot,s)$. Thus $u(\cdot;s)$ is certainly not a solution of (12).
+
+However \textit{Duhamel's principle}* asserts that we can build a solution of (12) out of the solutions of $(12_s)$, by integrating with respect to $s$. The idea is to consider
+$$u(x,t) = \int_0^t u(x,t;s)\,ds \quad (x \in \R^n,\ t \geq 0).$$
+
+\begin{center}
+\rule{2in}{0.4pt}
+\end{center}
+{\small *Duhamel's principle has wide applicability to linear ODE and PDE, and does not depend on the specific structure of the heat equation. It yields, for example, the solution of the nonhomogeneous transport equation, obtained by different means in \S2.1.2. We will invoke Duhamel's principle for the wave equation in \S2.4.2.}
+
+Rewriting, we have
+$$u(x,t) = \int_0^t \int_{\R^n} \Phi(x-y,t-s)f(y,s)\,dy\,ds$$
+$$(13) \quad = \int_0^t \frac{1}{(4\pi(t-s))^{n/2}} \int_{\R^n} e^{-\frac{|x-y|^2}{4(t-s)}}f(y,s)\,dy\,ds,$$
+for $x \in \R^n$, $t>0$.
+
+To confirm that formula (13) works, let us for simplicity assume $f \in C_1^2(\R^n \times [0,\infty))$ and $f$ has compact support.
+
+\begin{theorem}[Solution of nonhomogeneous problem]
+\label{thm:heat-equation-nonhomogeneous-solution}
+\dcref{ch2:2.3-thm-2}
+\group{Heat Equation}
+\uses{def:fundamental-solution-heat-equation}
+Define $u$ by (13). Then
+
+(i) $u \in C^2_1(\R^n \times (0,\infty))$,
+
+(ii) $u_t(x,t) - \Delta u(x,t) = f(x,t)$ $(x \in \R^n, t > 0)$,
+
+and
+
+(iii) $\lim_{\substack{(x,t) \to (x^0,0) \\ x \in \R^n, t > 0}} u(x,t) = 0$ for each point $x^0 \in \R^n$.
+\end{theorem}
+
+\begin{proof}
+1. Since $\Phi$ has a singularity at $(0,0)$, we cannot directly justify differentiating under the integral sign. We instead proceed somewhat as in the proof of \cref{thm:poisson-equation-solution-formula}.
+
+First we change variables, to write
+$$u(x,t) = \int_0^t \int_{\R^n} \Phi(y,s)f(x-y, t-s) \, dy \, ds.$$
+
+As $f \in C_c^1(\R^n \times [0,\infty))$ has compact support and $\Phi = \Phi(y,s)$ is smooth near $s = t > 0$, we compute
+$$u_t(x,t) = \int_0^t \int_{\R^n} \Phi(y,s)f_t(x-y, t-s) \, dy \, ds$$
+$$+ \int_{\R^n} \Phi(y,t)f(x-y, 0) \, dy$$
+and
+$$\frac{\partial^2 u}{\partial x_i \partial x_j}(x,t) = \int_0^t \int_{\R^n} \Phi(y,s) \frac{\partial^2 f}{\partial x_i \partial x_j}(x-y, t-s) \, dy \, ds \quad (i,j = 1,\ldots,n).$$
+
+Thus $u_t, D^2_x u$, and likewise $u, D_x u$, belong to $C(\R^n \times (0,\infty))$.
+
+2. We then calculate
+$$(14) \qquad u_t(x,t) - \Delta u(x,t) = \int_0^t \int_{\R^n} \Phi(y,s)\left[\left(\frac{\partial}{\partial t} - \Delta_x\right)f(x-y, t-s)\right] dy \, ds$$
+$$+ \int_{\R^n} \Phi(y,t)f(x-y, 0) \, dy$$
+$$= \int_\epsilon^t \int_{\R^n} \Phi(y,s)\left[\left(-\frac{\partial}{\partial s} - \Delta_y\right)f(x-y, t-s)\right] dy \, ds$$
+$$+ \int_0^\epsilon \int_{\R^n} \Phi(y,s)\left[\left(-\frac{\partial}{\partial s} - \Delta_y\right)f(x-y, t-s)\right] dy \, ds$$
+$$+ \int_{\R^n} \Phi(y,t)f(x-y, 0) \, dy$$
+$$=: I_\epsilon + J_\epsilon + K.$$
+
+Now
+$$(15) \quad |J_\varepsilon| \leq (\|f_t\|_{L^\infty} + \|D^2 f\|_{L^\infty}) \int_0^\varepsilon \int_{\R^n} \Phi(y,s) \, dy\,ds \leq c\varepsilon,$$
+by the lemma. Integrating by parts, we also find
+$$I_\varepsilon = \int_\varepsilon^t \int_{\R^n} \left[\left(\frac{\partial}{\partial s} - \Delta_y\right)\Phi(y,s)\right] f(x-y, t-s) \, dy\,ds$$
+$$+ \int_{\R^n} \Phi(y,\varepsilon) f(x-y, t-\varepsilon) \, dy$$
+$$(16)$$
+$$- \int_{\R^n} \Phi(y,t) f(x-y, 0) \, dy$$
+$$= \int_{\R^n} \Phi(y,\varepsilon) f(x-y, t-\varepsilon) \, dy - K,$$
+since $\Phi$ solves the heat equation. Combining (14)--(16), we ascertain
+$$u_t(x,t) - \Delta u(x,t) = \lim_{\varepsilon \to 0} \int_{\R^n} \Phi(y,\varepsilon) f(x-y, t-\varepsilon) \, dy$$
+$$= f(x,t) \quad (x \in \R^n, t > 0),$$
+the limit as $\varepsilon \to 0$ being computed as in the proof of \cref{thm:heat-equation-initial-value-solution}. Finally note $\|u(\cdot,t)\|_{L^\infty} \leq t\|f\|_{L^\infty} \to 0$.
+\end{proof}
+
+\begin{remark}[Combined Duhamel formula]
+\label{rem:heat-equation-duhamel-combined}
+\dcref{ch2:2.3.1-rem-2}
+\group{Heat Equation}
+\uses{thm:heat-equation-initial-value-solution,thm:heat-equation-nonhomogeneous-solution}
+We can of course combine \cref{thm:heat-equation-initial-value-solution,thm:heat-equation-nonhomogeneous-solution} to discover that
+$$(17) \quad u(x,t) = \int_{\R^n} \Phi(x-y,t) g(y) \, dy + \int_0^t \int_{\R^n} \Phi(x-y, t-s) f(y,s) \, dy\,ds$$
+is, under the hypotheses on $g$ and $f$ as above, a solution of
+$$(18) \quad \begin{cases} u_t - \Delta u = f & \text{in } \R^n \times (0,\infty) \\ u = g & \text{on } \R^n \times \{t = 0\}. \end{cases}$$
+$\square$
+\end{remark}
+
+\subsection{Mean-Value Formula}
+\label{sec:heat-mean-value-formula}
+
+First we recall some useful notation from \S A.2. Assume $U \subset \R^n$ is open and bounded, and fix a time $T > 0$.
+
+\begin{definition}[Parabolic cylinder]
+\label{def:parabolic-cylinder-heat-ball}
+\dcref{ch2:2.3.2-def-1}
+\group{Heat Equation}
+We define the \textit{parabolic cylinder}
+$$U_T := U \times (0,T].$$
+\end{definition}
+
+\begin{figure}[h]\centering
+% [FIGURE: A three-dimensional diagram showing coordinate axes labeled $t$ (vertical) and $\R^n$ (a diagonal axis), with a wavy-sided cylindrical solid region drawn between them; the bottom cross-section of the cylinder is shaded and labeled $\Gamma_T$, with an arrow pointing to it. Caption reads "The region $U_T$"]
+\end{figure}
+
+\begin{definition}[Parabolic boundary]
+\label{def:parabolic-boundary-heat-ball}
+\dcref{ch2:2.3.2-def-2}
+\group{Heat Equation}
+\uses{def:parabolic-cylinder-heat-ball}
+The \textit{parabolic boundary} of $U_T$ is
+$$\Gamma_T := \bar{U}_T - U_T.$$
+\end{definition}
+
+We interpret $U_T$ as being the \textit{parabolic interior} of $\bar{U} \times [0,T]$: note carefully that $U_T$ includes the top $U \times \{t=T\}$. The parabolic boundary $\Gamma_T$ comprises the bottom and vertical sides of $U \times [0,T]$, but not the top.
+
+We want next to derive a kind of analogue to the mean-value property for harmonic functions, as discussed in \S2.2.2. There is no such simple formula. However let us observe that for fixed $x$ the spheres $\partial B(x,r)$ are level sets of the fundamental solution $\Phi(x-y)$ for Laplace's equation. This suggests that perhaps for fixed $(x,t)$ the level sets of fundamental solution $\Phi(x-y,t-s)$ for the heat equation may be relevant.
+
+\begin{definition}[Heat ball]
+\label{def:heat-ball}
+\dcref{ch2:2.3.2-def-3}
+\group{Heat Equation}
+\uses{def:fundamental-solution-heat-equation}
+For fixed $x \in \R^n$, $t \in \R$, $r > 0$, we define
+$$E(x,t;r) := \left\{(y,s) \in \R^{n+1} \;\middle|\; s \leq t, \ \Phi(x-y,t-s) \geq \frac{1}{r^n}\right\}.$$
+\end{definition}
+
+This is a region in space-time, the boundary of which is a level set of $\Phi(x-y,t-s)$. Note that the point $(x,t)$ is at the center of the top. $E(x,t;r)$ is sometimes called a ``heat ball''.
+
+\begin{theorem}[Mean-value property for the heat equation]
+\label{thm:mean-value-property-heat-equation}
+\dcref{ch2:2.3-thm-3}
+\group{Heat Equation}
+\uses{def:fundamental-solution-heat-equation,def:parabolic-cylinder-heat-ball,def:heat-ball}
+Let $u \in C^2_1(U_T)$ solve the heat equation. Then
+$$(19) \quad u(x,t) = \frac{1}{4r^n} \iint_{E(x,t;r)} u(y,s) \frac{|x-y|^2}{(t-s)^2} \, dy\,ds$$
+
+\begin{figure}[h]\centering
+% [FIGURE: An ellipsoid (heat ball) labeled with $(x,t)$ at the top and $E(x,t;r)$ at the bottom right, with dotted shading inside. Caption reads "A 'heat ball'"]
+\end{figure}
+
+for each $E(x,t;r) \subset U_T$.
+\end{theorem}
+
+Formula (19) is a sort of analogue for the heat equation of the mean-value formulas for Laplace's equation. Observe that the right hand side involves only $u(y,s)$ for times $s \leq t$. This is reasonable, as the value $u(x,t)$ should not depend upon future times.
+
+\begin{proof}
+We may as well assume upon translating the space and time coordinates that $x = 0$ and $t = 0$. Write $E(r) = E(0,0;r)$ and set
+$$\phi(r) := \frac{1}{r^n} \iint_{E(r)} u(y,s) \frac{|y|^2}{s^2} \, dy\,ds$$
+$$(20)$$
+$$= \iint_{E(1)} u(ry, r^2 s) \frac{|y|^2}{s^2} \, dy\,ds.$$
+
+We compute
+$$\phi'(r) = \iint_{E(1)} \sum_{i=1}^{n} u_{y_i y_i} \frac{|y|^2}{s^2} + 2ru_s \frac{|y|^2}{s} \, dy\,ds$$
+$$= \frac{1}{r^{n+1}} \iint_{E(r)} \sum_{i=1}^{n} u_{y_i y_i} \frac{|y|^2}{s^2} + 2u_s \frac{|y|^2}{s} \, dy\,ds$$
+$$=: A + B.$$
+
+Also, let us introduce the useful function
+$$(21) \quad \psi := -\frac{n}{2} \log(-4\pi s) + \frac{|y|^2}{4s} + n \log r,$$
+and observe $\psi = 0$ on $\partial E(r)$, since $\Phi(y,-s) = r^{-n}$ on $\partial E(r)$. We utilize (21) to write
+$$B = \frac{1}{r^{n+1}} \iint_{E(r)} 4u_s \sum_{i=1}^{n} y_i \psi_{y_i} \, dy\,ds$$
+$$= -\frac{1}{r^{n+1}} \iint_{E(r)} 4nu_s \psi + 4 \sum_{i=1}^{n} u_{y_i} y_i \psi \, dy\,ds;$$
+there is no boundary term since $\psi = 0$ on $\partial E(r)$. Integrating by parts with respect to $s$, we discover
+$$B = \frac{1}{r^{n+1}} \iint_{E(r)} -4nu_s \psi + 4 \sum_{i=1}^{n} u_{y_i} y_i \psi_s \, dy \, ds$$
+$$= \frac{1}{r^{n+1}} \iint_{E(r)} -4nu_s \psi + 4 \sum_{i=1}^{n} u_{y_i} y_i \left( -\frac{n}{2s} - \frac{|y|^2}{4s^2} \right) dy \, ds$$
+$$= \frac{1}{r^{n+1}} \iint_{E(r)} -4nu_s \psi - \frac{2n}{s} \sum_{i=1}^{n} u_{y_i} y_i \, dy \, ds - A.$$
+
+Consequently, since $u$ solves the heat equation,
+$$\phi'(r) = A + B$$
+$$= \frac{1}{r^{n+1}} \iint_{E(r)} -4n \Delta u \, \psi - \frac{2n}{s} \sum_{i=1}^{n} u_{y_i} y_i \, dy \, ds$$
+$$= \sum_{i=1}^{n} \frac{1}{r^{n+1}} \iint_{E(r)} 4n u_{y_i} \psi_{y_i} - \frac{2n}{s} u_{y_i} y_i \, dy \, ds$$
+$$= 0, \quad \text{according to (21).}$$
+
+Thus $\phi$ is constant, and therefore
+$$\phi(r) = \lim_{t \to 0} \phi(t) = u(0,0) \left( \lim_{t \to 0} \frac{1}{t^n} \iint_{E(t)} \frac{|y|^2}{s^2} dy \, ds \right) = 4u(0,0),$$
+as
+$$\frac{1}{t^n} \iint_{E(t)} \frac{|y|^2}{s^2} dy \, ds = \iint_{E(1)} \frac{|y|^2}{s^2} dy \, ds = 4.$$
+
+We omit the details of this last computation.
+\end{proof}
+
+\subsection{Properties of Solutions}
+\label{sec:heat-properties-of-solutions}
+
+\subsubsection{Strong maximum principle, uniqueness}
+\label{sec:heat-strong-maximum-principle}
+
+First we employ the mean-value property to give a quick proof of the strong maximum principle.
+
+\begin{theorem}[Strong maximum principle for the heat equation]
+\label{thm:strong-maximum-principle-heat-equation}
+\dcref{ch2:2.3-thm-4}
+\group{Maximum Principles}
+\uses{thm:mean-value-property-heat-equation}
+Assume $u \in C^2_1(U_T) \cap C(\overline{U_T})$ solves the heat equation in $U_T$.
+
+(i) Then
+$$\max_{U_T} u = \max_{\Gamma_T} u.$$
+
+\begin{figure}[h]\centering
+% [FIGURE: A three-dimensional diagram showing a cylinder aligned with coordinate axes labeled $t$ (vertical) and $x_n$ (horizontal), with a cross-hatched/shaded cylindrical region in the middle labeled $(\partial U) \times E_g$]
+\end{figure}
+
+(ii) Furthermore, if $U$ is connected and there exists a point $(x_0, t_0) \in U_T$ such that
+$$u(x_0, t_0) = \max_{U_T} u,$$
+then
+$$u \text{ is constant in } U_{t_0}.$$
+\end{theorem}
+
+Assertion (i) is the \textit{maximum principle} for the heat equation and (ii) is the \textit{strong maximum principle}. Similar assertions are valid with ``min'' replacing ``max''.
+
+\begin{remark}[Time-directedness of the strong maximum principle]
+\label{rem:strong-maximum-principle-heat-time-intuition}
+\dcref{ch2:2.3.3-rem-4}
+\group{Maximum Principles}
+\uses{thm:strong-maximum-principle-heat-equation}
+So if $u$ attains its maximum (or minimum) at an interior point, then $u$ is constant at all earlier times. This accords with our strong intuitive interpretation of the variable $t$ as denoting time: the solution will be constant on the time interval $[0, t_0]$ provided the initial and boundary conditions are constant. However, the solution may change at times $t > t_0$, provided the boundary conditions alter after $t_0$. The solution will however not respond to changes in boundary conditions until these changes happen.
+
+Take note that whereas all this is obvious on intuitive, physical grounds, such insights do not constitute a proof. The task is to \textit{deduce} such behavior from the PDE. $\square$
+\end{remark}
+
+\begin{proof}
+1. Suppose there exists a point $(x_0, t_0) \in U_T$ with $u(x_0, t_0) = M := \max_{U_T} u$. Then for all sufficiently small $r > 0$, $E(x_0, t_0; r) \subset U_T$; and we employ the mean-value property to deduce
+$$M = u(x_0,t_0) = \frac{1}{4r^n}\iint_{E(x_0,t_0;r)} u(y,s)\frac{|x_0-y|^2}{(t_0-s)^2}\,dy\,ds \leq M,$$
+since
+$$1 = \frac{1}{4r^n}\iint_{E(x_0,t_0;r)} \frac{|x_0-y|^2}{(t_0-s)^2}\,dy\,ds.$$
+
+Equality holds only if $u$ is identically equal to $M$ within $E(x_0,t_0;r)$. Consequently
+$$u(y,s) = M \quad \text{for all } (y,s) \in E(x_0,t_0;r).$$
+
+Draw any line segment $L$ in $U_T$ connecting $(x_0,t_0)$ with some other point $(y_0,s_0) \in U_T$, with $s_0 < t_0$. Consider
+$$r_0 := \min\{s \geq s_0 \mid u(x,t) = M \text{ for all points } (x,t) \in L,\ s \leq t \leq t_0\}.$$
+
+Since $u$ is continuous, the minimum is attained. Assume $r_0 > s_0$. Then $u(z_0,r_0) = M$ for some point $(z_0,r_0)$ on $L \cap U_T$ and so $u \equiv M$ on $E(z_0,r_0;r)$ for all sufficiently small $r>0$. Since $E(z_0,r_0;r)$ contains $L \cap \{r_0-\sigma \leq t \leq r_0\}$ for some small $\sigma>0$, we have a contradiction. Thus $r_0 = s_0$, and hence $u \equiv M$ on $L$.
+
+2. Now fix any point $x \in U$ and any time $0 \leq t < t_0$. There exist points $\{x_0,x_1,\ldots,x_m=x\}$ such that the line segments in $\R^n$ connecting $x_{i-1}$ to $x_i$ lie in $U$ for $i=1,\ldots,m$. (This follows since the set of points in $U$ which can be so connected to $x_0$ by a polygonal path is nonempty, open and relatively closed in $U$.) Select times $t_0 > t_1 > \cdots > t_m = t$. Then the line segments in $\R^{n+1}$ connecting $(x_{i-1},t_{i-1})$ to $(x_i,t_i)$ $(i=1,\ldots,m)$ lie in $U_T$. According to Step 1, $u \equiv M$ on each such segment and so $u(x,t) = M$.
+\end{proof}
+
+\begin{remark}[Strict positivity from boundary and initial data]
+\label{rem:strong-maximum-principle-heat-positivity}
+\dcref{ch2:2.3.3-rem-5}
+\group{Maximum Principles}
+\uses{thm:strong-maximum-principle-heat-equation}
+The strong maximum principle implies that if $U$ is connected and $u \in C_1^2(U_T) \cap C(\bar{U}_T)$ satisfies
+$$\begin{cases} u_t - \Delta u = 0 & \text{in } U_T \\ u = 0 & \text{on } \partial U \times [0,T] \\ u = g & \text{on } U \times \{t=0\} \end{cases}$$
+where $g \geq 0$, then $u$ is positive \textit{everywhere} within $U_T$ if $g$ is positive \textit{somewhere} on $U$. This is another illustration of infinite propagation speed for disturbances. $\square$
+\end{remark}
+
+An important application of the maximum principle is the following uniqueness assertion.
+
+\begin{theorem}[Uniqueness on bounded domains]
+\label{thm:uniqueness-heat-bounded-domain}
+\dcref{ch2:2.3-thm-5}
+\group{Maximum Principles}
+\uses{thm:strong-maximum-principle-heat-equation}
+Let $g \in C(\Gamma_T)$, $f \in C(U_T)$. Then there exists at most one solution $u \in C_1^2(U_T) \cap C(\bar{U}_T)$ of the initial/boundary-value problem
+$$(22) \quad \begin{cases}
+u_t - \Delta u = f & \text{in } U_T \\
+u = g & \text{on } \Gamma_T.
+\end{cases}$$
+\end{theorem}
+
+\begin{proof}
+If $u$ and $\bar{u}$ are two solutions of (22), apply \cref{thm:strong-maximum-principle-heat-equation} to $w := \pm(u - \bar{u})$.
+\end{proof}
+
+We next extend our uniqueness assertion to the \textit{Cauchy problem}, that is, the initial value problem for $U = \R^n$. As we are no longer on a bounded region, we must introduce some control on the behavior of solutions for large $|x|$.
+
+\begin{theorem}[Maximum principle for the Cauchy problem]
+\label{thm:maximum-principle-heat-cauchy-problem}
+\dcref{ch2:2.3-thm-6}
+\group{Maximum Principles}
+\uses{thm:strong-maximum-principle-heat-equation}
+Suppose $u \in C_1^2(\R^n \times (0,T]) \cap C(\R^n \times [0,T])$ solves
+$$(23) \quad \begin{cases}
+u_t - \Delta u = 0 & \text{in } \R^n \times (0,T) \\
+u = g & \text{on } \R^n \times \{t = 0\}
+\end{cases}$$
+and satisfies the growth estimate
+$$(24) \quad u(x,t) \le Ae^{a|x|^2} \quad (x \in \R^n, 0 \le t \le T)$$
+for constants $A, a > 0$. Then
+$$\sup_{\R^n \times [0,T]} u = \sup_{\R^n} g.$$
+\end{theorem}
+
+\begin{proof}
+1. First assume
+$$(25) \quad 4aT < 1;$$
+in which case
+$$(26) \quad 4a(T + \varepsilon) < 1$$
+for some $\varepsilon > 0$. Fix $y \in \R^n$, $\mu > 0$, and define
+$$v(x,t) := u(x,t) - \frac{\mu}{(T + \varepsilon - t)^{n/2}} e^{\frac{|x-y|^2}{4(T + \varepsilon - t)}} \quad (x \in \R^n, t > 0).$$
+
+A direct calculation (cf. \cref{sec:heat-fundamental-solution-derivation}) shows
+$$v_t - \Delta v = 0 \quad \text{in } \R^n \times (0,T].$$
+
+Fix $r > 0$ and set $U := B^0(y,r)$, $U_T := B^0(y,r) \times (0,T]$. Then according to \cref{thm:strong-maximum-principle-heat-equation},
+$$(27) \quad \max_{\overline{U}_T} v = \max_{\Gamma_T} v.$$
+
+2. Now if $x \in \R^n$,
+$$(28) \quad v(x,0) = u(x,0) - \frac{\mu}{(T+\varepsilon)^{n/2}} e^{\frac{|x-y|^2}{4(T+\varepsilon)}}$$
+$$\leq u(x,0) = g(x);$$
+and if $|x - y| = r$, $0 \leq t \leq T$, then
+$$v(x,t) = u(x,t) - \frac{\mu}{(T+\varepsilon-t)^{n/2}} e^{\frac{r^2}{4(T+\varepsilon-t)}}$$
+$$\leq Ae^{a|x|^2} - \frac{\mu}{(T+\varepsilon-t)^{n/2}} e^{\frac{r^2}{4(T+\varepsilon-t)}} \quad \text{by (24)}$$
+$$\leq Ae^{a(|y|+r)^2} - \frac{\mu}{(T+\varepsilon)^{n/2}} e^{\frac{r^2}{4(T+\varepsilon)}}.$$
+
+Now according to (26), $\frac{1}{T+\varepsilon} = 4(a+\gamma)$ for some $\gamma > 0$. Thus we may continue the calculation above to find
+$$(29) \quad v(x,t) \leq Ae^{a(|y|+r)^2} - \mu(4(a+\gamma))^{n/2} e^{(a+\gamma)r^2} \leq \sup_{\R^n} g,$$
+for $r$ selected sufficiently large. Thus (27)--(29) imply
+$$v(y,t) \leq \sup_{\R^n} g$$
+for all $y \in \R^n$, $0 \leq t \leq T$, provided (25) is valid. Let $\mu \to 0$.
+
+3. In the general case that (25) fails, we repeatedly apply the result above on the time intervals $[0, T_1]$, $[T_1, 2T_1]$, etc., for $T_1 = \frac{1}{8a}$.
+\end{proof}
+
+\begin{theorem}[Uniqueness for Cauchy problem]
+\label{thm:uniqueness-heat-cauchy-problem}
+\dcref{ch2:2.3-thm-7}
+\group{Maximum Principles}
+\uses{thm:maximum-principle-heat-cauchy-problem}
+Let $g \in C(\R^n)$, $f \in C(\R^n \times [0,T])$. Then there exists at most one solution $u \in C^2_1(\R^n \times (0,T]) \cap C(\R^n \times [0,T])$ of the initial-value problem
+$$(30) \quad \begin{cases} u_t - \Delta u = f & \text{in } \R^n \times (0,T) \\ u = g & \text{on } \R^n \times \{t = 0\} \end{cases}$$
+satisfying the growth estimate
+$$(31) \quad |u(x,t)| \leq Ae^{a|x|^2} \quad (x \in \R^n, 0 \leq t \leq T)$$
+for constants $A, a > 0$.
+\end{theorem}
+
+\begin{proof}
+If $u$ and $\tilde{u}$ both satisfy (30), (31), we apply \cref{thm:maximum-principle-heat-cauchy-problem} to $w := \pm(u - \tilde{u})$.
+\end{proof}
+
+\begin{remark}[Nonuniqueness without a growth bound]
+\label{rem:heat-equation-nonphysical-solutions}
+\dcref{ch2:2.3.3-rem-7}
+\group{Maximum Principles}
+\uses{thm:uniqueness-heat-cauchy-problem}
+There are in fact infinitely many solutions of
+$$(32) \quad \begin{cases} u_t - \Delta u = 0 & \text{in } \R^n \times (0,T) \\ u = 0 & \text{on } \R^n \times \{t = 0\}; \end{cases}$$
+see for instance John \cite{John1982}. Each of the solutions besides $u \equiv 0$ grows very rapidly as $|x| \to \infty$.
+
+There is an interesting point here: although $u \equiv 0$ is certainly the ``physically correct'' solution of (32), this initial-value problem in fact admits other, ``nonphysical'' solutions. \cref{thm:uniqueness-heat-cauchy-problem} provides a criterion which excludes the ``wrong'' solutions. We will encounter somewhat analogous situations in our study of Hamilton-Jacobi equations and conservation laws, in Chapter 3, 10 and 11. $\square$
+\end{remark}
+
+\subsubsection{Regularity}
+\label{sec:heat-regularity}
+
+We next demonstrate that solutions of the heat equation are automatically smooth.
+
+\begin{theorem}[Smoothness]
+\label{thm:heat-equation-smoothness}
+\dcref{ch2:2.3-thm-8}
+\group{Heat Equation}
+\uses{thm:heat-equation-nonhomogeneous-solution,thm:uniqueness-heat-cauchy-problem}
+Suppose $u \in C_1^2(U_T)$ solves the heat equation in $U_T$. Then
+$$u \in C^\infty(U_T).$$
+\end{theorem}
+
+This regularity assertion is valid even if $u$ attains nonsmooth boundary values on $\Gamma_T$.
+
+\begin{proof}
+1. Recall from \S A.2 that we write
+$$C(x,t;r) = \{(y,s) \mid |x - y| \leq r, t - r^2 \leq s \leq t\}$$
+to denote the closed circular cylinder of radius $r$, height $r^2$, and top center point $(x,t)$.
+
+Fix $(x_0, t_0) \in U_T$ and choose $r > 0$ so small that $C := C(x_0, t_0; r) \subset U_T$. Define also the smaller cylinders $C' := C(x_0, t_0; \frac{3}{4}r)$, $C'' := C(x_0, t_0; \frac{1}{2}r)$, which have the same top center point $(x_0, t_0)$.
+
+Choose a smooth cutoff function $\zeta = \zeta(x,t)$ such that
+$$\begin{cases} 0 \leq \zeta \leq 1, \quad \zeta \equiv 1 \text{ on } C', \\ \zeta \equiv 0 \text{ near the parabolic boundary of } C. \end{cases}$$
+
+Extend $\zeta \equiv 0$ in $(\R^n \times [0, t_0]) - C$.
+
+\begin{figure}[h]\centering
+% [FIGURE: Nested cylinders labeled C, C', C'' with point $(x_0, t_0)$ at the apex, illustrating a cylindrical space-time domain used in PDE analysis]
+\end{figure}
+
+2. Assume temporarily that $u \in C^\infty(U_T)$ and set
+$$v(x,t) := \zeta(x,t)u(x,t) \quad (x \in \R^n, 0 \leq t \leq t_0).$$
+
+Then
+$$v_t = \zeta_t u + \zeta u_t, \quad \Delta v = \zeta \Delta u + 2D\zeta \cdot Du + u\Delta\zeta.$$
+
+Consequently
+$$(33) \quad v = 0 \text{ on } \R^n \times \{t = 0\},$$
+and
+$$(34) \quad v_t - \Delta v = \zeta_t u - 2D\zeta \cdot Du - u\Delta\zeta =: \tilde{f}$$
+in $\R^n \times (0, t_0)$. Now set
+$$\bar{v}(x,t) := \int_0^t \int_{\R^n} \Phi(x-y, t-s)\tilde{f}(y,s) \, dy\,ds.$$
+
+According to \cref{thm:heat-equation-nonhomogeneous-solution}
+$$(35) \quad \begin{cases}
+\bar{v}_t - \Delta \bar{v} = \tilde{f} & \text{in } \R^n \times (0, t_0) \\
+\bar{v} = 0 & \text{on } \R^n \times \{t = 0\}.
+\end{cases}$$
+
+Since $|v|, |\bar{v}| \leq A$ for some constant $A$, \cref{thm:uniqueness-heat-cauchy-problem} implies $v \equiv \bar{v}$; that is,
+$$(36) \quad v(x,t) = \int_0^t \int_{\R^n} \Phi(x-y, t-s)\tilde{f}(y,s) \, dy\,ds.$$
+
+Now suppose $(x,t) \in C''$. As $\zeta = 0$ off the cylinder $C$, (34) and (36) imply
+$$u(x,t) = \iint_C \Phi(x-y, t-s)[(\zeta_s(y,s) - \Delta\zeta(y,s))u(y,s)$$
+$$- 2D\zeta(y,s) \cdot Du(y,s)] \, dy\,ds.$$
+
+Note in this expression that the expression in the square brackets vanishes in some region \textit{near} the singularity of $\Phi$. Integrate the last term by parts:
+$$(37) \quad u(x,t) = \iint_C [\Phi(x-y, t-s)(\zeta_s(y,s) + \Delta \zeta(y,s))$$
+$$+ 2D_y\Phi(x-y,t-s) \cdot D\zeta(y,s)]u(y,s)\,dy\,ds.$$
+
+We have proved this formula assuming $u \in C^\infty$. If $u$ satisfies only the hypotheses of the theorem, we derive (37) with $u^\varepsilon = \eta_\varepsilon * u$ replacing $u$, $\eta_\varepsilon$ being the standard mollifier in the variables $x$ and $t$, and let $\varepsilon \to 0$.
+
+3. Formula (37) has the form
+$$(38) \quad u(x,t) = \iint_C K(x,t,y,s)u(y,s)\,dy\,ds \quad ((x,t) \in C''),$$
+where
+$$K(x,t,y,s) = 0 \quad \text{for all points } (y,s) \in C',$$
+since $\zeta \equiv 1$ on $C'$. Note also $K$ is smooth on $C - C'$. In view of expression (38), we see $u$ is $C^\infty$ within $C'' = C(x_0, t_0; \frac{1}{2}r)$.
+\end{proof}
+
+\subsubsection{Local estimates for solutions of the heat equation}
+\label{sec:heat-local-estimates}
+
+Next we record some estimates on the derivatives of solutions to the heat equation, paying attention to the differences between derivatives with respect to $x_i$ ($i = 1, \ldots, n$) and with respect to $t$.
+
+\begin{theorem}[Estimates on derivatives]
+\label{thm:heat-equation-derivative-estimates}
+\dcref{ch2:2.3-thm-9}
+\group{Heat Equation}
+\uses{thm:heat-equation-smoothness}
+There exists for each pair of integers $k, l = 0, 1, \ldots,$ a constant $C_{kl}$ such that
+$$\max_{C(x,t;r/2)} |D_x^k D_t^l u| \leq \frac{C_{kl}}{r^{k+2l+n/2}}\|u\|_{L^1(C(x,t;r))}$$
+for all cylinders $C(x,t;r/2) \subset C(x,t;r) \subset U_T$, and all solutions $u$ of the heat equation in $U_T$.
+\end{theorem}
+
+\begin{proof}
+1. Fix some point in $U_T$. Upon shifting the coordinates, we may as well assume the point is $(0,0)$. Suppose first that the cylinder $C(1) := C(0,0;1)$ lies in $U_T$. Let $C\left(\frac{1}{2}\right) := C\left(0,0;\frac{1}{2}\right)$. Then, as in the proof of \cref{thm:heat-equation-smoothness},
+$$u(x,t) = \iint_{C(1)} K(x,t,y,s)u(y,s)\,dy\,ds \quad \left((x,t) \in C\left(\tfrac{1}{2}\right)\right)$$
+for some smooth function $K$. Consequently
+$$(39) \quad |D_x^k D_t^l u(x,t)| \leq \iint_{C(1)} |D_t^l D_x^k K(x,t,y,s)||u(y,s)|\,dy\,ds$$
+$$\leq C_{kl}\|u\|_{L^1(C(1))}$$
+for some constant $C_{kl}$.
+
+2. Now suppose the cylinder $C(r) := C(0,0;r)$ lies in $U_T$. Let $C(r/2) = C(0,0;r/2)$. We rescale by defining
+$$v(x,t) := u(rx,r^2t).$$
+
+Then $v_t - \Delta v = 0$ in the cylinder $C(1)$. According to (39),
+$$|D_x^k D_t^l v(x,t)| \leq C_{kl}\|v\|_{L^1(C(1))} \quad ((x,t) \in C(\tfrac12)).$$
+
+But $D_x^k D_t^l v(x,t) = r^{2l+k}D_x^k D_t^l u(rx,r^2t)$ and $\|v\|_{L^1(C(1))} = \frac{1}{r^{n+2}}\|u\|_{L^1(C(r))}$. Therefore
+$$\max_{C(r/2)} |D_x^k D_t^l u| \leq \frac{C_{kl}}{r^{2l+k+n+2}}\|u\|_{L^1(C(r))}.$$
+\end{proof}
+
+\begin{remark}[Spatial analyticity]
+\label{rem:heat-equation-spatial-analyticity}
+\dcref{ch2:2.3.3-rem-8}
+\group{Heat Equation}
+\uses{thm:heat-equation-derivative-estimates}
+If $u$ solves the heat equation within $U_T$, then for each fixed time $0 < t \leq T$, the mapping $x \mapsto u(x,t)$ is analytic. (See Mikhailov \cite{Mikhailov1978}.) However the mapping $t \mapsto u(x,t)$ is not in general analytic. $\square$
+\end{remark}
+
+\subsection{Energy Methods}
+\label{sec:heat-energy-methods}
+
+\subsubsection{Uniqueness}
+\label{sec:heat-energy-uniqueness}
+
+Let us investigate again the initial/boundary-value problem (40) below.
+
+We earlier invoked the maximum principle to show uniqueness, and now---by analogy with \S2.2.5---provide an alternative argument based upon integration by parts. We assume as usual that $U \subset \R^n$ is open, bounded and that $\partial U$ is $C^1$. The terminal time $T > 0$ is given.
+
+\begin{theorem}[Uniqueness, energy method]
+\label{thm:uniqueness-heat-energy-method}
+\dcref{ch2:2.3-thm-10}
+\group{Energy Methods}
+Let $g \in C(\Gamma_T)$, $f \in C(U_T)$. Then there exists at most one solution $u \in C_1^2(\bar{U}_T)$ of the initial/boundary-value problem
+$$(40) \quad \begin{cases}
+u_t - \Delta u = f & \text{in } U_T \\
+u = g & \text{on } \Gamma_T.
+\end{cases}$$
+\end{theorem}
+
+\begin{proof}
+1. If $\tilde{u}$ is another solution, $w := u - \tilde{u}$ solves
+$$(41) \quad \begin{cases} w_t - \Delta w = 0 & \text{in } U_T \\ w = 0 & \text{on } \Gamma_T. \end{cases}$$
+
+2. Set
+$$e(t) := \int_U w^2(x,t)\,dx \quad (0 \le t \le T).$$
+
+Then
+$$\dot{e}(t) = 2\int_U ww_t\,dx \quad \left(\dot{} := \frac{d}{dt}\right)$$
+$$= 2\int_U w\Delta w\,dx$$
+$$= -2\int_U |Dw|^2\,dx \le 0,$$
+and so
+$$e(t) \le e(0) = 0 \quad (0 \le t \le T).$$
+
+Consequently $w = u - \tilde{u} \equiv 0$ in $U_T$.
+\end{proof}
+
+Observe that the foregoing is a time-dependent variant of the proof of \cref{thm:uniqueness-poisson-energy-method} in \cref{sec:laplace-energy-methods}.
+
+\subsubsection{Backwards uniqueness}
+\label{sec:heat-backwards-uniqueness}
+
+A rather more subtle question concerns uniqueness \textit{backwards in time} for the heat equation. For this, suppose $u$ and $\tilde{u}$ are both smooth solutions of the heat equation in $U_T$, with the same boundary conditions on $\partial U$:
+$$(42) \quad \begin{cases} u_t - \Delta u = 0 & \text{in } U_T \\ u = g & \text{on } \partial U \times [0,T], \end{cases}$$
+$$(43) \quad \begin{cases} \tilde{u}_t - \Delta \tilde{u} = 0 & \text{in } U_T \\ \tilde{u} = g & \text{on } \partial U \times [0,T], \end{cases}$$
+for some function $g$. Note carefully that we are \textit{not} supposing $u = \tilde{u}$ at time $t = 0$.
+
+\begin{theorem}[Backwards uniqueness]
+\label{thm:backwards-uniqueness-heat-equation}
+\dcref{ch2:2.3-thm-11}
+\group{Energy Methods}
+\uses{thm:uniqueness-heat-energy-method}
+Suppose $u, \tilde{u} \in C^2(\overline{U}_T)$ solve (42), (43). If
+$$u(x, T) = \tilde{u}(x, T) \quad (x \in U),$$
+then
+$$u \equiv \tilde{u} \quad \text{within } U_T.$$
+\end{theorem}
+
+In other words, if two temperature distributions on $U$ agree at some time $T > 0$, and have had the same boundary values for times $0 \leq t \leq T$, then these temperatures must have been identically equal within $U$ at all earlier times. This is not at all obvious.
+
+\begin{proof}
+1. Write $w := u - \tilde{u}$ and, as in the proof of \cref{thm:uniqueness-heat-energy-method}, set
+$$e(t) := \int_U w^2(x, t)\, dx \quad (0 \leq t \leq T).$$
+
+As before
+$$(44) \quad \dot{e}(t) = -2 \int_U |Dw|^2 \, dx \quad \left(\dot{} = \frac{d}{dt}\right).$$
+
+Furthermore
+$$\ddot{e}(t) = -4 \int_U Dw \cdot Dw_t\, dx$$
+$$(45) \quad = 4 \int_U \Delta w \, w_t\, dx$$
+$$= 4 \int_U (\Delta w)^2 \, dx \quad \text{by (41).}$$
+
+Now since $w = 0$ on $\partial U$,
+$$\int_U |Dw|^2 \, dx = -\int_U w \Delta w\, dx$$
+$$\leq \left(\int_U w^2 \, dx\right)^{1/2} \left(\int_U (\Delta w)^2 \, dx\right)^{1/2}.$$
+
+Thus (44) and (45) imply
+$$(\dot{e}(t))^2 = 4 \left(\int_U |Dw|^2 \, dx\right)^2$$
+$$\leq \left(\int_U w^2 \, dx\right) \left(4 \int_U (\Delta w)^2 \, dx\right)$$
+$$= e(t)\ddot{e}(t).$$
+
+Hence
+$$(46) \quad \dot{e}(t)e(t) \geq (\dot{e}(t))^2 \quad (0 \leq t \leq T).$$
+
+2. Now if $e(t) = 0$ for all $0 \leq t \leq T$, we are done. Otherwise there exists an interval $[t_1, t_2] \subset [0,T]$, with
+$$(47) \quad e(t) > 0 \text{ for } t_1 \leq t < t_2, \quad e(t_2) = 0.$$
+
+3. Now write
+$$(48) \quad f(t) := \log e(t) \quad (t_1 \leq t < t_2).$$
+
+Then
+$$\ddot{f}(t) = \frac{\ddot{e}(t)}{e(t)} - \frac{\dot{e}(t)^2}{e(t)^2} \geq 0 \quad \text{by (46);}$$
+
+and so $f$ is convex on the interval $(t_1, t_2)$. Consequently if $0 < \tau < 1$, $t_1 < t < t_2$, we have
+$$f((1-\tau)t_1 + \tau t) \leq (1-\tau)f(t_1) + \tau f(t).$$
+
+Recalling (48), we deduce
+$$e((1-\tau)t_1 + \tau t) \leq e(t_1)^{1-\tau}e(t)^\tau,$$
+and so
+$$0 \leq e((1-\tau)t_1 + \tau t_2) \leq e(t_1)^{1-\tau}e(t_2)^\tau \quad (0 < \tau < 1).$$
+
+But in view of (47) this inequality implies $e(t) = 0$ for all times $t_1 \leq t \leq t_2$, a contradiction.
+\end{proof}
+
+\section{Wave Equation}
+\label{sec:wave-equation}
+
+In this section we investigate the \textit{wave equation}
+$$(1) \qquad u_{tt} - \Delta u = 0$$
+and the \textit{nonhomogeneous wave equation}
+$$(2) \qquad u_{tt} - \Delta u = f,$$
+subject to appropriate initial and boundary conditions. Here $t > 0$ and $x \in U$, where $U \subset \R^n$ is open. The unknown is $u : \overline{U} \times [0, \infty) \to \R$, $u = u(x,t)$, and the Laplacian $\Delta$ is taken with respect to the spatial variables $x = (x_1, \ldots, x_n)$. In (2) the function $f : U \times [0, \infty) \to \R$ is given. A common abbreviation is to write
+$$\Box u = u_{tt} - \Delta u.$$
+
+We shall discover that solutions of the wave equation behave quite differently than solutions of Laplace's equation or the heat equation. For example, these solutions are generally not $C^\infty$, exhibit finite speed of propagation, etc.
+
+\textbf{Physical interpretation.} The wave equation is a simplified model for a vibrating string ($n = 1$), membrane ($n = 2$), or elastic solid ($n = 3$). In these physical interpretations $u(x, t)$ represents the displacement in some direction of the point $x$ at time $t \geq 0$.
+
+Let $V$ represent any smooth subregion of $U$. The acceleration within $V$ is then
+$$\frac{d^2}{dt^2} \int_V u \, dx = \int_V u_{tt} \, dx$$
+and the net contact force is
+$$-\int_{\partial V} \mathbf{F} \cdot \nu \, dS,$$
+where $\mathbf{F}$ denotes the force acting on $V$ through $\partial V$ and the mass density is taken to be unity. Newton's law asserts the mass times the acceleration equals the net force:
+$$\int_V u_{tt} \, dx = -\int_{\partial V} \mathbf{F} \cdot \nu \, dS.$$
+
+This identity obtains for each subregion $V$ and so
+$$u_{tt} = -\Div \mathbf{F}.$$
+
+For elastic bodies, $\mathbf{F}$ is a function of the displacement gradient $Du$; whence
+$$u_{tt} + \Div \mathbf{F}(Du) = 0.$$
+
+For small $Du$, the linearization $\mathbf{F}(Du) \approx -a Du$ is often appropriate; and so
+$$u_{tt} - a \Delta u = 0.$$
+
+This is the wave equation if $a = 1$. $\square$
+
+This physical interpretation strongly suggests it will be mathematically appropriate to specify \textit{two} initial conditions, on the \textit{displacement} $u$ and the \textit{velocity} $u_t$, at time $t = 0$.
+
+\subsection{Solution by Spherical Means}
+\label{sec:wave-solution-spherical-means}
+
+We began \cref{sec:laplace-fundamental-solution-derivation} and \cref{sec:heat-fundamental-solution-derivation} by searching for certain scaling invariant solutions of Laplace's equation and the heat equation. For the wave equation however we will instead present the (reasonably) elegant method of solving (1) first for $n = 1$ directly and then for $n \geq 2$ by the method of spherical means.
+
+\subsubsection{Solution for $n = 1$, d'Alembert's formula}
+\label{sec:wave-dalembert-formula}
+
+We first focus our attention on the initial-value problem for the one-dimensional wave equation in all of $\R$:
+$$(3) \quad \begin{cases} u_{tt} - u_{xx} = 0 & \text{in } \R \times (0,\infty) \\ u = g, \quad u_t = h & \text{on } \R \times \{t = 0\}, \end{cases}$$
+where $g, h$ are given. We desire to derive a formula for $u$ in terms of $g$ and $h$.
+
+Let us first note the PDE in (3) can be ``factored'', to read
+$$(4) \quad \left(\frac{\partial}{\partial t} + \frac{\partial}{\partial x}\right)\left(\frac{\partial}{\partial t} - \frac{\partial}{\partial x}\right)u = u_{tt} - u_{xx} = 0.$$
+
+Write
+$$(5) \quad v(x,t) := \left(\frac{\partial}{\partial t} - \frac{\partial}{\partial x}\right)u(x,t).$$
+
+Then (4) says
+$$v_t(x,t) + v_x(x,t) = 0 \quad (x \in \R, t > 0).$$
+
+This is a transport equation with constant coefficients. Applying formula (3) from \cref{sec:transport-equation-initial-value-problem} (with $n = 1, b = 1$), we find
+$$(6) \quad v(x,t) = a(x - t)$$
+for $a(x) := v(x,0)$. Combining now (4)--(6), we obtain
+$$u_t(x,t) - u_x(x,t) = a(x - t) \quad \text{in } \R \times (0,\infty).$$
+
+This is a nonhomogeneous transport equation; and so formula (5) from \cref{sec:transport-equation-nonhomogeneous-problem} (with $n = 1, b = -1, f(x,t) = a(x-t)$) implies
+$$(7) \quad u(x,t) = \int_0^t a(x + (t - s) - s) \, ds + b(x+t)$$
+$$= \frac{1}{2}\int_{x-t}^{x+t} a(y) \, dy + b(x+t),$$
+where we have $b(x) := u(x,0)$.
+
+We lastly invoke the initial conditions in (3) to compute $a$ and $b$. The first initial condition in (3) gives
+$$b(x) = g(x) \quad (x \in \R);$$
+whereas the second initial condition and (5) imply
+$$a(x) = v(x,0) = u_t(x,0) - u_x(x,0) = h(x) - g'(x) \quad (x \in \R).$$
+
+Our substituting into (7) now yields
+$$u(x,t) = \frac{1}{2} \int_{x-t}^{x+t} h(y) - g'(y) \, dy + g(x+t).$$
+
+Hence
+$$(8) \quad u(x,t) = \frac{1}{2}[g(x+t) + g(x-t)] + \frac{1}{2} \int_{x-t}^{x+t} h(y) \, dy \quad (x \in \R, t \geq 0).$$
+
+This is \textit{d'Alembert's formula}.
+
+We have derived formula (8) assuming $u$ is a (sufficiently smooth) solution of (3). We need to check that this really is a solution.
+
+\begin{theorem}[Solution of wave equation, $n = 1$]
+\label{thm:wave-equation-dalembert-solution}
+\dcref{ch2:2.4-thm-1}
+\group{Wave Equation}
+Assume $g \in C^2(\R)$, $h \in C^1(\R)$, and define $u$ by d'Alembert's formula (8). Then
+
+(i) $u \in C^2(\R \times [0,\infty))$,
+
+(ii) $u_{tt} - u_{xx} = 0$ in $\R \times (0,\infty)$,
+
+and
+
+(iii) $\lim\limits_{(x,t) \to (x^0,0), t>0} u(x,t) = g(x^0)$, \quad $\lim\limits_{(x,t) \to (x^0,0), t>0} u_t(x,t) = h(x^0)$
+
+for each point $x^0 \in \R$.
+\end{theorem}
+
+The proof is a straightforward calculation.
+
+\begin{remark}[General solution of the 1D wave equation]
+\label{rem:wave-equation-general-solution-1d}
+\dcref{ch2:2.4.1-rem-1}
+\group{Wave Equation}
+\uses{thm:wave-equation-dalembert-solution}
+(i) In view of (8), our solution $u$ has the form
+$$u(x,t) = F(x+t) + G(x-t)$$
+for appropriate functions $F$ and $G$. Conversely any function of this form solves $u_{tt} - u_{xx} = 0$. Hence the general solution of the one-dimensional wave equation is a sum of the general solution of $u_t - u_x = 0$ and the general solution of $u_t + u_x = 0$. This is a consequence of the factorization (4).
+
+(ii) We see from (8) that if $g \in C^k$ and $h \in C^{k-1}$, then $u \in C^k$, but is not in general smoother. Thus the wave equation does \textit{not} cause instantaneous smoothing of the initial data, as does the heat equation. $\square$
+\end{remark}
+
+\textbf{A reflection method.} To illustrate a further application of d'Alembert's formula, let us next consider this initial/boundary-value problem on the half-line $\R_+ = \{x>0\}$:
+$$(9) \quad \begin{cases} u_{tt} - u_{xx} = 0 & \text{in } \R_+\times(0,\infty) \\ u=g,\ u_t=h & \text{on }\R_+\times\{t=0\} \\ u=0 & \text{on }\{x=0\}\times(0,\infty), \end{cases}$$
+where $g,h$ are given, with $g(0) = h(0) = 0$.
+
+We convert (9) into the form (3) by extending $u,g,h$ to all of $\R$ by \textit{odd reflection}. That is, we set
+$$\tilde{u}(x,t) := \begin{cases} u(x,t) & (x \geq 0,\ t \geq 0) \\ -u(-x,t) & (x \leq 0,\ t \geq 0), \end{cases}$$
+$$\tilde{g}(x) := \begin{cases} g(x) & (x \geq 0) \\ -g(-x) & (x \leq 0), \end{cases}$$
+$$\tilde{h}(x) := \begin{cases} h(x) & (x \geq 0) \\ -h(-x) & (x \leq 0). \end{cases}$$
+
+Then (9) becomes
+$$\begin{cases} \tilde{u}_{tt} = \tilde{u}_{xx} & \text{in } \R\times(0,\infty) \\ \tilde{u} = \tilde{g},\ \tilde{u}_t = \tilde{h} & \text{on } \R\times\{t=0\}. \end{cases}$$
+
+Hence d'Alembert's formula (8) implies
+$$\tilde{u}(x,t) = \frac12[\tilde{g}(x+t)+\tilde{g}(x-t)] + \frac12\int_{x-t}^{x+t} \tilde{h}(y)\,dy.$$
+
+Recalling the definitions of $\tilde{u},\tilde{g},\tilde{h}$ above, we can transform this expression to read for $x \geq 0$, $t \geq 0$:
+$$(10) \quad u(x,t) = \begin{cases} \frac12[g(x+t)+g(x-t)] + \frac12\int_{x-t}^{x+t} h(y)\,dy & \text{if } x \geq t \geq 0 \\ \frac12[g(x+t)-g(t-x)] + \frac12\int_{-x+t}^{x+t} h(y)\,dy & \text{if } 0 \leq x \leq t. \end{cases}$$
+
+If $h \equiv 0$, we can understand formula (10) as saying that an initial displacement $g$ splits into two parts, one moving to the right with speed one and the other to the left with speed one. The latter then reflects off the point $x=0$, where the vibrating string is held fixed. $\square$
+
+\subsubsection{Spherical means}
+\label{sec:wave-spherical-means}
+
+Now suppose $n \geq 2$, $m \geq 2$, and $u \in C^m(\R^n \times [0, \infty))$ solves the initial-value problem
+$$(11) \quad \begin{cases} u_{tt} - \Delta u = 0 & \text{in } \R^n \times (0, \infty) \\ u = g, u_t = h & \text{on } \R^n \times \{t = 0\}. \end{cases}$$
+
+We intend to derive an explicit formula for $u$ in terms of $g, h$. The plan will be to study first the average of $u$ over certain spheres. These averages, taken as functions of the time $t$ and the radius $r$, turn out to solve the Euler--Poisson--Darboux equation, a PDE which we can for odd $n$ convert into the ordinary one-dimensional wave equation. Applying d'Alembert's formula, or more precisely its variant (10), eventually leads us to a formula for the solution.
+
+\textbf{Notation.} (i) Let $x \in \R^n$, $t > 0$, $r > 0$. Define
+$$(12) \quad U(x;r,t) := \int_{\partial B(x,r)} u(y,t) \, dS(y),$$
+the average of $u(\cdot, t)$ over the sphere $\partial B(x, r)$.
+
+(ii) Similarly,
+$$(13) \quad \begin{cases} G(x;r) := \int_{\partial B(x,r)} g(y) \, dS(y) \\ H(x;r) := \int_{\partial B(x,r)} h(y) \, dS(y). \end{cases}$$
+
+For fixed $x$, we hereafter regard $U$ as a function of $r$ and $t$, and discover a partial differential equation $U$ solves:
+
+\begin{lemma}[Euler--Poisson--Darboux equation]
+\label{lem:euler-poisson-darboux-equation}
+\dcref{ch2:2.4-lem-1}
+\group{Wave Equation}
+Fix $x \in \R^n$, and let $u$ satisfy (11). Then $U \in C^m(\R_+ \times [0, \infty))$ and
+$$(14) \quad \begin{cases} U_{tt} - U_{rr} - \frac{n-1}{r} U_r = 0 & \text{in } \R_+ \times (0, \infty) \\ U = G, U_t = H & \text{on } \R_+ \times \{t = 0\}. \end{cases}$$
+\end{lemma}
+
+The partial differential equation in (14) is the \textit{Euler--Poisson--Darboux equation}. (Note that the term $U_{rr} + \frac{n-1}{r} U_r$ is the radial part of the Laplacian $\Delta$ in polar coordinates.)
+
+\begin{proof}
+1. As in the proof of \cref{thm:mean-value-formulas-laplace} we compute for $r > 0$
+$$(15) \quad U_r(x;r,t) = \frac{r}{n} \int_{B(x,r)} \Delta u(y,t) \, dy.$$
+
+From this equality we deduce $\lim_{r \to 0+} U_r(x;r,t) = 0$. We next differentiate (15), to discover after some computations that
+$$(16) \quad U_{rr}(x;r,t) = \int_{\partial B(x,r)} \Delta u \, dS + \left(\frac{1}{n} - 1\right) \int_{B(x,r)} \Delta u \, dy.$$
+
+Thus $\lim_{r \to 0+} U_{rr}(x;r,t) = \frac{1}{n} \Delta u(x,t)$. Using formula (16) we can similarly compute $U_{rrr}$, etc., and so verify that $U \in C^m(\R \times [0, \infty))$.
+
+2. Continuing the calculation above, we see from (15) that
+$$U_r = \frac{r}{n} \int_{B(x,r)} u_{tt} \, dy \quad \text{by (11)}$$
+$$= \frac{1}{n\alpha(n) r^{n-1}} \int_{B(x,r)} u_{tt} \, dy.$$
+
+Thus
+$$r^{n-1} U_r = \frac{1}{n\alpha(n)} \int_{B(x,r)} u_{tt} \, dy,$$
+and so
+$$(r^{n-1} U_r)_r = \frac{1}{n\alpha(n)} \int_{\partial B(x,r)} u_{tt} \, dS$$
+$$= r^{n-1} \int_{\partial B(x,r)} u_{tt} \, dS = r^{n-1} U_{tt}. \qedhere$$
+\end{proof}
+
+\subsubsection{Solution for $n = 3, 2$, Kirchhoff's and Poisson's formulas}
+\label{sec:wave-kirchhoff-poisson-formulas}
+
+The overall plan in the ensuing subsections will be to transform the Euler--Poisson--Darboux equation (14) into the usual one-dimensional wave equation. As the full procedure is rather complicated, we pause here to handle the simpler cases $n = 3, 2$, in that order.
+
+\textbf{Solution for $n = 3$.} Let us therefore hereafter take $n = 3$, and suppose $u \in C^2(\R^3 \times [0, \infty))$ solves the initial-value problem (11). We recall the definitions (12), (13) of $U, G, H$, and then set
+$$(17) \quad \tilde{U} := rU,$$
+$$(18) \quad \tilde{G} := rG, \quad \tilde{H} := rH.$$
+
+We now assert that $\tilde{U}$ solves
+$$(19) \quad \begin{cases}
+\tilde{U}_{tt} - \tilde{U}_{rr} = 0 & \text{in } \R_+ \times (0,\infty) \\
+\tilde{U} = \tilde{G}, \tilde{U}_t = \tilde{H} & \text{on } \R_+ \times \{t = 0\} \\
+\tilde{U} = 0 & \text{on } \{r = 0\} \times (0,\infty).
+\end{cases}$$
+
+Indeed
+$$\tilde{U}_{tt} = rU_{tt}$$
+$$= r\left[U_{rr} + \frac{2}{r}U_r\right] \text{ by (14), with } n = 3$$
+$$= rU_{rr} + 2U_r = (U + rU_r)_r$$
+$$= \tilde{U}_{rr}.$$
+
+Applying formula (10) to (19), we find for $0 \le r \le t$
+$$(20) \quad \tilde{U}(x;r,t) = \frac{1}{2}[\tilde{G}(r+t) - \tilde{G}(t-r)] + \frac{1}{2}\int_{t-r}^{r+t} \tilde{H}(y)\, dy.$$
+
+Since (12) implies $u(x,t) = \lim_{r \to 0+} U(x;r,t)$, we conclude from (17), (18), (20) that
+$$u(x,t) = \lim_{r \to 0+} \frac{\tilde{U}(x;r,t)}{r}$$
+$$= \lim_{r \to 0+} \left[\frac{\tilde{G}(t+r) - \tilde{G}(t-r)}{2r} + \frac{1}{2r}\int_{t-r}^{t+r} \tilde{H}(y)\, dy\right]$$
+$$= \tilde{G}'(t) + \tilde{H}(t).$$
+
+Owing then to (13), we deduce
+$$(21) \quad u(x,t) = \frac{\partial}{\partial t}\left(t\int_{\partial B(x,t)} g\, dS\right) + t\int_{\partial B(x,t)} h\, dS.$$
+
+But
+$$\int_{\partial B(x,t)} g(y)\, dS(y) = \int_{\partial B(0,1)} g(x+tz)\, dS(z);$$
+and so
+$$\frac{\partial}{\partial t}\left(\int_{\partial B(x,t)} g\, dS\right) = \int_{\partial B(0,1)} Dg(x+tz) \cdot z\, dS(z)$$
+$$= \int_{\partial B(x,t)} Dg(y) \cdot \left(\frac{y-x}{t}\right) dS(y).$$
+
+Returning to (21), we therefore conclude
+$$(22) \quad u(x,t) = \int_{\partial B(x,t)} th(y) + g(y) + Dg(y)\cdot(y-x)\,dS(y) \quad (x \in \R^3,\ t>0).$$
+
+This is \textit{Kirchhoff's formula} for the solution of the initial-value problem (11) in three dimensions.
+
+\textbf{Solution for $n=2$.} No transformation like (17) works to convert the Euler--Poisson--Darboux equation into the one-dimensional wave equation when $n=2$. Instead we will take the initial-value problem (11) for $n=2$ and simply regard it as a problem for $n=3$, in which the third spatial variable $x_3$ does not appear.
+
+Indeed, assuming $u \in C^2(\R^2\times[0,\infty))$ solves (11) for $n=2$, let us write
+$$(23) \quad \bar{u}(x_1,x_2,x_3,t) := u(x_1,x_2,t).$$
+
+Then (11) implies
+$$(24) \quad \begin{cases} \bar{u}_{tt} - \Delta\bar{u} = 0 & \text{in } \R^3\times(0,\infty) \\ \bar{u} = \bar{g},\ \bar{u}_t = \bar{h} & \text{on } \R^3\times\{t=0\}, \end{cases}$$
+for
+$$\bar{g}(x_1,x_2,x_3) := g(x_1,x_2), \quad \bar{h}(x_1,x_2,x_3) := h(x_1,x_2).$$
+
+If we write $x=(x_1,x_2) \in \R^2$ and $\bar{x}=(x_1,x_2,0)\in\R^3$, then (24) and Kirchhoff's formula (in the form (21)) imply
+$$u(x,t) = \bar{u}(\bar{x},t)$$
+$$(25) \quad = \frac{\partial}{\partial t}\left(t\int_{\partial\bar{B}(\bar{x},t)} \bar{g}\,d\bar{S}\right) + t\int_{\partial\bar{B}(\bar{x},t)} \bar{h}\,d\bar{S},$$
+where $\bar{B}(\bar{x},t)$ denotes the ball in $\R^3$ with center $\bar{x}$, radius $t>0$, and $d\bar{S}$ denotes two-dimensional surface measure on $\partial\bar{B}(\bar{x},t)$. We simplify (25) by observing
+$$\int_{\partial\bar{B}(\bar{x},t)} \bar{g}\,d\bar{S} = \frac{1}{4\pi t^2}\int_{\partial\bar{B}(\bar{x},t)} \bar{g}\,d\bar{S}$$
+$$= \frac{2}{4\pi t^2}\int_{B(x,t)} g(y)(1+|D\gamma(y)|^2)^{1/2}\,dy,$$
+where $\gamma(y) = (t^2-|y-x|^2)^{1/2}$ for $y \in B(x,t)$. The factor ``2'' enters since $\partial\bar{B}(\bar{x},t)$ consists of two hemispheres. Observe that $(1+|D\gamma|^2)^{1/2} =$
+$t(t^2 - |y - x|^2)^{-1/2}$. Therefore
+$$\int_{\partial B(x,t)} \bar{g} \, dS = \frac{1}{2\pi t} \int_{B(x,t)} \frac{g(y)}{(t^2 - |y - x|^2)^{1/2}} dy$$
+$$= \frac{t}{2} \int_{B(x,t)} \frac{g(y)}{(t^2 - |y - x|^2)^{1/2}} dy.$$
+
+Consequently formula (25) becomes
+$$(26) \quad u(x, t) = \frac{1}{2} \frac{\partial}{\partial t} \left( t^2 \int_{B(x,t)} \frac{g(y)}{(t^2 - |y - x|^2)^{1/2}} dy \right) + \frac{t^2}{2} \int_{B(x,t)} \frac{h(y)}{(t^2 - |y - x|^2)^{1/2}} dy.$$
+
+But
+$$t^2 \int_{B(x,t)} \frac{g(y)}{(t^2 - |y - x|^2)^{1/2}} dy = t \int_{B(0,1)} \frac{g(x + tz)}{(1 - |z|^2)^{1/2}} dz,$$
+and so
+$$\frac{\partial}{\partial t} \left( t^2 \int_{B(x,t)} \frac{g(y)}{(t^2 - |y - x|^2)^{1/2}} dy \right)$$
+$$= \int_{B(0,1)} \frac{g(x + tz)}{(1 - |z|^2)^{1/2}} dz + t \int_{B(0,1)} \frac{Dg(x + tz) \cdot z}{(1 - |z|^2)^{1/2}} dz$$
+$$= t \int_{B(x,t)} \frac{g(y)}{(t^2 - |y - x|^2)^{1/2}} dy + t \int_{B(x,t)} \frac{Dg(y) \cdot (y - x)}{(t^2 - |y - x|^2)^{1/2}} dy.$$
+
+Hence we can rewrite (26) and obtain the relation
+$$(27) \quad u(x, t) = \frac{1}{2} \int_{B(x,t)} \frac{tg(y) + t^2h(y) + tDg(y) \cdot (y - x)}{(t^2 - |y - x|^2)^{1/2}} dy$$
+for $x \in \R^2$, $t > 0$. This is \textit{Poisson's formula} for the solution of the initial-value problem (11) in two dimensions.
+
+This trick of solving the problem for $n = 3$ first and then dropping to $n = 2$ is the \textit{method of descent}.
+
+\subsubsection{Solution for odd $n$}
+\label{sec:wave-solution-odd-n}
+
+In this subsection we solve the Euler-Poisson-Darboux PDE for odd $n \geq 3$. We first record some technical facts.
+
+\begin{lemma}[Some useful identities]
+\label{lem:wave-equation-useful-identities}
+\dcref{ch2:2.4-lem-2}
+\group{Wave Equation}
+Let $\phi : \R \to \R$ be $C^{k+1}$. Then for $k = 1,2,\ldots$:
+
+(i) $\left(\frac{d^2}{dr^2}\right)\left(\frac{1}{r}\frac{d}{dr}\right)^{k-1}\left(r^{2k-1}\phi(r)\right) = \left(\frac{1}{r}\frac{d}{dr}\right)^k\left(r^{2k}\frac{d\phi}{dr}(r)\right),$
+
+(ii) $\left(\frac{1}{r}\frac{d}{dr}\right)^k\left(r^{2k-1}\phi(r)\right) = \sum_{j=0}^{k-1}\beta_j^k r^{j+1} \frac{d^j\phi}{dr^j}(r),$
+
+where the constants $\beta_j^k$ $(j = 0, \ldots, k-1)$ are independent of $\phi$.
+
+Furthermore,
+
+(iii) $\beta_0^k = 1 \cdot 3 \cdot 5 \cdots (2k-1)$.
+\end{lemma}
+
+The proof by induction is left as an exercise.
+
+Now assume
+$$n \geq 3 \text{ is an odd integer}$$
+and set
+$$n = 2k + 1 \quad (k \geq 1).$$
+
+Henceforth suppose $u \in C^{k+1}(\R^n \times [0, \infty))$ solves the initial-value problem (11). Then the function $U$ defined by (12) is $C^{k+1}$.
+
+\textbf{Notation.} We write
+$$(28) \quad \left\{\begin{array}{l}
+\tilde{U}(r,t) := \left(\frac{1}{r}\frac{\partial}{\partial r}\right)^{k-1}(r^{2k-1}U(x;r,t)) \\
+\tilde{G}(r) := \left(\frac{1}{r}\frac{\partial}{\partial r}\right)^{k-1}(r^{2k-1}G(x;r)) \quad (r > 0, t \geq 0) \\
+\tilde{H}(r) := \left(\frac{1}{r}\frac{\partial}{\partial r}\right)^{k-1}(r^{2k-1}H(x;r)).
+\end{array}\right.$$
+
+Then
+$$(29) \quad \tilde{U}(r,0) = \tilde{G}(r), \quad \tilde{U}_t(r,0) = \tilde{H}(r).$$
+
+Next we combine \cref{lem:euler-poisson-darboux-equation} and the identities provided by \cref{lem:wave-equation-useful-identities} to demonstrate that the transformation (28) of $U$ into $\tilde{U}$ in effect converts the Euler-Poisson-Darboux equation into the wave equation.
+
+\begin{lemma}[$\tilde{U}$ solves the one-dimensional wave equation]
+\label{lem:transformed-spherical-mean-wave-equation}
+\dcref{ch2:2.4-lem-3}
+\group{Wave Equation}
+\uses{lem:euler-poisson-darboux-equation,lem:wave-equation-useful-identities}
+We have
+$$\left\{\begin{array}{l}
+\tilde{U}_{tt} - \tilde{U}_{rr} = 0 \quad \text{in } \R_+ \times (0, \infty) \\
+\tilde{U} = \tilde{G}, \quad \tilde{U}_t = \tilde{H} \quad \text{on } \R_+ \times \{t = 0\} \\
+\tilde{U} = 0 \quad \text{on } \{r = 0\} \times (0, \infty).
+\end{array}\right.$$
+\end{lemma}
+
+\begin{proof}
+If $r > 0$,
+$$\tilde{U}_{rr} = \left(\frac{\partial^2}{\partial r^2}\right) \left(\frac{1}{r}\frac{\partial}{\partial r}\right)^{k-1} (r^{2k-1}U)$$
+$$= \left(\frac{1}{r}\frac{\partial}{\partial r}\right)^k (r^{2k}U_r) \text{ by Lemma 2,(i)}$$
+$$= \left(\frac{1}{r}\frac{\partial}{\partial r}\right)^{k-1} [r^{2k-1}U_{rr} + 2kr^{2k-2}U_r]$$
+$$= \left(\frac{1}{r}\frac{\partial}{\partial r}\right)^{k-1} \left[r^{2k-1}\left(U_{rr} + \frac{n-1}{r}U_r\right)\right] \quad (n = 2k+1)$$
+$$= \left(\frac{1}{r}\frac{\partial}{\partial r}\right)^{k-1} (r^{2k-1}U_{tt}) = \tilde{U}_{tt},$$
+the next-to-last equality holding according to (14). Using Lemma 2,(ii) we conclude as well that $\tilde{U} = 0$ on $\{r = 0\}$.
+\end{proof}
+
+In view of \cref{lem:transformed-spherical-mean-wave-equation}, (29), and formula (10), we conclude for $0 \leq r \leq t$ that
+$$(30) \quad \tilde{U}(r,t) = \frac{1}{2}[\tilde{G}(r+t) - \tilde{G}(t-r)] + \frac{1}{2}\int_{t-r}^{t+r} \tilde{H}(y) \, dy$$
+for all $r \in \R$, $t \geq 0$. But recall $u(x,t) = \lim_{r \to 0} U(x; r, t)$. Furthermore Lemma 2,(ii) asserts
+$$\tilde{U}(r,t) = \left(\frac{1}{r}\frac{\partial}{\partial r}\right)^{k-1} (r^{2k-1}U(x; r, t))$$
+$$= \sum_{j=0}^{k-1} \beta_j^k r^{j+1} \frac{\partial^j}{\partial r^j} U(x; r, t);$$
+and so
+$$\lim_{r \to 0} \frac{\tilde{U}(r,t)}{\beta_0^k r} = \lim_{r \to 0} U(x; r, t) = u(x,t).$$
+
+Thus (30) implies
+$$u(x,t) = \frac{1}{\beta_0^k} \lim_{r \to 0} \left[\frac{\tilde{G}(t+r) - \tilde{G}(t-r)}{2r} + \frac{1}{2r}\int_{t-r}^{t+r} \tilde{H}(y) \, dy\right]$$
+$$= \frac{1}{\beta_0^k} [\tilde{G}'(t) + \tilde{H}(t)].$$
+
+Finally then, since $n = 2k + 1$, (30) and Lemma 2,(iii) yield this representation formula:
+$$(31) \quad u(x,t) = \frac{1}{\gamma_n}\left[\left(\frac{\partial}{\partial t}\right)\left(\frac{1}{t}\frac{\partial}{\partial t}\right)^{\frac{n-3}{2}}\left(t^{n-2}\int_{\partial B(x,t)} g\,dS\right)$$
+$$+ \left(\frac{1}{t}\frac{d}{dt}\right)^{\frac{n-3}{2}}\left(t^{n-2}\int_{\partial B(x,t)} h\,dS\right)\right]$$
+where $n$ is odd and $\gamma_n = 1 \cdot 3 \cdot 5 \cdots (n-2)$,
+
+for $x \in \R^n$, $t > 0$.
+
+We note that $\gamma_3 = 1$, and so (31) agrees for $n=3$ with (21) and thus with Kirchhoff's formula (22).
+
+It remains to check that formula (31) really provides a solution of (11).
+
+\begin{theorem}[Solution of wave equation in odd dimensions]
+\label{thm:wave-equation-odd-dimensions-solution}
+\dcref{ch2:2.4-thm-2}
+\group{Wave Equation}
+\uses{lem:transformed-spherical-mean-wave-equation}
+Assume $n$ is an odd integer, $n \geq 3$, and suppose also $g \in C^{m+1}(\R^n)$, $h \in C^m(\R^n)$, for $m = \frac{n+1}{2}$. Define $u$ by (31). Then
+
+(i) $u \in C^2(\R^n \times [0,\infty))$,
+
+(ii) $u_{tt} - \Delta u = 0$ in $\R^n \times (0,\infty)$,
+
+and
+
+(iii) $\lim\limits_{\substack{(x,t) \to (x^0,0) \\ x \in \R^n, t>0}} u(x,t) = g(x^0)$, $\lim\limits_{\substack{(x,t) \to (x^0,0) \\ x \in \R^n, t>0}} u_t(x,t) = h(x^0)$
+
+for each point $x^0 \in \R^n$.
+\end{theorem}
+
+\begin{proof}
+1. Suppose first $g \equiv 0$; so that
+$$(32) \quad u(x,t) = \frac{1}{\gamma_n}\left(\frac{1}{t}\frac{d}{dt}\right)^{\frac{n-3}{2}}\left(t^{n-2}H(x;t)\right).$$
+
+Then Lemma 2,(i) lets us compute
+$$u_{tt} = \frac{1}{\gamma_n}\left(\frac{1}{t}\frac{d}{dt}\right)^{\frac{n-1}{2}}\left(t^{n-1}H_t\right).$$
+
+From the calculation in the proof of \cref{thm:mean-value-formulas-laplace}, we see as well that
+$$H_t = \frac{t}{n}\int_{B(x,t)} \Delta h\,dy.$$
+
+Consequently
+$$u_{tt} = \frac{1}{n\alpha(n)\gamma_n}\left(\frac{1}{t}\frac{d}{dt}\right)^{\frac{n-1}{2}}\left(\int_{B(x,t)} \Delta h\,dy\right)$$
+$$= \frac{1}{n\alpha(n)\gamma_n}\left(\frac{1}{t}\frac{d}{dt}\right)^{\frac{n-3}{2}}\left(\frac{1}{t}\int_{\partial B(x,t)} \Delta h\,dS\right).$$
+
+On the other hand,
+$$\Delta H(x;t) = \Delta_x \int_{\partial B(0,t)} h(x+y) \, dS(y)$$
+$$= \int_{\partial B(x,t)} \Delta h \, dS.$$
+
+Consequently (32) and the calculations above imply $u_{tt} = \Delta u$ in $\R^n \times (0,\infty)$. A similar computation works if $h \equiv 0$.
+
+2. We leave it as an exercise to confirm, using Lemma 2,(ii)-(iii), that $u$ takes on the correct initial conditions.
+\end{proof}
+
+\begin{remark}[Domain of dependence, regularity, and Huygens' principle]
+\label{rem:wave-equation-odd-dimension-remarks}
+\dcref{ch2:2.4.1-rem-2}
+\group{Wave Equation}
+\uses{thm:wave-equation-odd-dimensions-solution,thm:wave-equation-dalembert-solution}
+(i) Notice that to compute $u(x,t)$ we need only have information on $g, h$ and their derivatives on the sphere $\partial B(x,t)$, and not on the entire ball $B(x,t)$.
+
+(ii) Comparing formula (31) with d'Alembert's formula (8) ($n = 1$), we observe that the latter does not involve the derivatives of $g$. This suggests that for $n > 1$, a solution of the wave equation (11) need not for times $t > 0$ be as smooth as its initial value $g$: irregularities in $g$ may focus at times $t > 0$, thereby causing $u$ to be less regular. (We will see later in \S2.4.3 that the ``energy norm'' of $u$ does \textit{not} deteriorate for $t > 0$.)
+
+(iii) Once again (as in the case $n = 1$) we see the phenomenon of finite propagation speed of the initial disturbance.
+
+(iv) A completely different derivation of formula (31) (using the heat equation!) is in \S4.3.2. $\square$
+\end{remark}
+
+\subsubsection{Solution for even $n$}
+\label{sec:wave-solution-even-n}
+
+Assume now
+$$n \text{ is an even integer.}$$
+
+Suppose $u$ is a $C^m$ solution of (11), $m = \frac{n+2}{2}$. We want to fashion a representation formula like (31) for $u$. The trick, as above for $n = 2$, is to note
+$$(33) \quad \bar{u}(x_1, \ldots, x_{n+1}, t) := u(x_1, \ldots, x_n, t)$$
+solves the wave equation in $\R^{n+1} \times (0,\infty)$, with the initial conditions
+$$\bar{u} = \bar{g}, \quad \bar{u}_t = \bar{h} \quad \text{on } \R^{n+1} \times \{t = 0\},$$
+where
+$$(34) \quad \begin{cases}
+\bar{g}(x_1,\ldots,x_{n+1}) := g(x_1,\ldots,x_n)\\
+\bar{h}(x_1,\ldots,x_{n+1}) := h(x_1,\ldots,x_n).
+\end{cases}$$
+
+As $n+1$ is odd, we may employ (31) (with $n+1$ replacing $n$) to secure a representation formula for $\bar{u}$ in terms of $\bar{g}, \bar{h}$. But then (33) and (34) yield at once a formula for $u$ in terms of $g, h$. This is again the method of descent.
+
+To carry out the details, let us fix $x \in \R^n$, $t > 0$, and write $\bar{x} = (x_1,\ldots,x_n,0) \in \R^{n+1}$. Then (31), with $n+1$ replacing $n$, gives
+$$(35) \quad u(x,t) = \frac{1}{\gamma_{n+1}} \left[ \frac{\partial}{\partial t} \left(\frac{1}{t}\frac{\partial}{\partial t}\right)^{\frac{n-2}{2}} \left( t^{n-1} \int_{\partial \bar{B}(\bar{x},t)} \bar{g} \, dS \right) + \left(\frac{1}{t}\frac{\partial}{\partial t}\right)^{\frac{n-2}{2}} \left( t^{n-1} \int_{\partial \bar{B}(\bar{x},t)} \bar{h} \, dS \right) \right],$$
+$\bar{B}(\bar{x},t)$ denoting the ball in $\R^{n+1}$ with center $\bar{x}$ and radius $t$, and $dS$ $n$-dimensional surface measure on $\partial\bar{B}(\bar{x},t)$. Now
+$$(36) \quad \int_{\partial\bar{B}(x,t)} \bar{g} \, dS = \frac{1}{(n+1)\alpha(n+1)t^n} \int_{\partial \bar B(x,t)} \bar{g} \, dS.$$
+
+Note that $\partial\bar{B}(x,t) \cap \{y_{n+1} \geq 0\}$ is the graph of the function $\gamma(y) := (t^2 - |y-x|^2)^{1/2}$ for $y \in B(x,t) \subset \R^n$. Likewise $\partial\bar{B}(x,t) \cap \{y_{n+1} \leq 0\}$ is the graph of $-\gamma$. Thus (36) implies
+$$(37) \quad \int_{\partial\bar{B}(x,t)} \bar{g} \, dS = \frac{2}{(n+1)\alpha(n+1)t^n} \int_{B(x,t)} g(y)(1+|D\gamma(y)|^2)^{1/2} dy,$$
+the factor ``2'' entering because $\partial\bar{B}(x,t)$ comprises two hemispheres. Note that $(1+|D\gamma(y)|^2)^{1/2} = t(t^2-|y-x|^2)^{-1/2}$. Our substituting this into (37) yields
+$$\int_{\partial\bar{B}(x,t)} \bar{g} \, dS = \frac{2}{(n+1)\alpha(n+1)t^{n-1}} \int_{B(x,t)} \frac{g(y)}{(t^2-|y-x|^2)^{1/2}} dy$$
+$$= \frac{2t\alpha(n)}{(n+1)\alpha(n+1)} \int_{B(x,t)} \frac{g(y)}{(t^2-|y-x|^2)^{1/2}} dy.$$
+
+We insert this formula and the similar one with $h$ in place of $g$ into (37), and find
+$$u(x,t) =$$
+$$\frac{1}{\gamma_{n+1}(n+1)\alpha(n+1)} \left[ \frac{\partial}{\partial t} \left(\frac{1}{t}\frac{\partial}{\partial t}\right)^{\frac{n-2}{2}} \left( t^n \int_{B(x,t)} \frac{g(y)}{(t^2-|y-x|^2)^{1/2}} dy \right) \right.$$
+$$\left. + \left(\frac{1}{t}\frac{\partial}{\partial t}\right)^{\frac{n-2}{2}} \left( t^n \int_{B(x,t)} \frac{h(y)}{(t^2-|y-x|^2)^{1/2}} dy \right) \right].$$
+
+Since $\gamma_{n+1} = 1 \cdot 3 \cdot 5 \cdots (n-1)$ and $\alpha(n) = \frac{\pi^{n/2}}{\Gamma(\frac{n}{2}+1)}$, we may compute
+$$\gamma_n = 2 \cdot 4 \cdots (n-2) \cdot n.$$
+
+Hence the resulting representation formula for even $n$ is:
+$$(38) \quad u(x,t) = \frac{1}{\gamma_n}\left[\left(\frac{\partial}{\partial t}\right)\left(\frac{1}{t}\frac{\partial}{\partial t}\right)^{\frac{n-2}{2}}\left(t^n\int_{B(x,t)}\frac{g(y)}{(t^2-|y-x|^2)^{1/2}}\,dy\right) + \left(\frac{1}{t}\frac{\partial}{\partial t}\right)^{\frac{n-2}{2}}\left(t^n\int_{B(x,t)}\frac{h(y)}{(t^2-|y-x|^2)^{1/2}}\,dy\right)\right],$$
+where $n$ is even and $\gamma_n = 2 \cdot 4 \cdots (n-2) \cdot n$,
+
+for $x \in \R^n, t > 0$.
+
+Since $\gamma_2 = 2$, this agrees with Poisson's formula (27) if $n = 2$.
+
+\begin{theorem}[Solution of wave equation in even dimensions]
+\label{thm:wave-equation-even-dimensions-solution}
+\dcref{ch2:2.4-thm-3}
+\group{Wave Equation}
+\uses{thm:wave-equation-odd-dimensions-solution}
+Assume $n$ is an even integer, $n \geq 2$, and suppose also $g \in C^{m+1}(\R^n), h \in C^m(\R^n)$, for $m = \frac{n+2}{2}$. Define $u$ by (38). Then
+
+(i) $u \in C^2(\R^n \times [0,\infty))$,
+
+(ii) $u_{tt} - \Delta u = 0$ in $\R^n \times (0,\infty)$,
+
+and
+
+(iii) $\displaystyle\lim_{\substack{(x,t) \to (x^0,0) \\ x \in \R^n, t > 0}} u(x,t) = g(x^0), \quad \lim_{\substack{(x,t) \to (x^0,0) \\ x \in \R^n, t > 0}} u_t(x,t) = h(x^0)$
+
+for each point $x^0 \in \R^n$.
+\end{theorem}
+
+This follows from \cref{thm:wave-equation-odd-dimensions-solution}.
+
+\begin{remark}[Huygens' principle]
+\label{rem:huygens-principle}
+\dcref{ch2:2.4.1-rem-3}
+\group{Wave Equation}
+\uses{thm:wave-equation-odd-dimensions-solution,thm:wave-equation-even-dimensions-solution}
+(i) Observe, in contrast to formula (31), that to compute $u(x,t)$ for even $n$ we need information on $u = g, u_t = h$ on all of $B(x,t)$, and not just on $\partial B(x,t)$.
+
+(ii) Comparing (31) and (38) we observe that if $n$ is odd and $n \geq 3$, the data $g$ and $h$ at a given point $x \in \R^n$ affect the solution $u$ only on the \textit{boundary} $\{(y,t) \mid t > 0, |x-y| = t\}$ of the cone $C = \{(y,t) \mid t > 0, |x-y| \leq t\}$. On the other hand, if $n$ is even the data $g$ and $h$ affect $u$ within all of $C$. In other words, a \textit{disturbance} originating at $x$ propagates along a sharp wavefront in odd dimensions, but in even dimensions continues to have effects even after the leading edge of the wavefront passes. This is Huygens' principle. $\square$
+\end{remark}
+
+\subsection{Nonhomogeneous Problem}
+\label{sec:wave-nonhomogeneous-problem}
+
+We next investigate the initial-value problem for the nonhomogeneous wave equation
+$$(39) \quad \begin{cases} u_{tt} - \Delta u = f & \text{in } \R^n\times(0,\infty) \\ u=0,\ u_t=0 & \text{on } \R^n\times\{t=0\}. \end{cases}$$
+
+Motivated by Duhamel's principle (introduced earlier in \S2.3.1), we define $u = u(x,t;s)$ to be the solution of
+$$(40_s) \quad \begin{cases} u_{tt}(\cdot;s) - \Delta u(\cdot;s) = 0 & \text{in } \R^n\times(s,\infty) \\ u(\cdot;s) = 0,\ u_t(\cdot;s) = f(\cdot,s) & \text{on } \R^n\times\{t=s\}. \end{cases}$$
+
+Now set
+$$(41) \quad u(x,t) := \int_0^t u(x,t;s)\,ds \quad (x \in \R^n, t \geq 0).$$
+
+Duhamel's principle asserts this is a solution of
+$$(42) \quad \begin{cases} u_{tt} - \Delta u = f & \text{in } \R^n\times(0,\infty) \\ u=0,\ u_t=0 & \text{on } \R^n\times\{t=0\}. \end{cases}$$
+
+\begin{theorem}[Solution of nonhomogeneous wave equation]
+\label{thm:wave-equation-nonhomogeneous-duhamel}
+\dcref{ch2:2.4-thm-4}
+\group{Wave Equation}
+\uses{thm:wave-equation-odd-dimensions-solution,thm:wave-equation-even-dimensions-solution}
+Assume $n \geq 2$ and $f \in C^{[n/2]+1}(\R^n\times[0,\infty))$. Define $u$ by (41). Then
+
+(i) $u \in C^2(\R^n \times [0,\infty))$,
+
+(ii) $u_{tt}(x,t) - \Delta u(x,t) = f(x,t)$ $(x \in \R^n, t>0)$,
+
+and
+
+(iii) $\lim\limits_{\substack{(x,t)\to(x^0,0) \\ x\in\R^n,\,t>0}} u(x,t) = 0$, $\lim\limits_{\substack{(x,t)\to(x^0,0) \\ x\in\R^n,\,t>0}} u_t(x,t) = 0$ for each point $x^0 \in \R^n$.
+\end{theorem}
+
+\begin{proof}
+1. If $n$ is odd, $[\frac{n}{2}]+1 = \frac{n+1}{2}$. According to \cref{thm:wave-equation-odd-dimensions-solution} $u(\cdot,\cdot;s) \in C^2(\R^n\times[0,\infty))$ for each $s \geq 0$, and so $u \in C^2(\R^n\times[0,\infty))$. If $n$ is even, $[\frac{n}{2}]+1 = \frac{n+2}{2}$. Hence $u \in C^2(\R^n\times[0,\infty))$, according to \cref{thm:wave-equation-even-dimensions-solution}.
+
+2. We then compute:
+$$u_t(x,t) = u(x,t;t) + \int_0^t u_t(x,t;s)\,ds = \int_0^t u_t(x,t;s)\,ds,$$
+$$u_{tt}(x,t) = u_t(x,t;t) + \int_0^t u_{tt}(x,t;s)\,ds$$
+$$= f(x,t) + \int_0^t u_{tt}(x,t;s)\,ds.$$
+
+Furthermore
+$$\Delta u(x,t) = \int_0^t \Delta u(x, t; s) \, ds = \int_0^t u_{tt}(x, t; s) \, ds.$$
+
+Thus
+$$u_{tt}(x,t) - \Delta u(x,t) = f(x,t) \quad (x \in \R^n, t > 0),$$
+and clearly $u(x,0) = u_t(x,0) = 0$ for $x \in \R^n$.
+\end{proof}
+
+\begin{remark}[General solution of the nonhomogeneous wave equation]
+\label{rem:wave-equation-general-nonhomogeneous-solution}
+\dcref{ch2:2.4.2-rem-1}
+\group{Wave Equation}
+\uses{thm:wave-equation-nonhomogeneous-duhamel}
+The solution of the general nonhomogeneous problem is consequently the sum of the solution of (11) (given by formulas (8), (31) or (38)) and the solution of (39) (given by (41)). $\square$
+\end{remark}
+
+\begin{example}[Nonhomogeneous wave equation for $n=1,3$]
+\label{ex:wave-equation-nonhomogeneous-n1-n3}
+\dcref{ch2:2.4.2-ex-1}
+\group{Wave Equation}
+\uses{thm:wave-equation-nonhomogeneous-duhamel,thm:wave-equation-dalembert-solution}
+(i) Let us work out explicitly how to solve (39) for $n = 1$. In this case d'Alembert's formula (8) gives
+$$u(x, t; s) = \frac{1}{2} \int_{x-t+s}^{x+t-s} f(y, s) \, dy, \quad u(x,t) = \frac{1}{2} \int_0^t \int_{x-t+s}^{x+t-s} f(y, s) \, dy\,ds.$$
+
+That is,
+$$(43) \quad u(x,t) = \frac{1}{2} \int_0^t \int_{x-s}^{x+s} f(y, t-s) \, dy\,ds \quad (x \in \R, t \geq 0).$$
+
+(ii) For $n = 3$, Kirchhoff's formula (22) implies
+$$u(x, t; s) = (t-s) \int_{\partial B(x,t-s)} f(y, s) \, dS;$$
+so that
+$$u(x,t) = \int_0^t (t-s) \left(\int_{\partial B(x,t-s)} f(y, s) \, dS\right) ds$$
+$$= \frac{1}{4\pi} \int_0^t \int_{\partial B(x,t-s)} \frac{f(y, s)}{t-s} \, dS\,ds$$
+$$= \frac{1}{4\pi} \int_0^t \int_{\partial B(x,r)} \frac{f(y, t-r)}{r} \, dS\,dr.$$
+
+Therefore
+$$(44) \quad u(x,t) = \frac{1}{4\pi} \int_{B(x,t)} \frac{f(y, t - |y - x|)}{|y - x|} \, dy \quad (x \in \R^3, t \geq 0)$$
+solves (39) for $n = 3$. The integrand on the right is called a \textit{retarded potential}. $\square$
+\end{example}
+
+\subsection{Energy Methods}
+\label{sec:wave-energy-methods}
+
+The explicit formulas (31) and (38) demonstrate the necessity of making more and more smoothness assumptions upon the data $g$ and $h$ to ensure the existence of a $C^2$ solution of the wave equation for larger and larger $n$. This suggests that perhaps some other way of measuring the size and smoothness of functions may be more appropriate. Indeed we will see in this section that the wave equation is nicely behaved (for all $n$) with respect to certain integral ``energy'' norms.
+
+\subsubsection{Uniqueness}
+\label{sec:wave-energy-uniqueness}
+
+Let $U \subset \R^n$ be a bounded, open set with a smooth boundary $\partial U$, and as usual set $U_T = U \times (0,T]$, $\Gamma_T = \bar{U}_T - U_T$, where $T > 0$.
+
+We are interested in the initial/boundary-value problem
+$$(45) \quad \begin{cases} u_{tt} - \Delta u = f & \text{in } U_T \\ u = g & \text{on } \Gamma_T \\ u_t = h & \text{on } U \times \{t=0\}. \end{cases}$$
+
+\begin{theorem}[Uniqueness for wave equation]
+\label{thm:uniqueness-wave-equation-energy-method}
+\dcref{ch2:2.4-thm-5}
+\group{Energy Methods}
+There exists at most one function $u \in C^2(\bar{U}_T)$ solving (45).
+\end{theorem}
+
+\begin{proof}
+If $\tilde{u}$ is another such solution, then $w := u - \tilde{u}$ solves
+$$\begin{cases} w_{tt} - \Delta w = 0 & \text{in } U_T \\ w = 0 & \text{on } \Gamma_T \\ w_t = 0 & \text{on } U \times \{t=0\}. \end{cases}$$
+
+Define the ``energy''
+$$e(t) := \frac12 \int_U w_t^2(x,t) + |Dw(x,t)|^2\,dx \quad (0 \leq t \leq T).$$
+
+We compute
+$$\dot{e}(t) = \int_U w_t w_{tt} + Dw \cdot Dw_t\,dx \quad \left(\dot{} = \frac{d}{dt}\right)$$
+$$= \int_U w_t(w_{tt} - \Delta w)\,dx = 0.$$
+
+There is no boundary term since $w = 0$, and hence $w_t = 0$, on $\partial U \times [0,T]$. Thus for all $0 \leq t \leq T$, $e(t) = e(0) = 0$, and so $w_t, Dw \equiv 0$ within $U_T$. Since $w \equiv 0$ on $U \times \{t=0\}$, we conclude $w = u - \tilde{u} \equiv 0$ in $U_T$.
+\end{proof}
+
+\subsubsection{Domain of dependence}
+\label{sec:wave-domain-of-dependence}
+
+As another illustration of energy methods, let us examine again the domain of dependence of solutions to the wave equation in all of space. For this, suppose $u \in C^2$ solves
+$$u_{tt} - \Delta u = 0 \quad \text{in } \R^n \times (0,\infty).$$
+
+Fix $x_0 \in \R^n$, $t_0 > 0$ and consider the cone
+$$C = \{(x,t) \mid 0 \leq t \leq t_0,\ |x-x_0| \leq t_0-t\}.$$
+
+\begin{figure}[h]\centering
+% [FIGURE: A cone with apex labeled $(x_0,t_0)$ opening downward, with a shaded elliptical cross-section labeled $B(x_0,t_0-t)$ partway down and a shaded elliptical base at the bottom. Caption reads "Cone of dependence"]
+\end{figure}
+
+\begin{theorem}[Finite propagation speed]
+\label{thm:wave-equation-finite-propagation-speed}
+\dcref{ch2:2.4-thm-6}
+\group{Energy Methods}
+If $u \equiv u_t \equiv 0$ on $B(x_0,t_0)$, then $u \equiv 0$ within the cone $C$.
+\end{theorem}
+
+In particular, we see that any ``disturbance'' originating outside $B(x_0,t_0)$ has no effect on the solution within $C$, and consequently has finite propagation speed. We already know this from the representation formulas (31) and (38), at least assuming $g = u$ and $h = u_t$ on $\R^n \times \{t=0\}$ are sufficiently smooth. The point is that energy methods provide a \textit{much} simpler proof.
+
+\begin{proof}
+Define
+$$e(t) := \frac12 \int_{B(x_0,t_0-t)} u_t^2(x,t) + |Du(x,t)|^2\,dx \quad (0 \leq t \leq t_0).$$
+
+Then
+$$\dot{e}(t) = \int_{B(x_0,t_0-t)} u_t u_{tt} + Du \cdot Du_t \, dx - \frac{1}{2}\int_{\partial B(x_0,t_0-t)} u_t^2 + |Du|^2 \, dS$$
+$$= \int_{B(x_0,t_0-t)} u_t(u_{tt} - \Delta u) \, dx$$
+$$(46) \quad + \int_{\partial B(x_0,t_0-t)} \frac{\partial u}{\partial \nu} u_t \, dS - \frac{1}{2}\int_{\partial B(x_0,t_0-t)} u_t^2 + |Du|^2 \, dS$$
+$$= \int_{\partial B(x_0,t_0-t)} \frac{\partial u}{\partial \nu} u_t - \frac{1}{2}u_t^2 - \frac{1}{2}|Du|^2 \, dS.$$
+
+Now
+$$(47) \quad \left|\frac{\partial u}{\partial \nu} u_t\right| \leq |u_t||Du| \leq \frac{1}{2}u_t^2 + \frac{1}{2}|Du|^2,$$
+by the Cauchy--Schwarz and Cauchy inequalities (\S B.2). Inserting (47) into (46), we find $\dot{e}(t) \leq 0$; and so $e(t) \leq e(0) = 0$ for all $0 \leq t \leq t_0$. Thus $u_t, Du \equiv 0$, and consequently $u \equiv 0$ within the cone $C$.
+\end{proof}
+
+A generalization of this proof to more complicated geometry appears later, in \S7.2.4.
+
+\section{Problems}
+\label{sec:chapter2-problems}
+
+In the following exercises, all given functions are assumed smooth, unless otherwise stated.
+
+%ORIGINAL-NUMBER: 1
+\begin{exercise}
+Write down an explicit formula for a function $u$ solving the initial-value problem
+$$\begin{cases}
+u_t + b \cdot Du + cu = 0 & \text{in } \R^n \times (0,\infty) \\
+u = g & \text{on } \R^n \times \{t = 0\}.
+\end{cases}$$
+Here $c \in \R$ and $b \in \R^n$ are constants.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 2
+\begin{exercise}
+Prove that Laplace's equation $\Delta u = 0$ is rotation invariant; that is, if $O$ is an orthogonal $n \times n$ matrix and we define
+$$v(x) := u(Ox) \quad (x \in \R^n),$$
+then $\Delta v = 0$.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 3
+\begin{exercise}
+Modify the proof of the mean value formulas to show for $n \geq 3$ that
+$$u(0) = \int_{\partial B(0,r)} g \, dS + \frac{1}{n(n-2)\alpha(n)} \int_{B(0,r)} \left(\frac{1}{|x|^{n-2}} - \frac{1}{r^{n-2}}\right) f \, dx,$$
+provided
+$$\begin{cases}
+-\Delta u = f & \text{in } B^0(0,r) \\
+u = g & \text{on } \partial B(0,r).
+\end{cases}$$
+\end{exercise}
+
+%ORIGINAL-NUMBER: 4
+\begin{exercise}
+We say $v \in C^2(\bar{U})$ is \textit{subharmonic} if
+$$-\Delta v \le 0 \quad \text{in } U.$$
+
+(a) Prove for subharmonic $v$ that
+$$v(x) \le \int_{B(x,r)} v \, dy \quad \text{for all } B(x,r) \subset U.$$
+
+(b) Prove that therefore $\max_U v = \max_{\partial U} v$.
+
+(c) Let $\phi : \R \to \R$ be smooth and convex. Assume $u$ is harmonic and $v := \phi(u)$. Prove $v$ is subharmonic.
+
+(d) Prove $v := |Du|^2$ is subharmonic, whenever $u$ is harmonic.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 5
+\begin{exercise}
+Prove that there exists a constant $C$, depending only on $n$, such that
+$$\max_{B(0,1)} |u| \le C\left(\max_{\partial B(0,1)} |g| + \max_{B(0,1)} |f|\right)$$
+whenever $u$ is a smooth solution of
+$$\begin{cases}
+-\Delta u = f & \text{in } B^0(0,1) \\
+u = g & \text{on } \partial B(0,1).
+\end{cases}$$
+\end{exercise}
+
+%ORIGINAL-NUMBER: 6
+\begin{exercise}
+Use Poisson's formula for the ball to prove
+$$r^{n-2} \frac{r-|x|}{(r+|x|)^{n-1}} u(0) \le u(x) \le r^{n-2} \frac{r+|x|}{(r-|x|)^{n-1}} u(0)$$
+whenever $u$ is positive and harmonic in $B^0(0,r)$. This is an explicit form of Harnack's inequality.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 7
+\begin{exercise}
+Prove \cref{thm:poissons-formula-ball} in \cref{sec:laplace-greens-function}. (Hint: Since $u \equiv 1$ solves (44) for $g \equiv 1$, the theory automatically implies
+$$\int_{\partial B(0,1)} K(x,y) \, dS(y) = 1$$
+for each $x \in B^0(0,1)$.)
+\end{exercise}
+
+%ORIGINAL-NUMBER: 8
+\begin{exercise}
+Let $u$ be the solution of
+$$\begin{cases}
+\Delta u = 0 & \text{in } \R^n_+ \\
+u = g & \text{on } \partial \R^n_+
+\end{cases}$$
+given by Poisson's formula for the half-space. Assume $g$ is bounded and $g(x) = |x|$ for $x \in \partial\R^n_+$, $|x| \le 1$. Show $Du$ is \textit{not} bounded near $x = 0$. (Hint: Estimate $\frac{u(\lambda e_n)-u(0)}{\lambda}$.)
+\end{exercise}
+
+%ORIGINAL-NUMBER: 9
+\begin{exercise}
+Let $U^+$ denote the open half-ball $\{x \in \R^n \mid |x| < 1, x_n > 0\}$. Assume $u \in C(\overline{U^+})$ is harmonic in $U^+$, with $u = 0$ on $\partial U^+ \cap \{x_n = 0\}$. Set
+$$v(x) := \begin{cases} u(x) & \text{if } x_n \ge 0 \\ -u(x_1, \ldots, x_{n-1}, -x_n) & \text{if } x_n < 0 \end{cases}$$
+for $x \in U = B^0(0, 1)$. Prove $v$ is harmonic in $U$.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 10
+\begin{exercise}
+Suppose $u$ is smooth and solves $u_t - \Delta u = 0$ in $\R^n \times (0, \infty)$.
+
+\quad (i) Show $u_\lambda(x,t) := u(\lambda x, \lambda^2 t)$ also solves the heat equation for each $\lambda \in \R$.
+
+\quad (ii) Use (i) to show $w(x,t) := x \cdot Du(x,t) + 2tu_t(x,t)$ solves the heat equation as well.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 11
+\begin{exercise}
+Assume $n = 1$ and $u(x,t) = v\left(\frac{x^2}{t}\right)$.
+
+\quad (a) Show
+$$u_t = u_{xx}$$
+if and only if
+$$(*) \quad 4zv''(z) + (2+z)v'(z) = 0 \quad (z > 0).$$
+
+\quad (b) Show that the general solution of $(*)$ is
+$$v(z) = c\int_0^z e^{-s/4} s^{-1/2} \, ds + d.$$
+
+\quad (c) Differentiate $v\left(\frac{x^2}{t}\right)$ with respect to $x$ and select the constant $c$ properly, so as to obtain the fundamental solution $\Phi$ for $n = 1$.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 12
+\begin{exercise}
+Write down an explicit formula for a solution of
+$$\begin{cases} u_t - \Delta u + cu = f & \text{in } \R^n \times (0, \infty) \\ u = g & \text{on } \R^n \times \{t = 0\}, \end{cases}$$
+where $c \in \R$.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 13
+\begin{exercise}
+Given $g : [0, \infty) \to \R$, with $g(0) = 0$, derive the formula
+$$u(x,t) = \frac{x}{\sqrt{4\pi}} \int_0^t \frac{1}{(t-s)^{3/2}} e^{-\frac{x^2}{4(t-s)}} g(s) \, ds$$
+for a solution of the initial/boundary-value problem
+$$\begin{cases}
+u_t - u_{xx} = 0 & \text{in } \R_+ \times (0, \infty) \\
+u = 0 & \text{on } \R_+ \times \{t = 0\} \\
+u = g & \text{on } \{x = 0\} \times [0, \infty).
+\end{cases}$$
+(Hint: Let $v(x,t) := u(x,t) - g(t)$ and extend $v$ to $\{x < 0\}$ by odd reflection.)
+\end{exercise}
+
+%ORIGINAL-NUMBER: 14
+\begin{exercise}
+We say $v \in C_1^2(U_T)$ is a \textit{subsolution} of the heat equation if
+$$v_t - \Delta v \le 0 \quad \text{in } U_T.$$
+
+(a) Prove for a subsolution $v$ that
+$$v(x,t) \le \frac{1}{4r^n} \iint_{E(x,t,r)} v(y,s) \frac{|x-y|^2}{(t-s)^2} \, dy \, ds$$
+for all $E(x,t,r) \subset U_T$.
+
+(b) Prove that therefore $\max_{U_T} v = \max_{\Gamma_T} v$.
+
+(c) Let $\phi : \R \to \R$ be smooth and convex. Assume $u$ solves the heat equation and $v := \phi(u)$. Prove $v$ is a subsolution.
+
+(d) Prove $v := |Du|^2 + u_t^2$ is a subsolution, whenever $u$ solves the heat equation.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 15
+\begin{exercise}
+(a) Show the general solution of the PDE $u_{xy} = 0$ is
+$$u(x,y) = F(x) + G(y)$$
+for arbitrary functions $F, G$.
+
+(b) Using the change of variables $\xi = x + t$, $\eta = x - t$, show $u_{tt} - u_{xx} = 0$ if and only if $u_{\xi\eta} = 0$.
+
+(c) Use (a) and (b) to rederive d'Alembert's formula.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 16
+\begin{exercise}
+Assume $\mathbf{E} = (E^1, E^2, E^3)$ and $\mathbf{B} = (B^1, B^2, B^3)$ solve Maxwell's equations (\cref{ex:maxwells-equations}). Show
+$$u_{tt} - \Delta u = 0$$
+where $u = E^i$ or $B^i$ ($i = 1, 2, 3$).
+\end{exercise}
+
+%ORIGINAL-NUMBER: 17
+\begin{exercise}
+(Equipartition of energy). Let $u \in C^2(\R \times [0,\infty))$ solve the initial-value problem for the wave equation in one dimension:
+$$\begin{cases}
+u_{tt} - u_{xx} = 0 & \text{in } \R \times (0, \infty) \\
+u = g, \, u_t = h & \text{on } \R \times \{t = 0\}.
+\end{cases}$$
+Suppose $g, h$ have compact support. The \textit{kinetic energy} is $k(t) := \frac{1}{2}\int_{-\infty}^{\infty} u_t^2(x,t) \, dx$ and the \textit{potential energy} is $p(t) := \frac{1}{2}\int_{-\infty}^{\infty} u_x^2(x,t) \, dx$. Prove
+
+(i) $k(t) + p(t)$ is constant in $t$,
+
+(ii) $k(t) = p(t)$ for all large enough times $t$.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 18
+\begin{exercise}
+Let $u$ solve
+$$
+\begin{cases}
+u_{tt} - \Delta u = 0 & \text{in } \R^3 \times (0,\infty) \\
+u = g, u_t = h & \text{on } \R^3 \times \{t = 0\},
+\end{cases}
+$$
+where $g, h$ are smooth and have compact support. Show there exists a constant $C$ such that
+$$
+|u(x,t)| \leq C/t \quad (x \in \R^3, t > 0).
+$$
+\end{exercise}
+
+\section{References}
+\label{sec:chapter2-references}
+
+\textbf{Section 2.2} \quad A good source for more on Laplace's and Poisson's equations is Gilbarg--Trudinger \cite{GilbargTrudinger1983}. The proof of analyticity is from Mikhailov \cite{Mikhailov1978}. J. Cooper helped me with Green's functions.
+
+\textbf{Section 2.3} \quad See John \cite{John1982} or Friedman \cite{Friedman1964} for further information concerning the heat equation. \cref{thm:mean-value-property-heat-equation} is due to N. Watson \cite{Watson1973}, as is the proof of \cref{thm:strong-maximum-principle-heat-equation}. \cref{thm:maximum-principle-heat-cauchy-problem} is taken from John \cite{John1982}, and \cref{thm:heat-equation-smoothness} follows Mikhailov \cite{Mikhailov1978}. \cref{thm:backwards-uniqueness-heat-equation} is from Payne \cite{Payne1975}.
+
+\textbf{Section 2.4} \quad See Antman \cite{Antman1980} for a careful derivation of the one-dimensional wave equation as a model for a vibrating string. The solution of the wave equation presented here follows Folland \cite{Folland1976}, Strauss \cite{Strauss1992}.
+
+\textbf{Section 2.5} \quad J. Goldstein suggested Problem 17.

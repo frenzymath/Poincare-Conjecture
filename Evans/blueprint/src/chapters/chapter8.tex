@@ -1,0 +1,2799 @@
+% Source: Evans, "Partial Differential Equations" (2nd ed., AMS Graduate Studies in Mathematics vol. 19, 2010),
+% Chapter 8 "The Calculus of Variations", PDF pages 434-493 of MathBooks/Evans Partial Differential Equations(1).pdf.
+% Transcribed page-by-page by vision subagents, then merged and restructured into
+% leanblueprint conventions (semantic \label, bracketed titles, \uses dependency edges) below.
+%
+% NOTE ON GAPS: as in chapter6.tex, a number of source pages were returned by the vision
+% transcription subagent as refusal placeholders rather than actual page content (PDF pages
+% 453, 454, 461, 462, 467, 473, 474; equivalently book pages 450, 451, 458, 459, 464, 470, 471,
+% since PDF page numbers run exactly three higher than the book's own printed page numbers
+% throughout this chapter). Every such gap was closed by directly re-reading the corresponding
+% pages of the source PDF with a vision-capable Read call during this restructuring pass, so no
+% content below is invented or reconstructed purely from outside knowledge of the book -- it is
+% a faithful transcription of the actual page images.
+
+
+\section{Introduction}
+\label{sec:calculus-of-variations-introduction}
+
+\subsection{Basic Ideas}
+\label{sec:basic-ideas-calculus-of-variations}
+
+We introduce some new ideas by supposing first of all that we wish to solve some partial differential equation, which for simplicity we write in the abstract form
+\[
+A[u] = 0.
+\tag{1}
+\]
+In this formula $A[\cdot]$ denotes a given, possibly nonlinear partial differential operator and $u$ is the unknown. There is, of course, no general theory for solving all such PDE.
+
+The \textit{calculus of variations} identifies an important class of such nonlinear problems that can be solved using relatively simple techniques from nonlinear functional analysis. This is the class of \textit{variational problems}, that is, PDE of the form (1), where the nonlinear operator $A[\cdot]$ is the ``derivative'' of an appropriate ``energy'' functional $I[\cdot]$. Symbolically we write
+\[
+A[\cdot] = I'[\cdot].
+\tag{2}
+\]
+Then problem (1) reads
+\[
+I'[u] = 0.
+\tag{3}
+\]
+The advantage of this new formulation is that we now can recognize solutions of (1) as being critical points of $I[\cdot]$. These in certain circumstances may be relatively easy to find; if, for instance, the functional $I[\cdot]$ has a minimum at $u$, then presumably (3) is valid and thus $u$ is a solution of the original PDE (1). \textit{The point is that whereas it is usually extremely difficult to solve (1) directly, it may be much easier to discover minimum (or maximum, or other critical) points of the functional} $I[\cdot]$.
+
+In addition of course, many of the laws of physics and other scientific disciplines arise directly as variational principles.
+
+\subsection{First Variation, Euler--Lagrange Equation}
+\label{sec:first-variation-euler-lagrange}
+
+Suppose now $U \subset \R^n$ is a bounded, open set with smooth boundary $\partial U$, and we are given a smooth function
+\[
+L : \R^n \times \R \times \overline{U} \to \R.
+\]
+We call $L$ the \textit{Lagrangian}.
+
+\noindent\textbf{Notation.} We will write
+\[
+L = L(p, z, x) = L(p_1, \ldots, p_n, z, x_1, \ldots, x_n)
+\]
+for $p \in \R^n$, $z \in \R$, and $x \in U$. Thus ``$p$'' is the name of the variable for which we substitute $Dw(x)$ below, and ``$z$'' is the variable for which we substitute $w(x)$. We also set
+\[
+\begin{cases}
+D_p L = (L_{p_1}, \ldots, L_{p_n}) \\
+D_z L = L_z \\
+D_x L = (L_{x_1}, \ldots, L_{x_n}).
+\end{cases}
+\]
+This notation will clarify the theory to follow.
+
+We now make the vague ideas in \cref{sec:basic-ideas-calculus-of-variations} more precise by now assuming $I[\cdot]$ to have the explicit form
+\[
+I[w] = \int_U L(Dw(x), w(x), x)\, dx,
+\tag{4}
+\]
+for smooth functions $w : U \to \R$ satisfying, say, the boundary condition
+\[
+w = g \text{ on } \partial U.
+\tag{5}
+\]
+
+Let us now additionally suppose some particular smooth function $u$, satisfying the requisite boundary condition $u = g$ on $\partial U$, happens to be a minimizer of $I[\cdot]$ among all functions $w$ satisfying (5). We will demonstrate that $u$ is then automatically a solution of a certain nonlinear partial differential equation.
+
+To confirm this, first choose any smooth function $v \in C_c^\infty(U)$ and consider the real-valued function
+\[
+i(\tau) := I[u + \tau v] \quad (\tau \in \R).
+\tag{6}
+\]
+Since $u$ is a minimizer of $I[\cdot]$ and $u + \tau v = u = g$ on $\partial U$, we observe that $i(\cdot)$ has a minimum at $\tau = 0$. Therefore
+\[
+i'(0) = 0.
+\tag{7}
+\]
+We explicitly compute this derivative (called the \textit{first variation}) by writing out
+\[
+i(\tau) = \int_U L(Du + \tau Dv, u + \tau v, x)\, dx.
+\tag{8}
+\]
+Thus
+\[
+i'(\tau) = \int_U \sum_{i=1}^n L_{p_i}(Du + \tau Dv, u + \tau v, x) v_{x_i} + L_z(Du + \tau Dv, u + \tau v, x) v \, dx.
+\]
+Let $\tau = 0$, to deduce from (7) that
+\[
+0 = i'(0) = \int_U \sum_{i=1}^n L_{p_i}(Du, u, x) v_{x_i} + L_z(Du, u, x) v \, dx.
+\]
+Finally, since $v$ has compact support, we can integrate by parts and obtain
+\[
+0 = \int_U \left[ -\sum_{i=1}^n (L_{p_i}(Du, u, x))_{x_i} + L_z(Du, u, x) \right] v \, dx.
+\]
+As this equality holds for all test functions $v$, we conclude $u$ solves the nonlinear PDE
+\[
+-\sum_{i=1}^{n}(L_{p_i}(Du, u, x))_{x_i} + L_z(Du, u, x) = 0 \quad \text{in } U.
+\tag{9}
+\]
+
+\begin{theorem}[Euler--Lagrange equation for a minimizer]
+\label{thm:euler-lagrange-equation-pde-minimizer}
+\dcref{ch8:8.1.2}
+\group{Euler--Lagrange Equations}
+Any smooth minimizer $u$ of $I[\cdot]$, subject to the boundary condition $u = g$ on $\partial U$, is a solution of the Euler--Lagrange partial differential equation
+\[
+-\sum_{i=1}^{n}(L_{p_i}(Du, u, x))_{x_i} + L_z(Du, u, x) = 0 \quad \text{in } U.
+\]
+This is a quasilinear, second-order PDE in divergence form. Thus--conversely--we can try to find a solution of this equation by searching for minimizers of (4).
+\end{theorem}
+\begin{proof}
+This is precisely the derivation (6)--(9) above.
+\end{proof}
+
+\begin{example}[Dirichlet's principle]
+\label{ex:dirichlets-principle-calculus-of-variations}
+\dcref{ch8:8.1-ex-1}
+\group{Euler--Lagrange Equations}
+\uses{thm:euler-lagrange-equation-pde-minimizer}
+Take
+\[
+L(p, z, x) = \frac{1}{2}|p|^2.
+\]
+Then $L_{p_i} = p_i$ ($i = 1, \ldots, n$), $L_z = 0$; and so the Euler--Lagrange equation associated with the functional
+\[
+I[w] := \frac{1}{2}\int_U |Dw|^2 \, dx
+\]
+is
+\[
+\Delta u = 0 \quad \text{in } U.
+\]
+This fact is \textit{Dirichlet's principle}, previously introduced in \S2.2.5 (see \cref{thm:dirichlets-principle}).
+\end{example}
+
+\begin{example}[Generalized Dirichlet's principle]
+\label{ex:generalized-dirichlets-principle}
+\dcref{ch8:8.1-ex-2}
+\group{Euler--Lagrange Equations}
+\uses{thm:euler-lagrange-equation-pde-minimizer}
+Write
+\[
+L(p, z, x) = \frac{1}{2}\sum_{i,j=1}^{n} a^{ij}(x) p_i p_j - zf(x),
+\]
+where $a^{ij} = a^{ji}$ ($i, j = 1, \ldots, n$). Then $L_{p_i} = \sum_{j=1}^{n} a^{ij}(x) p_j$ ($i = 1, \ldots, n$), $L_z = -f(x)$. Hence the Euler--Lagrange equation associated with the functional
+\[
+I[w] := \int_U \left\{\frac{1}{2}\sum_{i,j=1}^{n} a^{ij} w_{x_i} w_{x_j} - wf\right\} dx
+\]
+is the divergence structure linear equation
+\[
+-\sum_{i,j=1}^{n}(a^{ij} u_{x_j})_{x_i} = f \quad \text{in } U.
+\]
+We will see later (in \cref{sec:basic-ideas-calculus-of-variations,sec:existence-of-minimizers}) that the uniform ellipticity condition on the $a^{ij}$ $(i,j = 1, \ldots, n)$ is a natural further assumption, required to prove the existence of a minimizer. Consequently from the nonlinear viewpoint of the calculus of variations, the divergence structure form of a linear second-order elliptic PDE is completely natural. This observation provides some much belated motivation for the bilinear form techniques utilized in \cref{chap:second-order-elliptic-equations}.
+\end{example}
+
+\begin{example}[Nonlinear Poisson equation]
+\label{ex:nonlinear-poisson-equation-calculus-of-variations}
+\dcref{ch8:8.1-ex-3}
+\group{Euler--Lagrange Equations}
+\uses{thm:euler-lagrange-equation-pde-minimizer}
+Given a smooth function $f : \R \to \R$, define its antiderivative $F(z) = \int_0^z f(y)\, dy$. Then the Euler--Lagrange equation associated with the functional
+\[
+I[w] := \int_U \frac{1}{2}|Dw|^2 - F(w)\, dx
+\]
+is the nonlinear Poisson equation
+\[
+-\Delta u = f(u) \text{ in } U.
+\]
+\end{example}
+
+\begin{example}[Minimal surfaces]
+\label{ex:minimal-surfaces-calculus-of-variations}
+\dcref{ch8:8.1-ex-4}
+\group{Euler--Lagrange Equations}
+\uses{thm:euler-lagrange-equation-pde-minimizer}
+Let
+\[
+L(p, z, x) = (1 + |p|^2)^{1/2};
+\]
+so that
+\[
+I[w] = \int_U (1 + |Dw|^2)^{1/2} \, dx
+\]
+is the area of the graph of the function $w : U \to \R$. The associated Euler--Lagrange equation is
+\[
+\sum_{i=1}^{n} \left( \frac{u_{x_i}}{(1 + |Du|^2)^{1/2}} \right)_{x_i} = 0 \text{ in } U.
+\tag{10}
+\]
+This partial differential equation is the \textit{minimal surface equation}. The expression $\Div\left(\frac{Du}{(1+|Du|^2)^{1/2}}\right)$ on the left side of (10) is $n$ times the \textit{mean curvature} of the graph of $u$. Thus a \textit{minimal surface} has zero mean curvature.
+\end{example}
+
+\begin{figure}[h]\centering
+% [FIGURE: A three-dimensional diagram showing a minimal surface. The figure depicts a coordinate system with axes, a region labeled $U$ on the base plane, and above it a surface of revolution-like shape that is described as "A minimal surface". An arrow points to the surface with the label "Surface area of graph = I[u]".]
+\end{figure}
+
+\subsection{Second Variation}
+\label{sec:second-variation-calculus-of-variations}
+
+We continue in the spirit of the calculations from \cref{sec:first-variation-euler-lagrange} by computing now the \textit{second variation} of $I[\cdot]$ at the function $u$. This we find by observing that since $u$ gives a minimum for $I[\cdot]$, we must have
+\[
+i''(0) \geq 0,
+\]
+$i(\cdot)$ defined as above by (6). In view of (8) we can calculate
+\[
+i''(\tau) = \int_U \sum_{i,j=1}^n L_{p_i p_j}(Du + \tau Dv, u + \tau v, x) v_{x_i} v_{x_j}
++ 2 \sum_{i=1}^n L_{p_i z}(Du + \tau Dv, u + \tau v, x) v_{x_i} v
++ L_{zz}(Du + \tau Dv, u + \tau v, x) v^2 \, dx.
+\]
+Setting $\tau = 0$, we derive the inequality
+\[
+0 \leq i''(0) = \int_U \sum_{i,j=1}^n L_{p_i p_j}(Du, u, x) v_{x_i} v_{x_j}
++ 2 \sum_{i=1}^n L_{p_i z}(Du, u, x) v_{x_i} v + L_{zz}(Du, u, x) v^2 \, dx,
+\tag{11}
+\]
+holding for all test functions $v \in C_c^\infty(U)$.
+
+We can extract useful information from inequality (11), as follows. First, note after a routine approximation argument that estimate (11) is valid for any Lipschitz continuous function $v$ vanishing on $\partial U$. We then fix $\xi \in \R^n$ and define
+\[
+v(x) := \epsilon\rho\left(\frac{x \cdot \xi}{\epsilon}\right)\zeta(x) \quad (x \in U),
+\tag{12}
+\]
+where $\zeta \in C_c^\infty(U)$ and $\rho: \R \to \R$ is the periodic ``zig-zag'' function defined by
+\[
+\rho(x) = \begin{cases} x & \text{if } 0 \leq x \leq \frac{1}{2} \\ 1-x & \text{if } \frac{1}{2} \leq x \leq 1 \end{cases}, \quad \rho(x+1) = \rho(x) \quad (x \in \R).
+\]
+Thus
+\[
+|\rho'| = 1 \text{ a.e.}
+\tag{13}
+\]
+Observe further $v_{x_i}(x) = \rho'\left(\frac{x \cdot \xi}{\epsilon}\right)\zeta \xi_i + O(\epsilon)$ as $\epsilon \to 0$, and so our substituting (12) into (11) yields
+\[
+0 \leq \int_U \sum_{i,j=1}^n L_{p_i p_j}(Du, u, x)(\rho')^2 \xi_i \xi_j\, \zeta^2\, dx + O(\epsilon).
+\]
+We recall (13) and then send $\epsilon \to 0$, thereby obtaining the inequality
+\[
+0 \leq \int_U \sum_{i,j=1}^n L_{p_i p_j}(Du, u, x)\xi_i \xi_j\, \zeta^2\, dx.
+\]
+Since this estimate holds for all $\zeta \in C_c^\infty(U)$, we deduce
+
+\begin{proposition}[Second variation necessary condition]
+\label{prop:second-variation-convexity-necessary-condition}
+\dcref{ch8:8.1.3}
+\group{Euler--Lagrange Equations}
+\uses{thm:euler-lagrange-equation-pde-minimizer}
+If $u$ is a smooth minimizer of $I[\cdot]$ as in \cref{thm:euler-lagrange-equation-pde-minimizer}, then
+\[
+\sum_{i,j=1}^n L_{p_i p_j}(Du, u, x)\xi_i \xi_j \geq 0 \quad (\xi \in \R^n, x \in U).
+\tag{14}
+\]
+\end{proposition}
+\begin{proof}
+This is the derivation immediately above, substituting the zig-zag test function (12) into the second variation inequality (11) and letting $\epsilon \to 0$.
+\end{proof}
+
+We will see later in \cref{sec:existence-of-minimizers} that this necessary condition contains a clue as to the basic convexity assumption on the Lagrangian $L$ required for the existence theory.
+
+\subsection{Systems}
+\label{sec:systems-calculus-of-variations}
+
+\subsubsection{Euler--Lagrange equations}
+
+The foregoing considerations generalize quite easily to the case of systems, the only new complications being largely notational. Recall from \S A.1 that $\mathbb{M}^{m \times n}$ is the space of real $m \times n$ matrices, and assume the smooth Lagrangian function
+\[
+L: \mathbb{M}^{m \times n} \times \R^m \times \overline{U} \to \R
+\]
+is given.
+
+\noindent\textbf{Notation.} We will write
+\[
+L = L(P, z, x) = L(p_1^1, \ldots, p_n^m, z^1, \ldots, z^m, x_1, \ldots, x_n)
+\]
+for $P \in \mathbb{M}^{m \times n}$, $z \in \R^m$, and $x \in U$, where
+\[
+P = \begin{pmatrix} p_1^1 & \cdots & p_n^1 \\ \vdots & \ddots & \vdots \\ p_1^m & \cdots & p_n^m \end{pmatrix}_{m \times n}.
+\]
+(We are now employing superscripts to denote rows: this notational convention simplifies the following formulas.)
+
+As in \cref{sec:first-variation-euler-lagrange} we associate with $L$ the functional
+\[
+I[\mathbf{w}] := \int_U L(D\mathbf{w}(x), \mathbf{w}(x), x)\, dx,
+\tag{15}
+\]
+defined for smooth functions $\mathbf{w}: \overline{U} \to \R^m$, $\mathbf{w} = (w^1, \ldots, w^m)$, satisfying the boundary conditions $\mathbf{w} = \mathbf{g}$ on $\partial U$, $\mathbf{g}: \partial U \to \R^m$ being given. Here
+\[
+D\mathbf{w}(x) = \begin{pmatrix} w^1_{x_1} & \cdots & w^1_{x_n} \\ \vdots & \ddots & \vdots \\ w^m_{x_1} & \cdots & w^m_{x_n} \end{pmatrix}_{m \times n}
+\]
+is the gradient matrix of $\mathbf{w}$ at $x$.
+
+Let us now show that any smooth minimizer $\mathbf{u} = (u^1, \ldots, u^m)$ of $I[\cdot]$, taken among functions equal to $\mathbf{g}$ on $\partial U$, must solve a certain \textit{system} of nonlinear partial differential equations. We therefore fix $\mathbf{v} = (v^1, \ldots, v^m) \in C_c^\infty(U; \R^m)$ and write
+\[
+i(\tau) := I[\mathbf{u} + \tau \mathbf{v}].
+\]
+As before
+\[
+i'(0) = 0.
+\]
+From this we readily deduce as above the equality
+\[
+0 = i'(0) = \int_U \sum_{i=1}^n \sum_{k=1}^m L_{p_i^k}(D\mathbf{u}, \mathbf{u}, x) v^k_{x_i} + \sum_{k=1}^m L_{z^k}(D\mathbf{u}, \mathbf{u}, x) v^k \, dx.
+\]
+As this identity is valid for all choices of $v^1, \ldots, v^m$, we conclude after integrating by parts:
+\[
+-\sum_{i=1}^n \left( L_{p_i^k}(D\mathbf{u}, \mathbf{u}, x) \right)_{x_i} + L_{z^k}(D\mathbf{u}, \mathbf{u}, x) = 0 \quad \text{in } U \quad (k = 1, \ldots, m).
+\tag{16}
+\]
+
+\begin{theorem}[Euler--Lagrange system for a minimizer]
+\label{thm:euler-lagrange-system-pde-minimizer}
+\dcref{ch8:8.1.4-a}
+\group{Euler--Lagrange Equations}
+\uses{thm:euler-lagrange-equation-pde-minimizer}
+Any smooth minimizer $\mathbf{u} = (u^1,\ldots,u^m)$ of $I[\cdot]$ defined by (15), taken among functions equal to $\mathbf{g}$ on $\partial U$, solves the coupled, quasilinear \textit{system} of PDE
+\[
+-\sum_{i=1}^n \left( L_{p_i^k}(D\mathbf{u}, \mathbf{u}, x) \right)_{x_i} + L_{z^k}(D\mathbf{u}, \mathbf{u}, x) = 0 \quad \text{in } U \quad (k = 1, \ldots, m).
+\]
+These are the \textit{Euler--Lagrange equations} for the functional $I[\cdot]$ defined by (15).
+\end{theorem}
+\begin{proof}
+This is the derivation above, exactly analogous to that of \cref{thm:euler-lagrange-equation-pde-minimizer} in the scalar case.
+\end{proof}
+
+\subsubsection{Null Lagrangians}
+
+Surprisingly, it turns out to be interesting to study certain systems of nonlinear partial differential equations, for which \textit{every} smooth function is a solution.
+
+\begin{definition}[Null Lagrangian]
+\label{def:null-lagrangian}
+\dcref{ch8:8.1.4-def-1}
+\group{Null Lagrangians}
+\uses{thm:euler-lagrange-system-pde-minimizer}
+The function $L$ is called a \textit{null Lagrangian} if the system of Euler--Lagrange equations
+\[
+-\sum_{i=1}^{n} (L_{p_i^k}(D\mathbf{u}, \mathbf{u}, x))_{x_i} + L_{z_k}(D\mathbf{u}, \mathbf{u}, x) = 0 \quad \text{in } U \quad (k = 1, \ldots, m)
+\tag{17}
+\]
+is automatically solved by all smooth functions $\mathbf{u} : U \to \R^m$.
+\end{definition}
+
+The importance of null Lagrangians is that the corresponding energy
+\[
+I[\mathbf{w}] = \int_U L(D\mathbf{w}, \mathbf{w}, x) \, dx
+\]
+depends only on the boundary conditions:
+
+\begin{theorem}[Null Lagrangians and boundary conditions]
+\label{thm:null-lagrangians-boundary-conditions}
+\dcref{ch8:8.1-thm-1}
+\group{Null Lagrangians}
+\uses{def:null-lagrangian}
+Let $L$ be a null Lagrangian. Assume $\mathbf{u}, \bar{\mathbf{u}}$ are two functions in $C^2(U, \R^m)$ such that
+\[
+\mathbf{u} = \bar{\mathbf{u}} \quad \text{on } \partial U .
+\tag{18}
+\]
+Then
+\[
+I[\mathbf{u}] = I[\bar{\mathbf{u}}] .
+\tag{19}
+\]
+\end{theorem}
+\begin{proof}
+Define
+\[
+i(\tau) := I[\tau \mathbf{u} + (1-\tau)\bar{\mathbf{u}}] \quad (0 \le \tau \le 1) .
+\]
+Then
+\[
+\begin{aligned}
+i'(\tau) &= \int_U \sum_{i=1}^{n} \sum_{k=1}^{m} L_{p_i^k}(\tau D\mathbf{u} + (1-\tau)D\bar{\mathbf{u}}, \tau \mathbf{u} + (1-\tau)\bar{\mathbf{u}}, x)(u^k_{x_i} - \bar{u}^k_{x_i}) \\
+&\qquad + \sum_{k=1}^{m} L_{z_k}(\tau D\mathbf{u} + (1-\tau)D\bar{\mathbf{u}}, \tau \mathbf{u} + (1-\tau)\bar{\mathbf{u}}, x)(u^k - \bar{u}^k) \, dx \\
+&= \sum_{k=1}^{m} \int_U \Big[ -\sum_{i=1}^{n} (L_{p_i^k}(\tau D\mathbf{u} + (1-\tau)D\bar{\mathbf{u}}, \tau \mathbf{u} + (1-\tau)\bar{\mathbf{u}}, x))_{x_i} \\
+&\qquad + L_{z_k}(\tau D\mathbf{u} + (1-\tau)D\bar{\mathbf{u}}, \tau \mathbf{u} + (1-\tau)\bar{\mathbf{u}}, x) \Big] (u^k - \bar{u}^k) \, dx \\
+&= 0,
+\end{aligned}
+\]
+the last equality holding since the Euler--Lagrange system of PDE is satisfied by $\tau \mathbf{u} + (1 - \tau)\bar{\mathbf{u}}$. The identity (19) follows.
+\end{proof}
+
+In the scalar case that $m = 1$ the only null Lagrangians are the boring examples where $L$ is linear in the variable $p$. For the case of systems ($m > 1$), however, there are certain nontrivial examples, which will turn out to be important for us later.
+
+\noindent\textbf{Notation.} If $A$ is an $n \times n$ matrix, we denote by
+\[
+\cof A
+\]
+the \textit{cofactor} matrix, whose $(k,i)^{\text{th}}$ entry is $(\cof A)^k_i = (-1)^{i+k}d(A)^k_i$, where $d(A)^k_i =$ determinant of the $(n-1) \times (n-1)$ matrix obtained by deleting the $k^{\text{th}}$-row and $i^{\text{th}}$-column from $A$.
+
+\begin{lemma}[Divergence-free rows of the cofactor matrix]
+\label{lem:cofactor-divergence-free}
+\dcref{ch8:8.1-lem-1}
+\group{Null Lagrangians}
+Let $\mathbf{u} : \R^n \to \R^n$ be a smooth function. Then
+\[
+\sum_{i=1}^n (\cof D\mathbf{u})^k_{i,x_i} = 0 \quad (k = 1, \ldots, n).
+\tag{20}
+\]
+\end{lemma}
+\begin{proof}
+1. From linear algebra we recall the identity
+\[
+(\det P) I = P^T (\cof P) \quad (P \in \mathbb{M}^{n \times n});
+\tag{21}
+\]
+that is,
+\[
+(\det P) \delta_{ij} = \sum_{k=1}^n p^k_i (\cof P)^k_j \quad (i, j = 1, \ldots, n).
+\tag{22}
+\]
+Thus in particular
+\[
+\frac{\partial \det P}{\partial p^k_m} = (\cof P)^k_m \quad (k, m = 1, \ldots, n).
+\tag{23}
+\]
+
+2. Now set $P = D\mathbf{u}$ in (22), differentiate with respect to $x_j$, and sum $j = 1, \ldots, n$, to find
+\[
+\sum_{j,k,m=1}^n \delta_{ij} (\cof D\mathbf{u})^k_m u^k_{x_m x_j} = \sum_{k,j=1}^n u^k_{x_i x_j} (\cof D\mathbf{u})^k_j + u^k_{x_i} (\cof D\mathbf{u})^k_{j,x_j}
+\]
+for $i = 1, \ldots, n$. This identity simplifies to read
+\[
+\sum_{k=1}^n u^k_{x_i} \left(\sum_{j=1}^n (\cof D\mathbf{u})^k_{j,x_j}\right) = 0 \quad (i = 1, \ldots, n).
+\tag{24}
+\]
+
+3. Now if $\det D\mathbf{u}(x_0) \neq 0$, we deduce from (24) that
+\[
+\sum_{j=1}^{n}(\cof D\mathbf{u})^k_{j,x_j} = 0 \quad (k = 1, \ldots, n)
+\]
+at $x_0$. If instead $\det D\mathbf{u}(x_0) = 0$, we choose a number $\epsilon > 0$ so small that $\det(D\mathbf{u}(x_0) + \epsilon I) \neq 0$, apply steps 1--3 to $\mathbf{u} = \mathbf{u} + \epsilon x$, and send $\epsilon \to 0$.
+\end{proof}
+
+\begin{theorem}[Determinants as null Lagrangians]
+\label{thm:determinant-null-lagrangian}
+\dcref{ch8:8.1-thm-2}
+\group{Null Lagrangians}
+\uses{lem:cofactor-divergence-free,def:null-lagrangian}
+The determinant function
+\[
+L(P) = \det P \quad (P \in \mathbb{M}^{n \times n})
+\]
+is a null Lagrangian.
+\end{theorem}
+\begin{proof}
+We must show that for any smooth function $\mathbf{u} : U \to \R^n$,
+\[
+\sum_{i=1}^{n} \left( L_{p^k_i}(D\mathbf{u}) \right)_{x_i} = 0 \quad (k = 1, \ldots, n).
+\]
+According to (23) we have $L_{p^k_i} = (\cof P)^k_i$ $(i, k = 1, \ldots, n)$. But then employing the notation and conclusion of \cref{lem:cofactor-divergence-free}, we see
+\[
+\sum_{i=1}^{n} \left( L_{p^k_i}(D\mathbf{u}) \right)_{x_i} = \sum_{i=1}^{n} (\cof D\mathbf{u})^k_{i,x_i} = 0 \quad (k = 1, \ldots, n).
+\]
+\end{proof}
+
+Some other interesting null Lagrangians are introduced in the exercises.
+
+\subsubsection{Application}
+
+A nice application is a quick analytic proof of a topological fixed point theorem.
+
+\begin{theorem}[Brouwer's Fixed Point Theorem]
+\label{thm:brouwer-fixed-point-theorem}
+\dcref{ch8:8.1-thm-3}
+\group{Null Lagrangians}
+\uses{thm:null-lagrangians-boundary-conditions,thm:determinant-null-lagrangian}
+Assume
+\[
+\mathbf{u} : B(0,1) \to B(0,1)
+\]
+is continuous, where $B(0,1)$ denotes the closed unit ball in $\R^n$. Then $\mathbf{u}$ has a fixed point; that is, there exists a point $x \in B(0,1)$ with
+\[
+\mathbf{u}(x) = x.
+\]
+\end{theorem}
+\begin{proof}
+1. Write $B = B(0,1)$. We first of all claim that there does not exist a smooth function
+\[
+\mathbf{w} : B \to \partial B
+\tag{25}
+\]
+such that
+\[
+\mathbf{w}(x) = x \text{ for all } x \in \partial B.
+\tag{26}
+\]
+
+2. Suppose to the contrary that such a function $\mathbf{w}$ exists. Let us temporarily write $\tilde{\mathbf{w}}$ for the identity function, so that $\tilde{\mathbf{w}}(x) = x$ for all $x \in B$. In view of (26), $\mathbf{w} \equiv \tilde{\mathbf{w}}$ on $\partial B$. Since the determinant is a null Lagrangian, \cref{thm:null-lagrangians-boundary-conditions} implies
+\[
+\int_B \det D\mathbf{w}\, dx = \int_B \det D\tilde{\mathbf{w}}\, dx = |B| \neq 0.
+\tag{27}
+\]
+On the other hand, (25) implies $|\mathbf{w}|^2 \equiv 1$; and so differentiating, we find
+\[
+(D\mathbf{w})^T \mathbf{w} = \mathbf{0}.
+\tag{28}
+\]
+Since $|\mathbf{w}| = 1$, (28) says 0 is an eigenvalue of $D\mathbf{w}^T$ for each $x \in B$. Therefore $\det D\mathbf{w} \equiv 0$ in $B$. This contradicts (27), and thereby proves no smooth function $\mathbf{w}$ satisfying (25), (26) can exist.
+
+3. Next we show there does not exist any continuous function $\mathbf{w}$ verifying (25), (26). Indeed if $\mathbf{w}$ were such a function, we continuously extend $\mathbf{w}$ by setting $\mathbf{w}(x) = x$ if $x \in \R^n - B$. Observe that $\mathbf{w}(x) \neq 0$ ($x \in \R^n$). Fix $\epsilon > 0$ so small that $\mathbf{w}_1 := \eta_\epsilon \star \mathbf{w}$ satisfies $\mathbf{w}_1(x) \neq 0$ ($x \in \R^n$). Note also that since $\eta_\epsilon$ is radial, we have $\mathbf{w}_1(x) = x$ if $x \in \R^n - B(0, 2)$, for $\epsilon > 0$ sufficiently small. Then
+\[
+\mathbf{w}_2 := \frac{2\mathbf{w}_1}{|\mathbf{w}_1|}
+\]
+would be a smooth mapping satisfying (25), (26) (with the ball $B(0,2)$ replacing $B = B(0,1)$), in contradiction to step 2.
+
+4. Finally suppose $\mathbf{u} : B \to B$ is continuous, but has no fixed point. Define now the mapping $\mathbf{w} : B \to \partial B$ by setting $\mathbf{w}(x)$ to be the point on $\partial B$ hit by the ray emanating from $\mathbf{u}(x)$ and passing through $x$. This mapping is well defined since $\mathbf{u}(x) \neq x$ for all $x \in B$. In addition $\mathbf{w}$ is continuous and satisfies (25), (26).
+
+But this in turn is a contradiction to step 3.
+\end{proof}
+
+We will employ Brouwer's fixed point theorem several times in Chapter 9.
+
+\section{Existence of Minimizers}
+\label{sec:existence-of-minimizers}
+
+In this section we will identify some conditions on the Lagrangian $L$ which ensure that the functional $I[\cdot]$ does indeed have a minimizer, at least within an appropriate Sobolev space.
+
+\subsection{Coercivity, Lower Semicontinuity}
+\label{sec:coercivity-lower-semicontinuity}
+
+Let us start with some largely heuristic insights as to when the functional
+\[
+I[w] := \int_U L(Dw(x), w(x), x) \, dx,
+\tag{1}
+\]
+defined for appropriate functions $w : U \to \R$ satisfying
+\[
+w = g \text{ on } \partial U,
+\tag{2}
+\]
+should have a minimizer.
+
+\subsubsection{Coercivity}
+
+We first of all note that even a smooth function $f$ mapping $\R$ to $\R$ and bounded below need not attain its infimum. Consider, for instance, $f = e^x$ or $(1 + x^2)^{-1}$. These examples suggest that we in general will need some hypothesis controlling $I[w]$ for ``large'' functions $w$. Certainly the most effective way to ensure this would be to hypothesize that $I[w]$ ``grows rapidly as $|w| \to \infty$''.
+
+More specifically, let us assume
+\[
+1 < q < \infty
+\tag{3}
+\]
+is fixed.
+
+\begin{definition}[Coercivity condition]
+\label{def:coercivity-condition-lagrangian}
+\dcref{ch8:8.2.1-def-1}
+\group{Existence of Minimizers}
+We say the Lagrangian $L$ satisfies the coercivity condition (for the exponent $q$ of (3)) if
+\[
+\begin{cases}
+\text{there exist constants } \alpha > 0, \beta \geq 0 \text{ such that} \\
+L(p, z, x) \geq \alpha|p|^q - \beta \\
+\text{for all } p \in \R^n, z \in \R, x \in U.
+\end{cases}
+\tag{4}
+\]
+\end{definition}
+
+Therefore
+\[
+I[w] \geq \alpha\|Dw\|_{L^q(U)}^q - \gamma
+\tag{5}
+\]
+for $\gamma := \beta|U|$. Thus $I[w] \to \infty$ as $\|Dw\|_{L^q} \to \infty$. It is customary to call (5) a \textit{coercivity condition} on $I[\cdot]$.
+
+Turning once more to our basic task of finding minimizers for the functional $I[\cdot]$, we observe from inequality (5) that it seems reasonable to define $I[w]$ not only for smooth functions $w$, but also for functions $w$ in the Sobolev space $W^{1,q}(U)$ that satisfy the boundary condition (2) in the trace sense. After all, the wider the class of functions $w$ for which $I[w]$ is defined, the more candidates we will have for a minimizer.
+
+\begin{definition}[Admissible class]
+\label{def:admissible-class-sobolev-minimization}
+\dcref{ch8:8.2.1-def-2}
+\group{Existence of Minimizers}
+\uses{def:coercivity-condition-lagrangian}
+We will henceforth write
+\[
+\mathcal{A} := \{w \in W^{1,q}(U) \mid w = g \text{ on } \partial U \text{ in the trace sense}\}
+\]
+to denote this class of \textit{admissible} functions $w$. Note in view of (4) that $I[w]$ is defined (but may equal $+\infty$) for each $w \in \mathcal{A}$.
+\end{definition}
+
+\subsubsection{Lower semicontinuity}
+
+Next, let us observe that although a continuous function $f : \R \to \R$ satisfying a coercivity condition does indeed attain its infimum, our integral functional $I[\cdot]$ in general will not. To understand the problem, set
+\[
+m := \inf_{w \in \mathcal{A}} I[w]
+\tag{6}
+\]
+and choose functions $u_k \in \mathcal{A}$ $(k = 1, \ldots)$ so that
+\[
+I[u_k] \to m \text{ as } k \to \infty.
+\tag{7}
+\]
+
+\begin{definition}[Minimizing sequence]
+\label{def:minimizing-sequence-calculus-of-variations}
+\dcref{ch8:8.2.1-def-3}
+\group{Existence of Minimizers}
+\uses{def:admissible-class-sobolev-minimization}
+We call a sequence $\{u_k\}_{k=1}^{\infty} \subset \mathcal{A}$ satisfying (7), i.e.\ $I[u_k]\to m := \inf_{w\in\mathcal{A}} I[w]$, a \textit{minimizing sequence}.
+\end{definition}
+
+We would now like to show that some subsequence of $\{u_k\}_{k=1}^{\infty}$ converges to an actual minimizer. For this, however, we need some kind of compactness, and this is definitely a problem since the space $W^{1,q}(U)$ is infinite dimensional. Indeed, if we utilize the coercivity inequality (5), it turns out (cf. \cref{sec:convexity-lower-semicontinuity-existence}) that we can only conclude that the minimizing sequence lies in a bounded subset of $W^{1,q}(U)$. But this does \textit{not} imply that there exists any subsequence which converges in $W^{1,q}(U)$.
+
+We therefore turn our attention to the \textit{weak topology} (cf. \S D.4). Since we are assuming $1 < q < \infty$, so that $L^q(U)$ is reflexive, we conclude that there exists a subsequence $\{u_{k_j}\}_{j=1}^{\infty} \subset \{u_k\}_{k=1}^{\infty}$ and a function $u \in W^{1,q}(U)$ so that
+\[
+\begin{cases}
+u_{k_j} \rightharpoonup u \text{ weakly in } L^q(U) \\
+Du_{k_j} \rightharpoonup Du \text{ weakly in } L^q(U; \R^n).
+\end{cases}
+\tag{8}
+\]
+We will hereafter abbreviate (8) by saying
+\[
+u_{k_j} \rightharpoonup u \text{ weakly in } W^{1,q}(U).
+\tag{9}
+\]
+Furthermore, it will be true that $u = g$ on $\partial U$ in the trace sense, and so $u \in \mathcal{A}$.
+
+Consequently by shifting to the weak topology we have recovered enough compactness from the coercivity inequality (5) to deduce (9) for an appropriate subsequence. But now another difficulty arises, for in essentially all cases of interest the \textit{functional $I[\cdot]$ is not continuous with respect to weak convergence}. In other words, we \textit{cannot} deduce from (7) and (9) that
+\[
+I[u] = \lim_{j \to \infty} I[u_{k_j}],
+\tag{10}
+\]
+and thus $u$ is a minimizer. The problem is that $Du_{k_j} \rightharpoonup Du$ does \textit{not} imply $Du_{k_j} \to Du$ a.e.: it is quite possible for instance that the gradients $Du_{k_j}$, although bounded in $L^q$, are oscillating more and more wildly as $k_j \to \infty$.
+
+What saves us is the final, key observation that we do not really need the full strength of (10). It would suffice instead to know only
+\[
+I[u] \leq \liminf_{j \to \infty} I[u_{k_j}].
+\tag{11}
+\]
+Then from (7) we could deduce $I[u] \leq m$. But owing to (6), $m \leq I[u]$. Consequently $u$ is indeed a minimizer.
+
+\begin{definition}[Weakly lower semicontinuous functional]
+\label{def:weakly-lower-semicontinuous-functional}
+\dcref{ch8:8.2.1-def-4}
+\group{Existence of Minimizers}
+We say that a function $I[\cdot]$ is (sequentially) weakly lower semicontinuous on $W^{1,q}(U)$, provided
+\[
+I[u] \leq \liminf_{k \to \infty} I[u_k]
+\]
+whenever
+\[
+u_k \rightharpoonup u \text{ weakly in } W^{1,q}(U).
+\]
+\end{definition}
+
+Our goal therefore is now to identify reasonable conditions on the nonlinearity $L$ that ensure $I[\cdot]$ is weakly lower semicontinuous.
+
+\subsection{Convexity}
+\label{sec:convexity-lower-semicontinuity-existence}
+
+We next look back to our second variation analysis in \cref{sec:second-variation-calculus-of-variations} and recall we derived there the inequality
+\[
+\sum_{i,j=1}^n L_{p_i p_j}(Du(x), u(x), x) \xi_i \xi_j \geq 0 \quad (\xi \in \R^n, x \in U)
+\]
+holding as a necessary condition, whenever $u$ is a smooth minimizer. This inequality strongly suggests that it is reasonable to assume that $L$ is convex in its first argument.
+
+\begin{theorem}[Weak lower semicontinuity]
+\label{thm:weak-lower-semicontinuity-convex-lagrangian}
+\dcref{ch8:8.2-thm-1}
+\group{Existence of Minimizers}
+\uses{prop:second-variation-convexity-necessary-condition,def:weakly-lower-semicontinuous-functional}
+Assume that $L$ is bounded below, and in addition the mapping $p \mapsto L(p,z,x)$ is convex, for each $z \in \R, x \in U$. Then $I[\cdot]$ is weakly lower semicontinuous on $W^{1,q}(U)$.
+\end{theorem}
+\begin{proof}
+1. Choose any sequence $\{u_k\}_{k=1}^\infty$ with
+\[
+u_k \rightharpoonup u \text{ weakly in } W^{1,q}(U),
+\tag{12}
+\]
+and set $l := \liminf_{k \to \infty} I[u_k]$. We must show
+\[
+I[u] \le l.
+\tag{13}
+\]
+
+2. Note first from (12) and \S D.4 that
+\[
+\sup_k \|u_k\|_{W^{1,q}(U)} < \infty.
+\tag{14}
+\]
+Upon passing to a subsequence if necessary, we may as well also suppose
+\[
+l = \lim_{k \to \infty} I[u_k].
+\tag{15}
+\]
+Furthermore we see from the compactness theorem \cref{thm:rellich-kondrachov} that $u_k \to u$ strongly in $L^q(U)$; and thus, passing if necessary to yet another subsequence, we have
+\[
+u_k \to u \text{ a.e. in } U.
+\tag{16}
+\]
+
+3. Fix $\epsilon > 0$. Then (16) and Egoroff's Theorem (\S E.2) assert
+\[
+u_k \to u \text{ uniformly on } E_\epsilon,
+\tag{17}
+\]
+where $E_\epsilon$ is a measurable set with
+\[
+|U - E_\epsilon| \le \epsilon.
+\tag{18}
+\]
+Now write
+\[
+F_\epsilon := \left\{x \in U \;\middle|\; |u(x)| + |Du(x)| \le \frac{1}{\epsilon}\right\}.
+\tag{19}
+\]
+Then
+\[
+|U - F_\epsilon| \to 0 \quad \text{as } \epsilon \to 0.
+\tag{20}
+\]
+We finally set
+\[
+G_\epsilon := E_\epsilon \cap F_\epsilon,
+\tag{21}
+\]
+and observe from (18), (20): $|U - G_\epsilon| \to 0$ as $\epsilon \to 0$.
+
+4. Now let us observe since $L$ is bounded below, we may as well assume
+\[
+L \geq 0
+\tag{22}
+\]
+(for otherwise we could apply the following arguments to $\tilde{L} = L + \beta \geq 0$ for some appropriate constant $\beta$). Consequently
+\[
+\begin{aligned}
+I[u_k] = \int_U L(Du_k, u_k, x) \, dx &\geq \int_{G_\epsilon} L(Du_k, u_k, x) \, dx \\
+&\geq \int_{G_\epsilon} L(Du, u_k, x) \, dx + \int_{G_\epsilon} D_p L(Du, u_k, x) \cdot (Du_k - Du) \, dx,
+\end{aligned}
+\tag{23}
+\]
+the last inequality following from the convexity of $L$ in its first argument; see \S B.1. Now in view of (17), (19) and (21):
+\[
+\lim_{k \to \infty} \int_{G_\epsilon} L(Du, u_k, x) \, dx = \int_{G_\epsilon} L(Du, u, x) \, dx.
+\tag{24}
+\]
+In addition, since $D_p L(Du, u_k, x) \to D_p L(Du, u, x)$ uniformly on $G_\epsilon$ and $Du_k \rightharpoonup Du$ weakly in $L^q(U; \R^n)$, we have
+\[
+\lim_{k \to \infty} \int_{G_\epsilon} D_p L(Du, u_k, x) \cdot (Du_k - Du) \, dx = 0.
+\tag{25}
+\]
+Owing now to (24), (25), we deduce from (23) that
+\[
+l = \lim_{k \to \infty} I[u_k] \geq \int_{G_\epsilon} L(Du, u, x) \, dx.
+\]
+This inequality holds for each $\epsilon > 0$. We now let $\epsilon$ tend to zero, and recall (22) and the Monotone Convergence Theorem (\S E.3) to conclude
+\[
+l \geq \int_U L(Du, u, x) \, dx = I[u],
+\]
+as required.
+\end{proof}
+
+\begin{remark}[On the role of weak convergence in the proof]
+\label{rem:weak-lower-semicontinuity-proof-remark}
+\dcref{ch8:8.2.2-rem-1}
+\group{Existence of Minimizers}
+\uses{thm:weak-lower-semicontinuity-convex-lagrangian}
+It is very important to understand how the foregoing proof deals with the weak convergence $Du_k \rightharpoonup Du$. The key is the convexity inequality (23), on the right hand side of which $Du_k$ appears linearly. Weak convergence is, by its very definition, compatible with linear expressions, and so the limit (25) holds. Remember that it is not in general true that $Du_k \to Du$ a.e., even if we pass to a subsequence.
+
+The convergence of $u_k$ to $u$ in $L^q$ is much stronger, and so we do not need any convexity assumption concerning $z \mapsto L(p, z, x)$.
+\end{remark}
+
+We can at last establish that $I[\cdot]$ has a minimizer among the functions in $\mathcal{A}$.
+
+\begin{theorem}[Existence of minimizer]
+\label{thm:existence-minimizer-convex-coercive}
+\dcref{ch8:8.2-thm-2}
+\group{Existence of Minimizers}
+\uses{thm:weak-lower-semicontinuity-convex-lagrangian,def:coercivity-condition-lagrangian,def:admissible-class-sobolev-minimization}
+Assume that $L$ satisfies the coercivity inequality (4) and is convex in the variable $p$. Suppose also the admissible set $\mathcal{A}$ is nonempty.
+
+Then there exists at least one function $u \in \mathcal{A}$ solving
+\[
+I[u] = \min_{w \in \mathcal{A}} I[w] .
+\]
+\end{theorem}
+\begin{proof}
+1. Set $m := \inf_{w \in \mathcal{A}} I[w]$. If $m = +\infty$ we are done, and so we henceforth assume $m$ is finite. Select a minimizing sequence $\{u_k\}_{k=1}^\infty$. Then
+\[
+I[u_k] \to m.
+\tag{26}
+\]
+
+2. We may as well take $\beta = 0$ in inequality (4), since we could otherwise just as well consider $\bar{L} := L + \beta$. Thus $\bar{L} \geq \alpha|p|^q$, and so
+\[
+I[w] \geq \alpha \int_U |Dw|^q \, dx.
+\tag{27}
+\]
+Since $m$ is finite, we conclude from (26) and (27) that
+\[
+\sup_k \|Du_k\|_{L^q(U)} < \infty.
+\tag{28}
+\]
+
+3. Now fix any function $w \in \mathcal{A}$. Since $u_k$ and $w$ both equal $g$ on $\partial U$ in the trace sense, we have $u_k - w \in W_0^{1,q}(U)$. Therefore Poincaré's inequality (\cref{thm:poincares-inequality-connected}) implies
+\[
+\|u_k\|_{L^q(U)} \leq \|u_k - w\|_{L^q(U)} + \|w\|_{L^q(U)} \leq C\|Du_k - Dw\|_{L^q(U)} + C \leq C,
+\]
+by (28). Hence $\sup_k \|u_k\|_{L^q(U)} < \infty$. This estimate and (28) imply $\{u_k\}_{k=1}^\infty$ is bounded in $W^{1,q}(U)$.
+
+4. Consequently there exist a subsequence $\{u_{k_j}\}_{j=1}^\infty \subset \{u_k\}_{k=1}^\infty$ and a function $u \in W^{1,q}(U)$ such that
+\[
+u_{k_j} \rightharpoonup u \quad \text{weakly in } W^{1,q}(U).
+\]
+We assert next that $u \in \mathcal{A}$. To see this, note that for $w \in \mathcal{A}$ as above, $u_k - w \in W_0^{1,q}(U)$. Now $W_0^{1,q}(U)$ is a closed, linear subspace of $W^{1,q}(U)$, and so, by Mazur's Theorem (\S D.4), is weakly closed. Hence $u - w \in W_0^{1,q}(U)$. Consequently the trace of $u$ on $\partial U$ is $g$.
+
+In view of \cref{thm:weak-lower-semicontinuity-convex-lagrangian} then, $I[u] \leq \liminf_{j \to \infty} I[u_{k_j}] = m$. But since $u \in \mathcal{A}$, it follows that
+\[
+I[u] = m = \min_{w \in \mathcal{A}} I[w].
+\]
+\end{proof}
+
+We turn next to the problem of uniqueness. In general there can be many minimizers, and so to ensure uniqueness we require further assumptions. Suppose for instance
+\[
+L = L(p,x) \text{ does not depend on } z,
+\tag{29}
+\]
+and
+\[
+\left\{ \begin{array}{l} \text{there exists } \theta > 0 \text{ such that} \\ \displaystyle \sum_{i,j=1}^n L_{p_i p_j}(p,x) \xi_i \xi_j \geq \theta|\xi|^2 \quad (p, \xi \in \R^n; x \in U). \end{array} \right.
+\tag{30}
+\]
+Condition (30) says the mapping $p \mapsto L(p,x)$ is uniformly convex for each $x$.
+
+\begin{theorem}[Uniqueness of minimizer]
+\label{thm:uniqueness-minimizer-uniformly-convex}
+\dcref{ch8:8.2-thm-3}
+\group{Existence of Minimizers}
+\uses{thm:existence-minimizer-convex-coercive}
+Suppose (29), (30) hold. Then a minimizer $u \in \mathcal{A}$ of $I[\cdot]$ is unique.
+\end{theorem}
+\begin{proof}
+1. Assume $u, \tilde{u} \in \mathcal{A}$ are both minimizers of $I[\cdot]$ over $\mathcal{A}$. Then $v := \frac{u + \tilde{u}}{2} \in \mathcal{A}$. We claim
+\[
+I[v] \leq \frac{I[u] + I[\tilde{u}]}{2},
+\tag{31}
+\]
+with a strict inequality, unless $u = \tilde{u}$ a.e.
+
+2. To see this, note from the uniform convexity assumption that we have
+\[
+L(p,x) \geq L(q,x) + D_p L(q,x) \cdot (p-q) + \frac{\theta}{2}|p-q|^2 \quad (x \in U, p, q \in \R^n).
+\tag{32}
+\]
+Set $q = \frac{Du + D\tilde u}{2}$, $p = Du$, and integrate over $U$:
+\[
+I[v] + \int_U D_p L\left(\frac{Du+D\tilde u}{2},x\right)\cdot\left(\frac{Du - D\tilde u}{2}\right) dx + \frac{\theta}{8}\int_U |Du - D\tilde u|^2\, dx \le I[u].
+\tag{33}
+\]
+Similarly, set $q = \frac{Du+D\tilde u}{2}$, $p = D\tilde u$ in (32) and integrate:
+\[
+I[v] + \int_U D_p L\left(\frac{Du+D\tilde u}{2},x\right)\cdot\left(\frac{D\tilde u - Du}{2}\right) dx + \frac{\theta}{8}\int_U |Du - D\tilde u|^2\, dx \le I[\tilde u].
+\tag{34}
+\]
+Add and divide by 2, to deduce
+\[
+I[v] + \frac{\theta}{8}\int_U |Du - D\tilde u|^2\, dx \le \frac{I[u]+I[\tilde u]}{2}.
+\]
+This proves (31).
+
+3. As $I[u] = I[\tilde u] = \min_{w\in\mathcal{A}} I[w] \le I[v]$, we deduce $Du = D\tilde u$ a.e.\ in $U$. Since $u = \tilde u = g$ on $\partial U$ in the trace sense, it follows that $u = \tilde u$ a.e.
+\end{proof}
+
+\subsection{Weak Solutions of the Euler--Lagrange Equation}
+\label{sec:euler-lagrange-equation-weak-solutions}
+
+We wish next to demonstrate that any minimizer $u \in \mathcal{A}$ of $I[\cdot]$ solves the Euler--Lagrange equation in some suitable sense. This does \textit{not} follow from the calculations in \cref{sec:calculus-of-variations-introduction} since we do not know $u$ is smooth, only $u \in W^{1,q}(U)$. And in fact we will need some growth conditions on $L$ and its derivatives. Let us hereafter suppose
+\[
+|L(p, z, x)| \le C(|p|^q + |z|^q + 1),
+\tag{35}
+\]
+and also
+\[
+\begin{cases}
+|D_pL(p,z,x)| \le C(|p|^{q-1} + |z|^{q-1} + 1) \\
+|D_zL(p,z,x)| \le C(|p|^{q-1} + |z|^{q-1} + 1)
+\end{cases}
+\tag{36}
+\]
+for some constant $C$ and all $p \in \R^n$, $z \in \R$, $x \in U$.
+
+\noindent\textbf{Motivation for definition of weak solution.} We now turn our attention to the boundary-value problem for the Euler--Lagrange PDE associated with our functional $L$, which for a smooth minimizer $u$ reads
+\[
+\begin{cases}
+-\sum_{i=1}^n(L_{p_i}(Du,u,x))_{x_i} + L_z(Du,u,x) = 0 & \text{in } U \\
+u = g & \text{on } \partial U.
+\end{cases}
+\tag{37}
+\]
+If we multiply (37) by a test function $v \in C_c^\infty(U)$ and integrate by parts, we arrive at the equality
+\[
+\int_U \sum_{i=1}^n L_{p_i}(Du,u,x)v_{x_i} + L_z(Du,u,x)v \, dx = 0.
+\tag{38}
+\]
+Of course this is the identity we first obtained in our derivation of (37) (i.e.\ of (9)) in \cref{sec:first-variation-euler-lagrange}.
+
+Now assume $u \in W^{1,q}(U)$. Then using (36) we see
+\[
+|D_pL(Du,u,x)| \le C(|Du|^{q-1} + |u|^{q-1}+1) \in L^{q'}(U),
+\]
+where $q' = \frac{q}{q-1}$, $\frac1q+\frac1{q'}=1$. Similarly
+\[
+|D_zL(Du,u,x)| \le C(|Du|^{q-1}+|u|^{q-1}+1) \in L^{q'}(U).
+\tag{39}
+\]
+Consequently we see using a standard approximation argument that the equality (38) is valid for any $v \in W_0^{1,q}(U)$. This motivates the following
+
+\begin{definition}[Weak solution of the Euler--Lagrange equation]
+\label{def:weak-solution-euler-lagrange-scalar}
+\dcref{ch8:8.2.3-def-1}
+\group{Existence of Minimizers}
+We say $u \in \mathcal{A}$ is a \textit{weak solution} of the boundary-value problem (37) for the Euler--Lagrange equation provided
+\[
+\int_U \sum_{i=1}^n L_{p_i}(Du,u,x) v_{x_i} + L_z(Du,u,x) v \, dx = 0
+\]
+for all $v \in W_0^{1,q}(U)$.
+\end{definition}
+
+\begin{theorem}[Solution of the Euler--Lagrange equation]
+\label{thm:weak-solution-euler-lagrange-scalar}
+\dcref{ch8:8.2-thm-4}
+\group{Existence of Minimizers}
+\uses{def:weak-solution-euler-lagrange-scalar}
+Assume $L$ verifies the growth conditions (35), (36), and $u \in \mathcal{A}$ satisfies
+\[
+I[u] = \min_{w \in \mathcal{A}} I[w].
+\]
+Then $u$ is a weak solution of (37).
+\end{theorem}
+\begin{proof}
+We proceed as in \cref{sec:first-variation-euler-lagrange}, taking care about differentiating under the integrals. Fix any $v \in W_0^{1,q}(U)$ and set
+\[
+i(\tau) := I[u+\tau v] \quad (\tau \in \R).
+\]
+In view of (35) we see that $i(\tau)$ is finite for all $\tau$.
+
+Let $\tau \ne 0$ and write the difference quotient
+\[
+\frac{i(\tau)-i(0)}{\tau} = \int_U \frac{L(Du+\tau Dv, u+\tau v, x) - L(Du,u,x)}{\tau}\, dx = \int_U L^\tau(x)\, dx,
+\tag{40}
+\]
+for
+\[
+L^\tau(x) := \frac{1}{\tau}[L(Du(x) + \tau Dv(x), u(x) + \tau v(x), x) - L(Du(x), u(x), x)]
+\]
+for a.e. $x \in U$. Clearly
+\[
+L^\tau(x) \to \sum_{i=1}^n L_{p_i}(Du, u, x)v_{x_i} + L_z(Du, u, x)v \quad \text{a.e.}
+\tag{41}
+\]
+as $\tau \to 0$. Furthermore
+\[
+\begin{aligned}
+L^\tau(x) &= \frac{1}{\tau}\int_0^\tau \frac{d}{ds} L(Du + sDv, u + sv, x)\, ds \\
+&= \frac{1}{\tau}\int_0^\tau \sum_{i=1}^n L_{p_i}(Du + sDv, u + sv, x)v_{x_i} + L_z(Du + sDv, u + sv, x)v\, ds.
+\end{aligned}
+\]
+Next recall from \S B.2 Young's inequality: $ab \leq \frac{a^q}{q} + \frac{b^{q'}}{q'}$, where $\frac{1}{q} + \frac{1}{q'} = 1$. Then since $u, v \in W^{1,q}(U)$, inequalities (36) and Young's inequality imply after some elementary calculations that
+\[
+|L^\tau(x)| \leq C(|Du|^q + |u|^q + |Dv|^q + |v|^q + 1) \in L^1(U)
+\]
+for each $\tau \neq 0$. Consequently we may invoke the Dominated Convergence Theorem to conclude from (40), (41) that $i'(0)$ exists and equals
+\[
+\int_U \sum_{i=1}^n L_{p_i}(Du, u, x)v_{x_i} + L_z(Du, u, x)v\, dx.
+\]
+But then since $i(\cdot)$ has a minimum for $\tau = 0$, we know $i'(0) = 0$; and thus $u$ is a weak solution.
+\end{proof}
+
+\begin{remark}[Weak solutions of the Euler--Lagrange equation need not be minimizers]
+\label{rem:weak-solution-minimizer-joint-convexity}
+\dcref{ch8:8.2.3-rem-1}
+\group{Existence of Minimizers}
+\uses{thm:weak-solution-euler-lagrange-scalar}
+In general, the Euler--Lagrange equation (37) will have other solutions which do not correspond to minima of $I[\cdot]$; see \cref{sec:critical-points-calculus-of-variations}. However, \textit{in the special case that the joint mapping $(p, z) \mapsto L(p, z, x)$ is convex for each $x$, then each weak solution is in fact a minimizer}.
+
+To see this, suppose $u \in \mathcal{A}$ solves
+\[
+\begin{cases}
+-\sum_{i=1}^n (L_{p_i}(Du, u, x))_{x_i} + L_z(Du, u, x) = 0 & \text{in } U \\
+u = g & \text{on } \partial U
+\end{cases}
+\tag{42}
+\]
+in the weak sense and select any $w \in \mathcal{A}$. Utilizing the convexity of the mapping $(p, z) \mapsto L(p, z, x)$, we have
+\[
+L(p, z, x) + D_p L(p, z, x) \cdot (q - p) + D_z L(p, z, x) \cdot (w - z) \leq L(q, w, x).
+\]
+Let $p = Du(x)$, $q = Dw(x)$, $z = u(x)$, $w = w(x)$ and integrate over $U$:
+\[
+I[u] + \int_U D_p L(Du, u, x) \cdot (Dw - Du) + D_z L(Du, u, x)(w - u) \, dx \leq I[w].
+\]
+In view of (42) the second term on the right is zero, and therefore $I[u] \leq I[w]$ for each $w \in \mathcal{A}$.
+\end{remark}
+
+\subsection{Systems}
+\label{sec:systems-existence-minimizers}
+
+\subsubsection{Convexity}
+
+We now adopt again the notation for systems set forth in \cref{sec:systems-calculus-of-variations}, and consider the existence question for minimizers of the functional
+\[
+I[\mathbf{w}] := \int_U L(D\mathbf{w}(x), \mathbf{w}(x), x) \, dx,
+\]
+defined for appropriate functions $\mathbf{w} : U \to \R^m$, where now $L : \mathbb{M}^{m \times n} \times \R^m \times U \to \R$ is given.
+
+It turns out the theory developed in \cref{sec:coercivity-lower-semicontinuity} extends with no difficulty to the case at hand. Let us therefore assume the coercivity inequality
+\[
+L(P, z, x) \geq \alpha|P|^q - \beta \quad (P \in \mathbb{M}^{m \times n}, z \in \R^m, x \in U)
+\tag{43}
+\]
+for constants $\alpha > 0$, $\beta \geq 0$.
+
+\begin{definition}[Admissible class for systems]
+\label{def:admissible-class-systems}
+\dcref{ch8:8.2.4-def-1}
+\group{Existence of Minimizers}
+Set
+\[
+\mathcal{A} = \{\mathbf{w} \in W^{1,q}(U; \R^m) \mid \mathbf{w} = \mathbf{g} \text{ on } \partial U \text{ in the trace sense}\},
+\]
+where $\mathbf{g} : \partial U \to \R^m$ is given.
+\end{definition}
+
+\begin{theorem}[Existence of minimizer, systems]
+\label{thm:existence-minimizer-systems}
+\dcref{ch8:8.2-thm-5}
+\group{Existence of Minimizers}
+\uses{def:admissible-class-systems,thm:existence-minimizer-convex-coercive}
+Assume that $L$ satisfies the coercivity inequality (43) and is convex in the variable $P$. Suppose also the admissible set $\mathcal{A}$ is nonempty.
+
+Then there exists $\mathbf{u} \in \mathcal{A}$ solving
+\[
+I[\mathbf{u}] = \min_{\mathbf{w} \in \mathcal{A}} I[\mathbf{w}].
+\]
+\end{theorem}
+\begin{proof}
+The proof follows almost exactly the proofs of Theorems \cref{thm:weak-lower-semicontinuity-convex-lagrangian} and \cref{thm:existence-minimizer-convex-coercive} above.
+\end{proof}
+
+Similarly to \cref{thm:uniqueness-minimizer-uniformly-convex} above we have:
+
+\begin{theorem}[Uniqueness of minimizer, systems]
+\label{thm:uniqueness-minimizer-systems}
+\dcref{ch8:8.2-thm-6}
+\group{Existence of Minimizers}
+\uses{thm:existence-minimizer-systems}
+Assume $L$ does not depend on $z$ and the mapping $P \mapsto L(P, x)$ is uniformly convex. Then a minimizer $\mathbf{u} \in \mathcal{A}$ of $I[\cdot]$ is unique.
+\end{theorem}
+
+Now suppose additionally
+\[
+\begin{cases}
+|L(P, z, x)| \le C(|P|^q + |z|^q + 1) \\
+|D_P L(P, z, x)| \le C(|P|^{q-1} + |z|^{q-1} + 1) \\
+|D_z L(P, z, x)| \le C(|P|^{q-1} + |z|^{q-1} + 1)
+\end{cases}
+\tag{44}
+\]
+for some constant $C$ and all $P \in \mathbb{M}^{m \times n}$, $z \in \R^m$, $x \in U$.
+
+We consider now the system of Euler--Lagrange equations
+\[
+\begin{cases}
+-\sum_{i=1}^n (L_{p_k^i}(D\mathbf{u}, \mathbf{u}, x))_{x_i} + L_{z^k}(D\mathbf{u}, \mathbf{u}, x) = 0 & \text{in } U \\
+u^k = g^k & \text{on } \partial U
+\end{cases}
+\tag{45}
+\]
+for $k = 1, \ldots, m$.
+
+\begin{definition}[Weak solution of the Euler--Lagrange system]
+\label{def:weak-solution-euler-lagrange-system}
+\dcref{ch8:8.2.4-def-2}
+\group{Existence of Minimizers}
+We define $\mathbf{u} \in \mathcal{A}$ to be a \textit{weak solution} of (45) provided
+\[
+\sum_{k=1}^m \int_U \sum_{i=1}^n L_{p_k^i}(D\mathbf{u}, \mathbf{u}, x)w^k_{x_i} + L_{z^k}(D\mathbf{u}, \mathbf{u}, x)w^k \, dx = 0
+\]
+for all $\mathbf{w} \in W_0^{1,q}(U; \R^m)$, $\mathbf{w} = (w^1, \ldots, w^m)$.
+\end{definition}
+
+\begin{theorem}[Solution of the Euler--Lagrange system]
+\label{thm:weak-solution-euler-lagrange-system}
+\dcref{ch8:8.2-thm-7}
+\group{Existence of Minimizers}
+\uses{def:weak-solution-euler-lagrange-system,thm:weak-solution-euler-lagrange-scalar}
+Assume $L$ verifies the growth conditions (44) and $\mathbf{u} \in \mathcal{A}$ satisfies
+\[
+I[\mathbf{u}] = \min_{\mathbf{w} \in \mathcal{A}} I[\mathbf{w}].
+\]
+Then $\mathbf{u}$ is a weak solution of (45).
+\end{theorem}
+\begin{proof}
+The proof is almost precisely like that of \cref{thm:weak-solution-euler-lagrange-scalar}.
+\end{proof}
+
+\subsubsection{Polyconvexity}
+
+It is rather surprising that there are some mathematically and physically interesting systems which are not covered by \cref{thm:existence-minimizer-systems} above, but which can still be studied using the calculus of variations. These include certain problems where the Lagrangian $L$ is \textit{not} convex in $P$, but $I[\cdot]$ is nonetheless weakly lower semicontinuous.
+
+\begin{lemma}[Weak continuity of determinants]
+\label{lem:weak-continuity-of-determinants}
+\dcref{ch8:8.2-lem-1}
+\group{Existence of Minimizers}
+\uses{lem:cofactor-divergence-free}
+Assume $n < q < \infty$ and
+\[
+\mathbf{u}_k \rightharpoonup \mathbf{u} \quad \text{weakly in } W^{1,q}(U; \R^n).
+\]
+Then
+\[
+\det D\mathbf{u}_k \rightharpoonup \det D\mathbf{u} \quad \text{weakly in } L^{q/n}(U).
+\]
+\end{lemma}
+\begin{proof}
+1. First we recall the matrix identity $(\det P)I = P(\cof P)^T$; consequently
+\[
+\det P = \sum_{j=1}^{n} p_j^i (\cof P)_j^i \quad (i = 1, \ldots, n).
+\]
+
+2. Now let $\mathbf{w} \in C^\infty(U; \R^n)$, $\mathbf{w} = (w^1, \ldots, w^n)$. Then
+\[
+\det D\mathbf{w} = \sum_{j=1}^{n} w_{x_j}^i (\cof D\mathbf{w})_j^i \quad (i = 1, \ldots, n).
+\tag{46}
+\]
+But \cref{lem:cofactor-divergence-free} asserts $\sum_{j=1}^{n} (\cof D\mathbf{w})^i_{j,x_j} = 0$. Thus formula (46) says
+\[
+\det D\mathbf{w} = \sum_{j=1}^{n} (w^i(\cof D\mathbf{w})_j^i)_{x_j}.
+\]
+Consequently \textit{the determinant of the gradient matrix can be written as a divergence.} Therefore if $v \in C_c^\infty(U)$, we have
+\[
+\int_U v \det D\mathbf{w} \, dx = -\sum_{j=1}^{n} \int_U v_{x_j} w^i(\cof D\mathbf{w})_j^i \, dx \quad (i = 1, \ldots, n).
+\tag{47}
+\]
+
+3. We have established the identity (47) for a smooth function $\mathbf{w}$; and so a standard approximation argument yields
+\[
+\int_U v \det D\mathbf{u}_k \, dx = -\sum_{j=1}^{n} \int_U v_{x_j} u_k^i(\cof D\mathbf{u}_k)_j^i \, dx
+\tag{48}
+\]
+for $k = 1, 2, \ldots$. Now since $n < q < \infty$ and $\mathbf{u}_k \rightharpoonup \mathbf{u}$ in $W^{1,q}(U; \R^n)$, we know from Morrey's inequality (\cref{thm:morreys-inequality}) that $\{\mathbf{u}_k\}_{k=1}^\infty$ is bounded in $C^{0,1-n/q}(U; \R^n)$. Thus using the Arzel\`a--Ascoli compactness criterion, \S C.7, we deduce $\mathbf{u}_k \to \mathbf{u}$ uniformly in $U$. Returning then to identity (48) we see that we could conclude
+\[
+\lim_{k \to \infty} \int_U v \det D\mathbf{u}_k \, dx = -\sum_{j=1}^{n} \int_U v_{x_j} u^i(\cof D\mathbf{u})_j^i \, dx = \int_U v \det D\mathbf{u} \, dx,
+\tag{49}
+\]
+if we knew
+\[
+\lim_{k \to \infty} \int_U \psi (\cof D\mathbf{u}_k)_j^i \, dx = \int_U \psi(\cof D\mathbf{u})_j^i \, dx
+\tag{50}
+\]
+for $i, j = 1, \ldots, n$ and each $\psi \in C_c^\infty(U)$. However $(\cof D\mathbf{u}_k)_j^i$ is the determinant of an $(n-1) \times (n-1)$ matrix, which can be analyzed as above by being written as a sum of determinants of appropriate $(n-2) \times (n-2)$ submatrices, times uniformly convergent factors. We continue and eventually must show only the obvious fact that the entries of the matrices $D\mathbf{u}_k$ converge weakly to the corresponding entries of $D\mathbf{u}$. In this way we verify (50), and thus (49).
+
+4. Finally, since $\{\mathbf{u}_k\}_{k=1}^\infty$ is bounded in $W^{1,q}(U;\R^n)$ and $|\det D\mathbf{u}_k| \leq C|D\mathbf{u}_k|^n$, we see that $\{\det D\mathbf{u}_k\}_{k=1}^\infty$ is bounded in $L^{q/n}(U)$. Hence any subsequence has a weakly convergent subsequence in $L^{q/n}(U)$, which---owing to (49)---can only converge to $\det D\mathbf{u}$.
+\end{proof}
+
+We next utilize this lemma to establish a weak lower semicontinuity assertion analogous to \cref{thm:weak-lower-semicontinuity-convex-lagrangian}, except that we will not assume that the Lagrangian $L$ is necessarily convex in $P$. Instead let us suppose that $m = n$ and $L$ has the form
+\[
+L(P, z, x) = F(P, \det P, z, x) \quad (P \in \mathbb{M}^{n \times n}, z \in \R^n, x \in U)
+\tag{51}
+\]
+where $F : \mathbb{M}^{n \times n} \times \R \times \R^n \times \overline{U} \to \R$ is smooth. We additionally hypothesize that
+\[
+\begin{cases}
+\text{for each fixed } z \in \R^n, x \in \R, \text{ the joint mapping} \\
+(P, r) \mapsto F(P, r, z, x) \text{ is convex}.
+\end{cases}
+\tag{52}
+\]
+
+\begin{definition}[Polyconvex Lagrangian]
+\label{def:polyconvex-lagrangian}
+\dcref{ch8:8.2.4-def-3}
+\group{Existence of Minimizers}
+A Lagrangian $L$ of the form (51) is called \textit{polyconvex} provided (52) holds.
+\end{definition}
+
+\begin{theorem}[Lower semicontinuity of polyconvex functionals]
+\label{thm:lower-semicontinuity-polyconvex}
+\dcref{ch8:8.2-thm-8}
+\group{Existence of Minimizers}
+\uses{def:polyconvex-lagrangian,lem:weak-continuity-of-determinants,thm:weak-lower-semicontinuity-convex-lagrangian}
+Suppose $n < q < \infty$. Assume also $L$ is bounded below and is polyconvex. Then $I[u]$ is weakly lower semicontinuous on $W^{1,q}(U;\R^n)$.
+\end{theorem}
+\begin{proof}
+Choose any sequence $\{\mathbf{u}_k\}_{k=1}^\infty$ with
+\[
+\mathbf{u}_k \rightharpoonup \mathbf{u} \quad \text{weakly in } W^{1,q}(U;\R^n).
+\tag{53}
+\]
+According to \cref{lem:weak-continuity-of-determinants},
+\[
+\det D\mathbf{u}_k \rightharpoonup \det D\mathbf{u} \quad \text{weakly in } L^{q/n}(U).
+\tag{54}
+\]
+We can now argue almost exactly as in the proof of \cref{thm:weak-lower-semicontinuity-convex-lagrangian}. Indeed, using the notation from that proof, we have
+\[
+\begin{aligned}
+I[\mathbf{u}_k] = \int_U L(D\mathbf{u}_k, \mathbf{u}_k, x)\, dx &\geq \int_{G_\epsilon} L(D\mathbf{u}_k, \mathbf{u}_k, x)\, dx \\
+&= \int_{G_\epsilon} F(D\mathbf{u}_k, \det D\mathbf{u}_k, \mathbf{u}_k, x)\, dx \\
+&\geq \int_{G_\epsilon} F(D\mathbf{u}, \det D\mathbf{u}, \mathbf{u}_k, x)\, dx \\
+&\qquad + \int_{G_\epsilon} F_P(D\mathbf{u}, \det D\mathbf{u}, \mathbf{u}_k, x) \cdot (D\mathbf{u}_k - D\mathbf{u}) \\
+&\qquad + F_r(D\mathbf{u}, \det D\mathbf{u}, \mathbf{u}_k, x)(\det D\mathbf{u}_k - \det D\mathbf{u})\, dx,
+\end{aligned}
+\]
+in view of (52). Reasoning as in the proof of \cref{thm:weak-lower-semicontinuity-convex-lagrangian} we deduce from (53), (54) that the limit of the last term is zero as $k \to \infty$.
+\end{proof}
+
+As before, we immediately deduce
+
+\begin{theorem}[Existence of minimizers, polyconvex functionals]
+\label{thm:existence-minimizer-polyconvex}
+\dcref{ch8:8.2-thm-9}
+\group{Existence of Minimizers}
+\uses{thm:lower-semicontinuity-polyconvex,def:admissible-class-systems}
+Assume that $n < q < \infty$, and that $L$ satisfies the coercivity inequality (43) and is polyconvex. Suppose also the admissible set $\mathcal{A}$ is nonempty.
+
+Then there exists $u \in \mathcal{A}$ solving
+\[
+I[u] = \min_{w \in \mathcal{A}} I[w].
+\]
+\end{theorem}
+
+\begin{example}[Nonlinear elasticity and polyconvexity]
+\label{ex:polyconvexity-nonlinear-elasticity}
+\dcref{ch8:8.2.4-ex-1}
+\group{Existence of Minimizers}
+\uses{def:polyconvex-lagrangian}
+We explain the interest in the hypothesis of polyconvexity with an application from nonlinear elasticity theory, where $n = 3$. We consider an elastic body, which initially has the reference configuration $U$. We then displace each point $x \in \partial U$ to a new position $\mathbf{g}(x)$ and wish to determine new displacement $\mathbf{u}(x)$ of each internal point $x \in U$.
+
+If the material is \textit{hyperelastic}, there exists by definition an associated energy density $L$ such that the physical displacement $\mathbf{u}$ minimizes the internal energy functional
+\[
+I[\mathbf{w}] := \int_U L(D\mathbf{w}, x)\, dx
+\]
+over all admissible displacements $\mathbf{w} \in \mathcal{A}$. Now it seems reasonable physically that $L$, which represents the internal energy density from stretching and compression, may explicitly depend on the local change in volume, that is, on $\det D\mathbf{w}$. In other words, it is physically appropriate to suppose that $L$ has the form $L(P, x) = F(P, \det P, x)$. Then $F$ describes in its first argument changes in internal energy due to changes in line elements, and in its second argument changes in internal energy due to changes in volume elements. See Ball \cite{Ball1977} for more explanation.
+\end{example}
+
+\section{Regularity}
+\label{sec:regularity-calculus-of-variations}
+
+We discuss in this section the smoothness of minimizers to our energy functionals. This is generally a quite difficult topic, and so we will make a number of strong simplifying assumptions, most notably that $L$ depends only on $p$. Thus we henceforth assume our functional $I[\cdot]$ to have the form
+\[
+I[w] := \int_U L(Dw) - wf\, dx,
+\tag{1}
+\]
+for $f \in L^2(U)$. We will also take $q = 2$, and suppose as well the growth condition
+\[
+|D_pL(p)| \le C(|p|+1) \quad (p \in \R^n).
+\tag{2}
+\]
+Then any minimizer $u \in \mathcal{A}$ is a weak solution of the Euler--Lagrange PDE
+\[
+-\sum_{i=1}^n (L_{p_i}(Du))_{x_i} = f \quad \text{in } U;
+\tag{3}
+\]
+that is,
+\[
+\int_U \sum_{i=1}^n L_{p_i}(Du) v_{x_i}\, dx = \int_U fv\, dx
+\tag{4}
+\]
+for all $v \in H_0^1(U)$.
+
+\subsection{Second Derivative Estimates}
+\label{sec:second-derivative-estimates-calculus-of-variations}
+
+We now intend to show if $u \in H^1(U)$ is a weak solution of the nonlinear PDE (3), then in fact $u \in H^2_{\text{loc}}(U)$. But to establish this we will need to strengthen our growth conditions on $L$. Let us first of all suppose
+\[
+|D^2L(p)| \le C \quad (p \in \R^n).
+\tag{5}
+\]
+In addition let us assume that $L$ is uniformly convex, and so there exists a constant $\theta > 0$ such that
+\[
+\sum_{i,j=1}^n L_{p_ip_j}(p)\xi_i\xi_j \ge \theta|\xi|^2 \quad (p,\xi \in \R^n).
+\tag{6}
+\]
+Clearly this is some sort of nonlinear analogue of our uniform ellipticity condition (\cref{def:uniform-ellipticity}) for linear PDE in \cref{chap:second-order-elliptic-equations}. The idea will therefore be to try to utilize, or at least mimic, some of the calculations from that chapter.
+
+\begin{theorem}[Second derivatives for minimizers]
+\label{thm:second-derivatives-minimizers}
+\dcref{ch8:8.3-thm-1}
+\group{Regularity}
+\uses{def:uniform-ellipticity,thm:interior-h2-regularity,thm:boundary-h2-regularity,thm:difference-quotients-weak-derivatives}
+\begin{enumerate}
+\item[(i)] Let $u \in H^1(U)$ be a weak solution of the nonlinear partial differential equation (3), where $L$ satisfies (5), (6). Then
+\[
+u \in H^2_{\mathrm{loc}}(U).
+\]
+\item[(ii)] If in addition $u \in H_0^1(U)$ and $\partial U$ is $C^2$, then
+\[
+u \in H^2(U),
+\]
+with the estimate
+\[
+\|u\|_{H^2(U)} \le C\|f\|_{L^2(U)}.
+\]
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+1. We will largely follow the proof of the interior $H^2$ regularity theorem for linear second-order elliptic PDE, \cref{thm:interior-h2-regularity}.
+
+Fix any open set $V \subset\subset U$ and choose then an open set $W$ so that $V \subset\subset W \subset\subset U$. Select a smooth cutoff function $\zeta$ satisfying
+\[
+\begin{cases}
+\zeta \equiv 1 \text{ on } V, \quad \zeta \equiv 0 \text{ in } \R^n - W \\
+0 \le \zeta \le 1.
+\end{cases}
+\]
+Let $|h| > 0$ be small, choose $k \in \{1,\ldots,n\}$, and substitute
+\[
+v := -D_k^{-h}(\zeta^2 D_k^h u)
+\]
+into (4). We are employing here the notation from \S5.8.2 (see \cref{def:difference-quotients}):
+\[
+D_k^h u(x) = \frac{u(x+he_k) - u(x)}{h} \quad (x \in W).
+\]
+Using the identity $\int_U u D_k^{-h} v\, dx = -\int_U v D_k^h u\, dx$, we deduce
+\[
+\sum_{i=1}^n \int_U D_k^h(L_{p_i}(Du))(\zeta^2 D_k^h u)_{x_i}\, dx = -\int_U f D_k^{-h}(\zeta^2 D_k^h u)\, dx.
+\tag{7}
+\]
+Now
+\[
+\begin{aligned}
+D_k^h L_{p_i}(Du(x)) &= \frac{L_{p_i}(Du(x+he_k)) - L_{p_i}(Du(x))}{h} \\
+&= \frac{1}{h}\int_0^1 \frac{d}{ds} L_{p_i}(sDu(x+he_k) + (1-s)Du(x))\, ds \\
+&= \frac{1}{h}\int_0^1 \sum_{j=1}^n L_{p_ip_j}(sDu(x+he_k)+(1-s)Du(x))\, ds \; (u_{x_j}(x+he_k) - u_{x_j}(x)) \\
+&= \sum_{j=1}^n a_{ij}^h(x) D_k^h u_{x_j}(x),
+\end{aligned}
+\tag{8}
+\]
+for
+\[
+a_{ij}^h(x) := \int_0^1 L_{p_ip_j}(sDu(x+he_k) + (1-s)Du(x))\, ds \quad (i,j=1,\ldots,n).
+\tag{9}
+\]
+We substitute (8) into (7) and perform simple calculations, to arrive at the identity:
+\[
+\begin{aligned}
+A_1 + A_2 &:= \sum_{i,j=1}^n \int_U \zeta^2 a_{ij}^h D_k^h u_{x_j} D_k^h u_{x_i}\, dx \\
+&\qquad + \sum_{i,j=1}^n \int_U a_{ij}^h D_k^h u_{x_j} D_k^h u\, 2\zeta\zeta_{x_i}\, dx \\
+&= -\int_U f D_k^h(\zeta^2 D_k^h u)\, dx =: B.
+\end{aligned}
+\tag{10}
+\]
+Now the uniform convexity condition (6) implies
+\[
+A_1 \ge \theta \int_U \zeta^2 |D_k^h Du|^2\, dx.
+\tag{11}
+\]
+Furthermore we see from (5) that
+\[
+|A_2| \le C\int_W \zeta |D_k^h Du||D_k^h u|\, dx \le \epsilon \int_W \zeta^2|D_k^h Du|^2\, dx + \frac{C}{\epsilon}\int_W |D_k^h u|^2\, dx.
+\tag{12}
+\]
+Furthermore, as in the proof of the interior regularity theorem \cref{thm:interior-h2-regularity} (\S6.3.1), we have
+\[
+|B| \le \epsilon \int_U \zeta^2 |D_k^h Du|^2\, dx + \frac{C}{\epsilon}\int_U f^2 + |Du|^2\, dx.
+\]
+We select $\epsilon = \theta/4$, to deduce from the foregoing bounds on $A_1, A_2, B$, the estimate
+\[
+\int_U \zeta^2 |D_k^h Du|^2\, dx \le C\int_W f^2 + |D_k^h u|^2\, dx \le C\int_U f^2 + |Du|^2\, dx,
+\]
+the last inequality valid according to \cref{thm:difference-quotients-weak-derivatives},(i) in \S5.8.2.
+
+2. Since $\zeta \equiv 1$ on $V$, we find
+\[
+\int_V |D_k^h Du|^2\, dx \le C\int_U f^2 + |Du|^2\, dx
+\]
+for $k = 1, \ldots, n$ and all sufficiently small $|h| > 0$. Consequently \cref{thm:difference-quotients-weak-derivatives},(iii) in \S5.8.2 implies $Du \in H^1(V)$, and so $u \in H^2(V)$. This is true for each $V \subset\subset U$; thus $u \in H^2_{\text{loc}}(U)$.
+
+3. If $u \in H_0^1(U)$ is a weak solution of (3) and $\partial U$ is $C^2$, we can then mimic the proof of the boundary regularity theorem \cref{thm:boundary-h2-regularity} (\S6.3.2) to prove $u \in H^2(U)$, with estimate
+\[
+\|u\|_{H^2(U)} \le C(\|f\|_{L^2(U)} + \|u\|_{H^1(U)});
+\]
+details are left to the reader. Now from (6) follows the inequality
+\[
+(DL(p) - DL(0))\cdot p \ge \theta|p|^2 \quad (p \in \R^n).
+\]
+If we then put $v = u$ in (4), we can employ this estimate to derive the bound
+\[
+\|u\|_{H^1(U)} \le C\|f\|_{L^2(U)},
+\]
+and so finish the proof.
+\end{proof}
+
+\subsection{Remarks on Higher Regularity}
+\label{sec:higher-regularity-remarks}
+
+We would next like to show that if $L$ is infinitely differentiable, then so is $u$. By analogy with the regularity theory developed for second-order linear elliptic PDE in \cref{chap:second-order-elliptic-equations}, it may seem natural to try to extend the $H^1_{\text{loc}}$ estimate from the previous section to obtain further estimates in the higher Sobolev spaces $H^k_{\text{loc}}(U)$ for $k = 3, 4, \ldots$.
+
+This method will \textit{not} work for the nonlinear partial differential equation (3) however. The reason is this. For linear equations we could, roughly speaking, differentiate the equation many times and still obtain a linear PDE of the same general form as that we began with. See for instance the proof of the higher interior regularity theorem \cref{thm:higher-interior-regularity} (\S6.3.1). Whereas if we differentiate a nonlinear differential equation many times, the resulting increasingly complicated expressions quickly become impossible to handle. Much deeper ideas are called for, the full development of which is beyond the scope of this book. We will nevertheless at least outline the basic plan.
+
+To start with, choose a test function $w \in C_c^\infty(U)$, select $k \in \{1, \ldots, n\}$, and set $v = -w_{x_k}$ in the identity (4), where for simplicity we now take $f \equiv 0$. Since we now know $u \in H^2_{\text{loc}}(U)$ (\cref{thm:second-derivatives-minimizers}), we can integrate by parts to find
+\[
+\int_U \sum_{i,j=1}^n L_{p_i p_j}(Du) u_{x_k x_i} w_{x_j}\, dx = 0.
+\tag{13}
+\]
+Next write
+\[
+\bar{u} := u_{x_k}
+\tag{14}
+\]
+and
+\[
+a^{ij} := L_{p_i p_j}(Du) \quad (i,j = 1, \ldots, n).
+\tag{15}
+\]
+Fix also any $V \subset\subset U$. Then after an approximation we find from (13)--(15) that
+\[
+\int_V \sum_{i,j=1}^n a^{ij}(x)\bar{u}_{x_j} w_{x_i}\, dx = 0
+\tag{16}
+\]
+for all $w \in H_0^1(V)$. This is to say that $\bar{u} \in H^1(V)$ is a weak solution of the linear, second order elliptic PDE
+\[
+-\sum_{i,j=1}^n (a^{ij}\bar{u}_{x_j})_{x_i} = 0 \quad \text{in } V.
+\tag{17}
+\]
+But we \textit{cannot} just apply our regularity theory from \cref{chap:second-order-elliptic-equations} to conclude from (17) that $\bar{u}$ is smooth, the reason being that we can deduce from (5) and (15) only that
+\[
+a^{ij} \in L^\infty(V) \quad (i,j = 1, \ldots, n).
+\]
+However a deep theorem, due independently to DeGiorgi and to Nash, asserts that any weak solution of (17) must in fact be locally Hölder continuous for some exponent $\gamma > 0$. (See Gilbarg--Trudinger \cite{GilbargTrudinger1983}[Chapter 8].) Thus if $W \subset V$ we have $\bar{u} \in C^{0,\gamma}(W)$, and so
+\[
+u \in C_{\text{loc}}^{1,\gamma}(U).
+\]
+Return to the definition (15). If $L$ is smooth, we now know $a^{ij} \in C_{\text{loc}}^{0,\gamma}(U)$ $(i,j = 1, \ldots, n)$. Then (3) and an older theorem of Schauder \cite{GilbargTrudinger1983}[Chapter 4] assert that in fact
+\[
+u \in C_{\text{loc}}^{2,\gamma}(U).
+\]
+But then $a^{ij} \in C_{\text{loc}}^{1,\gamma}(U)$; and so another version of Schauder's estimate implies
+\[
+u \in C_{\text{loc}}^{3,\gamma}(U).
+\]
+We can continue this so-called ``bootstrap'' argument, eventually to deduce $u$ is $C_{\text{loc}}^{k,\gamma}(U)$ for $k = 1, \ldots$, and so $u \in C^\infty(U)$.
+
+See Giaquinta \cite{Giaquinta1983} for much more about regularity theory in the calculus of variations.
+
+\section{Constraints}
+\label{sec:constraints-calculus-of-variations}
+
+In this section we consider applications of the calculus of variations to certain constrained minimization problems, and, in particular, discuss the role of \textit{Lagrange multipliers} in the corresponding Euler--Lagrange PDE.
+
+\subsection{Nonlinear Eigenvalue Problems}
+\label{sec:nonlinear-eigenvalue-problems}
+
+We investigate first problems with \textit{integral constraints}. To be specific, let us consider the problem of minimizing the energy functional
+\[
+I[w] := \frac{1}{2} \int_U |Dw|^2\, dx
+\tag{1}
+\]
+over all functions $w$ with, say, $w = 0$ on $\partial U$, but subject now also to the side condition that
+\[
+J[w] := \int_U G(w)\, dx = 0,
+\tag{2}
+\]
+where $G : \R \to \R$ is a given, smooth function.
+
+We will henceforth write $g = G'$. Assume now
+\[
+|g(z)| \leq C(|z| + 1),
+\tag{3}
+\]
+and so
+\[
+|G(z)| \leq C(|z|^2 + 1) \quad (z \in \R)
+\tag{4}
+\]
+for some constant $C$.
+
+\begin{definition}[Admissible class for a nonlinear eigenvalue problem]
+\label{def:admissible-class-nonlinear-eigenvalue}
+\dcref{ch8:8.4.1-def-1}
+\group{Constrained Minimization}
+Let us introduce the appropriate admissible class
+\[
+\mathcal{A} := \{w \in H_0^1(U) \mid J[w] = 0\}.
+\]
+We suppose also that the open set $U$ is bounded, connected and has a smooth boundary.
+\end{definition}
+
+\begin{theorem}[Existence of constrained minimizer]
+\label{thm:existence-constrained-minimizer-nonlinear-eigenvalue}
+\dcref{ch8:8.4-thm-1}
+\group{Constrained Minimization}
+\uses{def:admissible-class-nonlinear-eigenvalue}
+Assume the admissible set $\mathcal{A}$ is nonempty. Then there exists $u \in \mathcal{A}$ satisfying
+\[
+I[u] = \min_{w \in \mathcal{A}} I[w].
+\]
+\end{theorem}
+\begin{proof}
+Choose, as usual, a minimizing sequence $\{u_k\}_{k=1}^\infty \subset \mathcal{A}$ with
+\[
+I[u_k] \to m = \inf_{w \in \mathcal{A}} I[w].
+\]
+Then as above we can extract a subsequence
+\[
+u_{k_j} \rightharpoonup u \quad \text{weakly in } H_0^1(U),
+\tag{5}
+\]
+with $I[u] \le m$. We will be done once we show
+\[
+J[u] = 0,
+\tag{6}
+\]
+so that $u \in \mathcal{A}$. Utilizing the compactness theory from \cref{thm:rellich-kondrachov} (\S5.6), we deduce from (5) that
+\[
+u_{k_j} \to u \quad \text{in } L^2(U).
+\tag{7}
+\]
+Consequently
+\[
+\begin{aligned}
+|J(u)| = |J(u) - J(u_k)| &\le \int_U |G(u) - G(u_k)|\, dx \\
+&\le C\int_U |u-u_k|(1+|u|+|u_k|)\, dx \quad \text{by (3)} \\
+&\to 0 \quad \text{as } k \to \infty.
+\end{aligned}
+\tag{8}
+\]
+\end{proof}
+
+Far more interesting than the mere existence of constrained minimizers is an examination of the corresponding Euler--Lagrange equation.
+
+\begin{theorem}[Lagrange multiplier]
+\label{thm:lagrange-multiplier-nonlinear-eigenvalue}
+\dcref{ch8:8.4-thm-2}
+\group{Constrained Minimization}
+\uses{thm:existence-constrained-minimizer-nonlinear-eigenvalue}
+Let $u \in \mathcal{A}$ satisfy
+\[
+I[u] = \min_{w \in \mathcal{A}} I[w].
+\tag{9}
+\]
+Then there exists a real number $\lambda$ such that
+\[
+\int_U Du \cdot Dv\, dx = \lambda \int_U g(u)v\, dx
+\tag{10}
+\]
+for all $v \in H_0^1(U)$.
+\end{theorem}
+
+\begin{remark}[Nonlinear eigenvalue problem interpretation]
+\label{rem:nonlinear-eigenvalue-lagrange-multiplier-interpretation}
+\dcref{ch8:8.4.1-rem-1}
+\group{Constrained Minimization}
+\uses{thm:lagrange-multiplier-nonlinear-eigenvalue}
+Thus $u$ is a weak solution of the nonlinear boundary-value problem
+\[
+\begin{cases}
+-\Delta u = \lambda g(u) & \text{in } U \\
+u = 0 & \text{on } \partial U,
+\end{cases}
+\tag{11}
+\]
+where $\lambda$ is the \textit{Lagrange multiplier} corresponding to the \textit{integral constraint}
+\[
+J[u] = 0.
+\tag{12}
+\]
+A problem of the form (11) for the unknowns $(u,\lambda)$, with $u \not\equiv 0$, is a \textit{nonlinear eigenvalue problem}.
+\end{remark}
+
+\begin{proof}[Proof of \cref{thm:lagrange-multiplier-nonlinear-eigenvalue}]
+1. Fix any function $v \in H_0^1(U)$. Assume first
+\[
+g(u) \text{ is not equal to zero a.e. within } U.
+\tag{13}
+\]
+Choose then any function $w \in H_0^1(U)$ with
+\[
+\int_U g(u)w\, dx \neq 0;
+\tag{14}
+\]
+this is possible because of (13). Now write
+\[
+j(\tau, \sigma) := J[u + \tau v + \sigma w] = \int_U G(u + \tau v + \sigma w)\, dx \quad (\tau, \sigma \in \R).
+\tag{15}
+\]
+Clearly
+\[
+j(0,0) = \int_U G(u)\, dx = 0.
+\tag{16}
+\]
+In addition, $j$ is $C^1$ and
+\[
+\frac{\partial j}{\partial \tau}(\tau, \sigma) = \int_U g(u + \tau v + \sigma w)v\, dx,
+\tag{17}
+\]
+\[
+\frac{\partial j}{\partial \sigma}(\tau, \sigma) = \int_U g(u + \tau v + \sigma w)w\, dx.
+\tag{18}
+\]
+Consequently (14) implies
+\[
+\frac{\partial j}{\partial \sigma}(0, 0) \neq 0.
+\tag{19}
+\]
+According to the Implicit Function Theorem (\S C.6), there exists a $C^1$ function $\phi: \R \to \R$ such that
+\[
+\phi(0) = 0
+\tag{20}
+\]
+and
+\[
+j(\tau, \phi(\tau)) = 0
+\tag{21}
+\]
+for all sufficiently small $\tau$, say $|\tau| \leq \tau_0$. Differentiating, we discover
+\[
+\frac{\partial j}{\partial \tau}(\tau, \phi(\tau)) + \frac{\partial j}{\partial \sigma}(\tau, \phi(\tau))\phi'(\tau) = 0;
+\]
+whence (17) and (18) yield
+\[
+\phi'(0) = \frac{\int_U g(u)v\, dx}{\int_U g(u)w\, dx}.
+\tag{22}
+\]
+
+2. Now set
+\[
+\mathbf{w}(\tau) := \tau v + \phi(\tau)w \quad (|\tau| \le \tau_0)
+\]
+and write
+\[
+i(\tau) := I[u + \mathbf{w}(\tau)].
+\]
+Since (21) implies $J[u + \mathbf{w}(\tau)] = 0$, we see that $u + \mathbf{w}(\tau) \in \mathcal{A}$. So the $C^1$ function $i(\cdot)$ has a minimum at $0$. Thus
+\[
+\begin{aligned}
+0 = i'(0) &= \int_U (Du + \tau Dv + \phi(\tau)Dw) \cdot (Dv + \phi'(\tau)Dw)\, dx\Big|_{\tau=0} \\
+&= \int_U Du \cdot (Dv + \phi'(0)Dw)\, dx.
+\end{aligned}
+\tag{23}
+\]
+Recall now (22) and \textit{define}
+\[
+\lambda := \frac{\int_U Du \cdot Dw\, dx}{\int_U g(u)w\, dx},
+\]
+to deduce from (23) the desired equality
+\[
+\int_U Du \cdot Dv\, dx = \lambda \int_U g(u)v\, dx
+\]
+for all $v \in H_0^1(U)$.
+
+3. Suppose now instead of (13) that
+\[
+g(u) = 0 \quad \text{a.e. in } U.
+\]
+Approximating $g$ by bounded functions, we deduce $DG(u) = g(u)Du = 0$ a.e. Hence, since $U$ is connected, $G(u)$ is constant a.e. It follows that $G(u) = 0$ a.e., because $J[u] = \int_U G(u)\, dx = 0$. As $u = 0$ on $\partial U$ in the trace sense, it follows that $G(0) = 0$.
+
+But then $u = 0$ a.e., as otherwise $I[u] > I[0] = 0$. Since $g = 0$ a.e., the identity (10) is trivially valid in this case, for any $\lambda$.
+\end{proof}
+
+\subsection{Unilateral Constraints, Variational Inequalities}
+\label{sec:unilateral-constraints-variational-inequalities}
+
+We study now calculus of variation problems with certain pointwise, \textit{one-sided constraints} on the values of $u(x)$ for each $x \in U$. For definiteness let us consider the problem of minimizing, say, the energy functional
+\[
+I[w] := \int_U \frac{1}{2}|Dw|^2 - fw\, dx,
+\tag{24}
+\]
+among all functions $w$ belonging to the set
+\[
+\mathcal{A} := \{w \in H^1_0(U) \mid w \geq h \text{ a.e. in } U\},
+\tag{25}
+\]
+where $h : \overline{U} \to \R$ is a given smooth function, called the \textit{obstacle}. The convex admissible set $\mathcal{A}$ thus comprises those functions $w \in H^1_0(U)$ satisfying the one-sided or \textit{unilateral} constraint that $w \geq h$. We suppose as well that $f$ is a given, smooth function.
+
+\begin{definition}[Admissible class for the obstacle problem]
+\label{def:admissible-class-obstacle-problem}
+\dcref{ch8:8.4.2-def-1}
+\group{Variational Inequalities}
+The set $\mathcal{A}$ of (25) is the admissible class for the obstacle problem with obstacle $h$.
+\end{definition}
+
+\begin{theorem}[Existence of minimizer, obstacle problem]
+\label{thm:existence-minimizer-obstacle-problem}
+\dcref{ch8:8.4-thm-3}
+\group{Variational Inequalities}
+\uses{def:admissible-class-obstacle-problem}
+Assume the admissible set $\mathcal{A}$ is nonempty. Then there exists a unique function $u \in \mathcal{A}$ satisfying
+\[
+I[u] = \min_{w \in \mathcal{A}} I[w].
+\]
+\end{theorem}
+\begin{proof}
+1. The existence of a minimizer follows very easily from the general ideas discussed before. We need only note explicitly that if $\{u_{k_j}\}_{j=1}^\infty \subset \mathcal{A}$ is a minimizing sequence with $u_{k_j} \rightharpoonup u$ weakly in $H^1_0(U)$, then by compactness we have $u_{k_j} \to u$ strongly in $L^2(U)$. Since $u_{k_j} \geq h$ a.e., it follows that $u \geq h$ a.e. Therefore $u \in \mathcal{A}$.
+
+2. We now prove uniqueness. Assume $u$ and $\bar{u} \in \mathcal{A}$ are two minimizers, with $u \neq \bar{u}$. Then $w := \frac{u+\bar{u}}{2} \in \mathcal{A}$, and
+\[
+I[w] = \int_U \frac{1}{2}\left(\frac{Du + D\bar{u}}{2}\right)^2 - f\left(\frac{u+\bar{u}}{2}\right) dx = \int_U \frac{1}{8}(|Du|^2 + 2Du \cdot D\bar{u} + |D\bar{u}|^2) - f\left(\frac{u+\bar{u}}{2}\right) dx.
+\]
+Now $2a \cdot b = |a|^2 + |b|^2 - |a - b|^2$. Thus
+\[
+\begin{aligned}
+I[w] &= \int_U \frac{1}{8}(2|Du|^2 + 2|D\bar{u}|^2 - |Du - D\bar{u}|^2) - f\left(\frac{u+\bar{u}}{2}\right) dx \\
+&< \frac{1}{2} \int_U \frac{1}{2}|Du|^2 - fu\, dx + \frac{1}{2} \int_U \frac{1}{2}|D\bar{u}|^2 - f\bar{u}\, dx \\
+&= \frac{1}{2}I[u] + \frac{1}{2}I[\bar{u}],
+\end{aligned}
+\]
+the strict inequality holding since $u \neq \bar{u}$. This is a contradiction, since $u$ and $\bar{u}$ are minimizers.
+\end{proof}
+
+We next compute the analogue of the Euler--Lagrange equation, which for the case at hand turns out to be an inequality.
+
+\begin{theorem}[Variational characterization of minimizer]
+\label{thm:variational-inequality-characterization}
+\dcref{ch8:8.4-thm-4}
+\group{Variational Inequalities}
+\uses{thm:existence-minimizer-obstacle-problem}
+Let $u \in \mathcal{A}$ be the unique solution of
+\[
+I[u] = \min_{w \in \mathcal{A}} I[w].
+\]
+Then
+\[
+\int_U Du \cdot D(w - u)\, dx \geq \int_U f(w - u)\, dx \quad \text{for all } w \in \mathcal{A}.
+\tag{26}
+\]
+We call (26) a \textit{variational inequality}.
+\end{theorem}
+\begin{proof}
+1. Fix any element $w \in \mathcal{A}$. Then for each $0 \leq \tau \leq 1$,
+\[
+u + \tau(w - u) = (1 - \tau)u + \tau w \in \mathcal{A},
+\]
+since $\mathcal{A}$ is convex. Thus if we set
+\[
+i(\tau) := I[u + \tau(w - u)],
+\]
+we see that $i(0) \leq i(\tau)$ for all $0 \leq \tau \leq 1$. Hence
+\[
+i'(0) \geq 0.
+\tag{27}
+\]
+
+2. Now if $0 < \tau \leq 1$,
+\[
+\begin{aligned}
+\frac{i(\tau) - i(0)}{\tau} &= \frac{1}{\tau} \int_U \frac{|Du + \tau D(w-u)|^2 - |Du|^2}{2} - f(u + \tau(w-u) - u)\, dx \\
+&= \int_U Du \cdot D(w-u) + \frac{\tau|D(w-u)|^2}{2} - f(w-u)\, dx.
+\end{aligned}
+\]
+Thus (27) implies
+\[
+0 \leq i'(0) = \int_U Du \cdot D(w-u) - f(w-u)\, dx.
+\]
+Notice that we obtain the inequality (27), since we can in effect take only ``one-sided'' variations, away from the constraint.
+\end{proof}
+
+\begin{remark}[Interpretation of the variational inequality]
+\label{rem:obstacle-problem-free-boundary-interpretation}
+\dcref{ch8:8.4.2-rem-1}
+\group{Variational Inequalities}
+\uses{thm:variational-inequality-characterization}
+To gain some insight into the variational inequality (26), let us quote without proof a regularity assertion (see Kinderlehrer--Stampacchia \cite{KinderlehrerStampacchia1980}), which states $u \in W^{2,\infty}(U)$, provided $\partial U$ is smooth. Hence the set
+\[
+O := \{x \in U \mid u(x) > h(x)\}
+\]
+is open, and
+\[
+C := \{x \in U \mid u(x) = h(x)\}
+\]
+is (relatively) closed.
+
+\begin{figure}[h]\centering
+% [FIGURE: Diagram showing the free boundary for the obstacle problem. Two regions are shown: a hatched region labeled with "-\Delta u > \xi" and "u = h", and an unhatched region labeled "free boundary". The boundary between them forms a curved surface.]
+\end{figure}
+\noindent\textbf{The free boundary for the obstacle problem}
+
+We claim that in fact $u \in C^\infty(O)$ and
+\[
+-\Delta u = f \quad \text{in } O.
+\tag{28}
+\]
+To see this, fix any test function $v \in C_c^\infty(O)$. Then if $|\tau|$ is sufficiently small, $w := u + \tau v \geq h$, and so $w \in \mathcal{A}$. Thus (26) implies $\tau \int_O Du \cdot Dv - fv\, dx \geq 0$. This inequality is valid for all sufficiently small $\tau$, both positive and negative, and so in fact
+\[
+\int_O Du \cdot Dv - fv\, dx = 0
+\]
+for all $v \in C_c^\infty(O)$. Hence $u$ is a weak solution of (28); whence linear regularity theory (\cref{sec:elliptic-equations-definitions}) shows $u \in C^\infty(O)$.
+
+Now if $v \in C_c^\infty(U)$ satisfies $v \geq 0$ and if $0 < \tau < 1$, then $w := u+\tau v \in \mathcal{A}$, whence $\int_U Du \cdot Dv - fv\, dx \geq 0$. But since $u \in W^{2,\infty}(U)$, we can integrate by parts to deduce $\int_U (-\Delta u - f)v\, dx \geq 0$ for all nonnegative functions $v \in C_c^\infty(U)$. Thus
+\[
+-\Delta u \geq f \quad \text{a.e. in } U.
+\tag{29}
+\]
+We summarize our conclusions by observing from (28), (29) that
+\[
+\begin{cases} u \geq h, -\Delta u \geq f & \text{a.e. in } U \\ -\Delta u = f & \text{on } U \cap \{u > h\}. \end{cases}
+\tag{30}
+\]
+
+The set
+\[
+F := \partial O \cap U
+\]
+is called the \textit{free boundary}. Many interesting problems in applied mathematics involve partial differential equations with free boundaries. Such of these problems as can be recast as variational inequalities become relatively easy to study, especially in that there is no explicit mention of the free boundary in the inequalities (30). Applications arise in stopping time optimal control problems for Brownian motion, in groundwater hydrology, in plasticity theory, etc. See Kinderlehrer--Stampacchia \cite{KinderlehrerStampacchia1980}.
+\end{remark}
+
+\subsection{Harmonic Maps}
+\label{sec:harmonic-maps-pointwise-constraints}
+
+We consider next the case of \textit{pointwise} constraints as exemplified by \textit{harmonic maps into spheres}. We are interested now in the problem of minimizing the energy
+\[
+I[\mathbf{w}] := \frac{1}{2}\int_U |D\mathbf{w}|^2\, dx
+\tag{31}
+\]
+over all functions belonging to the admissible class
+\[
+\mathcal{A} := \{\mathbf{w} \in H^1(U;\R^m) \mid \mathbf{w} = \mathbf{g} \text{ on } \partial U, |\mathbf{w}| = 1 \text{ a.e.}\}.
+\tag{32}
+\]
+
+\begin{figure}[h]\centering
+% [FIGURE: A diagram showing a harmonic map u from a shaded, irregularly-shaped planar region labeled U into the unit sphere $S^{m-1}$, with a portion of the sphere's surface shaded black. Caption: "A harmonic map into a sphere".]
+\end{figure}
+
+The idea is that we are trying to minimize the energy over all appropriate maps from $U \subset \R^n$ into the unit sphere $S^{m-1} = \partial B(0,1) \subset \R^m$. This problem and its variants arises for instance as a greatly simplified model for the behavior of liquid crystals.
+
+It is straightforward to verify that there exists at least one minimizer in $\mathcal{A}$, provided $\mathcal{A} \neq \emptyset$.
+
+\begin{theorem}[Euler--Lagrange equation for harmonic maps]
+\label{thm:euler-lagrange-harmonic-maps}
+\dcref{ch8:8.4-thm-5}
+\group{Constrained Minimization}
+Let $\mathbf{u} \in \mathcal{A}$ satisfy
+\[
+I[\mathbf{u}] = \min_{\mathbf{w} \in \mathcal{A}} I[\mathbf{w}].
+\]
+Then
+\[
+\int_U D\mathbf{u} : D\mathbf{v}\, dx = \int_U |D\mathbf{u}|^2 \mathbf{u} \cdot \mathbf{v}\, dx
+\tag{33}
+\]
+for each $\mathbf{v} \in H_0^1(U;\R^m) \cap L^\infty(U;\R^m)$.
+\end{theorem}
+
+\begin{remark}[Harmonic map equation and the Lagrange multiplier function]
+\label{rem:harmonic-maps-lagrange-multiplier-function}
+\dcref{ch8:8.4.3-rem-1}
+\group{Constrained Minimization}
+\uses{thm:euler-lagrange-harmonic-maps}
+We interpret (33) as saying that $\mathbf{u} = (u^1, \ldots, u^m)$ is a weak solution of the boundary-value problem
+\[
+\begin{cases} -\Delta \mathbf{u} = |D\mathbf{u}|^2 \mathbf{u} & \text{in } U \\ \mathbf{u} = \mathbf{g} & \text{on } \partial U. \end{cases}
+\tag{34}
+\]
+The \textit{function} $\lambda = |D\mathbf{u}|^2$ is the Lagrange multiplier corresponding to the \textit{pointwise} constraint $|\mathbf{u}| = 1$. Note carefully that for a single, integral constant (\cref{sec:nonlinear-eigenvalue-problems}) the Lagrange multiplier is a number, but for a pointwise constraint it is a function.
+\end{remark}
+
+\begin{proof}[Proof of \cref{thm:euler-lagrange-harmonic-maps}]
+1. Fix $\mathbf{v} \in H_0^1(U;\R^m) \cap L^\infty(U;\R^m)$. Then since $|\mathbf{u}| = 1$ a.e., we have
+\[
+|\mathbf{u} + \tau \mathbf{v}| \neq 0 \text{ a.e.}
+\]
+for each sufficiently small $\tau$. Consequently
+\[
+\mathbf{v}(\tau) := \frac{\mathbf{u} + \tau\mathbf{v}}{|\mathbf{u}+\tau\mathbf{v}|} \in \mathcal{A}.
+\tag{35}
+\]
+Thus
+\[
+i(\tau) := I[\mathbf{v}(\tau)]
+\]
+has a minimum at $\tau = 0$, and so, as usual,
+\[
+i'(0) = 0.
+\tag{36}
+\]
+
+2. Now
+\[
+i'(0) = \int_U D\mathbf{u} : D\mathbf{v}'(0)\, dx \qquad \left(\, ' = \frac{d}{d\tau}\right).
+\tag{37}
+\]
+But we compute directly from (35) that
+\[
+\mathbf{v}'(\tau) = \frac{\mathbf{v}}{|\mathbf{u}+\tau\mathbf{v}|} - \frac{[(\mathbf{u}+\tau\mathbf{v})\cdot \mathbf{v}](\mathbf{u}+\tau\mathbf{v})}{|\mathbf{u}+\tau\mathbf{v}|^3};
+\]
+whence $\mathbf{v}'(0) = \mathbf{v} - (\mathbf{u}\cdot\mathbf{v})\mathbf{u}$. Inserting this equality into (36), (37), we find
+\[
+0 = \int_U D\mathbf{u} : D\mathbf{v} - D\mathbf{u} : D((\mathbf{u}\cdot\mathbf{v})\mathbf{u})\, dx.
+\tag{38}
+\]
+However since $|\mathbf{u}|^2 \equiv 1$, we have
+\[
+(D\mathbf{u})^T\mathbf{u} = \mathbf{0}.
+\]
+Using this fact, we then verify
+\[
+D\mathbf{u}:D((\mathbf{u}\cdot\mathbf{v})\mathbf{u}) = |D\mathbf{u}|^2(\mathbf{u}\cdot\mathbf{v}) \quad \text{a.e. in } U.
+\]
+This identity employed in (38) gives (33).
+\end{proof}
+
+\subsection{Incompressibility}
+\label{sec:incompressibility-constraints}
+
+\subsubsection{Stokes' problem}
+
+Suppose $U \subset \R^3$ is open, bounded, simply connected, and set
+\[
+I[\mathbf{w}] := \int_U \frac{1}{2}|D\mathbf{w}|^2 - \mathbf{f} \cdot \mathbf{w}\, dx,
+\]
+for $\mathbf{w}$ belonging to
+\[
+\mathcal{A} = \{\mathbf{w} \in H_0^1(U; \R^3) \mid \Div \mathbf{w} = 0 \text{ in } U\}.
+\]
+Here $\mathbf{f} \in L^2(U; \R^3)$ is given.
+
+\begin{definition}[Admissible class for Stokes' problem]
+\label{def:admissible-class-stokes-problem}
+\dcref{ch8:8.4.4-def-1}
+\group{Incompressible Fluids}
+The set $\mathcal{A}$ above, of divergence-free vector fields in $H_0^1(U;\R^3)$, is the admissible class for Stokes' problem.
+\end{definition}
+
+There is no problem in showing by customary methods that there exists a unique minimizer $\mathbf{u} \in \mathcal{A}$. We interpret $\mathbf{u}$ as representing the velocity field of a steady fluid flow within the region $U$, subject to the external force $\mathbf{f}$. The constraint that $\Div \mathbf{u} = 0$ ensures that the flow is incompressible: see the Remark at the end of this section.
+
+How does the constraint manifest itself in the Euler--Lagrange equation?
+
+\begin{theorem}[Pressure as Lagrange multiplier]
+\label{thm:pressure-lagrange-multiplier-stokes}
+\dcref{ch8:8.4-thm-6}
+\group{Incompressible Fluids}
+\uses{def:admissible-class-stokes-problem}
+There exists a scalar function $p \in L^2_{\text{loc}}(U)$ such that
+\[
+\int_U Du : Dv\, dx = \int_U p\, \Div \mathbf{v} + \mathbf{f}\cdot\mathbf{v}\, dx
+\tag{39}
+\]
+for all $\mathbf{v} \in H^1(U;\R^3)$ with compact support within $U$.
+\end{theorem}
+
+\begin{remark}[Weak formulation of Stokes' problem]
+\label{rem:stokes-problem-weak-formulation}
+\dcref{ch8:8.4.4-rem-1}
+\group{Incompressible Fluids}
+\uses{thm:pressure-lagrange-multiplier-stokes}
+We interpret (39) as saying that $(\mathbf{u}, p)$ form a weak solution of \textit{Stokes' problem}
+\[
+\begin{cases}
+-\Delta \mathbf{u} = \mathbf{f} - Dp & \text{in } U \\
+\Div \mathbf{u} = 0 & \text{in } U \\
+\mathbf{u} = 0 & \text{on } \partial U.
+\end{cases}
+\tag{40}
+\]
+The function $p$ is the \textit{pressure} and arises as a Lagrange multiplier corresponding to the \textit{incompressibility condition} $\Div \mathbf{u} = 0$.
+\end{remark}
+
+\begin{proof}[Proof of \cref{thm:pressure-lagrange-multiplier-stokes}]
+1. Assume first $\mathbf{v} \in \mathcal{A}$. Then for each $\tau \in \R$, $\mathbf{u} + \tau \mathbf{v} \in \mathcal{A}$. Thus
+\[
+0 = I'(0) = \int_U Du : Dv - \mathbf{f} \cdot \mathbf{v} \, dx.
+\tag{41}
+\]
+
+2. Fix now $V \subset\subset U$, $V$ smooth and simply connected, and select $\mathbf{w} \in H_0^1(V;\R^3)$ with $\Div \mathbf{w} = 0$. Choose $0 < \epsilon < \dist(V, \partial U)$ and set $\mathbf{v} = \mathbf{v}^\epsilon := \eta_\epsilon * \mathbf{w}$ in (41), $\eta_\epsilon$ denoting the usual mollifier and $\mathbf{w}$ defined to be zero in $U - V$. Then
+\[
+0 = \int_U Du : Dv^\epsilon - f \cdot v^\epsilon\, dx = \int_U Du^\epsilon : Dw - f^\epsilon \cdot w\, dx
+\tag{42}
+\]
+for
+\[
+\mathbf{u}^\epsilon := \eta_\epsilon * \mathbf{u}, \quad \mathbf{f}^\epsilon := \eta_\epsilon * \mathbf{f}.
+\tag{43}
+\]
+As $\mathbf{u}^\epsilon$ is smooth, (42) implies
+\[
+\int_V (-\Delta \mathbf{u}^\epsilon - \mathbf{f}^\epsilon) \cdot \mathbf{w}\, dx = 0
+\tag{44}
+\]
+for each $\mathbf{w} \in H_0^1(V;\R^3)$ with $\Div \mathbf{w} = 0$.
+
+3. Fix any smooth vector field $\zeta \in C_c^\infty(V;\R^3)$ and put $\mathbf{w} = \curl \zeta$ in (44). This is legitimate since $\Div \mathbf{w} = \Div(\curl \zeta) = 0$. Then, temporarily writing $\mathbf{h} := \Delta \mathbf{u}^\epsilon + \mathbf{f}^\epsilon$, we find
+\[
+0 = \int_V \mathbf{h} \cdot \curl \zeta\, dx = \int_V h^1(\zeta_{x_2}^3 - \zeta_{x_3}^2) + h^2(\zeta_{x_3}^1 - \zeta_{x_1}^3) + h^3(\zeta_{x_1}^2 - \zeta_{x_2}^1)\, dx,
+\]
+for $\mathbf{h} = (h^1, h^2, h^3), \zeta = (\zeta^1, \zeta^2, \zeta^3)$. An integration by parts reveals
+\[
+0 = \int_V \zeta^1(h_{x_2}^3 - h_{x_3}^2) + \zeta^2(h_{x_3}^1 - h_{x_1}^3) + \zeta^3(h_{x_1}^2 - h_{x_2}^1)\, dx.
+\]
+As $\zeta^1, \zeta^2, \zeta^3 \in C_c^\infty(V)$ are arbitrary, we deduce $\curl \mathbf{h} = 0$ in $V$. Since $V$ is simply connected, there consequently exists a smooth function $p^\epsilon$ in $V$ such that
+\[
+Dp^\epsilon = \mathbf{h} = \Delta \mathbf{u}^\epsilon + \mathbf{f}^\epsilon \quad \text{in } V.
+\tag{45}
+\]
+
+4. If necessary we can add a constant to $p^\epsilon$ to ensure $\int_V p^\epsilon\, dx = 0$. In view of this normalization, there exists a smooth vector field $\mathbf{v}^\epsilon: V \to \R^3$ solving
+\[
+\begin{cases} \Div \mathbf{v}^\epsilon = p^\epsilon & \text{in } V \\ \mathbf{v}^\epsilon = 0 & \text{on } \partial V. \end{cases}
+\tag{46}
+\]
+In addition we have the estimate
+\[
+\|\mathbf{v}^\epsilon\|_{H^1(V;\R^3)} \le C\|p^\epsilon\|_{L^2(V)},
+\tag{47}
+\]
+the constant $C$ depending only on $V$. (We omit the proof of the existence of the vector field $\mathbf{v}^\epsilon$: the construction both is intricate and requires knowledge of certain estimates for Laplace's equation with Neumann-type boundary conditions beyond the scope of this book. See Dacorogna--Moser \cite{DacorognaMoser1990} for details.)
+
+Now compute
+\[
+\begin{aligned}
+\int_V (p^\epsilon)^2\, dx &= \int_V p^\epsilon\, \Div \mathbf{v}^\epsilon\, dx \quad \text{by (46)} \\
+&= -\int_V Dp^\epsilon \cdot \mathbf{v}^\epsilon\, dx \\
+&= \int_V (-\Delta \mathbf{u}^\epsilon - \mathbf{f}^\epsilon) \cdot \mathbf{v}^\epsilon\, dx \quad \text{by (45)} \\
+&= \int_V D\mathbf{u}^\epsilon : D\mathbf{v}^\epsilon - \mathbf{f}^\epsilon \cdot \mathbf{v}^\epsilon\, dx \\
+&\leq \|\mathbf{v}^\epsilon\|_{H^1(V;\R^3)}(\|\mathbf{u}^\epsilon\|_{H^1(V)} + \|\mathbf{f}^\epsilon\|_{L^2(V)}) \\
+&\leq C\|p^\epsilon\|_{L^2(V)}(\|\mathbf{u}\|_{H^1_0(V)} + \|\mathbf{f}\|_{L^2(V)}) \quad \text{by (47)}.
+\end{aligned}
+\]
+Thus
+\[
+\|p^\epsilon\|_{L^2(V)} \leq C\left(\|\mathbf{u}\|_{H^1(V)} + \|\mathbf{f}\|_{L^2(V)}\right).
+\tag{48}
+\]
+
+5. In view of estimate (48) there exists a subsequence $\epsilon_j \to 0$ so that
+\[
+p^{\epsilon_j} \rightharpoonup p \quad \text{weakly in } L^2(V)
+\tag{49}
+\]
+for some $p \in L^2(V)$. Now (45) implies
+\[
+\int_V D\mathbf{u}^\epsilon : Dv\, dx = \int_V p^\epsilon\, \Div v + \mathbf{f}^\epsilon \cdot v\, dx
+\]
+for all $v \in H_0^1(V;\R^3)$. Sending $\epsilon = \epsilon_j \to 0$ we find
+\[
+\int_V D\mathbf{u} : Dv\, dx = \int_V p\, \Div v + \mathbf{f} \cdot v\, dx
+\tag{50}
+\]
+as well.
+
+6. Finally choose a sequence of sets $V_k \subset\subset U$ ($k = 1, \ldots$) as above, with $V_1 \subset\subset V_2 \subset\subset V_3 \subset\subset \cdots$ and $U = \bigcup_{k=1}^\infty V_k$. Utilizing steps 2--5 we find $p_k \in L^2(V_k)$ ($k = 1, \ldots$) so that
+\[
+\int_{V_k} D\mathbf{u} : Dv\, dx = \int_{V_k} p_k\, \Div v + \mathbf{f} \cdot v\, dx
+\tag{51}
+\]
+for each $v \in H_0^1(V_k;\R^3)$. Adding constants as necessary to each $p_k$, we deduce from (51) that if $1 \leq l \leq k$, then $p_k = p_l$ on $V_l$. We finally define $p = p_k$ on $V_k$ ($k = 1, \ldots$).
+\end{proof}
+
+\subsubsection{Incompressible nonlinear elasticity}
+
+We return now to the model of nonlinear elasticity discussed before in \cref{sec:systems-existence-minimizers}. Suppose that $\mathbf{u}$ represents the displacement of an elastic body which has the rest configuration $U$. Let us suppose now that the elastic body is incompressible, which now means
+\[
+\det D\mathbf{u} = 1.
+\]
+We therefore suppose the energy density function $L : \mathbb{M}^{3 \times 3} \times U \to \R$ is given, and consider the problem of minimizing the elastic energy
+\[
+I[\mathbf{w}] := \int_U L(D\mathbf{w}, x)\, dx
+\]
+over all $\mathbf{w}$ in the admissible set
+
+\begin{definition}[Admissible class, incompressible elasticity]
+\label{def:admissible-class-incompressible-elasticity}
+\dcref{ch8:8.4.4-def-2}
+\group{Nonlinear Elasticity}
+\[
+\mathcal{A} := \{\mathbf{w} \in W^{1,q}(U; \R^3) \mid \mathbf{w} = \mathbf{g} \text{ on } \partial U,\ \det D\mathbf{w} = 1 \text{ a.e.}\}
+\]
+for some $q > 3$.
+\end{definition}
+
+\begin{theorem}[Minimizers with determinant constraint]
+\label{thm:existence-minimizer-determinant-constraint}
+\dcref{ch8:8.4-thm-7}
+\group{Nonlinear Elasticity}
+\uses{def:admissible-class-incompressible-elasticity,lem:weak-continuity-of-determinants}
+Assume the mapping
+\[
+P \mapsto L(P,x)
+\]
+is convex, and $L$ satisfies the coercivity condition
+\[
+L(P,x) \geq \alpha|P|^q - \beta \quad (P \in \mathbb{M}^{3 \times 3}, x \in U)
+\]
+for some $\alpha > 0$, $\beta \geq 0$. Suppose finally $\mathcal{A} \neq \emptyset$.
+
+Then there exists $\mathbf{u} \in \mathcal{A}$ satisfying
+\[
+I[\mathbf{u}] = \min_{\mathbf{w} \in \mathcal{A}} I[\mathbf{w}].
+\]
+\end{theorem}
+\begin{proof}
+We as usual select a minimizing sequence, with
+\[
+\mathbf{u}_{k_j} \rightharpoonup \mathbf{u} \quad \text{weakly in } W^{1,q}(U; \R^3).
+\]
+Since
+\[
+I[\mathbf{u}] \leq \liminf_{j \to \infty} I[\mathbf{u}_{k_j}],
+\]
+we must only show that $\mathbf{u} \in \mathcal{A}$. However, since in view of \cref{lem:weak-continuity-of-determinants} we have $\det D\mathbf{u}_{k_j} \rightharpoonup \det D\mathbf{u}$ weakly in $L^{q/n}(U)$, we see that $\det D\mathbf{u} = 1$ a.e., as required.
+\end{proof}
+
+\begin{remark}[Velocity versus displacement incompressibility conditions]
+\label{rem:incompressibility-euler-formula}
+\dcref{ch8:8.4.4-rem-2}
+\group{Nonlinear Elasticity}
+\uses{def:admissible-class-stokes-problem,def:admissible-class-incompressible-elasticity}
+It may seem odd that the incompressibility condition in the Stokes problem is
+\[
+\Div \mathbf{u} = 0
+\tag{52}
+\]
+and in the nonlinear elasticity problem is
+\[
+\det D\mathbf{u} = 1.
+\tag{53}
+\]
+The explanation is that $\mathbf{u}$ represents a velocity in (52) and a displacement in (53). More generally if $\mathbf{w}$ is a velocity field, say of a fluid, we compute the motion of a particle initially at a point $x$ by solving the ODE
+\[
+\begin{cases}
+\dot{\mathbf{y}}(t) = \mathbf{w}(\mathbf{y}(t), t) & (t \in \R) \\
+\mathbf{y}(0) = x.
+\end{cases}
+\]
+Write $\mathbf{y}(t) = \mathbf{y}(t, x)$ to display the dependence on the initial position $x$. Then for each $t > 0$, the mapping $x \mapsto \mathbf{y}(t, x)$ is volume-preserving if
+\[
+J(x, t) = \det D_x \mathbf{y}(t, x) = 1 \quad \text{for all } x.
+\]
+Clearly $J(0, x) = 1$, and a calculation verifies \textit{Euler's formula}:
+\[
+J_t(x, t) = (\Div \mathbf{w})(\mathbf{y}(t, x), t)J(x, t),
+\]
+the divergence taken with respect to the spatial variables. Hence if $\Div \mathbf{w} = 0$, the flow is volume preserving.
+\end{remark}
+
+\section{Critical Points}
+\label{sec:critical-points-calculus-of-variations}
+
+Thus far we have studied the problem of locating minimizers of various energy functionals, subject perhaps to constraints, and of discovering the appropriate nonlinear Euler--Lagrange equations they satisfy. For this section we turn our attention to the problem of finding additional solutions of the Euler--Lagrange PDE, by looking for other \textit{critical points}. These critical points will not in general be minimizers, but rather ``saddle points'' of $I[\cdot]$.
+
+\subsection{Mountain Pass Theorem}
+\label{sec:mountain-pass-theorem-section}
+
+We develop here some machinery which ensures that an abstract functional $I[\cdot]$ has a critical point.
+
+\subsubsection{Critical points, deformations}
+
+Hereafter $H$ denotes a real Hilbert space, with norm $\|\cdot\|$ and inner product $(\cdot,\cdot)$. Let $I : H \to \R$ be a nonlinear functional on $H$.
+
+\begin{definition}[Fr\'echet differentiability]
+\label{def:frechet-derivative-hilbert-space}
+\dcref{ch8:8.5.1-def-1}
+\group{Critical Point Theory}
+We say $I$ is differentiable at $u \in H$ if there exists $v \in H$ such that
+\[
+I[w] = I[u] + (v, w - u) + o(\|w - u\|) \quad (w \in H).
+\tag{1}
+\]
+The element $v$, if it exists, is unique. We then write $I'[u] = v$.
+\end{definition}
+
+\begin{definition}[The class $C^1(H;\R)$]
+\label{def:c1-functional-class-hilbert}
+\dcref{ch8:8.5.1-def-2}
+\group{Critical Point Theory}
+\uses{def:frechet-derivative-hilbert-space}
+We say $I$ belongs to $C^1(H;\R)$ if $I'[u]$ exists for each $u \in H$, and the mapping $I' : H \to H$ is continuous.
+\end{definition}
+
+\begin{remark}[Simplifying Lipschitz hypothesis]
+\label{rem:lipschitz-derivative-simplification}
+\dcref{ch8:8.5.1-rem-1}
+\group{Critical Point Theory}
+\uses{def:c1-functional-class-hilbert}
+The theory we will develop below holds if $I \in C^1(H;\R)$, but the proofs will be greatly streamlined provided we additionally assume
+\[
+I' : H \to H \text{ is Lipschitz continuous on bounded subsets of } H.
+\tag{2}
+\]
+\end{remark}
+
+\noindent\textbf{Notation.} (i) We denote by $\mathcal{C}$ the collection of functions $I \in C^1(H;\R)$ satisfying (2).
+
+(ii) If $c \in \R$, we write
+\[
+A_c := \{u \in H \mid I[u] \leq c\}, \quad K_c := \{u \in H \mid I[u] = c, I'[u] = 0\}.
+\]
+
+\begin{definition}[Critical points and critical values]
+\label{def:critical-point-critical-value}
+\dcref{ch8:8.5.1-def-3}
+\group{Critical Point Theory}
+\uses{def:frechet-derivative-hilbert-space}
+(i) We say $u \in H$ is a \textit{critical point} if $I'[u] = 0$.
+
+(ii) The real number $c$ is a \textit{critical value} if $K_c \neq \emptyset$.
+\end{definition}
+
+We now want to prove that if $c$ is \textit{not} a critical level, we can nicely deform the set $A_{c+\epsilon}$ into $A_{c-\epsilon}$ for some $\epsilon > 0$. The idea will be to solve an appropriate ODE in $H$ and to follow the resulting flow ``downhill''. As $H$ is generally infinite dimensional, we will need some kind of compactness condition.
+
+\begin{definition}[Palais--Smale condition]
+\label{def:palais-smale-condition}
+\dcref{ch8:8.5.1-def-4}
+\group{Critical Point Theory}
+A functional $I \in C^1(H;\R)$ satisfies the \textit{Palais--Smale compactness condition} if each sequence $\{u_k\}_{k=1}^\infty \subset H$ such that
+
+(i) $\{I[u_k]\}_{k=1}^\infty$ is bounded
+
+and
+
+(ii) $I'[u_k] \to 0$ in $H$,
+
+is precompact in $H$.
+\end{definition}
+
+\begin{theorem}[Deformation Theorem]
+\label{thm:deformation-theorem}
+\dcref{ch8:8.5-thm-1}
+\group{Critical Point Theory}
+\uses{def:palais-smale-condition,def:critical-point-critical-value}
+Assume $I \in \mathcal{C}$ satisfies the Palais--Smale condition. Suppose also
+\[
+K_c = \emptyset.
+\tag{3}
+\]
+Then for each sufficiently small $\epsilon > 0$, there exists a constant $0 < \delta < \epsilon$ and a function
+\[
+\eta \in C([0,1] \times H; H)
+\]
+such that the mappings
+\[
+\eta_t(u) = \eta(t, u) \quad (0 \le t \le 1, u \in H)
+\]
+satisfy
+\begin{itemize}
+\item[(i)] $\eta_0(u) = u$ \quad $(u \in H)$,
+\item[(ii)] $\eta_1(u) = u$ \quad $(u \notin I^{-1}[c - \epsilon, c + \epsilon])$,
+\item[(iii)] $I[\eta_t(u)] \le I[u]$ \quad $(u \in H, 0 \le t \le 1)$,
+\item[(iv)] $\eta_1(A_{c+\delta}) \subset A_{c-\delta}$.
+\end{itemize}
+\end{theorem}
+\begin{proof}
+1. We first claim that there exist constants $0 < \sigma, \epsilon < 1$ such that
+\[
+\|I'[u]\| \ge \sigma \text{ for each } u \in A_{c+\epsilon} - A_{c-\epsilon}.
+\tag{4}
+\]
+The proof is by contradiction. Were (4) false for all constants $\sigma, \epsilon > 0$, there would exist sequences $\sigma_k \to 0$, $\epsilon_k \to 0$ and elements
+\[
+u_k \in A_{c+\epsilon_k} - A_{c-\epsilon_k}
+\tag{5}
+\]
+with
+\[
+\|I'[u_k]\| < \sigma_k.
+\tag{6}
+\]
+According to the Palais--Smale condition, there is a subsequence $\{u_{k_j}\}_{j=1}^\infty$ and an element $u \in H$ with $u_{k_j} \to u$ in $H$. But then since $I \in C^1(H; \R)$, (5) and (6) imply $I[u] = c$, $I'[u] = 0$. Consequently $K_c \ne \emptyset$, a contradiction to our hypothesis (3).
+
+2. Now fix $\delta$ to satisfy
+\[
+0 < \delta < \epsilon, \quad 0 < \delta < \frac{\sigma^2}{2}.
+\tag{7}
+\]
+Write
+\[
+A := \{u \in H \mid I[u] \le c - \epsilon \text{ or } I[u] \ge c + \epsilon\},
+\]
+\[
+B := \{u \in H \mid c - \delta \le I[u] \le c + \delta\}.
+\]
+Since $I'$ is bounded on bounded sets, we verify that the mapping $u \mapsto \dist(u, A) + \dist(u, B)$ is bounded below by a positive constant on each bounded subset of $H$. Consequently, the function
+\[
+g(u) := \frac{\dist(u, A)}{\dist(u, A) + \dist(u, B)} \quad (u \in H)
+\]
+satisfies
+\[
+0 \le g \le 1, \quad g = 0 \text{ on } A, \quad g = 1 \text{ on } B.
+\tag{8}
+\]
+Set
+\[
+h(t) := \begin{cases} 1, & 0 \le t \le 1 \\ 1/t, & t \ge 1. \end{cases}
+\tag{9}
+\]
+Finally define the mapping $V : H \to H$ by
+\[
+V(u) := -g(u)h(\|I'[u]\|)I'[u] \quad (u \in H).
+\tag{10}
+\]
+Observe that $V$ is bounded.
+
+3. Consider now for each $u \in H$ the ODE
+\[
+\begin{cases} \dfrac{d\eta}{dt}(t) = V(\eta(t)) & (t > 0) \\ \eta(0) = u. \end{cases}
+\tag{11}
+\]
+As $V$ is bounded and Lipschitz continuous on bounded sets there is a unique solution, existing for all times $t \ge 0$. We write $\eta = \eta(t, u) = \eta_t(u)$ ($t \ge 0, u \in H$) to display the dependence of the solution on both the time $t$ and the initial position $u \in H$. Restricting ourselves to times $0 \le t \le 1$, we see that the mapping $\eta \in C([0, 1] \times H; H)$ so defined satisfies assertions (i) and (ii).
+
+4. We now compute
+\[
+\begin{aligned}
+\frac{d}{dt}I[\eta_t(u)] &= \left( I'[\eta_t(u)], \frac{d}{dt}\eta_t(u) \right) \\
+&= (I'[\eta_t(u)], V(\eta_t(u))) \\
+&= -g(\eta_t(u))h(\|I'[\eta_t(u)]\|) \|I'[\eta_t(u)]\|^2.
+\end{aligned}
+\tag{12}
+\]
+In particular
+\[
+\frac{d}{dt}I[\eta_t(u)] \le 0 \quad (u \in H, 0 \le t \le 1),
+\]
+and so assertion (iii) is valid.
+
+5. Now fix any point
+\[
+u \in A_{c+\delta}.
+\tag{13}
+\]
+We want to prove
+\[
+\eta_t(u) \in A_{c-\delta}
+\tag{14}
+\]
+and thereby verify assertion (iv). If $\eta_t(u) \notin B$ for some $0 \leq t \leq 1$, we are done; and so we may as well suppose instead $\eta_t(u) \in B$ ($0 \leq t \leq 1$). Then $g(\eta_t(u)) = 1$ ($0 \leq t \leq 1$). Consequently, calculation (12) yields
+\[
+\frac{d}{dt}I[\eta_t(u)] = -h(\|I'[\eta_t(u)]\|)\|I'[\eta_t(u)]\|^2.
+\tag{15}
+\]
+Now if $\|I'[\eta_t(u)]\| \geq 1$, then (9) and (4) imply
+\[
+\frac{d}{dt}I[\eta_t(u)] = -\|I'[\eta_t(u)]\| \leq -\sigma.
+\]
+On the other hand, if $\|I'[\eta_t(u)]\| \leq 1$, (9) and (4) yield
+\[
+\frac{d}{dt}I[\eta_t(u)] \leq -\sigma^2.
+\]
+Both these inequalities, and (15), then imply
+\[
+I[\eta_t(u)] \leq I[u] - \sigma^2 \leq c + \delta - \sigma^2 \leq c - \delta \text{ by (7)}.
+\]
+This estimate establishes (14) and completes the proof.
+\end{proof}
+
+\subsubsection{Mountain Pass Theorem}
+
+Next we employ an interesting ``min-max'' technique, using the deformation $\eta$ built above to deduce the existence of a critical point.
+
+\begin{theorem}[Mountain Pass Theorem]
+\label{thm:mountain-pass-theorem}
+\dcref{ch8:8.5-thm-2}
+\group{Critical Point Theory}
+\uses{thm:deformation-theorem}
+Assume $I \in \mathcal{C}$ satisfies the Palais--Smale condition. Suppose also
+\begin{itemize}
+\item[(i)] $I[0] = 0$,
+\item[(ii)] there exist constants $r, a > 0$ such that
+\[
+I[u] \geq a \text{ if } \|u\| = r,
+\]
+\item[(iii)] there exists an element $v \in H$ with
+\[
+\|v\| > r, \quad I[v] \leq 0.
+\]
+\end{itemize}
+Define
+\[
+\Gamma := \{\mathbf{g} \in C([0,1]; H) \mid \mathbf{g}(0) = 0, \, \mathbf{g}(1) = v\}.
+\]
+Then
+\[
+c = \inf_{\mathbf{g} \in \Gamma} \max_{0 \le t \le 1} I[\mathbf{g}(t)]
+\]
+is a \textit{critical value} of $I$.
+\end{theorem}
+
+Think of the graph of $I[\cdot]$ as a landscape with a low spot at $0$, surrounded by a ring of mountains. Beyond these mountains lies another low spot at $v$. The idea is to look for a path $\mathbf{g}$ connecting $0$ to $v$, which passes through a mountain pass, that is, a saddle point for $I[\cdot]$. But note carefully: we are only asserting the existence of a critical point at the ``energy level'' $c$, which may not necessarily correspond to a true saddle point.
+
+\begin{proof}
+1. Clearly
+\[
+c \ge a.
+\tag{16}
+\]
+
+2. Assume that $c$ is not a critical value of $I$, so that
+\[
+K_c = \emptyset.
+\tag{17}
+\]
+Choose then any sufficiently small number
+\[
+0 < \epsilon < \frac{a}{2}.
+\tag{18}
+\]
+According to the Deformation Theorem (\cref{thm:deformation-theorem}), there exist a constant $0 < \delta < \epsilon$ and a homeomorphism $\eta: H \to H$ with
+\[
+\eta(A_{c+\delta}) \subset A_{c-\delta}
+\tag{19}
+\]
+and
+\[
+\eta(u) = u \text{ if } u \notin I^{-1}[c - \delta, c + \epsilon].
+\tag{20}
+\]
+
+3. Now select $\mathbf{g} \in \Gamma$ satisfying
+\[
+\max_{0 \le t \le 1} I[\mathbf{g}(t)] \le c + \delta.
+\tag{21}
+\]
+Then $\tilde{\mathbf{g}} := \eta \circ \mathbf{g}$ also belongs to $\Gamma$, since $\eta(\mathbf{g}(0)) = \eta(0) = 0$ and $\eta(\mathbf{g}(1)) = \eta(v) = v$, according to (20). But then (21) implies $\max_{0 \le t \le 1} I[\tilde{\mathbf{g}}(t)] \le c - \delta$; whence $c = \inf_{\mathbf{g} \in \Gamma} \max_{0 \le t \le 1} I[\mathbf{g}(t)] \le c - \delta$, a contradiction.
+\end{proof}
+
+\subsection{Application to Semilinear Elliptic PDE}
+\label{sec:semilinear-elliptic-application}
+
+To illustrate the utility of the Mountain Pass Theorem, let us investigate now the semilinear boundary-value problem:
+\[
+\begin{cases}
+-\Delta u = f(u) & \text{in } U \\
+u = 0 & \text{on } \partial U.
+\end{cases}
+\tag{22}
+\]
+We assume $f$ is smooth, and for some
+\[
+1 < p < \frac{n+2}{n-2}
+\]
+we have
+\[
+|f(z)| \le C(1 + |z|^p), \quad |f'(z)| \le C(1 + |z|^{p-1}) \quad (z \in \R),
+\tag{23}
+\]
+where $C$ is a constant. We will suppose also
+\[
+0 \le F(z) \le \gamma f(z)z \text{ for some constant } \gamma < \frac{1}{2},
+\tag{24}
+\]
+where $F(z) := \int_0^z f(s)\, ds$ and $z \in \R$. We hypothesize finally for constants $0 < a \le A$ that
+\[
+a|z|^{p+1} \le |F(z)| \le A|z|^{p+1} \quad (z \in \R).
+\tag{25}
+\]
+Now (25) implies $f(0) = 0$, and so obviously $u \equiv 0$ is a trivial solution of (22). We want to find another.
+
+\begin{remark}[A power-law example]
+\label{rem:power-nonlinearity-semilinear-example}
+\dcref{ch8:8.5.2-rem-1}
+\group{Critical Point Theory}
+Observe that the PDE
+\[
+-\Delta u = |u|^{p-1}u
+\]
+falls under the hypotheses above. We will return to this particular nonlinearity again in \S9.4.2.
+\end{remark}
+
+\begin{theorem}[Existence of a nontrivial solution]
+\label{thm:existence-nontrivial-solution-semilinear-elliptic}
+\dcref{ch8:8.5-thm-3}
+\group{Critical Point Theory}
+\uses{thm:mountain-pass-theorem,thm:lax-milgram-theorem}
+The boundary-value problem (22) has at least one weak solution $u \not\equiv 0$.
+\end{theorem}
+\begin{proof}
+1. Define
+\[
+I[u] := \int_U \frac{1}{2}|Du|^2 - F(u)\, dx
+\tag{26}
+\]
+for $u \in H_0^1(U)$. We intend to apply the Mountain Pass Theorem to $I[\cdot]$.
+
+We set $H = H_0^1(U)$, with the norm $\|u\| = \left(\int_U |Du|^2\, dx\right)^{1/2}$ and inner product $(u,v) = \int_U Du \cdot Dv\, dx$. Then
+\[
+I[u] = \frac{1}{2}\|u\|^2 - \int_U F(u)\, dx =: I_1[u] - I_2[u].
+\]
+
+2. We first claim
+\[
+I \text{ belongs to the class } \mathcal{C}.
+\tag{27}
+\]
+To see this, note first that for each $u, w \in H$,
+\[
+I_1[w] = \frac{1}{2}\|w\|^2 = \frac{1}{2}\|u + w - u\|^2 = \frac{1}{2}\|u\|^2 + (u, w - u) + \frac{1}{2}\|w - u\|^2.
+\]
+Hence $I_1$ is differentiable at $u$, with $I_1'[u] = u$. Consequently, $I_1 \in \mathcal{C}$.
+
+3. We must next examine the term $I_2$. Recall from the Lax--Milgram Theorem (\cref{thm:lax-milgram-theorem}) that for each element $v^* \in H^{-1}(U)$, the problem
+\[
+\begin{cases} -\Delta v = v^* & \text{in } U \\ v = 0 & \text{on } \partial U \end{cases}
+\]
+has a unique solution $v \in H_0^1(U)$. We will write $v = Kv^*$; so that
+\[
+K : H^{-1}(U) \to H_0^1(U) \text{ is an isometry.}
+\tag{28}
+\]
+Note in particular that if $w \in L^{2n/(n+2)}(U)$, then the linear functional $w^*$ defined by
+\[
+(w^*, u) := \int_U wu\, dx \quad (u \in H_0^1(U))
+\]
+belongs to $H^{-1}(U)$. (We will misuse notation and say ``$w \in H^{-1}(U)$''.) Observe next that $p\left(\frac{2n}{n+2}\right) < \frac{n+2}{n-2} \cdot \frac{2n}{n+2} = 2^*$, and so $f(u) \in L^{2n/(n+2)}(U) \subset H^{-1}(U)$ if $u \in H_0^1(U)$.
+
+We now demonstrate that if $u \in H_0^1(U)$, then
+\[
+I_2'[u] = K[f(u)].
+\tag{29}
+\]
+To see this, note first that
+\[
+F(a + b) = F(a) + f(a)b + \int_0^1 (1-s)f'(a + sb)\, ds\, b^2.
+\]
+Thus for each $w \in H_0^1(U)$,
+\[
+\begin{aligned}
+I_2[w] = \int_U F(w)\, dx &= \int_U F(u + w - u)\, dx \\
+&= \int_U F(u) + f(u)(w - u)\, dx + R \\
+&= I_2[u] + \int_U DK[f(u)] \cdot D(w - u)\, dx + R,
+\end{aligned}
+\tag{30}
+\]
+where the remainder term $R$ satisfies, according to (23),
+\[
+\begin{aligned}
+|R| &\leq C \int_U (1 + |u|^{p-1} + |w-u|^{p-1})|w - u|^2\, dx \\
+&\leq C \left(\int_U |w-u|^2 + |w-u|^{p+1}\, dx\right) + C\left(\int_U |u|^{p+1}\, dx\right)^{\frac{p-1}{p+1}}\left(\int_U |w-u|^{p+1}\, dx\right)^{\frac{2}{p+1}}.
+\end{aligned}
+\]
+Since $p + 1 < 2^*$, the Sobolev inequalities show $R = o(\|w - u\|)$. Thus we see from (28) that
+\[
+I_2[w] = I_2[u] + (K[f(u)], w) + o(\|w - u\|),
+\]
+as required.
+
+Finally we note that if $u, \bar{u} \in H_0^1(U)$ with $\|u\|, \|\bar{u}\| \leq L$, then
+\[
+\|I_2'[u] - I_2'[\bar{u}]\| = \|K[f(u)] - K[f(\bar{u})]\|_{H_0^1(U)} = \|f(u) - f(\bar{u})\|_{H^{-1}(U)} \leq \|f(u) - f(\bar{u})\|_{L^{\frac{2n}{n+2}}(U)}.
+\]
+But
+\[
+\begin{aligned}
+\|f(u) - f(\bar{u})\|_{L^{\frac{2n}{n+2}}(U)} &\leq C \left(\int_U ((1 + |u|^{p-1} + |\bar{u}|^{p-1})|u - \bar{u}|)^{\frac{2n}{n+2}}\, dx\right)^{\frac{n+2}{2n}} \\
+&\leq C \left(\int_U (1 + |u|^{p-1} + |\bar{u}|^{p-1})^{\frac{2n}{n+2}\cdot\frac{n+2}{2}}\, dx\right)^{\frac{1}{n}}  \|u - \bar{u}\|_{L^2(U)} \\
+&\leq C(L)\|u - \bar{u}\|_{L^2(U)} \leq C(L)\|u - \bar{u}\|,
+\end{aligned}
+\]
+where we used (23). Thus $I_2' : H_0^1(U) \to H_0^1(U)$ is Lipschitz continuous on bounded sets. Consequently $I_2 \in \mathcal{C}$, and we have established assertion (27).
+
+4. Now we verify the Palais--Smale condition. For this suppose $\{u_k\}_{k=1}^\infty \subset H_0^1(U)$, with
+\[
+\{I[u_k]\}_{k=1}^\infty \text{ bounded}
+\tag{31}
+\]
+and
+\[
+I'[u_k] \to 0 \text{ in } H_0^1(U).
+\tag{32}
+\]
+According to the foregoing
+\[
+u_k - K(f(u_k)) \to 0 \quad \text{in } H_0^1(U).
+\tag{33}
+\]
+Thus for each $\epsilon > 0$ we have
+\[
+\left|(I'[u_k], v)\right| = \left|\int_U Du_k \cdot Dv - f(u_k)v\, dx\right| \leq \epsilon\|v\| \quad (v \in H_0^1(U))
+\]
+for $k$ large enough. Let $v = u_k$ above to find
+\[
+\left|\int_U |Du_k|^2 - f(u_k)u_k\, dx\right| \leq \epsilon\|u_k\|
+\]
+for each $\epsilon > 0$ and for all $k$ sufficiently large. For $\epsilon = 1$ in particular, we see
+\[
+\int_U f(u_k)u_k\, dx \leq \|u_k\|^2 + \|u_k\|
+\tag{34}
+\]
+for all $k$ sufficiently large. But since (31) says
+\[
+\left(\frac{1}{2}\|u_k\|^2 - \int_U F(u_k)\, dx\right) \leq C < \infty
+\]
+for all $k$ and some constant $C$, we deduce
+\[
+\|u_k\|^2 \leq C + 2\int_U F(u_k)\, dx \leq C + 2\gamma\left(\|u_k\|^2 + \|u_k\|\right) \quad \text{by (34), (24).}
+\]
+Since $2\gamma < 1$, we discover that $\{u_k\}_{k=1}^\infty$ is bounded in $H_0^1(U)$. Hence there exists a subsequence $\{u_{k_j}\}_{j=1}^\infty$ and $u \in H_0^1(U)$, with $u_{k_j} \rightharpoonup u$ weakly in $H_0^1(U)$ and $u_{k_j} \to u$ in $L^{p+1}(U)$, the latter assertion holding since $p+1 < 2^*$. But then $f(u_k) \to f(u)$ in $H^{-1}(U)$, whence $K[f(u_k)] \to K[f(u)]$ in $H_0^1(U)$. Consequently (33) implies
+\[
+u_{k_j} \to u \quad \text{in } H_0^1(U).
+\tag{35}
+\]
+
+5. We finally verify the remaining hypotheses of the Mountain Pass Theorem. Clearly $I[0] = 0$. Suppose now that $u \in H_0^1(U)$, with $\|u\| = r$, for $r > 0$ to be selected below. Then
+\[
+I[u] = I_1[u] - I_2[u] = \frac{r^2}{2} - I_2[u].
+\tag{36}
+\]
+Now hypothesis (25) implies, since $p + 1 < 2^*$, that
+\[
+|I_2[u]| \leq C \int_U |u|^{p+1}\, dx \leq C \left(\int_U |u|^{2^*}\, dx\right)^{\frac{p+1}{2^*}} \leq C\|u\|^{p+1} \leq Cr^{p+1}.
+\]
+In view of (36), then
+\[
+I[u] \geq \frac{r^2}{2} - Cr^{p+1} \geq \frac{r^2}{4} = a > 0,
+\]
+provided $r > 0$ is small enough, since $p + 1 > 2$. Now fix some element $u \in H$, $u \neq 0$. Write $v := tu$ for $t > 0$ to be selected. Then
+\[
+\begin{aligned}
+I[v] = I_1[tu] - I_2[tu] &= t^2 I_1[u] - \int_U F(tu)\, dx \\
+&\leq t^2 I_1[u] - at^{p+1} \int_U |u|^{p+1}\, dx \quad \text{by (25)} \\
+&< 0
+\end{aligned}
+\]
+for $t > 0$ large enough.
+
+6. We have at last checked all the hypotheses of the Mountain Pass Theorem. There must consequently exist a function $u \in H_0^1(U)$, $u \neq 0$, with
+\[
+I'[u] = u - K[f(u)] = 0.
+\]
+In particular for each $v \in H_0^1(U)$, we have
+\[
+\int_U Du \cdot Dv\, dx = \int_U f(u)v\, dx,
+\]
+and so $u$ is a weak solution of (22).
+\end{proof}
+
+See \S9.4.2 for further discussion about nonlinear Poisson equations, and in particular the significance of the \textit{critical exponent} $\frac{n+2}{n-2}$ in hypothesis (23).
+
+\section{Problems}
+\label{sec:calculus-of-variations-problems}
+
+In the exercises $U$ always denotes a bounded, open subset of $\R^n$, with smooth boundary.
+
+%ORIGINAL-NUMBER: 1
+\begin{exercise}
+This problem illustrates that a weakly convergent sequence can in fact be rather badly behaved.
+
+(i) Prove $u_k(x) = \sin(kx) \rightharpoonup 0$ as $k \to \infty$ in $L^2(0,1)$.
+
+(ii) Fix $a, b \in \R$, $0 < \lambda < 1$. Define
+\[
+u_k(x) = \begin{cases} a & \text{if } j/k \le x < \lambda(j+1)/k \\ b & \text{if } \lambda(j+1)/k \le x < (j+1)/k \end{cases} \quad (j = 0, \ldots, k-1).
+\]
+Prove $u_k \rightharpoonup \lambda a + (1-\lambda)b$ in $L^2(0,1)$.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 2
+\begin{exercise}
+Find $L = L(p, z, x)$ so that the PDE
+\[
+-\Delta u + D\phi \cdot Du = f \quad \text{in } U
+\]
+is the Euler--Lagrange equation corresponding to the functional $I[w] := \int_U L(Dw, w, x)\, dx$. Here $\phi, f : \overline{U} \to \R$ are given smooth functions.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 3
+\begin{exercise}
+The \textit{elliptic regularization} of the heat equation is the PDE
+\[
+(*) \qquad u_t - \Delta u - \epsilon u_{tt} = 0 \quad \text{in } U_T,
+\]
+where $\epsilon > 0$ and $U_T = U \times (0, T]$. Show that $(*)$ is the Euler--Lagrange equation corresponding to an energy functional $I_\epsilon[w] := \int_{U_T} L_\epsilon(Dw, w_t, w, x, t)\, dx\, dt$.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 4
+\begin{exercise}
+Assume $\eta : \R^n \to \R$ is $C^1$.
+
+(i) Show $L(P, z, x) = \eta(z) \det P$ ($P \in \mathbb{M}^{n \times n}$, $z \in \R^n$) is a null Lagrangian.
+
+(ii) Deduce that if $\mathbf{u} : \R^n \to \R^n$ is $C^1$, then
+\[
+\int_U \eta(\mathbf{u}) \det D\mathbf{u}\, dx
+\]
+depends only on $\mathbf{u}|_{\partial U}$.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 5
+\begin{exercise}
+(Continuation). Fix $x_0 \in \mathbf{u}(\partial U)$, and choose $\eta$ as above so that $\int_{\R^n} \eta\, dz = 1$, $\spt \eta \subset B(x_0, r)$, $r$ chosen so small that $B(x_0, r) \cap \mathbf{u}(\partial U) = \emptyset$. Define
+\[
+\deg(\mathbf{u}, x_0) = \int_U \eta(\mathbf{u}) \det D\mathbf{u}\, dx,
+\]
+the \textit{degree} of $\mathbf{u}$ relative to $x_0$. Prove the degree is an integer.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 6
+\begin{exercise}
+Let $\Sigma \subset \R^3$ denote the graph of the smooth function $u : U \to \R$, $U \subset \R^2$. Then
+\[
+(*) \qquad \int_U (1 + |Du|^2)^{-1} \det D^2u\, dx
+\]
+represents the integral of the Gauss curvature over $\Sigma$. Prove this expression depends only upon $Du$ restricted to $\partial U$. (The Gauss--Bonnet Theorem in differential geometry computes $(*)$ in terms of the geodesic curvature of $\partial\Gamma$.)
+\end{exercise}
+
+%ORIGINAL-NUMBER: 7
+\begin{exercise}
+Let $m = n$. Prove
+\[
+L(P) = \tr(P^2) - \tr(P)^2 \quad (P \in \mathbb{M}^{n \times n})
+\]
+is a null Lagrangian.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 8
+\begin{exercise}
+Explain why the methods in \S8.2 will not work to prove the existence of a minimizer of the functional
+\[
+I[w] := \int_U (1 + |Dw|^2)^{1/2}\, dx
+\]
+over $\mathcal{A} = \{w \in W^{1,q}(U) \mid w = g \text{ on } \partial U\}$, for any $1 \le q < \infty$.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 9
+\begin{exercise}
+(Second variation for systems). Assume $\mathbf{u} : U \to \R^m$ is a smooth minimizer of the functional
+\[
+I[\mathbf{w}] := \int_U L(D\mathbf{w}, \mathbf{w}, x)\, dx.
+\]
+
+(i) Show
+\[
+\sum_{i,j=1}^n \sum_{k,l=1}^m \frac{\partial^2 L}{\partial p_k^i \partial p_l^j}(D\mathbf{u}, \mathbf{u}, x)\eta_k \eta_l \xi_i \xi_j \ge 0
+\]
+for all $x \in U$, $\xi \in \R^n$, $\eta \in \R^m$.
+
+(ii) Give an example of a nonconvex function $L : \mathbb{M}^{m \times n} \to \R$ satisfying
+\[
+\sum_{i,j=1}^n \sum_{k,l=1}^m \frac{\partial^2 L(P)}{\partial p_k^i \partial p_l^j} \eta_k \eta_l \xi_i \xi_j \ge 0
+\]
+for all $P \in \mathbb{M}^{m \times n}$, $\xi \in \R^n$, $\eta \in \R^m$.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 10
+\begin{exercise}
+Use the methods of \S8.4.1 to show the existence of a nontrivial weak solution $u \in H_0^1(U)$, $u \not\equiv 0$, of
+\[
+\begin{cases} -\Delta u = |u|^{q-1}u & \text{in } U \\ u = 0 & \text{on } \partial U \end{cases}
+\]
+for $1 < q < \frac{n+2}{n-2}$, $n > 2$.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 11
+\begin{exercise}
+Assume $\beta: \R \to \R$ is smooth, with
+\[
+0 < a \le \beta'(z) \le b \quad (z \in \R)
+\]
+for constants $a, b$. Let $f \in L^2(U)$. Formulate what it means for $u \in H^1(U)$ to be a weak solution of the nonlinear boundary-value problem
+\[
+\begin{cases}
+-\Delta u = f & \text{in } U \\
+\dfrac{\partial u}{\partial \nu} + \beta(u) = 0 & \text{on } \partial U.
+\end{cases}
+\]
+Prove there exists a unique weak solution.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 12
+\begin{exercise}
+Assume $u$ is a smooth minimizer of the area integral
+\[
+I[w] = \int_U (1 + |Dw|^2)^{1/2}\, dx,
+\]
+subject to given boundary conditions $w = g$ on $\partial U$ and the constraint
+\[
+J[w] = \int_U w\, dx = 1.
+\]
+Prove the graph of $u$ is a surface of constant mean curvature. (Hint: Recall \cref{ex:minimal-surfaces-calculus-of-variations}.)
+\end{exercise}
+
+%ORIGINAL-NUMBER: 13
+\begin{exercise}
+(i) Show there exists a unique minimizer $u \in \mathcal{A}$ of
+\[
+I[w] = \int_U \frac{1}{2}|Dw|^2 - fw\, dx,
+\]
+where $f \in L^2(U)$ and
+\[
+\mathcal{A} = \{w \in H_0^1(U) \mid |Dw| \le 1 \text{ a.e.}\}.
+\]
+
+(ii) Prove
+\[
+\int_U Du \cdot D(w - u)\, dx \ge \int_U f(w - u)\, dx
+\]
+for all $w \in \mathcal{A}$.
+\end{exercise}
+
+\section{References}
+\label{sec:calculus-of-variations-references}
+
+\textbf{Section 8.1} See Giaquinta \cite{Giaquinta1983} for more about the calculus of variations. Another good source is Giaquinta--Hildebrandt \cite{GiaquintaHildebrandt1996}, and Zeidler \cite{Zeidler1985}[Vol. 3] is a general reference for variational methods.
+
+\textbf{Section 8.2} The proof of \cref{thm:weak-lower-semicontinuity-convex-lagrangian} in \cref{sec:convexity-lower-semicontinuity-existence} is from Ladyzhenskaya--Uraltseva \cite{LadyzhenskayaUraltseva1968}.
+
+\textbf{Section 8.3} See Giaquinta \cite{Giaquinta1983} for additional information about regularity (and partial regularity) of minimizers.
+
+\textbf{Section 8.4} The book by Kinderlehrer--Stampacchia \cite{KinderlehrerStampacchia1980} explains much more about variational inequalities.
+
+\textbf{Section 8.5} The Mountain Pass Theorem is due to Ambrosetti and Rabinowitz. Consult Rabinowitz \cite{Rabinowitz1986} (the source of \cref{sec:critical-points-calculus-of-variations}) for further results on saddle point methods.

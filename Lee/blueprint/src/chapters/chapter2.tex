@@ -1,0 +1,1813 @@
+% Source: Lee, "Introduction to Riemannian Manifolds" (2nd ed.), Chapter 2 "Riemannian Metrics", PDF pages 23-68 of /home/axel/MathBooks/Introduction to Riemannian Manifolds (Second Edition) 2(1).pdf.
+% Transcribed page-by-page by vision subagents (haiku), then merged and restructured into
+% leanblueprint conventions (semantic \label, bracketed titles, \uses dependency edges, \dcref to Lee's own numbering) below.
+% (Merged in 3 chunks due to chapter length.)
+
+\section{Definitions}
+
+Everything we know about the Euclidean geometry of $\mathbb{R}^n$ can be derived from its \textbf{dot product}, which is defined for $v = (v^1, \ldots, v^n)$ and $w = (w^1, \ldots, w^n)$ by
+\[
+v \cdot w = \sum_{i=1}^{n} v^i w^i.
+\]
+
+The dot product has a natural generalization to arbitrary vector spaces. Given a vector space $V$ (which we always assume to be real), an \textbf{inner product on $V$} is a map $V \times V \to \mathbb{R}$, typically written $(v, w) \mapsto \langle v, w \rangle$, that satisfies the following properties for all $u, v, x \in V$ and $a, b \in \mathbb{R}$:
+
+\begin{enumerate}
+\item[\textmd{(i)}] \textbf{Symmetry:} $\langle v, w \rangle = \langle w, v \rangle$.
+\item[\textmd{(ii)}] \textbf{Bilinearity:} $\langle av + bw, x \rangle = a\langle v, x \rangle + b\langle w, x \rangle = \langle x, av + bw \rangle$.
+\item[\textmd{(iii)}] \textbf{Positive Definiteness:} $\langle v,v \rangle \geq 0$, with equality if and only if $v = 0$.
+\end{enumerate}
+
+A vector space endowed with a specific inner product is called an \textit{inner product space}.
+
+An inner product on $V$ allows us to make sense of geometric quantities such as lengths of vectors and angles between vectors. First, we define the \textit{length} or \textit{norm} of a vector $v \in V$ as
+$$|v| = \langle v,v \rangle^{1/2}.$$
+
+The following identity shows that an inner product is completely determined by knowledge of the lengths of all vectors.
+
+\begin{lemma}[Polarization Identity]
+\label{lem:polarization-identity}
+\dcref{ch2:2.1}
+Suppose $\langle \cdot,\cdot \rangle$ is an inner product on a vector space $V$. Then for all $v, w \in V$,
+$$\langle v,w \rangle = \frac{1}{4}\bigl[\langle v+w, v+w \rangle - \langle v-w, v-w \rangle\bigr].$$
+\end{lemma}
+
+\begin{exercise}
+\label{exer:polarization-proof}
+\dcref{ch2:2.2}
+Prove the preceding lemma.
+\end{exercise}
+
+The \textit{angle} between two nonzero vectors $v, w \in V$ is defined as the unique $\theta \in [0,\pi]$ satisfying
+$$\cos \theta = \frac{\langle v,w \rangle}{|v||w|}.$$
+
+Two vectors $v, w \in V$ are said to be \textit{orthogonal} if $\langle v,w \rangle = 0$, which means that either their angle is $\pi/2$ or one of the vectors is zero. If $S \subseteq V$ is a linear subspace, the set $S^\perp \subseteq V$, consisting of all vectors in $V$ that are orthogonal to every vector in $S$, is also a linear subspace, called the \textit{orthogonal complement} of $S$. Vectors $v_1,\ldots,v_k$ are called \textit{orthonormal} if they are of length $1$ and pairwise orthogonal, or equivalently if $\langle v_i, v_j \rangle = \delta_{ij}$ (where $\delta_{ij}$ is the \textit{Kronecker delta symbol} defined in Appendix B; see (B.1)). The following well-known proposition shows that every finite-dimensional inner product space has an orthonormal basis.
+
+\begin{proposition}[Gram-Schmidt Algorithm]
+\label{prop:gram-schmidt}
+\dcref{ch2:2.3}
+Let $V$ be an $n$-dimensional inner product space, and suppose $(v_1,\ldots,v_n)$ is any ordered basis for $V$. Then there is an orthonormal ordered basis $(b_1,\ldots,b_n)$ satisfying the following conditions:
+$$\text{span}(b_1,\ldots,b_k) = \text{span}(v_1,\ldots,v_k) \quad \text{for each } k = 1,\ldots,n.$$
+\end{proposition}
+
+\begin{proof}
+The basis vectors $b_1,\ldots,b_n$ are defined recursively by
+$$b_1 = \frac{v_1}{|v_1|},$$
+$$b_j = \frac{v_j - \sum_{i=1}^{j-1}\langle v_j, b_i \rangle b_i}{\left|v_j - \sum_{i=1}^{j-1}\langle v_j, b_i \rangle b_i\right|}, \quad 2 \le j \le n.$$
+
+Because $v_1 \ne 0$ and $v_j \notin \text{span}(b_1,\ldots,b_{j-1})$ for each $j \ge 2$, the denominators are all nonzero. These vectors satisfy the span conditions by construction, and are orthonormal by direct computation.
+\end{proof}
+
+If two vector spaces $V$ and $W$ are both equipped with inner products, denoted by $\langle \cdot, \cdot \rangle_V$ and $\langle \cdot, \cdot \rangle_W$, respectively, then a map $F : V \to W$ is called a \emph{linear isometry} if it is a vector space isomorphism that preserves inner products: $\langle F(v), F(v') \rangle_W = \langle v, v' \rangle_V$. If $V$ and $W$ are inner product spaces of dimension $n$, then given any choices of orthonormal bases $(v_1, \ldots, v_n)$ for $V$ and $(w_1, \ldots, w_n)$ for $W$, the linear map $F : V \to W$ determined by $F(v_i) = w_i$ is easily seen to be a linear isometry. Thus all inner product spaces of the same finite dimension are linearly isometric to each other.
+
+\section{Riemannian Metrics}
+
+To extend these geometric ideas to abstract smooth manifolds, we define a structure that amounts to a smoothly varying choice of inner product on each tangent space.
+
+Let $M$ be a smooth manifold. A \textbf{Riemannian metric} on $M$ is a smooth covariant $2$-tensor field $g \in T^{-2}(M)$ whose value $g_p$ at each $p \in M$ is an inner product on $T_p M$; thus $g$ is a symmetric $2$-tensor field that is positive definite in the sense that $g_p(v, v) \geq 0$ for each $p \in M$ and each $v \in T_p M$, with equality if and only if $v = 0$. A \textbf{Riemannian manifold} is a pair $(M, g)$, where $M$ is a smooth manifold and $g$ is a specific choice of Riemannian metric on $M$. If $M$ is understood to be endowed with a specific Riemannian metric, we sometimes say ``$M$ is a Riemannian manifold.''
+
+The next proposition shows that Riemannian metrics exist in great abundance.
+
+\begin{proposition}[Every smooth manifold admits a Riemannian metric]
+\label{prop:existence-riemannian-metric}
+\dcref{ch2:2.4}
+Every smooth manifold admits a Riemannian metric.
+\end{proposition}
+
+\begin{exercise}[Use a partition of unity to prove the preceding proposition]
+\label{exer:partition-unity-proof}
+\dcref{ch2:2.5}
+Use a partition of unity to prove the preceding proposition.
+\end{exercise}
+
+We will give a number of examples of Riemannian metrics, along with several systematic methods for constructing them, later in this chapter and in the next.
+
+If $M$ is a smooth manifold with boundary, a Riemannian metric on $M$ is defined in exactly the same way: a smooth symmetric $2$-tensor field $g$ that is positive definite everywhere. A \textbf{Riemannian manifold with boundary} is a pair $(M, g)$, where $M$ is a smooth manifold with boundary and $g$ is a Riemannian metric on $M$. Many of the results we will discuss in this book work equally well for manifolds with or without boundary, with the same proofs, and in such cases we will state them in that generality. But when the treatment of a boundary would involve additional difficulties, we will generally restrict attention to the case of manifolds without boundary, since that is our primary interest. Many problems involving Riemannian manifolds with boundary can be addressed by embedding into a larger manifold without boundary and extending the Riemannian metric arbitrarily to the larger manifold; see Proposition A.31 in Appendix A.
+
+A Riemannian metric is not the same as a metric in the sense of metric spaces (though, as we will see later in this chapter, the two concepts are related). In this book, when we use the word ``metric'' without further qualification, it always refers to a Riemannian metric.
+
+Let $g$ be a Riemannian metric on a smooth manifold $M$ with or without boundary. Because $g_p$ is an inner product on $T_p M$ for each $p \in M$, we often use the following angle-bracket notation for $v, w \in T_p M$:
+\[
+\langle v, w \rangle_g = g_p(v, w).
+\]
+
+Using this inner product, we can define lengths of tangent vectors, angles between nonzero tangent vectors, and orthogonality of tangent vectors as described above. The length of a vector $v \in T_p M$ is denoted by $|v|_g = \langle v, v \rangle_g^{1/2}$. If the metric is understood, we sometimes omit it from the notation, and write $\langle v, w \rangle$ and $|v|$ in place of $\langle v, w \rangle_g$ and $|v|_g$, respectively.
+
+The starting point for Riemannian geometry is the following fundamental example.
+
+\begin{example}[The Euclidean Metric]
+\label{ex:euclidean-metric}
+\dcref{ch2:2.6}
+The \emph{Euclidean metric} is the Riemannian metric $g$ on $\mathbb{R}^n$ whose value at each $x \in \mathbb{R}^n$ is just the usual dot product on $T_x\mathbb{R}^n$ under the natural identification $T_x \mathbb{R}^n \cong \mathbb{R}^n$. This means that for $v,w \in T_x \mathbb{R}^n$ written in standard coordinates $(x^1, \ldots, x^n)$ as $v = \sum_i v^i \partial_i|_x$, $w = \sum_j w^j \partial_j|_x$, we have
+\[
+\langle v, w \rangle_g = \sum_{i=1}^n v^i w^i.
+\]
+
+When working with $\mathbb{R}^n$ as a Riemannian manifold, we always assume we are using the Euclidean metric unless otherwise specified. \hfill //
+\end{example}
+
+\section{Isometries}
+
+Suppose $(M, g)$ and $(\widetilde{M}, \widetilde{g})$ are Riemannian manifolds with or without boundary. An \emph{isometry from} $(M,g)$ \emph{to} $(\widetilde{M},\widetilde{g})$ is a diffeomorphism $\varphi: M \to \widetilde{M}$ such that $\varphi^* \widetilde{g} = g$. Unwinding the definitions shows that this is equivalent to the requirement that $\varphi$ be a smooth bijection and each differential $d\varphi_p: T_p M \to T_{\varphi(p)} \widetilde{M}$ be a linear isometry. We say $(M, g)$ and $(\widetilde{M}, \widetilde{g})$ are \emph{isometric} if there exists an isometry between them.
+
+A composition of isometries and the inverse of an isometry are again isometries, so being isometric is an equivalence relation on the class of Riemannian manifolds with or without boundary. Our subject, \emph{Riemannian geometry}, is concerned primarily with properties of Riemannian manifolds that are preserved by isometries.
+
+If $(M, g)$ and $(\widetilde{M}, \widetilde{g})$ are Riemannian manifolds, a map $\varphi: M \to \widetilde{M}$ is a \emph{local isometry} if each point $p \in M$ has a neighborhood $U$ such that $\varphi|_U$ is an isometry onto an open subset of $\widetilde{M}$.
+
+\begin{exercise}
+\label{exer:characterize-local-isometry}
+\dcref{ch2:2.7}
+Prove that if $(M,g)$ and $(\widetilde{M}, \widetilde{g})$ are Riemannian manifolds of the same dimension, a smooth map $\varphi: M \to \widetilde{M}$ is a local isometry if and only if $\varphi^* \widetilde{g} = g$.
+\end{exercise}
+
+A Riemannian $n$-manifold is said to be \emph{flat} if it is locally isometric to a Euclidean space, that is, if every point has a neighborhood that is isometric to an open set in $\mathbb{R}^n$ with its Euclidean metric. Problem 2-1 shows that all Riemannian 1-manifolds are flat; but we will see later that this is far from the case in higher dimensions.
+
+An isometry from $(M,g)$ to itself is called an \emph{isometry of $(M,g)$}. The set of all isometries of $(M,g)$ is a group under composition, called the \emph{isometry group of $(M,g)$}; it is denoted by $\text{Iso}(M,g)$, or sometimes just $\text{Iso}(M)$ if the metric is understood.
+
+A deep theorem of Sumner B. Myers and Norman E. Steenrod [MS39] shows that if $M$ has finitely many components, then $\text{Iso}(M,g)$ has a topology and smooth structure making it into a finite-dimensional Lie group acting smoothly on $M$. We will neither prove nor use the Myers--Steenrod theorem, but if you are interested, a good source for the proof is [Kob72].
+
+\section{Local Representations for Metrics}
+
+Suppose $(M,g)$ is a Riemannian manifold with or without boundary. If $(x^1,\ldots,x^n)$ are any smooth local coordinates on an open subset $U \subseteq M$, then $g$ can be written locally in $U$ as
+\begin{equation*}
+g = g_{ij} dx^i \otimes dx^j \tag{2.7}
+\end{equation*}
+for some collection of $n^2$ smooth functions $g_{ij}$ for $i,j = 1,\ldots,n$. (Here and throughout the book, we use the Einstein summation convention; see p. 375.) The component functions of this tensor field constitute a matrix-valued function $(g_{ij})$, characterized by $g_{ij}(p) = \langle \partial_i|_p, \partial_j|_p \rangle$, where $\partial_i = \partial/\partial x^i$ is the $i$th coordinate vector field; this matrix is symmetric in $i$ and $j$ and depends smoothly on $p \in U$. If $v = v^i \partial_i|_p$ is a vector in $T_p M$ such that $g_{ij}(p)v^i = 0$, it follows that $\langle v,v \rangle = g_{ij}(p) v^i v^j = 0$, which implies $v = 0$; thus the matrix $(g_{ij}(p))$ is always nonsingular. The notation for $g$ can be shortened by expressing it in terms of the symmetric product (see Appendix B): using the symmetry of $g_{ij}$, we compute
+\begin{align*}
+g &= g_{ij} dx^i \otimes dx^j \\
+  &= \tfrac{1}{2}(g_{ij} dx^i \otimes dx^j + g_{ji} dx^i \otimes dx^j) \\
+  &= \tfrac{1}{2}(g_{ij} dx^i \otimes dx^j + g_{ij} dx^j \otimes dx^i) \\
+  &= g_{ij} dx^i dx^j.
+\end{align*}
+
+For example, the Euclidean metric on $\mathbb{R}^n$ (Example 2.6) can be expressed in standard coordinates in several ways:
+\begin{equation*}
+\bar{g} = \sum_i dx^i dx^i = \sum_i (dx^i)^2 = \delta_{ij} dx^i dx^j. \tag{2.8}
+\end{equation*}
+
+The matrix of $\bar{g}$ in these coordinates is thus $\bar{g}_{ij} = \delta_{ij}$.
+
+More generally, if $(E_1,\ldots,E_n)$ is any smooth local frame for $TM$ on an open subset $U \subseteq M$ and $(e^1,\ldots,e^n)$ is its dual coframe, we can write $g$ locally in $U$ as
+\begin{equation*}
+g = g_{ij} e^i \otimes e^j, \tag{2.9}
+\end{equation*}
+where $g_{ij}(p) = \langle E_i|_p, E_j \rangle_p$, and the matrix-valued function $(g_{ij})$ is symmetric and smooth as before.
+
+A Riemannian metric $g$ acts on smooth vector fields $X, Y \in \mathfrak{X}(M)$ to yield a real-valued function $\langle X,Y \rangle$. In terms of any smooth local frame, this function is expressed locally by $\langle X,Y \rangle = g_{ij} X^i Y^j$ and therefore is smooth. Similarly, we obtain a nonnegative real-valued function $|X| = \langle X,X \rangle^{1/2}$, which is continuous everywhere and smooth on the open subset where $X \neq 0$.
+
+A local frame $\{E_i\}$ for $M$ on an open set $U$ is said to be an \textbf{orthonormal frame} if the vectors $E_1|_p, \ldots, E_n|_p$ are an orthonormal basis for $T_p M$ at each $p \in U$. Equivalently, $(E_i)$ is an orthonormal frame if and only if
+\[
+\langle E_i, E_j \rangle = \delta_{ij},
+\]
+in which case $g$ has the local expression
+\[
+g = (e^1)^2 + \cdots + (e^n)^2,
+\]
+where $(e^i)^2$ denotes the symmetric product $e^i e^i = e^i \otimes e^i$.
+
+\begin{proposition}[Existence of Orthonormal Frames]
+\label{prop:existence-orthonormal-frames}
+\dcref{ch2:2.8}
+\uses{exer:partition-unity-proof}
+\uses{ex:euclidean-metric}
+
+Let $(M, g)$ be a Riemannian $n$-manifold with or without boundary. If $(X_i)$ is any smooth local frame for $TM$ over an open subset $U \subseteq M$, then there is a smooth orthonormal frame $(E_j)$ over $U$ such that $\text{span}\{E_1|_p, \ldots, E_k|_p\} = \text{span}\{X_1|_p, \ldots, X_k|_p\}$ for each $k = 1, \ldots, n$ and each $p \in U$. In particular, for every $p \in M$, there is a smooth orthonormal frame $(E_j)$ defined on some neighborhood of $p$.
+\end{proposition}
+
+\begin{proof}
+Applying the Gram–Schmidt algorithm to the vectors $(X_1|_p, \ldots, X_n|_p)$ at each $p \in U$, we obtain an ordered $n$-tuple of rough orthonormal vector fields $(E_1, \ldots, E_n)$ over $U$ satisfying the span conditions. Because the vectors whose norms appear in the denominators of (2.5)–(2.6) are nowhere vanishing, those formulas show that each vector field $E_j$ is smooth. The last statement of the proposition follows by applying this construction to any smooth local frame in a neighborhood of $p$.
+\end{proof}
+
+\begin{remark}
+\label{rem:coordinate-frame-warning}
+\uses{prop:existence-orthonormal-frames}
+
+\textbf{Warning:} A common mistake made by beginners is to assume that one can find coordinates near $p$ such that the coordinate frame $(\partial_i)$ is orthonormal. Proposition 2.8 does not show this. In fact, as we will see in Chapter 7, this is possible only when the metric is flat, that is, locally isometric to the Euclidean metric.
+\end{remark}
+
+For a Riemannian manifold $(M, g)$ with or without boundary, we define the \textbf{unit tangent bundle} to be the subset $UTM \subseteq TM$ consisting of unit vectors:
+\begin{equation}
+UTM = \{(p, v) \in TM : |v|_g = 1\}.
+\tag{2.10}
+\end{equation}
+
+\begin{proposition}[Properties of the Unit Tangent Bundle]
+\label{prop:unit-tangent-bundle-properties}
+\dcref{ch2:2.9}
+
+If $(M, g)$ is a Riemannian manifold with or without boundary, its unit tangent bundle $UTM$ is a smooth, properly embedded codimension-1 submanifold with boundary in $TM$, with $\partial(UTM) = \pi^{-1}(\partial M)$ (where $\pi : UTM \to M$ is the canonical projection). The unit tangent bundle is connected if and only if $M$ is connected, and compact if and only if $M$ is compact.
+\end{proposition}
+
+\begin{exercise}
+\label{exer:orthonormal-frames-proposition}
+\dcref{ch2:2.10}
+Use local orthonormal frames to prove the preceding proposition.
+\end{exercise}
+
+\section{Methods for Constructing Riemannian Metrics}
+
+Many examples of Riemannian manifolds arise naturally as submanifolds, products, and quotients of other Riemannian manifolds. In this section, we introduce some of the tools for constructing such metrics.
+
+\subsection*{Riemannian Submanifolds}
+
+Every submanifold of a Riemannian manifold automatically inherits a Riemannian metric, and many interesting Riemannian metrics are defined in this way. The key fact is the following lemma.
+
+\begin{lemma}
+\label{lem:pullback-immersion-metric}
+\dcref{ch2:2.11}
+Suppose $(\tilde{M}, \tilde{g})$ is a Riemannian manifold with or without boundary, $M$ is a smooth manifold with or without boundary, and $F : M \to \tilde{M}$ is a smooth map. The smooth 2-tensor field $g = F^*\tilde{g}$ is a Riemannian metric on $M$ if and only if $F$ is an immersion.
+\end{lemma}
+
+\begin{exercise}
+\label{exer:prove-lemma-2-11}
+\dcref{ch2:2.12}
+\uses{lem:pullback-immersion-metric}
+Prove Lemma 2.11.
+\end{exercise}
+
+Suppose $(\tilde{M}, \tilde{g})$ is a Riemannian manifold with or without boundary. Given a smooth immersion $F : M \to \tilde{M}$, the metric $g = F^*\tilde{g}$ is called the \emph{metric induced by $F$}. On the other hand, if $M$ is already endowed with a given Riemannian metric $g$, an immersion or embedding $F : M \to \tilde{M}$ satisfying $F^*\tilde{g} = g$ is called an \emph{isometric immersion} or \emph{isometric embedding}, respectively. Which terminology is used depends on whether the metric on $M$ is considered to be given independently of the immersion or not.
+
+The most important examples of induced metrics occur on submanifolds. Suppose $M \subseteq \tilde{M}$ is an (immersed or embedded) submanifold, with or without boundary. The \emph{induced metric on $M$} is the metric $g = \iota^*\tilde{g}$ induced by the inclusion map $\iota : M \hookrightarrow \tilde{M}$. With this metric, $M$ is called a \emph{Riemannian submanifold} (or Riemannian submanifold with boundary) of $\tilde{M}$. We always consider submanifolds (with or without boundary) of Riemannian manifolds to be endowed with the induced metrics unless otherwise specified.
+
+If $(M, g)$ is a Riemannian submanifold of $(\tilde{M}, \tilde{g})$, then for every $p \in M$ and $v, w \in T_p M$, the definition of the induced metric reads
+\[
+g_p(v,w) = \tilde{g}_p(d\iota_p(v), d\iota_p(w)).
+\]
+
+Because we usually identify $T_p M$ with its image in $T_p \tilde{M}$ under $d\iota_p$, and think of $d\iota_p$ as an inclusion map, what this really amounts to is $g_p(v,w) = \tilde{g}(v,w)$ for $v,w \in T_p M$. In other words, the induced metric $g$ is just the restriction of $\tilde{g}$ to vectors tangent to $M$. Many of the examples of Riemannian metrics that we will encounter are obtained in this way, starting with the following.
+
+\begin{example}[Spheres]
+\label{ex:spheres}
+\dcref{ch2:2.13}
+For each positive integer $n$, the unit $n$-sphere $S^n \subseteq \mathbb{R}^{n+1}$ is an embedded $n$-dimensional submanifold. The Riemannian metric induced on $S^n$ by the Euclidean metric is denoted by $\bar{g}$ and known as the \textit{round metric} or \textit{standard metric} on $S^n$.
+\end{example}
+
+The next lemma describes one of the most important tools for studying Riemannian submanifolds. If $(\tilde{M}, \tilde{g})$ is an $m$-dimensional smooth Riemannian manifold and $M \subseteq \tilde{M}$ is an $n$-dimensional submanifold (both with or without boundary), a local frame $(E_1, \ldots, E_m)$ for $\tilde{M}$ on an open subset $U \subseteq \tilde{M}$ is said to be \textit{adapted to} $M$ if the first $n$ vector fields $(E_1, \ldots, E_n)$ are tangent to $M$. In case $\tilde{M}$ has empty boundary (so that slice coordinates are available), adapted local orthonormal frames are easy to find.
+
+\begin{proposition}[Existence of Adapted Orthonormal Frames]
+\label{prop:adapted-orthonormal-frames}
+\dcref{ch2:2.14}
+Let $(\tilde{M}, \tilde{g})$ be a Riemannian manifold (without boundary), and let $M \subseteq \tilde{M}$ be an embedded smooth submanifold with or without boundary. Given $p \in M$, there exist a neighborhood $\tilde{U}$ of $p$ in $\tilde{M}$ and a smooth orthonormal frame for $\tilde{M}$ on $\tilde{U}$ that is adapted to $M$.
+\end{proposition}
+
+\begin{exercise}
+\label{exer:gram-schmidt-adapted-frame}
+\dcref{ch2:2.15}
+\uses{prop:adapted-orthonormal-frames}
+\uses{prop:slice-coordinates}
+Prove the preceding proposition. [Hint: Apply the Gram--Schmidt algorithm to a coordinate frame in slice coordinates (see Prop. A.22).]
+\end{exercise}
+
+Suppose $(\tilde{M}, \tilde{g})$ is a Riemannian manifold and $M \subseteq \tilde{M}$ is a smooth submanifold with or without boundary in $\tilde{M}$. Given $p \in M$, a vector $v \in T_p \tilde M$ is said to be \textit{normal to} $M$ if $\langle v,w\rangle = 0$ for every $w \in T_p M$. The space of all vectors normal to $M$ at $p$ is a subspace of $T_p \tilde{M}$, called the \textit{normal space at} $p$ and denoted by $N_p M = (T_p M)^\perp$. At each $p \in M$, the ambient tangent space $T_p \tilde{M}$ splits as an orthogonal direct sum $T_p \tilde{M} = T_p M \oplus N_p M$. A section $N$ of the ambient tangent bundle $T\tilde{M}|_M$ is called a \textit{normal vector field along} $M$ if $N_p \in N_p M$ for each $p \in M$. The set
+\[
+NM = \bigsqcup_{p \in M} N_p M
+\]
+is called the \textit{normal bundle of} $M$.
+
+\begin{proposition}[The Normal Bundle]
+\label{prop:normal-bundle}
+\dcref{ch2:2.16}
+If $\tilde{M}$ is a Riemannian $m$-manifold and $M \subseteq \tilde{M}$ is an immersed or embedded $n$-dimensional submanifold with or without boundary, then $NM$ is a smooth rank-$(m-n)$ vector subbundle of the ambient tangent bundle $T\tilde{M}|_M$. There are smooth bundle homomorphisms
+\[
+\pi^\top : T\tilde{M}|_M \to TM, \quad \pi^\perp : T\tilde{M}|_M \to NM,
+\]
+called the \emph{tangential and normal projections}, that for each $p \in M$ restrict to orthogonal projections from $T_p \tilde M$ to $T_p M$ and $N_p M$, respectively.
+\end{proposition}
+
+\begin{proof}
+Given any point $p \in M$, Theorem A.16 shows that there is a neighborhood $U$ of $p$ in $\widetilde{M}$ that is embedded in $\widetilde{M}$, and then Proposition 2.14 shows that there is a smooth orthonormal frame $(E_1, \ldots, E_m)$ that is adapted to $U$ on some neighborhood $\widetilde{U}$ of $p$ in $\widetilde{M}$. This means that the restrictions of $(E_1, \ldots, E_n)$ to $U \cap \widetilde{U}$ form a local orthonormal frame for $M$. Given such an adapted frame, the restrictions of the last $m - n$ vector fields $(E_{n+1}, \ldots, E_m)$ to $M$ form a smooth local frame for $NM$, so it follows from Lemma A.34 that $NM$ is a smooth subbundle.
+
+The bundle homomorphisms $\pi^\top$ and $\pi^\perp$ are defined pointwise as orthogonal projections onto the tangent and normal spaces, respectively, which shows that they are uniquely defined. In terms of an adapted orthonormal frame, they can be written
+\[
+\pi^\top(X^1 E_1 + \cdots + X^m E_m) = X^1 E_1 + \cdots + X^n E_n,
+\]
+\[
+\pi^\perp(X^1 E_1 + \cdots + X^m E_m) = X^{n+1} E_{n+1} + \cdots + X^m E_m,
+\]
+which shows that they are smooth.
+\end{proof}
+
+In case $\widetilde{M}$ is a manifold with boundary, the preceding constructions do not always work, because there is not a fully general construction of slice coordinates in that case. However, there is a satisfactory result in case the submanifold is the boundary itself, using boundary coordinates in place of slice coordinates.
+
+Suppose $(M, g)$ is a Riemannian manifold with boundary. We will always consider $\partial M$ to be a Riemannian submanifold with the induced metric.
+
+\begin{proposition}[Existence of Outward-Pointing Normal]
+\label{prop:outward-pointing-normal}
+\dcref{ch2:2.17}
+If $(M, g)$ is a smooth Riemannian manifold with boundary, the normal bundle to $\partial M$ is a smooth rank-1 vector bundle over $\partial M$, and there is a unique smooth outward-pointing unit normal vector field along all of $\partial M$.
+\end{proposition}
+
+\begin{exercise}
+\label{exer:prove-outward-normal}
+\dcref{ch2:2.18}
+\uses{prop:induced-orientation-boundary}
+Prove this proposition. [Hint: Use the paragraph preceding Prop. B.17 as a starting point.]
+\end{exercise}
+
+Computations on a submanifold $M \subset \widetilde{M}$ are usually carried out most conveniently in terms of a \emph{smooth local parametrization}: this is a smooth map $X : U \to \widetilde{M}$, where $U$ is an open subset of $\mathbb{R}^n$ (or $\mathbb{R}^n_+$ in case $M$ has a boundary), such that $X(U)$ is an open subset of $M$, and such that $X$, regarded as a map from $U$ into $M$, is a diffeomorphism onto its image. Note that we can think of $X$ either as a map into $M$ or as a map into $\widetilde{M}$; both maps are typically denoted by the same symbol $X$. If we put $V = X(U) \subseteq M$ and $\varphi = X^{-1} : V \to U$, then $(V, \varphi)$ is a smooth coordinate chart on $M$.
+
+Suppose $(M, g)$ is a Riemannian submanifold of $(\widetilde{M}, \widetilde{g})$ and $X : U \to \widetilde{M}$ is a smooth local parametrization of $M$. The coordinate representation of $g$ in these coordinates is given by the following 2-tensor field on $U$:
+\[
+(\varphi^{-1})^* g = X^* g = X^* \iota^* \widetilde{g} = (\iota \circ X)^* \widetilde{g}.
+\]
+Since $\iota \circ X$ is just the map $X$ itself, regarded as a map into $\tilde{M}$, this is really just $X^*\tilde{g}$. The simplicity of the formula for the pullback of a tensor field makes this expression exceedingly easy to compute, once a coordinate expression for $\tilde{g}$ is known. For example, if $M$ is an immersed $n$-dimensional Riemannian submanifold of $\mathbb{R}^m$ and $X : U \to \mathbb{R}^m$ is a smooth local parametrization of $M$, the induced metric on $U$ is just
+\[
+g = X^*\tilde{g} = \sum_{i=1}^m (dX^i)^2 = \sum_{i=1}^m \left(\sum_{j=1}^n \frac{\partial X^i}{\partial u^j} du^j\right)^2 = \sum_{i=1}^m \sum_{j,k=1}^n \frac{\partial X^i}{\partial u^j}\frac{\partial X^i}{\partial u^k} du^j du^k.
+\]
+
+\begin{example}[Metrics in Graph Coordinates]
+\label{ex:metrics-in-graph-coordinates}
+\dcref{ch2:2.19}
+
+If $U \subseteq \mathbb{R}^n$ is an open set and $f : U \to \mathbb{R}$ is a smooth function, then the \textbf{graph of $f$} is the subset $\Gamma(f) = \{(x, f(x)) : x \in U\} \subseteq \mathbb{R}^{n+1}$, which is an embedded submanifold of dimension $n$. It has a global parametrization $X : U \to \mathbb{R}^{n+1}$ called a \textbf{graph parametrization}, given by $X(u) = (u, f(u))$; the corresponding coordinates $(u^1,\ldots,u^n)$ on $M$ are called \textbf{graph coordinates}. In graph coordinates, the induced metric of $\Gamma(f)$ is
+\[
+X^*\tilde{g} = X^*\left((dx^1)^2 + \cdots + (dx^{n+1})^2\right) = (du^1)^2 + \cdots + (du^n)^2 + df^2.
+\]
+
+Applying this to the upper hemisphere of $S^2$ with the parametrization $X : \mathbb{R}^2 \to \mathbb{R}^3$ given by
+\[
+X(u,v) = \left(u, v, \sqrt{1-u^2-v^2}\right),
+\]
+we see that the round metric on $S^2$ can be written locally as
+\[
+\hat{g} = X^*\bar{g} = du^2 + dv^2 + \left(\frac{u\,du + v\,dv}{\sqrt{1-u^2-v^2}}\right)^2
+\]
+\[
+= \frac{(1-v^2) du^2 + (1-u^2) dv^2 + 2uv\,du\,dv}{1-u^2-v^2}.
+\]
+\end{example}
+
+\begin{example}[Surfaces of Revolution]
+\label{ex:surfaces-of-revolution}
+\dcref{ch2:2.20}
+
+Let $H$ be the half-plane $\{(r,z) : r > 0\}$, and suppose $C \subseteq H$ is an embedded 1-dimensional submanifold. The \textbf{surface of revolution} determined by $C$ is the subset $S_C \subseteq \mathbb{R}^3$ given by
+\[
+S_C = \left\{(x,y,z) : \left(\sqrt{x^2 + y^2}, z\right) \in C\right\}.
+\]
+
+The set $C$ is called its \textbf{generating curve} (see Fig. 2.1). Every smooth local parametrization $\gamma(t) = (a(t), b(t))$ for $C$ yields a smooth local parametrization for $S_C$ of the form
+\begin{equation}
+X(t, \theta) = (a(t) \cos \theta, a(t) \sin \theta, b(t)), \tag{2.11}
+\end{equation}
+
+provided that $(t, \theta)$ is restricted to a sufficiently small open set in the plane. The $t$-coordinate curves $t \mapsto X(t, \theta_0)$ are called \textbf{meridians}, and the $\theta$-coordinate curves $\theta \mapsto X(t_0, \theta)$ are called \textbf{latitude circles}. The induced metric on $S_C$ is
+% [FIGURE: Two diagrams showing a surface of revolution — left diagram shows a curve C in the rz-plane, right diagram shows the 3D surface obtained by rotating C around the z-axis]
+\begin{align*}
+X^*\bar{g} &= d(a(t)\cos\theta)^2 + d(a(t)\sin\theta)^2 + d(b(t))^2 \\
+&= (a'(t)\cos\theta \, dt - a(t)\sin\theta \, d\theta)^2 + (a'(t)\sin\theta \, dt + a(t)\cos\theta \, d\theta)^2 + (b'(t)dt)^2 \\
+&= (a'(t)^2 + b'(t)^2)dt^2 + a(t)^2 d\theta^2.
+\end{align*}
+
+In particular, if $\gamma$ is a \emph{unit-speed curve} (meaning that $|\gamma'(t)|^2 = a'(t)^2 + b'(t)^2 \equiv 1$), this reduces to $dt^2 + a(t)^2 d\theta^2$.
+
+Here are some examples of surfaces of revolution and their induced metrics.
+
+\begin{itemize}
+\item If $C$ is the semicircle $r^2 + z^2 = 1$, parametrized by $\gamma(\varphi)=(\sin\varphi, \cos\varphi)$ for $0 < \varphi < \pi$, then $S_C$ is the unit sphere (minus the north and south poles). The map $X(\varphi, \theta) = (\sin\varphi\cos\theta, \sin\varphi\sin\theta, \cos\varphi)$ constructed above is called the \emph{spherical coordinate parametrization}, and the induced metric is $d\varphi^2 + \sin^2\varphi \, d\theta^2$. (This example is the source of the terminology for meridians and latitude circles.)
+
+\item If $C$ is the circle $(r-2)^2 + z^2 = 1$, parametrized by $\gamma(t) = (2+\cos t, \sin t)$, we obtain a torus of revolution, whose induced metric is $dt^2 + (2+\cos t)^2 d\theta^2$.
+
+\item If $C$ is a vertical line parametrized by $\gamma(t) = (1,t)$, then $S_C$ is the unit cylinder $x^2 + y^2 = 1$, and the induced metric is $dt^2 + d\theta^2$. Note that this means that the parametrization $X: \mathbb{R}^2 \to \mathbb{R}^3$ is an isometric immersion. \quad //
+\end{itemize}
+\end{example}
+
+\begin{example}[The n-Torus as a Riemannian Submanifold]
+\label{ex:n-torus-riemannian-submanifold}
+\dcref{ch2:2.21}
+\uses{ex:covering-n-torus}
+
+The smooth covering map $X: \mathbb{R}^n \to \mathbb{T}^n$ described in Example A.52 restricts to a smooth local parametrization on any sufficiently small open subset of $\mathbb{R}^n$, and the induced metric is equal to the Euclidean metric in $(u^i)$ coordinates, and therefore the induced metric on $\mathbb{T}^n$ is flat.
+\end{example}
+
+\begin{exercise}
+\label{exer:verify-surface-revolution-examples}
+\dcref{ch2:2.22}
+\uses{ex:metrics-in-graph-coordinates}
+\uses{ex:surfaces-of-revolution}
+\uses{ex:n-torus-riemannian-submanifold}
+
+Verify the claims in Examples 2.19–2.21.
+\end{exercise}
+
+\section{Riemannian Products}
+
+Next we consider products. If $(M_1, g_1)$ and $(M_2, g_2)$ are Riemannian manifolds, the product manifold $M_1 \times M_2$ has a natural Riemannian metric $g = g_1 \oplus g_2$, called the \emph{product metric}, defined by
+\begin{equation}
+g_{(p_1,p_2)}((v_1, v_2), (w_1, w_2)) = g_1\big|_{p_1}(v_1, w_1) + g_2\big|_{p_2}(v_2, w_2). \tag{2.12}
+\end{equation}
+
+where $(v_1, v_2)$ and $(w_1, w_2)$ are elements of $T_{p_1}M_1 \oplus T_{p_2}M_2$, which is naturally identified with $T_{(p_1,p_2)}(M_1 \times M_2)$. Smooth local coordinates $(x^1, \ldots, x^n)$ for $M_1$ and $(x^{n+1}, \ldots, x^{n+m})$ for $M_2$ give coordinates $(x^1, \ldots, x^{n+m})$ for $M_1 \times M_2$. In terms of these coordinates, the product metric has the local expression $g = g_{ij} \, dx^i \, dx^j$, where $(g_{ij})$ is the block diagonal matrix
+\[
+(g_{ij}) = \begin{pmatrix} (g_1)_{ab} & 0 \\ 0 & (g_2)_{cd} \end{pmatrix};
+\]
+here the indices $a, b$ run from $1$ to $n$, and $c, d$ run from $n+1$ to $n+m$. Product metrics on products of three or more Riemannian manifolds are defined similarly.
+
+\begin{exercise}[Induced Metric on $T^n$]
+\label{exer:product-metric-torus}
+\dcref{ch2:2.23}
+\uses{ex:n-torus-riemannian-submanifold}
+Show that the induced metric on $T^n$ described in Exercise 2.21 is equal to the product metric obtained from the usual induced metric on $S^1 \subseteq \mathbb{R}^2$.
+\end{exercise}
+
+Here is an important generalization of product metrics. Suppose $(M_1, g_1)$ and $(M_2, g_2)$ are two Riemannian manifolds, and $f : M_1 \to \mathbb{R}^+$ is a strictly positive smooth function. The \emph{warped product} $M_1 \times_f M_2$ is the product manifold $M_1 \times M_2$ endowed with the Riemannian metric $g = g_1 \oplus f^2 g_2$, defined by
+\begin{equation}
+g_{(p_1,p_2)}((v_1, v_2), (w_1, w_2)) = g_1\big|_{p_1}(v_1, w_1) + f(p_1)^2 \, g_2\big|_{p_2}(v_2, w_2),
+\end{equation}
+
+where $(v_1, v_2), (w_1, w_2) \in T_{p_1}M_1 \oplus T_{p_2}M_2$ as before. (Despite the similarity with the notation for product metrics, $g_1 \oplus f^2 g_2$ is generally not a product metric unless $f$ is constant.) A wide variety of metrics can be constructed in this way; here are just a few examples.
+
+\begin{example}[Warped Products]
+\label{ex:warped-products}
+\dcref{ch2:2.24}
+\uses{ex:surfaces-of-revolution}
+\uses{REF:ch2-3}
+
+\noindent (a) With $f \equiv 1$, the warped product $M_1 \times_f M_2$ is just the space $M_1 \times M_2$ with the product metric.
+
+\noindent (b) Every surface of revolution can be expressed as a warped product, as follows. Let $H$ be the half-plane $\{(r,z) : r > 0\}$, let $C \subseteq H$ be an embedded smooth 1-dimensional submanifold, and let $S_C \subseteq \mathbb{R}^3$ denote the corresponding surface of revolution as in Example 2.20. Endow $C$ with the Riemannian metric induced from the Euclidean metric on $H$, and let $S^1$ be endowed with its standard metric. Let $f : C \to \mathbb{R}$ be the distance to the $z$-axis: $f(r,z) = r$. Then Problem 2-3 shows that $S_C$ is isometric to the warped product $C \times_f S^1$.
+
+(c) If we let $\rho$ denote the standard coordinate function on $\mathbb{R}^+ \subset \mathbb{R}$, then the map $\Phi(\rho,\omega) = \rho\omega$ gives an isometry from the warped product $\mathbb{R}^+ \times_\rho S^{n-1}$ to $\mathbb{R}^n \setminus \{0\}$ with its Euclidean metric (see Problem 2-4). \hfill //
+\end{example}
+
+\section{Riemannian Submersions}
+
+Unlike submanifolds and products of Riemannian manifolds, which automatically inherit Riemannian metrics of their own, quotients of Riemannian manifolds inherit Riemannian metrics only under very special circumstances. In this section, we see what those circumstances are.
+
+Suppose $\tilde{M}$ and $M$ are smooth manifolds, $\pi : \tilde{M} \to M$ is a smooth submersion, and $\tilde{g}$ is a Riemannian metric on $\tilde{M}$. By the submersion level set theorem (Corollary A.25), each fiber $\tilde{M}_y = \pi^{-1}(y)$ is a properly embedded smooth submanifold of $\tilde{M}$. At each point $x \in \tilde{M}$, we define two subspaces of the tangent space $T_x \tilde{M}$ as follows: the \textbf{vertical tangent space at $x$} is
+\[
+V_x = \ker d\pi_x = T_x(\tilde{M}_{\pi(x)})
+\]
+(that is, the tangent space to the fiber containing $x$), and the \textbf{horizontal tangent space at $x$} is its orthogonal complement:
+\[
+H_x = (V_x)^\perp.
+\]
+Then the tangent space $T_x \tilde{M}$ decomposes as an orthogonal direct sum $T_x \tilde{M} = H_x \oplus V_x$. Note that the vertical space is well defined for every submersion, because it does not refer to the metric; but the horizontal space depends on the metric.
+
+A vector field on $\tilde{M}$ is said to be a \textbf{horizontal vector field} if its value at each point lies in the horizontal space at that point; a \textbf{vertical vector field} is defined similarly. Given a vector field $X$ on $M$, a vector field $\tilde{X}$ on $\tilde{M}$ is called a \textbf{horizontal lift of $X$} if $\tilde{X}$ is horizontal and $\pi$-related to $X$. (The latter property means that $d\pi_x(\tilde{X}_x) = X_{\pi(x)}$ for each $x \in \tilde{M}$.)
+
+The next proposition is the principal tool for doing computations on Riemannian submersions.
+
+\begin{proposition}[Properties of Horizontal Vector Fields]
+\label{prop:horizontal-vector-field-properties}
+\dcref{ch2:2.25}
+
+Let $\tilde{M}$ and $M$ be smooth manifolds, let $\pi : \tilde{M} \to M$ be a smooth submersion, and let $\tilde{g}$ be a Riemannian metric on $\tilde{M}$.
+
+\begin{enumerate}
+\item[(a)] Every smooth vector field $W$ on $\tilde{M}$ can be expressed uniquely in the form $W = W^H + W^V$, where $W^H$ is horizontal, $W^V$ is vertical, and both $W^H$ and $W^V$ are smooth.
+
+\item[(b)] Every smooth vector field on $M$ has a unique smooth horizontal lift to $\tilde{M}$.
+
+\item[(c)] For every $x \in \tilde{M}$ and $v \in H_x$, there is a vector field $X \in \mathfrak{X}(M)$ whose horizontal lift $\tilde{X}$ satisfies $\tilde{X}_x = v$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+Let $p \in \tilde{M}$ be arbitrary. Because $\pi$ is a smooth submersion, the rank theorem (Theorem A.15) shows that there exist smooth coordinate charts $(\tilde{U}, (x^i))$ centered at $p$ and $(U, (u^j))$ centered at $\pi(p)$ in which $\pi$ has the coordinate representation
+\[
+\pi(x^1,\ldots,x^n, x^{n+1},\ldots,x^m) = (x^1,\ldots,x^n),
+\]
+where $m = \dim \tilde{M}$ and $n = \dim M$. It follows that at each point $q \in \tilde{U}$, the vertical space $V_q$ is spanned by the vectors $\partial_{n+1}|_q,\ldots,\partial_m|_q$. (It probably will not be the case, however, that the horizontal space is spanned by the other $n$ basis vectors.) If we apply the Gram--Schmidt algorithm to the ordered frame $(\partial_{n+1},\ldots,\partial_m,\partial_1,\ldots,\partial_n)$, we obtain a smooth orthonormal frame $(E_1, \ldots, E_m)$ on $\tilde{U}$ such that $V_q$ is spanned by $(E_1|_q, \ldots, E_{m-n}|_q)$ at each $q \in \tilde{U}$. It follows that $H_q$ is spanned by $(E_{m-n+1}|_q, \ldots, E_m|_q)$.
+
+Now let $W \in \mathfrak{X}(\tilde{M})$ be arbitrary. At each point $q \in \tilde{M}$, $W_q$ can be written uniquely as a sum of a vertical vector plus a horizontal vector, thus defining a decomposition $W = W^V + W^H$ into rough vertical and horizontal vector fields. To see that they are smooth, just note that in a neighborhood of each point we can express $W$ in terms of a frame $(E_1,\ldots,E_m)$ of the type constructed above as $W = W^1 E_1 + \cdots + W^m E_m$ with smooth coefficients $(W^i)$, and then it follows that
+\[
+W^V = W^1 E_1 + \cdots + W^{m-n} E_{m-n} \quad \text{and} \quad W^H = W^{m-n+1} E_{m-n+1} + \cdots + W^m E_m,
+\]
+both of which are smooth.
+
+The proofs of (b) and (c) are left to Problem 2-5.
+\end{proof}
+
+The fact that every horizontal vector at a point of $\tilde{M}$ can be extended to a horizontal lift on all of $\tilde{M}$ (part (c) of the preceding proposition) is highly useful for computations. It is important to be aware, though, that not every horizontal vector field on $\tilde{M}$ is a horizontal lift, as the next exercise shows.
+
+\begin{exercise}
+\label{exer:horizontal-vector-field-not-lift}
+\dcref{ch2:2.26}
+Let $\pi: \mathbb{R}^2 \to \mathbb{R}$ be the projection map $\pi(x,y) = x$, and let $\tilde{W}$ be the smooth vector field $y\partial_x$ on $\mathbb{R}^2$. Show that $\tilde{W}$ is horizontal, but there is no vector field on $\mathbb{R}$ whose horizontal lift is equal to $\tilde{W}$.
+\end{exercise}
+
+Now we can identify some quotients of Riemannian manifolds that inherit metrics of their own. Let us begin by describing what such a metric should look like.
+
+Suppose $(\tilde{M},\tilde{g})$ and $(M,g)$ are Riemannian manifolds, and $\pi: \tilde{M} \to M$ is a smooth submersion. Then $\pi$ is said to be a \textbf{Riemannian submersion} if for each $x \in \tilde{M}$, the differential $d\pi_x$ restricts to a linear isometry from $H_x$ onto $T_{\pi(x)}M$. In other words, $\tilde{g}_x(v,w) = g_{\pi(x)}(d\pi_x(v), d\pi_x(w))$ whenever $v,w \in H_x$.
+
+\begin{example}[Riemannian Submersions]
+\label{ex:riemannian-submersions}
+\dcref{ch2:2.27}
+\begin{enumerate}
+\item[(a)] The projection $\pi: \mathbb{R}^{n+k} \to \mathbb{R}^n$ onto the first $n$ coordinates is a Riemannian submersion if $\mathbb{R}^{n+k}$ and $\mathbb{R}^n$ are both endowed with their Euclidean metrics.
+\item[(b)] If $M$ and $N$ are Riemannian manifolds and $M \times N$ is endowed with the product metric, then both projections $\pi_M: M \times N \to M$ and $\pi_N: M \times N \to N$ are Riemannian submersions.
+\item[(c)] If $M \times_f N$ is a warped product manifold, then the projection $\pi_M : M \times_f N \to M$ is a Riemannian submersion, but $\pi_N$ typically is not.
+\end{enumerate}
+\end{example}
+
+Given a Riemannian manifold $(\tilde{M}, \tilde{g})$ and a surjective submersion $\pi: \tilde{M} \to M$, it is almost never the case that there is a metric on $M$ that makes $\pi$ into a Riemannian submersion. It is not hard to see why: for this to be the case, whenever $p, q \in M$ are two points in the same fiber $\pi^{-1}(y)$, the linear maps $(d\pi_p|_{H_p})^{-1}: T_y M \to H_p$ both have to pull $\tilde{g}$ back to the same inner product on $T_y M$.
+
+There is, however, an important special case in which there is such a metric. Suppose $\pi: \tilde{M} \to M$ is a smooth surjective submersion, and $G$ is a group acting on $\tilde{M}$. (See Appendix C for a review of the basic definitions and terminology regarding group actions on manifolds.) We say that the action is \emph{vertical} if every element $\varphi \in G$ takes each fiber to itself, meaning that $\pi(\varphi \cdot p) = \pi(p)$ for all $p \in M$. The action is \emph{transitive on fibers} if for each $p, q \in \tilde{M}$ such that $\pi(p) = \pi(q)$, there exists $\varphi \in G$ such that $\varphi \cdot p = q$.
+
+If in addition $\tilde{M}$ is endowed with a Riemannian metric, the action is said to be an \emph{isometric action} or an \emph{action by isometries}, and the metric is said to be \emph{invariant under $G$}, if the map $x \mapsto \varphi \cdot x$ is an isometry for each $\varphi \in G$. In that case, provided the action is effective (so that different elements of $G$ define different isometries of $\tilde{M}$), we can identify $G$ with a subgroup of $\text{Iso}(\tilde{M}, \tilde{g})$. Since an isometry is, in particular, a diffeomorphism, every isometric action is an action by diffeomorphisms.
+
+\begin{theorem}
+\label{thm:group-action-riemannian-submersion}
+\dcref{ch2:2.28}
+\uses{REF:ch2-6}
+Let $(\tilde{M}, \tilde{g})$ be a Riemannian manifold, let $\pi: \tilde{M} \to M$ be a surjective smooth submersion, and let $G$ be a group acting on $\tilde{M}$. If the action is isometric, vertical, and transitive on fibers, then there is a unique Riemannian metric on $M$ such that $\pi$ is a Riemannian submersion.
+\end{theorem}
+
+\begin{proof}
+Problem 2-6.
+\end{proof}
+
+The next corollary describes one important situation to which the preceding theorem applies.
+
+\begin{corollary}
+\label{cor:quotient-manifold-lie-group-riemannian-metric}
+\dcref{ch2:2.29}
+\uses{thm:quotient-manifold-theorem}
+\uses{thm:group-action-riemannian-submersion}
+Suppose $(\tilde{M}, \tilde{g})$ is a Riemannian manifold, and $G$ is a Lie group acting smoothly, freely, properly, and isometrically on $\tilde{M}$. Then the orbit space $M = \tilde{M}/G$ has a unique smooth manifold structure and Riemannian metric such that $\pi$ is a Riemannian submersion.
+\end{corollary}
+
+\begin{proof}
+Under the given hypotheses, the quotient manifold theorem (Thm. C.17) shows that $M$ has a unique smooth manifold structure such that the quotient map $\pi: \tilde{M} \to M$ is a smooth submersion. It follows easily from the definitions in that case that the given action of $G$ on $\tilde{M}$ is vertical and transitive on fibers. Since the action is also isometric, Theorem 2.28 shows that $M$ inherits a unique Riemannian metric making $\pi$ into a Riemannian submersion.
+\end{proof}
+
+Here is an important example of a Riemannian metric defined in this way. A larger class of such metrics is described in Problem 2-7.
+
+\begin{example}[The Fubini--Study Metric]
+\label{ex:fubini-study-metric}
+\dcref{ch2:2.30}
+\uses{ex:complex-projective-spaces}
+\uses{thm:local-section-theorem}
+\uses{thm:group-action-riemannian-submersion}
+
+Let $n$ be a positive integer, and consider the complex projective space $\mathbb{CP}^n$ defined in Example C.19. That example shows that the map $\pi : \mathbb{C}^{n+1} \setminus \{0\} \to \mathbb{CP}^n$ sending each point in $\mathbb{C}^{n+1} \setminus \{0\}$ to its span is a surjective smooth submersion. Identifying $\mathbb{C}^{n+1}$ with $\mathbb{R}^{2n+2}$ endowed with its Euclidean metric, we can view the unit sphere $S^{2n+1}$ with its round metric $\bar{g}$ as an embedded Riemannian submanifold of $\mathbb{C}^{n+1} \setminus \{0\}$. Let $p: S^{2n+1} \to \mathbb{CP}^n$ denote the restriction of the map $\pi$. Then $p$ is smooth, and it is surjective because every 1-dimensional complex subspace contains elements of unit norm. We need to show that it is a submersion. Let $z_0 \in S^{2n+1}$ and set $\zeta_0 = p(z_0) \in \mathbb{CP}^n$. Since $\pi$ is a smooth submersion, it has a smooth local section $\sigma : U \to \mathbb{C}^{n+1}$ defined on a neighborhood $U$ of $\zeta_0$ and satisfying $\sigma(\zeta_0) = z_0$ (Thm. A.17). Let $\nu: \mathbb{C}^{n+1} \setminus \{0\} \to S^{2n+1}$ be the radial projection onto the sphere:
+\[
+\nu(z) = \frac{z}{|z|}.
+\]
+
+Since dividing an element of $\mathbb{C}^{n+1}$ by a nonzero scalar does not change its span, it follows that $p \circ \nu = \pi$. Therefore, if we set $\bar{\sigma} = \nu \circ \sigma$, we have $p \circ \bar{\sigma} = p \circ \nu \circ \sigma = \pi \circ \sigma = \text{Id}_U$, so $\bar{\sigma}$ is a local section of $p$. By Theorem A.17, this shows that $p$ is a submersion.
+
+Define an action of $S^1$ on $S^{2n+1}$ by complex multiplication:
+\[
+\lambda \cdot (z^1,\ldots,z^{n+1}) = (\lambda z^1,\ldots,\lambda z^{n+1}),
+\]
+for $\lambda \in S^1$ (viewed as a complex number of norm 1) and $z = (z^1,\ldots,z^{n+1}) \in S^{2n+1}$. This is easily seen to be isometric, vertical, and transitive on fibers of $p$. By Theorem 2.28, therefore, there is a unique metric on $\mathbb{CP}^n$ such that the map $p: S^{2n+1} \to \mathbb{CP}^n$ is a Riemannian submersion. This metric is called the \textbf{Fubini--Study metric}; you will have a chance to study its geometric properties in Problems 3-19 and 8-13.
+\end{example}
+
+\section{Riemannian Coverings}
+
+Another important special case of Riemannian submersions occurs in the context of covering maps. Suppose $(\tilde{M}, \tilde{g})$ and $(M, g)$ are Riemannian manifolds. A smooth covering map $\pi: \tilde{M} \to M$ is called a \textbf{Riemannian covering} if it is a local isometry.
+
+\begin{proposition}
+\label{prop:riemannian-covering-metric}
+\dcref{ch2:2.31}
+\uses{prop:elementary-covering-maps}
+\uses{UNRESOLVED:chA:C.21}
+\uses{thm:group-action-riemannian-submersion}
+
+Suppose $\pi: \tilde{M} \to M$ is a smooth normal covering map, and $\tilde{g}$ is any metric on $\tilde{M}$ that is invariant under all covering automorphisms. Then there is a unique metric $g$ on $M$ such that $\pi$ is a Riemannian covering.
+\end{proposition}
+
+\begin{proof}
+Proposition A.49 shows that $\pi$ is a surjective smooth submersion. The automorphism group acts vertically by definition, and Proposition C.21 shows that it acts transitively on fibers when the covering is normal. It then follows from Theorem 2.28 that there is a unique metric $g$ on $M$ such that $\pi$ is a Riemannian submersion. Since a Riemannian submersion between manifolds of the same dimension is a local isometry, it follows that $\pi$ is a Riemannian covering.
+\end{proof}
+
+\begin{proposition}
+\label{prop:riemannian-quotient-metric}
+\dcref{ch2:2.32}
+\uses{UNRESOLVED:chC:23}
+\uses{prop:riemannian-covering-metric}
+Suppose $(\widetilde{M}, \tilde{g})$ is a Riemannian manifold, and $\Gamma$ is a discrete Lie group acting smoothly, freely, properly, and isometrically on $\widetilde{M}$. Then $\widetilde{M}/\Gamma$ has a unique Riemannian metric such that the quotient map $\pi: \widetilde{M} \to \widetilde{M}/\Gamma$ is a normal Riemannian covering.
+\end{proposition}
+
+\begin{proof}
+Proposition C.23 shows that $\pi$ is a smooth normal covering map, and Proposition 2.31 shows that $M = \widetilde{M}/\Gamma$ has a unique Riemannian metric such that $\pi$ is a Riemannian covering.
+\end{proof}
+
+\begin{corollary}
+\label{cor:isometric-to-quotient}
+\dcref{ch2:2.33}
+\uses{UNRESOLVED:chC:20}
+\uses{UNRESOLVED:chC:23}
+\uses{UNRESOLVED:chA:19}
+Suppose $(M, g)$ and $(\widetilde{M}, \tilde{g})$ are connected Riemannian manifolds, $\pi: \widetilde{M} \to M$ is a normal Riemannian covering map, and $\Gamma = \text{Aut}_\pi(\widetilde{M})$. Then $M$ is isometric to $\widetilde{M}/\Gamma$.
+\end{corollary}
+
+\begin{proof}
+Proposition C.20 shows that with the discrete topology, $\Gamma$ is a discrete Lie group acting smoothly, freely, and properly on $\widetilde{M}$, and then Proposition C.23 shows that $\widetilde{M}/\Gamma$ is a smooth manifold and the quotient map $q: \widetilde{M} \to \widetilde{M}/\Gamma$ is a smooth normal covering map. The fact that both $\pi$ and $q$ are normal coverings implies that $\Gamma$ acts transitively on the fibers of both maps, so the two maps are constant on each other's fibers. Proposition A.19 then implies that there is a diffeomorphism $F: M \to \widetilde{M}/\Gamma$ that satisfies $q \circ F = \pi$. Because both $q$ and $\pi$ are local isometries, $F$ is too, and because it is bijective it is a global isometry.
+\end{proof}
+
+\begin{example}
+\label{ex:real-projective-space-metric}
+\dcref{ch2:2.34}
+\uses{UNRESOLVED:chC:24}
+\uses{prop:riemannian-quotient-metric}
+The two-element group $\Gamma = \{\pm1\}$ acts smoothly, freely, properly, and isometrically on $S^n$ by multiplication. Example C.24 shows that the quotient space is diffeomorphic to the real projective space $\mathbb{RP}^n$ and the quotient map $q: S^n \to \mathbb{RP}^n$ is a smooth normal covering map. Because the action is isometric, Proposition 2.32 shows that there is a unique metric on $\mathbb{RP}^n$ such that $q$ is a Riemannian covering.
+\end{example}
+
+\begin{example}[The Open Möbius Band]
+\label{ex:open-mobius-band}
+\dcref{ch2:2.35}
+\uses{REF:ch2-8}
+The open Möbius band is the quotient space $M = \mathbb{R}^2/\mathbb{Z}$, where $\mathbb{Z}$ acts on $\mathbb{R}^2$ by $n \cdot (x,y) = (x+n, (-1)^n y)$. This action is smooth, free, proper, and isometric, and therefore $M$ inherits a flat Riemannian metric such that the quotient map is a Riemannian covering. (See Problem 2-8.)
+\end{example}
+
+\begin{exercise}
+\label{exer:torus-covering}
+\dcref{ch2:2.36}
+\uses{ex:n-torus-riemannian-submanifold}
+Let $T^n \subseteq \mathbb{R}^{2n}$ be the $n$-torus with its induced metric. Show that the map $X: \mathbb{R}^n \to T^n$ of Example 2.21 is a Riemannian covering.
+\end{exercise}
+
+\section{Basic Constructions on Riemannian Manifolds}
+
+Every Riemannian metric yields an abundance of useful constructions on manifolds, besides the obvious ones of lengths of vectors and angles between them. In this section we describe the most basic ones. Throughout this section $M$ is a smooth manifold with or without boundary.
+
+\section{Raising and Lowering Indices}
+
+One elementary but important property of Riemannian metrics is that they allow us to convert vectors to covectors and vice versa. Given a Riemannian metric $g$ on $M$, we define a bundle homomorphism $\tilde{g} : TM \to T^* M$ by setting
+\[
+\tilde{g}(v)(w) = g_p(v,w)
+\]
+for all $p \in M$ and $v,w \in T_p M$. If $X$ and $Y$ are smooth vector fields on $M$, this yields
+\[
+\tilde{g}(X)(Y) = g(X,Y),
+\]
+which implies, first, that $\tilde{g}(X)(Y)$ is linear over $C^\infty(M)$ in $Y$ and thus $\tilde{g}(X)$ is a smooth covector field by the tensor characterization lemma (Lemma B.6); and second, that the covector field $\tilde{g}(X)$ is linear over $C^\infty(M)$ as a function of $X$, and thus $\tilde{g}$ is a smooth bundle homomorphism.
+
+Given a smooth local frame $(E_i)$ and its dual coframe $(e^i)$, let $g = g_{ij} e^i \otimes e^j$ be the local expression for $g$. If $X = X^i E_i$ is a smooth vector field, the covector field $\tilde{g}(X)$ has the coordinate expression
+\[
+\tilde{g}(X) = (g_{ij}X^i)e^j.
+\]
+Thus the matrix of $\tilde{g}$ in any local frame is the same as the matrix of $g$ itself. Given a vector field $X$, it is standard practice to denote the components of the covector field $\tilde{g}(X)$ by
+\[
+X_j = g_{ij}X^i,
+\]
+so that
+\[
+\tilde{g}(X) = X_j e^j,
+\]
+and we say that $\tilde{g}(X)$ is obtained from $X$ by \textit{lowering an index}. With this in mind, the covector field $g(X)$ is denoted by $X^\flat$ and called $X$ \textit{flat}, borrowing from the musical notation for lowering a tone.
+
+Because the matrix $(g_{ij})$ is nonsingular at each point, the map $\tilde{g}$ is invertible, and the matrix of $\tilde{g}^{-1}$ is just the inverse matrix of $(g_{ij})$. We denote this inverse matrix by $(g^{ij})$, so that $g^{ij}g_{jk} = g_{kj}g^{jl} = \delta_k^l$. The symmetry of $g_{ij}$ easily implies that $(g^{ij})$ is also symmetric in $i$ and $j$. In terms of a local frame, the inverse map $\tilde{g}^{-1}$ is given by
+\[
+\tilde{g}^{-1}(\omega) = \omega^i E_i,
+\]
+where
+\begin{equation}
+\omega^i = g^{ij}\omega_j. \tag{2.13}
+\end{equation}
+
+If $\omega$ is a covector field, the vector field $\tilde{g}^{-1}(\omega)$ is called (what else?) $\omega$ \textit{sharp} and denoted by $\omega^\sharp$, and we say that it is obtained from $\omega$ by \textit{raising an index}. The two inverse isomorphisms $\flat$ and $\sharp$ are known as the \textit{musical isomorphisms}.
+
+Probably the most important application of the sharp operator is to extend the classical gradient operator to Riemannian manifolds. If $g$ is a Riemannian metric on $M$ and $f : M \to \mathbb{R}$ is a smooth function, the \emph{gradient of $f$} is the vector field
+$\operatorname{grad} f = (df)^\#$ obtained from $df$ by raising an index. Unwinding the definitions,
+we see that $\operatorname{grad} f$ is characterized by the fact that
+\begin{equation}
+df_p(w) = \langle \operatorname{grad} f|_p, w \rangle \quad \text{for all } p \in M, w \in T_p M.
+\tag{2.14}
+\end{equation}
+and has the local basis expression
+\[
+\operatorname{grad} f = (g^{ij} E_i f) E_j.
+\]
+
+Thus if $(E_i)$ is an orthonormal frame, then $\operatorname{grad} f$ is the vector field whose
+components are the same as the components of $df$; but in other frames, this will
+not be the case.
+
+The next proposition shows that the gradient has the same geometric interpretation
+on a Riemannian manifold as it does in Euclidean space. If $f$ is a smooth
+real-valued function on a smooth manifold $M$, recall that a point $p \in M$ is called a
+\emph{regular point of $f$} if $df_p \neq 0$, and a \emph{critical point of $f$} otherwise; and a level set
+$f^{-1}(c)$ is called a \emph{regular level set} if every point of $f^{-1}(c)$ is a regular point of $f$
+(see Appendix A). Corollary A.26 shows that each regular level set is an embedded
+smooth hypersurface in $M$.
+
+\begin{proposition}
+\label{prop:regular-level-set-hypersurface}
+\dcref{ch2:2.37}
+\uses{cor:regular-level-set}
+\uses{prob:gradient-orthogonal-level-sets}
+Suppose $(M, g)$ is a Riemannian manifold, $f \in C^\infty(M)$, and
+$\mathcal{R} \subseteq M$ is the set of regular points of $f$. For each $c \in \mathbb{R}$, the set $M_c = f^{-1}(c) \cap \mathcal{R}$,
+if nonempty, is an embedded smooth hypersurface in $M$, and $\operatorname{grad} f$ is everywhere
+normal to $M_c$.
+\end{proposition}
+
+\textit{Proof.} Problem 2-9. \hfill $\square$
+
+The flat and sharp operators can be applied to tensors of any rank, in any index
+position, to convert tensors from covariant to contravariant or vice versa. Formally,
+this operation is defined as follows: if $F$ is any $(k,l)$-tensor and $i \in \{1, \ldots, k + l\}$ is
+any covariant index position for $F$ (meaning that the $i$th argument is a vector, not a
+covector), we can form a new tensor $F^\#$ of type $(k + 1, l - 1)$ by setting
+\[
+F^\#(\alpha_1, \ldots, \alpha_{k+l}) = F(\alpha_1, \ldots, \alpha_{i-1}, \alpha_i^*, \alpha_{i+1}, \ldots, \alpha_{k+l})
+\]
+whenever $\alpha_1, \ldots, \alpha_{k+l}$ are vectors or covectors as appropriate. In any local frame,
+the components of $F^\#$ are obtained by multiplying the components of $F$ by $g^{kl}$ and
+contracting one of the indices of $g^{kl}$ with the $i$th index of $F$. Similarly, if $i$ is a
+contravariant index position, we can define a $(k - 1, l + 1)$-tensor $F^b$ by
+\[
+F^b(\alpha_1, \ldots, \alpha_{k+l}) = F(\alpha_1, \ldots, \alpha_{i-1}, \alpha_i^*, \alpha_{i+1}, \ldots, \alpha_{k+l}).
+\]
+
+In components, it is computed by multiplying by $g_{kl}$ and contracting.
+
+For example, if $A$ is a mixed 3-tensor given in terms of a local frame by
+\[
+A = A_i^{jk} \varepsilon^i \otimes E_j \otimes \varepsilon^k
+\]
+(see (B.6)), we can lower its middle index to obtain a covariant 3-tensor $A^b$ with components
+\[
+A_{ijk} = g_{jl} A^l_{ik}.
+\]
+
+To avoid overly cumbersome notation, we use the symbols $F^\#$ and $F^b$ without explicitly specifying which index position the sharp or flat operator is to be applied to; when there is more than one choice, we will always stipulate in words what is meant.
+
+Another important application of the flat and sharp operators is to extend the trace operator introduced in Appendix B to covariant tensors. If $h$ is any covariant $k$-tensor field on a Riemannian manifold with $k \ge 2$, we can raise one of its indices (say the last one for definiteness) and obtain a $(1, k-1)$-tensor $h^\#$. The trace of $h^\#$ is thus a well-defined covariant $(k-2)$-tensor field (see Exercise B.3). We define the \textbf{trace of $h$ with respect to $g$} as
+\[
+\text{tr}_g h = \text{tr}(h^\#).
+\]
+
+Sometimes we may wish to raise an index other than the last, or to take the trace on a pair of indices other than the last covariant and contravariant ones. In each such case, we will say in words what is meant.
+
+The most important case is that of a covariant 2-tensor field. In this case, $h^\#$ is a $(1,1)$-tensor field, which can equivalently be regarded as an endomorphism field, and $\text{tr}_g h$ is just the ordinary trace of this endomorphism field. In terms of a basis, this is
+\[
+\text{tr}_g h = h_i^i = g^{ij} h_{ij}.
+\]
+
+In particular, in an orthonormal frame this is the ordinary trace of the matrix $(h_{ij})$ (the sum of its diagonal entries); but if the frame is not orthonormal, then this trace is different from the ordinary trace.
+
+\begin{exercise}
+\label{exer:inverse-metric-ambiguity}
+\dcref{ch2:2.38}
+If $g$ is a Riemannian metric on $M$ and $(E_i)$ is a local frame on $M$, there is a potential ambiguity about what the expression $(g^{ij})$ represents: we have defined it to mean the inverse matrix of $(g_{ij})$, but one could also interpret it as the components of the contravariant 2-tensor field $g^{\#\#}$ obtained by raising both of the indices of $g$. Show that these two interpretations lead to the same result.
+\end{exercise}
+
+\section{Inner Products of Tensors}
+
+A Riemannian metric yields, by definition, an inner product on tangent vectors at each point. Because of the musical isomorphisms between vectors and covectors, it is easy to carry the inner product over to covectors as well.
+
+Suppose $g$ is a Riemannian metric on $M$, and $x \in M$. We can define an inner product on the cotangent space $T_x^* M$ by
+\[
+\langle \omega, \eta \rangle_g = \langle \omega^\#, \eta^\# \rangle_g.
+\]
+(Just as with inner products of vectors, we might sometimes omit $g$ from the notation when the metric is understood.) To see how to compute this, we just use the basis formula (2.13) for the sharp operator, together with the relation $g_{kl}g^{kl} = g_{ik}g^{kl} = \delta_l^i$, to obtain
+\begin{align*}
+\langle\omega, \eta\rangle &= g_{kl}(g^{ki}\omega_i)(g^{lj}\eta_j)\\
+&= \delta_l^i g^{lj}\omega_i\eta_j\\
+&= g^{ij}\omega_i\eta_j.
+\end{align*}
+
+In other words, the inner product on covectors is represented by the inverse matrix $(g^{ij})$. Using our conventions for raising and lowering indices, this can also be written
+\begin{align*}
+\langle\omega, \eta\rangle &= \omega_i\eta^i = \omega^j\eta_j.
+\end{align*}
+
+\begin{exercise}
+\label{exer:orthonormal-frames-and-coframes}
+\dcref{ch2:2.39}
+Let $(M, g)$ be a Riemannian manifold with or without boundary, let $(E_i)$ be a local frame for $M$, and let $(e^i)$ be its dual coframe. Show that the following are equivalent:
+\begin{enumerate}
+\item[(a)] $(E_i)$ is orthonormal.
+\item[(b)] $(e^i)$ is orthonormal.
+\item[(c)] $(e^i)^{\sharp} = E_i$ for each $i$.
+\end{enumerate}
+\end{exercise}
+
+This construction can be extended to tensor bundles of any rank, as the following proposition shows. First a bit of terminology: if $E \to M$ is a smooth vector bundle, a \textbf{smooth fiber metric} on $E$ is an inner product on each fiber $E_p$ that varies smoothly, in the sense that for any (local) smooth sections $\sigma, \tau$ of $E$, the inner product $\langle\sigma, \tau\rangle$ is a smooth function.
+
+\begin{proposition}[Inner Products of Tensors]
+\label{prop:inner-products-of-tensors}
+\dcref{ch2:2.40}
+Let $(M, g)$ be an $n$-dimensional Riemannian manifold with or without boundary. There is a unique smooth fiber metric on each tensor bundle $T^{(k,l)}TM$ with the property that if $\alpha_1, \ldots, \alpha_{k+l}, \beta_1, \ldots, \beta_{k+l}$ are vector or covector fields as appropriate, then
+\begin{equation}
+\langle\alpha_1 \otimes \cdots \otimes \alpha_{k+l}, \beta_1 \otimes \cdots \otimes \beta_{k+l}\rangle = \langle\alpha_1, \beta_1\rangle \cdots \langle\alpha_{k+l}, \beta_{k+l}\rangle. \tag{2.15}
+\end{equation}
+
+With this inner product, if $(E_1, \ldots, E_n)$ is a local orthonormal frame for $TM$ and $(e^1, \ldots, e^n)$ is the corresponding dual coframe, then the collection of tensor fields $E_{i_1} \otimes \cdots \otimes E_{i_k} \otimes e^{j_1} \otimes \cdots \otimes e^{j_l}$ as all the indices range from $1$ to $n$ forms a local orthonormal frame for $T^{(k,l)}(T_pM)$. In terms of any (not necessarily orthonormal) frame, this fiber metric satisfies
+\begin{equation}
+\langle F, G\rangle = g_{i_1r_1} \cdots g_{i_kr_k} g^{j_1s_1} \cdots g^{j_ls_l} F_{j_1 \cdots j_l}^{i_1 \cdots i_k} G_{s_1 \cdots s_l}^{r_1 \cdots r_k}. \tag{2.16}
+\end{equation}
+
+If $F$ and $G$ are both covariant, this can be written
+\[
+\langle F, G\rangle = F_{j_1 \cdots j_l} G^{j_1 \cdots j_l},
+\]
+where the last factor on the right represents the components of $G$ with all of its
+indices raised:
+\[
+G^{j_1 \ldots j_i} = g^{i_1 s_1} \cdots g^{j_i s_I} G_{s_1 \ldots s_I}.
+\]
+\end{proposition}
+
+\textit{Proof.} Problem 2-11. $\square$
+
+\section{The Volume Form and Integration}
+
+Another important construction provided by a metric on an oriented manifold is a
+canonical volume form.
+
+\begin{proposition}[The Riemannian Volume Form]
+\label{prop:riemannian-volume-form}
+\dcref{ch2:2.41}
+\uses{prob:riemannian-volume-form-existence}
+
+Let $(M, g)$ be an oriented Riemannian $n$-manifold with or without boundary. There is a unique $n$-form $dV_g$ on
+$M$, called the \emph{Riemannian volume form}, characterized by any one of the following
+three equivalent properties:
+
+\begin{enumerate}[label=(\alph*)]
+\item If $(e^1, \ldots, e^n)$ is any local oriented orthonormal coframe for $T^* M$, then
+$$dV_g = e^1 \wedge \cdots \wedge e^n.$$
+
+\item If $(E_1, \ldots, E_n)$ is any local oriented orthonormal frame for $TM$, then
+$$dV_g(E_1, \ldots, E_n) = 1.$$
+
+\item If $(x^1, \ldots, x^n)$ are any oriented local coordinates, then
+$$dV_g = \sqrt{\det(g_{ij})} \, dx^1 \wedge \cdots \wedge dx^n.$$
+\end{enumerate}
+\end{proposition}
+
+\textit{Proof.} Problem 2-12. $\square$
+
+The significance of the Riemannian volume form is that it allows us to integrate
+functions on an oriented Riemannian manifold, not just differential forms. If $f$ is
+a continuous, compactly supported real-valued function on an oriented Riemannian
+$n$-manifold $(M, g)$ with or without boundary, then $f \, dV_g$ is a compactly supported
+$n$-form. Therefore, the integral $\int_M f \, dV_g$ makes sense, and we define it to be the
+\emph{integral of $f$ over $M$}. Similarly, if $M$ is compact, the \emph{volume of $M$} is defined to
+be
+$$\operatorname{Vol}(M) = \int_M dV_g = \int_M 1 \, dV_g.$$
+
+In particular, if $D \subseteq M$ is a \emph{regular domain} (a closed, embedded codimension-$0$
+submanifold with boundary), we can apply these definitions to $D$ with its induced
+metric and thereby make sense of the integral of $f$ over $D$ and, in case $D$ is compact, the volume of $D$.
+
+The notation $dV_g$ is chosen to emphasize the similarity of the integral $\int_M f \, dV_g$
+with the standard integral of a function over an open subset of $\mathbb{R}^n$. It is \emph{not} meant
+to imply that $dV_g$ is an exact form; in fact, if $M$ is a compact oriented manifold
+without boundary, then $dV_g$ is never exact, because its integral over $M$ is positive, and exact forms integrate to zero by Stokes's theorem.
+
+Because there are two conventions in common use for the wedge product (see p.~401), it should be noted that properties (a) and (c) of Proposition 2.41 are the same regardless of which convention is used; but property (b) holds only for the determinant convention that we use. If the Alt convention is used, the number 1 should be replaced by $1/n!$ in that formula.
+
+\begin{exercise}\label{exer:isometry-preserves-volume-form}\dcref{ch2:2.42}
+Suppose $(M,g)$ and $(\tilde{M},\tilde{g})$ are oriented Riemannian manifolds, and $\varphi: M \to \tilde{M}$ is an orientation-preserving isometry. Prove that $\varphi^* dV_{\tilde{g}} = dV_g$.
+\end{exercise}
+
+For Riemannian hypersurfaces, we have the following important characterization of the volume form on the hypersurface in terms of that of the ambient manifold. If $X$ is a vector field and $\mu$ is a differential form, recall that $X \lrcorner \mu$ denotes \emph{interior multiplication} of $\mu$ by $X$ (see p.~401).
+
+\begin{proposition}\label{prop:hypersurface-volume-form}\dcref{ch2:2.43}
+\uses{prob:hypersurface-volume-form}
+Suppose $M$ is a hypersurface in an oriented Riemannian manifold $(\tilde{M},\tilde{g})$ and $g$ is the induced metric on $M$. Then $M$ is orientable if and only if there exists a global unit normal vector field $N$ for $M$, and in that case the volume form of $(M,g)$ is given by
+\begin{equation}
+dV_g = (N \lrcorner dV_{\tilde{g}})|_M. \tag{2.17}
+\end{equation}
+
+\textit{Proof.} Problem 2-13.\quad$\square$
+\end{proposition}
+
+When $M$ is not orientable, we can still define integrals of functions, but now we have to use \emph{densities} instead of differential forms (see pp.~405--406).
+
+\begin{proposition}[The Riemannian Density]\label{prop:riemannian-density}\dcref{ch2:2.44}
+If $(M,g)$ is any Riemannian manifold, then there is a unique smooth positive density $\mu$ on $M$, called the \emph{Riemannian density}, with the property that
+\begin{equation}
+\mu(E_1,\ldots,E_n) = 1 \tag{2.18}
+\end{equation}
+for every local orthonormal frame $(E_i)$.
+\end{proposition}
+
+\begin{exercise}\label{exer:riemannian-density-formula}\dcref{ch2:2.45}
+\uses{prop:riemannian-density}
+Prove this proposition by showing that $\mu$ can be defined in terms of any local orthonormal frame by
+\[
+\mu = |\varepsilon^1 \wedge \cdots \wedge \varepsilon^n|.
+\]
+\end{exercise}
+
+Let $(M,g)$ be a Riemannian manifold (with or without boundary). If $M$ is oriented and $dV_g$ is its Riemannian volume form, then its Riemannian density is easily seen to be equal to $|dV_g|$. On the other hand, the Riemannian density is defined whether $M$ is oriented or not. It is customary to denote the Riemannian density by the same notation $dV_g$ that we use for the Riemannian volume form, and to specify when necessary whether the notation refers to a density or a form. In either case, we can define the integral of a compactly supported smooth function $f: M \to \mathbb{R}$ as $\int_M f\, dV_g$. This is to be interpreted as the integral of a density when $M$ is nonorientable; when $M$ is orientable, it can be interpreted either as the integral of a density
+or as the integral of an $n$-form (with respect to some choice of orientation), because
+both give the same result.
+
+\section{The Divergence and the Laplacian}
+
+In advanced calculus, you have undoubtedly been introduced to three important
+differential operators involving vector fields on $\mathbb{R}^3$: the \emph{gradient} (which takes real-valued functions to vector fields), \emph{divergence} (vector fields to functions), and \emph{curl}
+(vector fields to vector fields). We have already described how the gradient operator
+can be generalized to Riemannian manifolds (see equation (2.14)); now we can show
+that the divergence operator also generalizes easily to that setting. Problem 2-27
+describes a similar, but more limited, generalization of the curl.
+
+Suppose $(M, g)$ is an oriented Riemannian $n$-manifold with or without boundary,
+and $dV_g$ is its volume form. If $X$ is a smooth vector field on $M$, then $X \lrcorner dV_g$ is
+an $(n-1)$-form. The exterior derivative of this $(n-1)$-form is a smooth $n$-form, so
+it can be expressed as a smooth function multiplied by $dV_g$. That function is called
+the \emph{divergence of } $X$, and denoted by $\operatorname{div} X$; thus it is characterized by the following
+formula:
+\begin{equation}
+d(X \lrcorner dV_g) = (\operatorname{div} X)dV_g. \tag{2.19}
+\end{equation}
+
+Even if $M$ is nonorientable, in a neighborhood of each point we can choose an
+orientation and define the divergence by (2.19), and then note that reversing the orientation changes the sign of $dV_g$ on both sides of the equation, so $\operatorname{div} X$ is well
+defined, independently of the choice of orientation. In this way, we can define the
+divergence operator on \emph{any} Riemannian manifold with or without boundary, by
+requiring that it satisfy (2.19) for any choice of orientation in a neighborhood of
+each point.
+
+The most important application of the divergence operator is the \emph{divergence theorem}, which you will be asked to prove in Problem 2-22.
+
+Using the divergence operator, we can define another important operator, this one
+acting on real-valued functions. The \emph{Laplacian} (or \emph{Laplace--Beltrami operator}) is
+the linear operator $\Delta: C^\infty(M) \to C^\infty(M)$ defined by
+\begin{equation}
+\Delta u = \operatorname{div}(\operatorname{grad} u). \tag{2.20}
+\end{equation}
+
+(Note that many books, including [LeeSM] and the first edition of this book, define
+the Laplacian as $-\operatorname{div}(\operatorname{grad} u)$. The main reason for choosing the negative sign is
+so that the operator will have nonnegative eigenvalues; see Problem 2-24. But the
+definition we give here is much more common in Riemannian geometry.)
+
+The next proposition gives alternative formulas for these operators.
+
+\begin{proposition}
+\label{prop:coordinate-representations-divergence-laplacian}
+\dcref{ch2:2.46}
+
+Let $(M, g)$ be a Riemannian manifold with or without boundary,
+and let $(x^i)$ be any smooth local coordinates on an open set $U \subseteq M$. The coordinate
+representations of the divergence and Laplacian are as follows:
+\[
+\operatorname{div}\left(X^i \frac{\partial}{\partial x^i}\right) = \frac{1}{\sqrt{\det g}} \frac{\partial}{\partial x^i}\left(\sqrt{\det g}\, X^i\right),
+\]
+\[
+\Delta u = \frac{1}{\sqrt{\det g}} \frac{\partial}{\partial x^i}\left(\sqrt{\det g}\, g^{ij} \frac{\partial u}{\partial x^j}\right),
+\]
+where $\det g = \det(g_{kl})$ is the determinant of the component matrix of $g$ in these coordinates. On $\mathbb{R}^n$ with the Euclidean metric and standard coordinates, these reduce to
+
+\[
+\operatorname{div}\left(X^i \frac{\partial}{\partial x^i}\right) = \sum_{i=1}^n \frac{\partial X^i}{\partial x^i},
+\]
+
+\[
+\Delta u = \sum_{i=1}^n \frac{\partial^2 u}{(\partial x^i)^2}.
+\]
+\end{proposition}
+
+\textit{Proof.} Problem 2-21. \hfill $\square$
+
+\section{Lengths and Distances}
+
+Perhaps the most important tool that a Riemannian metric gives us is the ability to measure lengths of curves and distances between points. Throughout this section, $(M, g)$ denotes a Riemannian manifold with or without boundary.
+
+Without further qualification, a \textbf{curve} in $M$ always means a \textbf{parametrized curve}, that is, a continuous map $\gamma: I \to M$, where $I \subseteq \mathbb{R}$ is some interval. Unless otherwise specified, we will not worry about whether the interval is bounded or unbounded, or whether it includes endpoints or not. To say that $\gamma$ is a \textbf{smooth curve} is to say that it is smooth as a map from the manifold (with boundary) $I$ to $M$. If $I$ has one or two endpoints and $M$ has empty boundary, then $\gamma$ is smooth if and only if it extends to a smooth curve defined on some open interval containing $I$. (If $\partial M \neq \emptyset$, then smoothness of $\gamma$ has to be interpreted as meaning that each coordinate representation of $\gamma$ has a smooth extension to an open interval.) A \textbf{curve segment} is a curve whose domain is a compact interval.
+
+A smooth curve $\gamma: I \to M$ has a well-defined velocity $\gamma'(t) \in T_{\gamma(t)} M$ for each $t \in I$. We say that $\gamma$ is a \textbf{regular curve} if $\gamma'(t) \neq 0$ for $t \in I$. This implies that $\gamma$ is an immersion, so its image has no \textquotedblleft corners\textquotedblright\ or \textquotedblleft kinks.\textquotedblright
+
+We wish to use curve segments as \textquotedblleft measuring tapes\textquotedblright\ to define distances between points in a connected Riemannian manifold. Many aspects of the theory become technically much simpler if we work with a slightly larger class of curve segments instead of just the regular ones. We now describe the appropriate class of curves.
+
+If $[a, b] \subseteq \mathbb{R}$ is a closed bounded interval, a \textbf{partition of $[a,b]$} is a finite sequence $(a_0, \ldots, a_k)$ of real numbers such that $a = a_0 < a_1 < \cdots < a_k = b$. Each interval $[a_{i-1}, a_i]$ is called a \textbf{subinterval of the partition}. If $M$ is a smooth manifold with or without boundary, a (continuous) curve segment $\gamma: [a, b] \to M$ is said to be
+\emph{piecewise regular} if there exists a partition $(a_0,\ldots,a_k)$ of $[a,b]$ such that $\gamma|_{[a_{i-1},a_i]}$ is a regular curve segment (meaning it is smooth with nonvanishing velocity) for $i=1,\ldots,k$. For brevity, we refer to a piecewise regular curve segment as an \textbf{admissible curve}, and any partition $(a_0,\ldots,a_k)$ such that $\gamma|_{[a_{i-1},a_i]}$ is smooth for each $i$ an \textbf{admissible partition for $\gamma$}. (There are many admissible partitions for a given admissible curve, because we can always add more points to the partition.) It is also convenient to consider any map $\gamma: \{a\} \to M$ whose domain is a single real number to be an admissible curve.
+
+Suppose $\gamma$ is an admissible curve and $(a_0,\ldots,a_k)$ is an admissible partition for it. At each of the intermediate partition points $a_1,\ldots,a_{k-1}$, there are two one-sided velocity vectors, which we denote by
+\[
+\gamma'(a_i^-) = \lim_{t \nearrow a_i} \gamma'(t),
+\]
+\[
+\gamma'(a_i^+) = \lim_{t \searrow a_i} \gamma'(t).
+\]
+They are both nonzero, but they need not be equal.
+
+If $\gamma: I \to M$ is a smooth curve, we define a \emph{reparametrization} of $\gamma$ to be a curve of the form $\tilde{\gamma} = \gamma \circ \varphi: I' \to M$, where $I' \subseteq \mathbb{R}$ is another interval and $\varphi: I' \to I$ is a diffeomorphism. Because intervals are connected, $\varphi$ is either strictly increasing or strictly decreasing on $I'$. We say that $\tilde{\gamma}$ is a \emph{forward reparametrization} if $\varphi$ is increasing, and a \emph{backward reparametrization} if it is decreasing.
+
+For an admissible curve $\gamma: [a,b] \to M$, we define a \emph{reparametrization of $\gamma$} a little more broadly, as a curve of the form $\tilde{\gamma} = \gamma \circ \varphi$, where $\varphi: [c,d] \to [a,b]$ is a homeomorphism for which there is a partition $(c_0,\ldots,c_k)$ of $[c,d]$ such that the restriction of $\varphi$ to each subinterval $[c_{i-1},c_i]$ is a diffeomorphism onto its image.
+
+If $\gamma: [a,b] \to M$ is an admissible curve, we define the \emph{length of $\gamma$} to be
+\[
+L_g(\gamma) = \int_a^b |\gamma'(t)|_g \, dt.
+\]
+The integrand is bounded and continuous everywhere on $[a,b]$ except possibly at the finitely many points where $\gamma$ is not smooth, so this integral is well defined.
+
+\begin{proposition}[Properties of Lengths]
+\label{prop:properties-of-lengths}
+\dcref{ch2:2.47}
+Suppose $(M, g)$ is a Riemannian manifold with or without boundary, and $\gamma: [a, b] \to M$ is an admissible curve.
+
+\begin{enumerate}
+  \item[\textbf{(a) Additivity of Length}:] If $a < c < b$, then
+  \[
+    L_g(\gamma) = L_g(\gamma|_{[a,c]}) + L_g(\gamma|_{[c,b]}).
+  \]
+
+  \item[\textbf{(b) Parameter Independence}:] If $\tilde{\gamma}$ is a reparametrization of $\gamma$, then $L_g(\gamma) = L_g(\tilde{\gamma})$.
+
+  \item[\textbf{(c) Isometry Invariance}:] If $(M,g)$ and $(\tilde{M},\tilde{g})$ are Riemannian manifolds (with or without boundary) and $\varphi: M \to \tilde{M}$ is a local isometry, then $L_g(\gamma) = L_{\tilde{g}}(\varphi \circ \gamma)$.
+\end{enumerate}
+\end{proposition}
+
+\begin{exercise}[Prove Proposition 2.47]
+\label{exer:prove-prop-247}
+\dcref{ch2:2.48}
+\uses{prop:properties-of-lengths}
+\end{exercise}
+
+Suppose $\gamma : [a, b] \to M$ is an admissible curve. The \textbf{arc-length function} of $\gamma$ is the function $s : [a, b] \to \mathbb{R}$ defined by
+\[s(t) = L_g(\gamma|_{[a,t]}) = \int_a^t |\gamma'(u)|_g \, du.\]
+
+It is continuous everywhere, and it follows from the fundamental theorem of calculus that it is smooth wherever $\gamma$ is, with derivative $s'(t) = |\gamma'(t)|$.
+
+For this reason, if $\gamma: I \to M$ is any smooth curve (not necessarily a curve segment), we define the \textbf{speed} of $\gamma$ at any time $t \in I$ to be the scalar $|\gamma'(t)|$. We say that $\gamma$ is a \textbf{unit-speed curve} if $|\gamma'(t)| = 1$ for all $t$, and a \textbf{constant-speed curve} if $|\gamma'(t)|$ is constant. If $\gamma$ is a piecewise smooth curve, we say that $\gamma$ has \textbf{unit speed} if $|\gamma'(t)| = 1$ wherever $\gamma$ is smooth.
+
+If $\gamma : [a, b] \to M$ is a unit-speed admissible curve, then its arc-length function has the simple form $s(t) = t - a$. If, in addition, its parameter interval is of the form $[0, b]$ for some $b > 0$, then the arc-length function is $s(t) = t$. For this reason, a unit-speed admissible curve whose parameter interval is of the form $[0, b]$ is said to be \textbf{parametrized by arc length}.
+
+\begin{proposition}
+\label{prop:reparametrization-by-arc-length}
+\dcref{ch2:2.49}
+Suppose $(M, g)$ is a Riemannian manifold with or without boundary.
+\begin{enumerate}
+\item[(a)] Every regular curve in $M$ has a unit-speed forward reparametrization.
+\item[(b)] Every admissible curve in $M$ has a unique forward reparametrization by arc length.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+Suppose $\gamma : I \to M$ is a regular curve. Choose an arbitrary $t_0 \in I$, and define $s : I \to \mathbb{R}$ by
+\[s(t) = \int_{t_0}^t |\gamma'(u)|_g \, du.\]
+
+Since $s'(t) = |\gamma'(t)|_g > 0$, it follows that $s$ is a strictly increasing local diffeomorphism, and thus maps $I$ diffeomorphically onto an interval $I' \subseteq \mathbb{R}$. If we let $\varphi = s^{-1} : I' \to I$, then $\tilde{\gamma} = \gamma \circ \varphi$ is a forward reparametrization of $\gamma$, and the chain rule gives
+\[|\tilde{\gamma}'(t)|_g = |\varphi'(t)\gamma'(\varphi(t))|_g = \frac{1}{s'(\varphi(t))}|\gamma'(\varphi(t))|_g = 1.\]
+
+Thus $\tilde{\gamma}$ is a unit-speed reparametrization of $\gamma$.
+
+Now let $\gamma : [a, b] \to M$ be an admissible curve. We prove the existence statement in part (b) by induction on the number of smooth segments in an admissible partition. If $\gamma$ has only one smooth segment, then it is a regular curve segment, and (b) follows by applying (a) in the special case $I = [a, b]$ and choosing $t_0 = a$. Assuming that the result is true for admissible curves with $k$ smooth segments, suppose $\gamma$
+has an admissible partition $(a_0, \ldots, a_{k+1})$. The inductive hypothesis gives piecewise regular homeomorphisms $\varphi : [0,c] \to [a, a_k]$ and $\psi : [0,d] \to [a_k, b]$ such that $\gamma \circ \varphi$ is an arc-length reparametrization of $\gamma|_{[a,a_k]}$ and $\gamma \circ \psi$ is an arc-length reparametrization of $\gamma|_{[a_k,b]}$. If we define $\bar{\varphi}: [0, c+d] \to [a,b]$ by
+\[
+\bar{\varphi}(s) = \begin{cases}
+\varphi(s), & s \in [0,c], \\
+\psi(s-c), & s \in [c, c+d],
+\end{cases}
+\]
+then $\gamma \circ \bar{\varphi}$ is a reparametrization of $\gamma$ by arc length.
+
+To prove uniqueness, suppose that $\tilde{\gamma} = \gamma \circ \varphi$ and $\hat{\gamma} = \gamma \circ \psi$ are both forward reparametrizations of $\gamma$ by arc length. Since both have the same length, it follows that $\varphi$ and $\psi$ both have the same parameter domain $[0,c]$, and thus both are piecewise regular homeomorphisms from $[0,c]$ to $[a,b]$. If we define $\eta = \varphi^{-1} \circ \psi: [0,c] \to [0,c]$, then $\eta$ is a piecewise regular increasing homeomorphism satisfying $\tilde{\gamma} = \gamma \circ \varphi \circ \eta = \tilde{\gamma} \circ \eta$. The fact that both $\tilde{\gamma}$ and $\hat{\gamma}$ are of unit speed implies the following equality for all $s \in [0,c]$ except the finitely many values at which $\tilde{\gamma}$ or $\eta$ is not smooth:
+\[
+1 = |\dot{\tilde{\gamma}}(s)|_g = |\dot{\tilde{\gamma}}(\eta(s))\eta'(s)|_g = |\dot{\tilde{\gamma}}(\eta(s))|_g \eta'(s) = \eta'(s).
+\]
+
+Since $\eta$ is continuous and $\eta(0) = 0$, it follows that $\eta(s) = s$ for all $s \in [0,c]$, and thus $\tilde{\gamma} = \hat{\gamma}$.
+\end{proof}
+
+\section{The Riemannian Distance Function}
+
+We are now in a position to introduce one of the most important concepts from classical geometry into the Riemannian setting: distances between points.
+
+Suppose $(M, g)$ is a connected Riemannian manifold with or without boundary. For each pair of points $p, q \in M$, we define the \textbf{Riemannian distance from $p$ to $q$}, denoted by $d_g(p,q)$, to be the infimum of the lengths of all admissible curves from $p$ to $q$. The following proposition guarantees that $d_g(p,q)$ is a well-defined nonnegative real number for each $p, q \in M$.
+
+\begin{proposition}
+\label{prop:connected-manifold-admissible-curve}
+\dcref{ch2:2.50}
+If $M$ is a connected smooth manifold (with or without boundary), then any two points of $M$ can be joined by an admissible curve.
+\end{proposition}
+
+\begin{proof}
+Let $p, q \in M$ be arbitrary. Since a connected manifold is path-connected, $p$ and $q$ can be connected by a continuous path $c: [a,b] \to M$. By compactness, there is a partition of $[a,b]$ such that $c([a_{i-1}, a_i])$ is contained in a single smooth coordinate ball (or half-ball in case $\partial M \neq \emptyset$) for each $i$. Then we may replace each such curve segment by a straight-line path in coordinates, yielding an admissible curve $\gamma$ between the same points (Fig.~2.2).
+\end{proof}
+
+For convenience, if $(M, g)$ is a disconnected Riemannian manifold, we also let $d_g(p,q)$ denote the Riemannian distance from $p$ to $q$, provided that $p$ and $q$ lie in the same connected component of $M$. (See also Problem 2-30.)
+
+% [FIGURE: Any two points can be connected by an admissible curve]
+
+\begin{proposition}[Isometry Invariance of the Riemannian Distance Function]
+\label{prop:isometry-invariance-riemannian-distance}
+\dcref{ch2:2.51}
+
+Suppose $(M, g)$ and $(\tilde{M}, \tilde{g})$ are connected Riemannian manifolds with or without boundary, and $\varphi: M \to \tilde{M}$ is an isometry. Then $d_{\tilde{g}}(\varphi(x), \varphi(y)) = d_g(x, y)$ for all $x, y \in M$.
+\end{proposition}
+
+\begin{exercise}
+\label{exer:prove-isometry-invariance}
+\dcref{ch2:2.52}
+\uses{prop:isometry-invariance-riemannian-distance}
+
+Prove the preceding proposition.
+\end{exercise}
+
+(Note that unlike lengths of curves, Riemannian distances are not necessarily preserved by \textit{local} isometries; see Problem 2-31.)
+\uses{prob:local-isometry-distance}
+
+We wish to show that the Riemannian distance function turns $M$ into a metric space, whose metric topology is the same as its original manifold topology. To do so, we need the following lemmas.
+
+\begin{lemma}
+\label{lem:riemannian-euclidean-norm-comparison}
+\dcref{ch2:2.53}
+
+Let $g$ be a Riemannian metric on an open subset $W \subseteq \mathbb{R}^n$ or $\mathbb{R}^n_+$, and let $\tilde{g}$ denote the Euclidean metric on $W$. For every compact subset $K \subseteq W$, there are positive constants $c, C$ such that for all $x \in K$ and all $v \in T_x \mathbb{R}^n$,
+\begin{equation}
+c|v|_{\tilde{g}} \leq |v|_g \leq C|v|_{\tilde{g}}.
+\tag{2.21}
+\end{equation}
+
+\textit{Proof.} Define a continuous function $F: TW \to \mathbb{R}$ by $F(x, v) = |v|_g = g_x(v, v)^{1/2}$ for $x \in W$ and $v \in T_x \mathbb{R}^n$. Let $K \subseteq W$ be any compact subset, and define $L \subseteq T\mathbb{R}^n$ by
+\[
+L = \{(x, v) \in T\mathbb{R}^n : x \in K, |v|_{\tilde{g}} = 1\}.
+\]
+
+Under the canonical identification of $T\mathbb{R}^n$ with $\mathbb{R}^n \times \mathbb{R}^n$, $L$ is equal to the product set $K \times S^{n-1}$, which is compact. Since $F$ is positive on $L$, there are positive constants $c, C$ such that
+\[
+c \leq |v|_g \leq C \quad \text{for all } (x, v) \in L.
+\]
+
+For each $x \in K$ and $v \in T_x \mathbb{R}^n$ with $v \neq 0$, we can write $v = \lambda \tilde{v}$, where $\lambda = |v|_{\tilde{g}}$ and $\tilde{v} = v/\lambda$. Then $(x, \tilde{v}) \in L$, and it follows from the homogeneity of $|\cdot|_g$ that
+\[
+|v|_g = \lambda |\tilde{v}|_g \leq \lambda C = C|v|_{\tilde{g}}.
+\]
+
+The same inequality holds trivially when $v = 0$. Arguing similarly in the other direction, we conclude that (2.21) holds for all $x \in K$ and $v \in T_x \mathbb{R}^n$. \quad $\square$
+\end{lemma}
+
+% [FIGURE: Two overlapping regions with one labeled V, a point p inside, and a point q with an arrow labeled  \gamma (t₀), illustrating the neighborhood structure for the distance comparison proof]
+
+% [FIGURE: A curved path with labeled points p,  \gamma ₁, q,  \gamma ₂, and r, demonstrating the triangle inequality concept]
+
+The next lemma shows how to transfer this result to Riemannian manifolds.
+
+\begin{lemma}\label{lem:distance-comparison-neighborhood}\dcref{ch2:2.54}
+Let $(M, g)$ be a Riemannian manifold with or without boundary and
+let $d_g$ be its Riemannian distance function. Suppose $U$ is an open subset of $M$ and
+$p \in U$. Then $p$ has a coordinate neighborhood $V \subset U$ with the property that there
+are positive constants $C, D$ satisfying the following inequalities:
+\begin{enumerate}
+\item[(a)] If $q \in V$, then $d_g(p,q) \leq Cd_{\bar{g}}(p,q)$, where $\bar{g}$ is the Euclidean metric in the
+given coordinates on $\mathbb{R}^n$ or $\mathbb{R}^n_+$.
+\item[(b)] If $q \in M \setminus V$, then $d_g(p,q) \geq D$.
+\end{enumerate}
+
+\begin{proof}
+Let $W$ be any neighborhood of $p$ contained in $U$ on which there exist smooth
+coordinates $(x^i)$. Using these coordinates, we can identify $W$ with an open subset
+of $\mathbb{R}^n$ or $\mathbb{R}^n_+$. Let $K$ be a compact subset of $W$ containing a neighborhood $V$ of
+$p$, chosen as follows: If $p$ is an interior point of $M$, let $K$ be the closed Euclidean
+ball $\bar{B}_\epsilon(0)$, with $\epsilon > 0$ chosen small enough that $K \subseteq W$, and let $V =
+B_\epsilon(0)$. If $p \in \partial M$, let $K$ be a closed half-ball $\bar{B}_\epsilon(0) \cap \mathbb{R}^n_+$ with $\epsilon$ chosen similarly, and let $V =
+B_\epsilon(0) \cap \mathbb{R}^n_+$. Let $\bar{g} = \sum_i (dx^i)^2$ denote the Euclidean metric in these coordinates,
+and let $c, C$ be constants satisfying (2.21). If $\gamma$ is any admissible curve whose image
+lies entirely in $V$, it follows that
+
+$$cL_{\bar{g}}(\gamma) \leq L_g(\gamma) \leq CL_{\bar{g}}(\gamma). \quad (2.22)$$
+
+To prove (a), suppose $q \in V$. Letting $\gamma : [a,b] \to V$ be a parametrization of the
+line segment from $p$ to $q$, we conclude from (2.22) that
+
+$$d_g(p,q) \leq L_g(\gamma) \leq CL_{\bar{g}}(\gamma) = Cd_{\bar{g}}(p,q).$$
+
+To prove (b), suppose $q \in M \setminus V$. If $\gamma : [a,b] \to M$ is any admissible curve from
+$p$ to $q$, let $t_0$ denote the infimum of times $t \in [a,b]$ such that $\gamma(t) \notin V$. It follows
+that $\gamma([a, t_0]) \subseteq K$ and $d_{\bar{g}}(p, \gamma(t_0)) = \epsilon$ by continuity (Fig. 2.3), so (2.22) implies
+
+$$L_g(\gamma) \geq L_g(\gamma|_{[a,t_0]}) \geq cL_{\bar{g}}(\gamma|_{[a,t_0]}) \geq cd_{\bar{g}}(p, \gamma(t_0)) = c\epsilon.$$
+
+Taking the infimum over all such curves $\gamma$, we obtain (b) with $D = c\varepsilon$. \qed
+\end{proof}
+\end{lemma}
+
+\begin{theorem}[Riemannian Manifolds as Metric Spaces]
+\label{thm:riemannian-manifolds-metric-spaces}
+\dcref{ch2:2.55}
+\uses{lem:distance-comparison-neighborhood}
+
+Let $(M,g)$ be a connected Riemannian manifold with or without boundary. With the distance function $d_g$, $M$ is a metric space whose metric topology is the same as the given manifold topology.
+\end{theorem}
+
+\textit{Proof.} It is immediate from the definition of $d_g$ that $d_g(p,q) = d_g(q,p) \geq 0$ and $d_g(p,p) = 0$. On the other hand, suppose $p,q \in M$ are distinct. Let $U \subseteq M$ be an open set that contains $p$ but not $q$, and choose a coordinate neighborhood $V$ of $p$ contained in $U$ and satisfying the conclusion of Lemma 2.54. Then Lemma 2.54(b) shows that $d_g(p,q) \geq D > 0$.
+
+The triangle inequality follows from the fact that an admissible curve from $p$ to $q$ can be combined with one from $q$ to $r$ (possibly changing the starting time of the parametrization of the second) to yield one from $p$ to $r$ whose length is the sum of the lengths of the two given curves (Fig.\ 2.4). (This is one reason for defining distance using piecewise regular curves instead of just regular ones.) This completes the proof that $d_g$ turns $M$ into a metric space.
+
+It remains to show that the metric topology is the same as the manifold topology. Suppose first that $U \subseteq M$ is open in the manifold topology. For each $p \in U$, we can choose a coordinate neighborhood $V$ of $p$ contained in $U$ with positive constants $C, D$ satisfying the conclusions of Lemma 2.54. The contrapositive of part (b) of that lemma says $d_g(p,q) < D \Rightarrow q \in V \subseteq U$, which means that the metric ball of radius $D$ is contained in $U$. Thus $U$ is open in the metric topology induced by $d_g$.
+
+On the other hand, suppose $U'$ is open in the metric topology. Given $p \in U'$, choose $\delta > 0$ such that the $d_g$-metric ball of radius $\delta$ around $p$ is contained in $U'$. Let $V$ be any neighborhood of $p$ that is open in the manifold topology and satisfies the conclusions of Lemma 2.54, with corresponding constants $C, D$. (We are not claiming that $V \subseteq U'$.) Choose $\varepsilon$ small enough that $C\varepsilon < \delta$. Lemma 2.54(a) shows that if $q$ is a point of $V$ such that $d_g(p,q) < \varepsilon$, then $d_g(p,q) \leq C\varepsilon < \delta$, and thus $q$ lies in the metric ball of radius $\delta$ about $p$, and hence in $U'$. Since the set $\{q \in V : d_g(p,q) < \varepsilon\}$ is open in the given manifold topology, this shows that $U'$ is also open in the manifold topology. \qed
+
+Thanks to the preceding theorem, it makes sense to apply all the concepts of the theory of metric spaces to a connected Riemannian manifold $(M,g)$. For example, we say that $M$ is \textit{(metrically) complete} if every Cauchy sequence in $M$ converges. A subset $A \subseteq M$ is \textit{bounded} if there is a constant $C$ such that $d_g(p,q) \leq C$ for all $p,q \in A$; if this is the case, the \textit{diameter of } $A$ is the smallest such constant:
+\[
+\operatorname{diam}(A) = \sup\{d_g(p,q) : p,q \in A\}.
+\]
+
+Since every compact metric space is bounded, every compact connected Riemannian manifold with or without boundary has finite diameter. (Note that the unit sphere with the Riemannian distance determined by the round metric has diameter $\pi$, not $2$, since the Riemannian distance between antipodal points is $\pi$. See Problem 6-2.)
+
+\section{Pseudo-Riemannian Metrics}
+
+From the point of view of geometry, Riemannian metrics are by far the most important structures that manifolds carry. However, there is a generalization of Riemannian metrics that has become especially important because of its application to physics.
+
+Before defining this generalization, we begin with some linear-algebraic preliminaries. Suppose $V$ is a finite-dimensional vector space, and $q$ is a symmetric covariant 2-tensor on $V$ (also called a \textbf{symmetric bilinear form}). Just as for an inner product, there is a linear map $\tilde{q}: V \to V^*$ defined by
+\[
+\tilde{q}(v)(w) = q(v,w) \text{ for all } v, w \in V.
+\]
+
+We say that $q$ is \textbf{nondegenerate} if $\tilde{q}$ is an isomorphism.
+
+\begin{lemma}
+\label{lem:nondegenerate-symmetric-bilinear}
+\dcref{ch2:2.56}
+Suppose $q$ is a symmetric covariant 2-tensor on a finite-dimensional vector space $V$. The following are equivalent:
+\begin{enumerate}
+\item[(a)] $q$ is nondegenerate.
+\item[(b)] For every nonzero $v \in V$, there is some $w \in V$ such that $q(v,w) \neq 0$.
+\item[(c)] If $q = q_{ij} e^i e^j$ in terms of some basis $(e^j)$ for $V^*$, then the matrix $(q_{ij})$ is invertible.
+\end{enumerate}
+\end{lemma}
+
+\begin{exercise}
+\label{exer:prove-nondegenerate-equivalent}
+\dcref{ch2:2.57}
+Prove the preceding lemma.
+\end{exercise}
+
+Every inner product is a nondegenerate symmetric bilinear form, as is every symmetric bilinear form that is \textbf{negative definite} (which is defined by obvious analogy with positive definite). But there are others that are neither positive definite nor negative definite, as we will see below.
+
+We use the term \textbf{scalar product} to denote any nondegenerate symmetric bilinear form on a finite-dimensional vector space $V$, and reserve the term \textbf{inner product} for the special case of a positive definite scalar product. A \textbf{scalar product space} is a finite-dimensional vector space endowed with a scalar product. When convenient, we will often use a notation like $\langle \cdot, \cdot \rangle$ to denote a scalar product. We say that vectors $v, w \in V$ are \textbf{orthogonal} if $\langle v, w \rangle = 0$, just as in the case of an inner product. Given a vector $v \in V$, we define the \textbf{norm} of $v$ to be $|v| = \sqrt{\langle v, v \rangle}$. Note that in the indefinite case, it is possible for a nonzero vector to be orthogonal to itself, and thus to have norm zero. Thus $|v|$ is not technically a norm in the sense defined on page 47 below, but it is customary to call it ``the norm of $v$'' anyway.
+
+\begin{exercise}
+\label{exer:polarization-scalar-product}
+\dcref{ch2:2.58}
+\uses{exer:polarization-proof}
+Prove that the polarization identity (2.2) holds for every scalar product.
+\end{exercise}
+
+If $S \subseteq V$ is any linear subspace, the set of vectors in $V$ that are orthogonal to every vector in $S$ is a linear subspace denoted by $S^{\perp}$.
+
+\begin{lemma}
+\label{lem:orthogonal-complement}
+\dcref{ch2:2.59}
+Suppose $(V, q)$ is a finite-dimensional scalar product space, and $S \subseteq V$ is a linear subspace.
+\begin{enumerate}
+\item[(a)] $\dim S + \dim S^{\perp} = \dim V$.
+\item[(b)] $(S^{\perp})^{\perp} = S$.
+\end{enumerate}
+
+\noindent\textit{Proof.} Define a linear map $\Phi : V \to S^*$ by $\Phi(v) = \tilde{q}(v)|_S$. Note that $v \in \Ker\Phi$ if and only if $q(v,x) = \tilde{q}(v)(x) = 0$ for all $x \in S$, so $\Ker\Phi = S^\perp$. If $\varphi \in S^*$ is arbitrary, there is a covector $\tilde{\varphi} \in V^*$ whose restriction to $S$ is equal to $\varphi$. (For example, such a covector is easily constructed after choosing a basis for $S$ and extending it to a basis for $V$.) Since $\tilde{q}$ is an isomorphism, there exists $v \in V$ such that $\tilde{q}(v) = \tilde{\varphi}$. It follows that $\Phi(v) = \varphi$, and therefore $\Phi$ is surjective. By the rank--nullity theorem, the dimension of $S^\perp = \Ker\Phi$ is equal to $\dim V - \dim S^* = \dim V - \dim S$. This proves (a).
+
+To prove (b), note that every $v \in S$ is orthogonal to every element of $S^\perp$ by definition, so $S \subseteq (S^\perp)^\perp$. Because these finite-dimensional vector spaces have the same dimension by part (a), they are equal. \qed
+\end{lemma}
+
+An ordered $k$-tuple $(v_1,\ldots,v_k)$ of elements of $V$ is said to be \textbf{orthonormal} if $|v_i| = 1$ for each $i$ and $\langle v_i, v_j \rangle = 0$ for $i \neq j$, or equivalently, if $\langle v_i, v_j \rangle = \pm\delta_{ij}$ for each $i$ and $j$. We wish to prove that every scalar product space has an orthonormal basis. Note that the usual Gram--Schmidt algorithm does not always work in this situation, because the vectors that appear in the denominators in (2.5)--(2.6) might have vanishing norms. In order to get around this problem, we introduce the following definitions. If $(V,q)$ is a finite-dimensional scalar product space, a subspace $S \subseteq V$ is said to be \textbf{nondegenerate} if the restriction of $q$ to $S \times S$ is nondegenerate. An ordered $k$-tuple of vectors $(v_1,\ldots,v_k)$ in $V$ is said to be \textbf{nondegenerate} if for each $j = 1,\ldots,k$, the vectors $(v_1,\ldots,v_j)$ span a nondegenerate $j$-dimensional subspace of $V$. For example, every orthonormal basis is nondegenerate.
+
+\begin{lemma}\label{lem:nondegenerate-subspace}\dcref{ch2:2.60}
+Suppose $(V,q)$ is a finite-dimensional scalar product space, and $S \subseteq V$ is a linear subspace. The following are equivalent:
+\begin{enumerate}[label=(\alph*)]
+\item $S$ is nondegenerate.
+\item $S^\perp$ is nondegenerate.
+\item $S \cap S^\perp = \{0\}$.
+\item $V = S \oplus S^\perp$.
+\end{enumerate}
+\end{lemma}
+
+\begin{exercise}\label{exer:preceding-lemma-nondegenerate}\dcref{ch2:2.61}
+Prove the preceding lemma.
+\end{exercise}
+
+\begin{lemma}[Completion of Nondegenerate Bases]\label{lem:completion-nondegenerate-bases}\dcref{ch2:2.62}
+\uses{lem:nondegenerate-subspace}
+Suppose $(V,q)$ is an $n$-dimensional scalar product space, and $(v_1,\ldots,v_k)$ is a nondegenerate $k$-tuple in $V$ with $0 \leq k < n$. Then there exist vectors $v_{k+1},\ldots,v_n \in V$ such that $(v_1,\ldots,v_n)$ is a nondegenerate basis for $V$.
+
+\noindent\textit{Proof.} Let $S = \text{span}(v_1,\ldots,v_k) \subseteq V$. Because $k < n$, $S^\perp$ is a nontrivial subspace of $V$, and Lemma 2.60 shows that $S^\perp$ is nondegenerate and $V = S \oplus S^\perp$. By the nondegeneracy of $S^\perp$, there must be a vector in $S^\perp$ with nonzero length, because otherwise the polarization identity would imply that all inner products of pairs of elements of $S$ would be zero. If $v_{k+1} \in S^\perp$ is any vector with nonzero length, then $(v_1,\ldots,v_{k+1})$ is easily seen to be a nondegenerate $(k+1)$-tuple. Repeating this argument for $v_{k+2},\ldots,v_n$ completes the proof. \qed
+\end{lemma}
+
+
+\begin{proposition}[Gram--Schmidt Algorithm for Scalar Products]
+\label{prop:gram-schmidt-algorithm-scalar-products}
+\dcref{ch2:2.63}
+
+Suppose $(V, q)$ is an $n$-dimensional scalar product space. If $(v_i)$ is a nondegenerate basis for $V$, then there is an orthonormal basis $(b_i)$ with the property that $\text{span}(b_1, \ldots, b_k) = \text{span}(v_1, \ldots, v_k)$ for each $k = 1, \ldots, n$.
+
+Proof. As in the positive definite case, the basis $(b_i)$ is constructed recursively, starting with $b_1 = v_1/|v_1|$ and noting that the assumption that $v_1$ spans a nondegenerate subspace ensures that $|v_1| \neq 0$. At the inductive step, assuming we have constructed $(b_1, \ldots, b_k)$, we first set
+\[
+z = v_{k+1} - \sum_{i=1}^k \frac{\langle v_{k+1}, b_i \rangle}{\langle b_i, b_i \rangle} b_i.
+\]
+Each denominator $\langle b_i, b_i \rangle$ is equal to $\pm 1$, so this defines $z$ as a nonzero element of $V$ orthogonal to $b_1, \ldots, b_k$, and with the property that $\text{span}(b_1, \ldots, b_k, z) = \text{span}(v_1, \ldots, v_k, v_{k+1})$. If $\langle z, z \rangle = 0$, then $z$ is orthogonal to $\text{span}(v_1, \ldots, v_{k+1})$, contradicting the nondegeneracy assumption. Thus we can complete the inductive step by putting $b_{k+1} = z/|z|$. \qquad $\square$
+\end{proposition}
+
+\begin{corollary}
+\label{cor:scalar-product-signature-form}
+\dcref{ch2:2.64}
+
+Suppose $(V, q)$ is an $n$-dimensional scalar product space. There is a basis $(\beta^i)$ for $V^*$ with respect to which $q$ has the expression
+\[
+q = (\beta^1)^2 + \cdots + (\beta^r)^2 - (\beta^{r+1})^2 - \cdots - (\beta^{r+s})^2,
+\]
+for some nonnegative integers $r, s$ with $r + s = n$.
+
+Proof. Let $(b_i)$ be an orthonormal basis for $V$, and let $(\beta^i)$ be the dual basis for $V^*$. A computation shows that $q$ has a basis expression of the form (2.23), but perhaps with the positive and negative terms in a different order. Reordering the basis so that the positive terms come first, we obtain (2.23). \qquad $\square$
+\end{corollary}
+
+It turns out that the numbers $r$ and $s$ in (2.23) are independent of the choice of basis. The key to proving this is the following classical result from linear algebra.
+
+\begin{proposition}[Sylvester's Law of Inertia]
+\label{prop:sylvesters-law-inertia}
+\dcref{ch2:2.65}
+\uses{prob:sylvesters-law-inertia}
+
+Suppose $(V, q)$ is a finite-dimensional scalar product space. If $q$ has the representation (2.23) in some basis, then the number $r$ is the maximum dimension among all subspaces on which the restriction of $q$ is positive definite, and thus $r$ and $s$ are independent of the choice of basis.
+
+Proof. Problem 2-33. \qquad $\square$
+\end{proposition}
+
+The integer $s$ in the expression (2.23) (the number of negative terms) is called the \textit{index of $q$}, and the ordered pair $(r, s)$ is called the \textit{signature of $q$}.
+
+Now suppose $M$ is a smooth manifold. A \textit{pseudo-Riemannian metric} on $M$ (called by some authors a \textit{semi-Riemannian metric}) is a smooth symmetric 2-tensor field $g$ that is nondegenerate at each point of $M$, and with the same signature everywhere. Every Riemannian metric is also a pseudo-Riemannian metric.
+
+\begin{proposition}[Orthonormal Frames for Pseudo-Riemannian Manifolds]
+\label{prop:orthonormal-frames-pseudo-riemannian}
+\dcref{ch2:2.66}
+
+Let $(M,g)$ be a pseudo-Riemannian manifold. For each $p \in M$, there exists a smooth orthonormal frame on a neighborhood of $p$ in $M$.
+\end{proposition}
+
+\begin{exercise}
+\label{exer:prove-orthonormal-frames}
+\dcref{ch2:2.67}
+
+Prove the preceding proposition.
+\end{exercise}
+
+\begin{exercise}
+\label{exer:product-pseudo-riemannian}
+\dcref{ch2:2.68}
+
+Suppose $(M_1, g_1)$ and $(M_2, g_2)$ are pseudo-Riemannian manifolds of signatures $(r_1, s_1)$ and $(r_2, s_2)$, respectively. Show that $(M_1 \times M_2, g_1 \oplus g_2)$ is a pseudo-Riemannian manifold of signature $(r_1 + r_2, s_1 + s_2)$.
+\end{exercise}
+
+For nonnegative integers $r$ and $s$, we define the \textbf{pseudo-Euclidean space of signature $(r,s)$}, denoted by $\mathbb{R}^{r,s}$, to be the manifold $\mathbb{R}^{r+s}$, with standard coordinates denoted by $(\xi^1, \ldots, \xi^r, \tau^1, \ldots, \tau^s)$, and with the pseudo-Riemannian metric $\bar{g}^{(r,s)}$ defined by
+\begin{equation}
+\bar{g}^{(r,s)} = (d\xi^1)^2 + \cdots + (d\xi^r)^2 - (d\tau^1)^2 - \cdots - (d\tau^s)^2.
+\tag{2.24}
+\end{equation}
+
+By far the most important pseudo-Riemannian metrics (other than the Riemannian ones) are the \textbf{Lorentz metrics}, which are pseudo-Riemannian metrics of index 1, and thus signature $(r, 1)$. (Some authors, especially in the physics literature, prefer to use signature $(1, r)$; either one can be converted to the other by multiplying the metric by $-1$, so there is no significant difference.)
+
+The pseudo-Euclidean metric $\bar{g}^{(r,1)}$ is a Lorentz metric called the \textbf{Minkowski metric}, and the Lorentz manifold $\mathbb{R}^{r,1}$ is called $(r+1)$-\textbf{dimensional Minkowski space}. If we denote standard coordinates on $\mathbb{R}^{r,1}$ by $(\xi^1, \ldots, \xi^r, \tau)$, then the Minkowski metric is given by
+\begin{equation}
+\bar{g}^{(r,1)} = (d\xi^1)^2 + \cdots + (d\xi^r)^2 - (d\tau)^2.
+\tag{2.25}
+\end{equation}
+
+In the special case of $\mathbb{R}^{3,1}$, the Minkowski metric is the fundamental invariant of Albert Einstein's \textit{special theory of relativity}, which can be expressed succinctly by saying that if gravity is ignored, then spacetime is accurately modeled by $(3+1)$-dimensional Minkowski space, and the laws of physics have the same form in every coordinate system in which the Minkowski metric has the expression (2.25). The differing physical characteristics of ``space'' (the $\xi^i$ directions) and ``time'' (the $\tau$ direction) arise from the fact that they are subspaces on which the metric is positive definite and negative definite, respectively. The \textit{general theory of relativity} includes gravitational effects by allowing the Lorentz metric to vary from point to point.
+
+Many, but not all, results from the theory of Riemannian metrics apply equally well to pseudo-Riemannian metrics. Throughout this book, we will attempt to point out which results carry over directly to pseudo-Riemannian metrics, which ones can be adapted with minor modifications, and which ones do not carry over at all. As a rule of thumb, proofs that depend only on the nondegeneracy of the metric tensor, such as properties of the musical isomorphisms and existence and uniqueness of geodesics, work fine in the pseudo-Riemannian setting, while proofs that use positivity in an essential way, such as those involving lengths of curves, do not.
+
+One notable result that does \emph{not} carry over to the pseudo-Riemannian case is Proposition~2.4, about the existence of metrics. For example, the following result characterizes those manifolds that admit Lorentz metrics.
+
+\begin{theorem}
+\label{thm:lorentz-metrics}
+\dcref{ch2:2.69}
+\uses{prop:existence-riemannian-metric}
+A smooth manifold $M$ admits a Lorentz metric if and only if it admits a rank-1 tangent distribution (i.e., a rank-1 subbundle of $TM$).
+\end{theorem}
+
+\emph{Proof.} Problem~2-34. \qed
+
+With some more sophisticated tools from algebraic topology, it can be shown that every noncompact connected smooth manifold admits a Lorentz metric, and a compact connected smooth manifold admits a Lorentz metric if and only if its Euler characteristic is zero (see \cite{ON83}, p.~149). It follows that no even-dimensional sphere admits a Lorentz metric, because $S^{2n}$ has Euler characteristic equal to 2. For a thorough treatment of pseudo-Riemannian metrics from a mathematical point of view, see the excellent book \cite{ON83}; a more physical treatment can be found in \cite{HE73}.
+
+\section{Pseudo-Riemannian Submanifolds}
+
+The theory of submanifolds is only slightly more complicated in the pseudo-Riemannian case. If $(\tilde{M}, \tilde{g})$ is a pseudo-Riemannian manifold, a smooth submanifold $\iota: M \hookrightarrow \tilde{M}$ is called a \emph{pseudo-Riemannian submanifold} of $(\tilde{M}, \tilde{g})$ if $\iota^* \tilde{g}$ is nondegenerate with constant signature. If this is the case, we always consider $M$ to be endowed with the induced pseudo-Riemannian metric $\iota^* \tilde{g}$. In the special case in which $\iota^* \tilde{g}$ is positive definite, $M$ is called a \emph{Riemannian submanifold}.
+
+The nondegeneracy hypothesis is not automatically satisfied; for example, if $M \subseteq \mathbb{R}^{1,1}$ is the submanifold $\{(\xi, \tau) : \xi = \tau\}$ and $\iota: M \to \mathbb{R}^{1,1}$ is inclusion, then the pullback tensor $\iota^* \tilde{g}^{(1,1)}$ is identically zero on $M$.
+
+For hypersurfaces (submanifolds of codimension 1), the nondegeneracy condition is easy to check. If $M \subseteq \tilde{M}$ is a smooth submanifold and $p \in M$, then a vector $v \in T_p \tilde{M}$ is said to be \emph{normal} to $M$ if $(v,x) = 0$ for all $x \in T_p M$, just as in the Riemannian case. The space of all normal vectors at $p$ is a subspace of $T_p \tilde{M}$ denoted by $N_p M$.
+
+\begin{proposition}
+\label{prop:pseudo-riemannian-hypersurface-signature}
+\dcref{ch2:2.70}
+\uses{lem:nondegenerate-subspace}
+Suppose $(\tilde{M}, \tilde{g})$ is a pseudo-Riemannian manifold of signature $(r,s)$. Let $M$ be a smooth hypersurface in $\tilde{M}$, and let $\iota: M \to \tilde{M}$ be the inclusion map. Then the pullback tensor field $\iota^* \tilde{g}$ is nondegenerate if and only if $\tilde{g}(v,v) \neq 0$ for every $p \in M$ and every nonzero normal vector $v \in N_p M$. If $\tilde{g}(v,v) > 0$ for every nonzero normal vector to $M$, then $M$ is a pseudo-Riemannian submanifold of signature $(r-1,s)$; and if $\tilde{g}(v,v) < 0$ for every such vector, then $M$ is a pseudo-Riemannian submanifold of signature $(r,s-1)$.
+\end{proposition}
+
+\emph{Proof.} Given $p \in M$, Lemma~2.60 shows that $T_p M$ is a nondegenerate subspace of $T_p \tilde{M}$ if and only if the one-dimensional subspace $(T_p M)^\perp = N_p M$ is nondegenerate, which is the case if and only if every nonzero $v \in N_p M$ satisfies $\tilde{g}(v,v) \neq 0$.
+
+Now suppose $\bar{g}(v,v) > 0$ for every nonzero normal vector $v$. Let $p \in M$ be arbitrary, and let $v$ be a nonzero element of $N_p M$. Writing $n = \dim \bar{M}$, we can complete $v$ to a nondegenerate basis $(v, w_2, \ldots, w_n)$ for $T_p M$ by Lemma 2.62, and then use the Gram--Schmidt algorithm to find an orthonormal basis $(b_1, \ldots, b_n)$ for $T_p \bar{M}$ such that $\text{span}(b_1) = N_p M$. It follows that $\text{span}(b_2, \ldots, b_n) = T_p M$. If $(\beta^1)$ is the dual basis to $(b_i)$, then $\bar{g}_p$ has a basis representation of the form $(\beta^1)^2 \pm (\beta^2)^2 \pm \cdots \pm (\beta^n)^2$, with a total of $r$ positive terms and $s$ negative ones, and with a positive sign on the first term $(\beta^1)^2$. Therefore, $\iota^* \bar{g}_p = \pm(\beta^2)^2 \pm \cdots \pm (\beta^n)^2$ has signature $(r-1, s)$. The argument for the case $\bar{g}(v,v) < 0$ is similar. \quad$\square$
+
+If $(\bar{M}, \bar{g})$ is a pseudo-Riemannian manifold and $f \in C^\infty(M)$, then the \emph{gradient} of $f$ is defined as the smooth vector field $\text{grad} f = (df)^\#$ just as in the Riemannian case.
+
+\begin{corollary}
+\label{cor:pseudo-riemannian-embedding-criterion}
+\dcref{ch2:2.71}
+\uses{prob:level-sets-pseudo-riemannian}
+Suppose $(\bar{M}, \bar{g})$ is a pseudo-Riemannian manifold of signature $(r, s)$, $f \in C^\infty(\bar{M})$, and $M = f^{-1}(c)$ for some $c \in \mathbb{R}$. If $\bar{g}(\text{grad} f, \text{grad} f) > 0$ everywhere on $M$, then $M$ is an embedded pseudo-Riemannian submanifold of $\bar{M}$ of signature $(r-1, s)$; and if $\bar{g}(\text{grad} f, \text{grad} f) < 0$ everywhere on $M$, then $M$ is an embedded pseudo-Riemannian submanifold of $\bar{M}$ of signature $(r, s-1)$. In either case, $\text{grad} f$ is everywhere normal to $M$.
+\end{corollary}
+
+\noindent\textit{Proof.} Problem 2-35. \quad$\square$
+
+\begin{proposition}[Pseudo-Riemannian Adapted Orthonormal Frames]
+\label{prop:pseudo-riemannian-adapted-frame}
+\dcref{ch2:2.72}
+\uses{prop:orthonormal-frames-pseudo-riemannian}
+\uses{lem:completion-nondegenerate-bases}
+\uses{prop:gram-schmidt-algorithm-scalar-products}
+Suppose $(\bar{M}, \bar{g})$ is a pseudo-Riemannian manifold, and $M \subseteq \bar{M}$ is an embedded pseudo-Riemannian or Riemannian submanifold. For each $p \in M$, there exists a smooth orthonormal frame on a neighborhood of $p$ in $\bar{M}$ that is adapted to $M$.
+\end{proposition}
+
+\noindent\textit{Proof.} Write $m = \dim \bar{M}$ and $n = \dim M$, and let $p \in M$ be arbitrary. Proposition 2.66 shows that there is a smooth orthonormal frame $(E_1, \ldots, E_n)$ for $M$ on some neighborhood of $p$ in $M$. Then by Lemma 2.62, we can find vectors $v_{n+1}, \ldots, v_m \in T_p \bar{M}$ such that $(E_1|_p, \ldots, E_n|_p, v_{n+1}, \ldots, v_m)$ is a nondegenerate basis for $T_p \bar{M}$. Now extend $v_{n+1}, \ldots, v_m$ arbitrarily to smooth vector fields $V_{n+1}, \ldots, V_m$ on a neighborhood of $p$ in $\bar{M}$. By continuity, the ordered $m$-tuple $(E_1, \ldots, E_n, V_{n+1}, \ldots, V_m)$ will be a nondegenerate frame for $\bar{M}$ in some (possibly smaller) neighborhood of $p$. Applying the Gram--Schmidt algorithm (Prop.\ 2.63) to this local frame yields a smooth orthonormal frame $(E_1, \ldots, E_m)$ for $\bar{M}$ with the property that $(E_1, \ldots, E_n)$ restricts to a local orthonormal frame for $M$. \quad$\square$
+
+The next corollary is proved in the same way as Proposition 2.16.
+
+\begin{corollary}[Normal Bundle to a Pseudo-Riemannian Submanifold]
+\label{cor:normal-bundle-pseudo-riemannian-submanifold}
+\dcref{ch2:2.73}
+\uses{prop:normal-bundle}
+Suppose $(\bar{M}, \bar{g})$ is a pseudo-Riemannian manifold, and $M \subseteq \bar{M}$ is an embedded pseudo-Riemannian or Riemannian submanifold. The set of vectors normal to $M$ is a smooth vector subbundle of $T\bar{M}|_M$, called the \emph{normal bundle} to $M$. \quad$\square$
+\end{corollary}
+
+\section{Other Generalizations of Riemannian Metrics}
+
+Pseudo-Riemannian metrics are obtained by relaxing the positivity requirement for Riemannian metrics. In addition, there are other useful generalizations that result when we relax other requirements. In this section we touch briefly on two of those generalizations. We will not treat these anywhere else in the book, but it is useful to know the definitions.
+
+\subsection{Sub-Riemannian Metrics}
+
+The first generalization arises when we relax the requirement that the metric be defined on the whole tangent space.
+
+A \emph{sub-Riemannian metric} (also sometimes known as a \emph{singular Riemannian metric} or \emph{Carnot--Carathéodory metric}) on a smooth manifold $M$ is a smooth fiber metric on a smooth tangent distribution $S \subseteq TM$ (i.e., a vector subbundle of $TM$). Since lengths make sense only for vectors in $S$, the only curves whose lengths can be measured are those whose velocity vectors lie everywhere in $S$. Therefore, one usually imposes some condition on $S$ that guarantees that any two nearby points can be connected by such a curve. This is, in a sense, the opposite of the Frobenius integrability condition, which would restrict every such curve to lie in a single leaf of a foliation.
+
+Sub-Riemannian metrics arise naturally in the study of the abstract models of real submanifolds of complex space $\mathbb{C}^n$, called \emph{CR manifolds} (short for \emph{Cauchy--Riemann manifolds}). CR manifolds are real manifolds endowed with a tangent distribution $S \subseteq TM$ whose fibers carry the structure of complex vector spaces (with an additional integrability condition that need not concern us here). In the model case of a submanifold $M \subseteq \mathbb{C}^n$, $S$ is the set of vectors tangent to $M$ that remain tangent after multiplication by $i = \sqrt{-1}$ in the ambient complex coordinates. If $S$ is sufficiently far from being integrable, choosing a fiber metric on $S$ results in a sub-Riemannian metric whose geometric properties closely reflect the complex-analytic properties of $M$ as a subset of $\mathbb{C}^n$.
+
+Another motivation for studying sub-Riemannian metrics arises from \emph{control theory}. In this subject, one is given a manifold with a vector field depending on parameters called \emph{controls}, with the goal being to vary the controls so as to obtain a solution curve with desired properties, often one that minimizes some function such as arc length. If the vector field is constrained to be everywhere tangent to a distribution $S$ on the manifold (for example, in the case of a robot arm whose motion is restricted by the orientations of its hinges), then the function can often be modeled as a sub-Riemannian metric and optimal solutions modeled as sub-Riemannian geodesics.
+
+A useful introduction to the geometry of sub-Riemannian metrics is provided in the article [Str86].
+
+\subsection{Finsler Metrics}
+
+Another important generalization arises from relaxing the requirement that norms of vectors be defined in terms of an inner product on each tangent space.
+
+In general, a \emph{norm} on a vector space $V$ is a real-valued function on $V$, usually written $v \mapsto |v|$, that satisfies
+\begin{enumerate}
+\item \textsc{Homogeneity}: $|cv| = |c||v|$ for $v \in V$ and $c \in \mathbb{R}$;
+\item \textsc{Positivity}: $|v| \geq 0$ for $v \in V$, with equality if and only if $v = 0$;
+\item \textsc{Triangle Inequality}: $|v + w| \leq |v| + |w|$ for $v, w \in V$.
+\end{enumerate}
+
+For example, the length function associated with an inner product is a norm. Now suppose $M$ is a smooth manifold. A \emph{Finsler metric} on $M$ is a continuous function $F: TM \to \mathbb{R}$, smooth on the set of nonzero vectors, whose restriction to each tangent space $T_pM$ is a norm. Again, the norm function associated with a Riemannian metric is a special case.
+
+The inventor of Riemannian geometry himself, Bernhard Riemann, clearly envisioned an important role in $n$-dimensional geometry for what we now call Finsler metrics; he restricted his investigations to the ``Riemannian'' case purely for simplicity (see [Spi79, Vol. 2]). However, it was not until the late twentieth century that Finsler metrics began to be studied seriously from a geometric point of view.
+
+The recent upsurge of interest in Finsler metrics has been motivated in part by the fact that two different Finsler metrics appear very naturally in the theory of several complex variables. For certain bounded open sets in $\mathbb{C}^n$ (the ones with smooth, strictly convex boundaries, for example), the \emph{Kobayashi metric} and the \emph{Carathéodory metric} are intrinsically defined, biholomorphically invariant Finsler metrics. Combining differential-geometric and complex-analytic methods has led to striking new insights into both the function theory and the geometry of such domains. We do not treat Finsler metrics further in this book, but you can consult one of the recent books on the subject [AP94, BCS00, JP13].
+
+\section{Problems}
+
+\begin{exercise}\label{prob:riemannian-1-manifold-flat}\dcref{ch2:2-1}
+Show that every Riemannian $1$-manifold is flat. (Used on pp. 13, 193.)
+\end{exercise}
+
+\begin{exercise}\label{prob:distance-preserving-map-linear-isometry}\dcref{ch2:2-2}
+Suppose $V$ and $W$ are finite-dimensional real inner product spaces of the same dimension, and $F: V \to W$ is any map (not assumed to be linear or even continuous) that preserves the origin and all distances: $F(0) = 0$ and $|F(x) - F(y)| = |x - y|$ for all $x, y \in V$. Prove that $F$ is a linear isometry. [Hint: First show that $F$ preserves inner products, and then show that it is linear.] (Used on p. 187.)
+\end{exercise}
+
+\begin{exercise}\label{prob:surface-of-revolution-warped-product}\dcref{ch2:2-3}
+\uses{ex:warped-products}
+Given a smooth embedded $1$-dimensional submanifold $C \subseteq H$ as in Example 2.24(b), show that the surface of revolution $S_C \subseteq \mathbb{R}^3$ with its induced metric is isometric to the warped product $C \times_a S^1$, where $a: C \to \mathbb{R}$ is the distance to the $z$-axis.
+\end{exercise}
+
+\begin{exercise}\label{prob:warped-product-isometry}
+\dcref{ch2:2-4}
+\uses{ex:warped-products}
+Let $\rho: \mathbb{R}^+ \to \mathbb{R}$ be the restriction of the standard coordinate function, and let $\mathbb{R}^+ \times_\rho S^{n-1}$ denote the resulting warped product (see Example 2.24(c)). Define $\Phi: \mathbb{R}^+ \times_\rho S^{n-1} \to \mathbb{R}^n \setminus \{0\}$ by $\Phi(\rho,\omega) = \rho\omega$. Show that $\Phi$ is an isometry between the warped product metric and the Euclidean metric on $\mathbb{R}^n \setminus \{0\}$. (Used on p.~293.)
+\end{exercise}
+
+\begin{exercise}\label{prob:horizontal-vector-fields}
+\dcref{ch2:2-5}
+\uses{prop:horizontal-vector-field-properties}
+Prove parts (b) and (c) of Proposition 2.25 (properties of horizontal vector fields). (Used on p.~146.)
+\end{exercise}
+
+\begin{exercise}\label{prob:riemannian-metric-submersion}
+\dcref{ch2:2-6}
+\uses{thm:group-action-riemannian-submersion}
+Prove Theorem 2.28 (if $\pi: \tilde{M} \to M$ is a surjective smooth submersion, and a group acts on $\tilde{M}$ isometrically, vertically, and transitively on fibers, then $M$ inherits a unique Riemannian metric such that $\pi$ is a Riemannian submersion).
+\end{exercise}
+
+\begin{exercise}\label{prob:grassmann-stiefel-manifolds}
+\dcref{ch2:2-7}
+For $0 \le k \le n$, the set $G_k(\mathbb{R}^n)$ of $k$-dimensional linear subspaces of $\mathbb{R}^n$ is called a \textbf{Grassmann manifold} or \textbf{Grassmannian}. The group $GL(n,\mathbb{R})$ acts transitively on $G_k(\mathbb{R}^n)$ in an obvious way, and $G_k(\mathbb{R}^n)$ has a unique smooth manifold structure making this action smooth (see [LeeSM, Example 21.21]).
+
+(a) Let $V_k(\mathbb{R}^n)$ denote the set of orthonormal ordered $k$-tuples of vectors in $\mathbb{R}^n$. By arranging the vectors in $k$ columns, we can view $V_k(\mathbb{R}^n)$ as a subset of the vector space $M(n \times k, \mathbb{R})$ of all $n \times k$ real matrices. Prove that $V_k(\mathbb{R}^n)$ is a smooth submanifold of $M(n \times k, \mathbb{R})$ of dimension $k(2n - k - 1)/2$, called a \textbf{Stiefel manifold}. [Hint: Consider the map $\Phi: M(n \times k, \mathbb{R}) \to M(k \times k, \mathbb{R})$ given by $\Phi(A) = A^T A$.]
+
+(b) Show that the map $\pi: V_k(\mathbb{R}^n) \to G_k(\mathbb{R}^n)$ that sends a $k$-tuple to its span is a surjective smooth submersion.
+
+(c) Give $V_k(\mathbb{R}^n)$ the Riemannian metric induced from the Euclidean metric on $M(n \times k, \mathbb{R})$. Show that the right action of $O(k)$ on $V_k(\mathbb{R}^n)$ by matrix multiplication on the right is isometric, vertical, and transitive on fibers of $\pi$, and thus there is a unique metric on $G_k(\mathbb{R}^n)$ such that $\pi$ is a Riemannian submersion. [Hint: It might help to note that the Euclidean inner product on $M(n \times k, \mathbb{R})$ can be written in the form $(A,B) = \operatorname{tr}(A^T B)$.]
+\end{exercise}
+
+\begin{exercise}\label{prob:mobius-band-metric}
+\dcref{ch2:2-8}
+\uses{ex:open-mobius-band}
+Prove that the action of $\mathbb{Z}$ on $\mathbb{R}^2$ defined in Example 2.35 is smooth, free, proper, and isometric, and therefore the open Möbius band inherits a flat Riemannian metric such that the quotient map is a Riemannian covering.
+\end{exercise}
+
+\begin{exercise}\label{prob:gradient-orthogonal-level-sets}
+\dcref{ch2:2-9}
+\uses{prop:regular-level-set-hypersurface}
+Prove Proposition 2.37 (the gradient is orthogonal to regular level sets).
+\end{exercise}
+
+\begin{exercise}\label{prob:gradient-characterization}
+\dcref{ch2:2-10}
+Suppose $(M,g)$ is a Riemannian manifold, $f \in C^\infty(M)$, and $X \in \mathfrak{X}(M)$ is a nowhere-vanishing vector field. Prove that $X = \operatorname{grad} f$ if and only if $Xf = |X|_g^2$ and $X$ is orthogonal to the level sets of $f$ at all regular points of $f$. (Used on pp.~161, 180.)
+\end{exercise}
+
+\begin{exercise}\label{prob:inner-products-tensor-bundles}
+\dcref{ch2:2-11}
+\uses{prop:inner-products-of-tensors}
+Prove Proposition 2.40 (inner products on tensor bundles).
+\end{exercise}
+
+\begin{exercise}
+\label{prob:riemannian-volume-form-existence}
+\dcref{ch2:2-12}
+\uses{prop:riemannian-volume-form}
+Prove Proposition 2.41 (existence and uniqueness of the Riemannian volume form).
+\end{exercise}
+
+\begin{exercise}
+\label{prob:hypersurface-volume-form}
+\dcref{ch2:2-13}
+\uses{prop:hypersurface-volume-form}
+Prove Proposition 2.43 (characterizing the volume form of a Riemannian hypersurface). [Hint: To prove (2.17), use an adapted orthonormal frame.]
+\end{exercise}
+
+\begin{exercise}
+\label{prob:covering-volume-form}
+\dcref{ch2:2-14}
+Suppose $(\tilde{M}, \tilde{g})$ and $(M, g)$ are compact connected Riemannian manifolds, and $\pi : \tilde{M} \to M$ is a $k$-sheeted Riemannian covering. Prove that $\text{Vol}(\tilde{M}) = k \cdot \text{Vol}(M)$. (Used on p. 363.)
+\end{exercise}
+
+\begin{exercise}
+\label{prob:warped-product-volume-form}
+\dcref{ch2:2-15}
+Suppose $(M_1, g_1)$ and $(M_2, g_2)$ are oriented Riemannian manifolds of dimensions $k_1$ and $k_2$, respectively. Let $f : M_1 \to \mathbb{R}^+$ be a smooth function, and let $g = g_1 \oplus f^2 g_2$ be the corresponding warped product metric on $M_1 \times_f M_2$. Prove that the Riemannian volume form of $g$ is given by
+\[
+dV_g = f^{k_2} dV_{g_1} \wedge dV_{g_2},
+\]
+where $f$, $dV_{g_1}$, and $dV_{g_2}$ are understood to be pulled back to $M_1 \times M_2$ by the projection maps. (Used on p. 295.)
+\end{exercise}
+
+\begin{exercise}
+\label{prob:fiber-metric-exterior-powers}
+\dcref{ch2:2-16}
+Let $(M, g)$ be a Riemannian $n$-manifold. Show that for each $k = 1, \ldots, n$, there is a unique fiber metric $\langle \cdot, \cdot \rangle_g$ on the bundle $\Lambda^k T^* M$ that satisfies
+\[
+\langle \omega^1 \wedge \cdots \wedge \omega^k, \eta^1 \wedge \cdots \wedge \eta^k \rangle_g = \det\left(\langle \omega^i, \eta^j \rangle_g\right) \quad (2.26)
+\]
+whenever $\omega^1, \ldots, \omega^k, \eta^1, \ldots, \eta^k$ are covectors at a point $p \in M$. [Hint: Define the inner product locally by declaring the set of $k$-covectors
+\[
+\{e^{i_1} \wedge \cdots \wedge e^{i_k} |_p : i_1 < \cdots < i_k\}
+\]
+to be an orthonormal basis for $\Lambda^k(T_p^* M)$ whenever $(e^i)$ is a local orthonormal coframe for $T^* M$, and then prove that the resulting inner product satisfies (2.26) and is independent of the choice of frame.]
+\end{exercise}
+
+\begin{exercise}
+\label{prob:inner-products-k-forms}
+\dcref{ch2:2-17}
+\uses{prob:fiber-metric-exterior-powers}
+\uses{prop:inner-products-of-tensors}
+Because we regard the bundle $\Lambda^k T^* M$ of $k$-forms as a subbundle of the bundle $T^k T^* M$ of covariant $k$-tensors, we have two inner products to choose from on $k$-forms: the one defined in Problem 2-16, and the restriction of the tensor inner product defined in Proposition 2.40. For this problem, we use the notation $\langle \cdot, \cdot \rangle$ to denote the inner product of Problem 2-16, and $\langle\langle \cdot, \cdot \rangle\rangle$ to denote the restriction of the tensor inner product.
+
+(a) Using the convention for the wedge product that we use in this book (see p. 400), prove that
+\[
+\langle \cdot, \cdot \rangle_g = \frac{1}{k!} \langle\langle \cdot, \cdot \rangle\rangle_g.
+\]
+
+(b) Show that if the Alt convention is used for the wedge product (p. 401), the formula becomes
+\[
+\langle\langle \cdot, \cdot \rangle\rangle_g = k! \langle \cdot, \cdot \rangle_g.
+\]
+\end{exercise}
+
+\begin{exercise}\label{prob:hodge-star-operator}\dcref{ch2:2-18}
+Let $(M,g)$ be an oriented Riemannian $n$-manifold.
+
+(a) For each $k = 0, \ldots, n$, show that there is a unique smooth bundle homomorphism $*: \Lambda^k T^* M \to \Lambda^{n-k}T^*M$, called the \textbf{Hodge star operator}, satisfying
+\[
+\omega \wedge *\eta = \langle\omega,\eta\rangle_g dV_g
+\]
+for all smooth $k$-forms $\omega, \eta$, where $\langle\cdot,\cdot\rangle_g$ is the inner product on $k$-forms defined in Problem~2-16. (For $k = 0$, interpret the inner product as ordinary multiplication.) [Hint: First prove uniqueness, and then define $*$ locally by setting
+\[
+*(e^{i_1} \wedge \cdots \wedge e^{i_k}) = \pm e^{j_1} \wedge \cdots \wedge e^{j_{n-k}}
+\]
+in terms of an orthonormal coframe $(e^i)$, where the indices $j_1,\ldots,j_{n-k}$ are chosen such that $(i_1,\ldots,i_k,j_1,\ldots,j_{n-k})$ is some permutation of $(1,\ldots,n)$.]
+
+(b) Show that $*: \Lambda^0 T^*M \to \Lambda^n T^*M$ is given by $*f = f dV_g$.
+
+(c) Show that $* * \omega = (-1)^{k(n-k)}\omega$ if $\omega$ is a $k$-form.
+\end{exercise}
+
+\begin{exercise}\label{prob:hodge-star-euclidean}\dcref{ch2:2-19}
+Regard $\mathbb{R}^n$ as a Riemannian manifold with the Euclidean metric and the standard orientation, and let $*$ denote the Hodge star operator defined in Problem~2-18.
+
+(a) Calculate $* dx^i$ for $i = 1, \ldots, n$.
+
+(b) Calculate $*(dx^i \wedge dx^j)$ in the case $n = 4$.
+\end{exercise}
+
+\begin{exercise}\label{prob:self-dual-anti-self-dual}\dcref{ch2:2-20}
+Let $M$ be an oriented Riemannian 4-manifold. A 2-form $\omega$ on $M$ is said to be \textbf{self-dual} if $*\omega = \omega$, and \textbf{anti-self-dual} if $*\omega = -\omega$.
+
+(a) Show that every 2-form $\omega$ on $M$ can be written uniquely as a sum of a self-dual form and an anti-self-dual form.
+
+(b) On $M = \mathbb{R}^4$ with the Euclidean metric, determine the self-dual and anti-self-dual 2-forms in standard coordinates.
+\end{exercise}
+
+\begin{exercise}\label{prob:divergence-laplacian-formulas-ch2}\dcref{ch2:2-21}
+Prove Proposition~2.46 (the coordinate formulas for the divergence and the Laplacian).
+\uses{prop:coordinate-representations-divergence-laplacian}
+\end{exercise}
+
+\begin{exercise}\label{prob:divergence-theorem}\dcref{ch2:2-22}
+Suppose $(M,g)$ is a compact Riemannian manifold with boundary.
+
+(a) Prove the following \textbf{divergence theorem} for $X \in \mathfrak{X}(M)$:
+\[
+\int_M (\operatorname{div} X) dV_g = \int_{\partial M} \langle X, N\rangle_g d\bar{g},
+\]
+where $N$ is the outward unit normal to $\partial M$ and $\bar{g}$ is the induced metric on $\partial M$. [Hint: Prove it first in the case that $M$ is orientable, and then apply that case to the orientation covering of $M$ (Prop.~B.18).]
+\uses{prop:orientation-covering-theorem}
+
+(b) Show that the divergence operator satisfies the following product rule for
+$u \in C^\infty(M)$ and $X \in \mathfrak{X}(M)$:
+\[
+\operatorname{div}(uX) = u \operatorname{div} X + \langle \operatorname{grad} u, X \rangle_g,
+\]
+and deduce the following ``integration by parts'' formula:
+\[
+\int_M \langle \operatorname{grad} u, X \rangle_g \, dV_g = \int_{\partial M} u(X,N)_g \, d\tilde{V}_g - \int_M u \operatorname{div} X \, dV_g.
+\]
+What does this say when $M$ is a compact interval in $\mathbb{R}$?
+
+(Used on p.\ 149.)
+\end{exercise}
+
+\begin{exercise}\label{prob:harmonic-functions}\dcref{ch2:2-23}
+Let $(M,g)$ be a compact Riemannian manifold with or without boundary.
+A function $u \in C^\infty(M)$ is said to be \emph{harmonic} if $\Delta u = 0$, where $\Delta$ is the
+Laplacian defined on page~32.
+
+(a) Prove \emph{Green's identities}:
+\[
+\int_M u\Delta v \, dV_g = \int_{\partial M} u N v \, d\tilde{V}_g - \int_M \langle \operatorname{grad} u, \operatorname{grad} v \rangle_g \, dV_g,
+\]
+\[
+\int_M (u\Delta v - v\Delta u) \, dV_g = \int_{\partial M} (u N v - v N u) \, d\tilde{V}_g,
+\]
+where $N$ is the outward unit normal vector field on $\partial M$ and $\tilde{g}$ is the
+induced metric on $\partial M$.
+
+(b) Show that if $M$ is connected, $\partial M \ne \emptyset$, and $u, v$ are harmonic functions
+on $M$ whose restrictions to $\partial M$ agree, then $u \equiv v$.
+
+(c) Show that if $M$ is connected and $\partial M = \emptyset$, then the only harmonic
+functions on $M$ are the constants, and every smooth function $u$ satisfies
+$\int_M \Delta u \, dV_g = 0$.
+
+(Used on pp.\ 149, 223.)
+\end{exercise}
+
+\begin{exercise}\label{prob:eigenvalues}\dcref{ch2:2-24}
+Let $(M,g)$ be a compact Riemannian manifold (without boundary). A real
+number $\lambda$ is called an \emph{eigenvalue of $M$} if there exists a smooth function $u$
+on $M$, not identically zero, such that $-\Delta u = \lambda u$. In this case, $u$ is called an
+\emph{eigenfunction} corresponding to $\lambda$.
+
+(a) Prove that $0$ is an eigenvalue of $M$, and that all other eigenvalues are
+strictly positive.
+
+(b) Show that if $u$ and $v$ are eigenfunctions corresponding to distinct eigen-
+values, then $\int_M uv \, dV_g = 0$.
+
+(Used on p.\ 149.)
+\end{exercise}
+
+\begin{exercise}\label{prob:dirichlet-neumann-eigenvalues}\dcref{ch2:2-25}
+Let $(M,g)$ be a compact connected Riemannian $n$-manifold with nonempty
+boundary. A number $\lambda \in \mathbb{R}$ is called a \emph{Dirichlet eigenvalue for $M$} if there
+exists a smooth real-valued function $u$ on $M$, not identically zero, such that
+$-\Delta u = \lambda u$ and $u|_{\partial M} = 0$. Similarly, $\lambda$ is called a \emph{Neumann eigenvalue} if there exists a smooth real-valued function $u$ on $M$, not identically zero, such that $-\Delta u = \lambda u$ and $Nu|_{\partial M} = 0$, where $N$ is the outward unit normal vector field along $\partial M$.
+
+(a) Show that every Dirichlet eigenvalue is strictly positive.
+(b) Show that 0 is a Neumann eigenvalue, and all other Neumann eigenvalues are strictly positive.
+\end{exercise}
+
+\begin{exercise}[Dirichlet's Principle]
+\label{prob:dirichlet-principle}
+\dcref{ch2:2-26}
+Suppose $(M,g)$ is a compact connected Riemannian $n$-manifold with nonempty boundary. Prove that a function $u \in C^{\infty}(M)$ is harmonic if and only if it minimizes $\int_M |\operatorname{grad} u|^2 \, dV_g$ among all smooth functions with the same boundary values. [Hint: For any function $f \in C^{\infty}(M)$ that vanishes on $\partial M$, expand $\int_M |\operatorname{grad}(u + \varepsilon f)|^2 \, dV_g$ and use Problem 2-22.]
+\uses{prob:divergence-theorem}
+\end{exercise}
+
+\begin{exercise}
+\label{prob:curl-vector-field}
+\dcref{ch2:2-27}
+Suppose $(M,g)$ is an oriented Riemannian 3-manifold.
+
+(a) Define $\beta : TM \to \Lambda^2 T^* M$ by $\beta(X) = X \mathbin{\lrcorner} dV_g$. Show that $\beta$ is a smooth bundle isomorphism, and thus we can define the \emph{curl} of a vector field $X \in \mathfrak{X}(M)$ by
+\[
+\operatorname{curl} X = \beta^{-1} d(X^b).
+\]
+
+(b) Show that the following diagram commutes:
+\[
+\begin{array}{ccccccc}
+C^{\infty}(M) & \xrightarrow{\operatorname{grad}} & \mathfrak{X}(M) & \xrightarrow{\operatorname{curl}} & \mathfrak{X}(M) & \xrightarrow{\operatorname{div}} & C^{\infty}(M) \\
+\downarrow \text{Id} & & \downarrow b & & \downarrow \beta & & \downarrow * \\
+\Omega^0(M) & \xrightarrow{d} & \Omega^1(M) & \xrightarrow{d} & \Omega^2(M) & \xrightarrow{d} & \Omega^3(M)
+\end{array}
+\]
+where $*(f) = f \, dV_g$, and use this to prove that $\operatorname{curl}(\operatorname{grad} f) = 0$ for every $f \in C^{\infty}(M)$, and $\operatorname{div}(\operatorname{curl} X) = 0$ for every $X \in \mathfrak{X}(M)$.
+
+(c) Compute the formula for the curl in standard coordinates on $\mathbb{R}^3$ with the Euclidean metric.
+\end{exercise}
+
+\begin{exercise}
+\label{prob:hodge-star-exterior-derivative}
+\dcref{ch2:2-28}
+Let $(M,g)$ be an oriented Riemannian manifold and let $*$ denote its Hodge star operator (Problem 2-18). Show that for every $X \in \mathfrak{X}(M)$,
+\[
+X \mathbin{\lrcorner} dV_g = *(X^b),
+\]
+\[
+\operatorname{div} X = *d*(X^b),
+\]
+and, when $\dim M = 3$,
+\[
+\operatorname{curl} X = (*d(X^b))^{\#},
+\]
+where the curl of a vector field is defined as in Problem 2-27.
+\uses{prob:hodge-star-operator}
+\uses{prob:curl-vector-field}
+\end{exercise}
+
+\begin{exercise}
+\label{prob:codifferential-operator}
+\dcref{ch2:2-29}
+Let $(M,g)$ be a compact oriented Riemannian $n$-manifold. For $1 \leq k \leq n$, define a map $d^* : \Omega^k(M) \to \Omega^{k-1}(M)$ by $d^* \omega = (-1)^{n(k+1)+1} * d * \omega$, where $*$ is the Hodge star operator defined in Problem 2-18. Extend this definition to 0-forms by defining $d^*\omega = 0$ for $\omega \in \Omega^0(M)$.
+
+\begin{enumerate}
+\item[(a)] Show that $d^* \circ d^* = 0$.
+\item[(b)] Show that the formula
+\[
+(\omega, \eta) = \int_M \langle \omega, \eta \rangle_g \, dV_g
+\]
+defines an inner product on $\Omega^k(M)$ for each $k$, where $(\cdot, \cdot)_g$ is the inner product on forms defined in Problem 2-16.
+\item[(c)] Show that $(d^*\omega, \eta) = (\omega, d\eta)$ for all $\omega \in \Omega^k(M)$ and $\eta \in \Omega^{k-1}(M)$.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}\label{prob:distance-disconnected-riemannian}\dcref{ch2:2-30}
+Suppose $(M,g)$ is a (not necessarily connected) Riemannian manifold. Show that there is a distance function $d$ on $M$ that induces the given topology and restricts to the Riemannian distance on each component of $M$. (Used on p. 187.)
+\end{exercise}
+
+\begin{exercise}\label{prob:local-isometry-distance}\dcref{ch2:2-31}
+Suppose $(M,g)$ and $(\tilde{M}, \tilde{g})$ are connected Riemannian manifolds, and $\varphi: M \to \tilde{M}$ is a local isometry. Show that $d_{\tilde{g}}(\varphi(x), \varphi(y)) \leq d_g(x,y)$ for all $x, y \in M$. Give an example to show that equality need not hold. (Used on p. 37.)
+\end{exercise}
+
+\begin{exercise}\label{prob:arc-length-integral}\dcref{ch2:2-32}
+Let $(M,g)$ be a Riemannian manifold and $\gamma: [a,b] \to M$ a smooth curve segment. For each continuous function $f: [a,b] \to \mathbb{R}$, we define the \textit{integral of $f$ with respect to arc length}, denoted by $\int_\gamma f \, ds$, by
+\[
+\int_\gamma f \, ds = \int_a^b f(t) |\gamma'(t)|_g \, dt.
+\]
+
+\begin{enumerate}
+\item[(a)] Show that $\int_\gamma f \, ds$ is independent of parametrization in the following sense: if $\varphi: [c,d] \to [a,b]$ is a diffeomorphism, then
+\[
+\int_a^b f(t) |\gamma'(t)|_g \, dt = \int_c^d \tilde{f}(u) |\tilde{\gamma}'(u)|_g \, du,
+\]
+where $\tilde{f} = f \circ \varphi$ and $\tilde{\gamma} = \gamma \circ \varphi$.
+\item[(b)] Suppose now that $\gamma$ is a smooth embedding, so that $C = \gamma([a,b])$ is an embedded submanifold with boundary in $M$. Show that
+\[
+\int_\gamma f \, ds = \int_C (f \circ \gamma^{-1}) \, d\tilde{V},
+\]
+where $d\tilde{V}$ is the Riemannian volume element on $C$ associated with the induced metric and the orientation determined by $\gamma$.
+\end{enumerate}
+
+(Used on p. 273.)
+\end{exercise}
+
+\begin{exercise}\label{prob:sylvesters-law-inertia}\dcref{ch2:2-33}
+\uses{prop:sylvesters-law-inertia}
+
+Prove Proposition 2.65 (Sylvester's law of inertia).
+\end{exercise}
+
+\begin{exercise}\label{prob:lorentz-metric-existence}\dcref{ch2:2-34}
+\uses{thm:lorentz-metrics}
+Prove Theorem 2.69 (existence of Lorentz metrics), as follows.
+
+\begin{enumerate}
+\item[(a)] For sufficiency, assume that $D \subseteq TM$ is a 1-dimensional distribution, and choose any Riemannian metric $g$ on $M$. Show that locally it is possible to choose a $g$-orthonormal frame $(E_i)$ and dual coframe $(\varepsilon^i)$ such that $E_1$ spans $D$; and then show that the Lorentz metric $-(\varepsilon^1)^2 + (\varepsilon^2)^2 + \cdots + (\varepsilon^n)^2$ is independent of the choice of frame.
+
+\item[(b)] To prove necessity, suppose that $g$ is a Lorentz metric on $M$, and let $g_0$ be any Riemannian metric. Show that for each $p \in M$, there are exactly two $g_0$-unit vectors $v_0, -v_0$ on which the function $v \mapsto g(v, v)$ takes its minimum among all unit vectors in $T_p M$, and use Lagrange multipliers to conclude that there exists a number $\lambda(p) < 0$ such that $g(v_0, w) = \lambda(p)g_0(v_0, w)$ for all $w \in T_p M$. You may use the following standard result from perturbation theory: if $U$ is an open subset of $\mathbb{R}^n$ and $A: U \to GL(n, \mathbb{R})$ is a smooth matrix-valued function such that $A(x)$ is symmetric and has exactly one negative eigenvalue for each $x \in U$, then there exist smooth functions $\lambda: U \to (-\infty, 0)$ and $X: U \to \mathbb{R}^n \setminus \{0\}$ such that $A(x)X(x) = \lambda(x)X(x)$ for all $x \in U$.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}\label{prob:level-sets-pseudo-riemannian}\dcref{ch2:2-35}
+\uses{cor:pseudo-riemannian-embedding-criterion}
+Prove Corollary 2.71 (about level sets in pseudo-Riemannian manifolds). (Used on p.\ 63.)
+\end{exercise}

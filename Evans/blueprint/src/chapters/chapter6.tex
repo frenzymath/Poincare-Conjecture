@@ -1,0 +1,1613 @@
+% Source: Evans, "Partial Differential Equations" (2nd ed., AMS Graduate Studies in Mathematics vol. 19, 2010),
+% Chapter 6 "Second-Order Elliptic Equations", PDF pages 299-353 of MathBooks/Evans Partial Differential Equations(1).pdf.
+% Transcribed page-by-page by vision subagents, then merged and restructured into
+% leanblueprint conventions (semantic \label, bracketed titles, \uses dependency edges) below.
+%
+% NOTE ON GAPS: as in chapter5.tex, a number of source pages were returned by the vision
+% transcription subagent as refusal placeholders rather than actual page content
+% (PDF pages 299, 302, 304, 305, 306, 314, 319, 322, 332, 338, 339, 340, 341, 347, 350). Every
+% such gap was closed by directly re-reading the corresponding pages of the source PDF with a
+% vision-capable Read call during this restructuring pass (the PDF's own page numbers run
+% exactly six higher than the book's own printed page numbers throughout this chapter), so no
+% content below is invented or reconstructed purely from outside knowledge of the book -- it is
+% a faithful transcription of the actual page images. Running page headers (the small
+% "6.X SECTION NAME" banner repeated at the top of every printed page) are omitted where they
+% merely repeat an already-transcribed section title; only genuine inline section/subsection
+% headings are kept.
+
+
+This chapter investigates the solvability of uniformly elliptic, second-order partial differential equations, subject to prescribed boundary conditions. We will exploit two essentially distinct techniques, energy methods within Sobolev spaces (\S\S6.1--6.3) and maximum principle methods (\S6.4).
+
+\section{Definitions}
+\label{sec:elliptic-equations-definitions}
+
+\subsection{Elliptic equations}
+
+We will in this chapter mostly study the boundary-value problem
+$$(1) \qquad \begin{cases} Lu = f & \text{in } U \\ u = 0 & \text{on } \partial U, \end{cases}$$
+where $U$ is an open, bounded subset of $\R^n$ and $u : \bar U \to \R$ is the unknown, $u = u(x)$. Here $f : U \to \R$ is given, and $L$ denotes a second-order partial differential operator having either the form
+
+\begin{definition}[Divergence and nondivergence form]
+\label{def:divergence-nondivergence-form}
+\dcref{ch6:6.1-def-1}
+\group{Elliptic PDE}
+Let
+$$(2) \qquad Lu = -\sum_{i,j=1}^n \left(a^{ij}(x)u_{x_i}\right)_{x_j} + \sum_{i=1}^n b^i(x)u_{x_i} + c(x)u$$
+or else
+$$(3) \qquad Lu = -\sum_{i,j=1}^n a^{ij}(x)u_{x_ix_j} + \sum_{i=1}^n b^i(x)u_{x_i} + c(x)u,$$
+for given coefficient functions $a^{ij}, b^i, c$ $(i,j=1,\ldots,n)$.
+
+We say that the PDE $Lu = f$ is in \textit{divergence form} if $L$ is given by (2), and is in \textit{nondivergence form} provided $L$ is given by (3). The requirement that $u = 0$ on $\partial U$ in (1) is sometimes called \textit{Dirichlet's boundary condition}.
+\end{definition}
+
+\begin{remark}[Converting between divergence and nondivergence form]
+\label{rem:elliptic-operator-form-conversion}
+\dcref{ch6:6.1-rem-1}
+\group{Elliptic PDE}
+\uses{def:divergence-nondivergence-form}
+If the highest order coefficients $a^{ij}$ $(i,j=1,\ldots,n)$ are $C^1$ functions, then an operator given in divergence form can be rewritten into nondivergence structure, and vice versa. Indeed the divergence form equation (2) becomes
+$$(2') \qquad Lu = -\sum_{i,j=1}^n a^{ij}(x)u_{x_ix_j} + \sum_{i=1}^n \tilde b^i(x)u_{x_i} + c(x)u$$
+for $\tilde b^i := b^i - \sum_{j=1}^n a^{ij}_{x_j}$ $(i=1,\ldots,n)$, and (2') is obviously in nondivergence form. We will see, however, there are definite advantages to considering the two different representations of $L$ separately. The divergence form is most natural for energy methods, based upon integration by parts (\S\S6.1--6.3), and the nondivergence form is most appropriate for maximum principle techniques (\S6.4).
+\end{remark}
+
+We henceforth assume as well the symmetry condition
+$$a^{ij} = a^{ji} \quad (i,j=1,\ldots,n).$$
+
+\begin{definition}[Uniform ellipticity]
+\label{def:uniform-ellipticity}
+\dcref{ch6:6.1-def-2}
+\group{Elliptic PDE}
+\uses{def:divergence-nondivergence-form}
+We say the partial differential operator $L$ is (uniformly) elliptic if there exists a constant $\theta > 0$ such that
+$$(4) \qquad \sum_{i,j=1}^n a^{ij}(x)\xi_i\xi_j \geq \theta|\xi|^2$$
+for a.e. $x \in U$ and all $\xi \in \R^n$.
+\end{definition}
+
+Ellipticity thus means that for each point $x \in U$, the symmetric $n \times n$ matrix $\mathbf A(x) = ((a^{ij}(x)))$ is positive definite, with smallest eigenvalue greater than or equal to $\theta$.
+
+An obvious example is $a^{ij} \equiv \delta_{ij}$, $b^i \equiv 0$, $c \equiv 0$, in which case the operator $L$ is $-\Delta$. Indeed we will see that solutions of the general second-order elliptic PDE $Lu = 0$ are similar in many ways to harmonic functions. However, for these partial differential equations we do not have available the various explicit formulas developed for harmonic functions in Chapter 2: we must instead work directly with the PDE. Readers should continually be alert in the following calculations for uses of the structural condition of ellipticity (4).
+
+\begin{remark}[Physical interpretation]
+\label{rem:elliptic-pde-physical-interpretation}
+\dcref{ch6:6.1-rem-2}
+\group{Elliptic PDE}
+\uses{def:uniform-ellipticity}
+As just noted, second-order elliptic PDE generalize Laplace's and Poisson's equations. As in the derivation of Laplace's equation set forth in \S2.2, $u$ in applications typically represents the density of some quantity, say a chemical concentration, at equilibrium within a region $U$. The second-order term $\mathbf A : D^2u = \sum_{i,j=1}^n a^{ij}u_{ij}$ represents the \textit{diffusion} of $u$ within $U$, the coefficients $((a^{ij}))$ describing the anisotropic, heterogeneous nature of the medium. In particular, $\mathbf F := -\mathbf A Du$ is the diffusive flux density, and the ellipticity condition implies
+$$\mathbf F \cdot Du \leq 0;$$
+that is, the flow is from regions of higher to lower concentration. The first-order term $\mathbf b \cdot Du = \sum_{i=1}^n b^i u_i$ represents \textit{transport} within $U$, and the zeroth-order term $cu$ describes the local \textit{creation} or \textit{depletion} of the chemical (owing, say, to reactions). A careful analysis of these interpretations requires the probabilistic study of diffusion processes.
+
+Nonlinear second-order elliptic PDE also arise naturally in the calculus of variations (as the Euler--Lagrange equations of convex energy integrands) and in differential geometry (as expressions involving curvatures). We will encounter some such nonlinear equations later, in Chapters 8 and 9.
+\end{remark}
+
+\subsection{Weak solutions}
+
+Let us consider first the boundary-value problem (1) when $L$ has the divergence form (2). Our overall plan is first to define and then construct an appropriate weak solution $u$ of (1), and only later to investigate the smoothness and other properties of $u$.
+
+We will assume in the following exposition that
+$$(5) \qquad a^{ij}, b^i, c \in L^\infty(U) \quad (i,j=1,\ldots,n)$$
+and
+$$(6) \qquad f \in L^2(U).$$
+
+\textbf{Motivation for definition of weak solution.} How should we define a weak or generalized solution? Assuming for the moment $u$ is really a smooth solution, let us multiply the PDE $Lu = f$ by a smooth test function $v \in C_c^\infty(U)$, and integrate over $U$, to find
+$$(7) \qquad \int_U \sum_{i,j=1}^n a^{ij}u_{x_i}v_{x_j} + \sum_{i=1}^n b^iu_{x_i}v + cuv \, dx = \int_U fv \, dx,$$
+where we have integrated by parts in the first term on the left hand side. There are no boundary terms since $v = 0$ on $\partial U$. By approximation we find the same identity holds with the smooth function $v$ replaced by any $v \in H_0^1(U)$, and the resulting identity makes sense if only $u \in H_0^1(U)$. (We choose the space $H_0^1(U)$ to incorporate the boundary condition from (1) that ``$u = 0$ on $\partial U$''.)
+
+\begin{definition}[Bilinear form and weak solution for $f \in L^2(U)$]
+\label{def:bilinear-form-weak-solution-l2}
+\dcref{ch6:6.1-def-3}
+\group{Weak Solutions}
+\uses{def:divergence-nondivergence-form}
+(i) The bilinear form $B[\ ,\ ]$ associated with the divergence form elliptic operator $L$ defined by (2) is
+$$(8) \qquad B[u,v] := \int_U \sum_{i,j=1}^n a^{ij}u_{x_i}v_{x_j} + \sum_{i=1}^n b^iu_{x_i}v + cuv \, dx$$
+for $u,v \in H_0^1(U)$.
+
+(ii) We say that $u \in H_0^1(U)$ is a \textit{weak solution} of the boundary-value problem (1) if
+$$(9) \qquad B[u,v] = (f,v)$$
+for all $v \in H_0^1(U)$, where $(\ ,\ )$ denotes the inner product in $L^2(U)$.
+\end{definition}
+
+\begin{remark}[Variational formulation]
+\label{rem:variational-formulation}
+\dcref{ch6:6.1-rem-3}
+\group{Weak Solutions}
+\uses{def:bilinear-form-weak-solution-l2}
+The identity (9) is sometimes called the \textit{variational formulation} of (1). This terminology will be explained later, in Example 2 of \S8.1.2.
+\end{remark}
+
+More generally, let us consider the boundary-value problem
+$$(10) \qquad \begin{cases} Lu = f^0 - \sum_{i=1}^n f^i_{x_i} & \text{in } U \\ u = 0 & \text{on } \partial U, \end{cases}$$
+where $L$ is defined by (2) and $f^i \in L^2(U)$ $(i=0,\ldots,n)$. In view of the theory set forth in \S5.9.1 we see that the righthand term $f = f^0 - \sum_{i=1}^n f^i_{x_i}$ belongs to $H^{-1}(U)$, the dual space of $H_0^1(U)$.
+
+\begin{definition}[Weak solution of the elliptic boundary-value problem]
+\label{def:weak-solution-elliptic-bvp}
+\dcref{ch6:6.1-def-4}
+\group{Weak Solutions}
+\uses{def:bilinear-form-weak-solution-l2,thm:characterization-h-minus-1}
+We say $u \in H_0^1(U)$ is a weak solution of problem (10) provided
+$$B[u,v] = \langle f,v \rangle$$
+for all $v \in H_0^1(U)$, where $\langle f,v \rangle = \int_U f^0 v + \sum_{i=1}^n f^i v_{x_i} \, dx$ and $\langle \cdot,\cdot \rangle$ is the pairing of $H^{-1}(U)$ and $H_0^1(U)$.
+\end{definition}
+
+\begin{remark}[Nonzero boundary conditions]
+\label{rem:nonzero-boundary-weak-solution}
+\dcref{ch6:6.1-rem-4}
+\group{Weak Solutions}
+\uses{def:weak-solution-elliptic-bvp,def:trace-operator}
+We will hereafter, as above, focus attention exclusively on the case of zero boundary conditions, but in fact a problem with prescribed, nonzero boundary values can easily be transformed into this setting. We spell this out by supposing now that $\partial U$ is $C^1$ and $u \in H^1(U)$ is a weak solution of
+$$\begin{cases} Lu = f & \text{in } U \\ u = g & \text{on } \partial U. \end{cases}$$
+This means that $u = g$ on $\partial U$ in the trace sense, and furthermore that the bilinear form identity (9) holds for all $v \in H_0^1(U)$. That this be possible, it is necessary for $g$ to be the trace of some $H^1$ function, say $w$. But then $\tilde u := u - w$ belongs to $H_0^1(U)$, and is a weak solution of the boundary-value problem
+$$\begin{cases} L\tilde u = \tilde f & \text{in } U \\ \tilde u = 0 & \text{on } \partial U, \end{cases}$$
+where $\tilde f := f - Lw \in H^{-1}(U)$.
+
+See Problems 2, 3 to learn how to cast some other sorts of PDE and boundary conditions into weak formulations.
+\end{remark}
+
+\section{Existence of Weak Solutions}
+\label{sec:existence-of-weak-solutions}
+
+\subsection{Lax--Milgram Theorem}
+
+We now introduce a fairly simple abstract principle from linear functional analysis, which will later in \S6.2.2 provide in certain circumstances the existence and uniqueness of a weak solution to our boundary-value problem.
+
+We assume for this section $H$ is a real Hilbert space, with norm $\| \ \|$ and inner product $(\cdot,\cdot)$. We let $\langle \cdot,\cdot \rangle$ denote the pairing of $H$ with its dual space. Readers should review as necessary the basic Hilbert space theory described in \S D.2-3.
+
+\begin{theorem}[Lax--Milgram Theorem]
+\label{thm:lax-milgram-theorem}
+\dcref{ch6:6.2-thm-1}
+\group{Weak Solutions}
+Assume that
+$$B : H \times H \to \R$$
+is a bilinear mapping, for which there exist constants $\alpha,\beta > 0$ such that
+$$(i) \qquad |B[u,v]| \leq \alpha\|u\| \, \|v\| \quad (u,v \in H)$$
+and
+$$(ii) \qquad \beta\|u\|^2 \leq B[u,u] \quad (u \in H).$$
+Finally, let $f : H \to \R$ be a bounded linear functional on $H$.
+
+Then there exists a unique element $u \in H$ such that
+$$(1) \qquad B[u,v] = \langle f,v \rangle$$
+for all $v \in H$.
+\end{theorem}
+
+\begin{proof}
+1. For each fixed element $u \in H$, the mapping $v \mapsto B[u,v]$ is a bounded linear functional on $H$; whence the Riesz Representation Theorem (\S D.3) asserts the existence of a unique element $w \in H$ satisfying
+$$(2) \qquad B[u,v] = (w,v) \quad (v \in H).$$
+Let us write $Au = w$ whenever (2) holds; so that
+$$(3) \qquad B[u,v] = (Au,v) \quad (u,v \in H).$$
+
+2. We first claim $A : H \to H$ is a bounded linear operator. Indeed if $\lambda_1,\lambda_2 \in \R$ and $u_1,u_2 \in H$, we see for each $v \in H$ that
+$$(A(\lambda_1u_1+\lambda_2u_2),v) = B[\lambda_1u_1+\lambda_2u_2,v] \text{ by (3)}$$
+$$= \lambda_1B[u_1,v] + \lambda_2B[u_2,v]$$
+$$= \lambda_1(Au_1,v) + \lambda_2(Au_2,v) \text{ by (3) again}$$
+$$= (\lambda_1Au_1 + \lambda_2Au_2,v).$$
+This equality obtains for each $v \in H$, and so $A$ is linear. Furthermore
+$$\|Au\|^2 = (Au,Au) = B[u,Au] \leq \alpha\|u\| \, \|Au\|.$$
+Consequently $\|Au\| \leq \alpha\|u\|$ for all $u \in H$, and so $A$ is bounded.
+
+3. Next we assert
+$$(4) \qquad \begin{cases} A \text{ is one-to-one, and} \\ R(A), \text{ the range of } A, \text{ is closed in } H. \end{cases}$$
+To prove this, let us compute
+$$\beta\|u\|^2 \leq B[u,u] = (Au,u) \leq \|Au\| \, \|u\|.$$
+Hence $\beta\|u\| \leq \|Au\|$. This inequality easily implies (4).
+
+4. We demonstrate now
+$$(5) \qquad R(A) = H.$$
+For if not, then, since $R(A)$ is closed, there would exist a nonzero element $w \in H$ with $w \in R(A)^\perp$. But this fact in turn implies the contradiction $\beta\|w\|^2 \leq B[w,w] = (Aw,w) = 0$.
+
+5. Next, we observe once more from the Riesz Representation Theorem that
+$$\langle f,v \rangle = (w,v) \quad \text{for all } v \in H$$
+for some element $w \in H$. We then utilize (4) and (5) to find $u \in H$ satisfying $Au = w$. Then
+$$B[u,v] = (Au,v) = (w,v) = \langle f,v \rangle \quad (v \in H),$$
+and this is (1).
+
+6. Finally, we show there is at most one element $u \in H$ verifying (1). For if both $B[u,v] = \langle f,v \rangle$ and $B[\tilde u,v] = \langle f,v \rangle$, then $B[u-\tilde u,v] = 0$ $(v \in H)$. We set $v = u - \tilde u$ to find $\beta\|u-\tilde u\|^2 \leq B[u-\tilde u, u-\tilde u] = 0$.
+\end{proof}
+
+\begin{remark}[The symmetric case]
+\label{rem:lax-milgram-symmetric-case}
+\dcref{ch6:6.2-rem-1}
+\group{Weak Solutions}
+\uses{thm:lax-milgram-theorem}
+If the bilinear form $B[\ ,\ ]$ is symmetric, that is, if
+$$B[u,v] = B[v,u] \quad (u,v \in H),$$
+we can fashion a much simpler proof by noting $((u,v)) := B[u,v]$ is a new inner product on $H$, to which the Riesz Representation Theorem directly applies. Consequently, the Lax--Milgram Theorem is primarily significant in that it does \textit{not} require symmetry of $B[\ ,\ ]$.
+\end{remark}
+
+\subsection{Energy estimates}
+
+We return now to the specific bilinear form $B[\ ,\ ]$, defined in \S6.1.2 by the formula
+$$B[u,v] = \int_U \sum_{i,j=1}^n a^{ij}u_{x_i}v_{x_j} + \sum_{i=1}^n b^iu_{x_i}v + cuv \, dx$$
+for $u,v \in H_0^1(U)$, and try to verify the hypothesis of the Lax--Milgram Theorem.
+
+\begin{theorem}[Energy estimates]
+\label{thm:energy-estimates}
+\dcref{ch6:6.2-thm-2}
+\group{Weak Solutions}
+\uses{def:bilinear-form-weak-solution-l2,def:uniform-ellipticity,thm:poincare-w01p-subcritical}
+There exist constants $\alpha,\beta > 0$ and $\gamma \geq 0$ such that
+$$(i) \qquad |B[u,v]| \leq \alpha\|u\|_{H_0^1(U)}\|v\|_{H_0^1(U)}$$
+and
+$$(ii) \qquad \beta\|u\|_{H_0^1(U)}^2 \leq B[u,u] + \gamma\|u\|_{L^2(U)}^2$$
+for all $u,v \in H_0^1(U)$.
+\end{theorem}
+
+\begin{proof}
+1. We readily check
+$$|B[u,v]| \leq \sum_{i,j=1}^n \|a^{ij}\|_{L^\infty}\int_U|Du|\,|Dv|\,dx$$
+$$+ \sum_{i=1}^n \|b^i\|_{L^\infty}\int_U|Du|\,|v|\,dx + \|c\|_{L^\infty}\int_U|u|\,|v|\,dx$$
+$$\leq \alpha\|u\|_{H_0^1(U)}\|v\|_{H_0^1(U)},$$
+for some appropriate constant $\alpha$.
+
+2. Furthermore, in view of the ellipticity condition (4) from \S6.1 we have
+$$\theta\int_U|Du|^2\,dx \leq \int_U \sum_{i,j=1}^n a^{ij}u_{x_i}u_{x_j}\,dx$$
+$$(6) \qquad = B[u,u] - \int_U \sum_{i=1}^n b^iu_{x_i}u + cu^2\,dx$$
+$$\leq B[u,u] + \sum_{i=1}^n\|b^i\|_{L^\infty}\int_U|Du|\,|u|\,dx + \|c\|_{L^\infty}\int_U u^2\,dx.$$
+Now from Cauchy's inequality with $\varepsilon$ (\S B.2), we observe
+$$\int_U |Du|\,|u|\,dx \leq \varepsilon\int_U|Du|^2\,dx + \frac1{4\varepsilon}\int_U u^2\,dx \quad (\varepsilon > 0).$$
+We insert this estimate into (6) and then choose $\varepsilon > 0$ so small that
+$$\varepsilon\sum_{i=1}^n\|b^i\|_{L^\infty} < \frac\theta2.$$
+Thus
+$$\frac\theta2\int_U|Du|^2\,dx \leq B[u,u] + C\int_U u^2\,dx$$
+for some appropriate constant $C$. In addition we recall from Poincar\'e's inequality in \S5.6.1 that
+$$\|u\|_{L^2(U)} \leq C\|Du\|_{L^2(U)}.$$
+It easily follows that
+$$\beta\|u\|_{H_0^1(U)}^2 \leq B[u,u] + \gamma\|u\|_{L^2(U)}^2$$
+for appropriate constants $\beta > 0$, $\gamma \geq 0$.
+\end{proof}
+
+Observe now that if $\gamma > 0$ in these energy estimates, then $B[\cdot,\cdot]$ does not precisely satisfy the hypotheses of the Lax--Milgram Theorem. The following existence assertion for weak solutions must confront this possibility:
+
+\begin{theorem}[First Existence Theorem for weak solutions]
+\label{thm:first-existence-weak-solutions}
+\dcref{ch6:6.2-thm-3}
+\group{Weak Solutions}
+\uses{thm:lax-milgram-theorem,thm:energy-estimates,def:bilinear-form-weak-solution-l2}
+There is a number $\gamma \geq 0$ such that for each
+$$(7) \qquad \mu \geq \gamma$$
+and each function
+$$f \in L^2(U),$$
+there exists a unique weak solution $u \in H_0^1(U)$ of the boundary-value problem
+$$(8) \qquad \begin{cases} Lu + \mu u = f & \text{in } U \\ u = 0 & \text{on } \partial U \end{cases}$$
+\end{theorem}
+
+\begin{proof}
+1. Take $\gamma$ from Theorem~\ref{thm:energy-estimates}, let $\mu \geq \gamma$, and define then the bilinear form
+$$B_\mu[u,v] := B[u,v] + \mu(u,v) \quad (u,v \in H_0^1(U)),$$
+which corresponds as in \S6.1 to the operator $L_\mu u := Lu + \mu u$. As before $(\cdot,\cdot)$ means the inner product in $L^2(U)$. Then $B_\mu[\cdot,\cdot]$ satisfies the hypotheses of the Lax--Milgram Theorem.
+
+2. Now fix $f \in L^2(U)$ and set $\langle f,v \rangle := (f,v)_{L^2(U)}$. This is a bounded linear functional on $L^2(U)$, and thus on $H_0^1(U)$.
+
+We apply the Lax--Milgram Theorem to find a unique function $u \in H_0^1(U)$ satisfying
+$$B_\mu[u,v] = \langle f,v \rangle$$
+for all $v \in H_0^1(U)$; $u$ is consequently the unique weak solution of (8).
+\end{proof}
+
+\begin{remark}[General right-hand side and the isomorphism $L_\mu$]
+\label{rem:general-rhs-weak-solution-isomorphism}
+\dcref{ch6:6.2-rem-2}
+\group{Weak Solutions}
+\uses{thm:first-existence-weak-solutions,def:weak-solution-elliptic-bvp}
+We can similarly show that for all
+$$f^i \in L^2(U) \quad (i=0,\ldots,n),$$
+there exists a unique weak solution $u$ of the PDE
+$$(9) \qquad \begin{cases} Lu + \mu u = f^0 - \sum_{i=1}^n f^i_{x_i} & \text{in } U \\ u = 0 & \text{on } \partial U. \end{cases}$$
+Indeed, it is enough to note $\langle f,v \rangle = \int_U f^0v + \sum_{i=1}^n f^iv_{x_i}\,dx$ is a bounded linear functional on $H_0^1(U)$, as previously discussed in \S5.9.1.
+
+In particular, we deduce that the mapping
+$$L_\mu = L + \mu I : H_0^1(U) \to H^{-1}(U) \quad (\mu \geq \gamma)$$
+is an isomorphism.
+\end{remark}
+
+\begin{example}[Nonnegative zeroth-order coefficient]
+\label{ex:energy-estimates-gamma-zero-examples}
+\dcref{ch6:6.2-ex-1}
+\group{Weak Solutions}
+\uses{thm:energy-estimates,thm:poincare-w01p-subcritical}
+In the case $Lu = -\Delta u$, so that $B[u,v] = \int_U Du \cdot Dv\,dx$, we easily check using Poincar\'e's inequality that Theorem~\ref{thm:energy-estimates} holds with $\gamma = 0$. A similar assertion holds for the general operator $Lu = -\sum_{i,j=1}^n(a^{ij}u_{x_i})_{x_j} + cu$, provided $c \geq 0$ in $U$.
+\end{example}
+
+\subsection{Fredholm alternative}
+
+We next employ the Fredholm theory for compact operators (discussed in \S D.5) to glean more detailed information regarding the solvability of second-order elliptic PDE.
+
+\begin{definition}[Formal adjoint operator and adjoint problem]
+\label{def:formal-adjoint-operator}
+\dcref{ch6:6.2-def-1}
+\group{Weak Solutions}
+\uses{def:divergence-nondivergence-form,def:bilinear-form-weak-solution-l2}
+(i) The operator $L^*$, the formal adjoint of $L$, is
+$$L^*v := -\sum_{i,j=1}^n(a^{ij}v_{x_j})_{x_i} - \sum_{i=1}^n b^iv_{x_i} + \left(c - \sum_{i=1}^n b^i_{x_i}\right)v,$$
+provided $b^i \in C^1(\bar U)$ $(i=1,\ldots,n)$.
+
+(ii) The adjoint bilinear form
+$$B^* : H \times H \to \R$$
+is defined by
+$$B^*[v,u] = B[u,v]$$
+for all $u,v \in H_0^1(U)$.
+
+(iii) We say that $v \in H_0^1(U)$ is a weak solution of the adjoint problem
+$$\begin{cases} L^*v = f & \text{in } U \\ v = 0 & \text{on } \partial U, \end{cases}$$
+provided
+$$B^*[v,u] = (f,u)$$
+for all $u \in H_0^1(U)$.
+\end{definition}
+
+\begin{theorem}[Second Existence Theorem for weak solutions]
+\label{thm:second-existence-fredholm-alternative}
+\dcref{ch6:6.2-thm-4}
+\group{Weak Solutions}
+\uses{thm:first-existence-weak-solutions,def:formal-adjoint-operator,thm:rellich-kondrachov}
+(i) Precisely one of the following statements holds:
+
+either
+$$\begin{cases} \text{for each } f \in L^2(U) \text{ there exists a unique} \\ \text{weak solution } u \text{ of the boundary-value problem} \\ (10) \quad \begin{cases} Lu = f & \text{in } U \\ u = 0 & \text{on } \partial U \end{cases} \end{cases} (\alpha)$$
+
+or else
+$$\begin{cases} \text{there exists a weak solution } u \not\equiv 0 \text{ of} \\ \text{the homogeneous problem} \\ (11) \quad \begin{cases} Lu = 0 & \text{in } U \\ u = 0 & \text{on } \partial U \end{cases} \end{cases} (\beta)$$
+
+(ii) Furthermore, should assertion $(\beta)$ hold, the dimension of the subspace $N \subset H_0^1(U)$ of weak solutions of (11) is finite and equals the dimension of the subspace $N^* \subset H_0^1(U)$ of weak solutions of
+$$(12) \qquad \begin{cases} L^*v = 0 & \text{in } U \\ v = 0 & \text{on } \partial U \end{cases}$$
+
+(iii) Finally, the boundary-value problem (10) has a weak solution if and only if
+$$(f,v) = 0 \text{ for all } v \in N^*.$$
+
+The dichotomy $(\alpha)$, $(\beta)$ is the \textit{Fredholm alternative}.
+\end{theorem}
+
+\begin{proof}
+1. Choose $\mu = \gamma$ as in Theorem~\ref{thm:first-existence-weak-solutions} and define the bilinear form
+$$B_\gamma[u,v] := B[u,v] + \gamma(u,v),$$
+corresponding to the operator $L_\gamma u := Lu + \gamma u$. Then for each $g \in L^2(U)$ there exists a unique function $u \in H_0^1(U)$ solving
+$$(13) \qquad B_\gamma[u,v] = (g,v) \text{ for all } v \in H_0^1(U).$$
+Let us write
+$$(14) \qquad u = L_\gamma^{-1}g$$
+whenever (13) holds.
+
+2. Observe next $u \in H_0^1(U)$ is a weak solution of (10) if and only if
+$$(15) \qquad B_\gamma[u,v] = (\gamma u + f,v) \text{ for all } v \in H_0^1(U);$$
+that is, if and only if
+$$(16) \qquad u = L_\gamma^{-1}(\gamma u + f).$$
+We rewrite this equality to read
+$$(17) \qquad u - Ku = h,$$
+for
+$$(18) \qquad Ku := \gamma L_\gamma^{-1}u$$
+and
+$$(19) \qquad h := L_\gamma^{-1}f.$$
+
+3. We now claim $K : L^2(U) \to L^2(U)$ is a bounded, linear, compact operator. Indeed, from our choice of $\gamma$ and the energy estimates from \S6.2.2 we note that if (13) holds, then
+$$\beta\|u\|_{H_0^1(U)}^2 \leq B_\gamma[u,u] = (g,u) \leq \|g\|_{L^2(U)}\|u\|_{L^2(U)} \leq \|g\|_{L^2(U)}\|u\|_{H_0^1(U)};$$
+so that (18) implies
+$$\|Kg\|_{H_0^1(U)} \leq C\|g\|_{L^2(U)} \quad (g \in L^2(U))$$
+for some appropriate constant $C$. But since $H_0^1(U) \subset\subset L^2(U)$ according to the Rellich--Kondrachov compactness theorem, we deduce that $K$ is a compact operator.
+
+4. We may consequently apply the Fredholm alternative from \S D.5: either
+$$(20) \qquad (\alpha) \quad \begin{cases} \text{for each } h \in L^2(U) \text{ the equation} \\ u - Ku = h \\ \text{has a unique solution } u \in L^2(U) \end{cases}$$
+or else
+$$(21) \qquad (\beta) \quad \begin{cases} \text{the equation} \\ u - Ku = 0 \\ \text{has nonzero solutions in } L^2(U). \end{cases}$$
+Should assertion $(\alpha)$ hold, then according to (15)--(19) there exists a unique weak solution of problem (10). On the other hand, should assertion $(\beta)$ be valid, then necessarily $\gamma \neq 0$ and we recall further from \S D.5 that the dimension of the space $N$ of the solutions of (21) is finite and equals the dimension of the space $N^*$ of solutions of
+$$(22) \qquad v - K^*v = 0.$$
+We readily check however that (21) holds if and only if $u$ is a weak solution of (11); and (22) holds if and only if $v$ is a weak solution of (12).
+
+5. Finally, we recall (20) has a solution if and only if
+$$(23) \qquad (h,v) = 0$$
+for all $v$ solving (22). But from (18), (19) and (22) we compute
+$$(h,v) = \frac1\gamma(Kf,v) = \frac1\gamma(f,K^*v) = \frac1\gamma(f,v).$$
+Consequently the boundary-value problem (10) has a solution if and only if $(f,v) = 0$ for all weak solutions $v$ of (12).
+\end{proof}
+
+\begin{theorem}[Third Existence Theorem for weak solutions]
+\label{thm:third-existence-spectrum}
+\dcref{ch6:6.2-thm-5}
+\group{Weak Solutions}
+\uses{thm:second-existence-fredholm-alternative,thm:energy-estimates}
+(i) There exists an at most countable set $\Sigma \subset \R$ such that the boundary-value problem
+$$(24) \qquad \begin{cases} Lu = \lambda u + f & \text{in } U \\ u = 0 & \text{on } \partial U \end{cases}$$
+has a unique weak solution for each $f \in L^2(U)$ if and only if $\lambda \notin \Sigma$.
+
+(ii) If $\Sigma$ is infinite, then $\Sigma = \{\lambda_k\}_{k=1}^\infty$, the values of a nondecreasing sequence with
+$$\lambda_k \to +\infty.$$
+\end{theorem}
+
+\begin{definition}[Spectrum of the operator $L$]
+\label{def:spectrum-of-operator}
+\dcref{ch6:6.2-def-2}
+\group{Weak Solutions}
+\uses{thm:third-existence-spectrum}
+We call $\Sigma$ the (real) spectrum of the operator $L$.
+\end{definition}
+
+\begin{remark}[Eigenvalues and Helmholtz's equation]
+\label{rem:eigenvalues-helmholtz-equation}
+\dcref{ch6:6.2-rem-3}
+\group{Weak Solutions}
+\uses{def:spectrum-of-operator}
+Note in particular the boundary-value problem
+$$\begin{cases} Lu = \lambda u & \text{in } U \\ u = 0 & \text{on } \partial U \end{cases}$$
+has a nontrivial solution $w \neq 0$ if and only if $\lambda \in \Sigma$, in which case $\lambda$ is called an \textit{eigenvalue} of $L$, $w$ a corresponding \textit{eigenfunction}. The partial differential equation $Lu = \lambda u$ for $L = -\Delta$ is sometimes called \textit{Helmholtz's equation}.
+\end{remark}
+
+\begin{proof}[Proof of Theorem~\ref{thm:third-existence-spectrum}]
+1. Let $\gamma$ be the constant from Theorem~\ref{thm:energy-estimates} and assume
+$$(25) \qquad \lambda > -\gamma.$$
+Assume also with no loss of generality that $\gamma > 0$.
+
+2. According to the Fredholm alternative, the boundary-value problem (24) has a unique weak solution for each $f \in L^2(U)$ if and only if $u = 0$ is the only weak solution of the homogeneous problem
+$$\begin{cases} Lu = \lambda u & \text{in } U \\ u = 0 & \text{on } \partial U. \end{cases}$$
+This is in turn true if and only if $u = 0$ is the only weak solution of
+$$(26) \qquad \begin{cases} Lu + \gamma u = (\gamma+\lambda)u & \text{in } U \\ u = 0 & \text{on } \partial U. \end{cases}$$
+Now (26) holds exactly when
+$$(27) \qquad u = L_\gamma^{-1}(\gamma+\lambda)u = \frac{\gamma+\lambda}\gamma Ku,$$
+where, as in the proof of Theorem~\ref{thm:second-existence-fredholm-alternative}, we have set $Ku = \gamma L_\gamma^{-1}u$. Recall also from that proof that $K : L^2(U) \to L^2(U)$ is a bounded, linear, compact operator.
+
+Now if $u = 0$ is the only solution of (27), we see
+$$(28) \qquad \frac\gamma{\gamma+\lambda} \text{ is not an eigenvalue of } K.$$
+Consequently we see the PDE (24) has a unique weak solution for each $f \in L^2(U)$ if and only if (28) holds.
+
+3. According to Theorem 6 in \S D.5 the collection of all eigenvalues of $K$ comprises either a finite set or else the values of a sequence converging to zero. In the second case we see, according to (25) and (27), that the PDE (24) has a unique weak solution for all $f \in L^2(U)$, except for a sequence $\lambda_k \to +\infty$.
+\end{proof}
+
+Finally, we explicitly note:
+
+\begin{theorem}[Boundedness of the inverse]
+\label{thm:boundedness-of-inverse}
+\dcref{ch6:6.2-thm-6}
+\group{Weak Solutions}
+\uses{thm:third-existence-spectrum,thm:energy-estimates}
+If $\lambda \notin \Sigma$, there exists a constant $C$ such that
+$$(29) \qquad \|u\|_{L^2(U)} \leq C\|f\|_{L^2(U)},$$
+whenever $f \in L^2(U)$ and $u \in H_0^1(U)$ is the unique weak solution of
+$$\begin{cases} Lu = \lambda u + f & \text{in } U \\ u = 0 & \text{on } \partial U. \end{cases}$$
+The constant $C$ depends only on $\lambda$, $U$ and the coefficients of $L$.
+
+This constant will blow up if $\lambda$ approaches an eigenvalue.
+\end{theorem}
+
+\begin{proof}
+If not, there would exist sequences $\{f_k\}_{k=1}^\infty \subset L^2(U)$ and $\{u_k\}_{k=1}^\infty \subset H_0^1(U)$ such that
+$$\begin{cases} Lu_k = \lambda u_k + f_k & \text{in } U \\ u_k = 0 & \text{on } \partial U \end{cases}$$
+in the weak sense, but
+$$\|u_k\|_{L^2(U)} > k\|f_k\|_{L^2(U)} \quad (k=1,\ldots).$$
+As we may with no loss suppose $\|u_k\|_{L^2(U)} = 1$, we see $f_k \to 0$ in $L^2(U)$. According to the usual energy estimates the sequence $\{u_k\}_{k=1}^\infty$ is bounded in $H_0^1(U)$. Thus there exists a subsequence $\{u_{k_j}\}_{j=1}^\infty \subset \{u_k\}_{k=1}^\infty$ such that
+$$(30) \qquad \begin{cases} u_{k_j} \to u & \text{weakly in } H_0^1(U), \\ u_{k_j} \to u & \text{in } L^2(U). \end{cases}$$
+(See \S D.4 for weak convergence.) Then $u$ is a weak solution of
+$$\begin{cases} Lu = \lambda u & \text{in } U \\ u = 0 & \text{on } \partial U. \end{cases}$$
+Since $\lambda \notin \Sigma$, $u \equiv 0$. However (30) implies as well that $\|u\|_{L^2(U)} = 1$, a contradiction.
+\end{proof}
+
+\begin{remark}[Complex solutions]
+\label{rem:complex-valued-weak-solutions}
+\dcref{ch6:6.2-rem-4}
+\group{Weak Solutions}
+\uses{thm:lax-milgram-theorem,thm:second-existence-fredholm-alternative}
+The foregoing theory extends easily to include complex-valued solutions. Given complex-valued $u,v \in H^1(U)$, write
+$$(u,v)_{L^2(U)} := \int_U u\bar v\,dx, \quad (u,v)_{H^1(U)} := \int_U Du \cdot D\bar v + u\bar v\,dx,$$
+and set
+$$B[u,v] := \int_U \sum_{i,j=1}^n a^{ij}u_{x_i}\bar v_{x_j} + \sum_{i=1}^n b^iu_{x_i}\bar v + cu\bar v\,dx,$$
+where $\bar{\ }$ denotes complex conjugate. We check
+$$|B[u,v]| \leq \alpha\|u\|_{H_0^1(U)}\|v\|_{H_0^1(U)},$$
+$$\beta\|u\|_{H_0^1(U)}^2 \leq \operatorname{Re}B[u,u] + \gamma\|u\|_{L^2(U)}^2 \quad (u,v \in H_0^1(U))$$
+for appropriate constants $\alpha,\beta > 0$, $\gamma \geq 0$. Complex variants of the Lax--Milgram Theorem and Fredholm alternative lead to analogues of Theorems~\ref{thm:first-existence-weak-solutions}--\ref{thm:boundedness-of-inverse} above.
+\end{remark}
+
+\section{Regularity}
+\label{sec:elliptic-regularity}
+
+We now address the question as to whether a weak solution $u$ of the PDE
+$$(1) \qquad Lu = f \quad \text{in } U$$
+is in fact smooth: this is the \textit{regularity} problem for weak solutions.
+
+\textbf{Motivation: formal derivation of estimates.} To see that there is some hope that a weak solution may be better than a typical function in $H_0^1(U)$, let us consider the model problem
+$$(2) \qquad -\Delta u = f \quad \text{in } \R^n.$$
+We assume for heuristic purposes that $u$ is smooth and vanishes sufficiently rapidly as $|x| \to \infty$ to justify the following calculations. We then compute
+$$\int_{\R^n} f^2\,dx = \int_{\R^n}(\Delta u)^2\,dx = \sum_{i,j=1}^n \int_{\R^n} u_{x_ix_i}u_{x_jx_j}\,dx$$
+$$(3) \qquad = -\sum_{i,j=1}^n \int_{\R^n} u_{x_ix_ix_j}u_{x_j}\,dx$$
+$$= \sum_{i,j=1}^n \int_{\R^n} u_{x_ix_j}u_{x_ix_j}\,dx = \int_{\R^n}|D^2u|^2\,dx.$$
+Thus we see the $L^2$-norm of the \textit{second} derivatives of $u$ can be estimated by (and in fact equals) the $L^2$-norm of $f$. Similarly, we can differentiate the PDE (2), to find
+$$-\Delta\tilde u = \tilde f,$$
+for $\tilde u := u_{x_k}$ and $\tilde f := f_{x_k}$ $(k=1,\ldots,n)$. Applying the same method, we discover that the $L^2$-norm of the third derivatives of $u$ can be estimated by the first derivatives of $f$. Continuing, we see the $L^2$-norm of the $(m+2)^{nd}$ derivatives of $u$ can be controlled by the $L^2$-norm of the $m^{th}$ derivatives of $f$, for $m = 0,1,\ldots$.
+
+These computations suggest that for Poisson's equation (2), we can expect a weak solution $u \in H_0^1$ to belong to $H^{m+2}$ whenever the inhomogeneous term $f$ belongs to $H^m$ $(m=1,\ldots)$. Informally we say that $u$ has ``two more derivatives in $L^2$ than $f$ has''. This will be particularly interesting for $m = \infty$, in which case $u$ will belong to $H^m$ for all $m = 1,\ldots$, and thus will be in $C^\infty$.
+
+Observe, however, that the calculations above do not really constitute a proof. We assumed $u$ was smooth, or at least say $C^3$, in order to carry out the calculation (3); whereas if we start with merely a weak solution in $H_0^1$ we cannot immediately justify these computations. We will instead have to rely upon an analysis of certain difference quotients.
+
+The following calculations are often technically difficult, but eventually yield extremely powerful and useful assertions concerning the smoothness of weak solutions. As always, the heart of each computation is the invocation of ellipticity: \textit{the point is to derive analytic estimates from the structural, algebraic assumption of ellipticity.}
+
+\subsection{Interior regularity}
+
+We as always assume that $U \subset \R^n$ is a bounded, open set. Suppose also $u \in H_0^1(U)$ is a weak solution of the PDE (1), where $L$ has the divergence form
+$$(4) \qquad Lu = -\sum_{i,j=1}^n \left(a^{ij}(x)u_{x_i}\right)_{x_j} + \sum_{i=1}^n b^i(x)u_{x_i} + c(x)u.$$
+We continue to require the uniform ellipticity condition from \S6.1.1, and will as necessary make various additional assumptions about the smoothness of the coefficients $a^{ij}, b^i, c$.
+
+\begin{theorem}[Interior $H^2$-regularity]
+\label{thm:interior-h2-regularity}
+\dcref{ch6:6.3-thm-1}
+\group{Regularity Theory}
+\uses{def:uniform-ellipticity,def:weak-solution-elliptic-bvp,thm:difference-quotients-weak-derivatives}
+Assume
+$$(5) \qquad a^{ij} \in C^1(U), \quad b^i,c \in L^\infty(U) \quad (i,j=1,\ldots,n)$$
+and
+$$(6) \qquad f \in L^2(U).$$
+Suppose furthermore that $u \in H^1(U)$ is a weak solution of the elliptic PDE
+$$Lu = f \quad \text{in } U.$$
+Then
+$$(7) \qquad u \in H^2_{\text{loc}}(U);$$
+and for each open $V \subset\subset U$ we have the estimate
+$$(8) \qquad \|u\|_{H^2(V)} \leq C\left(\|f\|_{L^2(U)} + \|u\|_{L^2(U)}\right),$$
+the constant $C$ depending only on $V$, $U$, and the coefficients of $L$.
+\end{theorem}
+
+\begin{remark}
+\label{rem:interior-regularity-remarks}
+\dcref{ch6:6.3-rem-1}
+\group{Regularity Theory}
+\uses{thm:interior-h2-regularity}
+(i) Note carefully that we do not require $u \in H_0^1(U)$; that is, we are not necessarily assuming the boundary condition $u = 0$ on $\partial U$ in the trace sense.
+
+(ii) Observe additionally that since $u \in H^2_{\text{loc}}(U)$, we have
+$$Lu = f \quad \text{a.e. in } U.$$
+Thus $u$ actually solves the PDE, at least for a.e. point within $U$. To see this, note that for each $v \in C_c^\infty(U)$, we have
+$$B[u,v] = (f,v).$$
+Since $u \in H^2_{\text{loc}}(U)$, we can integrate by parts:
+$$B[u,v] = (Lu,v).$$
+Thus $(Lu-f,v) = 0$ for all $v \in C_c^\infty(U)$, and so $Lu = f$ a.e.
+\end{remark}
+
+\begin{proof}
+1. Fix any open set $V \subset\subset U$, and choose an open set $W$ such that $V \subset\subset W \subset\subset U$. Then select a smooth function $\zeta$ satisfying
+$$\begin{cases} \zeta \equiv 1 \text{ on } V, \quad \zeta \equiv 0 \text{ on } \R^n - W, \\ 0 \leq \zeta \leq 1. \end{cases}$$
+We call $\zeta$ a \textit{cutoff} function; its purpose in the subsequent calculations will be to restrict all expressions to the subset $W$, which is a positive distance away from $\partial U$. This is necessary as we have no information concerning the behavior of $u$ near $\partial U$. (As an interesting technical point, notice carefully in the following calculations why we put ``$\zeta^2$'', and not just ``$\zeta$'' in (11) below.)
+
+2. Now since $u$ is a weak solution of (1), we have $B[u,v] = (f,v)$ for all $v \in H_0^1(U)$. Consequently
+$$(9) \qquad \sum_{i,j=1}^n \int_U a^{ij}u_{x_i}v_{x_j}\,dx = \int_U \tilde f v\,dx,$$
+where
+$$(10) \qquad \tilde f := f - \sum_{i=1}^n b^iu_{x_i} - cu.$$
+
+3. Now let $|h| > 0$ be small, choose $k \in \{1,\ldots,n\}$, and then substitute
+$$(11) \qquad v := -D_k^{-h}(\zeta^2D_k^hu)$$
+into (9), where as in \S5.8.2 $D_k^hu$ denotes the \textit{difference quotient}
+$$D_k^hu(x) = \frac{u(x+he_k)-u(x)}h \quad (h \in \R, h \neq 0).$$
+We write the resulting expression as
+$$(12) \qquad A = B,$$
+for
+$$(13) \qquad A := \sum_{i,j=1}^n \int_U a^{ij}u_{x_i}v_{x_j}\,dx$$
+and
+$$(14) \qquad B := \int_U \tilde f v\,dx.$$
+
+4. \textit{Estimate of A.} We have
+$$A = -\sum_{i,j=1}^n \int_U a^{ij}u_{x_i}\left[D_k^{-h}(\zeta^2D_k^hu)\right]_{x_j}dx$$
+$$= \sum_{i,j=1}^n \int_U D_k^h(a^{ij}u_{x_i})\left(\zeta^2D_k^hu\right)_{x_j}dx$$
+$$(15) \qquad = \sum_{i,j=1}^n \int_U a^{ij,h}(D_k^hu_{x_i})(\zeta^2D_k^hu)_{x_j}$$
+$$+ (D_k^ha^{ij})u_{x_i}(\zeta^2D_k^hu)_{x_j}\,dx.$$
+Here we used the formulas
+$$(16) \qquad \int_U vD_k^{-h}w\,dx = -\int_U wD_k^hv\,dx$$
+and
+$$(17) \qquad D_k^h(vw) = v^hD_k^hw + wD_k^hv,$$
+for $v^h(x) := v(x+he_k)$.
+
+Returning now to (15), we find
+$$(18) \qquad A = \sum_{i,j=1}^n \int_U a^{ij,h}D_k^hu_{x_i}D_k^hu_{x_j}\zeta^2\,dx$$
+$$+ \sum_{i,j=1}^n \int_U [a^{ij,h}D_k^hu_{x_i}D_k^hu\,2\zeta\zeta_{x_j} + (D_k^ha^{ij})u_{x_i}D_k^hu_{x_j}\zeta^2$$
+$$+ (D_k^ha^{ij})u_{x_i}D_k^hu\,2\zeta\zeta_{x_j}]\,dx$$
+$$=: A_1 + A_2.$$
+The uniform ellipticity condition implies
+$$(19) \qquad A_1 \geq \theta\int_U \zeta^2|D_k^hDu|^2\,dx.$$
+Furthermore we see from (5) that
+$$|A_2| \leq C\int_U \zeta|D_k^hDu|\,|D_k^hu| + \zeta|D_k^hDu|\,|Du| + \zeta|D_k^hu|\,|Du|\,dx,$$
+for some appropriate constant $C$. But then Cauchy's inequality with $\varepsilon$ (\S B.2) yields the bound
+$$|A_2| \leq \varepsilon\int_U \zeta^2|D_k^hDu|^2\,dx + \frac C\varepsilon\int_W[|D_k^hu|^2+|Du|^2]\,dx.$$
+We choose $\varepsilon = \frac\theta2$ and further recall from Theorem 3,(i) in \S5.8.2 the estimate
+$$\int_W|D_k^hu|^2\,dx \leq C\int_U|Du|^2\,dx,$$
+thereby obtaining the inequality
+$$|A_2| \leq \frac\theta2\int_U \zeta^2|D_k^hDu|^2\,dx + C\int_U|Du|^2\,dx.$$
+This estimate, (19) and (18) imply finally
+$$(20) \qquad A \geq \frac\theta2\int_U \zeta^2|D_k^hDu|^2\,dx - C\int_U|Du|^2\,dx.$$
+
+5. \textit{Estimate of B.} Recalling now (10), (11), and (14), we estimate
+$$(21) \qquad |B| \leq C\int_U (|f|+|Du|+|u|)|v|\,dx.$$
+Now Theorem 3,(i) in \S5.8.2 implies
+$$\int_U|v|^2\,dx \leq C\int_U|D(\zeta^2D_k^hu)|^2\,dx$$
+$$\leq C\int_W|D_k^hu|^2 + \zeta^2|D_k^hDu|^2\,dx$$
+$$\leq C\int_U|Du|^2 + \zeta^2|D_k^hDu|^2\,dx.$$
+Thus (21) and Cauchy's inequality with $\varepsilon$ imply
+$$|B| \leq \varepsilon\int_U \zeta^2|D_k^hDu|^2\,dx + \frac C\varepsilon\int_U f^2+u^2\,dx + \frac C\varepsilon\int_U|Du|^2\,dx.$$
+Select $\varepsilon = \frac\theta4$, to obtain
+$$(22) \qquad |B| \leq \frac\theta4\int_U \zeta^2|D_k^hDu|^2\,dx + C\int_U f^2+u^2+|Du|^2\,dx.$$
+
+6. We finally combine (12), (20) and (22), to discover
+$$\int_V |D_k^hDu|^2\,dx \leq \int_U \zeta^2|D_k^hDu|^2\,dx \leq C\int_U f^2+u^2+|Du|^2\,dx$$
+for $k=1,\ldots,n$ and all sufficiently small $|h| \neq 0$.
+
+In view of Theorem 3,(ii) in \S5.8.2, we deduce $Du \in H^1_{\text{loc}}(U)$, and thus $u \in H^2_{\text{loc}}(U)$, with the estimate
+$$(23) \qquad \|u\|_{H^2(V)} \leq C(\|f\|_{L^2(U)} + \|u\|_{H^1(U)}).$$
+
+7. We now refine estimate (23) by noting that if $V \subset\subset W \subset\subset U$, then the same argument shows
+$$(24) \qquad \|u\|_{H^2(V)} \leq C(\|f\|_{L^2(W)} + \|u\|_{H^1(W)}),$$
+for an appropriate constant $C$ depending on $V, W$, etc. Choose a new cutoff function $\zeta$ satisfying
+$$\begin{cases} \zeta \equiv 1 \text{ on } W, \quad \spt \zeta \subset U, \\ 0 \leq \zeta \leq 1. \end{cases}$$
+Now set $v = \zeta^2u$ in identity (9) and perform elementary calculations, to discover
+$$\int_U \zeta^2|Du|^2\,dx \leq C\int_U f^2+u^2\,dx.$$
+Thus
+$$\|u\|_{H^1(W)} \leq C(\|f\|_{L^2(U)}+\|u\|_{L^2(U)}).$$
+This inequality and (24) yield (8).
+\end{proof}
+
+Our intention next is to iterate the argument above, thereby deducing our weak solution lies in various higher Sobolev spaces (provided the coefficients are smooth enough and the righthand side lies in sufficiently good spaces).
+
+\begin{theorem}[Higher interior regularity]
+\label{thm:higher-interior-regularity}
+\dcref{ch6:6.3-thm-2}
+\group{Regularity Theory}
+\uses{thm:interior-h2-regularity}
+Let $m$ be a nonnegative integer, and assume
+$$(25) \qquad a^{ij}, b^i, c \in C^{m+1}(U) \quad (i,j=1,\ldots,n)$$
+and
+$$(26) \qquad f \in H^m(U).$$
+Suppose $u \in H^1(U)$ is a weak solution of the elliptic PDE
+$$Lu = f \quad \text{in } U.$$
+Then
+$$(27) \qquad u \in H^{m+2}_{\text{loc}}(U);$$
+and for each $V \subset\subset U$ we have the estimate
+$$(28) \qquad \|u\|_{H^{m+2}(V)} \leq C(\|f\|_{H^m(U)} + \|u\|_{L^2(U)}),$$
+the constant $C$ depending only on $m, U, V$ and the coefficients of $L$.
+\end{theorem}
+
+\begin{proof}
+1. We will establish (27), (28) by induction on $m$, the case $m=0$ being Theorem~\ref{thm:interior-h2-regularity} above.
+
+2. Assume now assertions (27) and (28) are valid for some nonnegative integer $m$ and all open sets $U$, coefficients $a^{ij}, b^i, c$, etc., as above. Suppose then
+$$(29) \qquad a^{ij}, b^i, c \in C^{m+2}(U),$$
+$$(30) \qquad f \in H^{m+1}(U),$$
+and $u \in H^1(U)$ is a weak solution of $Lu = f$ in $U$. By the induction hypotheses, we have
+$$(31) \qquad u \in H^{m+2}_{\text{loc}}(U),$$
+with the estimate
+$$(32) \qquad \|u\|_{H^{m+2}(W)} \leq C(\|f\|_{H^m(U)}+\|u\|_{L^2(U)}),$$
+for each $W \subset\subset U$ and an appropriate constant $C$, depending only on $W$, the coefficients of $L$, etc. Fix $V \subset\subset W \subset\subset U$.
+
+3. Now let $\alpha$ be any multiindex with
+$$(33) \qquad |\alpha| = m+1,$$
+and choose any test function $\tilde v \in C_c^\infty(W)$. Insert
+$$v := (-1)^{|\alpha|}D^\alpha\tilde v$$
+into the identity $B[u,v] = (f,v)_{L^2(U)}$, and perform some integrations by parts, eventually to discover
+$$(34) \qquad B[\tilde u,\tilde v] = (\tilde f,\tilde v)$$
+for
+$$(35) \qquad \tilde u := D^\alpha u \in H^1(W)$$
+and
+$$(36) \qquad \tilde f := D^\alpha f - \sum_{\substack{\beta \leq \alpha \\ \beta \neq \alpha}}\binom\alpha\beta\left[-\sum_{i,j=1}^n(D^{\alpha-\beta}a^{ij}D^\beta u_{x_i})_{x_j} + \sum_{i=1}^n D^{\alpha-\beta}b^iD^\beta u_{x_i} + D^{\alpha-\beta}cD^\beta u\right].$$
+Since the identity (34) holds for each $\tilde v \in C_c^\infty(W)$, we see that $\tilde u$ is a weak solution of
+$$L\tilde u = \tilde f \quad \text{in } W.$$
+In view of (29)--(32) and (36), we have $\tilde f \in L^2(W)$, with
+$$(37) \qquad \|\tilde f\|_{L^2(W)} \leq C(\|f\|_{H^{m+1}(U)}+\|u\|_{L^2(U)}).$$
+
+4. In light of Theorem~\ref{thm:interior-h2-regularity} then, we see $\tilde u \in H^2(V)$, with the estimate
+$$\|\tilde u\|_{H^2(V)} \leq C(\|\tilde f\|_{L^2(W)}+\|\tilde u\|_{L^2(W)})$$
+$$\leq C(\|f\|_{H^{m+1}(U)}+\|u\|_{L^2(U)}).$$
+This inequality holds for each multiindex $\alpha$ with $|\alpha| = m+1$, and $\tilde u = D^\alpha u$ as above. Consequently $u \in H^{m+3}(V)$, and
+$$\|u\|_{H^{m+3}(V)} \leq C(\|f\|_{H^{m+1}(U)}+\|u\|_{L^2(U)}).$$
+\end{proof}
+
+We can now repeatedly apply Theorem~\ref{thm:higher-interior-regularity} for $m = 0,1,2,\ldots$ to deduce the infinite differentiability of $u$.
+
+\begin{theorem}[Infinite differentiability in the interior]
+\label{thm:interior-infinite-differentiability}
+\dcref{ch6:6.3-thm-3}
+\group{Regularity Theory}
+\uses{thm:higher-interior-regularity,thm:general-sobolev-inequalities}
+Assume
+$$a^{ij}, b^i, c \in C^\infty(U) \quad (i,j=1,\ldots,n)$$
+and
+$$f \in C^\infty(U).$$
+Suppose $u \in H^1(U)$ is a weak solution of the elliptic PDE
+$$Lu = f \quad \text{in } U.$$
+Then
+$$u \in C^\infty(U).$$
+We are again making no assumptions here about the behavior of $u$ on $\partial U$. Therefore, in particular, we are asserting that any possible singularities of $u$ on the boundary do not ``propagate'' into the interior.
+\end{theorem}
+
+\begin{proof}
+According to Theorem~\ref{thm:higher-interior-regularity}, we have $u \in H^m_{\text{loc}}(U)$ for each integer $m = 1,2,\ldots$. Hence Theorem 6 in \S5.6.3 implies $u \in C^k(U)$ for each $k = 1,2,\ldots$.
+\end{proof}
+
+\subsection{Boundary regularity}
+
+Now we extend the estimates from \S6.3.1 to study the smoothness of weak solutions up to the boundary.
+
+\begin{theorem}[Boundary $H^2$-regularity]
+\label{thm:boundary-h2-regularity}
+\dcref{ch6:6.3-thm-4}
+\group{Regularity Theory}
+\uses{def:uniform-ellipticity,def:weak-solution-elliptic-bvp,thm:difference-quotients-weak-derivatives,thm:interior-h2-regularity}
+Assume
+$$(38) \qquad a^{ij} \in C^1(\bar U), \quad b^i,c \in L^\infty(U) \quad (i,j=1,\ldots,n)$$
+and
+$$(39) \qquad f \in L^2(U).$$
+Suppose that $u \in H_0^1(U)$ is a weak solution of the elliptic boundary-value problem
+$$(40) \qquad \begin{cases} Lu = f & \text{in } U \\ u = 0 & \text{on } \partial U. \end{cases}$$
+Assume finally
+$$(41) \qquad \partial U \text{ is } C^2.$$
+Then
+$$u \in H^2(U),$$
+and we have the estimate
+$$(42) \qquad \|u\|_{H^2(U)} \leq C(\|f\|_{L^2(U)}+\|u\|_{L^2(U)}),$$
+the constant $C$ depending only on $U$ and the coefficients of $L$.
+\end{theorem}
+
+\begin{remark}
+\label{rem:boundary-regularity-remarks}
+\dcref{ch6:6.3-rem-2}
+\group{Regularity Theory}
+\uses{thm:boundary-h2-regularity,thm:boundedness-of-inverse}
+(i) If $u \in H_0^1(U)$ is the unique weak solution of (40), estimate (42) simplifies to read
+$$\|u\|_{H^2(U)} \leq C\|f\|_{L^2(U)}.$$
+This follows from Theorem~\ref{thm:boundedness-of-inverse} in \S6.2.
+
+(ii) Observe also that in contrast to Theorem~\ref{thm:interior-h2-regularity} in \S6.3.1, we are now assuming $u = 0$ along $\partial U$ (in the trace sense).
+\end{remark}
+
+\begin{proof}
+1. We first investigate the special case that $U$ is a half-ball:
+$$(43) \qquad U = B^0(0,1) \cap \R^n_+.$$
+Set $V := B^0(0,\frac12) \cap \R^n_+$. Then select a smooth cutoff function $\zeta$ satisfying
+$$\begin{cases} \zeta \equiv 1 \text{ on } B(0,\frac12), \quad \zeta \equiv 0 \text{ on } \R^n - B(0,1), \\ 0 \leq \zeta \leq 1. \end{cases}$$
+So $\zeta \equiv 1$ on $V$ and $\zeta$ vanishes near the \textit{curved} part of $\partial U$.
+
+2. Since $u$ is a weak solution of (3), we have $B[u,v] = (f,v)$ for all $v \in H_0^1(U)$; consequently
+$$(44) \qquad \sum_{i,j=1}^n \int_U a^{ij}u_{x_i}v_{x_j}\,dx = \int_U \tilde f v\,dx,$$
+for
+$$(45) \qquad \tilde f := f - \sum_{i=1}^n b^iu_{x_i} - cu.$$
+
+3. Now let $h > 0$ be small, choose $k \in \{1,\ldots,n-1\}$, and write
+$$v := -D_k^{-h}(\zeta^2D_k^hu).$$
+Let us note carefully
+$$v(x) = -\frac1hD_k^{-h}(\zeta^2(x)[u(x+he_k)-u(x)])$$
+$$= -\frac1{h^2}(\zeta^2(x-he_k)[u(x)-u(x-he_k)]$$
+$$- \zeta^2(x)[u(x+he_k)-u(x)])$$
+if $x \in U$. Now since $u = 0$ along $\{x_n = 0\}$ in the trace sense and $\zeta = 0$ near the curved portion of $\partial U$, we see $v \in H_0^1(U)$.
+
+We may therefore substitute $v$ into the identity (44), and write the resulting expression as
+$$(46) \qquad A = B,$$
+for
+$$(47) \qquad A := \sum_{i,j=1}^n \int_U a^{ij}u_{x_i}v_{x_j}\,dx$$
+and
+$$(48) \qquad B := \int_U \tilde f v\,dx.$$
+
+4. We can now estimate the terms $A$ and $B$ in almost exactly the same way that we estimated their counterparts in the proof of Theorem~\ref{thm:interior-h2-regularity}. After some calculations we find
+$$(49) \qquad A \geq \frac\theta2\int_U \zeta^2|D_k^hDu|^2\,dx - C\int_U|Du|^2\,dx$$
+and
+$$(50) \qquad |B| \leq \frac\theta4\int_U \zeta^2|D_k^hDu|^2\,dx + C\int_U f^2+u^2+|Du|^2\,dx,$$
+for appropriate constants $C$. We then combine (46), (49), and (50) to discover
+$$\int_V|D_k^hDu|^2\,dx \leq C\int_U f^2+u^2+|Du|^2\,dx$$
+for $k = 1,\ldots,n-1$. Thus recalling the Remark after Theorem 3 in \S5.8.2, we deduce
+$$u_{x_k} \in H^1(V) \quad (k=1,\ldots,n-1),$$
+with the estimate
+$$(51) \qquad \sum_{\substack{k,l=1 \\ k+l<2n}}^n \|u_{x_kx_l}\|_{L^2(V)} \leq C(\|f\|_{L^2(U)}+\|u\|_{H^1(U)}).$$
+
+5. We must now augment (51) with an estimate of the $L^2$-norm of $u_{x_nx_n}$ over $V$. For this we recall from the Remarks after Theorem~\ref{thm:interior-h2-regularity} that $Lu = f$ a.e. in $U$. Remembering the definition of $L$, we can rewrite this equality into nondivergence form, as
+$$(52) \qquad -\sum_{i,j=1}^n a^{ij}u_{x_ix_j} + \sum_{i=1}^n \tilde b^iu_{x_i} + cu = f,$$
+for $\tilde b^i := b^i - \sum_{j=1}^n a^{ij}_{x_j}$ $(i=1,\ldots,n)$. So we discover
+$$(53) \qquad a^{nn}u_{x_nx_n} = -\sum_{\substack{i,j=1 \\ i+j<2n}}^n a^{ij}u_{x_ix_j} + \sum_{i=1}^n \tilde b^iu_{x_i} + cu - f.$$
+Now according to the uniform ellipticity condition, $\sum_{i,j=1}^n a^{ij}(x)\xi_i\xi_j \geq \theta|\xi|^2$ for all $x \in U$, $\xi \in \R^n$. We set $\xi = e_n = (0,\ldots,0,1)$, to conclude
+$$(54) \qquad a^{nn}(x) \geq \theta > 0$$
+for all $x \in U$. But then (38), (53) and (54) imply
+$$(55) \qquad |u_{x_nx_n}| \leq C\left(\sum_{\substack{i,j=1 \\ i+j<2n}}^n |u_{x_ix_j}| + |Du| + |u| + |f|\right)$$
+in $U$. Utilizing this estimate in inequality (51), we conclude $u \in H^2(V)$, and
+$$(56) \qquad \|u\|_{H^2(V)} \leq C(\|f\|_{L^2(U)}+\|u\|_{H^1(U)})$$
+for some appropriate constant $C$.
+
+6. We now drop the assumption that $U$ is a half-ball and so has the special form (43). In the general case we choose any point $x^0 \in \partial U$ and note that since $\partial U$ is $C^2$, we may assume---upon relabeling the coordinate axes if needs be---that
+$$U \cap B(x^0,r) = \{x \in B(x^0,r) \mid x_n > \gamma(x_1,\ldots,x_{n-1})\}$$
+for some $r > 0$ and some $C^2$ function $\gamma : \R^{n-1} \to \R$. As usual, we change variables utilizing \S C.1 and write
+$$(57) \qquad y = \boldsymbol\Phi(x), \quad x = \boldsymbol\Psi(y).$$
+
+7. Choose $s > 0$ so small that the half-ball $U' := B^0(0,s) \cap \{y_n > 0\}$ lies in $\boldsymbol\Phi(U \cap U(x^0,r))$. Set $V' := B^0(0,s/2) \cap \{y_n > 0\}$. Finally define
+$$(58) \qquad u'(y) := u(\boldsymbol\Psi(y)) \quad (y \in U').$$
+It is straightforward to check
+$$(59) \qquad u' \in H^1(U')$$
+and
+$$(60) \qquad u' = 0 \quad \text{on } \partial U' \cap \{y_n = 0\}$$
+in the trace sense.
+
+8. We now claim $u'$ is a weak solution of the PDE
+$$(61) \qquad L'u' = f' \quad \text{in } U',$$
+for
+$$(62) \qquad f'(y) := f(\boldsymbol\Psi(y))$$
+and
+$$(63) \qquad L'u' := -\sum_{k,l=1}^n (a^{kl}u'_{y_k})_{y_l} + \sum_{k=1}^n b^ku'_{y_k} + c'u',$$
+where
+$$(64) \qquad a^{kl}(y) := \sum_{r,s=1}^n a^{rs}(\boldsymbol\Psi(y))\Phi^k_{x_r}(\boldsymbol\Psi(y))\Phi^l_{x_s}(\boldsymbol\Psi(y)) \quad (k,l=1,\ldots,n),$$
+$$(65) \qquad b^k(y) := \sum_{r=1}^n b^r(\boldsymbol\Psi(y))\Phi^k_{x_r}(\boldsymbol\Psi(y)) \quad (k=1,\ldots,n),$$
+and
+$$(66) \qquad c'(y) := c(\boldsymbol\Psi(y))$$
+for $y \in U'$, $k,l = 1,\ldots,n$.
+
+If $v' \in H_0^1(U')$ and $B'[\cdot,\cdot]$ denotes the bilinear form associated with the operator $L'$, we have
+$$(67) \qquad B'[u',v'] = \int_{U'} \sum_{k,l=1}^n a^{kl}u'_{y_k}v'_{y_l} + \sum_{k=1}^n b^ku'_{y_k}v' + c'u'v'\,dy.$$
+Now define
+$$v(x) := v'(\boldsymbol\Phi(x)).$$
+Then from (67) we calculate
+$$(68) \qquad B'[u',v'] = \sum_{i,j=1}^n \sum_{k,l=1}^n \int_U a^{kl}u_{x_i}v_{y_k}^i v_{y_l}^j\,dy$$
+$$+ \sum_{i=1}^n \sum_{k=1}^n \int_U b^k u_{x_i}v_{y_k}^i v\,dy + \int_U c'uv\,dy.$$
+Now according to (64), we find for each $i,j = 1,\ldots,n$ that
+$$\sum_{k,l=1}^n a^{kl}\Phi^i_{y_k}\Phi^j_{y_l} = \sum_{r,s=1}^n \sum_{k,l=1}^n a^{rs}\Phi^k_{x_r}\Phi^l_{x_s}\Phi^i_{y_k}\Phi^j_{y_l} = a^{ij},$$
+since $D\Phi = (D\Psi)^{-1}$. Similarly for $i = 1,\ldots,n$, we have
+$$\sum_{k=1}^n b^k\Phi^i_{y_k} = \sum_{k=1}^n \sum_{r=1}^n b^r\Phi^k_{x_r}\Phi^i_{y_k} = b^i.$$
+Substituting these calculations into (68) and changing variables yields, since $|\det D\Phi| = 1$,
+$$B'[u',v'] = \int_U \sum_{i,j=1}^n a^{ij}u_{x_i}v_{x_j} + \sum_{i=1}^n b^iu_{x_i}v + cuv\,dx$$
+$$= B[u,v] = (f,v)_{L^2(U)} = (f',v')_{L^2(U')}.$$
+This establishes (61).
+
+9. We now check that \textit{the operator $L'$ is uniformly elliptic in $U'$.} Indeed if $y \in U'$ and $\xi \in \R^n$, we note that
+$$(69) \qquad \sum_{k,l=1}^n a^{kl}(y)\xi_k\xi_l = \sum_{r,s=1}^n \sum_{k,l=1}^n a^{rs}(\boldsymbol\Psi(y))\Phi^k_r\Phi^l_s\xi_k\xi_l$$
+$$= \sum_{r,s=1}^n a^{rs}(\boldsymbol\Psi(y))\eta_r\eta_s \geq \theta|\eta|^2,$$
+where $\eta = \xi D\Phi$; that is, $\eta_r = \sum_{k=1}^n \Phi^k_{x_r}\xi_k$ $(r=1,\ldots,n)$. But then, since $D\Phi D\Psi = I$, we have $\xi = \eta D\Psi$; and so $|\xi| \leq C|\eta|$ for some constant $C$. This inequality and (69) imply
+$$(70) \qquad \sum_{k,l=1}^n a^{kl}(y)\xi_k\xi_l \geq \theta'|\xi|^2$$
+for some $\theta' > 0$ and all $y \in U'$, $\xi \in \R^n$.
+
+Observe also from (64) that the coefficients $a^{kl}$ are $C^1$, since $\Phi$ and $\Psi$ are $C^2$.
+
+10. In view of (61) and (70), we may apply the results from steps 1--5 in the proof above to ascertain that $u' \in H^2(V')$, with the bound
+$$\|u'\|_{H^2(V')} \leq C(\|f'\|_{L^2(U')} + \|u'\|_{L^2(U')}).$$
+Consequently
+$$(71) \qquad \|u\|_{H^2(V)} \leq C(\|f\|_{L^2(U)} + \|u\|_{L^2(U)})$$
+for $V := \boldsymbol\Psi(V')$.
+
+Since $\partial U$ is compact, we can as usual cover $\partial U$ with finitely many sets $V_1,\ldots,V_N$ as above. We sum the resulting estimates, along with the interior estimate, to find $u \in H^2(U)$, with the inequality (42).
+\end{proof}
+
+Now we derive higher regularity for our weak solutions, all the way up to $\partial U$.
+
+\begin{theorem}[Higher boundary regularity]
+\label{thm:higher-boundary-regularity}
+\dcref{ch6:6.3-thm-5}
+\group{Regularity Theory}
+\uses{thm:boundary-h2-regularity,thm:higher-interior-regularity}
+Let $m$ be a nonnegative integer, and assume
+$$(72) \qquad a^{ij}, b^i, c \in C^{m+1}(\bar U) \quad (i,j=1,\ldots,n)$$
+and
+$$(73) \qquad f \in H^m(U).$$
+Suppose that $u \in H_0^1(U)$ is a weak solution of the boundary-value problem
+$$(74) \qquad \begin{cases} Lu = f & \text{in } U \\ u = 0 & \text{on } \partial U \end{cases}$$
+Assume finally
+$$(75) \qquad \partial U \text{ is } C^{m+2}.$$
+Then
+$$(76) \qquad u \in H^{m+2}(U),$$
+and we have the estimate
+$$(77) \qquad \|u\|_{H^{m+2}(U)} \leq C(\|f\|_{H^m(U)} + \|u\|_{L^2(U)}),$$
+the constant $C$ depending only on $m, U$ and the coefficients of $L$.
+\end{theorem}
+
+\begin{remark}
+\label{rem:higher-boundary-regularity-simplified}
+\dcref{ch6:6.3-rem-3}
+\group{Regularity Theory}
+\uses{thm:higher-boundary-regularity}
+If $u$ is the unique solution of (74), then estimate (77) simplifies to read
+$$\|u\|_{H^{m+2}(U)} \leq C\|f\|_{H^m(U)}.$$
+\end{remark}
+
+\begin{proof}[Proof of Theorem~\ref{thm:higher-boundary-regularity}]
+1. We first investigate the special case
+$$(78) \qquad U := B^0(0,s) \cap \R^n_+$$
+for some $s > 0$. Fix $0 < t < s$ and set $V := B^0(0,t) \cap \R^n_+$.
+
+2. We intend to prove by induction on $m$ that whenever $u = 0$ along $\{x_n = 0\}$ in the trace sense, (72) and (73) imply
+$$(79) \qquad u \in H^{m+2}(V),$$
+with the estimate
+$$(80) \qquad \|u\|_{H^{m+2}(V)} \leq C(\|f\|_{H^m(U)} + \|u\|_{L^2(U)}),$$
+for a constant $C$ depending only on $U, V$ and the coefficients of $L$. The case $m = 0$ follows as in the proof of Theorem~\ref{thm:boundary-h2-regularity} above.
+
+Suppose then
+$$(81) \qquad a^{ij}, b^i, c \in C^{m+2}(\bar U),$$
+$$(82) \qquad f \in H^{m+1}(U),$$
+and $u$ is a weak solution of $Lu = f$ in $U$, which vanishes in the trace sense along $\{x_n = 0\}$. Fix any $0 < t < r < s$, and write $W := B^0(0,r) \cap \R^n_+$. By the induction assumption we have
+$$(83) \qquad u \in H^{m+2}(W),$$
+with the estimate
+$$(84) \qquad \|u\|_{H^{m+2}(W)} \leq C(\|f\|_{H^m(U)} + \|u\|_{L^2(U)}).$$
+Furthermore according to the interior regularity Theorem~\ref{thm:higher-interior-regularity}, $u \in H^{m+3}_{\text{loc}}(U)$.
+
+3. Next, let $\alpha$ be any multiindex with
+$$(85) \qquad |\alpha| = m+1$$
+and
+$$(86) \qquad \alpha_n = 0.$$
+Then
+$$(87) \qquad \tilde u := D^\alpha u$$
+belongs to $H^1(U)$, and vanishes along the plane $\{x_n=0\}$ in the trace sense. Furthermore, as in the proof of Theorem~\ref{thm:higher-interior-regularity}, $\tilde u$ is a weak solution of $L\tilde u = \tilde f$ in $U$, for
+$$\tilde f := D^\alpha f - \sum_{\substack{\beta \leq \alpha \\ \beta \neq \alpha}}\binom\alpha\beta\left[\sum_{i,j=1}^n -(D^{\alpha-\beta}a^{ij}D^\beta u_i)_{x_j} + \sum_{i=1}^n D^{\alpha-\beta}b^iD^\beta u_{x_i} + D^{\alpha-\beta}cD^\beta u\right].$$
+In view of (72), (73), (82) and (84), we see $\tilde f \in L^2(W)$, with
+$$(88) \qquad \|\tilde f\|_{L^2(W)} \leq C(\|f\|_{H^{m+1}(U)} + \|u\|_{L^2(U)}).$$
+Consequently the proof of Theorem~\ref{thm:boundary-h2-regularity} shows $\tilde u \in H^2(V)$, with the estimate
+$$\|\tilde u\|_{H^2(V)} \leq C(\|\tilde f\|_{L^2(W)} + \|\tilde u\|_{L^2(W)})$$
+$$\leq C(\|f\|_{H^{m+1}(U)} + \|u\|_{L^2(U)}).$$
+In light of (85)--(88), we thus deduce
+$$(89) \qquad \|D^\beta u\|_{L^2(V)} \leq C(\|f\|_{H^{m+1}(U)} + \|u\|_{L^2(U)})$$
+for any multiindex $\beta$ with $|\beta| = m+3$ and
+$$(90) \qquad \beta_n = 0, 1, \text{ or } 2.$$
+
+4. We must extend estimate (89) to remove the restriction (90). For this, let us suppose by induction
+$$(91) \qquad \|D^\beta u\|_{L^2(V)} \leq C(\|f\|_{H^{m+1}(U)} + \|u\|_{L^2(U)})$$
+for any multiindex $\beta$ with $|\beta| = m+3$ and
+$$(92) \qquad \beta_n = 0, 1, \ldots, j,$$
+for some $j \in \{2,\ldots,m+2\}$. Assume then $|\beta| = m+3$,
+$$(93) \qquad \beta_n = j+1.$$
+Let us write $\beta = \gamma+\delta$, for $\delta = (0,\ldots,2)$ and $|\gamma| = m+1$. Since $u \in H^{m+3}_{\text{loc}}(U)$ and $Lu = f$ in $U$, we have $D^\gamma Lu = D^\gamma f$ a.e. in $U$. Now
+$$D^\gamma Lu = a^{nn}D^\beta u + \{\text{sum of terms involving at most } j$$
+$$\text{derivatives of } u \text{ with respect to } x_n, \text{ and}$$
+$$\text{at most } m+3 \text{ derivatives in all}\}.$$
+Since $a^{nn} \geq \theta > 0$, we thus find by utilizing (91), (92) that
+$$(94) \qquad \|D^\beta u\|_{L^2(V)} \leq C(\|f\|_{H^{m+1}(U)} + \|u\|_{L^2(U)})$$
+provided $|\beta| = m+3$ and $\beta_n = j+1$. By induction on $j$ then, we have
+$$\|u\|_{H^{m+3}(V)} \leq C(\|f\|_{H^{m+1}(U)} + \|u\|_{L^2(U)}).$$
+This estimate in turn completes the induction on $m$, begun in step 2.
+
+5. We have now shown that (72) and (73) imply (79) and (80), provided $U$ has the form (78). The general case follows once we straighten out the boundary, using the ideas explained in the proof of Theorem~\ref{thm:boundary-h2-regularity}.
+\end{proof}
+
+We finally iterate the foregoing estimates to obtain
+
+\begin{theorem}[Infinite differentiability up to the boundary]
+\label{thm:boundary-infinite-differentiability}
+\dcref{ch6:6.3-thm-6}
+\group{Regularity Theory}
+\uses{thm:higher-boundary-regularity,thm:general-sobolev-inequalities}
+Assume
+$$a^{ij}, b^i, c \in C^\infty(\bar U) \quad (i,j=1,\ldots,n)$$
+and
+$$f \in C^\infty(\bar U).$$
+Suppose $u \in H_0^1(U)$ is a weak solution of the boundary-value problem
+$$\begin{cases} Lu = f & \text{in } U \\ u = 0 & \text{on } \partial U. \end{cases}$$
+Assume also that $\partial U$ is $C^\infty$. Then
+$$u \in C^\infty(\bar U).$$
+\end{theorem}
+
+\begin{proof}
+According to Theorem~\ref{thm:higher-boundary-regularity} we have $u \in H^m(U)$ for each integer $m = 1,2,\ldots$. Thus Theorem 6 in \S5.6.3 implies $u \in C^k(\bar U)$ for each $k = 1,2,\ldots$.
+\end{proof}
+
+The computations in this section have basically been repeated applications of ``energy'' methods to higher and higher partial derivatives. The basic tool of integration by parts has eventually taken us from weak solutions (belonging merely to $H_0^1(U)$) to smooth, classical solutions.
+
+\section{Maximum Principles}
+\label{sec:elliptic-maximum-principles}
+
+This section develops the \textit{maximum principle} for second-order elliptic partial differential equations.
+
+Maximum principle methods are based upon the observation that if a $C^2$ function $u$ attains its maximum over an open set $U$ at a point $x_0 \in U$, then
+$$(1) \qquad Du(x_0) = 0, \quad D^2(x_0) \leq 0,$$
+the latter inequality meaning that the symmetric matrix $D^2u = ((u_{x_ix_j}))$ is nonpositive definite at $x_0$. Deductions based upon (1) are consequently \textit{pointwise} in character, and are thus utterly different from the integral-based energy methods set forth in \S\S6.1--6.3.
+
+In particular we will need to require that our solutions $u$ are at least $C^2$, so that it makes sense to consider the pointwise values of $Du, D^2u$. (In view of the regularity theory from \S6.3 we know however that a weak solution is this smooth, at least provided the coefficients, etc. are sufficiently regular.) As we will shortly learn, it is also most appropriate now to consider elliptic operators $L$ having the \textit{nondivergence form}
+$$(2) \qquad Lu = -\sum_{i,j=1}^n a^{ij}u_{x_ix_j} + \sum_{i=1}^n b^iu_{x_i} + cu,$$
+where the coefficients $a^{ij}, b^i, c$ are continuous and---as always---the uniform ellipticity condition (4) in \S6.1 holds. We continue also to assume, without loss of generality, the symmetry condition $a^{ij} = a^{ji}$ $(i,j=1,\ldots,n)$.
+
+\subsection{Weak maximum principle}
+
+First, we identify circumstances under which a function must attain its maximum (or minimum) on the boundary. We always assume $U \subset \R^n$ is open, bounded.
+
+\begin{theorem}[Weak maximum principle]
+\label{thm:weak-maximum-principle-c-zero}
+\dcref{ch6:6.4-thm-1}
+\group{Maximum Principles}
+\uses{def:uniform-ellipticity,def:divergence-nondivergence-form,thm:boundary-h2-regularity}
+Assume $u \in C^2(U) \cap C(\bar U)$ and
+$$c \equiv 0 \quad \text{in } U.$$
+
+(i) If
+$$Lu \leq 0 \quad \text{in } U,$$
+then
+$$\max_{\bar U} u = \max_{\partial U} u.$$
+
+(ii) If
+$$Lu \geq 0 \quad \text{in } U,$$
+then
+$$\min_{\bar U} u = \min_{\partial U} u.$$
+\end{theorem}
+
+\begin{remark}
+\label{rem:subsolution-supersolution-terminology}
+\dcref{ch6:6.4-rem-1}
+\group{Maximum Principles}
+\uses{thm:weak-maximum-principle-c-zero}
+A function satisfying (3) is called a \textit{subsolution}. We are thus asserting a subsolution attains its maximum on $\partial U$. Similarly, if (4) holds, $u$ is a \textit{supersolution} and attains its minimum on $\partial U$.
+\end{remark}
+
+\begin{proof}
+1. Let us first suppose we have the strict inequality
+$$(5) \qquad Lu < 0 \quad \text{in } U,$$
+and yet there exists a point $x_0 \in U$ with
+$$(6) \qquad u(x_0) = \max_{\bar U} u.$$
+Now at this maximum point $x_0$, we have
+$$(7) \qquad Du(x_0) = 0,$$
+and
+$$(8) \qquad D^2u(x_0) \leq 0.$$
+
+2. Since the matrix $A = ((a^{ij}(x_0)))$ is symmetric and positive definite, there exists an orthogonal matrix $O = ((o_{ij}))$ so that
+$$(9) \qquad OAO^T = \operatorname{diag}(d_1,\ldots,d_n), \quad OO^T = I,$$
+with $d_k > 0$ $(k=1,\ldots,n)$. Write $y = x_0 + O(x-x_0)$. Then $x - x_0 = O^T(y-x_0)$, and so
+$$u_{x_i} = \sum_{k=1}^n u_{y_k}o_{ik}, \quad u_{x_ix_j} = \sum_{k,l=1}^n u_{y_ky_l}o_{ik}o_{jl} \quad (i,j=1,\ldots,n).$$
+Hence at the point $x_0$,
+$$\sum_{i,j=1}^n a^{ij}u_{x_ix_j} = \sum_{k,l=1}^n \sum_{i,j=1}^n a^{ij}u_{y_ky_l}o_{ik}o_{jl}$$
+$$(10) \qquad = \sum_{k=1}^n d_ku_{y_ky_k} \quad \text{by (9)}$$
+$$\leq 0,$$
+since $d_k > 0$ and $u_{y_ky_k}(x_0) \leq 0$ $(k=1,\ldots,n)$, according to (8).
+
+3. Thus at $x_0$
+$$Lu = -\sum_{i,j=1}^n a^{ij}u_{x_ix_j} + \sum_{i=1}^n b^iu_{x_i} \geq 0,$$
+in light of (7) and (10). So (5) and (6) are incompatible, and we have a contradiction.
+
+4. In the general case that (3) holds, write
+$$u^\varepsilon(x) := u(x) + \varepsilon e^{\lambda x_1} \quad (x \in U),$$
+where $\lambda > 0$ will be selected below and $\varepsilon > 0$. Recall (as in the proof of Theorem~\ref{thm:boundary-h2-regularity} in \S6.3.2) that the uniform ellipticity condition implies $a^{ii}(x) \geq \theta$ $(i=1,\ldots,n$, $x \in U)$. Therefore
+$$Lu^\varepsilon = Lu + \varepsilon L(e^{\lambda x_1})$$
+$$\leq \varepsilon e^{\lambda x_1}[-\lambda^2a^{11} + \lambda b^1]$$
+$$\leq \varepsilon e^{\lambda x_1}[-\lambda^2\theta + \|\mathbf b\|_{L^\infty}\lambda]$$
+$$< 0 \quad \text{in } U,$$
+provided we choose $\lambda > 0$ sufficiently large. Then according to steps 1 and 2 above $\max_{\bar U} u^\varepsilon = \max_{\partial U} u^\varepsilon$. Let $\varepsilon \to 0$ to find $\max_{\bar U} u = \max_{\partial U} u$. This proves (i).
+
+5. Since $-u$ is a subsolution whenever $u$ is a supersolution, assertion (ii) follows.
+\end{proof}
+
+We next modify the maximum principle to allow for a \textit{nonnegative} zeroth-order coefficient $c$. Remember from \S A.3 that $u^+ = \max(u,0)$, $u^- = -\min(u,0)$.
+
+\begin{theorem}[Weak maximum principle for $c \geq 0$]
+\label{thm:weak-maximum-principle-c-nonneg}
+\dcref{ch6:6.4-thm-2}
+\group{Maximum Principles}
+\uses{thm:weak-maximum-principle-c-zero}
+Assume $u \in C^2(U) \cap C(\bar U)$ and
+$$c \geq 0 \quad \text{in } U.$$
+
+(i) If
+$$Lu \leq 0 \quad \text{in } U,$$
+then
+$$(11) \qquad \max_{\bar U} u \leq \max_{\partial U} u^+.$$
+
+(ii) Likewise, if
+$$Lu \geq 0 \quad \text{in } U,$$
+then
+$$(12) \qquad \min_{\bar U} u \geq -\max_{\partial U} u^-.$$
+\end{theorem}
+
+\begin{remark}
+\label{rem:weak-maximum-principle-absolute-value}
+\dcref{ch6:6.4-rem-2}
+\group{Maximum Principles}
+\uses{thm:weak-maximum-principle-c-nonneg}
+So in particular, if $Lu = 0$ in $U$, then
+$$(13) \qquad \max_{\bar U}|u| = \max_{\partial U}|u|.$$
+\end{remark}
+
+\begin{proof}
+1. Let $u$ be a subsolution and set $V := \{x \in U \mid u(x) > 0\}$. Then
+$$Ku := Lu - cu \leq -cu \leq 0 \quad \text{in } V.$$
+The operator $K$ has no zeroth-order term and consequently Theorem~\ref{thm:weak-maximum-principle-c-zero} implies $\max_V u = \max_{\partial V} u = \max_{\partial U} u^+$. This gives (11) in the case that $V \neq \emptyset$. Otherwise $u \leq 0$ everywhere in $U$, and (11) likewise follows.
+
+2. Assertion (ii) follows from (i) applied to $-u$, once we observe that $(-u)^+ = u^-$.
+\end{proof}
+
+\subsection{Strong maximum principle}
+
+We next substantially strengthen the foregoing assertions, by demonstrating that a subsolution $u$ cannot attain its maximum at an interior point of a connected region at all, unless $u$ is constant. This statement is the \textit{strong maximum principle}, which depends on the following subtle analysis of the outer normal derivative $\frac{\partial u}{\partial\nu}$ at a boundary maximum point.
+
+\begin{lemma}[Hopf's Lemma]
+\label{lem:hopfs-lemma}
+\dcref{ch6:6.4-lem-1}
+\group{Maximum Principles}
+\uses{def:uniform-ellipticity,thm:weak-maximum-principle-c-zero}
+Assume $u \in C^2(U) \cap C^1(\bar U)$ and
+$$c = 0 \quad \text{in } U.$$
+Suppose further
+$$Lu \leq 0 \quad \text{in } U,$$
+and there exists a point $x^0 \in \partial U$ such that
+$$(14) \qquad u(x^0) > u(x) \quad \text{for all } x \in U.$$
+Assume finally that $U$ satisfies the interior ball condition at $x^0$; that is, there exists an open ball $B \subset U$ with $x^0 \in \partial B$.
+
+(i) Then
+$$\frac{\partial u}{\partial\nu}(x^0) > 0,$$
+where $\nu$ is the outer unit normal to $B$ at $x^0$.
+
+(ii) If
+$$c \geq 0 \quad \text{in } U,$$
+the same conclusion holds provided
+$$u(x^0) \geq 0.$$
+\end{lemma}
+
+\begin{remark}
+\label{rem:hopfs-lemma-strict-inequality}
+\dcref{ch6:6.4-rem-3}
+\group{Maximum Principles}
+\uses{lem:hopfs-lemma}
+The importance of (i) is the \textit{strict} inequality: that $\frac{\partial u}{\partial\nu}(x^0) \geq 0$ is obvious. Note that the interior ball condition automatically holds if $\partial U$ is $C^2$.
+\end{remark}
+
+\begin{proof}
+1. Assume $c \geq 0$ and $u(x^0) \geq 0$. We may as well further assume $B = B^0(0,r)$ for some radius $r > 0$. Define
+$$v(x) := e^{-\lambda|x|^2} - e^{-\lambda r^2} \quad (x \in B(0,r))$$
+
+\begin{figure}[h]\centering
+% [FIGURE: A domain U (shaded gray) with an embedded annular region R showing two concentric circles with radius labels. The inner circle has a center point P and radius R marked. The outer boundary is labeled ∂U. There is a point x⁰ marked on the inner circle of the annulus and the region extends outward.]
+\end{figure}
+
+for $\lambda > 0$ as selected below. Then using the uniform ellipticity condition, we compute:
+$$Lv = -\sum_{i,j=1}^n a^{ij}v_{x_ix_j} + \sum_{i=1}^n b^iv_{x_i} + cv$$
+$$= e^{-\lambda|x|^2}\sum_{i,j=1}^n a^{ij}(-4\lambda^2x_ix_j + 2\lambda\delta^{ij})$$
+$$- e^{-\lambda|x|^2}\sum_{i=1}^n b^i2\lambda x_i + c(e^{-\lambda|x|^2}-e^{-\lambda r^2})$$
+$$\leq e^{-\lambda|x|^2}(-4\theta\lambda^2|x|^2 + 2\lambda\operatorname{tr}\mathbf A + 2\lambda|\mathbf b||x| + c),$$
+for $\mathbf A = ((a^{ij}))$, $\mathbf b = (b^1,\ldots,b^n)$. Consider next the open annular region $R := B^0(0,r) - B(0,r/2)$. We have
+$$(15) \qquad Lv \leq e^{-\lambda|x|^2}(-\theta\lambda^2r^2 + 2\lambda\operatorname{tr}\mathbf A + 2\lambda|\mathbf b|r + c) \leq 0$$
+in $R$, provided $\lambda > 0$ is fixed large enough.
+
+2. In view of (14) there exists a constant $\varepsilon > 0$ so small that
+$$(16) \qquad u(x^0) \geq u(x) + \varepsilon v(x) \quad (x \in \partial B(0,r/2)).$$
+In addition note
+$$(17) \qquad u(x^0) \geq u(x) + \varepsilon v(x) \quad (x \in \partial B(0,r)),$$
+since $v \equiv 0$ on $\partial B(0,r)$.
+
+3. From (15) we see
+$$L(u+\varepsilon v - u(x^0)) \leq -cu(x^0) \leq 0 \quad \text{in } R,$$
+and from (16), (17) we observe
+$$u + \varepsilon v - u(x^0) \leq 0 \quad \text{on } \partial R.$$
+In view of the weak maximum principle, Theorem~\ref{thm:weak-maximum-principle-c-zero}, $u + \varepsilon v - u(x^0) \leq 0$ in $R$. But $u(x^0) + \varepsilon v(x^0) - u(x^0) = 0$, and so
+$$\frac{\partial u}{\partial\nu}(x^0) + \varepsilon\frac{\partial v}{\partial\nu}(x^0) \geq 0.$$
+Consequently
+$$\frac{\partial u}{\partial\nu}(x^0) \geq -\varepsilon\frac{\partial v}{\partial\nu}(x^0) = -\frac\varepsilon r Dv(x^0)\cdot x^0 = 2\lambda\varepsilon re^{-\lambda r^2} > 0,$$
+as required.
+\end{proof}
+
+Hopf's Lemma is the primary technical tool in the next proof:
+
+\begin{theorem}[Strong maximum principle]
+\label{thm:strong-maximum-principle-c-zero}
+\dcref{ch6:6.4-thm-3}
+\group{Maximum Principles}
+\uses{lem:hopfs-lemma}
+Assume $u \in C^2(U) \cap C(\bar U)$ and
+$$c \equiv 0 \quad \text{in } U.$$
+Suppose also $U$ is connected, open and bounded.
+
+(i) If
+$$Lu \leq 0 \quad \text{in } U$$
+and $u$ attains its maximum over $\bar U$ at an interior point, then
+$$u \text{ is constant within } U.$$
+
+(ii) Similarly, if
+$$Lu \geq 0 \quad \text{in } U$$
+and $u$ attains its minimum over $\bar U$ at an interior point, then
+$$u \text{ is constant within } U.$$
+\end{theorem}
+
+\begin{proof}
+Write $M := \max_{\bar U} u$ and $C := \{x \in U \mid u(x) = M\}$. Then if $u \not\equiv M$, set
+$$V := \{x \in U \mid u(x) < M\}.$$
+Choose a point $y \in V$ satisfying $\dist(y,C) < \dist(y,\partial U)$, and let $B$ denote the largest ball with center $y$ whose interior lies in $V$. Then there exists some point $x^0 \in C$, with $x^0 \in \partial B$. Clearly $V$ satisfies the interior ball condition at $x^0$; whence Hopf's Lemma, (i), implies $\frac{\partial u}{\partial\nu}(x^0) > 0$. But this is a contradiction: since $u$ attains its maximum at $x^0 \in U$, we have $Du(x^0) = 0$.
+\end{proof}
+
+If the zeroth-order term $c$ is \textit{nonnegative}, we have this version of the strong maximum principle:
+
+\begin{theorem}[Strong maximum principle with $c \geq 0$]
+\label{thm:strong-maximum-principle-c-nonneg}
+\dcref{ch6:6.4-thm-4}
+\group{Maximum Principles}
+\uses{lem:hopfs-lemma,thm:strong-maximum-principle-c-zero}
+Assume $u \in C^2(U) \cap C(\bar U)$ and
+$$c \geq 0 \quad \text{in } U.$$
+Suppose also $U$ is connected.
+
+(i) If
+$$Lu \leq 0 \quad \text{in } U$$
+and $u$ attains a nonnegative maximum over $\bar U$ at an interior point, then
+$$u \text{ is constant within } U.$$
+
+(ii) Similarly, if
+$$Lu \geq 0 \quad \text{in } U$$
+and $U$ attains a nonpositive minimum over $\bar U$ at an interior point, then
+$$u \text{ is constant within } U.$$
+
+The proof is like that above, except that we use statement (ii) in Hopf's Lemma.
+\end{theorem}
+
+\subsection{Harnack's inequality}
+
+Harnack's inequality states the values of a nonnegative solution are comparable, at least in any subregion away from the boundary. We assume as usual that
+$$Lu = -\sum_{i,j=1}^n a^{ij}u_{x_ix_j} + \sum_{i=1}^n b^iu_{x_i} + cu.$$
+
+\begin{theorem}[Harnack's inequality]
+\label{thm:harnacks-inequality-elliptic}
+\dcref{ch6:6.4-thm-5}
+\group{Maximum Principles}
+Assume $u \geq 0$ is a $C^2$ solution of
+$$Lu = 0 \quad \text{in } U,$$
+and suppose $V \subset\subset U$ is connected. Then there exists a constant $C$ such that
+$$(18) \qquad \sup_V u \leq C\inf_V u.$$
+The constant $C$ depends only on $V$ and the coefficients of $L$.
+\end{theorem}
+
+If the coefficients are smooth, the proof is a (much easier) special case of the calculations to be presented later for the parabolic Harnack inequality, in \S7.1.4. For the general situation of merely bounded and measurable coefficients, see Gilbarg--Trudinger \cite{GilbargTrudinger1983}.
+
+\section{Eigenvalues and Eigenfunctions}
+\label{sec:elliptic-eigenvalues}
+
+We consider in this section the boundary-value problem
+$$(1) \qquad \begin{cases} Lw = \lambda w & \text{in } U \\ w = 0 & \text{on } \partial U, \end{cases}$$
+where $U$ is open, bounded, and recall that $\lambda$ is an eigenvalue of $L$ provided there exists a nontrivial solution $w$ of (1). From the theory developed in \S6.2 we recall that the set $\Sigma$ of eigenvalues of $L$ is at most countable.
+
+The theorems in \S6.5.1 below are analogues for elliptic PDE of the standard linear algebra assertion that a real symmetric matrix possesses real eigenvalues and an orthonormal basis of eigenvectors. Similarly, the results in \S6.5.2 are PDE versions of the Perron--Frobenius theorem that a matrix with positive entries has a real, positive eigenvalue and a corresponding eigenvector with positive entries (cf. Gantmacher \cite{Gantmacher1977}).
+
+\subsection{The symmetric case}
+
+For simplicity, we consider now an elliptic operator having the divergence form
+$$(2) \qquad Lu = -\sum_{i,j=1}^n (a^{ij}u_{x_i})_{x_j},$$
+where $a^{ij} \in C^\infty(\bar U)$ $(i,j=1,\ldots,n)$. We suppose the usual uniform ellipticity condition to hold, and as usual suppose
+$$(3) \qquad a^{ij} = a^{ji} \quad (i,j=1,\ldots,n).$$
+The operator $L$ is thus formally symmetric, and in particular the associated bilinear form $B[\ ,\ ]$ satisfies $B[u,v] = B[v,u]$ $(u,v \in H_0^1(U))$. Assume also $U$ is connected.
+
+\begin{theorem}[Eigenvalues of symmetric elliptic operators]
+\label{thm:existence-eigenvalues-symmetric-operator}
+\dcref{ch6:6.5-thm-1}
+\group{Eigenvalues}
+\uses{thm:second-existence-fredholm-alternative,thm:rellich-kondrachov,def:bilinear-form-weak-solution-l2}
+(i) Each eigenvalue of $L$ is real.
+
+(ii) Furthermore, if we repeat each eigenvalue according to its (finite) multiplicity, we have
+$$\Sigma = \{\lambda_k\}_{k=1}^\infty,$$
+where
+$$0 < \lambda_1 \leq \lambda_2 \leq \lambda_3 \leq \cdots,$$
+and
+$$\lambda_k \to \infty \quad \text{as } k \to \infty.$$
+
+(iii) Finally, there exists an orthonormal basis $\{w_k\}_{k=1}^\infty$ of $L^2(U)$, where $w_k \in H_0^1(U)$ is an eigenfunction corresponding to $\lambda_k$:
+$$(4) \qquad \begin{cases} Lw_k = \lambda_k w_k & \text{in } U \\ w_k = 0 & \text{on } \partial U \end{cases}$$
+for $k = 1,2,\ldots$.
+\end{theorem}
+
+\begin{remark}
+\label{rem:eigenfunctions-smoothness}
+\dcref{ch6:6.5-rem-1}
+\group{Eigenvalues}
+\uses{thm:existence-eigenvalues-symmetric-operator,thm:interior-infinite-differentiability,thm:boundary-infinite-differentiability}
+Owing to the regularity theory in \S6.3, $w_k \in C^\infty(U)$ (and $w_k \in C^\infty(\bar U)$ if $\partial U$ is smooth), for $k = 1,2,\ldots$.
+\end{remark}
+
+\begin{proof}
+1. As in \S6.2,
+$$S := L^{-1}$$
+is a bounded, linear, compact operator mapping $L^2(U)$ into itself.
+
+2. We claim further that $S$ is symmetric. To see this, select $f,g \in L^2(U)$. Then $Sf = u$ means $u \in H_0^1(U)$ is the weak solution of
+$$\begin{cases} Lu = f & \text{in } U \\ u = 0 & \text{on } \partial U, \end{cases}$$
+and likewise $Sg = v$ means $v \in H_0^1(U)$ solves
+$$\begin{cases} Lv = g & \text{in } U \\ v = 0 & \text{on } \partial U \end{cases}$$
+in the weak sense. Thus
+$$(Sf,g) = (u,g) = B[v,u]$$
+and
+$$(f,Sg) = (f,v) = B[u,v].$$
+Since $B[u,v] = B[v,u]$, we see $(Sf,g) = (f,Sg)$ for all $f,g \in L^2(U)$. Therefore $S$ is symmetric.
+
+3. Notice also
+$$(Sf,f) = (u,f) = B[u,u] \geq 0 \quad (f \in L^2(U)).$$
+Consequently the theory of compact, symmetric operators from \S D.6 implies that all the eigenvalues of $S$ are real, positive, and there are corresponding eigenfunctions which make up an orthonormal basis of $L^2(U)$. But observe as well that for $\eta \neq 0$, we have $Sw = \eta w$ if and only if $Lw = \lambda w$ for $\lambda = \frac1\eta$. The theorem follows.
+\end{proof}
+
+We next scrutinize more carefully the first eigenvalue of $L$.
+
+\begin{definition}[Principal eigenvalue]
+\label{def:principal-eigenvalue}
+\dcref{ch6:6.5-def-1}
+\group{Eigenvalues}
+\uses{thm:existence-eigenvalues-symmetric-operator}
+We call $\lambda_1 > 0$ the principal eigenvalue of $L$.
+\end{definition}
+
+\begin{theorem}[Variational principle for the principal eigenvalue]
+\label{thm:variational-principle-principal-eigenvalue}
+\dcref{ch6:6.5-thm-2}
+\group{Eigenvalues}
+\uses{thm:existence-eigenvalues-symmetric-operator,def:principal-eigenvalue,thm:strong-maximum-principle-c-zero}
+(i) We have
+$$(5) \qquad \lambda_1 = \min\{B[u,u] \mid u \in H_0^1(U), \|u\|_{L^2} = 1\}.$$
+
+(ii) Furthermore, the above minimum is attained for a function $w_1$, positive within $U$, which solves
+$$\begin{cases} Lw_1 = \lambda_1w_1 & \text{in } U \\ w_1 = 0 & \text{on } \partial U. \end{cases}$$
+
+(iii) Finally, if $u \in H_0^1(U)$ is any weak solution of
+$$\begin{cases} Lu = \lambda_1u & \text{in } U \\ u = 0 & \text{on } \partial U, \end{cases}$$
+then $u$ is a multiple of $w_1$.
+\end{theorem}
+
+\begin{remark}[Simplicity of $\lambda_1$ and Rayleigh's formula]
+\label{rem:principal-eigenvalue-simple-rayleigh}
+\dcref{ch6:6.5-rem-2}
+\group{Eigenvalues}
+\uses{thm:variational-principle-principal-eigenvalue}
+(i) Assertion (iii) says the principal eigenvalue $\lambda_1$ is simple. In particular
+$$0 < \lambda_1 < \lambda_2 \leq \lambda_3 \leq \cdots.$$
+
+(ii) Expression (5) is \textit{Rayleigh's formula}, and is equivalent to the statement
+$$\lambda_1 = \min_{\substack{u \in H_0^1(U) \\ u \neq 0}} \frac{B[u,u]}{\|u\|_{L^2(U)}^2}.$$
+\end{remark}
+
+\begin{proof}
+1. In view of (4) we see
+$$(6) \qquad B[w_k,w_k] = \lambda_k\|w_k\|_{L^2(U)}^2 = \lambda_k,$$
+and
+$$(7) \qquad B[w_k,w_l] = \lambda_k(w_k,w_l) = 0$$
+for $k,l = 1,2,\ldots$, $k \neq l$.
+
+2. As $\{w_k\}_{k=1}^\infty$ is an orthonormal basis of $L^2(U)$, if $u \in H_0^1(U)$ and $\|u\|_{L^2(U)} = 1$, we can write
+$$(8) \qquad u = \sum_{k=1}^\infty d_kw_k$$
+for $d_k = (u,w_k)_{L^2(U)}$, the series converging in $L^2(U)$; see \S D.2. In addition
+$$(9) \qquad \sum_{k=1}^\infty d_k^2 = \|u\|_{L^2(U)}^2 = 1.$$
+
+3. Furthermore from (6) and (7) we see that $\left\{\frac{w_k}{\sqrt{\lambda_k}}\right\}_{k=1}^\infty$ is an orthonormal subset of $H_0^1(U)$, endowed with the new inner product $B[\cdot,\cdot]$.
+
+We claim further that $\left\{\frac{w_k}{\sqrt{\lambda_k}}\right\}_{k=1}^\infty$ is in fact an orthonormal basis of $H_0^1(U)$, with this new inner product. To see this, it suffices to verify that
+$$B[w_k,u] = 0 \quad (k=1,2,\ldots)$$
+implies $u = 0$. But this assertion is clearly true, since the identities
+$$B[w_k,u] = \lambda_k(w_k,u) = 0 \quad (k=1,\ldots)$$
+force $u \equiv 0$, as $\{w_k\}_{k=1}^\infty$ is a basis of $L^2(U)$. Consequently
+$$u = \sum_{k=1}^\infty \mu_k\frac{w_k}{\lambda_k^{1/2}}$$
+for $\mu_k = B\left[u,\frac{w_k}{\lambda_k^{1/2}}\right]$, the series converging in $H_0^1(U)$. But then according to (8), $\mu_k = d_k\lambda_k^{1/2}$, and so the series (8) in fact converges also in $H_0^1(U)$.
+
+4. Thus (6) and (8) imply
+$$B[u,u] = \sum_{k=1}^\infty d_k^2\lambda_k \geq \lambda_1 \text{ by (9)}.$$
+As equality holds for $u = w_1$, we obtain formula (5).
+
+5. We next claim that if $u \in H_0^1(U)$ and $\|u\|_{L^2(U)} = 1$, then $u$ is a weak solution of
+$$(10) \qquad \begin{cases} Lu = \lambda_1u & \text{in } U \\ u = 0 & \text{on } \partial U \end{cases}$$
+if and only if
+$$(11) \qquad B[u,u] = \lambda_1.$$
+Obviously (10) implies (11). On the other hand, suppose (11) is valid. Then, writing $d_k = (u,w_k)$ as above, we have
+$$(12) \qquad \sum_{k=1}^\infty d_k^2\lambda_1 = \lambda_1 = B[u,u] = \sum_{k=1}^\infty d_k^2\lambda_k.$$
+Hence
+$$(13) \qquad \sum_{k=1}^\infty (\lambda_k-\lambda_1)d_k^2 = 0.$$
+Consequently
+$$d_k = (u,w_k) = 0 \text{ if } \lambda_k > \lambda_1.$$
+Since $\lambda_1$ has finite multiplicity, it follows that
+$$(14) \qquad u = \sum_{k=1}^m (u,w_k)w_k$$
+for some $m$, where $Lw_k = \lambda_1w_k$. Therefore
+$$(15) \qquad Lu = \sum_{k=1}^m (u,w_k)Lw_k = \lambda_1u.$$
+This proves (10).
+
+6. Next we will show that if $u \in H_0^1(U)$ is a weak solution of (10), $u \not\equiv 0$, then either
+$$(16) \qquad u > 0 \quad \text{in } U$$
+or else
+$$(17) \qquad u < 0 \quad \text{in } U.$$
+To see this, let us assume without loss that $\|u\|_{L^2} = 1$, and note
+$$(18) \qquad \alpha + \beta = 1$$
+for
+$$\alpha := \int_U (u^+)^2\,dx, \quad \beta := \int_U (u^-)^2\,dx.$$
+Furthermore since $u^\pm \in H_0^1(U)$, with
+$$Du^+ = \begin{cases} Du & \text{a.e. on } \{u \geq 0\} \\ 0 & \text{a.e. on } \{u \leq 0\}, \end{cases}$$
+$$Du^- = \begin{cases} 0 & \text{a.e. on } \{u \geq 0\} \\ -Du & \text{a.e. on } \{u \leq 0\} \end{cases}$$
+(cf. Problem 17 in Chapter 5), we have $B[u^+,u^-] = 0$. Accordingly
+$$\lambda_1 = B[u,u] = B[u^+,u^+] + B[u^-,u^-]$$
+$$\geq \lambda_1\|u^+\|_{L^2(U)}^2 + \lambda_1\|u^-\|_{L^2(U)}^2 \quad \text{by (5)}$$
+$$= (\alpha+\beta)\lambda_1 = \lambda_1.$$
+But then we see that the inequality above must in fact be an equality, and so
+$$B[u^+,u^+] = \lambda_1\|u^+\|_{L^2(U)}^2, \quad B[u^-,u^-] = \lambda_1\|u^-\|_{L^2(U)}^2.$$
+Therefore the claim proved in step 5 asserts
+$$(19) \qquad \begin{cases} Lu^+ = \lambda_1u^+ & \text{in } U \\ u^+ = 0 & \text{on } \partial U \end{cases}$$
+and
+$$(20) \qquad \begin{cases} Lu^- = \lambda_1u^- & \text{in } U \\ u^- = 0 & \text{on } \partial U \end{cases}$$
+in the weak sense.
+
+7. Next, since the coefficients $a^{ij}$ are smooth, we deduce from (19) that $u^+ \in C^\infty(U)$ and
+$$Lu^+ = \lambda_1u^+ \geq 0 \quad \text{in } U.$$
+The function $u^+$ is therefore a supersolution. Thus the strong maximum principle implies either $u^+ > 0$ in $U$ or else $u^+ \equiv 0$ in $U$. Similar arguments apply to $u^-$, and so (16) and (17) hold.
+
+8. Finally assume that $u$ and $\tilde u$ are two nontrivial weak solutions of (10). In view of steps 6 and 7 above
+$$\int_U \tilde u\,dx \neq 0,$$
+and so there exists a real constant $\chi$ such that
+$$(21) \qquad \int_U u - \chi\tilde u\,dx = 0.$$
+But since $u - \chi\tilde u$ is also a weak solution of (10), steps 6, 7, and the equality (21) imply $u \equiv \chi\tilde u$ in $U$. Hence the eigenvalue $\lambda_1$ is simple.
+\end{proof}
+
+\subsection{Eigenvalues of nonsymmetric elliptic operators}
+
+We will now consider a uniformly elliptic operator $L$ in the nondivergence form:
+$$Lu = -\sum_{i,j=1}^n a^{ij}u_{x_ix_j} + \sum_{i=1}^n b^iu_{x_i} + cu.$$
+Let us for simplicity assume $a^{ij}, b^i, c \in C^\infty(\bar U)$, $U$ is open, bounded, connected, and $\partial U$ is smooth. We suppose also $a^{ij} = a^{ji}$ $(i,j=1,\ldots,n)$, and
+$$(22) \qquad c \geq 0 \quad \text{in } U.$$
+Notice however that in general the operator $L$ will not equal its formal adjoint. We therefore \textit{cannot} invoke as above the abstract theory from \S D.6. And in fact $L$ will in general have complex eigenvalues and eigenfunctions.
+
+Remarkably, however, the principal eigenvalue of $L$ is real, and the corresponding eigenfunction is of one sign within $U$.
+
+\begin{theorem}[Principal eigenvalue for nonsymmetric elliptic operators]
+\label{thm:principal-eigenvalue-nonsymmetric-operator}
+\dcref{ch6:6.5-thm-3}
+\group{Eigenvalues}
+\uses{thm:strong-maximum-principle-c-nonneg,lem:hopfs-lemma,thm:weak-maximum-principle-c-nonneg}
+(i) There exists a real eigenvalue $\lambda_1$ for the operator $L$, taken with zero boundary conditions. Furthermore if $\lambda \in \C$ is any other eigenvalue, we have
+$$\operatorname{Re}(\lambda) \leq \lambda_1.$$
+
+(ii) There exists a corresponding eigenfunction $w_1$, which is positive within $U$.
+
+(iii) The eigenvalue $\lambda_1$ is simple; that is, if $u$ is any solution of (1), then $u$ is a multiple of $w_1$.
+\end{theorem}
+
+\begin{proof}
+\footnote{Omit on first reading.}
+1. Choose $m = \left[\frac n2\right]+2$ and consider the Banach space $X = H^m(U) \cap H_0^1(U)$. According to Theorem 3 in \S5.3.2 $X \subset C^2(\bar U)$. We define the linear, compact operator $A : X \to X$ by setting $Af = u$, where $u$ is the unique solution of
+$$(23) \qquad \begin{cases} Lu = f & \text{in } U \\ u = 0 & \text{on } \partial U. \end{cases}$$
+Next define the cone
+$$C = \{u \in X \mid u \geq 0 \text{ in } U\}.$$
+According to the maximum principle, $A : C \to C$.
+
+2. Hereafter fix any function $w \in C$, $w \not\equiv 0$. Employing the strong maximum principle and Hopf's Lemma, we deduce
+$$(24) \qquad v > 0 \text{ in } U, \quad \frac{\partial v}{\partial\nu} < 0 \text{ on } \partial U$$
+for $v = A(w)$.
+
+Remember that $w = 0$ on $\partial U$. So in view of (24) there exists a constant $\mu > 0$ so that
+$$(25) \qquad \mu v \geq w \quad \text{in } U.$$
+
+3. Fix $\varepsilon > 0$, $\eta > 0$, and consider then the equation
+$$(26) \qquad u = \eta A[u+\varepsilon w]$$
+for the unknown $u \in C$. We claim that
+$$(27) \qquad \text{if (26) has a solution } u\text{, then } \eta \leq \mu.$$
+To verify this assertion, suppose in fact $u \in C$ solves (26). We compute
+$$u \geq \eta A[\varepsilon w] = \eta\varepsilon v \geq \frac\eta\mu\varepsilon w,$$
+according to (25). Hence
+$$u \geq \eta Au \geq \frac{\eta^2\varepsilon}\mu Aw = \frac{\eta^2\varepsilon}\mu v \geq \left(\frac\eta\mu\right)^2\varepsilon w.$$
+Continuing, we deduce
+$$u \geq \left(\frac\eta\mu\right)^k\varepsilon w \quad (k=1,\ldots),$$
+a contradiction unless $\eta \leq \mu$. This observation confirms the assertion (27).
+
+4. Define
+$$S_\varepsilon := \{u \in C \mid \text{there exists } 0 \leq \eta \leq 2\mu \text{ such that } u = \eta A[u+\varepsilon w]\}.$$
+We next assert
+$$(28) \qquad S_\varepsilon \text{ is unbounded in } X.$$
+For otherwise we could apply Schaefer's fixed point theorem (to be proved later, as Theorem 4 in \S9.2.2), to deduce that the equation
+$$u = 2\mu A[u+\varepsilon w]$$
+has a solution, in contradiction to (27).
+
+5. Owing to (28), there exist
+$$(29) \qquad 0 \leq \eta_\varepsilon \leq 2\mu$$
+and $v_\varepsilon \in C$, with $\|v_\varepsilon\|_X \geq 1$, satisfying
+$$(30) \qquad v_\varepsilon = \eta_\varepsilon A[v_\varepsilon + \varepsilon w].$$
+Renormalize by setting
+$$(31) \qquad u_\varepsilon := \frac{v_\varepsilon}{\|v_\varepsilon\|_X}.$$
+Using (29)--(31) and the compactness of the operator $A$, we obtain a subsequence $\varepsilon_k \to 0$ so that
+$$\eta_{\varepsilon_k} \to \eta \text{ and } u_{\varepsilon_k} \to u \text{ in } X.$$
+Then (31) implies
+$$(32) \qquad \|u\|_X = 1, \quad u \in C.$$
+Since $u_\varepsilon = \eta_\varepsilon A\left[u_\varepsilon + \frac{\varepsilon w}{\|v_\varepsilon\|_X}\right]$, we deduce in the limit that $u = \eta Au$. In view of (32), $\eta > 0$. We may consequently rewrite the above to read
+$$\begin{cases} Lw_1 = \lambda_1w_1 & \text{in } U \\ w_1 = 0 & \text{on } \partial U, \end{cases}$$
+for $\lambda_1 = \eta$, $u = w_1$. Thus $\lambda_1$ is a real eigenvalue for the operator $L$, taken with zero boundary conditions, and $w_1 \geq 0$ is a corresponding eigenfunction. In view of the strong maximum principle and Hopf's Lemma, we have
+$$(33) \qquad w_1 > 0 \text{ in } U, \quad \frac{\partial w_1}{\partial\nu} < 0 \text{ on } \partial U.$$
+Additionally we know $w_1$ is smooth, owing to the regularity theory in \S6.3.
+
+6. All expressions occurring in steps 1--5 above are real. Suppose now $\lambda \in \C$ and $u$ is a complex-valued solution of
+$$(34) \qquad \begin{cases} Lu = \lambda u & \text{in } U \\ u = 0 & \text{on } \partial U. \end{cases}$$
+Now choose any smooth function $w : U \to \R$, with $w > 0$ in $U$, and set $v := \frac uw$. We compute
+$$\lambda v = \frac1wL(vw) \quad \text{by (34)}$$
+$$(35) \qquad = Lv - cv - \frac2w\sum_{i,j=1}^n a^{ij}w_{x_j}v_{x_i} + \frac vwLw.$$
+Writing
+$$Kv := -\sum_{i,j=1}^n a^{ij}v_{x_ix_j} + \sum_{i=1}^n b'_iv_{x_i}$$
+for $b'_i := b^i - \frac2w\sum_{j=1}^n a^{ij}w_{x_j}$ $(1 \leq i \leq n)$, we deduce from (35) that
+$$(36) \qquad Kv + \left(\frac{Lw}w - \lambda\right)v = 0 \quad \text{in } U.$$
+Take complex conjugates:
+$$(37) \qquad K\bar v + \left(\frac{Lw}w - \bar\lambda\right)\bar v = 0 \quad \text{in } U.$$
+Next we compute
+$$(38) \qquad K(|v|^2) = K(v\bar v) = \bar vKv + vK\bar v - 2\sum_{i,j=1}^n a^{ij}v_{x_i}\bar v_{x_j} \leq \bar vKv + vK\bar v,$$
+since
+$$\sum_{i,j=1}^n a^{ij}\xi_i\bar\xi_j = \sum_{i,j=1}^n a^{ij}(\operatorname{Re}(\xi_i)\operatorname{Re}(\xi_j) + \operatorname{Im}(\xi_i)\operatorname{Im}(\xi_j)) \geq 0$$
+for $\xi \in \C^n$. Combining (36)--(38), we discover
+$$K(|v|^2) \leq 2\left(\operatorname{Re}\lambda - \frac{Lw}w\right)|v|^2.$$
+Now choose
+$$(39) \qquad w := w_1^{1-\varepsilon}$$
+for $0 < \varepsilon < 1$. Then
+$$Lw = \frac{(1-\varepsilon)}{w_1^\varepsilon}Lw_1 + \frac{\varepsilon(1-\varepsilon)}{w_1^{1+\varepsilon}}\sum_{i,j=1}^n a^{ij}w_{1,x_i}w_{1,x_j} + \varepsilon cw_1^{1-\varepsilon} \geq (1-\varepsilon)\lambda_1w.$$
+Consequently
+$$K(|v|^2) \leq 2(\operatorname{Re}\lambda - (1-\varepsilon)\lambda_1)|v|^2 \quad \text{in } U.$$
+Thus if $\operatorname{Re}(\lambda) \leq (1-\varepsilon)\lambda_1$, then $K(|v|^2) \leq 0$ in $U$. As $v = 0$ on $\partial U$, according to (33) and (39), we deduce from the maximum principle that $v = \frac uw \equiv 0$ in $U$. Thus $u \equiv 0$ in $U$ and so $\lambda$ cannot be an eigenvalue. This conclusion obtains for each $\varepsilon > 0$, and so $\operatorname{Re}\lambda \geq \lambda_1$ if $\lambda$ is any complex eigenvalue.
+
+7. Finally, let $u$ be any (possibly complex-valued) solution of
+$$(40) \qquad \begin{cases} Lu = \lambda_1u & \text{in } U \\ u = 0 & \text{on } \partial U. \end{cases}$$
+Since $\operatorname{Re}(u)$ and $\operatorname{Im}(u)$ also solve (40), we may as well suppose from the outset $u$ is real-valued. Replacing $u$ by $-u$ if needs be, we may also suppose $u > 0$ somewhere in $U$. Now set
+$$(41) \qquad \chi := \sup\{\mu > 0 \mid w_1 - \mu u \geq 0 \text{ in } U\}.$$
+Then $0 < \chi < \infty$. Write $v = w_1 - \chi u$; so that $v \geq 0$ in $U$ and
+$$\begin{cases} Lv = \lambda_1v \geq 0 & \text{in } U \\ v = 0 & \text{on } \partial U. \end{cases}$$
+Now if $v$ is not identically zero, the strong maximum principle and Hopf's Lemma imply
+$$v > 0 \text{ in } U, \quad \frac{\partial v}{\partial\nu} < 0 \text{ on } \partial U.$$
+Thus
+$$v - \varepsilon u \geq 0 \quad \text{in } U \text{ for some } \varepsilon > 0,$$
+and so
+$$w_1 - (\chi+\varepsilon)u \geq 0 \quad \text{in } U,$$
+a contradiction to (41). Hence $v \equiv 0$ in $U$, and so $u$ is a multiple of $w_1$.
+\end{proof}
+
+\section{Problems}
+\label{sec:elliptic-problems}
+
+In the following exercises we assume the coefficients of the various PDE are smooth and satisfy the uniform ellipticity condition. Also $U \subset \R^n$ is always an open, bounded set, with smooth boundary.
+
+%ORIGINAL-NUMBER: 1
+\begin{exercise}
+Let
+$$Lu = -\sum_{i,j=1}^n (a^{ij}u_{x_i})_{x_j} + cu.$$
+Prove that there exists a constant $\mu > 0$ such that the corresponding bilinear form $B[\cdot,\cdot]$ satisfies the hypotheses of the Lax--Milgram Theorem, provided
+$$c(x) \geq -\mu \quad (x \in U).$$
+\end{exercise}
+
+%ORIGINAL-NUMBER: 2
+\begin{exercise}
+A function $u \in H_0^2(U)$ is a weak solution of this boundary-value problem for the \textit{biharmonic equation}
+$$(*) \qquad \begin{cases} \Delta^2u = f & \text{in } U \\ u = \frac{\partial u}{\partial\nu} = 0 & \text{on } \partial U \end{cases}$$
+provided
+$$\int_U \Delta u \Delta v\,dx = \int_U fv\,dx$$
+for all $v \in H_0^2(U)$. Given $f \in L^2(U)$, prove that there exists a unique weak solution of $(*)$.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 3
+\begin{exercise}
+Assume $U$ is connected. A function $u \in H^1(U)$ is a weak solution of \textit{Neumann's problem}
+$$(*) \qquad \begin{cases} -\Delta u = f & \text{in } U \\ \frac{\partial u}{\partial\nu} = 0 & \text{on } \partial U \end{cases}$$
+if
+$$\int_U Du \cdot Dv\,dx = \int_U fv\,dx$$
+for all $v \in H^1(U)$. Suppose $f \in L^2(U)$. Prove $(*)$ has a weak solution if and only if
+$$\int_U f\,dx = 0.$$
+\end{exercise}
+
+%ORIGINAL-NUMBER: 4
+\begin{exercise}
+Let $u \in H^1(\R^n)$ have compact support and be a weak solution of the semilinear PDE
+$$-\Delta u + c(u) = f \quad \text{in } \R^n,$$
+where $f \in L^2(\R^n)$ and $c : \R \to \R$ is smooth, with $c(0) = 0$ and $c' \geq 0$. Prove $u \in H^2(\R^n)$.
+
+(Hint: Mimic the proof of Theorem 1 in \S6.3.1, but without the cutoff function $\zeta$.)
+\end{exercise}
+
+%ORIGINAL-NUMBER: 5
+\begin{exercise}
+Let $u$ be a smooth solution of $Lu = -\sum_{i,j=1}^n a^{ij}u_{x_ix_j} = 0$ in $U$. Set $v := |Du|^2 + \lambda u^2$. Show that
+$$Lv \leq 0 \quad \text{in } U, \text{ if } \lambda \text{ is large enough.}$$
+Deduce
+$$\|Du\|_{L^\infty(U)} \leq C(\|Du\|_{L^\infty(\partial U)} + \|u\|_{L^\infty(\partial U)}).$$
+\end{exercise}
+
+%ORIGINAL-NUMBER: 6
+\begin{exercise}
+Assume $u$ is a smooth solution of $Lu = -\sum_{i,j=1}^n a^{ij}u_{x_ix_j} = f$ in $U$, $u = 0$ on $\partial U$, where $f$ is bounded. Fix $x^0 \in \partial U$. A barrier at $x^0$ is a $C^2$ function $w$ such that
+$$Lw \geq 1 \text{ in } U, \quad w(x^0) = 0, \quad w \geq 0 \text{ on } \partial U.$$
+Show that if $w$ is a barrier at $x^0$, there exists a constant $C$ such that
+$$|Du(x^0)| \leq C\left|\frac{\partial w}{\partial\nu}(x^0)\right|.$$
+\end{exercise}
+
+%ORIGINAL-NUMBER: 7
+\begin{exercise}
+Assume $U$ is connected. Use (a) energy methods and (b) the maximum principle to show that the only smooth solutions of the Neumann boundary-value problem
+$$\begin{cases} -\Delta u = 0 & \text{in } U \\ \frac{\partial u}{\partial\nu} = 0 & \text{on } \partial U \end{cases}$$
+are $u \equiv \text{constant}$.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 8
+\begin{exercise}
+Assume $u \in H^1(U)$ is a bounded weak solution of
+$$-\sum_{i,j=1}^n (a^{ij}u_{x_i})_{x_j} = 0 \quad \text{in } U.$$
+Let $\phi : \R \to \R$ be convex and smooth, and set $w = \phi(u)$. Show $w$ is a weak subsolution; that is,
+$$B[w,v] \leq 0$$
+for all $v \in H_0^1(U)$, $v \geq 0$.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 9
+\begin{exercise}
+(\textit{Courant minmax principle}). Let $L = -\sum_{i,j=1}^n (a^{ij}u_{x_i})_{x_j}$, where $(a^{ij})$ is symmetric. Assume the operator $L$, with zero boundary conditions, has eigenvalues $0 < \lambda_1 < \lambda_2 \leq \cdots$. Show
+$$\lambda_k = \max_{S \in \Sigma_{k-1}} \min_{\substack{u \in S^\perp \\ \|u\|_{L^2}=1}} B[u,u] \quad (k=1,2,\ldots).$$
+Here $\Sigma_{k-1}$ denotes the collection of $(k-1)$-dimensional subspaces of $H_0^1(U)$.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 10
+\begin{exercise}
+Let $\lambda_1$ be the principal eigenvalue of the uniformly elliptic, nonsymmetric operator
+$$Lu = -\sum_{i,j=1}^n a^{ij}u_{x_ix_j} + \sum_{i=1}^n b^iu_{x_i} + cu,$$
+taken with zero boundary conditions. Prove the ``max-min'' representation formula:
+$$\lambda_1 = \sup_u \inf_x \frac{Lu(x)}{u(x)},$$
+the ``sup'' taken over functions $u \in C^\infty(\bar U)$ with $u > 0$ in $U$, $u = 0$ on $\partial U$, and the ``inf'' taken over points $x \in U$. (Hint: Consider the eigenfunction $w_1^*$ corresponding to $\lambda_1$ for the adjoint operator $L^*$.)
+\end{exercise}
+
+\section{References}
+\label{sec:elliptic-references}
+
+\textbf{Section 6.1} See Gilbarg--Trudinger \cite{GilbargTrudinger1983}, Chapters 5, 8.
+
+\textbf{Section 6.3} Consult Gilbarg--Trudinger \cite{GilbargTrudinger1983}, Krylov \cite{Krylov1996} and Ladyzhenskaya--Uraltseva \cite{LadyzhenskayaUraltseva1968} for more on regularity theory for elliptic PDE.
+
+\textbf{Section 6.4} Gilbarg--Trudinger \cite{GilbargTrudinger1983}, Chapter 3. Protter and Weinberger \cite{ProtterWeinberger1967} is a good reference for further maximum principle methods.
+
+\textbf{Section 6.5} See Smoller \cite{Smoller1983}, pp. 122--125. The last part of the proof of Theorem~\ref{thm:principal-eigenvalue-nonsymmetric-operator} is modified from Protter--Weinberger \cite{ProtterWeinberger1967}, \S2.8. O. Hald simplified my proof of Theorem~\ref{thm:variational-principle-principal-eigenvalue}.

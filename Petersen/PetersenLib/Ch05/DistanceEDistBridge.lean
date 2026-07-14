@@ -1,7 +1,7 @@
 import PetersenLib.Ch05.MetricTopology
 import PetersenLib.Ch05.DistanceSegments
-import PetersenLib.Vendored.OpenGA.Geodesic.HopfRinow.CurveReadback
-import PetersenLib.Vendored.OpenGA.Metric.RiemannianDistance
+import OpenGALib.Riemannian.Geodesic.HopfRinow.CurveReadback
+import OpenGALib.Riemannian.Metric.RiemannianDistance
 
 /-!
 # Petersen Ch. 5 — the length bridge `pathELength = ofReal · curveLength`
@@ -41,6 +41,8 @@ open Bundle Manifold Set Filter MeasureTheory
 open scoped Manifold Topology ContDiff ENNReal
 
 namespace PetersenLib
+
+open Riemannian
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
   [Module.Finite ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]

@@ -1,5 +1,5 @@
 import PetersenLib.Ch02.DirectionalDerivative
-import PetersenLib.Vendored.OpenGA.Manifold.DoCarmoCh2
+import OpenGALib.Riemannian.Manifold.DoCarmoCh2
 import Mathlib.Geometry.Manifold.VectorField.LieBracket
 
 /-!
@@ -48,6 +48,8 @@ open scoped ContDiff Manifold Topology Bundle
 noncomputable section
 
 namespace PetersenLib
+
+open Riemannian
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}

@@ -1,6 +1,6 @@
 import PetersenLib.Ch02.Connections
 import PetersenLib.Ch02.CovariantDerivative
-import PetersenLib.Vendored.OpenGA.Connection.ChartFrameBridge
+import OpenGALib.Riemannian.Connection.ChartFrameBridge
 
 /-!
 # Petersen Ch. 2, §2.4 — The Connection in Tensor Notation
@@ -57,7 +57,7 @@ open scoped Manifold Topology ContDiff Matrix
 
 namespace PetersenLib
 
-open PetersenLib.Tensor
+open Riemannian Riemannian.Tensor
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]

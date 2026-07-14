@@ -15,7 +15,7 @@ These are Chapter 3 manifold facts **not yet formalized**, so throughout this
 file they enter as *hypotheses* (`hrad`, `htan`, `hmix`) on an abstract
 algebraic curvature form `B` on a single tangent space, in the vendored
 convention where `B x y x y` is the sectional-curvature numerator
-(`algSectionalCurvature B x y = B x y x y / wedgeSq x y`); in that convention
+(`sectionalCurvature B x y = B x y x y / wedgeSq x y`); in that convention
 the radial Jacobi equation reads `B(eᵢ, e_{i₀}, eⱼ, e_{i₀}) = a·δᵢⱼ` with
 `a := -ρ̈/ρ` and `e_{i₀}` playing the role of `∂r`.
 
@@ -53,6 +53,8 @@ open scoped RealInnerProductSpace
 noncomputable section
 
 namespace PetersenLib
+
+open Riemannian
 
 variable {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
 variable {ι : Type*} [DecidableEq ι]
@@ -158,7 +160,7 @@ theorem rotSymSectionalBounds [Fintype ι] {B : V → V → V → V → ℝ}
           - (if i = l then (1 : ℝ) else 0) * (if j = k then (1 : ℝ) else 0)))
     (hmix : ∀ i j k, i ≠ i₀ → j ≠ i₀ → k ≠ i₀ → B (e i) (e j) (e k) (e i₀) = 0) :
     ∀ v w : V, ⟪v, v⟫ = 1 → ⟪w, w⟫ = 1 → ⟪v, w⟫ = 0 →
-      algSectionalCurvature B v w ∈ Set.Icc (min a b) (max a b) := by
+      sectionalCurvature B v w ∈ Set.Icc (min a b) (max a b) := by
   have hdiag := rotSymDiagonalization hB (⇑e) i₀ a b hrad htan hmix
   intro v w hv hw hvw
   refine secBoundsFromDiagonalCurvatureOperator hB e
@@ -209,7 +211,7 @@ theorem rotSymCurvatureOperator [Fintype ι] {B : V → V → V → V → ℝ}
         ((if i = k then (1 : ℝ) else 0) * (if j = l then (1 : ℝ) else 0)
           - (if i = l then (1 : ℝ) else 0) * (if j = k then (1 : ℝ) else 0))) ∧
     ∀ v w : V, ⟪v, v⟫ = 1 → ⟪w, w⟫ = 1 → ⟪v, w⟫ = 0 →
-      algSectionalCurvature B v w ∈ Set.Icc
+      sectionalCurvature B v w ∈ Set.Icc
         (min (-(deriv (deriv ρ) r) / ρ r) ((1 - deriv ρ r ^ 2) / ρ r ^ 2))
         (max (-(deriv (deriv ρ) r) / ρ r) ((1 - deriv ρ r ^ 2) / ρ r ^ 2)) :=
   ⟨rotSymDiagonalization hB (⇑e) i₀ _ _ hrad htan hmix,
@@ -240,7 +242,7 @@ theorem rotSymRicciDiagonal [Fintype ι] [FiniteDimensional ℝ V]
     ricciForm hB (e i₀) (e i₀) = ((Fintype.card ι : ℝ) - 1) * a ∧
     (∀ i, i ≠ i₀ → ricciForm hB (e i) (e i) = a + ((Fintype.card ι : ℝ) - 2) * b) ∧
     (∀ i j, i ≠ j → ricciForm hB (e i) (e j) = 0) ∧
-    algScalarCurvature hB = 2 * ((Fintype.card ι : ℝ) - 1) * a
+    scalarCurvature hB = 2 * ((Fintype.card ι : ℝ) - 1) * a
       + ((Fintype.card ι : ℝ) - 1) * ((Fintype.card ι : ℝ) - 2) * b := by
   have hdiag := rotSymDiagonalization hB (⇑e) i₀ a b hrad htan hmix
   -- Ricci in the radial direction: `n - 1` radial eigenvalues.
@@ -286,7 +288,7 @@ theorem rotSymRicciDiagonal [Fintype ι] [FiniteDimensional ℝ V]
     simp [hxz, Ne.symm hxy, hyz]
   refine ⟨h₁, h₂, h₃, ?_⟩
   -- Scalar curvature: sum of the Ricci diagonal.
-  rw [algScalarCurvature_eq_sum_ricci hB e]
+  rw [scalarCurvature_eq_sum_ricci hB e]
   have hterm : ∀ j : ι, ricciForm hB (e j) (e j) =
       (a + ((Fintype.card ι : ℝ) - 2) * b)
         + (if j = i₀ then
@@ -330,7 +332,7 @@ theorem rotSymRicciScalar [Fintype ι] [FiniteDimensional ℝ V]
     (∀ i, i ≠ i₀ → ricciForm hB (e i) (e i) = -(deriv (deriv ρ) r) / ρ r
       + ((Fintype.card ι : ℝ) - 2) * ((1 - deriv ρ r ^ 2) / ρ r ^ 2)) ∧
     (∀ i j, i ≠ j → ricciForm hB (e i) (e j) = 0) ∧
-    algScalarCurvature hB =
+    scalarCurvature hB =
       2 * ((Fintype.card ι : ℝ) - 1) * (-(deriv (deriv ρ) r) / ρ r)
         + ((Fintype.card ι : ℝ) - 1) * ((Fintype.card ι : ℝ) - 2) *
           ((1 - deriv ρ r ^ 2) / ρ r ^ 2) :=
@@ -351,7 +353,7 @@ theorem rotSymDim2SectionalConst [Fintype ι] {B : V → V → V → V → ℝ}
       B (e i) (e i₀) (e j) (e i₀) = a * (if i = j then (1 : ℝ) else 0))
     (hmix : ∀ i j k, i ≠ i₀ → j ≠ i₀ → k ≠ i₀ → B (e i) (e j) (e k) (e i₀) = 0) :
     ∀ v w : V, ⟪v, v⟫ = 1 → ⟪w, w⟫ = 1 → ⟪v, w⟫ = 0 →
-      algSectionalCurvature B v w = a := by
+      sectionalCurvature B v w = a := by
   -- In a two-element index type, all non-radial indices coincide.
   have huniq : ∀ x y : ι, x ≠ i₀ → y ≠ i₀ → x = y := by
     intro x y hx hy
@@ -390,7 +392,7 @@ theorem rotSymDim2Curvature [Fintype ι] {B : V → V → V → V → ℝ}
         (-(deriv (deriv ρ) r) / ρ r) * (if i = j then (1 : ℝ) else 0))
     (hmix : ∀ i j k, i ≠ i₀ → j ≠ i₀ → k ≠ i₀ → B (e i) (e j) (e k) (e i₀) = 0) :
     ∀ v w : V, ⟪v, v⟫ = 1 → ⟪w, w⟫ = 1 → ⟪v, w⟫ = 0 →
-      algSectionalCurvature B v w = -(deriv (deriv ρ) r) / ρ r :=
+      sectionalCurvature B v w = -(deriv (deriv ρ) r) / ρ r :=
   rotSymDim2SectionalConst hB e i₀ hcard _ hrad hmix
 
 /-! ## The constant-curvature models `ρ = sn_k` -/
@@ -418,7 +420,7 @@ theorem snkConstantCurvature [Fintype ι] {B : V → V → V → V → ℝ}
     -(deriv (deriv (snFunction k)) r) / snFunction k r = k ∧
     (1 - deriv (snFunction k) r ^ 2) / snFunction k r ^ 2 = k ∧
     ∀ v w : V, ⟪v, v⟫ = 1 → ⟪w, w⟫ = 1 → ⟪v, w⟫ = 0 →
-      algSectionalCurvature B v w = k := by
+      sectionalCurvature B v w = k := by
   -- The radial eigenvalue: the defining ODE of `sn_k`.
   have ha : -(deriv (deriv (snFunction k)) r) / snFunction k r = k := by
     rw [snFunction_ode k r, neg_mul, neg_neg, mul_div_assoc, div_self hsn, mul_one]

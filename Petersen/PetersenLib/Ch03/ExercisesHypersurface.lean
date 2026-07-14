@@ -37,6 +37,8 @@ noncomputable section
 
 namespace PetersenLib
 
+open Riemannian
+
 namespace Ex12
 
 variable {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]

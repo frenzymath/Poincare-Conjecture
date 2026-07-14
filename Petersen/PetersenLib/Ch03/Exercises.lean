@@ -31,7 +31,7 @@ A tractable subset of the §3.4 exercises.
   the **Schouten tensor** `P = 2/(n-2)·Ric − scal/((n-1)(n-2))·g` for `n > 2`.
   Its trace is `tr P = scal/(n-1)` (`schoutenForm_trace`), whence part (1):
   `P ≡ 0 ⟹ Ric = 0` (`exercise3_4_24`), via the abstract Ricci/scalar
-  contraction of an `IsAlgCurvatureForm` (`ricciForm`, `algScalarCurvature`).
+  contraction of an `IsAlgCurvatureForm` (`ricciForm`, `scalarCurvature`).
   Part (6) — the Ricci-recovery contraction `Ric(X,Y)=Σᵢ(P⊛g)(X,Eᵢ,Eᵢ,Y)` — is
   `exercise3_4_24_ricci_recovery`, via the Kulkarni–Nomizu Ricci contraction
   (`kulkarniNomizu_inner_contraction`); parts (2)–(5) are deferred.
@@ -56,6 +56,17 @@ set_option linter.unusedSectionVars false
 noncomputable section
 
 namespace PetersenLib
+
+open Riemannian
+
+/-- Petersen's own algebraic-curvature-form predicate (`PetersenLib.IsAlgCurvatureForm`,
+Ch. 3 §3.1) has the same defining fields as the shared `Riemannian.IsAlgCurvatureForm`.
+On an inner product space this converts a Petersen form to the shared one, so it can
+feed the shared inner-product curvature contractions (`ricciForm`, `scalarCurvature`, …). -/
+def IsAlgCurvatureForm.toR {V : Type*}
+    [NormedAddCommGroup V] [InnerProductSpace ℝ V] {B : V → V → V → V → ℝ}
+    (hB : IsAlgCurvatureForm B) : Riemannian.IsAlgCurvatureForm B :=
+  ⟨hB.add_left, hB.smul_left, hB.antisymm₁₂, hB.antisymm₃₄, hB.bianchi⟩
 
 /-! ## Exercise 3.4.23 — the Kulkarni–Nomizu product -/
 
@@ -386,11 +397,11 @@ variable {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDim
 /-- **Math.** Petersen §3.4, Exercise 3.4.24: the **Schouten tensor**
 `P = 2/(n-2)·Ric − scal/((n-1)(n-2))·g` of an algebraic curvature form `B` on an
 `n`-dimensional inner product space (`n = finrank ℝ V`), where `Ric = ricciForm`
-and `scal = algScalarCurvature` are the abstract Ricci and scalar contractions.
+and `scal = scalarCurvature` are the abstract Ricci and scalar contractions.
 The formula is meaningful for `n > 2`. -/
 def schoutenForm {B : V → V → V → V → ℝ} (hB : IsAlgCurvatureForm B) (x y : V) : ℝ :=
-  (2 / ((finrank ℝ V : ℝ) - 2)) * ricciForm hB x y
-    - algScalarCurvature hB / (((finrank ℝ V : ℝ) - 1) * ((finrank ℝ V : ℝ) - 2)) * ⟪x, y⟫
+  (2 / ((finrank ℝ V : ℝ) - 2)) * ricciForm hB.toR x y
+    - Riemannian.scalarCurvature hB.toR / (((finrank ℝ V : ℝ) - 1) * ((finrank ℝ V : ℝ) - 2)) * ⟪x, y⟫
 
 /-- **Math.** Petersen §3.4, Exercise 3.4.24: the **trace of the Schouten tensor**
 is `tr P = scal/(n-1)`. In a `g`-orthonormal frame `Eᵢ`,
@@ -399,14 +410,14 @@ is `tr P = scal/(n-1)`. In a `g`-orthonormal frame `Eᵢ`,
 theorem schoutenForm_trace {B : V → V → V → V → ℝ} (hB : IsAlgCurvatureForm B)
     (hn : 2 < finrank ℝ V) :
     ∑ i, schoutenForm hB (stdOrthonormalBasis ℝ V i) (stdOrthonormalBasis ℝ V i)
-      = algScalarCurvature hB / ((finrank ℝ V : ℝ) - 1) := by
+      = Riemannian.scalarCurvature hB.toR / ((finrank ℝ V : ℝ) - 1) := by
   set n : ℝ := (finrank ℝ V : ℝ) with hn_def
   have hn2 : (2 : ℝ) < n := by rw [hn_def]; exact_mod_cast hn
   have hne2 : n - 2 ≠ 0 := by linarith
   have hne1 : n - 1 ≠ 0 := by linarith
   set e := stdOrthonormalBasis ℝ V with he
-  have hscal : algScalarCurvature hB = ∑ i, ricciForm hB (e i) (e i) :=
-    algScalarCurvature_eq_sum_ricci hB e
+  have hscal : Riemannian.scalarCurvature hB.toR = ∑ i, ricciForm hB.toR (e i) (e i) :=
+    Riemannian.scalarCurvature_eq_sum_ricci hB.toR e
   have hcard : (∑ i, ⟪e i, e i⟫) = n := by
     have h1 : ∀ i, ⟪e i, e i⟫ = (1 : ℝ) := fun i => by
       have h := orthonormal_iff_ite.mp e.orthonormal i i
@@ -414,8 +425,8 @@ theorem schoutenForm_trace {B : V → V → V → V → ℝ} (hB : IsAlgCurvatur
     rw [Finset.sum_congr rfl (fun i _ => h1 i), Finset.sum_const, Finset.card_univ,
       Fintype.card_fin, nsmul_eq_mul, mul_one, hn_def]
   rw [show (∑ i, schoutenForm hB (e i) (e i))
-      = (2 / (n - 2)) * (∑ i, ricciForm hB (e i) (e i))
-        - algScalarCurvature hB / ((n - 1) * (n - 2)) * (∑ i, ⟪e i, e i⟫) from by
+      = (2 / (n - 2)) * (∑ i, ricciForm hB.toR (e i) (e i))
+        - Riemannian.scalarCurvature hB.toR / ((n - 1) * (n - 2)) * (∑ i, ⟪e i, e i⟫) from by
     simp only [schoutenForm, Finset.sum_sub_distrib, ← Finset.mul_sum, hn_def]]
   rw [← hscal, hcard]
   field_simp
@@ -427,15 +438,15 @@ Tracing `P ≡ 0` gives `tr P = scal/(n-1) = 0`, so `scal = 0`; then `P ≡ 0`
 reads `2/(n-2)·Ric = 0`, forcing `Ric = 0` since `2/(n-2) ≠ 0`. -/
 theorem exercise3_4_24 {B : V → V → V → V → ℝ} (hB : IsAlgCurvatureForm B)
     (hn : 2 < finrank ℝ V)
-    (hP : ∀ x y, schoutenForm hB x y = 0) : ∀ x y, ricciForm hB x y = 0 := by
+    (hP : ∀ x y, schoutenForm hB x y = 0) : ∀ x y, ricciForm hB.toR x y = 0 := by
   set n : ℝ := (finrank ℝ V : ℝ) with hn_def
   have hn2 : (2 : ℝ) < n := by rw [hn_def]; exact_mod_cast hn
   have hne2 : n - 2 ≠ 0 := by linarith
   have hne1 : n - 1 ≠ 0 := by linarith
-  have htr : algScalarCurvature hB / (n - 1) = 0 := by
+  have htr : Riemannian.scalarCurvature hB.toR / (n - 1) = 0 := by
     rw [← schoutenForm_trace hB hn]
     exact Finset.sum_eq_zero fun i _ => hP _ _
-  have hs : algScalarCurvature hB = 0 := by
+  have hs : Riemannian.scalarCurvature hB.toR = 0 := by
     rcases div_eq_zero_iff.mp htr with h | h
     · exact h
     · exact absurd h hne1
@@ -459,8 +470,8 @@ bilinear form (so it can enter a Kulkarni–Nomizu product). Agrees with
 `schoutenForm` (`schoutenBilin_apply`). -/
 def schoutenBilin {B : V → V → V → V → ℝ} (hB : IsAlgCurvatureForm B) :
     LinearMap.BilinForm ℝ V :=
-  (2 / ((finrank ℝ V : ℝ) - 2)) • ricciBilin hB
-    - (algScalarCurvature hB / (((finrank ℝ V : ℝ) - 1) * ((finrank ℝ V : ℝ) - 2))) • innerₗ V
+  (2 / ((finrank ℝ V : ℝ) - 2)) • ricciBilin hB.toR
+    - (Riemannian.scalarCurvature hB.toR / (((finrank ℝ V : ℝ) - 1) * ((finrank ℝ V : ℝ) - 2))) • innerₗ V
 
 @[simp] theorem schoutenBilin_apply {B : V → V → V → V → ℝ} (hB : IsAlgCurvatureForm B)
     (x y : V) : schoutenBilin hB x y = schoutenForm hB x y := by
@@ -469,7 +480,7 @@ def schoutenBilin {B : V → V → V → V → ℝ} (hB : IsAlgCurvatureForm B) 
 
 theorem bilinTrace_schoutenBilin {B : V → V → V → V → ℝ} (hB : IsAlgCurvatureForm B)
     (hn : 2 < finrank ℝ V) :
-    bilinTrace (schoutenBilin hB) = algScalarCurvature hB / ((finrank ℝ V : ℝ) - 1) := by
+    bilinTrace (schoutenBilin hB) = Riemannian.scalarCurvature hB.toR / ((finrank ℝ V : ℝ) - 1) := by
   rw [bilinTrace_eq_sum _ (stdOrthonormalBasis ℝ V)]
   simp only [schoutenBilin_apply]
   exact schoutenForm_trace hB hn
@@ -497,7 +508,7 @@ the middle-slot contraction with `h = P` (whose trace is `scal/(n−1)`) and the
 definition of `P`; needs `n > 2`. -/
 theorem exercise3_4_24_ricci_recovery {B : V → V → V → V → ℝ} (hB : IsAlgCurvatureForm B)
     (hn : 2 < finrank ℝ V) (x y : V) :
-    ricciForm hB x y
+    ricciForm hB.toR x y
       = ∑ i, kulkarniNomizuProduct (schoutenBilin hB) (innerₗ V)
           x (stdOrthonormalBasis ℝ V i) (stdOrthonormalBasis ℝ V i) y := by
   rw [kulkarniNomizu_inner_contraction', bilinTrace_schoutenBilin hB hn, schoutenBilin_apply,
@@ -511,7 +522,7 @@ theorem exercise3_4_24_ricci_recovery {B : V → V → V → V → ℝ} (hB : Is
 /-- **Math.** Petersen §3.4, Exercise 3.4.25: the **Weyl tensor** `W`, the
 trace-free part of the curvature in the orthogonal decomposition
 `R = P ⊛ g + W`. Working in the do Carmo curvature-sign convention of the
-abstract layer (where `ricciForm hB x y = ∑ᵢ B x Eᵢ y Eᵢ`), the trace-free part
+abstract layer (where `ricciForm hB.toR x y = ∑ᵢ B x Eᵢ y Eᵢ`), the trace-free part
 is `W = B + P ⊛ g`, matching Petersen's `R − P ⊛ g` after the overall
 curvature-sign flip (cf. `biinvariantCurvatureForm`). -/
 def weylForm {B : V → V → V → V → ℝ} (hB : IsAlgCurvatureForm B) :
@@ -527,12 +538,12 @@ theorem exercise3_4_25 {B : V → V → V → V → ℝ} (hB : IsAlgCurvatureFor
     ∑ i, weylForm hB x (stdOrthonormalBasis ℝ V i) (stdOrthonormalBasis ℝ V i) y = 0 := by
   simp only [weylForm, Finset.sum_add_distrib]
   have hBcontract : ∑ i, B x (stdOrthonormalBasis ℝ V i) (stdOrthonormalBasis ℝ V i) y
-      = - ricciForm hB x y := by
+      = - ricciForm hB.toR x y := by
     have hanti : ∀ i, B x (stdOrthonormalBasis ℝ V i) (stdOrthonormalBasis ℝ V i) y
         = - B x (stdOrthonormalBasis ℝ V i) y (stdOrthonormalBasis ℝ V i) :=
       fun i => hB.antisymm₃₄ x _ _ y
     rw [Finset.sum_congr rfl (fun i _ => hanti i), Finset.sum_neg_distrib,
-      ← ricciForm_eq_sum hB x y (stdOrthonormalBasis ℝ V)]
+      ← ricciForm_eq_sum hB.toR x y (stdOrthonormalBasis ℝ V)]
   rw [hBcontract, ← exercise3_4_24_ricci_recovery hB hn]
   ring
 
@@ -548,10 +559,10 @@ variable {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDim
 `G(x,y) = Ric(x,y) − ½·scal·⟪x,y⟫ + c·⟪x,y⟫` of an algebraic curvature form `B`
 on an inner product space, with cosmological constant `c` (the `(0,2)`-tensor
 `T = Ric + b·scal·g + cg` at the divergence-free value `b = −½`). Here
-`Ric = ricciForm` and `scal = algScalarCurvature` are the abstract Ricci and
+`Ric = ricciForm` and `scal = scalarCurvature` are the abstract Ricci and
 scalar contractions. -/
 def einsteinForm {B : V → V → V → V → ℝ} (hB : IsAlgCurvatureForm B) (c : ℝ) (x y : V) : ℝ :=
-  ricciForm hB x y - (algScalarCurvature hB / 2) * ⟪x, y⟫ + c * ⟪x, y⟫
+  ricciForm hB.toR x y - (Riemannian.scalarCurvature hB.toR / 2) * ⟪x, y⟫ + c * ⟪x, y⟫
 
 /-- **Math.** Petersen §3.4, Exercise 3.4.16 (3): for `n > 2`, if the **Einstein
 tensor vanishes** (`G ≡ 0`) then the metric is **Einstein**,
@@ -560,13 +571,13 @@ gives `scal = (scal/2 − c)·n`, hence `scal/n = scal/2 − c`, and the pointwi
 identity follows. -/
 theorem exercise3_4_16 {B : V → V → V → V → ℝ} (hB : IsAlgCurvatureForm B) (c : ℝ)
     (hn : 2 < finrank ℝ V) (hG : ∀ x y, einsteinForm hB c x y = 0) :
-    ∀ x y, ricciForm hB x y = (algScalarCurvature hB / (finrank ℝ V : ℝ)) * ⟪x, y⟫ := by
+    ∀ x y, ricciForm hB.toR x y = (Riemannian.scalarCurvature hB.toR / (finrank ℝ V : ℝ)) * ⟪x, y⟫ := by
   set n : ℝ := (finrank ℝ V : ℝ) with hn_def
-  set s : ℝ := algScalarCurvature hB with hs_def
+  set s : ℝ := Riemannian.scalarCurvature hB.toR with hs_def
   have hn0 : n ≠ 0 := by
     rw [hn_def]; exact_mod_cast (by omega : finrank ℝ V ≠ 0)
   set e := stdOrthonormalBasis ℝ V with he
-  have hRic : ∀ x y, ricciForm hB x y = (s / 2 - c) * ⟪x, y⟫ := fun x y => by
+  have hRic : ∀ x y, ricciForm hB.toR x y = (s / 2 - c) * ⟪x, y⟫ := fun x y => by
     have h := hG x y
     simp only [einsteinForm, ← hs_def] at h
     linear_combination h
@@ -577,7 +588,7 @@ theorem exercise3_4_16 {B : V → V → V → V → ℝ} (hB : IsAlgCurvatureFor
     rw [Finset.sum_congr rfl (fun i _ => h1 i), Finset.sum_const, Finset.card_univ,
       Fintype.card_fin, nsmul_eq_mul, mul_one, hn_def]
   have htr : s = (s / 2 - c) * n := by
-    have hsum := algScalarCurvature_eq_sum_ricci hB e
+    have hsum := Riemannian.scalarCurvature_eq_sum_ricci hB.toR e
     rw [← hs_def] at hsum
     conv_lhs => rw [hsum]
     rw [Finset.sum_congr rfl (fun i _ => hRic (e i) (e i)), ← Finset.mul_sum, hcard]
@@ -912,26 +923,26 @@ theorem exercise3_4_15 {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ
       B (e i) (e j) (e k) (e l) = 0)
     (α β γ : ℝ) (hα : α = B (e 0) (e 1) (e 0) (e 1)) (hβ : β = B (e 1) (e 2) (e 1) (e 2))
     (hγ : γ = B (e 0) (e 2) (e 0) (e 2)) :
-    ricciForm hB (e 0) (e 0) = α + γ ∧
-    ricciForm hB (e 1) (e 1) = α + β ∧
-    ricciForm hB (e 2) (e 2) = β + γ ∧
-    ∀ i j : Fin 3, i ≠ j → ricciForm hB (e i) (e j) = 0 := by
+    ricciForm hB.toR (e 0) (e 0) = α + γ ∧
+    ricciForm hB.toR (e 1) (e 1) = α + β ∧
+    ricciForm hB.toR (e 2) (e 2) = β + γ ∧
+    ∀ i j : Fin 3, i ≠ j → ricciForm hB.toR (e i) (e j) = 0 := by
   subst hα hβ hγ
   refine ⟨?_, ?_, ?_, ?_⟩
-  · rw [ricciForm_eq_sum hB (e 0) (e 0) e, Fin.sum_univ_three]
+  · rw [ricciForm_eq_sum hB.toR (e 0) (e 0) e, Fin.sum_univ_three]
     have h0 := hB.self_left (e 0) (e 0) (e 0)
     rw [h0]; ring
-  · rw [ricciForm_eq_sum hB (e 1) (e 1) e, Fin.sum_univ_three]
+  · rw [ricciForm_eq_sum hB.toR (e 1) (e 1) e, Fin.sum_univ_three]
     have h0 := hB.self_left (e 1) (e 1) (e 1)
     have hswap := hB.diag_swap (e 0) (e 1)
     rw [h0, ← hswap]; ring
-  · rw [ricciForm_eq_sum hB (e 2) (e 2) e, Fin.sum_univ_three]
+  · rw [ricciForm_eq_sum hB.toR (e 2) (e 2) e, Fin.sum_univ_three]
     have h0 := hB.self_left (e 2) (e 2) (e 2)
     have hswap1 := hB.diag_swap (e 0) (e 2)
     have hswap2 := hB.diag_swap (e 1) (e 2)
     rw [h0, ← hswap1, ← hswap2]; ring
   · intro i j hij
-    rw [ricciForm_eq_sum hB (e i) (e j) e, Fin.sum_univ_three]
+    rw [ricciForm_eq_sum hB.toR (e i) (e j) e, Fin.sum_univ_three]
     fin_cases i <;> fin_cases j <;>
       simp only [Fin.isValue, Fin.mk_zero, Fin.mk_one, finMkTwo] at hij ⊢ <;>
       first
@@ -1264,13 +1275,13 @@ theorem directionalDerivative_bivectorInnerProduct
   have hUp : MDifferentiableAt I (I.prod 𝓘(ℝ, E)) (fun y => (⟨y, U y⟩ : TangentBundle I M)) p :=
     (hU p).mdifferentiableAt (by decide)
   have hda : MDifferentiableAt I 𝓘(ℝ) (fun q => g.metricInner q (Y q) (V q)) p :=
-    g.metricInner_raw_mdifferentiableAt hYp hVp
+    Riemannian.RiemannianMetric.metricInner_raw_mdifferentiableAt g hYp hVp
   have hdb : MDifferentiableAt I 𝓘(ℝ) (fun q => g.metricInner q (Z q) (U q)) p :=
-    g.metricInner_raw_mdifferentiableAt hZp hUp
+    Riemannian.RiemannianMetric.metricInner_raw_mdifferentiableAt g hZp hUp
   have hdc : MDifferentiableAt I 𝓘(ℝ) (fun q => g.metricInner q (Y q) (U q)) p :=
-    g.metricInner_raw_mdifferentiableAt hYp hUp
+    Riemannian.RiemannianMetric.metricInner_raw_mdifferentiableAt g hYp hUp
   have hdd : MDifferentiableAt I 𝓘(ℝ) (fun q => g.metricInner q (Z q) (V q)) p :=
-    g.metricInner_raw_mdifferentiableAt hZp hVp
+    Riemannian.RiemannianMetric.metricInner_raw_mdifferentiableAt g hZp hVp
   have hfun : (fun q => bivectorInnerProduct g q (Y q) (Z q) (V q) (U q))
       = (fun q => g.metricInner q (Y q) (V q)) * (fun q => g.metricInner q (Z q) (U q))
         - (fun q => g.metricInner q (Y q) (U q)) * (fun q => g.metricInner q (Z q) (V q)) := by
@@ -1333,10 +1344,10 @@ theorem exercise3_4_6 (D : RiemannianConnection I g) (k : ℝ) (hD : HasConstant
       (hV p).mdifferentiableAt (by decide)
     have hUp : MDifferentiableAt I (I.prod 𝓘(ℝ, E)) (fun y => (⟨y, U y⟩ : TangentBundle I M)) p :=
       (hU p).mdifferentiableAt (by decide)
-    exact (g.metricInner_raw_mdifferentiableAt hYp hVp).mul
-      (g.metricInner_raw_mdifferentiableAt hZp hUp) |>.sub
-      ((g.metricInner_raw_mdifferentiableAt hYp hUp).mul
-        (g.metricInner_raw_mdifferentiableAt hZp hVp))
+    exact (Riemannian.RiemannianMetric.metricInner_raw_mdifferentiableAt g hYp hVp).mul
+      (Riemannian.RiemannianMetric.metricInner_raw_mdifferentiableAt g hZp hUp) |>.sub
+      ((Riemannian.RiemannianMetric.metricInner_raw_mdifferentiableAt g hYp hUp).mul
+        (Riemannian.RiemannianMetric.metricInner_raw_mdifferentiableAt g hZp hVp))
   rw [covariantDerivativeCurvatureFour_apply, hfun,
     directionalDerivative_const_smul hda, hEq1, hEq2, hEq3,
     curvatureTensorFour_eq_bivectorInnerProduct_of_hasConstantCurvature D k hD hY hZ hV p,

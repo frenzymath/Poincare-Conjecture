@@ -1,0 +1,3770 @@
+% Source: Evans, "Partial Differential Equations" (2nd ed., AMS Graduate Studies in Mathematics vol. 19, 2010),
+% Chapter 7 "Linear Evolution Equations", PDF pages 354-433 of MathBooks/Evans Partial Differential Equations(1).pdf.
+% Transcribed page-by-page by vision subagents, then merged and restructured into
+% leanblueprint conventions (semantic \label, bracketed titles, \uses dependency edges) below.
+
+This long chapter studies various linear partial differential equations that involve time. We often call such PDE \textit{evolution equations}, the idea being that the solution evolves in time from a given initial configuration. We will study by energy methods general second-order parabolic and hyperbolic equations, and also certain first-order hyperbolic systems. The Fourier transform, utilized in \S7.3.3, and the semigroup technique, discussed in \S7.4, provide alternative approaches.
+
+\section{Second-Order Parabolic Equations}
+\label{sec:second-order-parabolic-equations}
+
+Second-order parabolic PDE are natural generalizations of the heat equation (\S2.3). We will study in this section the existence and uniqueness of appropriately defined weak solutions, their smoothness and other properties.
+
+\subsection{Definitions}
+
+\subsubsection{Parabolic equations}
+
+For this chapter we assume $U$ to be an open, bounded subset of $\mathbb{R}^n$, and as before set $U_T = U \times (0, T)$ for some fixed time $T > 0$.
+
+We will first study the initial/boundary-value problem
+\[
+\begin{cases}
+u_t + Lu = f & \text{in } U_T \\
+u = 0 & \text{on } \partial U \times [0, T] \\
+u = g & \text{on } U \times \{t = 0\},
+\end{cases}
+\tag{1}
+\]
+where $f : U_T \to \mathbb{R}$ and $g : U \to \mathbb{R}$ are given, and $u : \overline{U}_T \to \mathbb{R}$ is the unknown, $u = u(x,t)$. The letter $L$ denotes for each time $t$ a second-order partial differential operator, having either the divergence form
+\[
+Lu = -\sum_{i,j=1}^{n} (a^{ij}(x,t)u_{x_i})_{x_j} + \sum_{i=1}^{n} b^i(x,t)u_{x_i} + c(x,t)u
+\tag{2}
+\]
+or else the nondivergence form
+\[
+Lu = -\sum_{i,j=1}^{n} a^{ij}(x,t)u_{x_i x_j} + \sum_{i=1}^{n} b^i(x,t)u_{x_i} + c(x,t)u,
+\tag{3}
+\]
+for given coefficients $a^{ij}, b^i, c$ ($i, j = 1, \ldots, n$).
+
+\begin{definition}[Uniform parabolicity]
+\label{def:uniform-parabolicity}
+\dcref{ch7:7.1.1-def-1}
+\group{Parabolic PDE}
+We say that the partial differential operator $\frac{\partial}{\partial t} + L$ is (uniformly) parabolic if there exists a constant $\theta > 0$ such that
+\[
+\sum_{i,j=1}^{n} a^{ij}(x,t)\xi_i \xi_j \geq \theta|\xi|^2
+\tag{4}
+\]
+for all $(x,t) \in U_T$, $\xi \in \mathbb{R}^n$.
+\end{definition}
+
+\begin{remark}[Parabolic operators are elliptic at each fixed time]
+\label{rem:parabolic-operator-elliptic-fixed-time}
+\dcref{ch7:7.1.1-rem-1}
+\group{Parabolic PDE}
+\uses{def:uniform-parabolicity,def:uniform-ellipticity}
+Note in particular that for each fixed time $0 \leq t \leq T$ the operator $L$ is a uniformly elliptic operator in the spatial variable $x$.
+\end{remark}
+
+An obvious example is $a^{ij} = \delta_{ij}$, $b^i \equiv c \equiv f \equiv 0$; in which case $L = -\Delta$ and the PDE $\frac{\partial u}{\partial t} + Lu$ becomes the heat equation. We will see in fact that solutions of the general second-order parabolic PDE are similar in many ways to solutions of the heat equation.
+
+General second-order parabolic equations describe in physical applications the time-evolution of the density of some quantity $u$, say a chemical concentration, within the region $U$. As noted for the equilibrium setting (i.e., second-order elliptic PDE, in \S6.1), the second-order term $\sum_{i,j=1}^n a^{ij}u_{x_i x_j}$ describes diffusion, the first-order term $\sum_{i=1}^n b^i u_{x_i}$ describes transport, and the zeroth-order term $cu$ describes creation or depletion.
+
+The Fokker--Planck and Kolmogorov equations from the probabilistic study of diffusion processes are also second-order parabolic equations.
+
+\subsubsection{Weak solutions}
+
+Mimicking the developments in \S6.1 for elliptic equations, we consider first the case that $L$ has the divergence form (2) and try to find an appropriate notion of weak solution for the initial/boundary-value problem (1). We assume for now that
+\[
+a^{ij}, b^i, c \in L^\infty(U_T) \quad (i,j = 1, \ldots, n),
+\tag{5}
+\]
+\[
+f \in L^2(U_T),
+\tag{6}
+\]
+\[
+g \in L^2(U).
+\tag{7}
+\]
+We will also always suppose $a^{ij} = a^{ji}$ $(i,j = 1, \ldots, n)$.
+
+Let us now define, by analogy with the notation introduced in Chapter 6, the time-dependent bilinear form
+\[
+B[u, v; t] := \int_U \sum_{i,j=1}^n a^{ij}(\cdot, t) u_{x_i} v_{x_j} + \sum_{i=1}^n b^i(\cdot, t) u_{x_i} v + c(\cdot, t) uv \, dx
+\tag{8}
+\]
+for $u, v \in H_0^1(U)$ and a.e. $0 \le t \le T$.
+
+\begin{remark}[Motivation for definition of weak solution]
+\label{rem:motivation-weak-solution-parabolic}
+\dcref{ch7:7.1.1-rem-2}
+\group{Parabolic PDE}
+\uses{def:sobolev-space-time-banach,def:dual-space-h-minus-1}
+To make plausible the following definition of weak solution, let us first temporarily suppose that $u = u(x,t)$ is in fact a smooth solution of our parabolic problem (1). We now switch our viewpoint, by associating with $u$ a mapping
+\[
+\mathbf{u} : [0, T] \to H_0^1(U)
+\]
+defined by
+\[
+[\mathbf{u}(t)](x) := u(x, t) \quad (x \in U, \, 0 \le t \le T).
+\]
+In other words, we are going to consider $u$ not as a function of $x$ and $t$ together, but rather as a mapping $\mathbf{u}$ of $t$ into the space $H_0^1(U)$ of functions of $x$. This point of view will greatly clarify the following presentation.
+
+Returning to problem (1), let us similarly define
+\[
+\mathbf{f} : [0, T] \to L^2(U)
+\]
+by
+\[
+[\mathbf{f}(t)](x) := f(x,t) \quad (x \in U, 0 \le t \le T).
+\]
+
+Then if we fix a function $v \in H_0^1(U)$, we can multiply the PDE $\frac{\partial u}{\partial t} + Lu = f$ by $v$ and integrate by parts, to find
+\[
+(\mathbf{u}', v) + B[\mathbf{u},v;t] = (\mathbf{f},v) \qquad \left({}' = \frac{d}{dt}\right)
+\tag{9}
+\]
+for each $0 \le t \le T$, the pairing $(\,, \,)$ denoting inner product in $L^2(U)$.
+
+Next, observe that
+\[
+u_t = g^0 + \sum_{j=1}^n g^j_{x_j} \quad \text{in } U_T
+\tag{10}
+\]
+for $g^0 := f - \sum_{i=1}^n b^i u_{x_i} - cu$ and $g^j := \sum_{i=1}^n a^{ij} u_{x_i}$ $(j = 1, \ldots, n)$. Consequently (10) and the definitions from \cref{def:dual-space-h-minus-1} imply the right hand side of (10) lies in the Sobolev space $H^{-1}(U)$, with
+\[
+\|u_t\|_{H^{-1}(U)} \le \left(\sum_{j=0}^n \|g^j\|_{L^2(U)}^2\right)^{1/2} \le C\left(\|u\|_{H_0^1(U)} + \|f\|_{L^2(U)}\right).
+\]
+
+This estimate suggests it may be reasonable to look for a weak solution with $u' \in H^{-1}(U)$ for a.e. time $0 \le t \le T$; in which case the first term in (9) can be reexpressed as $\langle u', v \rangle$, $\langle \, , \, \rangle$ being the pairing of $H^{-1}(U)$ and $H_0^1(U)$.
+\end{remark}
+
+All these considerations motivate the following
+
+\begin{definition}[Weak solution of the parabolic initial/boundary-value problem]
+\label{def:weak-solution-parabolic-bvp}
+\dcref{ch7:7.1.1-def-2}
+\group{Parabolic PDE}
+\uses{rem:motivation-weak-solution-parabolic}
+We say a function
+\[
+\mathbf{u} \in L^2(0,T; H_0^1(U)), \text{ with } \mathbf{u}' \in L^2(0,T; H^{-1}(U)),
+\]
+is a weak solution of the parabolic initial/boundary-value problem (1) provided
+
+\quad (i) $\langle \mathbf{u}', v \rangle + B[\mathbf{u},v;t] = (\mathbf{f},v)$
+
+for each $v \in H_0^1(U)$ and a.e. time $0 \le t \le T$, and
+
+\quad (ii) $\mathbf{u}(0) = g$.
+\end{definition}
+
+\begin{remark}[Continuity of the weak solution]
+\label{rem:weak-solution-parabolic-continuity}
+\dcref{ch7:7.1.1-rem-3}
+\group{Parabolic PDE}
+\uses{def:weak-solution-parabolic-bvp,thm:more-calculus-h1-hminus1}
+In view of Theorem 3 in \S5.9, we see $u \in C([0,T]; L^2(U))$, and thus the equality (ii) makes sense.
+\end{remark}
+
+\subsection{Existence of Weak Solutions}
+
+\subsubsection{Galerkin approximations}
+
+We intend to build a weak solution of the parabolic problem
+\[
+\begin{cases}
+u_t + Lu = f & \text{in } U_T \\
+u = 0 & \text{on } \partial U \times [0,T] \\
+u = g & \text{on } U \times \{t = 0\}
+\end{cases} \tag{11}
+\]
+by first constructing solutions of certain finite-dimensional approximations to (11) and then passing to limits. This is called \textit{Galerkin's method}.
+
+More precisely, assume the functions $w_k = w_k(x)$ ($k = 1, \ldots$) are smooth,
+\[
+\{w_k\}_{k=1}^{\infty} \text{ is an orthogonal basis of } H_0^1(U), \tag{12}
+\]
+and
+\[
+\{w_k\}_{k=1}^{\infty} \text{ is an orthonormal basis of } L^2(U). \tag{13}
+\]
+(For instance, we could take $\{w_k\}_{k=1}^{\infty}$ to be the complete set of appropriately normalized eigenfunctions for $L = -\Delta$ in $H_0^1(U)$: see \S6.5.)
+
+Fix now a positive integer $m$. We will look for a function $u_m : [0,T] \to H_0^1(U)$ of the form
+\[
+u_m(t) := \sum_{k=1}^{m} d_m^k(t)w_k, \tag{14}
+\]
+where we hope to select the coefficients $d_m^k(t)$ ($0 \le t \le T$, $k = 1, \ldots, m$) so that
+\[
+d_m^k(0) = (g, w_k) \quad (k = 1, \ldots, m) \tag{15}
+\]
+and
+\[
+(u_m', w_k) + B[u_m, w_k; t] = (f, w_k) \quad (0 \le t \le T, k = 1, \ldots, m). \tag{16}
+\]
+(Here, as before, $(\cdot, \cdot)$ denotes the inner product in $L^2(U)$.)
+
+Thus we seek a function $u_m$ of the form (14) that satisfies the ``projection'' (16) of problem (11) onto the finite dimensional subspace spanned by $\{w_k\}_{k=1}^{m}$.
+
+\begin{theorem}[Construction of approximate solutions]
+\label{thm:parabolic-galerkin-approximate-solutions}
+\dcref{ch7:7.1-thm-1}
+\group{Parabolic PDE}
+For each integer $m = 1, 2, \ldots$ there exists a unique function $u_m$ of the form (14) satisfying (15), (16).
+\end{theorem}
+
+\begin{proof}
+Assuming $u_m$ has the structure (14), we first note from (13) that
+\[
+(u_m'(t), w_k) = (d_m^k)'(t).
+\]
+Furthermore
+\[
+B[u_m, w_k; t] = \sum_{l=1}^{m} c^{kl}(t)d^l_m(t),
+\]
+for $c^{kl}(t) := B[w_l, w_k; t]$ $(k, l = 1, \ldots, m)$. Let us further write $f^k(t) := (\mathbf{f}(t), w_k)$ $(k = 1, \ldots, m)$. Then (16) becomes the linear system of ODE
+\[
+(d_m^k)'(t) + \sum_{l=1}^{m} c^{kl}(t)d^l_m(t) = f^k(t) \quad (k = 1, \ldots, m),
+\tag{19}
+\]
+subject to the initial conditions (15). According to standard existence theory for ordinary differential equations, there exists a unique absolutely continuous function $\mathbf{d}_m(t) = (d^1_m(t), \ldots, d^m_m(t))$ satisfying (15) and (19) for a.e.\ $0 \leq t \leq T$. And then $u_m$ defined by (14) solves (16) for a.e.\ $0 \leq t \leq T$.
+\end{proof}
+
+\subsubsection{Energy estimates}
+
+We propose now to send $m$ to infinity and to show a subsequence of our solutions $u_m$ of the approximate problems (15), (16) converges to a weak solution of (11). For this we will need some uniform estimates.
+
+\begin{theorem}[Energy estimates]
+\label{thm:parabolic-energy-estimates}
+\dcref{ch7:7.1-thm-2}
+\group{Energy Estimates}
+\uses{thm:parabolic-galerkin-approximate-solutions,thm:energy-estimates}
+There exists a constant $C$, depending only on $U, T$ and the coefficients of $L$, such that
+\[
+\max_{0 \leq t \leq T} \|u_m(t)\|_{L^2(U)} + \|u_m\|_{L^2(0,T; H^1(U))} + \|u_m'\|_{L^2(0,T; H^{-1}(U))}
+\]
+\[
+\leq C(\|f\|_{L^2(0,T; L^2(U))} + \|g\|_{L^2(U)})
+\]
+for $m = 1, 2, \ldots$ .
+\end{theorem}
+
+\begin{proof}
+1. Multiply equation (16) by $d^k_m(t)$, sum for $k = 1, \ldots, m$, and then recall (14) to find
+\[
+(u_m', u_m) + B[u_m, u_m; t] = (f, u_m)
+\tag{21}
+\]
+for a.e. $0 \leq t \leq T$. We proved in \cref{thm:energy-estimates} that there exist constants $\beta > 0$, $\gamma \geq 0$ such that
+\[
+\beta\|u_m\|^2_{H^1_0(U)} \leq B[u_m, u_m; t] + \gamma\|u_m\|^2_{L^2(U)}
+\tag{22}
+\]
+for all $0 \leq t \leq T$, $m = 1,\ldots$ Furthermore $|(f, u_m)| \leq \frac{1}{2}\|f\|^2_{L^2(U)} + \frac{1}{2}\|u_m\|^2_{L^2(U)}$, and $(u'_m, u_m) = \frac{d}{dt}\left(\frac{1}{2}\|u_m\|^2_{L^2(U)}\right)$ for a.e. $0 \leq t \leq T$. Consequently (21) yields the inequality
+\[
+\frac{d}{dt}\left(\|u_m\|^2_{L^2(U)}\right) + 2\beta\|u_m\|^2_{H^1_0(U)} \leq C_1\|u_m\|^2_{L^2(U)} + C_2\|f\|^2_{L^2(U)}
+\tag{23}
+\]
+for a.e. $0 \leq t \leq T$, and appropriate constants $C_1$ and $C_2$.
+
+2. Now write
+\[
+\eta(t) := \|u_m(t)\|^2_{L^2(U)}
+\tag{24}
+\]
+and
+\[
+\xi(t) := \|f(t)\|^2_{L^2(U)}.
+\tag{25}
+\]
+Then (23) implies
+\[
+\eta'(t) \leq C_1\eta(t) + C_2\xi(t)
+\]
+for a.e. $0 \leq t \leq T$. Thus the differential form of Gronwall's inequality yields the estimate
+\[
+\eta(t) \leq e^{C_1 t}\left(\eta(0) + C_2 \int_0^t \xi(s)\, ds\right) \quad (0 \leq t \leq T).
+\tag{26}
+\]
+Since $\eta(0) = \|u_m(0)\|^2_{L^2(U)} \leq \|g\|^2_{L^2(U)}$ by (15), we obtain from (24)--(26) the estimate
+\[
+\max_{0 \leq t \leq T} \|u_m(t)\|^2_{L^2(U)} \leq C\left(\|g\|^2_{L^2(U)} + \|f\|^2_{L^2(0,T;L^2(U))}\right).
+\]
+
+3. Returning once more to inequality (23), we integrate from 0 to $T$ and employ the inequality above to find
+\[
+\|u_m\|^2_{L^2(0,T;H^1_0(U))} = \int_0^T \|u_m\|^2_{H^1_0(U)}\, dt \leq C\left(\|g\|^2_{L^2(U)} + \|f\|^2_{L^2(0,T;L^2(U))}\right).
+\]
+
+4. Fix any $v \in H^1_0(U)$, with $\|v\|_{H^1_0(U)} = 1$, and write $v = v^1 + v^2$, where $v^1 \in \text{span}\{w_k\}^m_{k=1}$ and $(v^2, w_k) = 0$ ($k = 1, \ldots, m$). Since the functions $\{w_k\}_{k=1}^\infty$ are orthogonal in $H_0^1(U)$, we have $\|v^1\|_{H_0^1(U)} \leq \|v\|_{H_0^1(U)} = 1$. Then (14) and (16) give
+\[
+(u_m', v) = (u_m', v^1) = (f, v^1) - B[u_m, v^1; t],
+\]
+whence
+\[
+|(u_m', v)| \leq C(\|f\|_{L^2(U)} + \|u_m\|_{H_0^1(U)}).
+\]
+Taking the supremum over such $v$, squaring, and integrating in time, we conclude
+\[
+\|u_m'\|^2_{L^2(0,T;H^{-1}(U))} \leq C\left(\|g\|^2_{L^2(U)} + \|f\|^2_{L^2(0,T;L^2(U))}\right),
+\]
+which, combined with steps 2 and 3, completes the proof.
+\end{proof}
+
+\begin{theorem}[Existence of weak solution]
+\label{thm:parabolic-existence-weak-solution}
+\dcref{ch7:7.1-thm-3}
+\group{Parabolic PDE}
+\uses{thm:parabolic-galerkin-approximate-solutions,thm:parabolic-energy-estimates,def:weak-solution-parabolic-bvp}
+There exists a weak solution of (11).
+\end{theorem}
+
+\begin{proof}
+% NOTE: PDF page 361, containing the opening of this proof, was lost to a transcription
+% failure (the vision subagent returned only a refusal message). Step 1 below is
+% reconstructed from the closely parallel argument given in full for the analogous
+% hyperbolic existence theorem, \cref{thm:hyperbolic-existence-weak-solution}, later in
+% this chapter; the remaining steps resume from the surviving source text on page 362.
+1. According to the energy estimates of \cref{thm:parabolic-energy-estimates}, the sequence $\{u_m\}_{m=1}^{\infty}$ is bounded in $L^2(0,T;H_0^1(U))$ and $\{u_m'\}_{m=1}^{\infty}$ is bounded in $L^2(0,T;H^{-1}(U))$. Consequently there is a subsequence $\{u_{m_l}\}_{l=1}^{\infty} \subset \{u_m\}_{m=1}^{\infty}$ and a function $u \in L^2(0,T;H_0^1(U))$, with $u' \in L^2(0,T;H^{-1}(U))$, such that
+\[
+\begin{cases}
+u_{m_l} \to u & \text{weakly in } L^2(0,T;H_0^1(U)) \\
+u_{m_l}' \to u' & \text{weakly in } L^2(0,T;H^{-1}(U)).
+\end{cases}
+\tag{27}
+\]
+
+2. Next fix an integer $N$ and choose a function $\mathbf{v} \in C^1([0,T]; H_0^1(U))$ having the form
+\[
+\mathbf{v}(t) = \sum_{k=1}^{N} d^k(t)w_k,
+\tag{28}
+\]
+where $\{d^k\}_{k=1}^N$ are given smooth functions. We choose $m \geq N$, multiply (16) by $d^k(t)$, sum $k = 1, \ldots, N$, and then integrate with respect to $t$ to find
+\[
+\int_0^T \langle \mathbf{u}'_m, \mathbf{v} \rangle + B[\mathbf{u}_m, \mathbf{v}; t] \, dt = \int_0^T (\mathbf{f}, \mathbf{v}) \, dt.
+\tag{29}
+\]
+We set $m = m_l$ and recall (27), to find upon passing to weak limits that
+\[
+\int_0^T \langle \mathbf{u}', \mathbf{v} \rangle + B[\mathbf{u}, \mathbf{v}; t] \, dt = \int_0^T (\mathbf{f}, \mathbf{v}) \, dt.
+\tag{30}
+\]
+This equality then holds for all functions $\mathbf{v} \in L^2(0,T; H_0^1(U))$, as functions of the form (28) are dense in this space. Hence in particular
+\[
+\langle \mathbf{u}', \mathbf{v} \rangle + B[\mathbf{u}, \mathbf{v}; t] = (\mathbf{f}, \mathbf{v})
+\tag{31}
+\]
+for each $\mathbf{v} \in H_0^1(U)$ and a.e. $0 \leq t \leq T$. From Theorem 3 in \S5.9 we see that furthermore $\mathbf{u} \in C([0,T]; L^2(U))$.
+
+3. In order to prove $\mathbf{u}(0) = g$, we first note from (30) that
+\[
+\int_0^T -\langle \mathbf{v}', \mathbf{u} \rangle + B[\mathbf{u}, \mathbf{v}; t] \, dt = \int_0^T (\mathbf{f}, \mathbf{v}) \, dt + (\mathbf{u}(0), \mathbf{v}(0))
+\tag{32}
+\]
+for each $\mathbf{v} \in C^1([0,T]; H_0^1(U))$ with $\mathbf{v}(T) = 0$. Similarly, from (29) we deduce
+\[
+\int_0^T -\langle \mathbf{v}', \mathbf{u}_m \rangle + B[\mathbf{u}_m, \mathbf{v}; t] \, dt = \int_0^T (\mathbf{f}, \mathbf{v}) \, dt + (\mathbf{u}_m(0), \mathbf{v}(0)).
+\tag{33}
+\]
+We set $m = m_l$ and once again employ (27) to find
+\[
+\int_0^T -\langle \mathbf{v}', \mathbf{u} \rangle + B[\mathbf{u}, \mathbf{v}; t] \, dt = \int_0^T (\mathbf{f}, \mathbf{v}) \, dt + (g, \mathbf{v}(0)),
+\tag{34}
+\]
+since $\mathbf{u}_{m_l}(0) \to g$ in $L^2(U)$. As $\mathbf{v}(0)$ is arbitrary, comparing (32) and (34), we conclude $\mathbf{u}(0) = g$.
+\end{proof}
+
+\begin{theorem}[Uniqueness of weak solutions]
+\label{thm:parabolic-uniqueness-weak-solution}
+\dcref{ch7:7.1-thm-4}
+\group{Parabolic PDE}
+\uses{def:weak-solution-parabolic-bvp,thm:energy-estimates}
+A weak solution of (11) is unique.
+\end{theorem}
+
+\begin{proof}
+It suffices to check that the only weak solution of (11) with $\mathbf{f} = \mathbf{g} \equiv 0$ is
+\[
+\mathbf{u} = 0.
+\tag{35}
+\]
+To prove this, observe that by setting $\mathbf{v} = \mathbf{u}$ in identity (31) (for $\mathbf{f} = 0$) we learn, using Theorem 3 in \S5.9, that
+\[
+\frac{d}{dt}\left(\frac{1}{2}\|\mathbf{u}\|^2_{L^2(U)}\right) + B[\mathbf{u},\mathbf{u};t] = \langle \mathbf{u}', \mathbf{u}\rangle + B[\mathbf{u},\mathbf{u};t] = 0.
+\tag{36}
+\]
+Since
+\[
+B[\mathbf{u},\mathbf{u};t] \geq \beta\|\mathbf{u}\|^2_{H^1(U)} - \gamma\|\mathbf{u}\|^2_{L^2(U)} \geq -\gamma\|\mathbf{u}\|^2_{L^2(U)},
+\]
+Gronwall's inequality and (36) imply (35).
+\end{proof}
+
+\subsection{Regularity}
+
+In this section we discuss the regularity of our weak solutions $u$ to the initial/boundary-value problem for second-order parabolic equations. Our eventual goal is to prove that $u$ is smooth, provided the coefficients of the PDE, the boundary of the domain, etc. are smooth. The following presentation mirrors that from \S6.3.
+
+\begin{remark}[Motivation: formal derivation of estimates]
+\label{rem:parabolic-regularity-motivation}
+\dcref{ch7:7.1.3-rem-1}
+\group{Regularity}
+(i) To gain some insight as to what regularity assertions could possibly be valid, let us temporarily suppose $u = u(x,t)$ is a smooth solution of this initial-value problem for the heat equation:
+\[
+\begin{cases} u_t - \Delta u = f & \text{in } \mathbb{R}^n \times (0,T) \\ u = g & \text{on } \mathbb{R}^n \times \{t = 0\}, \end{cases}
+\tag{37}
+\]
+and assume also $u$ goes to zero as $|x| \to \infty$ sufficiently rapidly to justify the following computations. We then calculate for $0 \leq t \leq T$:
+\[
+\int_{\mathbb{R}^n} f^2 \, dx = \int_{\mathbb{R}^n} (u_t - \Delta u)^2 \, dx
+\]
+\[
+= \int_{\mathbb{R}^n} u_t^2 - 2\Delta u \, u_t + (\Delta u)^2 \, dx
+\tag{38}
+\]
+\[
+= \int_{\mathbb{R}^n} u_t^2 + 2Du \cdot Du_t + (\Delta u)^2 \, dx.
+\]
+
+Now $2Du \cdot Du_t = \frac{d}{dt}(|Du|^2)$, and consequently
+\[
+\int_0^t \int_{\mathbb{R}^n} 2Du \cdot Du_t \, dx\,ds = \int_{\mathbb{R}^n} |Du|^2 \, dx \bigg|_{s=0}^{s=t}.
+\]
+Furthermore, as demonstrated in \S6.3,
+\[
+\int_{\mathbb{R}^n} (\Delta u)^2 \, dx = \int_{\mathbb{R}^n} |D^2u|^2 \, dx.
+\]
+We utilize the two equalities above in (38) and integrate in time, to obtain
+\[
+\sup_{0 \leq t \leq T} \int_{\mathbb{R}^n} |Du|^2 \, dx + \int_0^T \int_{\mathbb{R}^n} u_t^2 + |D^2u|^2 \, dx\,dt \leq C \left(\int_0^T \int_{\mathbb{R}^n} f^2 \, dx\,dt + \int_{\mathbb{R}^n} |Dg|^2 \, dx \right).
+\tag{39}
+\]
+We therefore see that we can estimate the $L^2$-norms of $u_t$ and $D^2u$ within $\mathbb{R}^n \times (0,T)$, in terms of the $L^2$-norm of $f$ on $\mathbb{R}^n \times (0,T)$ and the $L^2$-norm of $Dg$ on $\mathbb{R}^n$.
+
+(ii) Next differentiate the PDE with respect to $t$ and set $\tilde{u} := u_t$. Then
+\[
+\begin{cases}
+\tilde{u}_t - \Delta \tilde{u} = \tilde{f} & \text{in } \mathbb{R}^n \times (0,T] \\
+\tilde{u} = \tilde{g} & \text{on } \mathbb{R}^n \times \{t = 0\},
+\end{cases}
+\tag{40}
+\]
+for $\tilde{f} := f_t$, $\tilde{g} := u_t(\cdot, 0) = f(\cdot, 0) + \Delta g$. Multiplying by $\tilde{u}$, integrating by parts and invoking Gronwall's inequality, we deduce:
+\[
+\sup_{0 \leq t \leq T} \int_{\mathbb{R}^n} |u_t|^2 \, dx + \int_0^T \int_{\mathbb{R}^n} |Du_t|^2 \, dx\,dt \leq C \left(\int_0^T \int_{\mathbb{R}^n} f_t^2 \, dx\,dt + \int_{\mathbb{R}^n} |D^2g|^2 + f(\cdot, 0)^2 \, dx \right).
+\tag{41}
+\]
+But
+\[
+\max_{0 \leq t \leq T} \|f(\cdot, t)\|_{L^2(\mathbb{R}^n)} \leq C(\|f\|_{L^2(\mathbb{R}^n \times (0,T))} + \|f_t\|_{L^2(\mathbb{R}^n \times (0,T))}),
+\tag{42}
+\]
+according to Theorem 2,(iii) of \S5.9. Furthermore, writing $-\Delta u = f - u_t$, we find as in \S6.3 that
+\[
+\int_{\mathbb{R}^n} |D^2u|^2 \, dx \leq C \int_{\mathbb{R}^n} f^2 + u_t^2 \, dx.
+\tag{43}
+\]
+Combining (41)--(43) leads us to the estimate
+\[
+\sup_{0 \leq t \leq T} \int_{\mathbb{R}^n} |u_t|^2 + |D^2u|^2 \, dx + \int_0^T \int_{\mathbb{R}^n} |Du|^2 \, dx\,dt
+\]
+\[
+\leq C \left( \int_0^T \int_{\mathbb{R}^n} f_t^2 + f^2 \, dx\,dt + \int_{\mathbb{R}^n} |D^2 g|^2 \, dx \right),
+\tag{44}
+\]
+for some constant $C$.
+
+The foregoing formal computations suggest that we have estimates corresponding to (39) and (44) for our weak solution to a general second-order parabolic PDE. These calculations do not constitute a proof however, since our weak solution of (11), constructed above, is not smooth enough to justify the foregoing computations.
+\end{remark}
+
+We will instead calculate using the Galerkin approximations. To streamline the presentation, we hereafter assume that $\{w_k\}_{k=1}^\infty$ is the complete collection of eigenfunctions for $-\Delta$ on $H_0^1(U)$, and that $U$ is bounded, open, with $\partial U$ smooth. We furthermore suppose that
+\[
+\begin{cases} \text{the coefficients } a^{ij}, b^i, c \text{ } (i,j = 1, \ldots, n) \text{ are smooth on} \\ \bar{U} \text{ and do not depend on } t. \end{cases}
+\tag{45}
+\]
+
+\begin{theorem}[Improved regularity]
+\label{thm:parabolic-improved-regularity}
+\dcref{ch7:7.1-thm-5}
+\group{Regularity}
+\uses{def:weak-solution-parabolic-bvp,thm:boundary-h2-regularity}
+(i) Assume
+\[
+g \in H_0^1(U), \quad f \in L^2(0,T; L^2(U)).
+\]
+Suppose also $u \in L^2(0,T; H_0^1(U))$, with $u' \in L^2(0,T; H^{-1}(U))$, is the weak solution of
+\[
+\begin{cases}
+u_t + Lu = f & \text{in } U_T \\
+u = 0 & \text{on } \partial U \times [0,T] \\
+u = g & \text{on } U \times \{t = 0\}.
+\end{cases}
+\]
+Then in fact
+\[
+u \in L^2(0,T; H^2(U)) \cap L^\infty(0,T; H_0^1(U)), \quad u' \in L^2(0,T; L^2(U)),
+\]
+and we have the estimate
+\[
+\operatorname{ess\,sup}_{0 \leq t \leq T} \|u(t)\|_{H_0^1(U)} + \|u\|_{L^2(0,T; H^2(U))} + \|u'\|_{L^2(0,T; L^2(U))}
+\]
+\[
+\leq C \left( \|f\|_{L^2(0,T; L^2(U))} + \|g\|_{H_0^1(U)} \right),
+\tag{46}
+\]
+the constant $C$ depending only on $U$, $T$ and the coefficients of $L$.
+
+(ii) If, in addition,
+\[
+g \in H^2(U), \quad f' \in L^2(0,T;L^2(U)),
+\]
+then
+\[
+u \in L^\infty(0,T;H^2(U)), \quad u' \in L^\infty(0,T;L^2(U)) \cap L^2(0,T;H_0^1(U)),
+\]
+\[
+u'' \in L^2(0,T;H^{-1}(U)),
+\]
+with the estimate
+\[
+\operatorname{ess\,sup}_{0 \leq t \leq T} \left( \|u(t)\|_{H^2(U)} + \|u'(t)\|_{L^2(U)} + \|u\|_{L^2(0,T;H_0^1(U))} \right.
+\]
+\[
+\left. + \|u''\|_{L^2(0,T;H^{-1}(U))} \right) \leq C \left( \|f\|_{H^1(0,T;L^2(U))} + \|g\|_{H^2(U)} \right).
+\tag{47}
+\]
+\end{theorem}
+
+\begin{remark}[Precise versions of the formal estimates]
+\label{rem:parabolic-improved-regularity-remark}
+\dcref{ch7:7.1.3-rem-2}
+\group{Regularity}
+\uses{thm:parabolic-improved-regularity,rem:parabolic-regularity-motivation}
+Assertions (i), (ii) of \cref{thm:parabolic-improved-regularity} are precise versions of the formal estimates (39), (44) (for the heat equation on $U = \mathbb{R}^n$).
+\end{remark}
+
+\begin{proof}
+1. Fixing $m \geq 1$, we multiply equation (16) by $(d_m^k)'(t)$ and sum $k = 1, \ldots, m$, to discover
+\[
+(u_m', u_m') + B[u_m, u_m'] = (f, u_m')
+\]
+for a.e. $0 \leq t \leq T$. Now
+\[
+B[u_m, u_m'] = \int_U \sum_{i,j=1}^n a^{ij} u_{m,x_i} u'_{m,x_j} \, dx
+\]
+\[
++ \int_U \sum_{i=1}^n b^i u_{m,x_i} u_m' + c u_m u_m' \, dx
+\]
+\[
+=: A + B.
+\]
+Since $a^{ij} = a^{ji}$ $(i,j = 1, \ldots, n)$ and these coefficients do not depend on $t$, we see $A = \frac{d}{dt}\left(\frac{1}{2}A[u_m, u_m]\right)$, for the symmetric bilinear form
+\[
+A[u, v] := \int_U \sum_{i,j=1}^n a^{ij} u_{x_i} v_{x_j} \, dx \quad (u, v \in H_0^1(U)).
+\]
+Furthermore,
+\[
+|B| \leq \frac{C}{\epsilon}\|u_m\|_{H_0^1(U)}^2 + \epsilon\|u_m'\|_{L^2(U)}^2, \quad |(f, u_m')| \leq \frac{C}{\epsilon}\|f\|_{L^2(U)}^2 + \epsilon\|u_m'\|_{L^2(U)}^2
+\]
+for each $\epsilon > 0$.
+
+2. Combining the above inequalities, we deduce
+\[
+\|u'_m\|^2_{L^2(U)} + \frac{d}{dt}\left(\frac{1}{2}A[u_m, u_m]\right)
+\]
+\[
+\leq \frac{C}{\epsilon}(\|u_m\|^2_{H^1(U)} + \|f\|^2_{L^2(U)}) + 2\epsilon\|u'_m\|^2_{L^2(U)}.
+\]
+Choosing $\epsilon = \frac{1}{4}$ and integrating, we find
+\[
+\int_0^T \|u'_m\|^2_{L^2(U)} \, dt + \sup_{0 \le t \le T} A[u_m(t), u_m(t)]
+\]
+\[
+\leq C\left(A[u_m(0), u_m(0)] + \int_0^T \left(\|u_m\|^2_{H^1_0(U)} + \|f\|^2_{L^2(U)}\right) dt\right)
+\]
+\[
+\leq C\left(\|g\|^2_{H^1_0(U)} + \|f\|^2_{L^2(0,T;L^2(U))}\right),
+\]
+according to \cref{thm:parabolic-energy-estimates}, where we estimated $\|u_m(0)\|_{H^1_0(U)} \leq \|g\|_{H^1_0(U)}$. As $A[u,u] \geq \theta \int_U |Du|^2 dx$ for each $u \in H^1_0(U)$, we find that
+\[
+\sup_{0 \le t \le T} \|u_m(t)\|^2_{H^1_0(U)} \leq C\left(\|g\|^2_{H^1_0(U)} + \|f\|^2_{L^2(0,T;L^2(U))}\right).
+\tag{48}
+\]
+Passing to limits as $m = m_l \to \infty$, we deduce $u \in L^\infty(0,T;H^1_0(U))$, $u' \in L^2(0,T;L^2(U))$, with the stated bounds; cf.\ Problem 5.
+
+3. In particular, for a.e. $t$ we have the identity
+\[
+(u', v) + B[u, v] = (f, v)
+\]
+for each $v \in H^1_0(U)$. This equality we rewrite to read
+\[
+B[u, v] = (h, v)
+\]
+for $h := f - u'$. Since $h(t) \in L^2(U)$ for a.e. $0 \le t \le T$, we deduce from the elliptic regularity theorem, \cref{thm:boundary-h2-regularity}, that $u(t) \in H^2(U)$ for a.e. $0 \le t \le T$, with the estimate
+\[
+\|u\|^2_{H^2(U)} \leq C(\|h\|^2_{L^2(U)} + \|u\|^2_{L^2(U)})
+\]
+\[
+\leq C(\|f\|^2_{L^2(U)} + \|u'\|^2_{L^2(U)} + \|u\|^2_{L^2(U)}).
+\tag{49}
+\]
+Integrating and utilizing the estimates from step 2, we complete the proof of (i).
+
+4. The goal next is to establish higher regularity for our weak solution. So now suppose $g \in H^2(U) \cap H^1_0(U)$, $f \in H^1(0,T;L^2(U))$. Fix $m \geq 1$ and differentiate equation (16) with respect to $t$. Owing to (45), we find
+\[
+(\bar u_m', w_k) + B[\bar u_m, w_k] = (f', w_k) \quad (k = 1, \ldots, m),
+\tag{50}
+\]
+where $\bar u_m := u_m'$. Multiply (50) by $d^k_m(t)$ and sum $k = 1, \ldots, m$:
+\[
+(\bar u_m', \bar u_m) + B[\bar u_m, \bar u_m] = (f', \bar u_m).
+\]
+Employing Gronwall's inequality, we deduce
+\[
+\sup_{0 \leq t \leq T} \|u_m'(t)\|^2_{L^2(U)} + \int_0^T \|u_m'\|^2_{H^1_0(U)} dt
+\]
+\[
+\leq C(\|u_m'(0)\|^2_{L^2(U)} + \|f'\|^2_{L^2(0,T;L^2(U))})
+\]
+\[
+\leq C(\|f\|^2_{H^1(0,T;L^2(U))} + \|u_m(0)\|^2_{H^1(U)}).
+\tag{51}
+\]
+We employed (16) in the last inequality.
+
+5. We must estimate the last term in (51). Remember that we have taken $\{w_k\}^\infty_{k=1}$ to be the complete collection of (smooth) eigenfunctions for $-\Delta$ on $H^1_0(\bar{U})$. In particular, $\Delta u_m = 0$ on $\partial U$. Thus
+\[
+\|u_m(0)\|^2_{H^2(U)} \leq C\|\Delta u_m(0)\|^2_{L^2(U)} = C(u_m(0), \Delta^2 u_m(0)).
+\]
+Since $\Delta^2 u_m(0) \in \text{span}\{w_k\}^m_{k=1}$ and $(u_m(0), w_k) = (g, w_k)$ for $k = 1, \ldots, m$, we have
+\[
+\|u_m(0)\|^2_{H^2(U)} \leq C(g, \Delta^2 u_m(0)) = C(\Delta g, \Delta u_m(0))
+\]
+\[
+\leq \frac{1}{2}\|u_m(0)\|^2_{H^2(U)} + C\|g\|^2_{H^2(U)}.
+\]
+Hence $\|u_m(0)\|_{H^2(U)} \leq C\|g\|_{H^2(U)}$. Therefore (51) implies
+\[
+\sup_{0 \leq t \leq T} \|u_m'(t)\|^2_{L^2(U)} + \int_0^T \|u_m'\|^2_{H^1_0(U)} dt
+\]
+\[
+\leq C(\|f\|^2_{H^1(0,T;L^2(U))} + \|g\|^2_{H^2(U)}).
+\tag{52}
+\]
+
+6. Now
+\[
+B[u_m, w_k] = (f - u_m', w_k) \quad (k = 1, \ldots, m).
+\]
+Let $\lambda_k$ denote the $k^{\text{th}}$ eigenvalue of $-\Delta$ on $H^1_0(U)$. Multiplying the above identity by $\lambda_k d^k_m(t)$ and summing $k = 1, \ldots, m$, we deduce for $0 \leq t \leq T$ that
+\[
+B[u_m, -\Delta u_m] = (f - u_m', -\Delta u_m).
+\tag{53}
+\]
+Since $\Delta u_m = 0$ on $\partial U$, we see $B[u_m, -\Delta u_m] = (Lu_m, -\Delta u_m)$. Next we invoke the inequality
+\[
+\beta\|u\|_{H^2(U)}^2 \leq (Lu, -\Delta u) + \gamma\|u\|_{L^2(U)}^2 \quad (u \in H^2(U) \cap H_0^1(U))
+\tag{54}
+\]
+for constants $\beta > 0$, $\gamma \geq 0$. See Problem 8 and also \cref{rem:parabolic-regularity-symmetric-eigenfunctions} following this proof.
+
+We thereupon conclude from (53) that
+\[
+\|u_m\|_{H^2(U)} \leq C(\|f\|_{L^2(U)} + \|u_m'\|_{L^2(U)} + \|u_m\|_{L^2(U)}).
+\]
+This inequality, (52), (48) and Theorem 3 in \S5.9 imply
+\[
+\sup_{0 \leq t \leq T} (\|u_m'(t)\|_{L^2(U)}^2 + \|u_m(t)\|_{H^2(U)}^2) + \int_0^T \|u_m''\|_{H_0^1(U)}^2 \, dt
+\]
+\[
+\leq C(\|f\|_{H^1(0,T;L^2(U))}^2 + \|g\|_{H^2(U)}^2).
+\]
+Passing to limits as $m = m_l \to \infty$, we deduce the same bound for $u$.
+
+7. It remains to show $u'' \in L^2(0, T; H^{-1}(U))$. To do so, take $v \in H_0^1(U)$, with $\|v\|_{H_0^1(U)} \leq 1$, and write $v = v^1 + v^2$, as in the proof of \cref{thm:parabolic-energy-estimates}. Then for a.e. time $0 \leq t \leq T$:
+\[
+(u_m'', v) = (u_m'', v^1) = (f', v^1) - B[u_m', v^1; t]
+\]
+according to (50), since $u_m'' = \bar u_m'$. Consequently
+\[
+|(u_m'', v)| \leq C(\|f'\|_{L^2(U)} + \|u_m'\|_{H_0^1(U)}),
+\]
+since $\|v^1\|_{H_0^1(U)} \leq 1$. Thus
+\[
+\|u_m''\|_{H^{-1}(U)} \leq C(\|f'\|_{L^2(U)} + \|u_m'\|_{H_0^1(U)}),
+\]
+and so $u_m''$ is bounded in $L^2(0, T; H^{-1}(U))$. Passing to limits, we deduce that $u'' \in L^2(0, T; H^{-1}(U))$, with the stated estimate.
+\end{proof}
+
+\begin{remark}[Symmetric operators and eigenfunction bases]
+\label{rem:parabolic-regularity-symmetric-eigenfunctions}
+\dcref{ch7:7.1.3-rem-3}
+\group{Regularity}
+\uses{thm:parabolic-improved-regularity}
+If $L$ were symmetric, we could alternatively have taken $\{w_k\}_{k=1}^\infty$ to be a basis of eigenfunctions of $L$ on $H_0^1(U)$, and so avoided the need for inequality (54).
+\end{remark}
+
+Let us now build upon the previous regularity assertion:
+
+\begin{theorem}[Higher regularity]
+\label{thm:parabolic-higher-regularity}
+\dcref{ch7:7.1-thm-6}
+\group{Regularity}
+\uses{thm:parabolic-improved-regularity,thm:higher-boundary-regularity,thm:mappings-into-better-spaces}
+Assume
+\[
+g \in H^{2m+1}(U), \quad \frac{d^k f}{dt^k} \in L^2(0,T; H^{2m-2k}(U)) \quad (k=0,\ldots,m).
+\]
+Suppose also the following $m^{\text{th}}$-order compatibility conditions hold:
+\[
+\begin{cases}
+g_0 := g \in H^1_0(U), \quad g_1 := f(0) - Lg_0 \in H^1_0(U), \\
+\ldots, \quad g_m := \dfrac{d^{m-1}}{dt^{m-1}}f(0) - Lg_{m-1} \in H^1_0(U).
+\end{cases}
+\]
+Then
+\[
+\frac{d^k u}{dt^k} \in L^2(0,T; H^{2m+2-2k}(U)) \quad (k=0,\ldots,m+1);
+\]
+and we have the estimate
+\[
+\sum_{k=0}^{m+1} \left\| \frac{d^k u}{dt^k} \right\|_{L^2(0,T;H^{2m+2-2k}(U))}
+\]
+\[
+\leq C \left( \sum_{k=0}^{m} \left\| \frac{d^k f}{dt^k} \right\|_{L^2(0,T,H^{2m-2k}(U))} + \|g\|_{H^{2m+1}(U)} \right),
+\tag{55}
+\]
+the constant $C$ depending only on $m, U, T$ and the coefficients of $L$.
+\end{theorem}
+
+\begin{remark}[Compatibility conditions]
+\label{rem:parabolic-compatibility-conditions}
+\dcref{ch7:7.1.3-rem-4}
+\group{Regularity}
+\uses{thm:parabolic-higher-regularity,thm:mappings-into-better-spaces}
+Taking into account Theorem 4 in \S5.9, we see that
+\[
+f(0) \in H^{2m-1}(U), \quad f'(0) \in H^{2m-3}(U), \ldots, \quad f^{(m-1)}(0) \in H^1(U),
+\]
+and consequently
+\[
+g_0 \in H^{2m+1}(U), \quad g_1 \in H^{2m-1}(U), \ldots, \quad g_m \in H^1(U).
+\]
+The compatibility conditions are consequently the requirements that, in addition, each of these functions equals $0$ on $\partial U$, in the trace sense.
+\end{remark}
+
+\begin{proof}
+1. The proof is an induction on $m$, the case $m=0$ being \cref{thm:parabolic-improved-regularity},(i) above.
+
+2. Assume now the theorem is valid for some nonnegative integer $m$, and suppose then
+\[
+g \in H^{2m+3}(U), \quad \frac{d^k f}{dt^k} \in L^2(0,T; H^{2m+2-2k}(U)) \quad (k=0,\ldots,m+1),
+\tag{56}
+\]
+and the $(m+1)^{\text{th}}$-order compatibility conditions hold. Now set $\tilde{u} := u'$. Differentiating the PDE with respect to $t$, we check that $\tilde{u}$ is the unique weak solution of
+\[
+\begin{cases}
+\tilde{u}_t + L\tilde{u} = \tilde{f} & \text{in } U_T \\
+\tilde{u} = 0 & \text{on } \partial U \times [0,T] \\
+\tilde{u} = \tilde{g} & \text{on } U \times \{t = 0\},
+\end{cases}
+\tag{57}
+\]
+for $\tilde{f} := f_t$, $\tilde{g} := f(\cdot, 0) - Lg$. In particular, for $m = 0$ we rely upon \cref{thm:parabolic-improved-regularity},(ii) to be sure that $\tilde u \in L^2(0, T; H_0^1(U))$, $\tilde u' \in L^2(0, T; H^{-1}(U))$.
+
+Since $f$ and $g$ satisfy the $(m+1)^{\text{th}}$-order compatibility conditions, it follows that $\tilde{f}$ and $\tilde{g}$ satisfy the $m^{\text{th}}$-order compatibility condition. Thus applying the induction assumption, we deduce
+\[
+\frac{d^k\tilde{u}}{dt^k} \in L^2(0, T; H^{2m+2-2k}(U)) \quad (k = 0, \ldots, m+1)
+\]
+and
+\[
+\sum_{k=0}^{m+1} \left\|\frac{d^k\tilde{u}}{dt^k}\right\|_{L^2(0,T;H^{2m+2-2k}(U))} \leq C\left(\sum_{k=0}^{m} \left\|\frac{d^k\tilde{f}}{dt^k}\right\|_{L^2(0,T;H^{2m-2k}(U))} + \|\tilde{g}\|_{H^{2m+1}(U)}\right)
+\]
+for $\tilde{f} := f'$. Since $\tilde u = u'$, we can rewrite the foregoing:
+\[
+\frac{d^k u}{dt^k} \in L^2(0, T; H^{2m+4-2k}(U)) \quad (k = 1, \ldots, m+2),
+\]
+\[
+\sum_{k=1}^{m+2} \left\|\frac{d^k u}{dt^k}\right\|_{L^2(0,T;H^{2m+4-2k}(U))}
+\]
+\[
+\leq C\left(\sum_{k=1}^{m+1} \left\|\frac{d^k f}{dt^k}\right\|_{L^2(0,T;H^{2m+2-2k}(U))} + \|f(0)\|_{H^{2m+1}(U)} + \|Lg\|_{H^{2m+1}(U)}\right)
+\]
+\[
+\leq C\left(\sum_{k=0}^{m+1} \left\|\frac{d^k f}{dt^k}\right\|_{L^2(0,T;H^{2m+2-2k}(U))} + \|g\|_{H^{2m+3}(U)}\right).
+\tag{58}
+\]
+Here we used the estimate
+\[
+\|f(0)\|_{H^{2m+1}(U)} \leq C(\|f\|_{L^2(0,T;H^{2m+2}(U))} + \|f'\|_{L^2(0,T;H^{2m}(U))}),
+\tag{59}
+\]
+which follows from Theorem 4 in \S5.9.
+
+3. Now write for a.e. $0 \leq t \leq T$: $Lu = f - u' =: h$. According to \cref{thm:higher-boundary-regularity}, we have
+\[
+\|u\|_{H^{2m+4}(U)} \leq C(\|h\|_{H^{2m+2}(U)} + \|u\|_{L^2(U)})
+\]
+\[
+\leq C(\|f\|_{H^{2m+2}(U)} + \|u'\|_{H^{2m+2}(U)} + \|u\|_{L^2(U)}).
+\]
+Integrating with respect to $t$ from $0$ to $T$ and adding the resulting expression to (58), we deduce
+\[
+\sum_{k=0}^{m+2} \left\| \frac{d^k u}{dt^k} \right\|_{L^2(0,T;H^{2m+4-2k}(U))}
+\]
+\[
+\leq C \left( \sum_{k=0}^{m+1} \left\| \frac{d^k f}{dt^k} \right\|_{L^2(0,T;H^{2m+2-2k}(U))} + \|g\|_{H^{2m+3}(U)} + \|u\|^2_{L^2(0,T;L^2(U))} \right).
+\tag{60}
+\]
+Since
+\[
+\|u\|_{L^2(0,T;L^2(U))} \leq C(\|f\|_{L^2(0,T;L^2(U))} + \|g\|_{L^2(U)}),
+\]
+we thereby obtain the assertion of the theorem for $m + 1$.
+\end{proof}
+
+\begin{theorem}[Infinite differentiability]
+\label{thm:parabolic-infinite-differentiability}
+\dcref{ch7:7.1-thm-7}
+\group{Regularity}
+\uses{thm:parabolic-higher-regularity}
+Assume
+\[
+g \in C^\infty(\bar{U}), \quad f \in C^\infty(\bar{U}_T),
+\]
+and the $m$-th order compatibility conditions hold for $m = 0, 1, \ldots$ . Then the parabolic initial/boundary-value problem (11) has a unique solution
+\[
+u \in C^\infty(\bar{U}_T).
+\]
+\end{theorem}
+
+\begin{proof}
+Apply \cref{thm:parabolic-higher-regularity} for $m = 0, 1, \ldots$ .
+\end{proof}
+
+As we did for elliptic operators in Chapter 6, we have succeeded in repeatedly applying fairly straightforward ``energy'' estimates to produce a smooth solution of our parabolic initial/boundary-value problem (1). This assertion requires the compatibility conditions hold for all $m$, and it is easy to see that these conditions are necessary for the existence of a solution smooth on all of $\bar{U}_T$.
+
+\begin{remark}[Interior estimates]
+\label{rem:parabolic-interior-estimates}
+\dcref{ch7:7.1.3-rem-5}
+\group{Regularity}
+\uses{thm:parabolic-infinite-differentiability,thm:interior-h2-regularity}
+Interior estimates, analogous to those developed for elliptic PDE in \S6.3, can also be derived, and these in particular do not require the compatibility conditions.
+\end{remark}
+
+\subsection{Maximum Principles}
+
+This section develops the maximum principle and Harnack's inequality for second-order parabolic operators.
+
+\subsubsection{Weak maximum principle}
+
+We will from now on assume that the operator $L$ has the nondivergence form
+\[
+Lu = -\sum_{i,j=1}^{n} a^{ij}u_{x_i x_j} + \sum_{i=1}^{n} b^i u_{x_i} + cu,
+\tag{61}
+\]
+where the coefficients $a^{ij}$, $b^i$, $c$ are continuous. We will always suppose the uniform parabolicity condition from \cref{def:uniform-parabolicity}, and also that $a^{ij} = a^{ji}$ ($i,j = 1,\ldots,n$). Recall also that the parabolic boundary of $U_T$ is $\Gamma_T = \overline{U_T} - U_T$.
+
+\begin{theorem}[Weak maximum principle]
+\label{thm:parabolic-weak-maximum-principle}
+\dcref{ch7:7.1-thm-8}
+\group{Maximum Principles}
+\uses{def:uniform-parabolicity,thm:weak-maximum-principle-c-zero}
+Assume $u \in C^2_1(U_T) \cap C(\overline{U_T})$ and
+\[
+c = 0 \quad \text{in } U_T.
+\tag{62}
+\]
+(i) If
+\[
+u_t + Lu \leq 0 \quad \text{in } U_T,
+\tag{63}
+\]
+then
+\[
+\max_{\bar U_T} u = \max_{\Gamma_T} u.
+\]
+(ii) Likewise, if
+\[
+u_t + Lu \geq 0 \quad \text{in } U_T,
+\tag{64}
+\]
+then
+\[
+\min_{\bar U_T} u = \min_{\Gamma_T} u.
+\]
+\end{theorem}
+
+\begin{remark}[Subsolution and supersolution terminology]
+\label{rem:parabolic-subsolution-supersolution}
+\dcref{ch7:7.1.4-rem-1}
+\group{Maximum Principles}
+\uses{thm:parabolic-weak-maximum-principle}
+A function $u$ satisfying the inequality (63) is called a \textit{subsolution}, and so we are asserting that a subsolution attains its maximum on the parabolic boundary $\Gamma_T$. Similarly, $u$ is a \textit{supersolution} provided (64) holds, in which case $u$ attains its minimum on $\Gamma_T$.
+\end{remark}
+
+\begin{proof}
+1. Let us first suppose we have the strict inequality
+\[
+u_t + Lu < 0 \quad \text{in } U_T,
+\tag{65}
+\]
+but there exists a point $(x_0, t_0) \in U_T$ with $u(x_0, t_0) = \max_{\Gamma_T} u$.
+
+2. If $0 < t_0 < T$, then $(x_0, t_0)$ belongs to the interior of $U_T$ and consequently
+\[
+u_t = 0 \quad \text{at } (x_0, t_0),
+\tag{66}
+\]
+since $u$ attains its maximum at this point. On the other hand $Lu \geq 0$ at $(x_0,t_0)$, as explained in the proof of \cref{thm:weak-maximum-principle-c-zero}. Thus $u_t + Lu \geq 0$ at $(x_0,t_0)$, a contradiction to (65).
+
+3. Now suppose $t_0 = T$. Then since $u$ attains its maximum over $\bar{U}_T$ at $(x_0,t_0)$, we see
+\[
+u_t \geq 0 \text{ at } (x_0,t_0).
+\]
+Since we still have the inequality $Lu \geq 0$ at $(x_0,t_0)$, we once more deduce the contradiction
+\[
+u_t + Lu \geq 0 \text{ at } (x_0,t_0).
+\]
+
+4. In the general case that (63) holds, write $u^\epsilon(x,t) := u(x,t) - \epsilon t$ where $\epsilon > 0$. Then
+\[
+u_t^\epsilon + Lu^\epsilon = u_t + Lu - \epsilon < 0 \text{ in } U_T,
+\]
+and so $\max_{\bar U_T} u^\epsilon = \max_{\Gamma_T} u^\epsilon$. Let $\epsilon \to 0$ to find $\max_{\bar U_T} u = \max_{\Gamma_T} u$. This proves assertion (i).
+
+5. As $-u$ is a subsolution whenever $u$ is a supersolution, assertion (ii) follows at once.
+\end{proof}
+
+Next we allow for zeroth-order terms.
+
+\begin{theorem}[Weak maximum principle for $c \geq 0$]
+\label{thm:parabolic-weak-maximum-principle-c-nonneg}
+\dcref{ch7:7.1-thm-9}
+\group{Maximum Principles}
+\uses{thm:parabolic-weak-maximum-principle}
+Assume $u \in C_1^2(U_T) \cap C(\bar{U}_T)$ and
+\[
+c \geq 0 \text{ in } U_T.
+\]
+(i) If
+\[
+u_t + Lu \leq 0 \text{ in } U_T,
+\]
+then
+\[
+\max_{\bar{U}_T} u \leq \max_{\Gamma_T} u^+.
+\]
+(ii) If
+\[
+u_t + Lu \geq 0 \text{ in } U_T,
+\]
+then
+\[
+\min_{\bar{U}_T} u \geq - \max_{\Gamma_T} u^-.
+\]
+\end{theorem}
+
+\begin{remark}[Absolute value bound]
+\label{rem:parabolic-weak-max-principle-abs-value}
+\dcref{ch7:7.1.4-rem-2}
+\group{Maximum Principles}
+\uses{thm:parabolic-weak-maximum-principle-c-nonneg}
+In particular, if $u_t + Lu = 0$ within $U_T$, then
+\[
+\max_{\bar{U}_T} |u| = \max_{\Gamma_T} |u|.
+\]
+\end{remark}
+
+\begin{proof}
+1. Assume $u$ satisfies
+\[
+u_t + Lu < 0 \text{ in } U_T
+\tag{67}
+\]
+and attains a \textit{positive} maximum at a point $(x_0, t_0) \in U_T$. Since $u(x_0, t_0) > 0$ and $c \geq 0$, we as above derive the contradiction
+\[
+u_t + Lu \geq 0 \text{ at } (x_0, t_0).
+\]
+
+2. If instead of (67), we have only
+\[
+u_t + Lu \leq 0 \text{ in } U_T,
+\]
+then as before $u^\epsilon(x,t) := u(x,t) - \epsilon t$ satisfies
+\[
+u^\epsilon_t + Lu^\epsilon < 0 \text{ in } U_T.
+\]
+Furthermore if $u$ attains a positive maximum at some point in $U_T$, then $u^\epsilon$ also attains a positive maximum at some point belonging to $\partial U_T$, provided $\epsilon > 0$ is small enough. But then, as in the previous proof, we obtain a contradiction.
+
+3. Assertion (ii) follows similarly.
+\end{proof}
+
+\begin{remark}[Maximum principles with $c$ not necessarily nonnegative]
+\label{rem:parabolic-max-principle-negative-c}
+\dcref{ch7:7.1.4-rem-3}
+\group{Maximum Principles}
+\uses{thm:parabolic-weak-maximum-principle-c-nonneg}
+Unlike the situation for elliptic PDE, various versions of the maximum principle obtain for parabolic PDE, \textit{even if the zeroth-order coefficient is negative}: see Problem 7.
+\end{remark}
+
+\subsubsection{Harnack's inequality}
+
+Harnack's inequality states that if $u$ is a nonnegative solution of our parabolic PDE, then the maximum of $u$ in some interior region at a positive time can be estimated by the minimum of $u$ in the same region at a later \textit{time}.
+
+\begin{theorem}[Parabolic Harnack inequality]
+\label{thm:parabolic-harnack-inequality}
+\dcref{ch7:7.1-thm-10}
+\group{Maximum Principles}
+\uses{thm:parabolic-weak-maximum-principle}
+Assume $u \in C^2_1(U_T)$ solves
+\[
+u_t + Lu = 0 \text{ in } U_T,
+\tag{68}
+\]
+and
+\[
+u \geq 0 \text{ in } U_T.
+\]
+Suppose $V \subset\subset U$ is connected. Then for each $0 < t_1 < t_2 \leq T$, there exists a constant $C$ such that
+\[
+\sup_V u(\cdot, t_1) \leq C \inf_V u(\cdot, t_2).
+\tag{69}
+\]
+The constant $C$ depends only on $V$, $t_1$, $t_2$, and the coefficients of $L$.
+\end{theorem}
+
+This is true if the coefficients are continuous, or even merely bounded and measurable; see Lieberman \cite{Lieberman1996}. We will however provide a proof only for the special case that $b^k \equiv c \equiv 0$ and the $a^{ij}$ are smooth $(i,j = 1, \ldots, n)$. The following computations are elementary, but fairly tricky.
+
+\begin{proof}[Proof (omit on first reading)]
+1. We may assume $u > 0$ in $U_T$, for otherwise we could apply the result to $u + \epsilon$ and then let $\epsilon \to 0^+$.
+
+Set
+\[
+v := \log u \quad \text{in } U_T.
+\tag{70}
+\]
+Using (68), we compute
+\[
+v_t = \sum_{i,j=1}^n a^{ij} v_{x_i x_j} + a^{ij} v_{x_i} v_{x_j} \quad \text{in } U_T.
+\tag{71}
+\]
+Define
+\[
+w := \sum_{i,j=1}^n a^{ij} v_{x_i x_j}, \quad \hat{w} := \sum_{i,j=1}^n a^{ij} v_{x_i} v_{x_j};
+\tag{72}
+\]
+so that (71) reads
+\[
+v_t = w + \hat{w}.
+\tag{73}
+\]
+
+2. We calculate using (72), (73) that for $k, l = 1, \ldots, n$:
+\[
+v_{x_k x_l t} = w_{x_k x_l} + \sum_{i,j=1}^n 2a^{ij} v_{x_i x_k x_l} v_{x_j} + 2a^{ij} v_{x_i x_k} v_{x_j x_l} + R,
+\]
+where the remainder term $R$ satisfies an estimate of the form
+\[
+|R| \leq \epsilon |D^2 v|^2 + C(\epsilon) |Dv|^2 + C
+\tag{74}
+\]
+for each $\epsilon > 0$. Thus
+\[
+w_t = \sum_{k,l=1}^n a^{kl} v_{x_k x_l t} + a^{kl}_t v_{x_k x_l}
+\]
+\[
+= \sum_{k,l=1}^n a^{kl} w_{x_k x_l} + 2 \sum_{i,j=1}^n a^{ij} v_{x_j} w_{x_i}
+\]
+\[
++ 2 \sum_{i,j,k,l=1}^n a^{ij} a^{kl} v_{x_i x_k} v_{x_j x_l} + R,
+\]
+where $R$ now denotes another remainder term satisfying estimate (74). Therefore choosing $\epsilon > 0$ small enough in (74) and remembering the uniform parabolicity condition, we discover
+\[
+w_t - \sum_{k,l=1}^n a^{kl} w_{x_k x_l} + \sum_{k=1}^n b^k w_{x_k} \geq \theta^2 |D^2 v|^2 - C|Dv|^2 - C,
+\tag{75}
+\]
+where
+\[
+b^k := -2 \sum_{l=1}^n a^{kl} v_{x_l} \quad (k = 1, \ldots, n).
+\tag{76}
+\]
+
+3. Estimate (75) is a differential inequality for $w$, and our task next is to obtain a similar inequality for $\hat{w}$. Indeed, using (72) and (71) we compute
+\[
+\hat{w}_t - \sum_{k,l=1}^n a^{kl} \hat{w}_{x_k x_l} = 2 \sum_{i,j=1}^n a^{ij} v_{x_i} \left( u_{x_j} - \sum_{k,l=1}^n a^{kl} v_{x_k x_l x_j} \right)
+\]
+\[
+- 2 \sum_{i,j,k,l=1}^n a^{ij} a^{kl} u_{x_i x_k} v_{x_j x_l} + R,
+\]
+$R$ yet another remainder term satisfying (74) for each $\epsilon > 0$. Recalling (71) and (76), we simplify to discover:
+\[
+\hat{w}_t - \sum_{k,l=1}^n a^{kl} \hat{w}_{x_k x_l} + \sum_{k=1}^n b^k \hat{w}_{x_k}
+\]
+\[
+\geq -C|D^2 v|^2 - C|Dv|^2 - C \quad \text{in } U_T.
+\tag{77}
+\]
+
+4. Next set
+\[
+\tilde w := w + \kappa \hat{w},
+\tag{78}
+\]
+$\kappa > 0$ to be selected below. Combining (75) and (77), we deduce
+\[
+\tilde w_t - \sum_{k,l=1}^n a^{kl}\tilde w_{x_k x_l} + \sum_{k=1}^n b^k \tilde w_{x_k} \geq \frac{\theta^2}{2}|D^2v|^2 - C|Dv|^2 - C
+\tag{79}
+\]
+provided $0 < \kappa \leq \frac{1}{2}$ is now fixed to be sufficiently small.
+
+5. Suppose next $V \subset\subset U$ is an open ball and $0 < t_1 < t_2 \leq T$. Choose a cutoff function $\zeta \in C^\infty(U_T)$ such that
+\[
+\begin{cases} 0 \leq \zeta \leq 1, \zeta = 0 \text{ on } \partial \Gamma_T, \\ \zeta = 1 \text{ on } V \times [t_1, t_2]. \end{cases}
+\tag{80}
+\]
+Note that $\zeta$ vanishes along $\{t = 0\}$.
+
+Let $\mu$ be a positive constant (to be adjusted below), and assume then
+\[
+\begin{cases} \zeta^4 \tilde w + \mu t \text{ attains a } \textit{negative minimum} \\ \text{ at some point } (x_0, t_0) \in U \times (0, T]. \end{cases}
+\tag{81}
+\]
+Consequently
+\[
+\zeta \tilde w_{x_k} + 4\zeta_{x_k} \tilde w = 0 \quad \text{at } (x_0, t_0) \quad (k = 1, \ldots, n).
+\tag{82}
+\]
+In addition
+\[
+0 \geq (\zeta^4 \tilde w + \mu t)_t - \sum_{k,l=1}^n a^{kl}(\zeta^4 \tilde w + \mu t)_{x_k x_l} \quad \text{at } (x_0, t_0).
+\]
+Hence at $(x_0, t_0)$:
+\[
+0 \geq \mu + \zeta^4 \left( \tilde w_t - \sum_{k,l=1}^n a^{kl} \tilde w_{x_k x_l} \right) - 2 \sum_{k,l=1}^n a^{kl}(\zeta^4)_{x_l} \tilde w_{x_k} + \tilde R,
+\tag{83}
+\]
+where
+\[
+|\tilde R| \leq C\zeta^2|\tilde w|.
+\tag{84}
+\]
+Recall now (79) and (82):
+\[
+0 \geq \mu + \zeta^4 \left( \frac{\theta^2}{2}|D^2 v|^2 - C|Dv|^2 - C - \sum_{k=1}^n b^k \tilde w_{x_k} \right) + \tilde R,
+\]
+$\tilde R$ another remainder term satisfying estimate (84). Utilizing (82) and (76), we deduce
+\[
+0 \geq \mu + \zeta^4 \left( \frac{\theta^2}{2}|D^2 v|^2 - C|Dv|^2 - C \right) + \tilde R,
+\tag{85}
+\]
+% NOTE: PDF page 379, containing the remainder of this proof (the conclusion of the
+% Harnack inequality argument via inequality (85), together with the transition to
+% \S7.1.4c), was lost to a transcription failure -- the vision subagent that processed
+% it returned only a refusal message rather than the book's text. The surviving text
+% resumes on page 380 with the heading "Strong maximum principle" below.
+\end{proof}
+
+\subsubsection{Strong maximum principle}
+
+\begin{figure}[h]\centering
+% [FIGURE: A three-dimensional illustration showing a cylindrical region in spacetime (with $t$ on vertical axis and $\mathbb{R}^n$ labeled on the base plane). The cylinder is shown with shading and labeled "Parabolic strong maximum principle" below the figure.]
+\end{figure}
+
+Now we employ Harnack's inequality to establish
+
+\begin{theorem}[Strong maximum principle]
+\label{thm:parabolic-strong-maximum-principle}
+\dcref{ch7:7.1-thm-11}
+\group{Maximum Principles}
+\uses{thm:parabolic-weak-maximum-principle,thm:parabolic-harnack-inequality}
+Assume $u \in C_1^2(U_T) \cap C(\overline{U_T})$ and
+\[
+c \equiv 0 \quad \text{in } U_T.
+\]
+Suppose also $U$ is connected.
+
+(i) If
+\[
+u_t + Lu \leq 0 \quad \text{in } U_T
+\]
+and $u$ attains its maximum over $\overline{U_T}$ at a point $(x_0, t_0) \in U_T$, then
+\[
+u \text{ is constant on } U_{t_0}.
+\]
+
+(ii) Likewise, if
+\[
+u_t + Lu \geq 0 \quad \text{in } U_T
+\]
+and $u$ attains its minimum over $\overline{U_T}$ at a point $(x_0, t_0) \in U_T$, then
+\[
+u \text{ is constant on } U_{t_0}.
+\]
+\end{theorem}
+
+\begin{remark}[Infinite propagation speed]
+\label{rem:parabolic-infinite-propagation-speed}
+\dcref{ch7:7.1.4-rem-4}
+\group{Maximum Principles}
+\uses{thm:parabolic-strong-maximum-principle}
+Thus our uniformly parabolic partial differential equations support ``infinite propagation speed of disturbances''.
+\end{remark}
+
+We will for the following proofs assume that $u$ and the coefficients of $L$ are in fact smooth.
+
+\begin{proof}
+1. Assume $u_t + Lu \leq 0$ in $U_T$, and $u$ attains its maximum at some point $(x_0, t_0) \in U_T$.
+
+Select a smooth, open set $W \subset U$, with $x_0 \in W$. Let $v$ solve
+\[
+\begin{cases} v_t + Lv = 0 & \text{in } W_T \\ v = u & \text{on } \Delta_T \end{cases}
+\]
+where $\Delta_T$ denotes the parabolic boundary of $W_T$.
+
+Then by the weak maximum principle $u \leq v$. Since
+\[
+u \leq v \leq M,
+\]
+for $M := \max_{U_T} u$, we deduce that $v = M$ at $(x_0, t_0)$.
+
+2. Now write $\bar{v} := M - v$. Then, since $c \equiv 0$, we have
+\[
+\bar{v}_t + L\bar{v} = 0, \quad \bar{v} \geq 0 \quad \text{in } W_T.
+\tag{90}
+\]
+Choose any $V \subset\subset W$ with $x_0 \in V$, $V$ connected. Let $0 < t < t_0$. Then owing to the Harnack inequality,
+\[
+\max_V \bar{v}(\cdot, t) \leq C \inf_V \bar{v}(\cdot, t_0).
+\tag{91}
+\]
+But $\inf_V \bar{v}(\cdot, t_0) \leq \bar{v}(x_0, t_0) = 0$. As $\bar{v} \geq 0$, (91) therefore implies $\bar{v} = 0$ on $V \times \{t\}$, for each $0 < t < t_0$. This deduction holds for each set $V$ as above, and so $\bar{v} = 0$ in $W_{t_0}$. But therefore $v \equiv M$ in $W_{t_0}$. As $v = u$ on $\Delta_T$, we conclude $u \equiv M$ on $\partial W \times [0, t_0]$.
+
+This conclusion holds for all sets $W$ as above, and therefore $u \equiv M$ on $U_{t_0}$.
+\end{proof}
+
+\begin{theorem}[Strong maximum principle for $c \geq 0$]
+\label{thm:parabolic-strong-maximum-principle-c-nonneg}
+\dcref{ch7:7.1-thm-12}
+\group{Maximum Principles}
+\uses{thm:parabolic-strong-maximum-principle,thm:parabolic-weak-maximum-principle-c-nonneg,thm:parabolic-harnack-inequality}
+Assume $u \in C_1^2(U_T) \cap C(\bar{U}_T)$ and
+\[
+c \geq 0 \quad \text{in } U_T.
+\]
+Suppose also $U$ is connected.
+
+(i) If
+\[
+u_t + Lu \leq 0 \quad \text{in } U_T
+\]
+and $u$ attains a nonnegative maximum over $\bar{U}_T$ at a point $(x_0, t_0) \in U_T$, then
+\[
+u \text{ is constant on } U_{t_0}.
+\]
+
+(ii) Similarly, if
+\[
+u_t + Lu \geq 0 \quad \text{in } U_T
+\]
+and $u$ attains a nonpositive minimum over $\bar{U}_T$ at a point $(x_0, t_0) \in U_T$, then
+\[
+u \text{ is constant on } U_{t_0}.
+\]
+\end{theorem}
+
+\begin{proof}
+1. As above, set $M := \max_{U_T} u$. Assume $M \geq 0$, $u_t + Lu \leq 0$ in $U_T$, and $u$ attains this maximum of $M$ at some point $(x_0, t_0) \in U_T$.
+
+If $M = 0$, the foregoing proof directly applies, as then
+\[
+\bar{v}_t + L\bar{v} = 0, \quad \bar{v} \geq 0 \quad \text{in } W_T.
+\]
+
+2. Assume instead that $M > 0$. Select as in the previous proof a smooth, open set $W \subset\subset U$, with $x_0 \in W$. Now let $v$ solve
+\[
+\begin{cases}
+v_t + Kv = 0 & \text{in } W_T \\
+v = u^+ & \text{on } \Delta_T,
+\end{cases}
+\]
+where
+\[
+Kv := Lv - cv.
+\]
+Note $0 \leq v \leq M$. Since $u_t + Ku = -cu \leq 0$ on $\{u \geq 0\}$, we deduce from the weak maximum principle that $u \leq v$. As before it follows that $v = M$ at $(x_0, t_0)$.
+
+3. Now write $\bar{v} := M - v$. Then, since the operator $K$ has no zeroth-order term, we have
+\[
+\bar{v}_t + K\bar{v} = 0, \quad \bar{v} \geq 0 \quad \text{in } W_T.
+\]
+Select any $V \subset\subset W$ with $x_0 \in V$, $V$ connected. Let $0 < t < t_0$. Then the Harnack inequality implies as above that $v = u^+ \equiv M$ on $\partial W \times [0, t_0]$. Since $M > 0$, we conclude that $u \equiv M$ on $\partial W \times [0, t_0]$.
+
+This deduction is valid for all sets $W$ as above, and therefore $u \equiv M$ on $U_{t_0}$.
+\end{proof}
+
+\section{Second-Order Hyperbolic Equations}
+\label{sec:second-order-hyperbolic-equations}
+
+Second-order hyperbolic equations are natural generalizations of the wave equation (\S2.4). We will build in this section appropriately defined weak solutions, and study their uniqueness, smoothness and other properties. It is interesting, given the utterly different physical character of second-order parabolic and hyperbolic PDE, that we can provide rather similar functional analytic constructions of weak solutions.
+
+\subsection{Definitions}
+
+\subsubsection{Hyperbolic equations}
+
+As in \cref{sec:second-order-parabolic-equations} we write $U_T = U \times (0, T]$, where $T > 0$ and $U \subset \mathbb{R}^n$ is an open, bounded set.
+
+We will next study the initial/boundary-value problem
+\[
+\begin{cases}
+u_{tt} + Lu = f & \text{in } U_T \\
+u = 0 & \text{on } \partial U \times [0,T] \\
+u = g, u_t = h & \text{on } U \times \{t = 0\},
+\end{cases}
+\tag{1}
+\]
+where $f : U_T \to \mathbb{R}$, $g, h : U \to \mathbb{R}$ are given, and $u : \overline{U}_T \to \mathbb{R}$ is the unknown, $u = u(x,t)$. The symbol $L$ denotes for each time $t$ a second-order partial differential operator, having either the divergence form
+\[
+Lu = -\sum_{i,j=1}^{n} (a^{ij}(x,t)u_{x_i})_{x_j} + \sum_{i=1}^{n} b^i(x,t)u_{x_i} + c(x,t)u
+\tag{2}
+\]
+or else the nondivergence form
+\[
+Lu = -\sum_{i,j=1}^{n} a^{ij}(x,t)u_{x_i x_j} + \sum_{i=1}^{n} b^i(x,t)u_{x_i} + c(x,t)u
+\tag{3}
+\]
+for given coefficients $a^{ij}, b^i, c$ $(i,j = 1,\ldots,n)$.
+
+\begin{definition}[Uniform hyperbolicity]
+\label{def:uniform-hyperbolicity}
+\dcref{ch7:7.2.1-def-1}
+\group{Hyperbolic PDE}
+We say the partial differential operator $\frac{\partial^2}{\partial t^2} + L$ is (uniformly) hyperbolic if there exists a constant $\theta > 0$ such that
+\[
+\sum_{i,j=1}^{n} a^{ij}(x,t)\xi_i\xi_j \geq \theta|\xi|^2
+\tag{4}
+\]
+for all $(x,t) \in U_T$, $\xi \in \mathbb{R}^n$.
+\end{definition}
+
+If $a^{ij} = \delta_{ij}$, $b^i \equiv c \equiv f \equiv 0$, then $L = -\Delta$ and the partial differential equation becomes the wave equation, already studied in Chapter 2. General second-order hyperbolic PDE model wave transmission in heterogeneous, nonisotropic media.
+
+\subsubsection{Weak solutions}
+
+As before, in \S6.1 and \cref{sec:second-order-parabolic-equations}, we first assume $L$ has the divergence form (2) and look for an appropriate notion of weak solution for problem (1). We will suppose initially that
+\[
+a^{ij}, b^i, c \in C^1(\overline{U}_T) \quad (i,j = 1,\ldots,n),
+\tag{5}
+\]
+\[
+f \in L^2(U_T),
+\tag{6}
+\]
+\[
+g \in H_0^1(U), \quad h \in L^2(U),
+\tag{7}
+\]
+and always assume $a^{ij} = a^{ji}$ $(i,j = 1,\ldots,n)$.
+
+As in \cref{sec:second-order-parabolic-equations}, let us also introduce the time-dependent bilinear form
+\[
+B[u,v;t] := \int_U \sum_{i,j=1}^{n} a^{ij}(\cdot,t)u_{x_i}v_{x_j} + \sum_{i=1}^{n} b^i(\cdot,t)u_{x_i}v + c(\cdot,t)uv \, dx
+\tag{8}
+\]
+for $u, v \in H_0^1(U)$ and $0 \leq t \leq T$.
+
+\begin{remark}[Motivation for definition of weak solution]
+\label{rem:motivation-weak-solution-hyperbolic}
+\dcref{ch7:7.2.1-rem-1}
+\group{Hyperbolic PDE}
+\uses{rem:motivation-weak-solution-parabolic}
+We begin by supposing $u = u(x,t)$ to be a smooth solution of (1) and defining the associated mapping
+\[
+\mathbf{u} : [0,T] \to H^1_0(U),
+\]
+by
+\[
+[\mathbf{u}(t)](x) := u(x,t) \quad (x \in U, 0 \le t \le T).
+\]
+We similarly introduce the function
+\[
+\mathbf{f} : [0,T] \to L^2(U)
+\]
+defined by
+\[
+[\mathbf{f}(t)](x) := f(x,t) \quad (x \in U, 0 \le t \le T).
+\]
+
+Now fix any function $v \in H^1_0(U)$, multiply the PDE $u_{tt} + Lu = f$ by $v$, and integrate by parts, to obtain the identity
+\[
+\langle \mathbf{u}'', v \rangle + B[\mathbf{u}, v; t] = (\mathbf{f}, v)
+\tag{9}
+\]
+for $0 \le t \le T$, where $(\cdot, \cdot)$ denotes the inner product in $L^2(U)$. Almost exactly as in the parallel discussion for parabolic PDE, we see from the PDE $u_{tt} + Lu = f$ that
+\[
+u_{tt} = g^0 + \sum_{j=1}^{n} g^j_{x_j}
+\]
+for $g^0 := f - \sum_{i=1}^{n} b^i u_{x_i} - cu$ and $g^j := \sum_{i=1}^{n} a^{ij} u_{x_i}$ $(j = 1, \ldots, n)$. This suggests that we should look for a weak solution $\mathbf{u}$ with $\mathbf{u}'' \in H^{-1}(U)$ for a.e. $0 \le t \le T$, and then reinterpret the first term of (9) as $\langle \mathbf{u}'', v \rangle$, $\langle \cdot, \cdot \rangle$ denoting as usual the pairing between $H^{-1}(U)$ and $H^1_0(U)$.
+\end{remark}
+
+\begin{definition}[Weak solution of the hyperbolic initial/boundary-value problem]
+\label{def:weak-solution-hyperbolic-bvp}
+\dcref{ch7:7.2.1-def-2}
+\group{Hyperbolic PDE}
+\uses{rem:motivation-weak-solution-hyperbolic}
+We say a function
+\[
+\mathbf{u} \in L^2(0, T; H^1_0(U)), \text{ with } \mathbf{u}' \in L^2(0, T; L^2(U)), \mathbf{u}'' \in L^2(0, T; H^{-1}(U)),
+\]
+is a weak solution of the \textit{hyperbolic initial/boundary-value problem} (1) provided
+
+(i) $\langle \mathbf{u}'', v \rangle + B[\mathbf{u}, v; t] = (\mathbf{f}, v)$
+
+for each $v \in H^1_0(U)$ and a.e. time $0 \le t \le T$, and
+
+(ii) $\mathbf{u}(0) = g$, $\mathbf{u}'(0) = h$.
+\end{definition}
+
+\begin{remark}[Continuity of the weak solution]
+\label{rem:weak-solution-hyperbolic-continuity}
+\dcref{ch7:7.2.1-rem-2}
+\group{Hyperbolic PDE}
+\uses{def:weak-solution-hyperbolic-bvp,thm:calculus-abstract-space}
+In view of Theorem 2 in \S5.9, we know $u \in C([0,T];L^2(U))$ and $\mathbf{u}' \in C([0,T];H^{-1}(U))$. Consequently the equalities (ii) above make sense.
+\end{remark}
+
+\subsection{Existence of Weak Solutions}
+
+\subsubsection{Galerkin approximations}
+
+By analogy with the approach taken in \cref{sec:second-order-parabolic-equations} we will construct our weak solution of the hyperbolic initial/boundary-value problem
+\[
+\begin{cases} u_{tt} + Lu = f & \text{in } U_T \\ u = 0 & \text{on } \partial U \times [0,T] \\ u = g, u_t = h & \text{on } U \times \{t = 0\} \end{cases}
+\tag{10}
+\]
+by first solving a finite dimensional approximation. We thus once more employ \textit{Galerkin's method} by selecting smooth functions $w_k = w_k(x)$ ($k = 1, \ldots$) such that
+\[
+\{w_k\}_{k=1}^{\infty} \text{ is an orthogonal basis of } H_0^1(U)
+\tag{11}
+\]
+and
+\[
+\{w_k\}_{k=1}^{\infty} \text{ is an orthonormal basis of } L^2(U).
+\tag{12}
+\]
+
+Fix a positive integer $m$, and write
+\[
+\mathbf{u}_m(t) := \sum_{k=1}^{m} d_m^k(t)w_k,
+\tag{13}
+\]
+where we intend to select the coefficients $d_m^k(t)$ ($0 \le t \le T$, $k = 1, \ldots, m$) to satisfy
+\[
+d_m^k(0) = (g,w_k) \quad (k = 1, \ldots, m),
+\tag{14}
+\]
+\[
+(d_m^k)'(0) = (h,w_k) \quad (k = 1, \ldots, m),
+\tag{15}
+\]
+and
+\[
+(\mathbf{u}_m'', w_k) + B[\mathbf{u}_m, w_k; t] = (f, w_k) \quad (0 \le t \le T, k = 1, \ldots, m).
+\tag{16}
+\]
+
+\begin{theorem}[Construction of approximate solutions]
+\label{thm:hyperbolic-galerkin-approximate-solutions}
+\dcref{ch7:7.2-thm-1}
+\group{Hyperbolic PDE}
+For each integer $m = 1, 2, \ldots$, there exists a unique function $\mathbf{u}_m$ of the form (13) satisfying (14)--(16).
+\end{theorem}
+
+\begin{proof}
+Assuming $u_m$ to be given by (13), we observe using (12)
+\[
+(u''_m(t), w_k) = (d_m^k)''(t).
+\tag{17}
+\]
+Furthermore, exactly as in the proof of \cref{thm:parabolic-galerkin-approximate-solutions}, we have
+\[
+B[u_m, w_k; t] = \sum_{l=1}^{m} e^{kl}(t)d_m^l(t)
+\]
+for $e^{kl}(t) := B[w_l, w_k; t]$ $(k, l = 1, \ldots, m)$. We also write $f^k(t) := (\mathbf{f}(t), w_k)$ $(k = 1, \ldots, m)$. Consequently (16) becomes the linear system of ODE
+\[
+(d_m^k)''(t) + \sum_{l=1}^{m} e^{kl}(t)d_m^l(t) = f^k(t) \quad (0 \le t \le T, k = 1, \ldots, m),
+\tag{18}
+\]
+subject to the initial conditions (14), (15). According to standard theory for ordinary differential equations, there exists a unique $C^2$ function $\mathbf{d}_m(t) = (d_m^1(t), \ldots, d_m^m(t))$, satisfying (14), (15), and solving (18) for $0 \le t \le T$.
+\end{proof}
+
+\subsubsection{Energy estimates}
+
+Our plan is hereafter to send $m \to \infty$, and so we will need some estimates, uniform in $m$.
+
+\begin{theorem}[Energy estimates]
+\label{thm:hyperbolic-energy-estimates}
+\dcref{ch7:7.2-thm-2}
+\group{Energy Estimates}
+\uses{thm:hyperbolic-galerkin-approximate-solutions}
+There exists a constant $C$, depending only on $U$, $T$ and the coefficients of $L$, such that
+\[
+\max_{0 \le t \le T} \left( \|u_m(t)\|_{H^1_0(U)} + \|u'_m(t)\|_{L^2(U)} \right) + \|u''_m\|_{L^2(0,T;H^{-1}(U))}
+\]
+\[
+\le C \left( \|\mathbf{f}\|_{L^2(0,T;L^2(U))} + \|g\|_{H^1_0(U)} + \|h\|_{L^2(U)} \right),
+\tag{19}
+\]
+for $m = 1, 2, \ldots$
+\end{theorem}
+
+\begin{proof}
+1. Multiply equality (16) by $(d_m^k)'(t)$, sum $k = 1, \ldots, m$, and recall (13) to discover
+\[
+(u''_m, u'_m) + B[u_m, u'_m; t] = (\mathbf{f}, u'_m)
+\tag{20}
+\]
+for a.e. $0 \le t \le T$. Observe next $(u''_m, u'_m) = \frac{d}{dt}(\frac{1}{2}\|u'_m\|^2_{L^2(U)})$. Furthermore, we can write
+\[
+B[u_m, u'_m; t] = \int_U \sum_{i,j=1}^{n} a^{ij}u_{m,x_i}u'_{m,x_j} dx
+\]
+\[
++ \int_U \sum_{i=1}^{n} b^i u_{m,x_i}u'_m + cu_mu'_m dx
+\tag{21}
+\]
+\[
+=: B_1 + B_2.
+\]
+Since $a^{ij} = a^{ji}$ (i, j = 1, \ldots, n), we see
+\[
+B_1 = \frac{d}{dt}\left(\frac{1}{2}A[u_m, u_m;t]\right) - \frac{1}{2}\int_U \sum_{i,j=1}^n a^{ij}_t u_{m,x_i} u_{m,x_j} dx,
+\tag{22}
+\]
+for the symmetric bilinear form
+\[
+A[u, v; t] := \int_U \sum_{i,j=1}^n a^{ij} u_{x_i} v_{x_j} dx \quad (u, v \in H^1_0(U)).
+\]
+The equality (22) implies
+\[
+B_1 \geq \frac{d}{dt}\left(\frac{1}{2}A[u_m, u_m;t]\right) - C\|u_m\|^2_{H^1_0(U)},
+\tag{23}
+\]
+and we note also
+\[
+|B_2| \leq C\left(\|u_m\|^2_{H^1_0(U)} + \|u'_m\|^2_{L^2(U)}\right).
+\tag{24}
+\]
+Combining estimates (20)--(24), we discover
+\[
+\frac{d}{dt}\left(\|u'_m\|^2_{L^2(U)} + A[u_m, u_m; t]\right) \leq C\left(\|u'_m\|^2_{L^2(U)} + \|u_m\|^2_{H^1_0(U)} + \|f\|^2_{L^2(U)}\right)
+\]
+\[
+\leq C\left(\|u'_m\|^2_{L^2(U)} + A[u_m, u_m; t] + \|f\|^2_{L^2(U)}\right),
+\tag{25}
+\]
+where we used the inequality
+\[
+\theta \int_U |Du|^2 dx \leq A[u, u; t] \quad (u \in H^1_0(U)),
+\tag{26}
+\]
+which follows from the uniform hyperbolicity condition.
+
+2. Now write
+\[
+\eta(t) := \|u'_m(t)\|^2_{L^2(U)} + A[u_m(t), u_m(t); t]
+\tag{27}
+\]
+and
+\[
+\xi(t) := \|f(t)\|^2_{L^2(U)}.
+\tag{28}
+\]
+Then inequality (25) reads
+\[
+\eta'(t) \leq C_1 \eta(t) + C_2 \xi(t)
+\]
+for $0 \le t \le T$ and appropriate constants $C_1, C_2$. Thus Gronwall's inequality yields the estimate
+\[
+\eta(t) \le e^{C_1 t}\left(\eta(0) + C_2 \int_0^t \xi(s)\,ds\right) \quad (0 \le t \le T).
+\tag{29}
+\]
+However
+\[
+\eta(0) = \|u_m'(0)\|^2_{L^2(U)} + A[u_m(0), u_m(0); 0]
+\]
+\[
+\le C\left(\|h\|^2_{L^2(U)} + \|g\|^2_{H_0^1(U)}\right),
+\]
+according to (14) and (15) and the estimate $\|u_m(0)\|_{H_0^1(U)} \le \|g\|_{H_0^1(U)}$. Thus formulas (27)--(29) provide the bound
+\[
+\|u_m'(t)\|^2_{L^2(U)} + A[u_m(t), u_m(t); t]
+\]
+\[
+\le C\left(\|g\|^2_{H_0^1(U)} + \|h\|^2_{L^2(U)} + \|f\|^2_{L^2(0,T;L^2(U))}\right).
+\]
+Since $0 \le t \le T$ was arbitrary, we see from this estimate and (26) that
+\[
+\max_{0 \le t \le T}\left(\|u_m(t)\|^2_{H_0^1(U)} + \|u_m'(t)\|^2_{L^2(U)}\right)
+\]
+\[
+\le C\left(\|g\|^2_{H_0^1(U)} + \|h\|^2_{L^2(U)} + \|f\|^2_{L^2(0,T;L^2(U))}\right).
+\]
+
+3. Fix any $v \in H_0^1(U)$, $\|v\|_{H_0^1(U)} \le 1$, and write $v = v^1 + v^2$, where $v^1 \in \text{span}\{w_k\}_{k=1}^m$ and $(v^2, w_k) = 0$ ($k = 1, \ldots, m$). Note $\|v^1\|_{H_0^1(U)} \le 1$. Then (13) and (16) imply
+\[
+(u_m'', v) = (u_m'', v^1) = (f, v^1) - B[u_m, v^1; t].
+\]
+Thus
+\[
+|(u_m'', v)| \le C(\|f\|_{L^2(U)} + \|u_m\|_{H_0^1(U)}),
+\]
+since $\|v^1\|_{H_0^1(U)} \le 1$. Consequently
+\[
+\int_0^T \|u_m''\|^2_{H^{-1}(U)} dt \le C\int_0^T \|f\|^2_{L^2(U)} + \|u_m\|^2_{H_0^1(U)}\,dt
+\]
+\[
+\le C\left(\|g\|^2_{H_0^1(U)} + \|h\|^2_{L^2(U)} + \|f\|^2_{L^2(0,T;L^2(U))}\right).
+\]
+\end{proof}
+
+\subsubsection{Existence and uniqueness}
+
+Now we pass to limits in our Galerkin approximations.
+
+\begin{theorem}[Existence of weak solution]
+\label{thm:hyperbolic-existence-weak-solution}
+\dcref{ch7:7.2-thm-3}
+\group{Hyperbolic PDE}
+\uses{thm:hyperbolic-galerkin-approximate-solutions,thm:hyperbolic-energy-estimates,def:weak-solution-hyperbolic-bvp}
+There exists a weak solution of (1).
+\end{theorem}
+
+\begin{proof}
+1. According to the energy estimates (19), we see that the sequence $\{u_m\}_{m=1}^{\infty}$ is bounded in $L^2(0,T;H_0^1(U))$, $\{u'_m\}_{m=1}^{\infty}$ is bounded in $L^2(0,T;L^2(U))$ and $\{u''_m\}_{m=1}^{\infty}$ is bounded in $L^2(0,T;H^{-1}(U))$.
+
+As a consequence there exists a subsequence $\{u_{m_l}\}_{l=1}^{\infty} \subset \{u_m\}_{m=1}^{\infty}$ and $\mathbf{u} \in L^2(0,T;H_0^1(U))$, with $\mathbf{u}' \in L^2(0,T;L^2(U))$, $\mathbf{u}'' \in L^2(0,T;H^{-1}(U))$, such that
+\[
+\begin{cases}
+\mathbf{u}_{m_l} \to \mathbf{u} & \text{weakly in } L^2(0,T;H_0^1(U)) \\
+\mathbf{u}'_{m_l} \to \mathbf{u}' & \text{weakly in } L^2(0,T;L^2(U)) \\
+\mathbf{u}''_{m_l} \to \mathbf{u}'' & \text{weakly in } L^2(0,T;H^{-1}(U)).
+\end{cases} \tag{30}
+\]
+
+2. Next fix an integer $N$ and choose a function $\mathbf{v} \in C^1([0,T];H_0^1(U))$ of the form
+\[
+\mathbf{v}(t) = \sum_{k=1}^{N} d^k(t)w_k, \tag{31}
+\]
+where $\{d^k\}_{k=1}^{N}$ are smooth functions. We select $m \geq N$, multiply (16) by $d^k(t)$, sum $k = 1, \ldots, N$, and then integrate with respect to $t$, to discover
+\[
+\int_0^T \langle u''_m, \mathbf{v} \rangle + B[u_m, \mathbf{v}; t] \, dt = \int_0^T (\mathbf{f}, \mathbf{v}) \, dt. \tag{32}
+\]
+We set $m = m_l$ and recall (30), to find in the limit that
+\[
+\int_0^T \langle \mathbf{u}'', \mathbf{v} \rangle + B[\mathbf{u}, \mathbf{v}; t] \, dt = \int_0^T (\mathbf{f}, \mathbf{v}) \, dt. \tag{33}
+\]
+This equality then holds for all functions $\mathbf{v} \in L^2(0,T;H_0^1(U))$, since functions of the form (31) are dense in this space. From (33) it follows further that
+\[
+\langle \mathbf{u}'', \mathbf{v} \rangle + B[\mathbf{u}, \mathbf{v}; t] = (\mathbf{f}, \mathbf{v})
+\]
+for all $\mathbf{v} \in H_0^1(U)$ and a.e. $0 \leq t \leq T$. Furthermore, $\mathbf{u} \in C([0,T];L^2(U))$ and $\mathbf{u}' \in C([0,T];H^{-1}(U))$.
+
+3. We must now verify
+\[
+\mathbf{u}(0) = g, \tag{34}
+\]
+\[
+\mathbf{u}'(0) = h. \tag{35}
+\]
+For this, choose any function $\mathbf{v} \in C^2([0,T]; H^1_0(U))$, with $\mathbf{v}(T) = \mathbf{v}'(T) = 0$. Then integrating by parts twice with respect to $t$ in (33), we find
+\[
+\int_0^T (\mathbf{v}'', \mathbf{u}) + B[\mathbf{u}, \mathbf{v}; t] \, dt = \int_0^T (\mathbf{f}, \mathbf{v}) \, dt - (\mathbf{u}(0), \mathbf{v}'(0)) + (\mathbf{u}'(0), \mathbf{v}(0)). \tag{36}
+\]
+Similarly from (32) we deduce
+\[
+\int_0^T (\mathbf{v}'', \mathbf{u}_m) + B[\mathbf{u}_m, \mathbf{v}; t] \, dt = \int_0^T (\mathbf{f}, \mathbf{v}) \, dt - (\mathbf{u}_m(0), \mathbf{v}'(0)) + (\mathbf{u}'_m(0), \mathbf{v}(0)).
+\]
+We set $m = m_l$ and recall (14), (15) and (30), to deduce
+\[
+\int_0^T (\mathbf{v}'', \mathbf{u}) + B[\mathbf{u}, \mathbf{v}; t] \, dt = \int_0^T (\mathbf{f}, \mathbf{v}) \, dt - (g, \mathbf{v}'(0)) + (h, \mathbf{v}(0)). \tag{37}
+\]
+Comparing identities (36) and (37), we conclude (34), (35), since $\mathbf{v}(0)$, $\mathbf{v}'(0)$ are arbitrary. Hence $u$ is a weak solution of (1).
+\end{proof}
+
+\begin{remark}[Improved regularity of the weak solution]
+\label{rem:hyperbolic-existence-remark}
+\dcref{ch7:7.2.2-rem-1}
+\group{Hyperbolic PDE}
+\uses{thm:hyperbolic-existence-weak-solution,thm:hyperbolic-energy-estimates}
+Recalling the energy estimates from \cref{thm:hyperbolic-energy-estimates}, we observe that in fact $u \in L^\infty(0,T; H^1_0(U))$, $u' \in L^\infty(0,T; L^2(U))$, $u'' \in L^2(0,T; H^{-1}(U))$: see \cref{thm:hyperbolic-improved-regularity} below.
+\end{remark}
+
+\begin{theorem}[Uniqueness of weak solution]
+\label{thm:hyperbolic-uniqueness-weak-solution}
+\dcref{ch7:7.2-thm-4}
+\group{Hyperbolic PDE}
+\uses{def:weak-solution-hyperbolic-bvp}
+A weak solution of (1) is unique.
+\end{theorem}
+
+\begin{remark}[Difficulty of the uniqueness proof]
+\label{rem:hyperbolic-uniqueness-remark}
+\dcref{ch7:7.2.2-rem-2}
+\group{Hyperbolic PDE}
+\uses{thm:hyperbolic-uniqueness-weak-solution}
+The following tricky demonstration would be greatly simplified if we knew $u'(t)$ itself were smooth enough to insert in place of $v$ in the definition of weak solution. This is not so, however.
+\end{remark}
+
+\begin{proof}
+1. It suffices to show that the only weak solution of (1) with $f \equiv g \equiv h \equiv 0$ is
+\[
+u \equiv 0. \tag{38}
+\]
+To verify this, fix $0 \le s \le T$ and set
+\[
+v(t) := \begin{cases} \int_t^s u(\tau) \, d\tau & \text{if } 0 \le t \le s \\ 0 & \text{if } s \le t \le T. \end{cases}
+\]
+Then $v(t) \in H_0^1(U)$ for each $0 \le t \le T$, and so
+\[
+\int_0^s \langle u'', v \rangle + B[u, v; t] \, dt = 0.
+\]
+Since $u'(0) = v(s) = 0$, we obtain after integrating by parts in the first term above:
+\[
+\int_0^s -\langle u', v' \rangle + B[u, v; t] \, dt = 0. \tag{39}
+\]
+Now $v' = -u$ ($0 \le t \le s$), and so
+\[
+\int_0^s \langle u', u \rangle - B[v', v; t] \, dt = 0.
+\]
+Thus
+\[
+\int_0^s \frac{d}{dt}\left(\frac{1}{2}\|u\|_{L^2(U)}^2 - \frac{1}{2}B[v, v; t]\right) dt = -\int_0^s C[u, v; t] + D[v, v; t] \, dt,
+\]
+where
+\[
+C[u, v; t] := \int_U \sum_{i=1}^n b^i v_{x_i} u + \frac{1}{2}b^i_{,x_i} uv \, dx
+\]
+and
+\[
+D[u, v; t] := \frac{1}{2}\int_U \sum_{i,j=1}^n a^{ij}_{,t} u_{x_i} v_{x_j} + \sum_{i=1}^n b^i_{,t} u_{x_i} v + c_t uv \, dx,
+\]
+for $u, v \in H_0^1(U)$. Hence
+\[
+\frac{1}{2}\|u(s)\|_{L^2(U)}^2 + \frac{1}{2}B[v(0), v(0); t] = -\int_0^s C[u, v; t] + D[v, v; t] \, dt,
+\]
+and consequently
+\[
+\|u(s)\|_{L^2(U)}^2 + \|v(0)\|_{H_0^1(U)}^2
+\]
+\[
+\le C\left(\int_0^s \|v\|_{H_0^1(U)}^2 + \|u\|_{L^2(U)}^2 \, dt + \|v(0)\|_{L^2(U)}^2\right). \tag{40}
+\]
+
+2. Now let us write
+\[
+w(t) := \int_0^t u(\tau) \, d\tau \quad (0 \le t \le T);
+\]
+whereupon (40) becomes
+\[
+\|u(s)\|^2_{L^2(U)} + \|w(s)\|^2_{H^1_0(U)}
+\]
+\[
+\leq C \left( \int_0^s \|w(t) - w(s)\|^2_{H^1_0(U)} + \|u(t)\|^2_{L^2(U)} dt + \|w(s)\|^2_{L^2(U)} \right). \tag{41}
+\]
+But $\|w(t)-w(s)\|^2_{H^1_0(U)} \leq 2\|w(t)\|^2_{H^1_0(U)}+2\|w(s)\|^2_{H^1_0(U)}$, and $\|w(s)\|_{L^2(U)} \leq \int_0^s \|u(t)\|_{L^2(U)} dt$. Therefore (41) implies
+\[
+\|u(s)\|^2_{L^2(U)} + (1 - 2sC_1)\|w(s)\|^2_{H^1_0(U)} \leq C_1 \int_0^s \|w\|^2_{H^1_0(U)} + \|u\|^2_{L^2(U)} dt.
+\]
+Choose $T_1$ so small that
+\[
+1 - 2T_1 C_1 \geq \frac{1}{2}.
+\]
+Then if $0 \leq s \leq T_1$, we have
+\[
+\|u(s)\|^2_{L^2(U)} + \|w(s)\|^2_{H^1_0(U)} \leq C \int_0^s \|u\|^2_{L^2(U)} + \|w\|^2_{H^1_0(U)} dt.
+\]
+Consequently the integral form of Gronwall's inequality implies $u \equiv 0$ on $[0, T_1]$.
+
+3. We apply the same argument on the intervals $[T_1, 2T_1], [2T_1, 3T_1]$, etc., eventually to deduce (38).
+\end{proof}
+
+\subsection{Regularity}
+
+As in our earlier treatments of second-order elliptic and parabolic PDE, the next task is to study the smoothness of our weak solutions.
+
+\begin{remark}[Motivation: formal derivation of estimates]
+\label{rem:hyperbolic-regularity-motivation}
+\dcref{ch7:7.2.3-rem-1}
+\group{Regularity}
+\uses{thm:wave-equation-nonhomogeneous-duhamel}
+(i) Suppose for the moment $u = u(x,t)$ is a smooth solution of this initial-value problem for the wave equation:
+\[
+\begin{cases}
+u_{tt} - \Delta u = f & \text{in } \mathbb{R}^n \times (0, T] \\
+u = g, u_t = h & \text{on } \mathbb{R}^n \times \{t = 0\},
+\end{cases}
+\]
+and assume also $u$ goes to zero as $|x| \to \infty$ sufficiently rapidly to justify the following calculations. Then as in \S2.4, we compute
+\[
+\frac{d}{dt} \left( \int_{\mathbb{R}^n} |Du|^2 + u_t^2 \, dx \right) = 2 \int_{\mathbb{R}^n} Du \cdot Du_t + u_t u_{tt} \, dx
+\]
+\[
+= 2 \int_{\mathbb{R}^n} u_t(u_{tt} - \Delta u) \, dx = 2 \int_{\mathbb{R}^n} u_t f \, dx
+\]
+\[
+\leq \int_{\mathbb{R}^n} u_t^2 \, dx + \int_{\mathbb{R}^n} f^2 \, dx.
+\]
+Applying Gronwall's inequality, we deduce
+\[
+\sup_{0 \leq t \leq T} \int_{\mathbb{R}^n} |Du|^2 + u_t^2 \, dx \leq C \left( \int_0^T \int_{\mathbb{R}^n} f^2 \, dx\,dt + \int_{\mathbb{R}^n} |Dg|^2 + h^2 \, dx \right),
+\tag{42}
+\]
+with the constant $C$ depending only on $T$.
+
+(ii) Next differentiate the PDE with respect to $t$ and set $\tilde{u} := u_t$. Then
+\[
+\begin{cases}
+\tilde{u}_t - \Delta \tilde{u} = \tilde{f} & \text{in } \mathbb{R}^n \times (0,T] \\
+\tilde{u} = \tilde{g}, \, \tilde{u}_t = \tilde{h} & \text{on } \mathbb{R}^n \times \{t = 0\},
+\end{cases}
+\tag{43}
+\]
+for $\tilde{f} := f_t$, $\tilde{g} := h$, $\tilde{h} := u_{tt}(\cdot,0) = f(\cdot,0) + \Delta g$. Applying estimate (42) to $\tilde{u}$, we discover
+\[
+\sup_{0 \leq t \leq T} \int_{\mathbb{R}^n} |Du_t|^2 + u_{tt}^2 \, dx
+\]
+\[
+\leq C \left( \int_0^T \int_{\mathbb{R}^n} f_t^2 \, dx\,dt + \int_{\mathbb{R}^n} |D^2 g|^2 + |Dh|^2 + f(\cdot,0)^2 \, dx \right).
+\tag{44}
+\]
+Now
+\[
+\max_{0 \leq t \leq T} \|f(\cdot,t)\|_{L^2(\mathbb{R}^n)} \leq C(\|f\|_{L^2(\mathbb{R}^n \times (0,T))} + \|f_t\|_{L^2(\mathbb{R}^n \times (0,T))}),
+\tag{45}
+\]
+according to Theorem 2 in \S5.9. Furthermore, writing $-\Delta u = f - u_{tt}$, we deduce as in \S6.3 that
+\[
+\int_{\mathbb{R}^n} |D^2 u|^2 \, dx \leq C \int_{\mathbb{R}^n} f^2 + u_{tt}^2 \, dx
+\tag{46}
+\]
+for each $0 \leq t \leq T$. Combining (44)--(46), we conclude
+\[
+\sup_{0 \leq t \leq T} \int_{\mathbb{R}^n} |D^2 u|^2 + |Du_t|^2 + u_{tt}^2 \, dx
+\]
+\[
+\leq C \left( \int_0^T \int_{\mathbb{R}^n} f_t^2 + f^2 \, dx\,dt + \int_{\mathbb{R}^n} |D^2 g|^2 + |Dh|^2 \, dx \right),
+\tag{47}
+\]
+the constant $C$ depending only on $T$.
+
+This estimate suggests that bounds similar to (42) and (47) should be valid for our weak solution of a general second-order hyperbolic PDE.
+\end{remark}
+
+We will calculate using the Galerkin approximations. To simplify the presentation, we hereafter assume that $\{w_k\}_{k=1}^\infty$ is the complete collection of eigenfunctions for $-\Delta$ on $H_0^1(U)$, and also that $U$ is bounded, open, with $\partial U$ smooth. In addition we suppose
+\[
+\begin{cases}
+\text{the coefficients } a^{ij}, b^i, c \, (i,j = 1, \ldots, n) \text{ are smooth on} \\
+U \text{ and do not depend on } t.
+\end{cases}
+\tag{48}
+\]
+
+\begin{theorem}[Improved regularity]
+\label{thm:hyperbolic-improved-regularity}
+\dcref{ch7:7.2-thm-5}
+\group{Regularity}
+\uses{def:weak-solution-hyperbolic-bvp,thm:parabolic-improved-regularity}
+(i) Assume
+\[
+g \in H_0^1(U), \quad h \in L^2(U), \quad f \in L^2(0,T;L^2(U)),
+\]
+and suppose also $u \in L^2(0,T;H_0^1(U))$, with $u' \in L^2(0,T;L^2(U))$, $u'' \in L^2(0,T;H^{-1}(U))$, is the weak solution of the problem
+\[
+\begin{cases} u_{tt} + Lu = f & \text{in } U_T \\ u = 0 & \text{on } \partial U \times [0,T] \\ u = g, u_t = h & \text{on } U \times \{t = 0\}. \end{cases}
+\tag{49}
+\]
+Then in fact
+\[
+u \in L^\infty(0,T;H_0^1(U)), \quad u' \in L^\infty(0,T;L^2(U)),
+\]
+and we have the estimate
+\[
+\operatorname{ess\,sup}_{0 \le t \le T} \left( \|u(t)\|_{H_0^1(U)} + \|u'(t)\|_{L^2(U)} \right) \le C\left( \|f\|_{L^2(0,T;L^2(U))} + \|g\|_{H_0^1(U)} + \|h\|_{L^2(U)} \right).
+\tag{50}
+\]
+
+(ii) If, in addition,
+\[
+g \in H^2(U), \quad h \in H_0^1(U), \quad f' \in L^2(0,T;L^2(U)),
+\]
+then
+\[
+u \in L^\infty(0,T;H^2(U)), \quad u' \in L^\infty(0,T;H_0^1(U)),
+\]
+\[
+u'' \in L^\infty(0,T;L^2(U)), \quad u''' \in L^2(0,T;H^{-1}(U)),
+\]
+with the estimate:
+\[
+\operatorname{ess\,sup}_{0 \le t \le T} \left( \|u(t)\|_{H^2(U)} + \|u'(t)\|_{H_0^1(U)} + \|u''(t)\|_{L^2(U)} \right) + \|u'''\|_{L^2(0,T;H^{-1}(U))} \le C\left( \|f\|_{H^1(0,T;L^2(U))} + \|g\|_{H^2(U)} + \|h\|_{H^1(U)} \right).
+\tag{51}
+\]
+\end{theorem}
+
+\begin{remark}[Precise versions of the formal estimates]
+\label{rem:hyperbolic-improved-regularity-remark}
+\dcref{ch7:7.2.3-rem-2}
+\group{Regularity}
+\uses{thm:hyperbolic-improved-regularity,rem:hyperbolic-regularity-motivation}
+Assertions (i), (ii) of this theorem are precise versions of the formal estimates (42), (47) (for the wave equation in $U = \mathbb{R}^n$).
+\end{remark}
+
+\begin{proof}
+% NOTE: PDF page 395, containing the opening of this proof (the derivation of estimates
+% (52)-(60) via the Galerkin approximations $\bar u_m := u_m'$, in close analogy with
+% steps 4-6 of the proof of the parabolic \cref{thm:parabolic-improved-regularity}), was
+% lost to a transcription failure -- the vision subagent that processed it returned only
+% a refusal message rather than the book's text. The proof resumes below from the
+% surviving text on page 396.
+Using this estimate in (55), recalling $\bar{u}_m = u_m'$, and applying Gronwall's inequality, we deduce
+\[
+\sup_{0 \le t \le T} \left( \|u_m(t)\|^2_{H^2(U)} + \|u'_m(t)\|^2_{H^1(U)} + \|u''_m(t)\|^2_{L^2(U)} \right)
+\]
+\[
+\le C\left( \|f\|^2_{H^1(0,T;L^2(U))} + \|g\|^2_{H^2(U)} + \|h\|^2_{H^1(U)} \right).
+\tag{61}
+\]
+Here we estimated $\|u_m(0)\|_{H^2(U)} \le C\|g\|_{H^2(U)}$, as in the proof of \cref{thm:parabolic-improved-regularity}.
+
+Passing to limits as $m = m_l \to \infty$, we derive the same bound for $\mathbf{u}$.
+
+4. As in the earlier proof of \cref{thm:parabolic-improved-regularity}, we likewise deduce $\mathbf{u}''' \in L^2(0, T; H^{-1}(U))$, with the stated estimate.
+\end{proof}
+
+\begin{remark}[Symmetric operators and eigenfunction bases]
+\label{rem:hyperbolic-symmetric-eigenfunctions}
+\dcref{ch7:7.2.3-rem-3}
+\group{Regularity}
+\uses{thm:hyperbolic-improved-regularity}
+If $L$ were symmetric, we could alternatively have taken $\{w_k\}_{k=1}^\infty$ to be a basis of eigenfunctions of $L$ on $H^1_0(U)$, and so avoided the need for inequality (59).
+\end{remark}
+
+Now let $m$ be a nonnegative integer.
+
+\begin{theorem}[Higher regularity]
+\label{thm:hyperbolic-higher-regularity}
+\dcref{ch7:7.2-thm-6}
+\group{Regularity}
+\uses{thm:hyperbolic-improved-regularity,thm:mappings-into-better-spaces}
+Assume
+\[
+\left\{ \begin{array}{l} g \in H^{m+1}(U), \quad h \in H^m(U), \\ \frac{d^k f}{dt^k} \in L^2(0, T; H^{m-k}(U)) \quad (k = 0, \ldots, m). \end{array} \right.
+\]
+Suppose also the following $m^{\text{th}}$-order compatibility conditions hold:
+\[
+\left\{ \begin{array}{l} g_0 := g \in H^1_0(U), \quad h_1 := h \in H^1_0(U), \ldots, \\ g_{2l} := \dfrac{d^{2l}f}{dt^{2l}}(\cdot, 0) - Lg_{2l-2} \in H^1_0(U) \quad \text{(if } m = 2l\text{)} \\ h_{2l+1} := \dfrac{d^{2l+1}f}{dt^{2l+1}}(\cdot, 0) - Lh_{2l-1} \in H^1_0(U) \quad \text{(if } m = 2l + 1\text{)}. \end{array} \right.
+\tag{62}
+\]
+Then
+\[
+\frac{d^k u}{dt^k} \in L^\infty(0, T; H^{m+1-k}(U)) \quad (k = 0, \ldots, m+1),
+\tag{63}
+\]
+and we have the estimate
+\[
+\operatorname{ess\,sup}_{0 \le t \le T} \sum_{k=0}^{m+1} \left\| \frac{d^k u}{dt^k} \right\|_{H^{m+1-k}(U)}
+\]
+\[
+\le C \left( \sum_{k=0}^{m} \left\| \frac{d^k f}{dt^k} \right\|_{L^2(0,T;H^{m-k}(U))} + \|g\|_{H^{m+1}(U)} + \|h\|_{H^m(U)} \right).
+\tag{64}
+\]
+\end{theorem}
+
+\begin{remark}[Compatibility conditions]
+\label{rem:hyperbolic-higher-regularity-remark}
+\dcref{ch7:7.2.3-rem-4}
+\group{Regularity}
+\uses{thm:hyperbolic-higher-regularity,thm:mappings-into-better-spaces}
+In view of Theorem 2 in \S5.9, we see that
+\[
+f(0) \in H^{m-1}(U), f'(0) \in H^{m-2}(U), \ldots, f^{(m-2)}(0) \in H^1(U),
+\tag{65}
+\]
+and consequently
+\[
+g_0 \in H^{m+1}(U), h_1 \in H^m(U), g_2 \in H^{m-1}(U), h_3 \in H^{m-2}(U),
+\]
+\[
+\ldots, g_{2l} \in H^1(U) \text{ (if } m = 2l\text{)}, h_{2l+1} \in H^1(U) \text{ (if } m = 2l + 1\text{)}.
+\tag{66}
+\]
+The compatibility conditions are consequently the requirements that, in addition, each of these functions equals 0 on $\partial U$, in the trace sense.
+\end{remark}
+
+\begin{proof}
+1. The proof is by an induction, the case $m = 0$ following from \cref{thm:hyperbolic-improved-regularity},(i) above.
+
+2. Assume next the theorem is valid for some nonnegative integer $m$, and suppose
+\[
+\begin{cases} g \in H^{m+2}(U), h \in H^{m+1}(U), \\ \frac{d^k f}{dt^k} \in L^2(0, T; H^{m+1-k}(U)) \end{cases} \quad (k = 0, \ldots, m + 1).
+\tag{67}
+\]
+Suppose also the $(m+1)^{\text{th}}$-order compatibility conditions obtain. Now set $\tilde{u} := u'$. Differentiating the PDE with respect to $t$, we check that $\tilde{u}$ is the unique, weak solution of
+\[
+\begin{cases} \tilde{u}_{tt} + L\tilde{u} = \tilde{f} \text{ in } U_T \\ \tilde{u} = 0 \text{ on } \partial U \times [0,T] \\ \tilde{u} = \tilde{g}, \tilde{u}_t = \tilde{h} \text{ on } U \times \{t = 0\}, \end{cases}
+\tag{68}
+\]
+for
+\[
+\tilde{f} := f_t, \tilde{g} := h, \tilde{h} := f(\cdot, 0) - Lg.
+\tag{69}
+\]
+In particular, for $m = 0$ we rely upon \cref{thm:hyperbolic-improved-regularity},(ii) to be sure that $\tilde{u} \in L^2(0, T; H_0^1(U))$, $\tilde{u}' \in L^2(0, T; L^2(U))$, $\tilde{u}'' \in L^2(0, T; H^{-1}(U))$.
+
+Since $f, g$ and $h$ satisfy the $(m+1)^{\text{th}}$-order compatibility conditions, $\tilde{f}, \tilde{g}$ and $\tilde{h}$ satisfy the $m^{\text{th}}$-order compatibility conditions. Thus applying the induction assumption, we see
+\[
+\frac{d^k\tilde{u}}{dt^k} \in L^\infty(0, T; H^{m+1-k}(U)) \quad (k = 0, \ldots, m+1),
+\]
+with the estimate
+\[
+\operatorname{ess\,sup}_{0 \leq t \leq T} \sum_{k=0}^{m+1} \left\| \frac{d^k\tilde{u}}{dt^k} \right\|_{H^{m+1-k}(U)}
+\]
+\[
+\leq C \left( \sum_{k=0}^{m} \left\| \frac{d^k\tilde{f}}{dt^k} \right\|_{L^2(0,T;H^{m-k}(U))} + \|\tilde{g}\|_{H^{m+1}(U)} + \|\tilde{h}\|_{H^m(U)} \right).
+\]
+Since $\tilde{u} = u'$, we can rewrite:
+\[
+\operatorname{ess\,sup}_{0\leq t \leq T} \sum_{k=1}^{m+2} \left\|\frac{d^k u}{dt^k}\right\|_{H^{m+2-k}(U)}
+\]
+\[
+\leq C\left(\sum_{k=1}^{m+1} \left\|\frac{d^k f}{dt^k}\right\|_{L^2(0,T;H^{m+1-k}(U))} + \|h\|_{H^{m+1}(U)} + \|Lg\|_{H^m(U)} + \|f(0)\|_{H^m(U)}\right)
+\]
+\[
+\leq C\left(\sum_{k=0}^{m+1} \left\|\frac{d^k f}{dt^k}\right\|_{L^2(0,T;H^{m+1-k}(U))} + \|g\|_{H^{m+2}(U)} + \|h\|_{H^{m+1}(U)}\right).
+\tag{70}
+\]
+Here we used the inequality
+\[
+\|f\|_{C([0,T];H^m(U))} \leq C(\|f\|_{L^2(0,T;H^m(U))} + \|f'\|_{L^2(0,T;H^m(U))}),
+\]
+which follows from Theorem 2 in \S5.9.
+
+3. Now write for a.e. $0 \leq t \leq T$: $Lu = f - u'' =: h$. We have
+\[
+\|u\|_{H^{m+2}(U)} \leq C(\|h\|_{H^m(U)} + \|u\|_{L^2(U)})
+\]
+\[
+\leq C(\|f\|_{H^m(U)} + \|u''\|_{H^m(U)} + \|u\|_{L^2(U)}).
+\]
+Taking the essential supremum with respect to $t$, adding this inequality to (70) and making standard estimates, we deduce:
+\[
+\operatorname{ess\,sup}_{0\leq t \leq T} \sum_{k=0}^{m+2} \left\|\frac{d^k u}{dt^k}\right\|_{H^{m+2-k}(U)}
+\]
+\[
+\leq C\left(\sum_{k=0}^{m+1} \left\|\frac{d^k f}{dt^k}\right\|_{L^2(0,T;H^{m+1-k}(U))} + \|g\|_{H^{m+2}(U)} + \|h\|_{H^{m+1}(U)}\right).
+\]
+This is the assertion of the theorem for $m + 1$.
+\end{proof}
+
+\begin{theorem}[Infinite differentiability]
+\label{thm:hyperbolic-infinite-differentiability}
+\dcref{ch7:7.2-thm-7}
+\group{Regularity}
+\uses{thm:hyperbolic-higher-regularity}
+Assume
+\[
+g, h \in C^\infty(\bar{U}), \quad f \in C^\infty(\bar{U}_T),
+\]
+and the $m^{\text{th}}$-order compatibility conditions hold for $m = 0, 1, \ldots$.
+
+Then the hyperbolic initial/boundary-value problem (1) has a unique solution
+\[
+u \in C^\infty(\bar{U}_T).
+\]
+\end{theorem}
+
+\begin{proof}
+Apply \cref{thm:hyperbolic-higher-regularity} for $m = 0, 1, \ldots$.
+\end{proof}
+
+\subsection{Propagation of Disturbances}
+
+\begin{figure}[h]\centering
+% [FIGURE: A cone-like structure with vertex labeled $(x_0,t_0)$ at the top. The cone has a circular base with shaded regions (appearing as hatched bands at two levels). A dashed vertical line passes through the vertex. The figure illustrates the domain of dependence in spacetime.]
+\end{figure}
+
+Our study of second-order hyperbolic equations has thus far pretty much paralleled our treatment of second-order parabolic PDE, in \cref{sec:second-order-parabolic-equations}. In the corresponding earlier subsection on maximum principles, we discussed maximum principles for second-order parabolic equations, and noted in particular that the strong maximum principle implies an ``infinite propagation speed'' of initial disturbances for such PDE. Now strong maximum principles are false for second-order hyperbolic partial differential equations, and we will instead address here the opposite phenomenon, namely the ``finite propagation speed'' of initial disturbances. This study extends some ideas already introduced in \S2.4.
+
+For simplicity we will consider in this section the case $U = \mathbb{R}^n$ and $L$ has the simple nondivergence form
+\[
+Lu = -\sum_{i,j=1}^{n} a^{ij}u_{x_ix_j},
+\tag{71}
+\]
+where the coefficients are smooth, independent of time, and there are no lower-order terms. We as usual require the uniform hyperbolicity condition.
+
+Let us assume now $u$ is a smooth solution of the PDE
+\[
+u_{tt} + Lu = 0 \quad \text{in } \mathbb{R}^n \times (0,\infty).
+\tag{72}
+\]
+We wish to prove a uniqueness/finite propagation speed assertion analogous to that obtained for the wave equation in \S2.4. For this, we fix a point $(x_0, t_0) \in \mathbb{R}^n \times (0,\infty)$, and then try to find some sort of a curved ``cone-like'' region $C$, with vertex $(x_0, t_0)$, such that $u = 0$ within $C$ if $u \equiv u_t = 0$ on $C_0 = C \cap \{t = 0\}$.
+
+Motivated by the geometric optics computation in Example 3 of \cref{ex:geometric-optics-oscillating-solutions}, let us guess that the boundary of such a region $C$ is given as a level set $\{p = 0\}$, where $p$ solves the Hamilton-Jacobi PDE
+\[
+p_t - \left(\sum_{i,j=1}^n a^{ij}(x)p_{x_i}p_{x_j}\right)^{1/2} = 0 \quad \text{in } \mathbb{R}^n \times (0,\infty).
+\tag{73}
+\]
+We will simplify (73) by separating variables, to write
+\[
+p(x,t) = q(x) + t - t_0 \quad (x \in \mathbb{R}^n, 0 \le t \le t_0),
+\tag{74}
+\]
+where $q$ solves
+\[
+\begin{cases}
+\sum_{i,j=1}^n a^{ij}q_{x_i}q_{x_j} = 1, \quad q > 0 & \text{in } \mathbb{R}^n - \{x_0\} \\
+q(x_0) = 0.
+\end{cases}
+\tag{75}
+\]
+We henceforth assume that $q$ is a smooth solution of (75) on $\mathbb{R}^n - \{x_0\}$. (In fact $q(x) =$ distance of $x$ to $x_0$, in the Riemannian metric determined by $(a^{ij})$.) We write
+\[
+C := \{(x,t) \mid p(x,t) < 0\} = \{(x,t) \mid q(x) < t_0 - t\}.
+\]
+For each $t > 0$, we further define
+\[
+C_t := \{x \mid q(x) < t_0 - t\} = \text{ cross section of } C \text{ at time } t.
+\tag{76}
+\]
+Since (75) implies $Dq \ne 0$ in $\mathbb{R}^n - \{x_0\}$, $\partial C_t$ is a smooth, $(n-1)$-dimensional surface for $0 \le t < t_0$.
+
+\begin{theorem}[Finite propagation speed]
+\label{thm:hyperbolic-finite-propagation-speed}
+\dcref{ch7:7.2-thm-8}
+\group{Hyperbolic PDE}
+\uses{def:uniform-hyperbolicity,thm:wave-equation-finite-propagation-speed}
+Assume $u$ is a smooth solution of the hyperbolic equation (72). If $u \equiv u_t \equiv 0$ on $C_0$, then $u \equiv 0$ within the cone $C$.
+\end{theorem}
+
+\begin{remark}[Finite domain of dependence]
+\label{rem:hyperbolic-finite-propagation-remark}
+\dcref{ch7:7.2.4-rem-1}
+\group{Hyperbolic PDE}
+\uses{thm:hyperbolic-finite-propagation-speed}
+We see in particular that if $u$ is a solution of (72) with the initial conditions
+\[
+u = g, \quad u_t = h \quad \text{on } \mathbb{R}^n \times \{t = 0\},
+\tag{77}
+\]
+then $u(x_0, t_0)$ depends only upon the values of $g$ and $h$ within $C_0$.
+\end{remark}
+
+\begin{proof}
+1. We modify a proof from \S2.4, and so define the energy
+\[
+e(t) := \frac{1}{2}\int_{C_t} u_t^2 + \sum_{i,j=1}^n a^{ij}u_{x_i}u_{x_j} \, dx \quad (0 \le t \le t_0).
+\]
+
+2. In order to compute $\dot{e}(t)$, we first note that if $f$ is a continuous function of $x$, then
+\[
+\frac{d}{dt}\left(\int_{C_t} f\,dx\right) = -\int_{\partial C_t} \frac{f}{|Dq|}\,dS
+\]
+according to the coarea formula. Thus
+\[
+\dot{e}(t) = \int_{C_t} u_t u_{tt} + \sum_{i,j=1}^{n} a^{ij} u_{x_i} u_{x_j}\,dx
+\]
+\[
+- \frac{1}{2}\int_{\partial C_t} \left(u_t^2 + \sum_{i,j=1}^{n} a^{ij} u_{x_i} u_{x_j}\right) \frac{1}{|Dq|}\,dS
+\tag{78}
+\]
+\[
+=: A - B.
+\]
+Integrating by parts, we calculate
+\[
+A = \int_{C_t} u_t\left(u_{tt} - \sum_{i,j=1}^{n} (a^{ij} u_{x_i})_{x_j}\right)dx + \int_{\partial C_t} \sum_{i,j=1}^{n} a^{ij} u_{x_i} \nu^j u_t\,dS
+\]
+\[
+= -\int_{C_t} u_t \sum_{i,j=1}^{n} a^{ij}_{x_j} u_{x_i}\,dx + \int_{\partial C_t} \sum_{i,j=1}^{n} a^{ij} u_{x_i} \nu^j u_t\,dS,
+\tag{79}
+\]
+with $\nu = (\nu^1, \ldots, \nu^n)$ being as usual the outer unit normal to $\partial C_t$. But according to the generalized Cauchy-Schwarz inequality,
+\[
+\left|\sum_{i,j=1}^{n} a^{ij} u_{x_i} \nu^j\right| \le \left(\sum_{i,j=1}^{n} a^{ij} u_{x_i} u_{x_j}\right)^{1/2} \left(\sum_{i,j=1}^{n} a^{ij} \nu^i \nu^j\right)^{1/2}.
+\tag{80}
+\]
+In addition, since $q = t_0 - t$ on $\partial C_t$, we have $\nu = \frac{Dq}{|Dq|}$ on $\partial C_t$. Hence
+\[
+\sum_{i,j=1}^{n} a^{ij} \nu^i \nu^j = \sum_{i,j=1}^{n} \frac{a^{ij} q_{x_i} q_{x_j}}{|Dq|^2} = \frac{1}{|Dq|^2}
+\]
+by (75). Consequently inequality (80) reads
+\[
+\left|\sum_{i,j=1}^{n} a^{ij} u_{x_i} \nu^j\right| \le \left(\sum_{i,j=1}^{n} a^{ij} u_{x_i} u_{x_j}\right)^{1/2} \frac{1}{|Dq|}.
+\tag{81}
+\]
+Then returning to (79), we estimate using (81) and Cauchy's inequality:
+\[
+|A| \le Ce(t) + \int_{\partial C_t} \left(\sum_{i,j=1}^{n} a^{ij} u_{x_i} u_{x_j}\right)^{1/2} |u_t| \frac{1}{|Dq|}\,dS
+\]
+\[
+\le Ce(t) + \frac{1}{2}\int_{\partial C_t}\left(u_t^2 + \sum_{i,j=1}^{n} a^{ij} u_{x_i} u_{x_j}\right) \frac{1}{|Dq|}\,dS
+\]
+\[
+= Ce(t) + B.
+\]
+
+3. Therefore inequality (78) gives
+\[
+\dot{e}(t) \leq Ce(t).
+\]
+Since hypothesis (76) implies $e(0) = 0$, we deduce using Gronwall's inequality that
+\[
+e(t) = 0 \quad \text{for all } 0 \leq t \leq t_0.
+\]
+Hence $u_t \equiv Du \equiv 0$ in $C$, and consequently $u \equiv 0$ in $C$.
+\end{proof}
+
+\subsection{Equations in Two Variables}
+
+In this section we briefly consider second-order hyperbolic partial differential equations involving only two variables, and demonstrate that in this setting rather more precise information can be obtained. The very rough idea is that since a function of two variables has ``only'' three second partial derivatives, algebraic and analytic simplifications in the structure of the PDE may be possible, which are unavailable for more than two variables.
+
+We begin by considering a general linear second-order PDE in two variables
+\[
+\sum_{i,j=1}^{2} a^{ij} u_{x_i x_j} + \sum_{i=1}^{2} b^i u_{x_i} + cu = 0,
+\tag{82}
+\]
+where the coefficients $a^{ij}$, $b^i$, $c$ ($i, j = 1, 2$), with $a^{ij} = a^{ji}$, and the unknown $u$ are functions of the two variables $x_1$ and $x_2$ in some region $U \subset \mathbb{R}^2$. Note that for the moment, and in contrast to the theory developed above, we do \textit{not} identify either $x_1$ or $x_2$ with the variable $t$ denoting time.
+
+We now pose the following basic question: \textit{Is it possible to simplify the structure of the PDE (82) by introducing new independent variables?} In other words, can we expect to convert the PDE into some ``nicer'' form by rewriting in terms of new variables $y = \Phi(x)$?
+
+More precisely, let us set
+\[
+\left\{ \begin{array}{l} y_1 = \Phi^1(x_1, x_2) \\ y_2 = \Phi^2(x_1, x_2) \end{array} \right.
+\tag{83}
+\]
+for some appropriate function $\Phi = (\Phi^1, \Phi^2)$. To investigate this possibility let us now write
+\[
+u(x) = v(\Phi(x)).
+\tag{84}
+\]
+That is, we define $v(y) := u(\Psi(y))$, where $\Psi = \Phi^{-1}$.
+
+From (84), we compute
+\[
+\left\{\begin{array}{l}
+u_{x_i} = \sum_{k=1}^2 v_{y_k}\Phi^k_{x_i}\\
+u_{x_i x_j} = \sum_{k,l=1}^2 v_{y_k y_l}\Phi^k_{x_i}\Phi^l_{x_j} + \sum_k v_{y_k}\Phi^k_{x_i x_j}
+\end{array}\right.
+\]
+for $i, j = 1, 2$. Substituting into (82), we discover $v$ solves the PDE
+\[
+\sum_{k,l=1}^n \bar a^{kl}v_{y_k y_l} + \cdots = 0,
+\tag{85}
+\]
+for
+\[
+\bar{a}^{kl} := \sum_{i,j=1}^2 a^{ij}\Phi^k_{x_i}\Phi^l_{x_j} \quad (k, l = 1, 2),
+\tag{86}
+\]
+where the dots in (85) represent terms of lower order.
+
+We examine the first term in the PDE (85) in the hope we can perhaps choose the transformation $\Phi = (\Phi^1, \Phi^2)$ so this expression is particularly simple. Let us try to achieve
+\[
+\bar{a}^{11} = \bar{a}^{22} \equiv 0.
+\tag{87}
+\]
+In view of formula (86) this will be possible provided we can choose both $\Phi^1$ and $\Phi^2$ to solve the nonlinear first-order PDE
+\[
+a^{11}(v_{x_1})^2 + 2a^{12}v_{x_1}v_{x_2} + a^{22}(v_{x_2})^2 = 0 \quad \text{in } U.
+\tag{88}
+\]
+Observe this is the \textit{characteristic equation} associated with the partial differential equation (82).
+
+To proceed further, let us suppose
+\[
+\det A = a^{11}a^{22} - (a^{12})^2 < 0 \quad \text{in } U;
+\tag{89}
+\]
+in which case we say the PDE (82) is \textit{hyperbolic}.
+
+Utilizing condition (89), we can then factor equation (88) as follows:
+\[
+\left(a^{11}v_{x_1} + \left[a^{12} + ((a^{12})^2 - a^{11}a^{22})^{1/2}\right]v_{x_2}\right)
+\]
+\[
+\cdot \left(a^{11}v_{x_1} + \left[a^{12} - ((a^{12})^2 - a^{11}a^{22})^{1/2}\right]v_{x_2}\right)
+\]
+\[
+= a^{11}\left(a^{11}(v_{x_1})^2 + 2a^{12}v_{x_1}v_{x_2} + a^{22}(v_{x_2})^2\right) = 0.
+\tag{90}
+\]
+Now the left hand side of (90) is the product of two linear first-order PDE:
+\[
+a^{11} u_{x_1} + \left[a^{12} + ((a^{12})^2 - a^{11}a^{22})^{1/2}\right] u_{x_2} = 0 \quad \text{in } U
+\tag{$91_1$}
+\]
+and
+\[
+a^{11} u_{x_1} + \left[a^{12} - ((a^{12})^2 - a^{11}a^{22})^{1/2}\right] u_{x_2} = 0 \quad \text{in } U.
+\tag{$91_2$}
+\]
+We now assume that we can choose $\Phi^1$ to be a smooth solution of the PDE $(91_1)$, with $D\Phi^1 \neq 0$ in $U$. Then $\Phi^1$ is constant along trajectories $\mathbf{x} = (x^1, x^2)$ of the ODE
+\[
+\begin{cases} \dot{x}^1 = a^{11} \\ \dot{x}^2 = \left[a^{12} + ((a^{12})^2 - a^{11}a^{22})^{1/2}\right]. \end{cases}
+\tag{92}
+\]
+Similarly, suppose $\Phi^2$ is a smooth solution of $(91_2)$, with $D\Phi^2 \neq 0$ in $U$; then $\Phi^2$ is constant along trajectories $\mathbf{x} = (x^1, x^2)$ of the ODE
+\[
+\begin{cases} \dot{x}^1 = a^{11} \\ \dot{x}^2 = \left[a^{12} - ((a^{12})^2 - a^{11}a^{22})^{1/2}\right]. \end{cases}
+\tag{93}
+\]
+Curves which are trajectories of either the ODE (92) or (93) are called \textit{characteristics} of the original partial differential equation (82). Returning now to (83) we see that trajectories of solutions of the characteristic ODE (92) and (93) provide our new coordinate lines.
+
+Additionally we can verify using (89) that
+\[
+\bar{a}^{12} = \sum_{i,j=1}^{2} a^{ij}\Phi^1_{x_i}\Phi^2_{x_j} \neq 0 \quad \text{in } U.
+\tag{94}
+\]
+Combining then (85), (86), (87) and (94), we see that our PDE (82) becomes in the $y$ coordinates
+\[
+v_{y_1 y_2} + \cdots = 0,
+\tag{95}
+\]
+the dots as before denoting terms of lower order. Let us call equation (95) the \textit{first canonical form} for the hyperbolic PDE (82).
+
+If we change variables again by setting $z_1 = y_1 + y_2$, $z_2 = y_1 - y_2$, then (95) becomes
+\[
+w_{z_1 z_1} - w_{z_2 z_2} + \cdots = 0.
+\tag{96}
+\]
+If we then further rename the variables $t = z_1$, $x = z_2$, then (96) reads
+\[
+w_{tt} - w_{xx} + \cdots = 0,
+\tag{97}
+\]
+the second-order term of which is the one-dimensional wave operator. Equation (97) is the \textit{second canonical form}.
+
+Hence any hyperbolic PDE in two variables of the form (82) can be converted by a change of variables into the wave equation plus a lower order term, assuming we can find the mapping $\Phi$ as above.
+
+\section{Hyperbolic Systems of First-Order Equations}
+\label{sec:hyperbolic-systems-first-order-equations}
+
+We next broaden our study of hyperbolic PDE (which we may informally interpret as equations supporting ``wave-like'' solutions) to the case of first-order systems. We continue in the manner of \cref{sec:second-order-parabolic-equations,sec:second-order-hyperbolic-equations} by first employing energy bounds to construct weak solutions for symmetric hyperbolic systems. For nonsymmetric, constant coefficient hyperbolic systems, however, we will instead employ Fourier transform methods.
+
+\subsection{Definitions}
+
+We investigate in this section \textit{systems} of linear first-order partial differential equations having the form
+\[
+\mathbf{u}_t + \sum_{j=1}^{n} \mathbf{B}_j \mathbf{u}_{x_j} = \mathbf{f} \quad \text{in } \mathbb{R}^n \times (0,\infty),
+\tag{1}
+\]
+subject to the initial condition
+\[
+\mathbf{u} = \mathbf{g} \quad \text{on } \mathbb{R}^n \times \{t = 0\}.
+\tag{2}
+\]
+The unknown is $\mathbf{u} : \mathbb{R}^n \times [0, \infty) \to \mathbb{R}^m$, $\mathbf{u} = (u^1, \ldots, u^m)$, and the functions $\mathbf{B}_j : \mathbb{R}^n \times [0, \infty) \to \mathbb{R}^{m \times m}$ ($j = 1, \ldots, n$), $\mathbf{f} : \mathbb{R}^n \times [0, \infty) \to \mathbb{R}^m$, $\mathbf{g} : \mathbb{R}^n \to \mathbb{R}^m$ are given.
+
+\noindent\textbf{Notation.} For each $y \in \mathbb{R}^n$, set
+\[
+\mathbf{B}(x,t;y) := \sum_{j=1}^{n} y_j \mathbf{B}_j(x,t) \quad (x \in \mathbb{R}^n, t \geq 0).
+\]
+
+\begin{definition}[Hyperbolic system]
+\label{def:hyperbolic-system}
+\dcref{ch7:7.3.1-def-1}
+\group{Hyperbolic Systems}
+The system of PDE (1) is called hyperbolic if the $m \times m$ matrix $\mathbf{B}(x, t; y)$ is diagonalizable for each $x, y \in \mathbb{R}^n$, $t \geq 0$.
+\end{definition}
+
+In other words, (1) is hyperbolic provided for each $x, y, t$, the matrix $\mathbf{B}(x, t, y)$ has $m$ real eigenvalues
+\[
+\lambda_1(x, t; y) \leq \lambda_2(x, t; y) \leq \cdots \leq \lambda_m(x, t; y)
+\]
+and corresponding eigenvectors $\{r_k(x, t; y)\}_{k=1}^m$ that form a basis of $\mathbb{R}^m$.
+
+There are two important special cases:
+
+\begin{definition}[Symmetric and strictly hyperbolic systems]
+\label{def:symmetric-strictly-hyperbolic-system}
+\dcref{ch7:7.3.1-def-2}
+\group{Hyperbolic Systems}
+\uses{def:hyperbolic-system}
+(i) We say (1) is a symmetric hyperbolic system if $B_j(x, t)$ is a symmetric $m \times m$ matrix for each $x \in \mathbb{R}^n$, $t \geq 0$ ($j = 1, \ldots, m$).
+
+(ii) The system (1) is strictly hyperbolic if for each $x, y \in \mathbb{R}^n$, $y \neq 0$, and each $t \geq 0$, the matrix $\mathbf{B}(x, t; y)$ has $m$ distinct real eigenvalues:
+\[
+\lambda_1(x, t; y) < \lambda_2(x, t; y) < \cdots < \lambda_m(x, t; y).
+\]
+\end{definition}
+
+\begin{remark}[Motivation for the definition of hyperbolicity]
+\label{rem:motivation-hyperbolicity-plane-wave}
+\dcref{ch7:7.3.1-rem-1}
+\group{Hyperbolic Systems}
+\uses{def:hyperbolic-system,def:traveling-wave-plane-wave}
+We justify the hyperbolicity condition as follows. Assume $\mathbf{f} \equiv 0$ and, further, the matrices $B_j$ are constant ($j = 1, \ldots, n$). Thus
+\[
+\sum_{j=1}^{n} y_j B_j = \mathbf{B}(y)
+\tag{3}
+\]
+depends only on $y \in \mathbb{R}^n$.
+
+As in \cref{def:traveling-wave-plane-wave} let us look for a \textit{plane wave} solution of (1), (2). That is, we seek a solution $\mathbf{u}$ having the form
+\[
+\mathbf{u}(x, t) = \mathbf{v}(y \cdot x - \sigma t) \quad (x \in \mathbb{R}^n, t \geq 0)
+\tag{4}
+\]
+for some direction $y \in \mathbb{R}^n$, velocity $\frac{\sigma}{|y|}$ ($\sigma \in \mathbb{R}$), and profile $\mathbf{v} : \mathbb{R} \to \mathbb{R}^m$. Plugging (4) into (1), we compute:
+\[
+\left( -\sigma I + \sum_{j=1}^{n} y_j B_j \right) \mathbf{v}' = 0.
+\]
+This equality asserts $\mathbf{v}'$ is an eigenvector of the matrix $\mathbf{B}(y)$ corresponding to the eigenvalue $\sigma$.
+
+The hyperbolicity condition requires that there are $m$ distinct plane wave solutions of (1) for each direction $y$. These are
+\[
+(y \cdot x - \lambda_k(y)t)r_k(y) \quad (k = 1, \ldots, m),
+\]
+where
+\[
+\lambda_1(y) \leq \lambda_2(y) \leq \cdots \leq \lambda_m(y)
+\]
+are the eigenvalues of $\mathbf{B}(y)$ and $\{r_k(y)\}_{k=1}^m$ the corresponding eigenvectors. The eigenvalues for $|y| = 1$ are the \textit{wave speeds}.
+\end{remark}
+
+\subsection{Symmetric Hyperbolic Systems}
+
+In this section we apply energy methods and the vanishing viscosity technique to build a solution to the hyperbolic initial-value problem
+\[
+\begin{cases} \mathbf{u}_t + \sum_{j=1}^n \mathbf{B}_j \mathbf{u}_{x_j} = \mathbf{f} & \text{in } \mathbb{R}^n \times (0,T] \\ \mathbf{u} = \mathbf{g} & \text{on } \mathbb{R}^n \times \{t=0\}, \end{cases}
+\tag{5}
+\]
+where $T > 0$, under the fundamental assumption that
+\[
+\text{the matrices } \mathbf{B}_j(x,t) \text{ are symmetric } (j = 1,\ldots,n),
+\tag{6}
+\]
+for $x \in \mathbb{R}^n$, $0 \le t \le T$. We will further assume $\mathbf{B}_j \in C^2(\mathbb{R}^n \times [0,T];\mathbb{M}^{m \times m})$, with
+\[
+\sup_{\mathbb{R}^n \times [0,T]} (|\mathbf{B}_j|, |D_{x_i}\mathbf{B}_j|, |D^2_{x_i}\mathbf{B}_j|) < \infty \quad (j = 1,\ldots,n),
+\tag{7}
+\]
+and
+\[
+\mathbf{g} \in H^1(\mathbb{R}^n; \mathbb{R}^m), \quad \mathbf{f} \in H^1(\mathbb{R}^n \times (0,T);\mathbb{R}^m).
+\tag{8}
+\]
+
+\begin{remark}[Symmetric systems generalize second-order hyperbolic PDE]
+\label{rem:symmetric-hyperbolic-general-systems}
+\dcref{ch7:7.3.2-rem-1}
+\group{Hyperbolic Systems}
+\uses{def:symmetric-strictly-hyperbolic-system,def:uniform-hyperbolicity}
+More general systems having the form
+\[
+\mathbf{B}_0\mathbf{u}_t + \sum_{j=1}^n \mathbf{B}_j\mathbf{u}_{x_j} = \mathbf{f}
+\tag{9}
+\]
+are also called \textit{symmetric}, provided the matrices $\mathbf{B}_j$ are symmetric for $j = 0,\ldots,n$. The theory set forth below easily extends to such systems, provided $\mathbf{B}_0$ is positive definite.
+
+Symmetric hyperbolic systems of the type (9) generalize the second-order hyperbolic PDE studied above. For suppose $v$ is a smooth solution of the scalar equation
+\[
+v_{tt} - \sum_{i,j=1}^n a^{ij}v_{x_ix_j} = 0,
+\tag{10}
+\]
+where without loss we may take $a^{ij} = a^{ji}$ $(i,j = 1,\ldots,n)$. Writing
+\[
+\mathbf{u} = (u^1,\ldots,u^{n+1}) := (v_{x_1},\ldots,v_{x_n},v_t),
+\]
+we discover $\mathbf{u}$ solves a system of the form (9), for $m = n+1$, $\mathbf{f} \equiv 0$,
+\[
+\mathbf{B}_j = \begin{pmatrix} 0 & \cdots & 0 & -a^{1j} \\ & \ddots & & \vdots \\ 0 & \cdots & 0 & -a^{nj} \\ -a^{1j} & \cdots & -a^{nj} & 0 \end{pmatrix}_{(n+1)\times(n+1)} \quad (j = 1,\ldots,n),
+\]
+\[
+\mathbf{B}_0 = \begin{pmatrix} a^{11} & \cdots & a^{1n} & 0 \\ & \ddots & & \vdots \\ a^{n1} & \cdots & a^{nn} & 0 \\ 0 & \cdots & 0 & 1 \end{pmatrix}_{(n+1)\times(n+1)}.
+\]
+Observe that the uniform hyperbolicity condition for (10) implies that the matrix $\mathbf{B}_0$ is positive definite.
+\end{remark}
+
+\subsubsection{Weak solutions}
+
+To ease notation, let us define the bilinear form
+\[
+B[\mathbf{u},\mathbf{v};t] := \int_{\mathbb{R}^n} \sum_{j=1}^n (\mathbf{B}_j(\cdot,t)\mathbf{u}_{x_j}) \cdot \mathbf{v} \, dx
+\]
+for $0 \le t \le T$, $\mathbf{u}, \mathbf{v} \in H^1(\mathbb{R}^n; \mathbb{R}^m)$.
+
+\begin{definition}[Weak solution of a symmetric hyperbolic system]
+\label{def:weak-solution-symmetric-hyperbolic-system}
+\dcref{ch7:7.3.2-def-1}
+\group{Hyperbolic Systems}
+\uses{rem:symmetric-hyperbolic-general-systems}
+We say
+\[
+\mathbf{u} \in L^2(0,T; H^1(\mathbb{R}^n; \mathbb{R}^m)), \text{ with } \mathbf{u}' \in L^2(0,T; L^2(\mathbb{R}^n; \mathbb{R}^m)),
+\]
+is a weak solution of the initial-value problem (5) for the symmetric hyperbolic system provided
+
+(i) $(\mathbf{u}',\mathbf{v}) + B[\mathbf{u},\mathbf{v};t] = (\mathbf{f},\mathbf{v})$
+
+for each $\mathbf{v} \in H^1(\mathbb{R}^n; \mathbb{R}^m)$ and a.e. $0 \le t \le T$, and
+
+(ii) $\mathbf{u}(0) = \mathbf{g}$.
+
+Here and afterwards $(\cdot, \cdot)$ denotes the inner product in $L^2(\mathbb{R}^n; \mathbb{R}^m)$.
+\end{definition}
+
+\begin{remark}[Continuity of the weak solution]
+\label{rem:weak-solution-symmetric-hyperbolic-continuity}
+\dcref{ch7:7.3.2-rem-2}
+\group{Hyperbolic Systems}
+\uses{def:weak-solution-symmetric-hyperbolic-system,thm:calculus-abstract-space}
+According to Theorem 2 in \S5.9, $\mathbf{u} \in C([0,T]; L^2(\mathbb{R}^n; \mathbb{R}^m))$ and so the initial condition (ii) makes sense.
+\end{remark}
+
+\subsubsection{Vanishing viscosity method}
+
+We will approximate problem (5) by the parabolic initial-value problem
+\[
+\begin{cases}
+\mathbf{u}_t^\epsilon - \epsilon \Delta \mathbf{u}^\epsilon + \sum_{j=1}^n \mathbf{B}_j \mathbf{u}_{x_j}^\epsilon = \mathbf{f} & \text{in } \mathbb{R}^n \times (0,T) \\
+\mathbf{u}^\epsilon = \mathbf{g}^\epsilon & \text{on } \mathbb{R}^n \times \{t=0\}
+\end{cases}
+\tag{11}
+\]
+for $0 < \epsilon \le 1$, $\mathbf{g}^\epsilon := \eta_\epsilon * \mathbf{g}$. The idea is that for each $\epsilon > 0$, problem (11) has a unique smooth solution $\mathbf{u}^\epsilon$, which converges to zero as $|x| \to \infty$. The plan is to show that as $\epsilon \to 0$, the $\mathbf{u}^\epsilon$ converge to a limit function $\mathbf{u}$, which is a weak solution of (5).
+
+\begin{theorem}[Existence of approximate solutions]
+\label{thm:symmetric-hyperbolic-approximate-solutions}
+\dcref{ch7:7.3-thm-1}
+\group{Hyperbolic Systems}
+\uses{def:fundamental-solution-heat-equation}
+For each $\epsilon > 0$, there exists a unique solution $\mathbf{u}^\epsilon$ of (11), with
+\[
+\mathbf{u}^\epsilon \in L^2(0,T; H^3(\mathbb{R}^n; \mathbb{R}^m)), \quad (\mathbf{u}^\epsilon)' \in L^2(0,T; H^1(\mathbb{R}^n; \mathbb{R}^m)).
+\tag{12}
+\]
+\end{theorem}
+
+\begin{proof}
+1. Set $X = L^\infty((0,T); H^1(\mathbb{R}^n; \mathbb{R}^m))$. For each $\mathbf{v} \in X$, consider the linear system
+\[
+\begin{cases}
+\mathbf{u}_t - \epsilon \Delta \mathbf{u} = \mathbf{f} - \sum_{j=1}^n \mathbf{B}_j v_{x_j} & \text{in } \mathbb{R}^n \times (0,T] \\
+\mathbf{u} = \mathbf{g}^\epsilon & \text{on } \mathbb{R}^n \times \{t=0\}.
+\end{cases}
+\]
+As the right hand side is bounded in $L^2$, there exists a unique solution $\mathbf{u} \in L^2(0,T; H^2(\mathbb{R}^n; \mathbb{R}^m))$, $\mathbf{u}' \in L^2(0,T; L^2(\mathbb{R}^n; \mathbb{R}^m))$. Indeed, we can utilize the fundamental solution $\Phi$ of the heat equation (\cref{def:fundamental-solution-heat-equation}) to represent $\mathbf{u}^\epsilon$ in terms of $\mathbf{g}^\epsilon$ and $\mathbf{f} - \sum_{j=1}^n \mathbf{B}_j v_{x_j}$.
+
+Similarly, take $\bar{\mathbf{v}} \in X$ and let $\bar{\mathbf{u}}$ solve
+\[
+\begin{cases}
+\bar{\mathbf{u}}_t - \epsilon \Delta \bar{\mathbf{u}} = \mathbf{f} - \sum_{j=1}^n \mathbf{B}_j \bar{v}_{x_j} & \text{in } \mathbb{R}^n \times (0,T] \\
+\bar{\mathbf{u}} = \mathbf{g}^\epsilon & \text{on } \mathbb{R}^n \times \{t=0\}.
+\end{cases}
+\]
+
+2. Subtracting, we find $\hat{\mathbf{u}} := \mathbf{u} - \bar{\mathbf{u}}$ satisfies
+\[
+\begin{cases}
+\hat{\mathbf{u}}_t - \epsilon \Delta \hat{\mathbf{u}} = -\sum_{j=1}^n \mathbf{B}_j \check{v}_{x_j} & \text{in } \mathbb{R}^n \times (0,T] \\
+\hat{\mathbf{u}} = 0 & \text{on } \mathbb{R}^n \times \{t=0\},
+\end{cases}
+\tag{13}
+\]
+for $\check{\mathbf{v}} := \mathbf{v} - \bar{\mathbf{v}}$. From the representation formula of $\hat{\mathbf{u}}$ in terms of the fundamental solution $\Phi$ and $\sum_{j=1}^n \mathbf{B}_j \check{v}_{x_j}$, we obtain the estimate:
+\[
+\operatorname{ess\,sup}_{0 \le t \le T} \|\hat{\mathbf{u}}(t)\|_{H^1(\mathbb{R}^n;\mathbb{R}^m)} \le C(\epsilon) \left\| \sum_{j=1}^n \mathbf{B}_j \check{v}_{x_j} \right\|_{L^2(0,T;L^2(\mathbb{R}^n;\mathbb{R}^m))}
+\]
+\[
+\le C(\epsilon) \|\check{\mathbf{v}}\|_{L^2(0,T;H^1(\mathbb{R}^n;\mathbb{R}^m))}
+\]
+\[
+\le C(\epsilon) T^{1/2} \operatorname{ess\,sup}_{0 \le t \le T} \|\check{\mathbf{v}}(t)\|_{H^1(\mathbb{R}^n;\mathbb{R}^m)}.
+\tag{14}
+\]
+Thus
+\[
+\|\hat{\mathbf{u}}\| \le C(\epsilon) T^{1/2} \|\check{\mathbf{v}}\|.
+\tag{15}
+\]
+
+3. If $T$ is so small that
+\[
+C(\epsilon) T^{1/2} \le 1/2,
+\tag{16}
+\]
+then (15) reads $\|\mathbf{u} - \bar{\mathbf{u}}\| \le \frac{1}{2}\|\mathbf{v} - \bar{\mathbf{v}}\|$. According to Banach's fixed point theorem (\S9.2.1) the mapping $\mathbf{v} \mapsto \mathbf{u}$ has a unique fixed point. Then $\mathbf{u} = \mathbf{u}^\epsilon$ solves (11), provided (16) holds.
+
+If (16) fails, we choose $0 < T_1 < T$ so that $CT_1 = 1/2$ and repeat the above argument on the time intervals $[0,T_1], [T_1, 2T_1]$, etc.
+
+Assertion (12) follows from parabolic regularity theory (cf.\ \cref{thm:hyperbolic-improved-regularity}).
+\end{proof}
+
+\subsubsection{Energy estimates}
+
+We intend to send $\epsilon \to 0$ in (11), and for this as usual need some uniform estimates.
+
+\begin{theorem}[Energy estimates]
+\label{thm:symmetric-hyperbolic-energy-estimates}
+\dcref{ch7:7.3-thm-2}
+\group{Energy Estimates}
+\uses{thm:symmetric-hyperbolic-approximate-solutions}
+There exists a constant $C$, depending only on $n$ and the coefficients, such that
+\[
+\max_{0 \leq t \leq T} \|u^\epsilon(t)\|_{H^1(\mathbb{R}^n;\mathbb{R}^m)} + \|u_t^\epsilon\|_{L^2(0,T;L^2(\mathbb{R}^n;\mathbb{R}^m))}
+\]
+\[
+\leq C(\|g\|_{H^1(\mathbb{R}^n;\mathbb{R}^m)} + \|f\|_{L^2(0,T;H^1(\mathbb{R}^n;\mathbb{R}^m))} + \|f'\|_{L^2(0,T;L^2(\mathbb{R}^n;\mathbb{R}^m))})
+\tag{17}
+\]
+for each $0 < \epsilon \leq 1$.
+\end{theorem}
+
+\begin{proof}
+1. We compute
+\[
+\frac{d}{dt}\left(\frac{1}{2}\|u^\epsilon\|_{L^2(\mathbb{R}^n;\mathbb{R}^m)}^2\right) = (u^\epsilon, u_t^\epsilon) = \left(u^\epsilon, f - \sum_{j=1}^n B_j u_{x_j}^\epsilon + \epsilon \Delta u^\epsilon\right).
+\tag{18}
+\]
+Now
+\[
+|(u^\epsilon, f)| \leq \|u^\epsilon\|_{L^2(\mathbb{R}^n;\mathbb{R}^m)} \|f\|_{L^2(\mathbb{R}^n;\mathbb{R}^m)}
+\tag{19}
+\]
+and
+\[
+(u^\epsilon, \epsilon \Delta u^\epsilon) = -\epsilon \|Du^\epsilon\|_{L^2(\mathbb{R}^n;\mathbb{R}^{n \times n})}^2 \leq 0.
+\tag{20}
+\]
+
+2. Suppose $v \in C_c^\infty(\mathbb{R}^n;\mathbb{R}^m)$. Then
+\[
+\left(v, \sum_{j=1}^n B_j v_{x_j}\right) = \sum_{j=1}^n \int_{\mathbb{R}^n} (B_j v_{x_j}) \cdot v \, dx
+\]
+\[
+= \frac{1}{2} \sum_{j=1}^n \int_{\mathbb{R}^n} ((B_j v) \cdot v)_{x_j} \, dx - \frac{1}{2} \sum_{j=1}^n \int_U (B_{j,x_j} v) \cdot v \, dx,
+\]
+the last equality following from the symmetry assumption (6). As $v$ has compact support, we deduce using (7) that
+\[
+\left|\left(v, \sum_{j=1}^n B_j v_{x_j}\right)\right| \leq \frac{1}{2} \sum_{j=1}^n \left|\int_{\mathbb{R}^n} (B_{j,x_j} v) \cdot v \, dx\right| \leq C\|v\|_{L^2(\mathbb{R}^n;\mathbb{R}^m)}^2.
+\]
+By approximation therefore:
+\[
+\left|\left(u^\epsilon, \sum_{j=1}^n B_j u_{x_j}^\epsilon\right)\right| \leq C\|u^\epsilon\|_{L^2(\mathbb{R}^n;\mathbb{R}^m)}^2.
+\]
+Utilizing this bound, (19) and (20) in (18), we obtain the estimate
+\[
+\frac{d}{dt}\left(\|u^\epsilon\|^2_{L^2(\mathbb{R}^n;\mathbb{R}^m)}\right) \leq C\left(\|u^\epsilon\|^2_{L^2(\mathbb{R}^n;\mathbb{R}^m)} + \|f\|^2_{L^2(\mathbb{R}^n;\mathbb{R}^m)}\right).
+\]
+We next apply Gronwall's inequality, to deduce
+\[
+\max_{0\leq t \leq T} \|u^\epsilon(t)\|^2_{L^2(\mathbb{R}^n;\mathbb{R}^m)} \leq C\left(\|g\|^2_{L^2(\mathbb{R}^n;\mathbb{R}^m)} + \|f\|^2_{L^2(0,T;L^2(\mathbb{R}^n;\mathbb{R}^m))}\right),
+\tag{21}
+\]
+since $\|g^\epsilon\|_{L^2(\mathbb{R}^n;\mathbb{R}^m)} \leq \|g\|_{L^2(\mathbb{R}^n;\mathbb{R}^m)}$.
+
+3. Fix $k \in \{1,\ldots,n\}$ and write $\mathbf{v}^k := u^\epsilon_{x_k}$. Differentiating (11) with respect to $x_k$, we find
+\[
+\left\{\begin{array}{ll}
+\mathbf{v}^k_t - \epsilon\Delta\mathbf{v}^k + \sum_{j=1}^n B_j\mathbf{v}^k_{x_j} = f_{x_k} - \sum_{j=1}^n B_{j,x_k}u^\epsilon_{x_j} & \text{in } \mathbb{R}^n \times (0,T] \\
+\mathbf{v}^k = g^\epsilon_{x_k} & \text{on } \mathbb{R}^n \times \{t=0\}.
+\end{array}\right.
+\]
+Reasoning as above, we find
+\[
+\frac{d}{dt}\left(\|\mathbf{v}^k\|^2_{L^2(\mathbb{R}^n;\mathbb{R}^{n \times n})}\right) \leq C\left(\|Du^\epsilon\|^2_{L^2(\mathbb{R}^n;\mathbb{R}^{n \times n})} + \|Df\|^2_{L^2(\mathbb{R}^n;\mathbb{R}^{n \times n})}\right).
+\tag{22}
+\]
+Sum the previous inequalities for $k = 1,\ldots,n$, to deduce
+\[
+\frac{d}{dt}\left(\|Du^\epsilon\|^2_{L^2(\mathbb{R}^n;\mathbb{R}^{n \times n})}\right) \leq C\left(\|Du^\epsilon\|^2_{L^2(\mathbb{R}^n;\mathbb{R}^{n \times n})} + \|Df\|^2_{L^2(\mathbb{R}^n;\mathbb{R}^{n \times n})}\right).
+\]
+Gronwall's inequality now provides the bound
+\[
+\max_{0 \leq t \leq T} \|Du^\epsilon(t)\|^2_{L^2(\mathbb{R}^n;\mathbb{R}^{n \times n})}
+\]
+\[
+\leq C\left(\|Dg\|^2_{L^2(\mathbb{R}^n;\mathbb{R}^{n \times n})} + \|f\|^2_{L^2(0,T;H^1(\mathbb{R}^n;\mathbb{R}^m))}\right),
+\tag{23}
+\]
+since $\|Dg^\epsilon\|_{L^2(\mathbb{R}^n;\mathbb{R}^{n \times n})} \leq \|Dg\|_{L^2(\mathbb{R}^n;\mathbb{R}^{n \times n})}$.
+
+4. Next set $\mathbf{v} := (u^\epsilon)'$ and differentiate (11) with respect to $t$, to discover
+\[
+\left\{\begin{array}{ll}
+\mathbf{v}_t - \epsilon\Delta\mathbf{v} + \sum_{j=1}^n B_j\mathbf{v}_{x_j} = f' - \sum_{j=1}^n B_{j,t}u^\epsilon_{x_j} & \text{in } \mathbb{R}^n \times (0,T] \\
+\mathbf{v} = f - \sum_{j=1}^n B_j g^\epsilon_{x_j} + \epsilon\Delta g^\epsilon & \text{on } \mathbb{R}^n \times \{t=0\}.
+\end{array}\right.
+\tag{24}
+\]
+Reasoning as before, we compute
+\[
+\max_{0\leq t \leq T} \|(u^\epsilon)'(t)\|^2_{L^2(\mathbb{R}^n;\mathbb{R}^m)} \leq C\left(\|Dg\|^2_{L^2(\mathbb{R}^n;\mathbb{R}^{n \times n})} + \epsilon^2\|\Delta g^\epsilon\|^2_{L^2(\mathbb{R}^n;\mathbb{R}^m)}\right.
+\]
+\[
++ \|f(0)\|^2_{L^2(\mathbb{R}^n;\mathbb{R}^m)} + \|f\|^2_{L^2(0,T;H^1(\mathbb{R}^n;\mathbb{R}^m))} + \|f'\|^2_{L^2(0,T;L^2(\mathbb{R}^n;\mathbb{R}^m))}\bigg).
+\tag{25}
+\]
+Now
+\[
+\|\Delta g^\epsilon\|^2_{L^2(\mathbb{R}^n;\mathbb{R}^m)} \leq \frac{C}{\epsilon^2}\|Dg\|^2_{L^2(\mathbb{R}^n;\mathbb{R}^{n \times n})},
+\tag{26}
+\]
+since $g^\epsilon = \eta_\epsilon * g$. Furthermore
+\[
+\|f(0)\|_{L^2(\mathbb{R}^n;\mathbb{R}^m)} \leq C\left(\|f\|^2_{L^2(0,T;L^2(\mathbb{R}^n;\mathbb{R}^m))} + \|f'\|^2_{L^2(0,T;L^2(\mathbb{R}^n;\mathbb{R}^m))}\right).
+\tag{27}
+\]
+This bound, together with (21) and (23), completes the proof.
+\end{proof}
+
+\subsubsection{Existence and uniqueness}
+
+\begin{theorem}[Existence of weak solution]
+\label{thm:symmetric-hyperbolic-existence-weak-solution}
+\dcref{ch7:7.3-thm-3}
+\group{Hyperbolic Systems}
+\uses{thm:symmetric-hyperbolic-energy-estimates,def:weak-solution-symmetric-hyperbolic-system}
+There exists a weak solution of the initial value problem (5).
+\end{theorem}
+
+\begin{proof}
+1. According to the energy estimates (17) there exists a subsequence $\epsilon_k \to 0$ and a function $u \in L^2(0,T; H^1(\mathbb{R}^n; \mathbb{R}^m))$, such that $u' \in L^2(0,T; L^2(\mathbb{R}^n; \mathbb{R}^m))$, with
+\[
+\begin{cases} \mathbf{u}^{\epsilon_k} \to u & \text{weakly in } L^2(0,T; H^1(\mathbb{R}^n; \mathbb{R}^m)) \\ (\mathbf{u}^{\epsilon_k})' \to u' & \text{weakly in } L^2(0,T; L^2(\mathbb{R}^n; \mathbb{R}^m)). \end{cases}
+\tag{28}
+\]
+
+2. Choose a function $\mathbf{v} \in C^1([0,T]; H^1(\mathbb{R}^n; \mathbb{R}^m))$. Then from (11) we deduce:
+\[
+\int_0^T (u', \mathbf{v}) + \epsilon Du' \cdot D\mathbf{v} + B[u^\epsilon, \mathbf{v}; t] \, dt = \int_0^T (\mathbf{f}, \mathbf{v}) \, dt.
+\tag{29}
+\]
+Let $\epsilon = \epsilon_k \to 0$:
+\[
+\int_0^T (u', \mathbf{v}) + B[u, \mathbf{v}; t] \, dt = \int_0^T (\mathbf{f}, \mathbf{v}) \, dt.
+\tag{30}
+\]
+This identity is valid for all $\mathbf{v} \in C([0,T]; H^1(\mathbb{R}^n; \mathbb{R}^m))$, and so
+\[
+(u', \mathbf{v}) + B[u, \mathbf{v}; t] = (\mathbf{f}, \mathbf{v})
+\]
+for a.e. $t$ and each $\mathbf{v} \in H^1(\mathbb{R}^n; \mathbb{R}^m)$.
+
+3. Assume now $\mathbf{v}(T) = 0$. Then (29) implies
+\[
+\int_0^T -(u^\epsilon, \mathbf{v}') + \epsilon Du^\epsilon \cdot D\mathbf{v} + B[u^\epsilon, \mathbf{v}; t] \, dt = \int_0^T (\mathbf{f}, \mathbf{v}) \, dt + (\mathbf{g}^\epsilon, \mathbf{v}(0)).
+\]
+Upon sending $\epsilon = \epsilon_k \to 0$ we obtain:
+\[
+\int_0^T -(u, \mathbf{v}') + B[u, \mathbf{v}; t] \, dt = \int_0^T (\mathbf{f}, \mathbf{v}) \, dt + (\mathbf{g}, \mathbf{v}(0)).
+\]
+Integrating by parts in (30) gives us the identity
+\[
+\int_0^T -(u, \mathbf{v}') + B[u, \mathbf{v}; t] \, dt = \int_0^T (\mathbf{f}, \mathbf{v}) \, dt + (u(0), \mathbf{v}(0)).
+\]
+Consequently $u(0) = \mathbf{g}$, as $\mathbf{v}(0)$ is arbitrary.
+\end{proof}
+
+\begin{theorem}[Uniqueness of weak solution]
+\label{thm:symmetric-hyperbolic-uniqueness-weak-solution}
+\dcref{ch7:7.3-thm-4}
+\group{Hyperbolic Systems}
+\uses{def:weak-solution-symmetric-hyperbolic-system}
+A weak solution of (5) is unique.
+\end{theorem}
+
+\begin{proof}
+1. It suffices to show the only weak solution of (5) with $\mathbf{f} \equiv \mathbf{g} \equiv 0$ is $\mathbf{u} = 0$.
+
+To verify this, note
+\[
+(\mathbf{u}', \mathbf{u}) + B[\mathbf{u}, \mathbf{u}; t] = 0 \quad \text{for a.e. } 0 \le t \le T.
+\tag{31}
+\]
+Since $|B[\mathbf{u}, \mathbf{u}; t]| \le C\|\mathbf{u}\|_{L^2(\mathbb{R}^m)}^2$, we as usual compute from (31) that
+\[
+\frac{d}{dt}\left(\|\mathbf{u}(t)\|_{L^2(\mathbb{R}^m)}^2\right) \le C\|\mathbf{u}(t)\|_{L^2(\mathbb{R}^m)}^2;
+\]
+whence Gronwall's inequality forces $\|\mathbf{u}(t)\|_{L^2(\mathbb{R}^m)}^2 = 0$ ($0 \le t \le T$), since $\mathbf{u}(0) = 0$.
+\end{proof}
+
+\subsection{Systems with Constant Coefficients}
+
+In this section we apply the Fourier transform (\S4.3) to solve the \textit{constant coefficient} system
+\[
+\mathbf{u}_t + \sum_{j=1}^n B_j \mathbf{u}_{x_j} = 0 \quad \text{in } \mathbb{R}^n \times (0,\infty),
+\tag{32}
+\]
+with the initial condition
+\[
+\mathbf{u} = \mathbf{g} \quad \text{on } \mathbb{R}^n \times \{t = 0\}.
+\tag{33}
+\]
+We assume that the $\{B_j\}_{j=1}^n$ are constant $m \times m$ matrices and that the $m \times m$ matrix
+\[
+\mathbf{B}(\mathbf{y}) := \sum_{j=1}^n y_j B_j
+\tag{34}
+\]
+has for each $\mathbf{y} \in \mathbb{R}^n$ $m$ real eigenvalues
+\[
+\lambda_1(\mathbf{y}) \le \lambda_2(\mathbf{y}) \le \cdots \le \lambda_m(\mathbf{y}).
+\tag{35}
+\]
+There is no hypothesis concerning the eigenvectors, and so we are supposing only a very weak sort of hyperbolicity here. We also make no assumption of symmetry for the matrices $\{B_j\}_{j=1}^n$. Consequently the foregoing energy estimates do not apply. We need a new tool, which we discover in the Fourier transform.
+
+\begin{theorem}[Existence of solution]
+\label{thm:constant-coefficient-hyperbolic-existence}
+\dcref{ch7:7.3-thm-5}
+\group{Hyperbolic Systems}
+\uses{def:fractional-sobolev-space,def:fourier-transform-l1}
+Assume
+\[
+\mathbf{g} \in H^s(\mathbb{R}^n; \mathbb{R}^m) \quad \left(s > \frac{n}{2} + m\right).
+\]
+Then there is a unique solution $\mathbf{u} \in C^1([0, \infty); \mathbb{R}^m)$ of the initial-value problem (32), (33).
+\end{theorem}
+
+See \cref{def:fractional-sobolev-space} for the definition of the fractional Sobolev spaces $H^s$.
+
+\begin{proof}
+1. We apply the Fourier transform (\cref{def:fourier-transform-l1}), as follows. First, temporarily assume $\mathbf{u} = (u^1, \ldots, u^m)$ is a smooth solution. Then set
+\[
+\hat{\mathbf{u}} = (\hat{u}^1, \ldots, \hat{u}^m),
+\]
+where $\hat{\cdot}$ denotes the Fourier transform in the variable $x$: we do not transform with respect to the time variable $t$. Equation (32) becomes
+\[
+\hat{\mathbf{u}}_t + i \sum_{j=1}^n y_j B_j \hat{\mathbf{u}} = 0;
+\]
+that is,
+\[
+\hat{\mathbf{u}}_t + i\mathbf{B}(y)\hat{\mathbf{u}} = 0 \quad \text{in } \mathbb{R}^n \times (0, \infty).
+\tag{36}
+\]
+In addition
+\[
+\hat{\mathbf{u}} = \hat{\mathbf{g}} \quad \text{on } \mathbb{R}^n \times \{t = 0\}.
+\tag{37}
+\]
+For each fixed $y \in \mathbb{R}^n$ we solve (36), (37) by integrating in time, to find
+\[
+\hat{\mathbf{u}}(y, t) = e^{-it\mathbf{B}(y)} \hat{\mathbf{g}}(y) \quad (y \in \mathbb{R}^n, t \geq 0).
+\tag{38}
+\]
+Consequently $\mathbf{u} = (e^{-it\mathbf{B}(y)} \hat{\mathbf{g}})^\vee$; so that
+\[
+\mathbf{u}(x, t) = \frac{1}{(2\pi)^{n/2}} \int_{\mathbb{R}^n} e^{ix \cdot y} e^{-it\mathbf{B}(y)} \hat{\mathbf{g}}(y) \, dy \quad (x \in \mathbb{R}^n, t \geq 0).
+\tag{39}
+\]
+
+2. We have derived formula (39) assuming $\mathbf{u}$ to be a smooth solution of (32), (33). We now verify that the function $\mathbf{u}$ defined by (39) is in truth a solution, and so must first check that the integral in (39) converges.
+
+Since $\mathbf{g} \in H^s(\mathbb{R}^n; \mathbb{R}^m)$, we know according to \cref{def:fractional-sobolev-space} that there exists $\mathbf{f} \in L^2(\mathbb{R}^n; \mathbb{R}^m)$ such that
+\[
+|\hat{\mathbf{g}}(y)| \leq C(1 + |y|^s)^{-1} |\mathbf{f}(y)| \quad (y \in \mathbb{R}^n).
+\tag{40}
+\]
+
+So in order to investigate the convergence of the integral (39), we must estimate $\|e^{-itB(y)}\|$.
+
+3. For a fixed $y$, let $\Gamma$ denote the path $\partial B(0, r)$ in the complex plane, traversed counterclockwise, the radius $r$ selected so large that the eigenvalues $\lambda_1(y), \ldots, \lambda_m(y)$ lie within $\Gamma$.
+
+We have the formula:
+\[
+e^{-itB(y)} = \frac{1}{2\pi i} \int_\Gamma e^{-itz}(zI - B(y))^{-1} dz.
+\tag{41}
+\]
+To verify this, let $A(t, y)$ denote the right hand side of (41) and fix $x \in \mathbb{R}^m$. Then
+\[
+B(y)A(t,y)x = \frac{1}{2\pi i} \int_\Gamma e^{-itz}B(y)(zI - B(y))^{-1}x \, dz
+\]
+\[
+= \frac{1}{2\pi i} \int_\Gamma e^{-itz}(z(zI - B(y))^{-1}x - x) \, dz
+\]
+\[
+= -\frac{1}{i} \frac{d}{dt} A(t,y)x,
+\]
+since $\int_\Gamma e^{-itz} dz = 0$. Consequently
+\[
+\left(\frac{d}{dt} + iB(y)\right) A(t,y) = 0.
+\tag{42}
+\]
+In addition
+\[
+A(0,y)x = \frac{1}{2\pi i} \int_\Gamma (zI - B(y))^{-1}x \, dz
+\]
+\[
+= \frac{1}{2\pi i} \int_\Gamma \frac{x + B(y)(zI - B(y))^{-1}x}{z} \, dz
+\]
+\[
+= x + \frac{1}{2\pi i} \int_\Gamma \frac{B(y)(zI - B(y))^{-1}x}{z} \, dz.
+\tag{43}
+\]
+Now set
+\[
+w := (zI - B(y))^{-1}x;
+\tag{44}
+\]
+so that $zw - B(y)w = x$. Taking the product with $\bar{w}$, we deduce $|w| \leq \frac{C}{|z|}$ for some constant $C$. Using this estimate and letting $r$ go to infinity, we conclude from (43) that $A(0,y)x = x$. This equality and (42) verify the representation formula (41).
+
+4. Define a new path $\Delta$ in the complex plane as follows. For fixed $y$, draw circles $B_k = B(\lambda_k(y), 1)$ of radius 1, centered at $\lambda_k(y)$ $(k = 1, \ldots, m)$. Then take $\Delta$ to be the boundary of $\bigcup_{k=1}^m B_k$, traversed counterclockwise.
+
+Deforming the path $\Gamma$ into $\Delta$, we deduce from (41) that
+\[
+e^{-itB(y)} = \frac{1}{2\pi i}\int_\Delta e^{-itz}(zI - \mathbf{B}(y))^{-1}dz.
+\tag{45}
+\]
+Now
+\[
+|e^{-itz}| \le e^t \quad (z \in \Delta).
+\tag{46}
+\]
+Furthermore
+\[
+\det(zI - \mathbf{B}(y)) = \prod_{k=1}^m (z - \lambda_k(y));
+\]
+whence
+\[
+|\det(zI - \mathbf{B}(y))| \ge 1 \quad \text{if } z \in \Delta.
+\tag{47}
+\]
+Now
+\[
+(zI - \mathbf{B}(y))^{-1} = \frac{\text{cof}(zI - \mathbf{B}(y))^T}{\det(zI - \mathbf{B}(y))},
+\]
+where ``cof'' denotes the cofactor matrix. We deduce
+\[
+\|(zI - \mathbf{B}(y))^{-1}\| \le \|\text{cof}(zI - \mathbf{B}(y))\|
+\]
+\[
+\le C(1 + |z|^{m-1} + \|\mathbf{B}(y)\|^{m-1})
+\]
+\[
+\le C(1 + |y|^{m-1}) \quad \text{if } z \in \Delta.
+\tag{48}
+\]
+We have utilized in this calculation the elementary inequality
+\[
+|\lambda_k(y)| \le C|y| \quad (k = 1, \ldots, m).
+\]
+Combining (45)--(48), we derive the estimate
+\[
+\|e^{-itB(y)}\| \le Ce^t(1 + |y|^{m-1}) \quad (y \in \mathbb{R}^n).
+\tag{49}
+\]
+
+5. Return now to (37). We deduce using (40), (49) that
+\[
+\int_{\mathbb{R}^n} |e^{ix \cdot y}e^{-itB(y)}\hat{g}(y)| dy \le C\int_{\mathbb{R}^n} \|e^{-itB(y)}\|(1 + |y|)^{-1}|f(y)| dy
+\]
+\[
+\le Ce^t\int_{\mathbb{R}^n} |f(y)|(1 + |y|^{m-1})(1 + |y|)^{-1} dy
+\]
+\[
+\le C\left(\int_{\mathbb{R}^n} |f|^2 dy\right)^{1/2}\left(\int_{\mathbb{R}^n} \frac{dy}{1 + |y|^{2(s-m+1)}}\right)^{1/2}
+\]
+\[
+< \infty,
+\]
+since $s > \frac{n}{2} + m - 1$. Hence the integral in (39) converges, and it follows easily that the function
+\[
+u(x,t) = \frac{1}{(2\pi)^{n/2}} \int_{\mathbb{R}^n} e^{ix \cdot y} e^{-itB(y)} \hat{g}(y) dy
+\]
+is continuous on $\mathbb{R}^n \times [0, \infty)$.
+
+6. To show $\mathbf{u}$ is $C^1$, observe for $0 < |h| \leq 1$ that
+\[
+\frac{\mathbf{u}(x, t+h) - \mathbf{u}(x,t)}{h} = \frac{1}{(2\pi)^{n/2} h} \int_{\mathbb{R}^n} e^{ix \cdot y}(e^{-i(t+h)B(y)} - e^{-itB(y)})\hat{g}(y) dy.
+\]
+Since
+\[
+e^{-i(t+h)B(y)} - e^{-itB(y)} = -i \int_t^{t+h} B(y)e^{-isB(y)} ds,
+\]
+we can estimate as above that
+\[
+\left|\frac{1}{h}(e^{-i(t+h)B(y)} - e^{-itB(y)})\right| \leq Ce^{t+1}(1 + |y|^m).
+\]
+Therefore
+\[
+\left|\frac{\mathbf{u}(x, t+h) - \mathbf{u}(x,t)}{h}\right| \leq Ce^{t+1} \int_{\mathbb{R}^n} |\hat{g}(y)|(1 + |y|^m)(1 + |y|^s)^{-1} dy,
+\]
+and the integrand is summable since $s > \frac{n}{2} + m$. Thus $\mathbf{u}_t$ exists and is continuous on $\mathbb{R}^n \times [0, \infty)$. A similar argument shows $\mathbf{u}_{x_i}$ exists and is continuous $(i = 1, \ldots, n)$. According to the Dominated Convergence Theorem, we can furthermore differentiate under the integral sign in (39), to confirm that it solves the system $\mathbf{u}_t + \sum_{j=1}^n B_j \mathbf{u}_{x_j} = 0$.
+\end{proof}
+
+In Chapter 11 we will encounter \textit{nonlinear} first-order systems of hyperbolic equations.
+
+\section{Semigroup Theory}
+\label{sec:semigroup-theory}
+
+\textit{Semigroup theory} is the abstract study of first-order ordinary differential equations with values in Banach spaces, driven by linear, but possibly unbounded, operators. In this section we outline the basics of the theory, and present as well two applications to linear PDE. This approach provides an elegant alternative to some of the existence theory for evolution equations set forth in \cref{sec:second-order-parabolic-equations,sec:second-order-hyperbolic-equations,sec:hyperbolic-systems-first-order-equations}.
+
+\subsection{Definitions, Elementary Properties}
+
+We begin in an abstract setting. Let $X$ denote a real Banach space, and consider then the ordinary differential equation
+\[
+\begin{cases}
+u'(t) = Au(t) & (t \geq 0) \\
+u(0) = u,
+\end{cases}
+\tag{1}
+\]
+where ${}' = \frac{d}{dt}$, $u \in X$ is given, and $A$ is a linear operator. More precisely, suppose $D(A)$, the \textit{domain of $A$}, is a linear subspace of $X$ and we are given a possibly unbounded linear operator
+\[
+A : D(A) \to X.
+\tag{2}
+\]
+We investigate the existence and uniqueness of a solution
+\[
+\mathbf{u} : [0, \infty) \to X
+\]
+of the ODE (1). The key problem is to ascertain reasonable conditions on the operator $A$ so that (a) the ODE has a unique solution $\mathbf{u}$ for each initial point $u \in X$, and (b) many interesting PDE can be cast into the abstract form (1). (We have in mind the situation that $X$ is an $L^p$ space of functions and $A$ is a linear partial differential operator involving variables other than $t$. In this case $A$ is necessarily an unbounded operator.)
+
+\subsubsection{Semigroups}
+
+Let us for the moment informally assume $\mathbf{u} : [0, \infty) \to X$ is a solution of the differential equation (1), and that (1) in fact has a unique solution for each initial point $u \in X$.
+
+\noindent\textbf{Notation.} We will write
+\[
+\mathbf{u}(t) := S(t)u \quad (t \geq 0)
+\tag{3}
+\]
+to display explicitly the dependence of $\mathbf{u}(t)$ on the initial value $u \in X$. For each time $t \geq 0$ we may therefore regard $S(t)$ as a mapping from $X$ into $X$.
+
+What properties does the family of operators $\{S(t)\}_{t \geq 0}$ satisfy? Clearly $S(t) : X \to X$ is linear. Furthermore
+\[
+S(0)u = u \quad (u \in X)
+\tag{4}
+\]
+and
+\[
+S(t + s)u = S(t)S(s)u = S(s)S(t)u \quad (t, s \geq 0, u \in X).
+\tag{5}
+\]
+Condition (5) is simply our assumption that the ODE (1) has a unique solution for each initial point. Finally, it seems reasonable to suppose that for each $u \in X$
+\[
+\text{the mapping } t \mapsto S(t)u \text{ is continuous from } [0, \infty) \text{ into } X.
+\tag{6}
+\]
+
+\begin{definition}[Semigroup, contraction semigroup]
+\label{def:semigroup-contraction-semigroup}
+\dcref{ch7:7.4.1-def-1}
+\group{Semigroup Theory}
+(i) A family $\{S(t)\}_{t \geq 0}$ of bounded linear operators mapping $X$ into $X$ is called a semigroup if conditions (4)--(6) are satisfied.
+
+(ii) We say $\{S(t)\}_{t \geq 0}$ is a contraction semigroup if in addition
+\[
+\|S(t)\| \leq 1 \quad (t \geq 0),
+\tag{7}
+\]
+$\|\cdot\|$ here denoting the operator norm. Thus
+\[
+\|S(t)u\| \leq \|u\| \quad (t \geq 0, u \in X).
+\]
+\end{definition}
+
+The notion of contraction semigroup captures many properties of a nice flow on $X$ generated by the ODE (1).
+
+\subsubsection{Elementary properties, generators}
+
+The real problem now is to determine which operators $A$ generate contraction semigroups. We will answer this in \cref{sec:generating-contraction-semigroups}, after recording in this section some further general facts.
+
+Henceforth assume $\{S(t)\}_{t \geq 0}$ is a contraction semigroup on $X$.
+
+\begin{definition}[Infinitesimal generator]
+\label{def:semigroup-generator}
+\dcref{ch7:7.4.1-def-2}
+\group{Semigroup Theory}
+\uses{def:semigroup-contraction-semigroup}
+Write
+\[
+D(A) := \left\{u \in X \mid \lim_{t \to 0+} \frac{S(t)u - u}{t} \text{ exists in } X\right\}
+\tag{8}
+\]
+and
+\[
+Au := \lim_{t \to 0+} \frac{S(t)u - u}{t} \quad (u \in D(A)).
+\tag{9}
+\]
+We call $A : D(A) \to X$ the (infinitesimal) generator of the semigroup $\{S(t)\}_{t \geq 0}$; $D(A)$ is the domain of $A$.
+\end{definition}
+
+\begin{theorem}[Differential properties of semigroups]
+\label{thm:semigroup-differential-properties}
+\dcref{ch7:7.4-thm-1}
+\group{Semigroup Theory}
+\uses{def:semigroup-generator}
+Assume $u \in D(A)$. Then
+(i) $S(t)u \in D(A)$ for each $t \geq 0$,
+(ii) $AS(t)u = S(t)Au$ for each $t > 0$,
+(iii) the mapping $t \mapsto S(t)u$ is differentiable for each $t > 0$,
+and
+(iv) $\frac{d}{dt}S(t)u = AS(t)u$ \quad $(t > 0)$.
+\end{theorem}
+
+\begin{proof}
+1. Let $u \in D(A)$. Then
+\[
+\lim_{s \to 0+} \frac{S(s)S(t)u - S(t)u}{s}
+\]
+\[
+= \lim_{s \to 0+} \frac{S(t)S(s)u - S(t)u}{s} \text{ by the semigroup property (5)}
+\]
+\[
+= S(t) \lim_{s \to 0+} \frac{S(s)u - u}{s} = S(t)Au.
+\]
+Thus $S(t)u \in D(A)$ and $AS(t)u = S(t)Au$. Assertions (i) and (ii) are proved.
+
+2. Let $u \in D(A)$, $h > 0$. Then if $t > 0$,
+\[
+\lim_{h \to 0+} \left\{ \frac{S(t)u - S(t-h)u}{h} - S(t)Au \right\}
+\]
+\[
+= \lim_{h \to 0+} \left\{ S(t-h) \left( \frac{S(h)u - u}{h} \right) - S(t)Au \right\}
+\]
+\[
+= \lim_{h \to 0+} \left\{ S(t-h) \left( \frac{S(h)u - u}{h} - Au \right) + (S(t-h) - S(t))Au \right\} = 0,
+\]
+since $\frac{S(h)u - u}{h} \to Au$ and $\|S(t-h)\| \leq 1$. Consequently
+\[
+\lim_{h \to 0+} \frac{S(t)u - S(t-h)u}{h} = S(t)Au.
+\]
+Similarly
+\[
+\lim_{h \to 0+} \frac{S(t+h)u - S(t)u}{h} = S(t) \lim_{h \to 0+} \frac{S(h)u - u}{h} = S(t)Au.
+\]
+Thus $\frac{d}{dt}S(t)u$ exists for each time $t > 0$, and equals $S(t)Au = AS(t)u$.
+\end{proof}
+
+\begin{remark}[Continuous differentiability of the flow]
+\label{rem:semigroup-c1-remark}
+\dcref{ch7:7.4.1-rem-1}
+\group{Semigroup Theory}
+\uses{thm:semigroup-differential-properties}
+Since $t \mapsto AS(t)u = S(t)Au$ is continuous, the mapping $t \mapsto S(t)u$ is $C^1$ in $(0, \infty)$, if $u \in D(A)$.
+\end{remark}
+
+\begin{theorem}[Properties of generators]
+\label{thm:semigroup-generator-properties}
+\dcref{ch7:7.4-thm-2}
+\group{Semigroup Theory}
+\uses{def:semigroup-generator,thm:semigroup-differential-properties}
+(i) The domain $D(A)$ is dense in $X$,
+
+and
+
+(ii) $A$ is a closed operator.
+\end{theorem}
+
+\begin{remark}[Meaning of ``closed operator'']
+\label{rem:closed-operator-definition}
+\dcref{ch7:7.4.1-rem-2}
+\group{Semigroup Theory}
+\uses{thm:semigroup-generator-properties}
+To say $A$ is closed means that whenever $u_k \in D(A)$ $(k = 1, \ldots)$ and $u_k \to u$, $Au_k \to v$ as $k \to \infty$, then
+\[
+u \in D(A), \quad v = Au.
+\]
+\end{remark}
+
+\begin{proof}
+1. Fix any $u \in X$ and define then $u^t := \int_0^t S(s)u\,ds$. In view of (6), $\frac{u^t}{t} \to u$ in $X$, as $t \to 0+$.
+
+2. We claim
+\[
+u^t \in D(A) \quad (t > 0).
+\tag{10}
+\]
+Indeed if $r > 0$, we have
+\[
+\frac{S(r)u^t - u^t}{r} = \frac{1}{r}\left[S(r)\left(\int_0^t S(s)u\,ds\right) - \left(\int_0^t S(s)u\,ds\right)\right]
+\]
+\[
+= \frac{1}{r}\int_0^t S(r+s)u - S(s)u\,ds,
+\]
+where we used the semigroup property (5). Thus
+\[
+\frac{S(r)u^t - u^t}{r} = \frac{1}{r}\int_t^{t+r} S(s)u\,ds - \frac{1}{r}\int_0^r S(s)u\,ds
+\]
+\[
+\to S(t)u - u, \quad \text{as } r \to 0+.
+\]
+Hence $u^t \in D(A)$, with $Au^t = S(t)u - u$. This proves (10) and completes the proof of assertion (i).
+
+3. To prove $A$ is closed, let $u_k \in D(A)$ $(k = 1, \ldots)$ and suppose
+\[
+u_k \to u, \quad Au_k \to v \quad \text{in } X.
+\tag{11}
+\]
+We must prove $u \in D(A)$, $v = Au$. According to \cref{thm:semigroup-differential-properties}
+\[
+S(t)u_k - u_k = \int_0^t S(s)Au_k\,ds.
+\]
+Let $k \to \infty$ and recall (11):
+\[
+S(t)u - u = \int_0^t S(s)v\,ds.
+\]
+Hence we have
+\[
+\lim_{t \to 0+} \frac{S(t)u - u}{t} = \lim_{t \to 0+} \frac{1}{t}\int_0^t S(s)v\,ds = v.
+\]
+But then by definition $u \in D(A)$, $v = Au$.
+\end{proof}
+
+\subsubsection{Resolvents}
+
+\begin{definition}[Resolvent set and resolvent operator]
+\label{def:resolvent-set-operator}
+\dcref{ch7:7.4.1-def-3}
+\group{Semigroup Theory}
+\uses{def:semigroup-generator}
+(i) We say a real number $\lambda$ belongs to $\rho(A)$, the resolvent set of $A$, provided the operator
+\[
+\lambda I - A : D(A) \to X
+\]
+is one-to-one and onto.
+
+(ii) If $\lambda \in \rho(A)$, the resolvent operator $R_\lambda : X \to X$ is defined by
+\[
+R_\lambda u := (\lambda I - A)^{-1}u.
+\]
+\end{definition}
+
+According to the Closed Graph Theorem, $R_\lambda : X \to D(A) \subset X$ is a bounded linear operator. Furthermore,
+\[
+AR_\lambda u = R_\lambda Au \quad \text{if } u \in D(A).
+\]
+
+\begin{theorem}[Properties of resolvent operators]
+\label{thm:resolvent-operator-properties}
+\dcref{ch7:7.4-thm-3}
+\group{Semigroup Theory}
+\uses{def:resolvent-set-operator}
+(i) If $\lambda, \mu \in \rho(A)$, we have
+\[
+R_\lambda - R_\mu = (\mu - \lambda)R_\lambda R_\mu \quad \text{(resolvent identity)}
+\tag{12}
+\]
+and
+\[
+R_\lambda R_\mu = R_\mu R_\lambda.
+\tag{13}
+\]
+
+(ii) If $\lambda > 0$, then $\lambda \in \rho(A)$,
+\[
+R_\lambda u = \int_0^\infty e^{-\lambda t}S(t)u \, dt \quad (u \in X),
+\tag{14}
+\]
+and so $\|R_\lambda\| \leq \frac{1}{\lambda}$.
+\end{theorem}
+
+\begin{remark}[Resolvent as Laplace transform]
+\label{rem:resolvent-laplace-transform-semigroup}
+\dcref{ch7:7.4.1-rem-3}
+\group{Semigroup Theory}
+\uses{thm:resolvent-operator-properties,ex:resolvent-laplace-transform}
+Thus the resolvent operator is the Laplace transform of the semigroup (cf. \cref{ex:resolvent-laplace-transform}).
+\end{remark}
+
+\begin{proof}
+1. Verification of the identities (12), (13) is left to the reader (Problem 11).
+
+2. Note first that since $\lambda > 0$ and $\|S(t)\| \leq 1$, the integral on the right hand side of (14) is defined. Let $\tilde{R}_\lambda u$ denote this integral. Then for $h > 0$ and $u \in X$,
+\[
+\frac{S(h)\tilde{R}_\lambda u - \tilde{R}_\lambda u}{h} = \frac{1}{h}\left(\int_0^\infty e^{-\lambda t}[S(t+h)u - S(t)u]\,dt\right)
+\]
+\[
+= -\frac{1}{h}\int_0^h e^{-\lambda(t-h)}S(t)u\,dt
+\]
+\[
++ \frac{1}{h}\int_0^\infty (e^{-\lambda(t-h)} - e^{-\lambda t})S(t)u\,dt
+\]
+\[
+= -e^{\lambda h}\frac{1}{h}\int_0^h e^{-\lambda t}S(t)u\,dt
+\]
+\[
++ \left(\frac{e^{\lambda h}-1}{h}\right)\int_0^\infty e^{-\lambda t}S(t)u\,dt.
+\]
+Hence
+\[
+\lim_{h \to 0+} \frac{S(h)\tilde{R}_\lambda u - \tilde{R}_\lambda u}{h} = -u + \lambda\tilde{R}_\lambda u.
+\]
+Thus $A\tilde{R}_\lambda u = -u + \lambda\tilde{R}_\lambda u$; that is,
+\[
+(I\lambda - A)\tilde{R}_\lambda u = u \quad (u \in X).
+\tag{15}
+\]
+On the other hand if $u \in D(A)$,
+\[
+A\tilde{R}_\lambda u = A\int_0^\infty e^{-\lambda t}S(t)u\,dt = \int_0^\infty e^{-\lambda t}AS(t)u\,dt
+\tag{16}
+\]
+\[
+= \int_0^\infty e^{-\lambda t}S(t)Au\,dt = \tilde{R}_\lambda Au.
+\]
+Our passing $A$ under the integral sign is justified since $A$ is a closed operator: see Problem 12. Thus
+\[
+\tilde{R}_\lambda(I\lambda - A)u = u \quad (u \in D(A)).
+\]
+In view of (15) and the formula above $I\lambda - A$ is one-to-one and onto. Consequently $\lambda \in \rho(A)$, $\tilde{R}_\lambda = (I\lambda - A)^{-1} = R_\lambda$.
+\end{proof}
+
+\subsection{Generating Contraction Semigroups}
+\label{sec:generating-contraction-semigroups}
+
+We now characterize the generators of contraction semigroups:
+
+\begin{theorem}[Hille--Yosida Theorem]
+\label{thm:hille-yosida-theorem}
+\dcref{ch7:7.4-thm-4}
+\group{Semigroup Theory}
+\uses{def:semigroup-contraction-semigroup,def:semigroup-generator,thm:resolvent-operator-properties}
+Let $A$ be a closed, densely-defined linear operator on $X$. Then $A$ is the generator of a contraction semigroup $\{S(t)\}_{t \geq 0}$ if and only if
+\[
+(0,\infty) \subset \rho(A) \text{ and } \|R_\lambda\| \leq \frac{1}{\lambda} \text{ for } \lambda > 0.
+\tag{17}
+\]
+\end{theorem}
+
+\begin{proof}
+1. If $A$ is a generator, then from \cref{thm:resolvent-operator-properties},(ii) we immediately deduce (17).
+
+2. Conversely, suppose $A$ is closed, densely-defined, and satisfies (17). We must build a contraction semigroup with $A$ as its generator. For this, fix $\lambda > 0$ and define
+\[
+A_\lambda := -\lambda I + \lambda^2 R_\lambda = \lambda AR_\lambda.
+\tag{18}
+\]
+The operator $A_\lambda$ is a kind of regularized approximation to $A$.
+
+3. We first claim
+\[
+A_\lambda u \to Au \quad \text{as } \lambda \to \infty \quad (u \in D(A)).
+\tag{19}
+\]
+Indeed, since $\lambda R_\lambda u - u = AR_\lambda u = R_\lambda Au$, we have $\|\lambda R_\lambda u - u\| \leq \|R_\lambda\| \|Au\| \leq \frac{1}{\lambda}\|Au\| \to 0$. Thus $\lambda R_\lambda u \to u$ as $\lambda \to \infty$ if $u \in D(A)$. But since $\|\lambda R_\lambda\| \leq 1$ and $D(A)$ is dense, we deduce then as well
+\[
+\lambda R_\lambda u \to u \quad \text{as } \lambda \to \infty, \text{ for all } u \in X.
+\tag{20}
+\]
+Now if $u \in D(A)$, then
+\[
+A_\lambda u = \lambda AR_\lambda u = \lambda R_\lambda Au.
+\]
+In view of (20), our claim (19) is proved.
+
+4. Next, define
+\[
+S_\lambda(t) := e^{tA_\lambda} = e^{-\lambda t}e^{\lambda^2 tR_\lambda} = e^{-\lambda t} \sum_{k=0}^{\infty} \frac{(\lambda^2 t)^k}{k!} R_\lambda^k.
+\]
+Observe that since $\|R_\lambda\| \leq \lambda^{-1}$,
+\[
+\|S_\lambda(t)\| \leq e^{-\lambda t} \sum_{k=0}^{\infty} \frac{\lambda^{2k}t^k}{k!} \|R_\lambda\|^k \leq e^{-\lambda t} \sum_{k=0}^{\infty} \frac{\lambda^{2k}t^k}{k!} = 1.
+\]
+Consequently $\{S_\lambda(t)\}_{t \geq 0}$ is a contraction semigroup, and it is easy to check its generator is $A_\lambda$, with $D(A_\lambda) = X$.
+
+5. Let $\lambda, \mu > 0$. Since $R_\lambda R_\mu = R_\mu R_\lambda$, we see $A_\lambda A_\mu = A_\mu A_\lambda$, and so
+\[
+A_\mu S_\lambda(t) = S_\lambda(t)A_\mu \quad \text{for each } t > 0.
+\]
+Thus if $u \in D(A)$, we can compute
+\[
+S_\lambda(t)u - S_\mu(t)u = \int_0^t \frac{d}{ds}[S_\mu(t-s)S_\lambda(s)u] \, ds
+\]
+\[
+= \int_0^t S_\mu(t-s)S_\lambda(s)(A_\lambda u - A_\mu u) \, ds,
+\]
+because $\frac{d}{dt}S_\lambda(t)u = AS_\lambda(t)u = S_\lambda(t)A_\lambda u$. Consequently $\|S_\lambda(t)u - S_\mu(t)u\| \le t\|A_\lambda u - A_\mu u\| \to 0$ as $\lambda, \mu \to \infty$. Hence
+\[
+S(t)u := \lim_{\lambda \to \infty} S_\lambda(t)u \text{ exists for each } t \ge 0, u \in D(A).
+\tag{21}
+\]
+As $\|S_\lambda(t)\| \le 1$, the limit (21) in fact exists for all $u \in X$, uniformly for $t$ in compact subsets of $[0, \infty)$. It is now straightforward to verify $\{S(t)\}_{t \ge 0}$ is a contraction semigroup on $X$.
+
+6. It remains to show $A$ is the generator of $\{S(t)\}_{t \ge 0}$. Write $B$ to denote this generator. Now
+\[
+S_\lambda(t)u - u = \int_0^t S_\lambda(s)A_\lambda u\,ds.
+\tag{22}
+\]
+In addition
+\[
+\|S_\lambda(s)A_\lambda u - S(s)Au\| \le \|S_\lambda(s)\|\,\|A_\lambda u - Au\| + \|(S_\lambda(s) - S(s))Au\| \to 0
+\]
+as $\lambda \to \infty$, if $u \in D(A)$. Passing therefore to limits in (22), we deduce
+\[
+S(t)u - u = \int_0^t S(s)Au\,ds
+\]
+if $u \in D(A)$. Thus $D(A) \subseteq D(B)$ and
+\[
+Bu = \lim_{t \to 0^+} \frac{S(t)u - u}{t} = Au \quad (u \in D(A)).
+\]
+Now if $\lambda > 0$, $\lambda \in \rho(A) \cap \rho(B)$. Also $(\lambda I - B)(D(A)) = (\lambda I - A)(D(A)) = X$, according to (17). Hence $(\lambda I - B)|_{D(A)}$ is one-to-one and onto; whence $D(A) = D(B)$. Therefore $A = B$, and so $A$ is indeed the generator of $\{S(t)\}_{t \ge 0}$.
+\end{proof}
+
+\begin{remark}[$\omega$-contractive semigroups]
+\label{rem:omega-contractive-semigroup}
+\dcref{ch7:7.4.2-rem-1}
+\group{Semigroup Theory}
+\uses{thm:hille-yosida-theorem}
+Let $\omega \in \mathbb{R}$. A semigroup $\{S(t)\}_{t \ge 0}$ is called \textit{$\omega$-contractive} if $\|S(t)\| \le e^{\omega t}$ $(t \ge 0)$. An easy variant of \cref{thm:hille-yosida-theorem} asserts that a closed, densely-defined linear operator $A$ generates an $\omega$-contractive semigroup if and only if
+\[
+(\omega, \infty) \subset \rho(A) \text{ and } \|R_\lambda\| \le \frac{1}{\lambda - \omega} \text{ for all } \lambda > \omega.
+\tag{23}
+\]
+This version of the Hille--Yosida Theorem will be required for our first example below.
+\end{remark}
+
+\subsection{Applications}
+
+We demonstrate in this section that certain second-order parabolic and hyperbolic PDE can be realized within the semigroup framework.
+
+\subsubsection{Second-order parabolic PDE}
+
+We consider first the parabolic initial/boundary-value problem
+\[
+\begin{cases}
+u_t + Lu = 0 & \text{in } U_T \\
+u = 0 & \text{on } \partial U \times [0,T] \\
+u = g & \text{on } U \times \{t = 0\},
+\end{cases}
+\tag{24}
+\]
+a special case (corresponding to $f \equiv 0$) of (1) in \cref{sec:second-order-parabolic-equations}. We assume $L$ has the divergence structure (2) from \cref{sec:second-order-parabolic-equations}, satisfies the usual strong ellipticity condition, and has smooth coefficients, \textit{which do not depend on $t$}. We additionally suppose that the bounded open set $U$ has a smooth boundary.
+
+We propose to reinterpret (24) as the flow determined by a semigroup on $X = L^2(U)$. For this, we set
+\[
+D(A) := H_0^1(U) \cap H^2(U),
+\tag{25}
+\]
+and define
+\[
+Au := -Lu \quad \text{if } u \in D(A).
+\tag{26}
+\]
+Clearly then $A$ is an unbounded linear operator on $X$. Recall the energy estimate
+\[
+\beta\|u\|_{H_0^1(U)}^2 \le B[u,u] + \gamma\|u\|_{L^2(U)}^2,
+\tag{27}
+\]
+for constants $\beta > 0, \gamma \ge 0$, where $B[\cdot,\cdot]$ is the bilinear form associated with $L$.
+
+\begin{theorem}[Second-order parabolic PDE as semigroups]
+\label{thm:parabolic-pde-as-semigroup}
+\dcref{ch7:7.4-thm-5}
+\group{Semigroup Theory}
+\uses{thm:hille-yosida-theorem,thm:energy-estimates,thm:boundary-h2-regularity,thm:first-existence-weak-solutions}
+The operator $A$ generates a $\gamma$-contraction semigroup $\{S(t)\}_{t \ge 0}$ on $L^2(U)$.
+\end{theorem}
+
+\begin{proof}
+1. We must verify the hypotheses of the variant of the Hille--Yosida Theorem mentioned in \cref{rem:omega-contractive-semigroup}, with $\gamma$ replacing $\omega$.
+
+First, $D(A)$ given by (25) is clearly dense in $L^2(U)$.
+
+2. We claim now that the operator $A$ is closed. Indeed, let $\{u_k\}_{k=1}^\infty \subset D(A)$ with
+\[
+u_k \to u, \quad Au_k \to f \quad \text{in } L^2(U).
+\]
+According to the regularity \cref{thm:boundary-h2-regularity},
+\[
+\|u_k - u_l\|_{H^2(U)} \le C(\|Au_k - Au_l\|_{L^2(U)} + \|u_k - u_l\|_{L^2(U)})
+\tag{28}
+\]
+for all $k$ and $l$. Thus (28) implies $\{u_k\}_{k=1}^\infty$ is a Cauchy sequence in $H^2(U)$ and so
+\[
+u_k \to u \text{ in } H^2(U).
+\tag{29}
+\]
+Therefore $u \in D(A)$. Furthermore (29) implies $Au_k \to Au$ in $L^2(U)$, and consequently $f = Au$.
+
+3. Next we check the resolvent conditions (23), with $\gamma$ replacing $\omega$. According to \cref{thm:first-existence-weak-solutions}, for each $\lambda \ge \gamma$ the boundary-value problem
+\[
+\begin{cases} Lu + \lambda u = f & \text{in } U \\ u = 0 & \text{in } \partial U \end{cases}
+\tag{30}
+\]
+has a unique weak solution $u \in H_0^1(U)$ for each $f \in L^2(U)$. Owing to elliptic regularity theory, in fact $u \in H^2(U) \cap H_0^1(U)$. Thus $u \in D(A)$. We may now rewrite (30), using (26), and find
+\[
+\lambda u - Au = f.
+\tag{31}
+\]
+Thus $(\lambda I - A) : D(A) \to X$ is one-to-one and onto, provided $\lambda \ge \gamma$. Hence $\rho(A) \supset [\gamma,\infty)$.
+
+4. Consider the weak form of the boundary-value problem (30):
+\[
+B[u,v] + \lambda(u,v) = (f,v)
+\]
+for each $v \in H_0^1(U)$, where $(\cdot, \cdot)$ is the inner product in $L^2(U)$. Set $v = u$ and recall (27) to compute for $\lambda > \gamma$:
+\[
+(\lambda - \gamma)\|u\|_{L^2(U)}^2 \le \|f\|_{L^2(U)} \|u\|_{L^2(U)}.
+\]
+Hence, since $u = R_\lambda f$, we have the estimate
+\[
+\|R_\lambda f\|_{L^2(U)} \le \frac{1}{\lambda - \gamma} \|f\|_{L^2(U)}.
+\]
+This bound is valid for all $f \in L^2(U)$ and so
+\[
+\|R_\lambda\| \le \frac{1}{\lambda - \gamma} \quad (\lambda > \gamma),
+\tag{32}
+\]
+as required.
+\end{proof}
+
+\begin{remark}[Comparison with the Galerkin method]
+\label{rem:parabolic-semigroup-remark}
+\dcref{ch7:7.4.3-rem-1}
+\group{Semigroup Theory}
+\uses{thm:parabolic-pde-as-semigroup,thm:parabolic-existence-weak-solution}
+Semigroup theory provides an elegant method for constructing a solution to the initial/boundary-value problem (24). It is worth noting however that this technique requires that the coefficients $a^{ij}, b^i, c$ ($i, j = 1, \ldots, n$) of $L$ be independent of $t$. The Galerkin method of \cref{sec:second-order-parabolic-equations} works without this restriction. On the other hand, semigroup theory constructs at the outset a more regular solution than that produced by the Galerkin technique, at least until we develop regularity theory.
+\end{remark}
+
+\subsubsection{Second-order hyperbolic PDE}
+
+We turn our attention next to the hyperbolic initial/boundary-value problem
+\[
+\begin{cases}
+u_{tt} + Lu = 0 & \text{in } U_T \\
+u = 0 & \text{on } \partial U \times [0,T] \\
+u = g, u_t = h & \text{on } U \times \{t = 0\},
+\end{cases}
+\tag{33}
+\]
+for the operator $L$ and open set $U$ as above. We recast (33) as a first-order system by setting $v := u_t$. Then the foregoing reads
+\[
+\begin{cases}
+u_t = v, v_t + Lu = 0 & \text{in } U_T \\
+u = 0 & \text{on } \partial U \times [0,T] \\
+u = g, v = h & \text{on } U \times \{t = 0\}.
+\end{cases}
+\]
+We will further assume $L$ has the symmetric form:
+\[
+Lu = -\sum_{i,j=1}^n (a^{ij}u_{x_i})_{x_j} + cu,
+\]
+where
+\[
+c \geq 0, \quad a^{ij} = a^{ji} \quad (i,j = 1,\ldots,n).
+\tag{34}
+\]
+Thus for some constant $\beta > 0$:
+\[
+\beta \|u\|^2_{H^1_0(U)} \leq B[u,u] \quad \text{for all } u \in H^1_0(U).
+\tag{35}
+\]
+Now take
+\[
+X = H^1_0(U) \times L^2(U),
+\]
+with the norm
+\[
+\|(u,v)\| := (B[u,u] + \|v\|^2_{L^2(U)})^{1/2}.
+\tag{36}
+\]
+Define
+\[
+D(A) := [H^2(U) \cap H^1_0(U)] \times H^1_0(U)
+\]
+and set
+\[
+A(u,v) := (v,-Lu) \quad \text{for } (u,v) \in D(A).
+\tag{37}
+\]
+We will show $A$ verifies the hypothesis of the Hille--Yosida Theorem.
+
+\begin{theorem}[Second-order hyperbolic PDE as semigroups]
+\label{thm:hyperbolic-pde-as-semigroup}
+\dcref{ch7:7.4-thm-6}
+\group{Semigroup Theory}
+\uses{thm:hille-yosida-theorem,thm:parabolic-pde-as-semigroup}
+The operator $A$ generates a contraction semigroup $\{S(t)\}_{t \geq 0}$ on $H_0^1(U) \times L^2(U)$.
+\end{theorem}
+
+\begin{proof}
+1. The domain of $A$ is clearly dense in $H_0^1(U) \times L^2(U)$.
+
+2. To see $A$ is closed, let $\{(u_k, v_k)\}_{k=1}^\infty \subset D(A)$, with
+\[
+(u_k, v_k) \to (u,v), \quad A(u_k, v_k) \to (f,g) \quad \text{in } H_0^1(U) \times L^2(U).
+\]
+Since $A(u_k, v_k) = (v_k, -Lu_k)$, we conclude $f = v$ and $Lu_k \to -g$ in $L^2(U)$. As in the previous proof, it follows that $u_k \to u$ in $H^2(U)$ and $g = -Lu$. Thus $(u,v) \in D(A)$, $A(u,v) = (v,-Lu) = (f,g)$.
+
+3. Now let $\lambda > 0$, $(f,g) \in X := H_0^1(U) \times L^2(U)$, and consider the operator equation
+\[
+\lambda(u,v) - A(u,v) = (f,g).
+\tag{38}
+\]
+This is equivalent to the two scalar equations
+\[
+\begin{cases} \lambda u - v = f & (u \in H^2(U) \cap H_0^1(U)), \\ \lambda v + Lu = g & (v \in H_0^1(U)). \end{cases}
+\tag{39}
+\]
+But (39) implies
+\[
+\lambda^2 u + Lu = \lambda f + g \quad (u \in H^2(U) \cap H_0^1(U)).
+\tag{40}
+\]
+Since $\lambda^2 > 0$, estimate (35) and the regularity theory imply there exists a unique solution $u$ of (40). Defining then $v := \lambda u - f \in H_0^1(U)$, we have shown that (38) has a unique solution $(u,v)$. Consequently $\rho(A) \supset (0,\infty)$.
+
+4. Whenever (39) holds, we write $(u,v) = R_\lambda(f,g)$. Now from the second equation in (39), we deduce
+\[
+\lambda \|v\|_{L^2}^2 + B[u,v] = (g,v)_{L^2}.
+\]
+Substituting $v = \lambda u - f$, we obtain
+\[
+\lambda \left( \|v\|_{L^2}^2 + B[u,u] \right) = (g,v)_{L^2} + B[u,f]
+\]
+\[
+\leq \left( \|g\|_{L^2}^2 + B[f,f] \right)^{1/2} \left( \|v\|_{L^2}^2 + B[u,u] \right)^{1/2}.
+\]
+Here we used the generalized Cauchy--Schwarz inequality, which holds owing to the symmetry condition (34). In light of our definition (36),
+\[
+\|(u,v)\| \leq \frac{1}{\lambda} \|(f,g)\|;
+\]
+and so
+\[
+\|R_\lambda\| \leq \frac{1}{\lambda} \quad (\lambda > 0),
+\]
+as required.
+\end{proof}
+
+See Friedman \cite{Friedman1969} or Yosida \cite{Yosida1980} for the theory of \textit{analytic semigroups}. Aspects of \textit{nonlinear} semigroup theory will be developed later, in \S9.6.
+
+\section{Problems}
+\label{sec:linear-evolution-equations-problems}
+
+In the following exercises we assume $U \subset \mathbb{R}^n$ is an open, bounded set, with smooth boundary, and $T > 0$.
+
+%ORIGINAL-NUMBER: 1
+\begin{exercise}
+Prove there is at most one smooth solution of this initial/boundary-value problem for the heat equation with Neumann boundary conditions:
+\[
+\begin{cases}
+u_t - \Delta u = f & \text{in } U_T \\
+\frac{\partial u}{\partial \nu} = 0 & \text{on } \partial U \times [0,T] \\
+u = g & \text{on } U \times \{t = 0\}.
+\end{cases}
+\]
+\end{exercise}
+
+%ORIGINAL-NUMBER: 2
+\begin{exercise}
+Assume $u$ is a smooth solution of
+\[
+\begin{cases}
+u_t - \Delta u = 0 & \text{in } U \times (0,\infty) \\
+u = 0 & \text{on } \partial U \times [0,\infty) \\
+u = g & \text{on } U \times \{t = 0\}.
+\end{cases}
+\]
+Prove the exponential decay estimate:
+\[
+\|u(\cdot,t)\|_{L^2(U)} \le e^{-\lambda_1 t}\|g\|_{L^2(U)} \quad (t \ge 0),
+\]
+where $\lambda_1 > 0$ is the principal eigenvalue of $-\Delta$ (with zero boundary conditions) on $U$.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 3
+\begin{exercise}
+(Galerkin's method for Poisson's equation.) Suppose $f \in L^2(U)$ and assume that $u_m = \sum_{k=1}^m d_m^k w_k$ solves
+\[
+\int_U Du_m \cdot Dw_k \, dx = \int_U f \cdot w_k \, dx
+\]
+for $k = 1,\ldots,m$. Show that a subsequence of $\{u_m\}_{m=1}^\infty$ converges weakly in $H_0^1(U)$ to the weak solution $u$ of
+\[
+\begin{cases}
+-\Delta u = f & \text{in } U \\
+u = 0 & \text{on } \partial U.
+\end{cases}
+\]
+\end{exercise}
+
+%ORIGINAL-NUMBER: 4
+\begin{exercise}
+Assume
+\[
+\begin{cases}
+u_k \to u & \text{in } L^2(0,T;H_0^1(U)) \\
+u_k' \to v & \text{in } L^2(0,T;H^{-1}(U)).
+\end{cases}
+\]
+Prove that $v = u'$. (Hint: Let $\phi \in C_c^1(0,T)$, $w \in H_0^1(U)$. Then
+\[
+\int_0^T \langle u_k, \phi w \rangle \, dt = -\int_0^T \langle u_k, \phi' w \rangle \, dt.)
+\]
+\end{exercise}
+
+%ORIGINAL-NUMBER: 5
+\begin{exercise}
+Suppose $H$ is a Hilbert space and
+\[
+u_k \to u \quad \text{in } L^2(0,T;H).
+\]
+Suppose further we have the uniform bounds
+\[
+\operatorname{ess\,sup}_{0 \leq t \leq T} \|u_k(t)\| \leq C \quad (k = 1, \ldots),
+\]
+for some constant $C$. Prove
+\[
+\operatorname{ess\,sup}_{0 \leq t \leq T} \|u(t)\| \leq C.
+\]
+(Hint: If $v \in H$ and $0 \leq a \leq b \leq T$, we have
+\[
+\int_a^b (v, u_k(t)) \, dt \leq C \|v\| (b - a).)
+\]
+\end{exercise}
+
+%ORIGINAL-NUMBER: 6
+\begin{exercise}
+Suppose $u$ is a smooth solution of
+\[
+\begin{cases}
+u_t - \Delta u + cu = 0 & \text{in } U \times (0, \infty) \\
+u = 0 & \text{on } \partial U \times [0, \infty) \\
+u = g & \text{on } U \times \{t = 0\}
+\end{cases}
+\]
+and the function $c$ satisfies
+\[
+c \geq \gamma > 0.
+\]
+Prove
+\[
+|u(x,t)| \leq Ce^{-\gamma t} \quad ((x,t) \in U_T).
+\]
+\end{exercise}
+
+%ORIGINAL-NUMBER: 7
+\begin{exercise}
+Suppose $u$ is a smooth solution of the PDE from Problem 6, that $g \geq 0$, and $c$ is bounded (but \textit{not necessarily nonnegative}). Show that $u \geq 0$. (Hint: What PDE does $v := e^{\lambda t}u$ solve?)
+\end{exercise}
+
+%ORIGINAL-NUMBER: 8
+\begin{exercise}
+Prove inequality (54) in \cref{sec:second-order-parabolic-equations} (\S7.1.3), (59) in \cref{sec:second-order-hyperbolic-equations} (\S7.2.3). (Hints: Assume $u$ is smooth, $u = 0$ on $\partial U$. Transform the term $(Lu, -\Delta u)$ by integrating by parts twice. Simplify and then estimate the boundary terms using trace inequalities.)
+\end{exercise}
+
+%ORIGINAL-NUMBER: 9
+\begin{exercise}
+Show there exists at most one smooth solution of this initial/boundary-value problem for the \textit{telegraph equation}
+\[
+\begin{cases}
+u_{tt} + du_t - u_{xx} = f & \text{in } (0,1) \times (0,T) \\
+u = 0 & \text{on } (\{0\} \times [0,T]) \cup (\{1\} \times [0,T]) \\
+u = g, u_t = h & \text{on } (0,1) \times \{t = 0\}.
+\end{cases}
+\]
+Here $d$ is a constant.
+\end{exercise}
+
+% NOTE: PDF page 432, which would have contained Problems 10-12, was lost to a
+% transcription failure (the vision subagent returned only a refusal message). These
+% problems are referenced elsewhere in this chapter -- "Problem 11" for the verification
+% of the resolvent identities (12)-(13) in \S7.4.1c, and "Problem 12" for justifying
+% passing the generator $A$ under the integral sign in the proof of \cref{thm:resolvent-operator-properties} --
+% but their exact statements could not be recovered from the source scan and are not
+% reproduced here.
+
+\section{References}
+\label{sec:chapter7-references}
+
+The books of Krylov \cite{Krylov1996}, Ladyzhenskaya--Solonnikov--Uraltseva \cite{LadyzhenskayaSolonnikovUraltseva1968}, and Lieberman \cite{Lieberman1996} have much more on regularity theory.
+
+\Cref{sec:second-order-hyperbolic-equations}: See Ladyzhenskaya \cite{Ladyzhenskaya1985}[Chapter 4], J.-L. Lions \cite{Lions1961}, Lions--Magenes \cite{LionsMagenes1972} and Wloka \cite{Wloka1987}.
+
+\Cref{sec:hyperbolic-systems-first-order-equations}: The Fourier transform argument is taken from John \cite{John1982}; cf.\ also Treves \cite{Treves1975}[\S15]. D. Serre has shown me a much more precise version of \cref{thm:constant-coefficient-hyperbolic-existence}, under the further assumption of strict hyperbolicity.
+
+\Cref{sec:semigroup-theory}: See Friedman \cite{Friedman1969}[Part 2, \S1] and Yosida \cite{Yosida1980}[Chapter IX].
+
+\Cref{sec:linear-evolution-equations-problems}: Problem 8: see \cite{BrezisEvans1979} for a proof, and see also Ladyzhenskaya--Uraltseva \cite{LadyzhenskayaUraltseva1968}[p.\ 182].

@@ -1,0 +1,3038 @@
+% Source: Evans, "Partial Differential Equations" (2nd ed., AMS Graduate Studies in Mathematics vol. 19, 2010),
+% Chapter 3 "Nonlinear First-Order PDE", PDF pages 100-174 of MathBooks/Evans Partial Differential Equations(1).pdf.
+% Transcribed page-by-page by vision subagents, then merged and restructured into
+% leanblueprint conventions (semantic \label, bracketed titles, \uses dependency edges) below.
+%
+% NOTE ON GAPS (resolved): several source pages were originally returned by the vision
+% transcription subagent as refusal placeholders rather than actual page content
+% (mirroring the situation documented in chapter1.tex and chapter2.tex), leaving marker
+% comments behind, with a few statements provisionally reconstructed from indirect
+% internal evidence and separately flagged. All such gaps have since been re-transcribed
+% directly from the source page images and inserted in place; no placeholder or
+% provisional-reconstruction markers remain in this file.
+
+
+In this chapter we investigate general nonlinear first-order partial differential equations of the form
+$$F(Du, u, x) = 0,$$
+where $x \in U$ and $U$ is an open subset of $\R^n$. Here
+$$F : \R^n \times \R \times \bar{U} \to \R$$
+is given, and $u : \bar{U} \to \R$ is the unknown, $u = u(x)$.
+
+\textbf{Notation.} Let us write
+$$F = F(p, z, x) = F(p_1, \ldots, p_n, z, x_1, \ldots, x_n)$$
+for $p \in \R^n$, $z \in \R$, $x \in U$. Thus ``$p$'' is the name of the variable for which we substitute the gradient $Du(x)$, and ``$z$'' is the variable for which we substitute $u(x)$. We also assume hereafter that $F$ is smooth, and set
+$$\begin{cases}
+D_p F = (F_{p_1}, \ldots, F_{p_n}) \\
+D_z F = F_z \\
+D_x F = (F_{x_1}, \ldots, F_{x_n}).
+\end{cases}$$
+
+We are concerned with discovering solutions $u$ of the PDE $F(Du, u, x) = 0$ in $U$, usually subject to the boundary condition
+$$u = g \text{ on } \Gamma,$$
+where $\Gamma$ is some given subset of $\partial U$ and $g : \Gamma \to \R$ is prescribed.
+
+Nonlinear first-order partial differential equations arise in a variety of physical theories, primarily in dynamics (to generate canonical transformations), continuum mechanics (to record conservation of mass, momentum, energy, etc.) and optics (to describe wavefronts). Although the strong nonlinearity generally precludes our deriving any simple formulas for solutions, we can, remarkably, often employ calculus to glean fairly detailed information about solutions. Such techniques, discussed in \S\S 3.1 and 3.2, are typically only local. In \S\S 3.3 and 3.4 we will for the important cases of Hamilton--Jacobi equations and conservation laws derive certain global representation formulas for appropriately defined weak solutions.
+
+\section{Complete Integrals, Envelopes}
+\label{sec:complete-integrals-envelopes}
+
+\subsection{Complete Integrals}
+\label{sec:complete-integrals}
+
+We begin our analysis of the nonlinear first-order PDE
+$$(1) \qquad F(Du, u, x) = 0$$
+by describing some simple classes of solutions and then learning how to build from them more complicated solutions.
+
+Suppose first $A \subset \R^n$ is an open set. Assume for each parameter $a = (a_1, \ldots, a_n) \in A$ we have a $C^2$ solution $u = u(x; a)$ of the PDE (1).
+
+\textbf{Notation.} We write
+$$(2) \qquad (D_a u, D^2_{xa} u) := \begin{pmatrix} u_{a_1} & u_{x_1 a_1} & \cdots & u_{x_n a_1} \\ \vdots & \vdots & \ddots & \vdots \\ u_{a_n} & u_{x_1 a_n} & \cdots & u_{x_n a_n} \end{pmatrix}_{n \times (n+1)}$$
+
+\begin{definition}[Complete integral]
+\label{def:complete-integral}
+\dcref{ch3:3.1.1-def-1}
+\group{Nonlinear First-Order PDE}
+A $C^2$ function $u = u(x; a)$ is called a complete integral in $U \times A$ provided
+
+\textit{(i)} $u(x; a)$ solves the PDE (1) for each $a \in A$
+
+\textit{and}
+
+\textit{(ii)} $\rank(D_a u, D^2_{xa} u) = n \quad (x \in U, a \in A)$.
+\end{definition}
+
+\begin{remark}[Complete integrals depend on all $n$ parameters]
+\label{rem:complete-integral-independence}
+\dcref{ch3:3.1.1-rem-1}
+\group{Nonlinear First-Order PDE}
+\uses{def:complete-integral}
+Condition \textit{(ii)} ensures $u(x;a)$ ``depends on all the $n$ independent parameters $a_1, \ldots, a_n$''. To see this, suppose $B \subset \R^{n-1}$ is open, and for each $b \in B$ assume $v = v(x;b)$ $(x \in U)$ is a solution of (1). Suppose also there exists a $C^1$ mapping $\psi : A \to B$, $\psi = (\psi^1, \ldots, \psi^{n-1})$, such that
+$$(3) \quad u(x;a) = v(x;\psi(a)) \quad (x \in U,\ a \in A).$$
+That is, we are supposing the function $u(x;a)$ ``really depends only on the $n-1$ parameters $b_1, \ldots, b_{n-1}$''. But then
+$$u_{x_i a_j}(x;a) = \sum_{k=1}^{n-1} v_{x_i b_k}(x;\psi(a)) \psi^k_{a_j}(a) \quad (i,j = 1, \ldots, n).$$
+Consequently
+$$\det(D^2_{xa}u) = \sum_{k_1,\ldots,k_n=1}^{n-1} v_{x_1 b_{k_1}} \cdots v_{x_n b_{k_n}} \det\begin{pmatrix} \psi^{k_1}_{a_1} & \cdots & \psi^{k_1}_{a_n} \\ & \ddots & \\ \psi^{k_n}_{a_1} & \cdots & \psi^{k_n}_{a_n} \end{pmatrix} = 0,$$
+since for each choice of $k_1, \ldots, k_n \in \{1, \ldots, n-1\}$, at least two columns in the corresponding matrix are equal. As
+$$u_{a_j}(x;a) = \sum_{k=1}^{n-1} v_{b_k}(x;\psi(a)) \psi^k_{a_j}(a) \quad (j = 1, \ldots, n),$$
+a similar argument shows the determinant of each $n \times n$ submatrix of $(D_a u, D^2_{xa} u)$ equals zero, and thus this matrix has rank strictly less than $n$. $\square$
+\end{remark}
+
+\begin{example}[Clairaut's equation]
+\label{ex:clairaut-complete-integral}
+\dcref{ch3:3.1-ex-1}
+\group{Nonlinear First-Order PDE}
+\uses{def:complete-integral}
+\textit{Clairaut's equation} from differential geometry is the PDE
+$$(4) \quad x \cdot Du + f(Du) = u,$$
+where $f : \R^n \to \R$ is given. A complete integral is
+$$(5) \quad u(x;a) = a \cdot x + f(a) \quad (x \in U)$$
+for $a \in \R^n$. $\square$
+\end{example}
+
+\begin{example}[Eikonal equation]
+\label{ex:eikonal-complete-integral}
+\dcref{ch3:3.1-ex-2}
+\group{Nonlinear First-Order PDE}
+\uses{def:complete-integral}
+The \textit{eikonal} (Greek $\epsilon\iota\kappa\acute{\omega}\nu$ = image) equation from geometric optics is the PDE
+$$(6) \quad |Du| = 1.$$
+A complete integral is
+$$(7) \quad u(x;a,b) = a \cdot x + b \quad (x \in U)$$
+for $x \in U$, $a \in \partial B(0,1)$, $b \in \R$. $\square$
+\end{example}
+
+\begin{example}[Hamilton--Jacobi complete integral]
+\label{ex:hamilton-jacobi-complete-integral}
+\dcref{ch3:3.1-ex-3}
+\group{Hamilton-Jacobi Equations}
+\uses{def:complete-integral}
+The \textit{Hamilton-Jacobi equation} from mechanics is in its simplest form the partial differential equation
+
+(8) $u_t + H(Du) = 0,$
+
+where $H : \R^n \to \R$. Here $u$ depends on $x = (x_1, \ldots, x_n) \in \R^n$ and $t \in \R$. As before we have set $t = x_{n+1}$ and written $Du = D_x u = (u_{x_1}, \ldots, u_{x_n})$. A complete integral is
+
+(9) $u(x, t; a, b) = a \cdot x - tH(a) + b \quad (x \in \R^n, t \geq 0)$
+
+where $a \in \R^n, b \in \R$.
+\end{example}
+
+\subsection{New Solutions from Envelopes}
+\label{sec:envelopes-new-solutions}
+
+We next demonstrate how to build more complicated solutions of our nonlinear first-order PDE (1), solutions which depend on an arbitrary \textit{function} of $n - 1$ variables, and not just on $n$ parameters. We will construct these new solutions as envelopes of complete integrals or, more generally, of other $m$-parameter families of solutions.
+
+\begin{definition}[Envelope]
+\label{def:envelope}
+\dcref{ch3:3.1.2-def-1}
+\group{Nonlinear First-Order PDE}
+Let $u = u(x; a)$ be a $C^1$ function of $x \in U, a \in A$, where $U \subset \R^n$ and $A \subset \R^m$ are open sets. Consider the vector equation
+
+(10) $D_a u(x; a) = 0 \quad (x \in U, a \in A)$.
+
+Suppose that we can solve (10) for the parameter $a$ as a $C^1$ function of $x$,
+
+(11) $a = \phi(x);$
+
+thus
+
+(12) $D_a u(x; \phi(x)) = 0 \quad (x \in U)$.
+
+We then call
+
+(13) $v(x) := u(x; \phi(x)) \quad (x \in U)$
+
+the envelope of the functions $\{u(\cdot; a)\}_{a \in A}$.
+\end{definition}
+
+By forming envelopes we can build new solutions of our nonlinear first-order partial differential equation:
+
+\begin{theorem}[Construction of new solutions]
+\label{thm:envelope-solves-pde}
+\dcref{ch3:3.1-thm-1}
+\group{Nonlinear First-Order PDE}
+\uses{def:envelope}
+Suppose for each $a \in A$ as above that $u = u(\cdot; a)$ solves the partial differential equation (1). Assume further that the envelope $v$, defined by (12) and (13) above, exists and is a $C^1$ function. Then $v$ solves (1) as well.
+
+The envelope $v$ defined above is sometimes called a \textit{singular integral} of (1).
+\end{theorem}
+
+\begin{proof}
+We have $v(x) = u(x; \phi(x))$; and so for $i = 1, \ldots, n$
+
+$$v_{x_i}(x) = u_{x_i}(x; \phi(x)) + \sum_{j=1}^n u_{a_j}(x, \phi(x)) \phi'_j(x)$$
+
+$$= u_{x_i}(x; \phi(x)), \text{ according to (12).}$$
+
+Hence for each $x \in U$,
+
+$$F(Du(x), v(x), x) = F(Du(x; \phi(x)), u(x; \phi(x)), x) = 0.$$
+\end{proof}
+
+\begin{remark}[Geometric interpretation of the envelope]
+\label{rem:envelope-tangency}
+\dcref{ch3:3.1.2-rem-1}
+\group{Nonlinear First-Order PDE}
+\uses{thm:envelope-solves-pde}
+The geometric idea is that for each $x \in U$, the graph of $v$ is tangent to the graph of $u(\cdot; a)$ for $a = \phi(x)$. Thus $Dv = D_x u(\cdot; a)$ at $x$, for $a = \phi(x)$. $\square$
+\end{remark}
+
+\begin{example}[Envelope of a complete integral for $u^2(1+|Du|^2)=1$]
+\label{ex:envelope-singular-integral}
+\dcref{ch3:3.1-ex-4}
+\group{Nonlinear First-Order PDE}
+\uses{thm:envelope-solves-pde}
+Consider the PDE
+
+$$(14) \quad u^2(1 + |Du|^2) = 1.$$
+
+A complete integral is
+
+$$u(x, a) = \pm(1 - |x - a|^2)^{1/2} \quad (|x - a| < 1).$$
+
+We compute
+
+$$D_a u = \frac{\pm(x - a)}{(1 - |x - a|^2)^{1/2}} \approx 0$$
+
+provided $a = \phi(x) = x$. Thus $v \equiv \pm 1$ are singular integrals of (14).
+\end{example}
+
+To generate still more solutions of the PDE (1) from a complete integral, we vary the above construction. Choose any open set $A' \subset \R^{n-1}$ and any $C^1$ function $h : A' \to \R$, so that the graph of $h$ lies within $A$. Let us write
+
+$$a = (a_1, \ldots, a_n) = (a', a_n) \text{ for } a' = (a_1, \ldots, a_{n-1}) \in \R^{n-1}.$$
+
+\begin{definition}[General integral]
+\label{def:general-integral}
+\dcref{ch3:3.1.2-def-2}
+\group{Nonlinear First-Order PDE}
+\uses{def:complete-integral,def:envelope}
+The general integral (depending on $h$) is the envelope $v' = v'(x)$ of the functions
+$$u'(x;a') = u(x;a',h(a')) \quad (x \in U, a' \in A'),$$
+provided this envelope exists and is $C^1$.
+
+In other words, in computing the envelope we are now restricting only to parameters $a$ of the form $a = (a',h(a'))$, for some explicit choice of the function $h$.
+\end{definition}
+
+\begin{remark}[On the general integral]
+\label{rem:general-integral-remarks}
+\dcref{ch3:3.1.2-rem-2}
+\group{Nonlinear First-Order PDE}
+\uses{def:general-integral}
+(i) Thus from a complete integral, which depends upon $n$ arbitrary constants $a_1,\ldots,a_n$, we build (whenever the foregoing construction works) a solution depending on an arbitrary function $h$ of $n - 1$ variables.
+
+(ii) It is tempting to believe that once we can find as above a solution of (1) depending on an arbitrary function $h$ we have found all the solutions of (1). This need not be so, however. Suppose our PDE has the structure
+$$F(Du, u, x) = F_1(Du, u, x)F_2(Du, u, x) = 0.$$
+If $u_1(x, a)$ is a complete integral of the PDE $F_1(Du, u, x) = 0$, and we succeed in finding a general integral corresponding to any function $h$, we will still have missed all the solutions of the PDE $F_2(Du, u, x) = 0$. $\square$
+\end{remark}
+
+\begin{example}[Alternative complete integral for the eikonal equation]
+\label{ex:eikonal-alternative-complete-integral}
+\dcref{ch3:3.1-ex-5}
+\group{Nonlinear First-Order PDE}
+\uses{def:general-integral}
+An alternative form for a complete integral of the eikonal equation $|Du| = 1$ for $n = 2$ is
+$$(15) \quad u(x; a) = x_1 \cos a_1 + x_2 \sin a_1 + a_2 \quad (x, a \in \R^2).$$
+We set $h \equiv 0$, so that
+$$u'(x; a_1) = x_1 \cos a_1 + x_2 \sin a_1$$
+represents the subfamily of planar solutions of $|Du| = 1$, whose graphs pass through the point $(0, 0, 0) \in \R^3$. We then compute the envelope by writing
+$$D_{a_1} u' = -x_1 \sin a_1 + x_2 \cos a_1 = 0.$$
+Thus $a_1 = \arctan \frac{x_2}{x_1}$, and consequently
+$$u'(x) = x_1 \cos\left(\arctan \frac{x_2}{x_1}\right) + x_2 \sin\left(\arctan \frac{x_2}{x_1}\right) = \pm|x| \quad (x \in \R^2)$$
+solves $|Du| = 1$ for $x \neq 0$. $\square$
+\end{example}
+
+\begin{example}[General integral for a Hamilton--Jacobi equation]
+\label{ex:hamilton-jacobi-envelope-example}
+\dcref{ch3:3.1-ex-6}
+\group{Hamilton-Jacobi Equations}
+\uses{def:general-integral,ex:hamilton-jacobi-complete-integral}
+Let $H(p) = |p|^2$, $h \equiv 0$ in \cref{ex:hamilton-jacobi-complete-integral} above. Then
+$$u'(x, t; a) = x \cdot a - t|a|^2.$$
+We calculate the envelope by setting $D_a u' = x - 2ta = 0$. Hence $a = \frac{x}{2t}$, and so
+$$u'(x, t) = x \cdot \frac{x}{2t} - t\left|\frac{x}{2t}\right|^2 = \frac{|x|^2}{4t} \quad (x \in \R^n, t > 0)$$
+solves the Hamilton-Jacobi equation $u_t + |Du|^2 = 0$. $\square$
+\end{example}
+
+\section{Characteristics}
+\label{sec:characteristics}
+
+\subsection{Derivation of Characteristic ODE}
+\label{sec:characteristic-ode-derivation}
+
+We return to our basic nonlinear first-order PDE
+
+(1)	$F(Du, u, x) = 0$ in $U$,
+
+subject now to the boundary condition
+
+(2)	$u = g$ on $\Gamma$,
+
+where $\Gamma \subset \partial U$ and $g : \Gamma \to \R$ are given. We hereafter suppose that $F, g$ are smooth functions.
+
+We develop next the method of \textit{characteristics}, which solves (1), (2) by converting the PDE into an appropriate system of ODE. This is the plan. Suppose $u$ solves (1), (2) and fix any point $x \in U$. We would like to calculate $u(x)$ by finding some curve lying within $U$, connecting $x$ with a point $x^0 \in \Gamma$ and along which we can compute $u$. Since (2) says $u = g$ on $\Gamma$, we know the value of $u$ at the one end $x^0$. We hope then to be able to calculate $u$ all along the curve, and so in particular at $x$.
+
+\textbf{Finding the characteristic ODE.} How can we choose the curve so all this will work? Let us suppose it is described parametrically by the function $\mathbf{x}(s) = (x^1(s), \ldots, x^n(s))$, the parameter $s$ lying in some subinterval of $\R$. Assuming $u$ is a $C^2$ solution of (1), we define also
+
+(3)	$z(s) := u(\mathbf{x}(s))$.
+
+In addition, set
+
+(4)	$\mathbf{p}(s) := Du(\mathbf{x}(s))$;
+
+that is, $\mathbf{p}(s) = (p^1(s), \ldots, p^n(s))$, where
+
+(5)	$p^i(s) = u_{x_i}(\mathbf{x}(s))$ $(i = 1, \ldots, n)$.
+
+So $z(\cdot)$ gives the values of $u$ along the curve and $\mathbf{p}(\cdot)$ records the values of the gradient $Du$. We must choose the function $\mathbf{x}(\cdot)$ in such a way that we can compute $z(\cdot)$ and $\mathbf{p}(\cdot)$.
+
+For this, first differentiate (5):
+
+(6)	$\dot{p}^i(s) = \sum_{j=1}^{n} u_{x_i x_j}(\mathbf{x}(s))\dot{x}^j(s) \quad \left(= \frac{d}{ds}\right)$.
+
+This expression is not too promising, since it involves the second derivatives of $u$. On the other hand, we can also differentiate the PDE (1) with respect to $x_i$:
+
+$$(7) \quad \sum_{i=1}^{n} \frac{\partial F}{\partial p_i}(Du, u, x)u_{x_j x_i} + \frac{\partial F}{\partial z}(Du, u, x)u_{x_i} + \frac{\partial F}{\partial x_i}(Du, u, x) = 0.$$
+
+We are able to employ this identity to get rid of the ``dangerous'' second derivative terms in (6), provided we first set
+
+$$(8) \quad \dot{x}^j(s) = \frac{\partial F}{\partial p_j}(\mathbf{p}(s), z(s), \mathbf{x}(s)) \quad (j = 1, \ldots, n).$$
+
+Assuming now (8) holds, we evaluate (7) at $x = \mathbf{x}(s)$, obtaining thereby from (3), (4) the identity:
+
+$$\sum_{j=1}^{n} \frac{\partial F}{\partial p_j}(\mathbf{p}(s), z(s), \mathbf{x}(s))u_{x_i x_j}(\mathbf{x}(s))$$
+
+$$+ \frac{\partial F}{\partial z}(\mathbf{p}(s), z(s), \mathbf{x}(s))p^i(s) + \frac{\partial F}{\partial x_i}(\mathbf{p}(s), z(s), \mathbf{x}(s)) = 0.$$
+
+Substitute this expression and (8) into (6):
+
+$$(9) \quad \dot{p}^i(s) = -\frac{\partial F}{\partial x_i}(\mathbf{p}(s), z(s), \mathbf{x}(s))$$
+
+$$- \frac{\partial F}{\partial z}(\mathbf{p}(s), z(s), \mathbf{x}(s))p^i(s) \quad (i = 1, \ldots, n).$$
+
+Finally we differentiate (3):
+
+$$(10) \quad \dot{z}(s) = \sum_{j=1}^{n} \frac{\partial u}{\partial x_j}(\mathbf{x}(s))\dot{x}^j(s) = \sum_{j=1}^{n} p^j(s) \frac{\partial F}{\partial p_j}(\mathbf{p}(s), z(s), \mathbf{x}(s)),$$
+
+the second equality holding by (5) and (8).
+
+We summarize by rewriting equations (8)--(10) in vector notation:
+
+$$(11) \quad \begin{cases} (a) \quad \dot{\mathbf{p}}(s) = -D_x F(\mathbf{p}(s), z(s), \mathbf{x}(s)) - D_z F(\mathbf{p}(s), z(s), \mathbf{x}(s))\mathbf{p}(s) \\ (b) \quad \dot{z}(s) = D_p F(\mathbf{p}(s), z(s), \mathbf{x}(s)) \cdot \mathbf{p}(s) \\ (c) \quad \dot{\mathbf{x}}(s) = D_p F(\mathbf{p}(s), z(s), \mathbf{x}(s)). \end{cases}$$
+
+This important system of $2n + 1$ first-order ODE comprises the \textit{characteristic equations} of the nonlinear first-order PDE (1). The functions $\mathbf{p}(\cdot) = (p^1(\cdot), \ldots, p^n(\cdot))$, $z(\cdot)$, $\mathbf{x}(\cdot) = (x^1(\cdot), \ldots, x^n(\cdot))$ are called the \textit{characteristics}. We will sometimes refer to $\mathbf{x}(\cdot)$ as the \textit{projected characteristic}: it is the projection of the full characteristics $(\mathbf{p}(\cdot), z(\cdot), \mathbf{x}(\cdot)) \subset \R^{2n+1}$ onto the physical region $U \subset \R^n$.
+
+We have proved:
+
+\begin{theorem}[Structure of characteristic ODE]
+\label{thm:characteristic-ode-structure}
+\dcref{ch3:3.2-thm-1}
+\group{Method of Characteristics}
+Let $u \in C^2(U)$ solve the nonlinear, first-order partial differential equation (1) in $U$. Assume $\mathbf{x}(\cdot)$ solves the ODE (11)(c), where $\mathbf{p}(\cdot) = Du(\mathbf{x}(\cdot)), z(\cdot) = u(\mathbf{x}(\cdot))$. Then $\mathbf{p}(\cdot)$ solves the ODE (11)(a) and $z(\cdot)$ solves the ODE (11)(b), for those $s$ such that $\mathbf{x}(s) \in U$.
+\end{theorem}
+
+We still need to discover appropriate initial conditions for the system of ODE (11), in order that this theorem be useful. We accomplish this in \S3.2.3 below.
+
+\begin{remark}[Closure of the characteristic system]
+\label{rem:characteristic-ode-closure}
+\dcref{ch3:3.2.1-rem-1}
+\group{Method of Characteristics}
+\uses{thm:characteristic-ode-structure}
+The characteristic ODE are truly remarkable in that they form a closed system of equations for $\mathbf{x}(\cdot), z(\cdot) = u(\mathbf{x}(\cdot))$, and $\mathbf{p}(\cdot) = Du(\mathbf{x}(\cdot))$, whenever $u$ is a smooth solution of the general nonlinear PDE (1). The key step in the derivation is our setting $\dot{\mathbf{x}} = D_p F$, so that---as explained above---the terms involving second derivatives drop out. We thereby obtain \textit{closure}, and in particular are not forced to introduce ODE for the second and higher derivatives of $u$. $\square$
+\end{remark}
+
+\subsection{Examples}
+\label{sec:characteristics-examples}
+
+Before continuing our investigation of the characteristic equations (11), we pause to consider some special cases for which the structure of these equations is especially simple. We illustrate as well how we can sometimes actually solve the characteristic ODE and thereby explicitly compute solutions of certain first-order PDE, subject to appropriate boundary conditions.
+
+\textbf{a. F linear.}
+
+Consider first the situation that our PDE (1) is linear and homogeneous, and thus has the form
+
+$$(12) \quad F(Du, u, x) = \mathbf{b}(x) \cdot Du(x) + c(x)u(x) = 0 \quad (x \in U).$$
+
+Then $F(\mathbf{p}, z, x) = \mathbf{b}(x) \cdot \mathbf{p} + c(x)z$, and so
+
+$$(13) \quad D_p F = \mathbf{b}(x).$$
+
+In this circumstance equation (11)(c) becomes
+
+$$(14) \quad \dot{\mathbf{x}}(s) = \mathbf{b}(\mathbf{x}(s)),$$
+
+an ODE involving only the function $\mathbf{x}(\cdot)$. Furthermore equation (11)(b) becomes
+
+$$(15) \quad \dot{z}(s) = \mathbf{b}(\mathbf{x}(s)) \cdot \mathbf{p}(s).$$
+
+Since $\mathbf{p}(\cdot) = Du(\mathbf{x}(\cdot))$, equation (12) simplifies (15), yielding
+
+$$(16) \quad \dot{z}(s) = -c(\mathbf{x}(s))z(s).$$
+
+This ODE is linear in $z(\cdot)$, once we know the function $\mathbf{x}(\cdot)$ by solving (14).
+In summary,
+
+$$(17) \quad \left\{\begin{array}{l} (a) \quad \dot{\mathbf{x}}(s) = \mathbf{b}(\mathbf{x}(s)) \\ (b) \quad \dot{z}(s) = -c(\mathbf{x}(s))z(s) \end{array}\right.$$
+
+comprise the characteristic equations for the linear, first-order PDE (12).
+(We will see later that the equation for $\mathbf{p}(\cdot)$ is not needed.) $\square$
+
+\begin{example}[Linear PDE on a quadrant]
+\label{ex:linear-pde-quadrant-characteristics}
+\dcref{ch3:3.2-ex-1}
+\group{Method of Characteristics}
+\uses{thm:characteristic-ode-structure}
+We demonstrate the utility of equations (17) by explicitly solving the problem
+
+$$(18) \quad \left\{\begin{array}{l} x_1 u_{x_2} - x_2 u_{x_1} = u \quad \text{in } U \\ u = g \quad \text{on } \Gamma, \end{array}\right.$$
+
+where $U$ is the quadrant $\{x_1 > 0, x_2 > 0\}$ and $\Gamma = \{x_1 > 0, x_2 = 0\} \subset \partial U$.
+The PDE in (18) is of the form (12), for $\mathbf{b} = (-x_2, x_1)$ and $c = -1$. Thus the equations (17) read
+
+$$(19) \quad \left\{\begin{array}{l} \dot{x}^1 = -x^2, \quad \dot{x}^2 = x^1 \\ \dot{z} = z. \end{array}\right.$$
+
+Accordingly we have
+
+$$\left\{\begin{array}{l} x^1(s) = x^0 \cos s, \quad x^2(s) = x^0 \sin s \\ z(s) = z^0 e^s = g(x^0) e^s, \end{array}\right.$$
+
+where $x^0 \geq 0, 0 \leq s \leq \frac{\pi}{2}$. Fix a point $(x_1, x_2) \in U$. We select $s > 0$,
+$x^0 > 0$ so that $(x_1, x_2) = (x^1(s), x^2(s)) = (x^0 \cos s, x^0 \sin s)$. That is, $x^0 =
+(x_1^2 + x_2^2)^{1/2}, s = \arctan\left(\frac{x_2}{x_1}\right)$. Therefore
+
+$$u(x_1, x_2) = u(x^1(s), x^2(s)) = z(s) = g(x^0) e^s$$
+
+$$= g((x_1^2 + x_2^2)^{1/2}) e^{\arctan(x_2/x_1)}.$$
+\end{example}
+
+\textbf{b. F quasilinear.}
+
+The partial differential equation (1) is quasilinear should it have the form
+
+(20) \quad $F(Du, u, x) = \mathbf{b}(x, u(x)) \cdot Du(x) + c(x, u(x)) = 0$.
+
+In this circumstance $F(p, z, x) = \mathbf{b}(x, z) \cdot p + c(x, z)$; whence
+$$D_p F = \mathbf{b}(x, z).$$
+
+Hence equation (11)(c) reads
+$$\dot{x}(s) = \mathbf{b}(x(s), z(s)),$$
+
+and (11)(b) becomes
+$$\dot{z}(s) = \mathbf{b}(x(s), z(s)) \cdot \mathbf{p}(s)$$
+$$= -c(x(s), z(s)), \quad \text{by (20)}.$$
+
+Consequently
+
+(21) \quad $\begin{cases} (a) & \dot{x}(s) = \mathbf{b}(x(s), z(s)) \\ (b) & \dot{z}(s) = -c(x(s), z(s)) \end{cases}$
+
+are the characteristic equations for the quasilinear first-order PDE (20). (Once again the equation for $\mathbf{p}(\cdot)$ is not needed.) $\square$
+
+\begin{example}[Semilinear PDE on a half-space]
+\label{ex:semilinear-pde-halfspace-characteristics}
+\dcref{ch3:3.2-ex-2}
+\group{Method of Characteristics}
+\uses{thm:characteristic-ode-structure}
+The characteristic ODE (21) are in general difficult to solve, and so we work out in this example the simpler case of a boundary-value problem for a semilinear PDE:
+
+(22) \quad $\begin{cases} u_{x_1} + u_{x_2} = u^2 & \text{in } U \\ u = g & \text{on } \Gamma. \end{cases}$
+
+Now $U$ is the half-space $\{x_2 > 0\}$ and $\Gamma = \{x_2 = 0\} = \partial U$. Here $\mathbf{b} = (1, 1)$ and $c = -z^2$. Then (21) becomes
+
+$$\begin{cases} \dot{x}^1 = 1, \dot{x}^2 = 1 \\ \dot{z} = z^2. \end{cases}$$
+
+Consequently
+
+$$\begin{cases} x^1(s) = x^0 + s, x^2(s) = s \\ z(s) = \frac{z^0}{1 - sz^0} = \frac{g(x^0)}{1 - sg(x^0)}, \end{cases}$$
+
+where $x^0 \in \R, s \geq 0$, provided the denominator is not zero.
+
+Fix a point $(x_1, x_2) \in U$. We select $s > 0$ and $x^0 \in \R$ so that $(x_1, x_2) = (x^1(s), x^2(s)) = (x^0 + s, s)$; that is, $x^0 = x_1 - x_2$, $s = x_2$. Then
+$$u(x_1,x_2) = u(x^1(s), x^2(s)) = z(s) = \frac{g(x^0)}{1 - sg(x^0)}$$
+$$= \frac{g(x_1-x_2)}{1-x_2 g(x_1-x_2)}.$$
+This solution of course makes sense only if $1 - x_2 g(x_1-x_2) \neq 0$. $\square$
+\end{example}
+
+\textbf{c. $F$ fully nonlinear.}
+
+In the general case, the full characteristic equations (11) must be integrated, if possible.
+
+\begin{example}[Fully nonlinear PDE on a half-space]
+\label{ex:fully-nonlinear-halfspace-characteristics}
+\dcref{ch3:3.2-ex-3}
+\group{Method of Characteristics}
+\uses{thm:characteristic-ode-structure}
+Consider the fully nonlinear problem
+$$(23) \quad \begin{cases} u_{x_1}u_{x_2} = u & \text{in } U \\ u = x_2^2 & \text{on } \Gamma, \end{cases}$$
+where $U = \{x_1 > 0\}$, $\Gamma = \{x_1 = 0\} = \partial U$. Here $F(p,z,x) = p_1 p_2 - z$, and hence the characteristic ODE (11) become
+$$\begin{cases} \dot{p}^1 = p^1, \ \dot{p}^2 = p^2 \\ \dot{z} = 2p^1 p^2 \\ \dot{x}^1 = p^2, \ \dot{x}^2 = p^1. \end{cases}$$
+We integrate these equations to find
+$$\begin{cases} x^1(s) = p_2^0(e^s - 1), \ x^2(s) = x^0 + p_1^0(e^s-1) \\ z(s) = z^0 + p_1^0 p_2^0 (e^{2s}-1) \\ p^1(s) = p_1^0 e^s, \ p^2(s) = p_2^0 e^s, \end{cases}$$
+where $x^0 \in \R$, $s \in \R$, and $z^0 = (x^0)^2$.
+
+We must determine $p^0 = (p_1^0, p_2^0)$. Since $u = x_2^2$ on $\Gamma$, $p_2^0 = u_{x_2}(0,x^0) = 2x^0$. Furthermore the PDE $u_{x_1}u_{x_2} = u$ itself implies $p_1^0 p_2^0 = z^0 = (x^0)^2$, and so $p_1^0 = \frac{x^0}{2}$. Consequently the formulas above become
+$$\begin{cases} x^1(s) = 2x^0(e^s-1), \ x^2(s) = \frac{x^0}{2}(e^s+1) \\ z(s) = (x^0)^2 e^{2s} \\ p^1(s) = \frac{x^0}{2}e^s, \ p^2(s) = 2x^0 e^s. \end{cases}$$
+Fix a point $(x_1,x_2) \in U$. Select $s$ and $x^0$ so that $(x_1,x_2) = (x^1(s), x^2(s)) = (2x^0(e^s-1), \frac{x^0}{2}(e^s+1))$. This equality implies $x^0 = \frac{4x_2-x_1}{4}$, $e^s = \frac{x_1+4x_2}{4x_2-x_1}$; and so
+$$u(x_1,x_2) = u(x^1(s),x^2(s)) = z(s) = (x^0)^2 e^{2s}$$
+$$= \frac{(x_1+4x_2)^2}{16}. \quad \square$$
+\end{example}
+
+\subsection{Boundary Conditions}
+\label{sec:characteristics-boundary-conditions}
+
+\textbf{a. Straightening the boundary.}
+
+We intend in the section following to invoke the characteristic ODE (11) actually to solve the boundary-value problem (1), (2), at least in a small region near an appropriate portion $\Gamma$ of $\partial U$. In order to simplify the relevant calculations, it is convenient first to change variables, so as to ``flatten out'' part of the boundary $\partial U$. To accomplish this, we first fix any point $x^0 \in \partial U$. Then utilizing the notation from \S C.1, we find smooth mappings $\Phi, \Psi : \R^n \to \R^n$ such that $\Psi = \Phi^{-1}$ and $\Phi$ straightens out $\partial U$ near $x^0$. (See the illustration in \S C.1.)
+
+Given any function $u : U \to \R$, let us write $V := \Phi(U)$ and set
+
+(24)
+$$v(y) := u(\Psi(y)) \quad (y \in V).$$
+
+Then
+
+(25)
+$$u(x) = v(\Phi(x)) \quad (x \in U).$$
+
+Now suppose that $u$ is a $C^1$ solution of our boundary-value problem (1), (2) in $U$. What PDE does $v$ then satisfy in $V$?
+
+According to (25), we see
+
+$$u_{x_i}(x) = \sum_{k=1}^n v_{y_k}(\Phi(x))\Phi^k_{x_i}(x) \quad (i = 1,\ldots,n);$$
+
+that is,
+
+$$Du(x) = Dv(y)D\Phi(x).$$
+
+Thus (1) implies
+
+(26)
+$$0 = F(Du(x), u(x), x)$$
+$$= F(Dv(y)D\Phi(\Psi(y)), v(y), \Psi(y)).$$
+
+This is an expression having the form
+
+$$G(Dv(y), v(y), y) = 0 \quad \text{in } V.$$
+
+In addition $v = h$ on $\Delta$, where $\Delta := \Phi(\Gamma)$ and $h(y) := g(\Psi(y))$.
+
+In summary, our problem (1), (2) transforms to read
+
+(27)
+$$\begin{cases}
+G(Dv, v, y) = 0 & \text{in } V \\
+v = h & \text{on } \Delta,
+\end{cases}$$
+
+for $G$, $h$ as above. The point is that if we change variables to straighten out the boundary near $x^0$, the boundary-value problem (1), (2) converts into a problem having the same form.
+
+\textbf{b. Compatibility conditions on boundary data.}
+
+In view of the foregoing computations, if we are given a point $x^0 \in \Gamma$ we may as well assume from the outset that $\Gamma$ is flat near $x^0$, lying in the plane $\{x_n = 0\}$.
+
+We intend now to utilize the characteristic ODE to construct a solution (1), (2), at least near $x^0$, and for this we must discover appropriate initial conditions
+
+(28) $$\mathbf{p}(0) = p^0, \quad z(0) = z^0, \quad \mathbf{x}(0) = x^0.$$
+
+Now clearly if the curve $\mathbf{x}(\cdot)$ passes through $x^0$, we should insist that
+
+(29) $$z^0 = g(x^0).$$
+
+What should we require concerning $\mathbf{p}(0) = p^0$? Since (2) implies $u(x_1 \ldots x_{n-1}, 0) = g(x_1 \ldots x_{n-1})$ near $x^0$, we may differentiate to find
+
+$$u_{x_i}(x^0) = g_{x_i}(x^0) \quad (i = 1, \ldots, n-1).$$
+
+As we also want the PDE (1) to hold, we should therefore insist $p^0 = (p_1^0, \ldots, p_n^0)$ satisfies these relations:
+
+(30) $$\begin{cases} p_i^0 = g_{x_i}(x^0) & (i = 1,\ldots,n-1) \\ F(p^0, z^0, x^0) = 0. \end{cases}$$
+
+These identities provide $n$ equations for the $n$ quantities $p^0 = (p_1^0, \ldots, p_n^0)$.
+
+\begin{definition}[Compatibility conditions, admissible triple]
+\label{def:compatibility-conditions-admissible-triple}
+\dcref{ch3:3.2.3-def-1}
+\group{Method of Characteristics}
+We call (29) and (30) the \textit{compatibility conditions}. A triple $(p^0, z^0, x^0) \in \R^{2n+1}$ verifying (29), (30) is \textit{admissible}. Note $z^0$ is uniquely determined by the boundary condition and our choice of the point $x^0$, but a vector $p^0$ satisfying (30) may not exist or may not be unique.
+\end{definition}
+
+\textbf{c. Noncharacteristic boundary data.}
+
+So now assume as above that $x^0 \in \Gamma$, that $\Gamma$ near $x^0$ lies in the plane $\{x_n = 0\}$, and that the triple $(p^0, z^0, x^0)$ is admissible. We are planning to construct a solution $u$ of (1), (2) in $U$ near $x^0$ by integrating the characteristic ODE (11). So far we have ascertained $\mathbf{x}(0) = x^0$, $z(0) = z^0$, $\mathbf{p}(0) = p^0$ are appropriate boundary conditions for the characteristic ODE, with $\mathbf{x}(\cdot)$ intersecting $\Gamma$ at $x^0$. But we will need in fact to solve these ODE for \textit{nearby} initial points as well, and must consequently now ask if we can somehow appropriately perturb $(p^0, z^0, x^0)$, keeping the compatibility conditions.
+
+In other words, given a point $y = (y_1, \ldots, y_{n-1}, 0) \in \Gamma$, with $y$ close to $x^0$, we intend to solve the characteristic ODE
+$$\begin{cases}
+\text{(a) } \dot{\mathbf{p}}(s) = -D_x F(\mathbf{p}(s), z(s), \mathbf{x}(s)) - D_z F(\mathbf{p}(s), z(s), \mathbf{x}(s))\mathbf{p}(s) \\
+\text{(b) } \dot{z}(s) = D_p F(\mathbf{p}(s), z(s), \mathbf{x}(s)) \cdot \mathbf{p}(s) \\
+\text{(c) } \dot{\mathbf{x}}(s) = D_p F(\mathbf{p}(s), z(s), \mathbf{x}(s)),
+\end{cases}$$
+
+with the initial conditions
+$$\mathbf{p}(0) = \mathbf{q}(y), \quad z(0) = g(y), \quad \mathbf{x}(0) = y.$$
+
+Our task then is to find a function $\mathbf{q}(\cdot) = (q^1(\cdot), \ldots, q^n(\cdot))$, so that
+$$\mathbf{q}(x^0) = p^0$$
+
+and $(\mathbf{q}(y), g(y), y)$ is admissible; that is, the compatibility conditions
+$$\begin{cases}
+q^i(y) = g_{x_i}(y) & (i = 1, \ldots, n-1) \\
+F(\mathbf{q}(y), g(y), y) = 0
+\end{cases}$$
+
+hold for all $y \in \Gamma$ close to $x^0$.
+
+\begin{definition}[Noncharacteristic admissible triple]
+\label{def:noncharacteristic-triple}
+\dcref{ch3:3.2.3-def-2}
+\group{Method of Characteristics}
+\uses{def:compatibility-conditions-admissible-triple}
+We say the admissible triple $(p^0, z^0, x^0)$ is \textit{noncharacteristic} if
+$$(35) \quad F_{p_n}(p^0, z^0, x^0) \neq 0.$$
+We henceforth assume this condition.
+\end{definition}
+
+\begin{lemma}[Noncharacteristic boundary conditions]
+\label{lem:noncharacteristic-boundary-conditions}
+\dcref{ch3:3.2-lem-1}
+\group{Method of Characteristics}
+\uses{def:noncharacteristic-triple}
+There exists a unique solution $\mathbf{q}(\cdot)$ of (33), (34) for all $y \in \Gamma$ sufficiently close to $x^0$, provided (35) holds.
+\end{lemma}
+
+\begin{proof}
+To simplify notation, let us now temporarily write $y = (y_1, \ldots, y_n) \in \R^n$. We apply the Implicit Function Theorem (\S C.6) to the mapping
+$$\mathbf{G} : \R^n \times \R^n \to \R^n, \quad \mathbf{G}(\mathbf{p}, y) = (G^1(\mathbf{p}, y), \ldots, G^n(\mathbf{p}, y)),$$
+
+where
+$$\begin{cases}
+G^i(\mathbf{p}, y) = p_i - g_{x_i}(y) & (i = 1, \ldots, n-1) \\
+G^n(\mathbf{p}, y) = F(\mathbf{p}, g(y), y).
+\end{cases}$$
+
+Now $\mathbf{G}(\mathbf{p}^0, x^0) = 0$, according to (29), (30). Also
+$$D_\mathbf{p} \mathbf{G}(\mathbf{p}^0, x^0) = \begin{pmatrix}
+1 & \cdots & 0 & 0 \\
+0 & \ddots & 1 & 0 \\
+F_{p_1}(p^0, z^0, x^0) & \cdots & F_{p_n}(p^0, z^0, x^0)
+\end{pmatrix}_{n \times n},$$
+
+and thus
+$$\det D_\mathbf{p} \mathbf{G}(\mathbf{p}^0, x^0) = F_{p_n}(p^0, z^0, x^0) \neq 0,$$
+
+in view of the noncharacteristic condition (35). The Implicit Function Theorem thus ensures we can uniquely solve the identity $\mathbf{G}(\mathbf{p}, y) = 0$ for $\mathbf{p} = \mathbf{q}(y)$, provided $y$ is close enough to $x^0$.
+\end{proof}
+
+\begin{remark}[Noncharacteristic condition for a general boundary]
+\label{rem:noncharacteristic-condition-general}
+\dcref{ch3:3.2.3-rem-1}
+\group{Method of Characteristics}
+\uses{def:noncharacteristic-triple}
+If $\Gamma$ is not flat near $x^0$, the condition that $\Gamma$ be noncharacteristic reads
+
+(36) \qquad $D_p F(p^0, z^0, x^0) \cdot \nu(x^0) \neq 0$,
+
+$\nu(x^0)$ denoting the outward unit normal to $\partial U$ at $x^0$. $\square$
+\end{remark}
+
+\subsection{Local Solution}
+\label{sec:characteristics-local-solution}
+
+Remember that our aim is to use the characteristic ODE to build a solution $u$ of (1), (2), at least near $\Gamma$. So as before we select a point $x^0 \in \Gamma$ and, as shown in \S3.2.3, may as well assume that near $x^0$ the surface $\Gamma$ is flat, lying in the plane $\{x_n = 0\}$. Suppose further that $(p^0, z^0, x^0)$ is an admissible triple of boundary data, which is noncharacteristic. According to \cref{lem:noncharacteristic-boundary-conditions} there is a function $\mathbf{q}(\cdot)$ so that $p^0 = \mathbf{q}(x^0)$ and the triple $(\mathbf{q}(y), g(y), y)$ is admissible, for all $y$ sufficiently close to $x^0$.
+
+Given any such point $y = (y_1, \ldots, y_{n-1}, 0)$, we solve the characteristic ODE (31), subject to initial conditions (32).
+
+\textbf{Notation.} Let us write
+$$\begin{cases}
+\mathbf{p}(s) = p(y,s) = p(y_1, \ldots, y_{n-1}, s) \\
+z(s) = z(y,s) = z(y_1, \ldots, y_{n-1}, s) \\
+\mathbf{x}(s) = x(y,s) = x(y_1, \ldots, y_{n-1}, s)
+\end{cases}$$
+
+to display the dependence of the solution of (31), (32) on $s$ and $y$. $\square$
+
+\begin{lemma}[Local invertibility]
+\label{lem:local-invertibility-characteristics}
+\dcref{ch3:3.2-lem-2}
+\group{Method of Characteristics}
+\uses{def:noncharacteristic-triple}
+Assume we have the noncharacteristic condition $F_{p_n}(p^0, z^0, x^0) \neq 0$. Then there exist an open interval $I \subset \R$ containing $0$, a neighborhood $W$ of $x^0$ in $\Gamma \subset \R^{n-1}$, and a neighborhood $V$ of $x^0$ in $\R^n$, such that for each $x \in V$ there exist unique $s \in I$, $y \in W$ such that
+
+$$x = \mathbf{x}(y, s).$$
+
+The mappings $x \mapsto s$, $y$ are $C^2$.
+\end{lemma}
+
+\begin{proof}
+We have $\mathbf{x}(x^0, 0) = x^0$. Consequently the Inverse Function Theorem (\S C.5) gives the result, provided $\det D\mathbf{x}(x^0, 0) \neq 0$. Now
+
+$$\mathbf{x}(y, 0) = (y, 0) \quad (y \in \Gamma),$$
+
+and so if $i = 1, \ldots, n-1$,
+
+$$\frac{\partial x^j}{\partial y_i}(x^0, 0) = \begin{cases} \delta_{ij} & (j = 1, \ldots, n-1) \\ 0 & (j = n). \end{cases}$$
+
+Furthermore equation (31)(c) implies
+$$\frac{\partial x^j}{\partial s}(x^0, 0) = F_{p_j}(p^0, z^0, x^0).$$
+
+Thus
+$$Dx(x^0, 0) = \begin{pmatrix}
+1 & 0 & F_{p_1}(p^0, z^0, x^0) \\
+& \ddots & \vdots \\
+0 & 1 & \vdots \\
+0 & \cdots & 0 & F_{p_n}(p^0, z^0, x^0)
+\end{pmatrix}_{n \times n} \quad ;$$
+
+whence $\det Dx(x^0, 0) \neq 0$ follows from the noncharacteristic condition (35).
+\end{proof}
+
+In view of \cref{lem:local-invertibility-characteristics} for each $x \in V$, we can locally uniquely solve the equation
+
+$$(37) \quad \begin{cases}
+x = x(y, s), \\
+\text{for } y = y(x), \, s = s(x).
+\end{cases}$$
+
+Finally, let us define
+
+$$(38) \quad \begin{cases}
+u(x) := z(y(x), s(x)) \\
+\textbf{p}(x) := \textbf{p}(y(x), s(x))
+\end{cases}$$
+
+for $x \in V$ and $s, y$ as in (37).
+
+We come finally to our principal assertion, namely, that we can locally weave together the solutions of the characteristic ODE into a solution of the PDE.
+
+\begin{theorem}[Local Existence Theorem]
+\label{thm:local-existence-characteristics}
+\dcref{ch3:3.2-thm-2}
+\group{Method of Characteristics}
+\uses{lem:local-invertibility-characteristics,def:compatibility-conditions-admissible-triple}
+The function $u$ defined above is $C^2$ and solves the PDE
+$$F(Du(x), u(x), x) = 0 \quad (x \in V),$$
+
+with the boundary condition
+$$u(x) = g(x) \quad (x \in \Gamma \cap V).$$
+\end{theorem}
+
+\begin{proof}
+1. First of all, fix $y \in \Gamma$ close to $x^0$ and, as above, solve the characteristic ODE (31), (32) for $\textbf{p}(s) = \textbf{p}(y, s)$, $z(s) = z(y, s)$, and $x(s) = x(y, s)$.
+
+2. We assert that if $y \in \Gamma$ is sufficiently close to $x^0$, then
+
+$$(39) \quad f(y, s) := F(\textbf{p}(y, s), z(y, s), x(y, s)) = 0 \quad (s \in \R).$$
+
+To see this, note
+
+$$(40) \quad f(y, 0) = F(\mathbf{p}(y, 0), z(y, 0), x(y, 0))$$
+$$= F(\mathbf{q}(y), z(y), y) = 0,$$
+
+by the compatibility condition (34). Furthermore
+
+$$\frac{\partial f}{\partial s}(y, s) = \sum_{j=1}^{n} \frac{\partial F}{\partial p_j} \dot{p}^j + \frac{\partial F}{\partial z} \dot{z} + \sum_{j=1}^{n} \frac{\partial F}{\partial x_j} \dot{x}^j$$
+
+$$= \sum_{j=1}^{n} \frac{\partial F}{\partial p_j} \left( \frac{\partial F}{\partial x_j} - \frac{\partial F}{\partial z} p^j \right) + \frac{\partial F}{\partial z} \left( \sum_{j=1}^{n} \frac{\partial F}{\partial p_j} p^j \right)$$
+
+$$+ \sum_{j=1}^{n} \frac{\partial F}{\partial x_j} \left( \frac{\partial F}{\partial p_j} \right), \quad \text{according to (31)}$$
+
+$$= 0.$$
+
+This calculation and (40) prove (39).
+
+3. In view of \cref{lem:local-invertibility-characteristics} and (37)--(39), we have
+
+$$F(\mathbf{p}(x), u(x), x) = 0 \quad (x \in V).$$
+
+To conclude, we must therefore show
+
+$$(41) \quad \mathbf{p}(x) = Du(x) \quad (x \in V).$$
+
+4. In order to prove (41), let us first demonstrate for $s \in I, y \in W$ that
+
+$$(42) \quad \frac{\partial z}{\partial s}(y, s) = \sum_{j=1}^{n} p^j(y, s) \frac{\partial x^j}{\partial s}(y, s)$$
+
+and
+
+$$(43) \quad \frac{\partial z}{\partial y_i}(y, s) = \sum_{j=1}^{n} p^j(y, s) \frac{\partial x^j}{\partial y_i}(y, s) \quad (i = 1, \ldots, n-1).$$
+
+These formulas are obviously consistent with the equality (41) and will later help us prove it. The identity (42) results at once from the characteristic ODE (31)(b),(c). To establish (43), fix $y \in \Gamma, i \in \{1, \ldots, n-1\}$, and set
+
+$$(44) \quad r^i(s) := \frac{\partial z}{\partial y_i}(y, s) - \sum_{j=1}^{n} p^j(y, s) \frac{\partial x^j}{\partial y_i}(y, s).$$
+
+We first note $r^i(0) = g_{x_i}(y) - q^i(y) = 0$ according to the compatibility condition (34). In addition, we can compute
+
+$$(45) \quad r^i(s) = \frac{\partial^2 z}{\partial y_i \partial s} - \sum_{j=1}^{n} \left[ \frac{\partial p^j \partial x^j}{\partial s \partial y_i} + p^j \frac{\partial^2 x^j}{\partial y_i \partial s} \right].$$
+
+In order to simplify this expression, let us first differentiate the identity (42) with respect to $y_i$:
+
+$$(46) \quad \frac{\partial^2 z}{\partial s \partial y_i} = \sum_{j=1}^{n} \left[ \frac{\partial p^j \partial x^j}{\partial y_i \partial s} + p^j \frac{\partial^2 x^j}{\partial s \partial y_i} \right].$$
+
+Substituting (46) into (45), we discover
+
+$$(47) \quad r^i(s) = \sum_{j=1}^{n} \left[ \frac{\partial p^j \partial x^j}{\partial y_i \partial s} - \frac{\partial p^j \partial x^j}{\partial s \partial y_i} \right]$$
+
+$$= \sum_{j=1}^{n} \left[ \frac{\partial p^j}{\partial y_i} \left( \frac{\partial F}{\partial p_j} \right) - \left( -\frac{\partial F}{\partial x_j} - \frac{\partial F}{\partial z} p^j \right) \frac{\partial x^j}{\partial y_i} \right] \text{ by } (31)(a).$$
+
+Now differentiate (39) with respect to $y_i$:
+
+$$\sum_{j=1}^{n} \frac{\partial F}{\partial p_j} \frac{\partial p^j}{\partial y_i} + \frac{\partial F}{\partial z} \frac{\partial z}{\partial y_i} + \sum_{j=1}^{n} \frac{\partial F}{\partial x_j} \frac{\partial x^j}{\partial y_i} = 0.$$
+
+We employ this identity in (47), thereby obtaining
+
+$$(48) \quad r^i(s) = \frac{\partial F}{\partial z} \left[ \sum_{j=1}^{n} p^j \frac{\partial x^j}{\partial y_i} - \frac{\partial z}{\partial y_i} \right] = -\frac{\partial F}{\partial z} r^i(s).$$
+
+Hence $r^i(\cdot)$ solves the linear ODE (48), with the initial condition $r^i(0) = 0$. Consequently $r^i(s) = 0$ ($s \in \R$, $i = 1, \ldots, n-1$); and so identity (43) is verified.
+
+5. We finally employ (42), (43) in proving (41). Indeed, if $j = 1, \ldots, n$,
+
+$$\frac{\partial u}{\partial x_j} = \frac{\partial z}{\partial s} \frac{\partial s}{\partial x_j} + \sum_{i=1}^{n-1} \frac{\partial z}{\partial y^i} \frac{\partial y^i}{\partial x_j} \quad \text{by } (38)$$
+
+$$= \left( \sum_{k=1}^{n} p^k \frac{\partial x^k}{\partial s} \right) \frac{\partial s}{\partial x_j} + \sum_{i=1}^{n-1} \left( \sum_{k=1}^{n} p^k \frac{\partial x^k}{\partial y_i} \right) \frac{\partial y^i}{\partial x_j} \quad \text{by } (42), (43)$$
+
+$$= \sum_{k=1}^{n} p^k \left( \frac{\partial x^k}{\partial s} \frac{\partial s}{\partial x_j} + \sum_{i=1}^{n-1} \frac{\partial x^k}{\partial y_i} \frac{\partial y^i}{\partial x_j} \right)$$
+
+$$= \sum_{k=1}^{n} p^k \frac{\partial x^k}{\partial x_j} = \sum_{k=1}^{n} p^k \delta_{jk} = p^j.$$
+
+This assertion at last establishes (41), and so finishes up the proof.
+\end{proof}
+
+\subsection{Applications}
+\label{sec:characteristics-applications}
+
+We turn now to various special cases, to see how the local existence theory simplifies in these circumstances.
+
+\textbf{a. F linear.}
+
+Recall that a linear, homogeneous, first-order PDE has the form
+
+(49) \quad $F(Du, u, x) = \textbf{b}(x) \cdot Du(x) + c(x)u(x) = 0 \quad (x \in U)$.
+
+Our noncharacteristic assumption (36) at a point $x^0 \in \Gamma$ as above becomes
+
+(50) \quad $\textbf{b}(x^0) \cdot \nu(x^0) \neq 0$,
+
+and thus does not involve $z^0$ or $p^0$ at all. Furthermore if we specify the boundary condition
+
+(51) \quad $u = g \quad \text{on } \Gamma$,
+
+we can uniquely solve equation (34) for $\mathbf{q}(y)$ if $y \in \Gamma$ is near $x^0$. Thus we can apply the \cref{thm:local-existence-characteristics} to construct a unique solution of (49), (51) in some neighborhood $V$ containing $x^0$. Note carefully that although we have utilized the full characteristic equations (31) in the proof of \cref{thm:local-existence-characteristics}, once we know the solution exists, we can use the reduced equations (17) (which do not involve $\mathbf{p}(\cdot)$) to compute the solution. Observe also the projected characteristics $\mathbf{x}(\cdot)$ emanating from distinct points on $\Gamma$ cannot cross, owing to uniqueness of solutions of the initial-value problem for the ODE (17)(a).
+
+\begin{example}[Flow patterns for a linear transport-type PDE]
+\label{ex:linear-transport-characteristics-flow}
+\dcref{ch3:3.2-ex-4}
+\group{Method of Characteristics}
+\uses{thm:local-existence-characteristics}
+Suppose the trajectories of the ODE
+
+(52) \quad $\dot{\mathbf{x}}(s) = \mathbf{b}(\mathbf{x}(s))$
+
+are as drawn for Case 1.
+
+We are thus assuming the vector field $\mathbf{b}$ vanishes within $U$ only at one point, which we will take to be the origin $0$, and $\mathbf{b} \cdot \nu < 0$ on $\Gamma := \partial U$. Can we solve the linear boundary-value problem
+
+(53) \quad $\begin{cases} \mathbf{b} \cdot Du = 0 & \text{in } U \\ u = g & \text{on } \Gamma \end{cases}$
+
+Invoking \cref{thm:local-existence-characteristics} we see that there exists a unique solution $u$ defined \textit{near} $\Gamma$, and indeed that $u(\mathbf{x}(s)) \equiv u(\mathbf{x}(0)) = g(x^0)$ for each solution of the
+
+\begin{figure}[h]\centering
+% [FIGURE: A shaded region labeled U with characteristic curves emanating radially from a central point. Arrows on the curves point outward toward the boundary, illustrating flow converging to an attracting point at the center.]
+\end{figure}
+
+\textbf{Case 1: flow to an attracting point}
+
+\begin{figure}[h]\centering
+% [FIGURE: A shaded region U with multiple characteristic curves flowing across it from left to right. Two points labeled A and B are marked on the boundary where curves enter/exit. Arrows on the curves show the direction of flow across the domain.]
+\end{figure}
+
+\textbf{Case 2: flow across a domain}
+
+ODE (52), with the initial condition $x(0) = x^0 \in \Gamma$. However, this solution cannot be smoothly continued to all of $U$ (unless $g$ is constant): any smooth solution of (53) is constant on trajectories of (52), and thus takes on different values near $x = 0$.
+
+On the other hand, now suppose the trajectories of the ODE (52) look like the illustration for Case 2. We are consequently now assuming that each trajectory of the ODE (except those through the characteristic points $A, B$) enters $U$ precisely once, somewhere through the set
+
+$$\Gamma := \{x \in \partial U \mid b(x) \cdot v(x) < 0\},$$
+
+and exits $U$ precisely once. In this circumstance we can find a smooth solution of (53) by setting $u$ to be constant along each flow line.
+
+\begin{figure}[h]\centering
+% [FIGURE: A shaded three-dimensional region with multiple arrows pointing outward from various directions. The region has characteristic curves or lines flowing through it. Several points are labeled: A at the top, B on the right side, D in the center interior, C below the center, and E at the bottom left. The figure illustrates the flow pattern with characteristic points intersecting within and on the boundary of the region.]
+\end{figure}
+
+\noindent\textbf{Case 3: flow with characteristic points}
+
+Assume finally the flow looks like Case 3. We can now define $u$ to be constant along trajectories, but then $u$ will be discontinuous (unless $g(B) = g(D)$).
+
+Note that the point $D$ is characteristic and that the local existence theory fails near $D$. $\square$
+\end{example}
+
+\textbf{b. F quasilinear.}
+
+Should $F$ be quasilinear, the PDE (1) becomes
+$$(54) \quad F(Du, u, x) = \mathbf{b}(x,u) \cdot Du + c(x,u) = 0.$$
+
+The noncharacteristic assumption (36) at a point $x^0 \in \Gamma$ reads $\mathbf{b}(x^0, z^0) \cdot \nu(x^0) \neq 0$, where $z^0 = g(x^0)$. As in the preceding example, if we specify the boundary condition
+$$(55) \quad u = g \quad \text{on } \Gamma,$$
+
+we can uniquely solve the equations (34) for $\mathbf{q}(y)$ if $y \in \Gamma$ near $x^0$. Thus \cref{thm:local-existence-characteristics} yields the existence of a unique solution of (54), (55) in some neighborhood $V$ of $x^0$. We can compute this solution by using the reduced characteristic equations (21), which do not explicitly involve $p(\cdot)$.
+
+In contrast to the linear case, however, \textit{it is possible that the projected characteristics emanating from distinct points in $\Gamma$ may intersect outside $V$; such an occurrence usually signals the failure of our local solution to exist within all of $U$.}
+
+\begin{example}[Characteristics for conservation laws]
+\label{ex:characteristics-conservation-laws}
+\dcref{ch3:3.2-ex-5}
+\group{Conservation Laws}
+\uses{thm:local-existence-characteristics}
+As an instance of a quasilinear first-order PDE, we turn now to the \textit{scalar conservation law}
+$$(56) \quad G(Du, u_t, u, x, t) = u_t + \text{div}\,\mathbf{F}(u)$$
+$$= u_t + \mathbf{F}'(u) \cdot Du = 0$$
+
+in $U = \R^n \times (0,\infty)$, subject to the initial condition
+
+(57)
+$$u = g \quad \text{on } \Gamma = \R^n \times \{t = 0\}.$$
+
+Here $\mathbf{F}: \R \to \R^n$, $\mathbf{F} = (F^1,\ldots,F^n)$, and, as usual, we have set $t = x_{n+1}$. Also, ``div'' denotes the divergence with respect to the spatial variables $(x_1,\ldots,x_n)$, and $Du = D_x u = (u_{x_1},\ldots,u_{x_n})$.
+
+Since the direction $t = x_{n+1}$ plays a special role, we appropriately modify our notation. Writing now $q = (p, p_{n+1})$ and $y = (x,t)$, we have
+
+$$G(q, z, y) = p_{n+1} + \mathbf{F}'(z) \cdot p,$$
+
+and consequently
+
+$$D_q G = (\mathbf{F}'(z), 1), \quad D_y G = 0, \quad D_z G = \mathbf{F}''(z) \cdot p.$$
+
+Clearly the noncharacteristic condition (35) is satisfied at each point $y^0 = (x^0, 0) \in \Gamma$. Furthermore equation (21)(a) becomes
+
+(58)
+$$\begin{cases}
+\dot{x}^i(s) = F^i(z(s)) & (i = 1,\ldots,n) \\
+\dot{x}^{n+1}(s) = 1.
+\end{cases}$$
+
+Hence $x^{n+1}(s) = s$, in agreement with our having written $x_{n+1} = t$ above. In other words, we can identify the parameter $s$ with the time $t$.
+
+Equation (21)(b) reads $\dot{z}(s) = 0$. Consequently
+
+(59)
+$$z(s) = z^0 = g(x^0);$$
+
+and (58) implies
+
+(60)
+$$\mathbf{x}(s) = \mathbf{F}'(g(x^0))s + x^0.$$
+
+Thus the projected characteristic $\mathbf{y}(s) = (\mathbf{x}(s), s) = (\mathbf{F}'(g(x^0))s + x^0, s)$ $(s \geq 0)$ is a straight line, along which $u$ is constant.
+
+\textbf{Crossing characteristics.} But suppose now we apply the same reasoning to a different initial point $z^0 \in \Gamma$, where $g(x^0) \neq g(x'^0)$. \textit{The projected characteristics may possibly then intersect at some time $t > 0$.} Since \cref{thm:characteristic-ode-structure} tells us $u \equiv g(x^0)$ on the projected characteristic through $x^0$ and $u \equiv g(x'^0)$ on the projected characteristic through $x'^0$, an apparent contradiction arises. The resolution is that \textit{the initial-value problem (56), (57) does not in general have a smooth solution, existing for all times $t > 0$.}
+
+We will discuss in \S 3.4 the interesting possibility of extending the local solution (guaranteed to exist for short times by \cref{thm:local-existence-characteristics}) to all times $t > 0$, as a kind of ``weak'' or ``generalized'' solution.
+\end{example}
+
+\begin{remark}[Implicit formula for the conservation law]
+\label{rem:implicit-formula-conservation-law}
+\dcref{ch3:3.2.5-rem-1}
+\group{Conservation Laws}
+\uses{ex:characteristics-conservation-laws}
+Let us also note we can eliminate $s$ from equations (59), (60) to obtain an implicit formula for $u$. Indeed given $x \in \R^n$ and $t > 0$, we see that since $s = t$,
+
+$$u(\mathbf{x}(t), t) = z(t) = g(\mathbf{x}(t) - tF'(z^0))$$
+$$= g(\mathbf{x}(t) - tF'(u(\mathbf{x}(t), t))).$$
+
+Hence
+
+$$(61) \quad u = g(x - t\mathbf{F}'(u)).$$
+
+This implicit formula for $u$ as a function of $x$ and $t$ is a nonlinear analogue of equation (3) in \S 2.1. It is easy to check (61) does indeed give a solution, provided
+$$1 + tDg(x - t\mathbf{F}'(u)) \cdot \mathbf{F}''(u) \neq 0.$$
+
+In particular if $n = 1$, we require
+$$1 + tg'(x - t\mathbf{F}'(u))\mathbf{F}''(u) \neq 0.$$
+
+Note that if $\mathbf{F}'' > 0$, but $g' < 0$, then this will definitely be false at some time $t > 0$. This failure of the implicit formula (61) reflects also the failure of the characteristic method. $\square$
+\end{remark}
+
+\textbf{c. F fully nonlinear.}
+
+The form of the full characteristic equations can be quite complicated for fully nonlinear first-order PDE, but sometimes a remarkable mathematical structure emerges.
+
+\begin{example}[Characteristics for the Hamilton--Jacobi equation]
+\label{ex:characteristics-hamilton-jacobi}
+\dcref{ch3:3.2-ex-6}
+\group{Hamilton-Jacobi Equations}
+\uses{thm:characteristic-ode-structure}
+We look now at the general Hamilton-Jacobi PDE
+
+$$(62) \quad G(Du, u, u, x, t) = u_t + H(Du, x) = 0,$$
+
+where $Du = D_x u = (u_{x_1}, \ldots, u_{x_n})$. Then writing $q = (p, p_{n+1})$, $y = (x, t)$, we have
+$$G(q, z, y) = p_{n+1} + H(p, x);$$
+
+and so
+$$D_q G = (D_p H(p, x), 1), \quad D_y G = (D_x H(p, x), 0), \quad D_z G = 0.$$
+
+Thus equation (11)(c) becomes
+
+$$(63) \quad \begin{cases} \dot{x}^i(s) = \frac{\partial H}{\partial p_i}(\mathbf{p}(s), \mathbf{x}(s)) & (i = 1, \ldots, n) \\ x^{n+1}(s) = 1. \end{cases}$$
+
+In particular we can identify the parameter $s$ with the time $t$.
+
+Equation (11)(a) for the case at hand reads
+$$
+\begin{cases}
+\dot{p}^i(s) = -\frac{\partial H}{\partial x_i}(\mathbf{p}(s), \mathbf{x}(s)) & (i = 1, \ldots, n) \\
+\dot{p}^{n+1}(s) = 0;
+\end{cases}
+$$
+
+the equation (11)(b) is
+$$
+\dot{z}(s) = D_p H(\mathbf{p}(s), \mathbf{x}(s)) \cdot \mathbf{p}(s) + p^{n+1}(s)
+$$
+$$
+= D_p H(\mathbf{p}(s), \mathbf{x}(s)) \cdot \mathbf{p}(s) - H(\mathbf{p}(s), \mathbf{x}(s)).
+$$
+
+In summary, the characteristic equations for the Hamilton-Jacobi equation are:
+$$
+(64) \quad
+\begin{cases}
+\text{(a)} \quad \dot{\mathbf{p}}(s) = -D_x H(\mathbf{p}(s), \mathbf{x}(s)) \\
+\text{(b)} \quad \dot{z}(s) = D_p H(\mathbf{p}(s), \mathbf{x}(s)) \cdot \mathbf{p}(s) - H(\mathbf{p}(s), \mathbf{x}(s)) \\
+\text{(c)} \quad \dot{\mathbf{x}}(s) = D_p H(\mathbf{p}(s), \mathbf{x}(s))
+\end{cases}
+$$
+
+for $\mathbf{p}(\cdot) = (p^1(\cdot), \ldots, p^n(\cdot))$, $z(\cdot)$, and $\mathbf{x}(\cdot) = (x^1(\cdot), \ldots, x^n(\cdot))$.
+
+The first and third of these equalities,
+$$
+(65) \quad
+\begin{cases}
+\dot{\mathbf{x}} = D_p H(\mathbf{p}, \mathbf{x}) \\
+\dot{\mathbf{p}} = -D_x H(\mathbf{p}, \mathbf{x}),
+\end{cases}
+$$
+
+are called \textit{Hamilton's equations}. We will discuss these ODE and their relationship to the Hamilton-Jacobi equation in much more detail, just below in \S 3.3. Observe that the equation for $z(\cdot)$ is trivial, once $\mathbf{x}(\cdot)$ and $\mathbf{p}(\cdot)$ have been found by solving Hamilton's equations. $\square$
+
+As for conservation laws (\cref{ex:characteristics-conservation-laws}), the initial-value problem for the Hamilton-Jacobi equation does not in general have a smooth solution $u$ lasting for all times $t > 0$.
+\end{example}
+
+\section{Introduction to Hamilton--Jacobi Equations}
+\label{sec:hamilton-jacobi-intro}
+
+In this section we study in some detail the initial-value problem for the Hamilton-Jacobi equation:
+$$
+(1) \quad
+\begin{cases}
+u_t + H(Du) = 0 & \text{in } \R^n \times (0, \infty) \\
+u = g & \text{on } \R^n \times \{t = 0\}.
+\end{cases}
+$$
+Here $u : \R^n \times [0, \infty) \to \R$ is the unknown, $u = u(x, t)$, and $Du = D_x u = (u_{x_1}, \ldots, u_{x_n})$. We are given the \textit{Hamiltonian} $H : \R^n \to \R$ and the initial function $g : \R^n \to \R$.
+
+Our goal is to find a formula for an appropriate weak or generalized solution, existing for all times $t > 0$, even after the method of characteristics has failed.
+
+\subsection{Calculus of Variations, Hamilton's ODE}
+\label{sec:calculus-of-variations-hamiltons-ode}
+
+Remember from \S 3.2.5 that two of the characteristic equations associated with the Hamilton-Jacobi PDE
+
+$$u_t + H(Du, x) = 0$$
+
+are Hamilton's ODE
+
+$$\begin{cases}
+\dot{x} = D_p H(\mathbf{p}, x) \\
+\dot{\mathbf{p}} = -D_x H(\mathbf{p}, x),
+\end{cases}$$
+
+which arise in the classical calculus of variations and in mechanics. (Note the $x$-dependence in $H$ here.) In this section we recall the derivation of these ODE from a variational principle. We will then discover in \S 3.3.2 that this discussion contains a clue as to how to build a weak solution of the initial-value problem (1).
+
+\textbf{a. The calculus of variations.}
+
+Assume that $L : \R^n \times \R^n \to \R$ is a given smooth function, hereafter called the \textit{Lagrangian}.
+
+\textbf{Notation.} We write
+
+$$L = L(q,x) = L(q_1, \ldots, q_n, x_1, \ldots, x_n) \quad (q, x \in \R^n)$$
+
+and
+
+$$\begin{cases}
+D_q L = (L_{q_1} \cdots L_{q_n}) \\
+D_x L = (L_{x_1} \cdots L_{x_n}).
+\end{cases}$$
+
+Thus in the formula (2) below ``$q$'' is the name of the variable for which we substitute $\dot{\mathbf{w}}(s)$, and ``$x$'' is the variable for which we substitute $\mathbf{w}(s)$.
+$\square$
+
+Now fix two points $x, y \in \R^n$ and a time $t > 0$. We introduce then the \textit{action} functional
+
+$$(2) \quad I[\mathbf{w}(\cdot)] = \int_0^t L(\dot{\mathbf{w}}(s), \mathbf{w}(s)) \, ds \quad \left(\cdot = \frac{d}{ds}\right),$$
+
+defined for functions $\mathbf{w}(\cdot) = (w^1(\cdot), w^2(\cdot), \ldots, w^n(\cdot))$ belonging to the \textit{admissible class}
+
+$$\mathcal{A} = \{\mathbf{w}(\cdot) \in C^2([0,t]; \R^n) \mid \mathbf{w}(0) = y, \mathbf{w}(t) = x\}.$$
+
+\begin{figure}[h]\centering
+% [FIGURE: Two smooth curves labeled $\mathbf{w}(·)$ and $\mathbf{x}(·)$ shown in space-time, with the vertical axis ranging from point $y$ on the left to point $x$ on the right, and horizontal axis labeled $t$ ranging from $0$ to $t$. The curves demonstrate paths through the interval.]
+\end{figure}
+
+A problem in the calculus of variations
+
+Thus a $C^2$ curve $\mathbf{w}(\cdot)$ lies in $A$ if it starts at the point $y$ at time $0$, and reaches the point $x$ at time $t$. A basic problem in the \textit{calculus of variations} is then to find a curve $\mathbf{x}(\cdot) \in A$ satisfying
+
+$$(3) \quad I[\mathbf{x}(\cdot)] = \min_{\mathbf{w}(\cdot) \in A} I[\mathbf{w}(\cdot)].$$
+
+That is, we are asking for a function $\mathbf{x}(\cdot)$ which minimizes the functional $I[\cdot]$ among all admissible candidates $\mathbf{w}(\cdot) \in A$.
+
+We assume next that there in fact exists a function $\mathbf{x}(\cdot) \in A$ satisfying our calculus of variations problem, and will deduce some of its properties.
+
+\begin{theorem}[Euler--Lagrange equations]
+\label{thm:euler-lagrange-equations}
+\dcref{ch3:3.3-thm-1}
+\group{Calculus of Variations}
+The function $\mathbf{x}(\cdot)$ solves the system of Euler--Lagrange equations
+
+$$(4) \quad -\frac{d}{ds}(D_v L(\dot{\mathbf{x}}(s), \mathbf{x}(s))) + D_x L(\dot{\mathbf{x}}(s), \mathbf{x}(s)) = 0 \quad (0 \leq s \leq t).$$
+
+This is a vector equation, consisting of $n$ coupled second-order equations.
+\end{theorem}
+
+\begin{proof}
+1. Choose a smooth function $\mathbf{v} : [0,t] \to \R^n$, $\mathbf{v} = (v^1,\ldots,v^n)$, satisfying
+
+$$(5) \quad \mathbf{v}(0) = \mathbf{v}(t) = 0,$$
+
+and define for $\tau \in \R$
+
+$$(6) \quad \mathbf{w}(\cdot) := \mathbf{x}(\cdot) + \tau \mathbf{v}(\cdot).$$
+
+Then $\mathbf{w}(\cdot) \in A$ and so
+
+$$I[\mathbf{x}(\cdot)] \leq I[\mathbf{w}(\cdot)].$$
+
+Thus the real-valued function
+
+$$i(\tau) := I[\mathbf{x}(\cdot) + \tau \mathbf{v}(\cdot)]$$
+
+has a minimum at $\tau = 0$, and consequently
+
+(7)                $i'(0) = 0$ $\left(i' = \frac{d}{d\tau}\right)$,
+
+provided $i'(0)$ exists.
+
+2. We explicitly compute this derivative. Observe
+
+$$i(\tau) = \int_0^t L(\dot{x}(s) + \tau\dot{v}(s), x(s) + \tau v(s)) \, ds,$$
+
+and so
+
+$$i'(\tau) = \int_0^t \sum_{i=1}^n L_{q_i}(\dot{x} + \tau\dot{v}, x + \tau v)\dot{v}^i + L_{x_i}(\dot{x} + \tau\dot{v}, x + \tau v)v^i \, ds.$$
+
+Set $\tau = 0$ and remember (7):
+
+$$0 = i'(0) = \int_0^t \sum_{i=1}^n L_{q_i}(\dot{x}, x)\dot{v}^i + L_{x_i}(\dot{x}, x)v^i \, ds.$$
+
+We recall (5) and then integrate by parts in the first term inside the integral, to discover
+
+$$0 = \sum_{i=1}^n \int_0^t \left[-\frac{d}{ds}(L_{q_i}(\dot{x}, x)) + L_{x_i}(\dot{x}, x)\right] v^i \, ds.$$
+
+This identity is valid for all smooth functions $\mathbf{v} = (v^1, \ldots, v^n)$ satisfying the boundary conditions (5), and so
+
+$$-\frac{d}{ds}(L_{q_i}(\dot{x}, x)) + L_{x_i}(\dot{x}, x) = 0$$
+
+for $0 \leq s \leq t$, $i = 1, \ldots, n$.
+\end{proof}
+
+\begin{remark}[Critical points versus minimizers]
+\label{rem:critical-point-vs-minimizer}
+\dcref{ch3:3.3.1-rem-1}
+\group{Calculus of Variations}
+\uses{thm:euler-lagrange-equations}
+We have just demonstrated that any minimizer $\mathbf{x}(\cdot) \in \mathcal{A}$ of $I[\cdot]$ solves the Euler--Lagrange system of ODE. It is of course possible that a curve $\mathbf{x}(\cdot) \in \mathcal{A}$ may solve the Euler--Lagrange equations without necessarily being a minimizer; in this case we say $\mathbf{x}(\cdot)$ is a \textit{critical point} of $I[\cdot]$. So every minimizer is a critical point, but a critical point need not be a minimizer. $\square$
+\end{remark}
+
+\begin{example}[Newton's law as an Euler--Lagrange equation]
+\label{ex:newtons-law-lagrangian}
+\dcref{ch3:3.3.1-ex-1}
+\group{Calculus of Variations}
+\uses{thm:euler-lagrange-equations}
+If $L(q,x) = \frac{1}{2}m|q|^2 - \phi(x)$, where $m > 0$, the corresponding Euler--Lagrange equation is
+
+$$m\ddot{\mathbf{x}}(s) = \mathbf{f}(\mathbf{x}(s))$$
+
+for $\mathbf{f} := -D\phi$. This is Newton's law for the motion of a particle of mass $m$ moving in the force field $\mathbf{f}$ generated by the potential $\phi$. (See \cite{FeynmanLeightonSands1966}, Chapter 19.) $\square$
+\end{example}
+
+\textbf{b. Hamilton's ODE.}
+
+We now convert the Euler--Lagrange equations, a system of $n$ second-order ODE, into Hamilton's equations, a system of $2n$ first-order ODE. We hereafter assume the $C^2$ function $\mathbf{x}(\cdot)$ is a critical point of the action functional, and thus solves the Euler--Lagrange equations (4).
+
+First we set
+
+(8) \quad $\mathbf{p}(s) := D_q L(\dot{\mathbf{x}}(s), \mathbf{x}(s))$ \quad $(0 \le s \le t)$;
+
+$\mathbf{p}(\cdot)$ is called the \textit{generalized momentum} corresponding to the \textit{position} $\mathbf{x}(\cdot)$ and \textit{velocity} $\dot{\mathbf{x}}(\cdot)$. We next make this important hypothesis:
+
+(9) \quad $\begin{cases}
+\text{Suppose for all } x, p \in \R^n \text{ that the equation}\\
+p = D_q L(q, x)\\
+\text{can be uniquely solved for } q \text{ as a smooth}\\
+\text{function of } p \text{ and } x, \quad q = \mathbf{q}(p, x).
+\end{cases}$
+
+We will examine this assumption in more detail later: see \S 3.3.2.
+
+\begin{definition}[Hamiltonian associated with a Lagrangian]
+\label{def:hamiltonian-from-lagrangian}
+\dcref{ch3:3.3.1-def-1}
+\group{Calculus of Variations}
+The Hamiltonian $H$ associated with the Lagrangian $L$ is
+$$H(p, x) := p \cdot \mathbf{q}(p, x) - L(\mathbf{q}(p, x), x) \quad (p, x \in \R^n),$$
+where the function $\mathbf{q}(\cdot, \cdot)$ is defined implicitly by (9).
+\end{definition}
+
+\begin{example}[Hamiltonian for Newton's law: total energy]
+\label{ex:hamiltonian-newtons-law}
+\dcref{ch3:3.3.1-ex-2}
+\group{Calculus of Variations}
+\uses{def:hamiltonian-from-lagrangian,ex:newtons-law-lagrangian}
+The Hamiltonian corresponding to the Lagrangian $L(q,x) = \frac{1}{2}m|q|^2 - \phi(x)$ is
+
+$$H(p, x) = \frac{1}{2m}|p|^2 + \phi(x).$$
+
+The Hamiltonian is thus the total energy, the sum of the kinetic and potential energies; the Lagrangian is the difference between the kinetic and potential energies. $\square$
+\end{example}
+
+Next we rewrite the Euler--Lagrange equations in terms of $\mathbf{p}(\cdot), \mathbf{x}(\cdot)$:
+
+\begin{theorem}[Derivation of Hamilton's ODE]
+\label{thm:hamiltons-ode-derivation}
+\dcref{ch3:3.3-thm-2}
+\group{Calculus of Variations}
+\uses{thm:euler-lagrange-equations,def:hamiltonian-from-lagrangian}
+The functions $x(\cdot)$ and $p(\cdot)$ satisfy Hamilton's equations:
+
+$$(10) \quad \begin{cases} \dot{x}(s) = D_p H(p(s), x(s)) \\ \dot{p}(s) = -D_x H(p(s), x(s)) \end{cases}$$
+
+for $0 \le s \le t$. Furthermore, the mapping $s \mapsto H(p(s), x(s))$ is constant.
+\end{theorem}
+
+\begin{remark}[Hamilton's ODE as a first-order system]
+\label{rem:hamiltons-ode-system-structure}
+\dcref{ch3:3.3.1-rem-2}
+\group{Calculus of Variations}
+\uses{thm:hamiltons-ode-derivation}
+The equations (10) comprise a coupled system of $2n$ first-order ODE for $x(\cdot) = (x^1(\cdot), \ldots, x^n(\cdot))$ and $p(\cdot) = (p^1(\cdot), \ldots, p^n(\cdot))$ (defined by (8)). $\square$
+\end{remark}
+
+\begin{proof}
+First note from (8) and (9) that $\dot{x}(s) = q(p(s), x(s))$.
+
+Let us hereafter write $q(\cdot) = (q^1(\cdot), \ldots, q^n(\cdot))$. We then compute for $i = 1, \ldots, n$:
+
+$$\frac{\partial H}{\partial x_i}(p, x) = \sum_{k=1}^n p_k \frac{\partial q^k}{\partial x_i}(p, x) - \frac{\partial L}{\partial q_k}(q(p, x), x) \frac{\partial q^k}{\partial x_i}(p, x) - \frac{\partial L}{\partial x_i}(q(p, x), x)$$
+
+$$= -\frac{\partial L}{\partial x_i}(q(p, x), x) \text{ by (9),}$$
+
+and
+
+$$\frac{\partial H}{\partial p_i}(p, x) = q^i(p, x) + \sum_{k=1}^n p_k \frac{\partial q^k}{\partial p_i}(p, x) - \frac{\partial L}{\partial q_k}(q(p, x), x) \frac{\partial q^k}{\partial p_i}(p, x)$$
+
+$$= q^i(p, x), \quad \text{again by (9).}$$
+
+Thus
+
+$$\frac{\partial H}{\partial p_i}(p(s), x(s)) = q^i(p(s), x(s)) = \dot{x}^i(s);$$
+
+and likewise
+
+$$\frac{\partial H}{\partial x_i}(p(s), x(s)) = -\frac{\partial L}{\partial x_i}(q(p(s), x(s)), x(s)) = -\frac{\partial L}{\partial x_i}(x(s), x(s))$$
+
+$$= -\frac{d}{ds}\left(\frac{\partial L}{\partial q_i}(x(s), x(s))\right) \text{ according to (4)}$$
+
+$$= -\dot{p}^i(s).$$
+
+Finally, observe
+
+$$\frac{d}{ds} H(p(s), x(s)) = \sum_{i=1}^n \frac{\partial H}{\partial p_i} \dot{p}^i + \frac{\partial H}{\partial x_i} \dot{x}^i$$
+
+$$= \sum_{i=1}^n \frac{\partial H}{\partial p_i} \left(-\frac{\partial H}{\partial x_i}\right) + \frac{\partial H}{\partial x_i} \left(\frac{\partial H}{\partial p_i}\right) = 0.$$
+\end{proof}
+
+\begin{remark}[Notational remark on classical mechanics]
+\label{rem:arnold-mechanics-notation}
+\dcref{ch3:3.3.1-rem-3}
+\group{Calculus of Variations}
+See \cite{Arnold1986}, Chapter 9, for more on Hamilton's ODE and Hamilton--Jacobi PDE in classical mechanics. We are employing here different notation than is customary in mechanics: our notation is better overall for PDE theory. $\square$
+\end{remark}
+
+\subsection{Legendre Transform, Hopf--Lax Formula}
+\label{sec:legendre-transform-hopf-lax}
+
+Now let us try to find a connection between the Hamilton--Jacobi PDE and the calculus of variations problem (2)--(4). To simplify further, we also drop the $x$-dependence in the Hamiltonian, so that afterwards $H = H(p)$. We start by reexamining the definition of the Hamiltonian in \S3.3.1.
+
+\textbf{a. Legendre transform.}
+
+We hereafter suppose the Lagrangian $L : \R^n \to \R$ satisfies these conditions:
+
+(11) \qquad the mapping $q \mapsto L(q)$ is convex
+
+and
+
+(12) \qquad $\lim_{q \to \infty} \frac{L(q)}{|q|} = +\infty$.
+
+The convexity implies $L$ is continuous.
+
+\begin{definition}[Legendre transform]
+\label{def:legendre-transform}
+\dcref{ch3:3.3.2-def-1}
+\group{Calculus of Variations}
+The Legendre transform of $L$ is
+
+(13) \qquad $L^*(p) = \sup_{q \in \R^n} \{p \cdot q - L(q)\}$ \qquad $(p \in \R^n)$.
+\end{definition}
+
+\textbf{Motivation for Legendre transform.} Why do we make this definition? For some insight let us note in view of (12) that the ``sup'' in (13) is really a ``max''; that is, there exists some $q^* \in \R^n$ for which
+$$L^*(p) = p \cdot q^* - L(q^*)$$
+and the mapping $q \mapsto p \cdot q - L(q)$ has a maximum at $q = q^*$. But then $p = DL(q^*)$, provided $L$ is differentiable at $q^*$. Hence the equation $p = DL(q)$ is solvable (although perhaps not uniquely) for $q$ in terms of $p$, $q^* = q(p)$. Therefore
+$$L^*(p) = p \cdot q(p) - L(q(p)).$$
+
+However, this is almost exactly the definition of the Hamiltonian $H$ associated with $L$ in \S3.3.1 (where, recall, we are now assuming the variable $x$ does not appear). We consequently henceforth write
+
+(14) \qquad $H = L^*$.
+
+Thus (13) tells us how to obtain the Hamiltonian $H$ from the Lagrangian $L$.
+$\square$
+
+Now we ask the converse question: given $H$, how do we compute $L$?
+
+\begin{theorem}[Convex duality of Hamiltonian and Lagrangian]
+\label{thm:convex-duality-hamiltonian-lagrangian}
+\dcref{ch3:3.3-thm-3}
+\group{Calculus of Variations}
+\uses{def:legendre-transform}
+Assume $L$ satisfies (11), (12) and define $H$ by (13), (14).
+
+(i) Then
+
+the mapping $p \mapsto H(p)$ is convex
+
+and
+
+$$\lim_{|p| \to \infty} \frac{H(p)}{|p|} = +\infty.$$
+
+(ii) Furthermore
+
+(15) $$L = H^*.$$
+\end{theorem}
+
+\begin{remark}[Dual convex functions]
+\label{rem:dual-convex-functions}
+\dcref{ch3:3.3.2-rem-1}
+\group{Calculus of Variations}
+\uses{thm:convex-duality-hamiltonian-lagrangian}
+Thus $H$ is the Legendre transform of $L$, and vice versa:
+$$L = H^*, \quad H = L^*.$$
+We say $H$ and $L$ are \textit{dual convex functions}. $\square$
+\end{remark}
+
+\begin{proof}
+1. For each fixed $q$, the function $p \mapsto p \cdot q - L(q)$ is linear, and consequently the mapping
+$$p \mapsto H(p) = L^*(p) = \sup_{q \in \R^n} \{p \cdot q - L(q)\}$$
+
+is convex. Indeed, if $0 \leq \tau \leq 1$, $p, \bar{p} \in \R^n$,
+$$H(\tau p + (1-\tau)\bar{p}) = \sup_q \{(\tau p + (1-\tau)\bar{p}) \cdot q - L(q)\}$$
+
+$$\leq \tau \sup_q \{p \cdot q - L(q)\}$$
+
+$$+ (1-\tau) \sup_q \{\bar{p} \cdot q - L(q)\}$$
+
+$$= \tau H(p) + (1-\tau) H(\bar{p}).$$
+
+2. Fix any $\lambda > 0$, $p \neq 0$. Then
+$$H(p) = \sup_{q \in \R^n} \{p \cdot q - L(q)\}$$
+
+$$\geq \lambda |p| - L\left(\lambda \frac{p}{|p|}\right) \quad \left(q = \lambda \frac{p}{|p|}\right)$$
+
+$$\geq \lambda |p| - \max_{B(0,\lambda)} L.$$
+
+Thus $\liminf_{|p| \to \infty} \frac{H(p)}{|p|} \geq \lambda$ for all $\lambda > 0$.
+
+3. In view of (14)
+$$H(p) + L(q) \geq p \cdot q$$
+for all $p,q \in \R^n$, and consequently
+$$L(q) \geq \sup_{p \in \R^n} \{p \cdot q - H(p)\} = H^*(q).$$
+On the other hand
+$$(16) \quad H^*(q) = \sup_{p \in \R^n} \left\{p \cdot q - \sup_{r \in \R^n}\{p \cdot r - L(r)\}\right\} = \sup_{p \in \R^n} \inf_{r \in \R^n} \{p \cdot (q-r) + L(r)\}.$$
+Now since $q \mapsto L(q)$ is convex, according to \S B.1 there exists $s \in \R^n$ such that
+$$L(r) \geq L(q) + s \cdot (r-q) \quad (r \in \R^n).$$
+(If $L$ is differentiable at $q$, take $s = DL(q)$.) Taking $p = s$ in (16), we compute
+$$H^*(q) \geq \inf_{r \in \R^n} \{s \cdot (q-r) + L(r)\} = L(q).$$
+\end{proof}
+
+\textbf{b. Hopf--Lax formula.}
+
+Let us now return to the initial-value problem (1). Recall that the calculus of variations problem with Lagrangian $L$, discussed in \S 3.3.1, led to Hamilton's ODE for the associated Hamiltonian $H$. Since these ODE are also the characteristic equations of the Hamilton--Jacobi PDE, we conjecture there is probably a direct connection between this PDE and the calculus of variations.
+
+So if $x \in \R^n$ and $t > 0$ are given, we should presumably try to minimize the action
+$$\int_0^t L(\dot{\mathbf{w}}(s))\,ds$$
+over functions $\mathbf{w} : [0,t] \to \R^n$ satisfying $\mathbf{w}(t) = x$. But what should we take for $\mathbf{w}(0)$? As we must somehow take into account the initial condition for our PDE, let us try modifying the action to include the function $g$ evaluated at $\mathbf{w}(0)$:
+$$\int_0^t L(\dot{\mathbf{w}}(s))\,ds + g(\mathbf{w}(0)).$$
+
+Next let us construct a candidate for a solution to the initial-value problem (1), in terms of a variational principle entailing this modified action. We accordingly set
+
+$$(17) \quad u(x,t) := \inf \left\{ \int_0^t L(\dot{\mathbf{w}}(s)) \, ds + g(y) \mid \mathbf{w}(0) = y, \mathbf{w}(t) = x \right\},$$
+
+the infimum taken over all $C^1$ functions $\mathbf{w}(\cdot)$ with $\mathbf{w}(t) = x$. (Better justification for this guess will be provided much later, in Chapter 10.)
+
+We propose now to investigate the sense in which $u$ so defined by (17) actually solves the initial-value problem for the Hamilton-Jacobi PDE:
+
+$$(18) \quad \begin{cases} u_t + H(Du) = 0 & \text{in } \R^n \times (0,\infty) \\ u = g & \text{on } \R^n \times \{t = 0\}. \end{cases}$$
+
+Recall we are assuming $H$ is smooth,
+
+$$(19) \quad \begin{cases} H \text{ is convex and} \\ \lim_{|p| \to \infty} \frac{H(p)}{|p|} = +\infty. \end{cases}$$
+
+We henceforth suppose also
+
+$$(20) \quad g : \R^n \to \R \quad \text{is Lipschitz continuous;}$$
+
+this means $\text{Lip}(g) := \sup_{x,y \in \R^n} \left\{ \frac{|g(x) - g(y)|}{|x - y|} \right\} < \infty.$
+
+First we note formula (17) can be simplified:
+
+\begin{theorem}[Hopf--Lax formula]
+\label{thm:hopf-lax-formula-derivation}
+\dcref{ch3:3.3-thm-4}
+\group{Hamilton-Jacobi Equations}
+\uses{thm:convex-duality-hamiltonian-lagrangian}
+If $x \in \R^n$ and $t > 0$, then the solution $u = u(x,t)$ of the minimization problem (17) is
+
+$$(21) \quad u(x,t) = \min_{y \in \R^n} \left\{ tL \left( \frac{x-y}{t} \right) + g(y) \right\}.$$
+\end{theorem}
+
+\begin{definition}[Hopf--Lax formula]
+\label{def:hopf-lax-formula}
+\dcref{ch3:3.3.2-def-2}
+\group{Hamilton-Jacobi Equations}
+\uses{thm:hopf-lax-formula-derivation}
+We call the expression on the right hand side of (21) the Hopf--Lax formula.
+\end{definition}
+
+\begin{proof}
+1. Fix any $y \in \R^n$ and define $\mathbf{w}(s) := y + \frac{s}{t}(x-y)$ $(0 \leq s \leq t)$. Then the definition (17) of $u$ implies
+
+$$u(x,t) \leq \int_0^t L(\dot{\mathbf{w}}(s)) \, ds + g(y) = tL \left( \frac{x-y}{t} \right) + g(y),$$
+
+and so
+$$u(x,t) \le \inf_{y \in \R^n} \left\{ tL\left(\frac{x-y}{t}\right) + g(y) \right\}.$$
+
+2. On the other hand, if $\mathbf{w}(\cdot)$ is any $C^1$ function satisfying $\mathbf{w}(t) = x$, we have
+$$L\left(\frac{1}{t}\int_0^t \dot{\mathbf{w}}(s) ds\right) \le \frac{1}{t}\int_0^t L(\dot{\mathbf{w}}(s)) ds$$
+by Jensen's inequality (\S B.1). Thus if we write $y = \mathbf{w}(0)$, we find
+$$tL\left(\frac{x-y}{t}\right) + g(y) \le \int_0^t L(\dot{\mathbf{w}}(s)) ds + g(y);$$
+
+and consequently
+$$\inf_{y \in \R^n} \left\{ tL\left(\frac{x-y}{t}\right) + g(y) \right\} \le u(x,t).$$
+
+3. We have so far shown
+$$u(x,t) = \inf_{y \in \R^n} \left\{ tL\left(\frac{x-y}{t}\right) + g(y) \right\},$$
+and leave it as an exercise to prove the infimum above is really a minimum.
+\end{proof}
+
+We now commence a study of various properties of the function $u$ defined by the Hopf-Lax formula (21). Our ultimate goal is showing this formula provides a reasonable weak solution of the initial-value problem (18) for the Hamilton-Jacobi equation.
+
+First, we record some preliminary observations.
+
+\begin{lemma}[A functional identity]
+\label{lem:hopf-lax-functional-identity}
+\dcref{ch3:3.3-lem-1}
+\group{Hamilton-Jacobi Equations}
+\uses{thm:hopf-lax-formula-derivation}
+For each $x \in \R^n$ and $0 \le s < t$, we have
+
+(22) \hspace{1em} $u(x,t) = \min_{y \in \R^n} \left\{ (t-s)L\left(\frac{x-y}{t-s}\right) + u(y,s) \right\}$.
+
+In other words, to compute $u(\cdot,t)$, we can calculate $u$ at time $s$ and then use $u(\cdot, s)$ as the initial condition on the remaining time interval $[s,t]$.
+\end{lemma}
+
+\begin{proof}
+1. Fix $y \in \R^n$, $0 < s < t$ and choose $z \in \R^n$ so that
+
+(23) \hspace{1em} $u(y,s) = sL\left(\frac{y-z}{s}\right) + g(z)$.
+
+Now since $L$ is convex and $\frac{x-z}{t} = \left(1-\frac{s}{t}\right)\frac{x-y}{t-s} + \frac{s}{t}\frac{y-z}{s}$, we have
+
+$$L\left(\frac{x-z}{t}\right) \le \left(1-\frac{s}{t}\right)L\left(\frac{x-y}{t-s}\right) + \frac{s}{t}L\left(\frac{y-z}{s}\right).$$
+
+Thus
+
+$$u(x,t) \le tL\left(\frac{x-z}{t}\right) + g(z) \le (t-s)L\left(\frac{x-y}{t-s}\right) + sL\left(\frac{y-z}{s}\right) + g(z)$$
+$$= (t-s)L\left(\frac{x-y}{t-s}\right) + u(y,s),$$
+
+by (23). This inequality is true for each $y \in \R^n$. Therefore, since $y \mapsto u(y,s)$ is continuous (according to \cref{lem:hopf-lax-lipschitz-continuity} below), we have
+
+$$(24) \quad u(x,t) \le \min_{y \in \R^n}\left\{(t-s)L\left(\frac{x-y}{t-s}\right) + u(y,s)\right\}.$$
+
+2. Now choose $w$ such that
+
+$$(25) \quad u(x,t) = tL\left(\frac{x-w}{t}\right) + g(w),$$
+
+and set $y := \frac{s}{t}x + \left(1-\frac{s}{t}\right)w$. Then $\frac{x-y}{t-s} = \frac{x-w}{t}$. Consequently
+
+$$(t-s)L\left(\frac{x-y}{t-s}\right) + u(y,s)$$
+$$\le (t-s)L\left(\frac{x-w}{t}\right) + sL\left(\frac{y-w}{s}\right) + g(w)$$
+$$= tL\left(\frac{x-w}{t}\right) + g(w) = u(x,t),$$
+
+by (25). Hence
+
+$$(26) \quad \min_{y \in \R^n}\left\{(t-s)L\left(\frac{x-y}{t-s}\right) + u(y,s)\right\} \le u(x,t).$$
+\end{proof}
+
+\begin{lemma}[Lipschitz continuity]
+\label{lem:hopf-lax-lipschitz-continuity}
+\dcref{ch3:3.3-lem-2}
+\group{Hamilton-Jacobi Equations}
+\uses{thm:hopf-lax-formula-derivation}
+The function $u$ is Lipschitz continuous in $\R^n \times [0,\infty)$, and
+
+$$u = g \text{ on } \R^n \times \{t=0\}.$$
+\end{lemma}
+
+\begin{proof}
+1. Fix $t > 0, x, \hat{x} \in \R^n$. Choose $y \in \R^n$ such that
+
+$$(27) \quad tL\left(\frac{x-y}{t}\right) + g(y) = u(x,t).$$
+
+Then
+
+$$u(\hat{x}, t) - u(x, t) = \inf_z \left\{tL\left(\frac{\hat{x} - z}{t}\right) + g(z)\right\} - tL\left(\frac{x-y}{t}\right) - g(y)$$
+$$\leq g(\hat{x} - x + y) - g(y) \leq \text{Lip}(g)|\hat{x} - x|.$$
+
+Hence
+
+$$u(\hat{x},t) - u(x,t) \leq \text{Lip}(g)|\hat{x} - x|;$$
+
+and, interchanging the roles of $\hat{x}$ and $x$, we find
+
+$$(28) \quad |u(x,t) - u(\hat{x},t)| \leq \text{Lip}(g)|x - \hat{x}|.$$
+
+2. Now select $x \in \R^n, t > 0$. Choosing $y = x$ in (21), we discover
+
+$$(29) \quad u(x,t) \leq tL(0) + g(x).$$
+
+Furthermore,
+
+$$u(x,t) = \min_{y \in \R^n} \left\{tL\left(\frac{x-y}{t}\right) + g(y)\right\}$$
+$$\geq g(x) + \min_{y \in \R^n} \left\{-\text{Lip}(g)|x - y| + tL\left(\frac{x-y}{t}\right)\right\}$$
+$$= g(x) - t\max_{z \in \R^n} \{\text{Lip}(g)|z| - L(z)\} \quad \left(z = \frac{x-y}{t}\right)$$
+$$= g(x) - t \max_{w \in B(0,\text{Lip}(g))} \max_{z \in \R^n} \{w \cdot z - L(z)\}$$
+$$= g(x) - t \max_{B(0,\text{Lip}(g))} H.$$
+
+This inequality and (29) imply
+
+$$|u(x,t) - g(x)| \leq Ct$$
+
+for
+
+$$(30) \quad C := \max\left(|L(0)|, \max_{B(0,\text{Lip}(g))} |H|\right).$$
+
+3. Finally select $x \in \R^n, 0 < \hat{t} < t$. Then $\text{Lip}(u(\cdot,t)) \leq \text{Lip}(g)$ by (28) above. Consequently \cref{lem:hopf-lax-functional-identity} and calculations like those employed in step 2 above imply
+
+$$|u(x,t) - u(x,\hat{t})| \leq C|t - \hat{t}|$$
+
+for the constant $C$ defined by (30).
+\end{proof}
+
+Now Rademacher's Theorem (which we will prove later, in \S5.8.3) asserts that a Lipschitz function is differentiable almost everywhere. Consequently in view of \cref{lem:hopf-lax-lipschitz-continuity} our function $u$ defined by the Hopf-Lax formula (21) is differentiable for a.e. $(x,t) \in \R^n \times (0,\infty)$. The next theorem asserts $u$ in fact solves the Hamilton--Jacobi PDE wherever $u$ is differentiable.
+
+\begin{theorem}[Solving the Hamilton--Jacobi equation]
+\label{thm:hopf-lax-solves-hj-equation}
+\dcref{ch3:3.3-thm-5}
+\group{Hamilton-Jacobi Equations}
+\uses{thm:hopf-lax-formula-derivation,lem:hopf-lax-functional-identity}
+Suppose $x \in \R^n$, $t > 0$, and $u$ defined by the Hopf-Lax formula (21) is differentiable at a point $(x,t) \in \R^n \times (0,\infty)$. Then
+
+$$u_t(x,t) + H(Du(x,t)) = 0.$$
+\end{theorem}
+
+\begin{proof}
+1. Fix $q \in \R^n$, $h > 0$. Owing to \cref{lem:hopf-lax-functional-identity},
+
+$$u(x + hq, t + h) = \min_{y \in \R^n} \left\{ hL\left(\frac{x + hq - y}{h}\right) + u(y,t) \right\}$$
+$$\leq hL(q) + u(x,t).$$
+
+Hence
+
+$$\frac{u(x + hq, t + h) - u(x,t)}{h} \leq L(q).$$
+
+Let $h \to 0^+$, to compute
+
+$$q \cdot Du(x,t) + u_t(x,t) \leq L(q).$$
+
+This inequality is valid for all $q \in \R^n$, and so
+
+$$(31) \quad u_t(x,t) + H(Du(x,t)) = u_t(x,t) + \max_{q \in \R^n} \{q \cdot Du(x,t) - L(q)\} \leq 0.$$
+
+The first equality holds since $H = L^*$.
+
+2. Now choose $z$ such that $u(x,t) = tL\left(\frac{x-z}{t}\right) + g(z)$. Fix $h > 0$ and set $s = t - h$, $y = \frac{s}{t}x + \left(1 - \frac{s}{t}\right)z$. Then $\frac{x-z}{t} = \frac{y-z}{s}$, and thus
+
+$$u(x,t) - u(y,s) \geq tL\left(\frac{x-z}{t}\right) + g(z) - \left[sL\left(\frac{y-z}{s}\right) + g(z)\right]$$
+$$= (t-s)L\left(\frac{x-z}{t}\right).$$
+
+That is,
+
+$$\frac{u(x,t) - u\left(\left(1-\frac{h}{t}\right)x + \frac{h}{t}z, t-h\right)}{h} \geq L\left(\frac{x-z}{t}\right).$$
+
+Let $h \to 0^+$ to compute
+
+$$\frac{x - z}{t} \cdot Du(x,t) + u_t(x,t) \geq L\left(\frac{x-z}{t}\right).$$
+
+Consequently
+
+$$u_t(x,t) + H(Du(x,t)) = u_t(x,t) + \max_{q \in \R^n} \{q \cdot Du(x,t) - L(q)\}$$
+$$\geq u_t(x,t) + \frac{x - z}{t} \cdot Du(x,t) - L\left(\frac{x-z}{t}\right)$$
+$$\geq 0.$$
+
+This inequality and (31) complete the proof.
+\end{proof}
+
+We summarize:
+
+\begin{theorem}[Hopf--Lax formula as solution]
+\label{thm:hopf-lax-formula-as-solution}
+\dcref{ch3:3.3-thm-6}
+\group{Hamilton-Jacobi Equations}
+\uses{thm:hopf-lax-solves-hj-equation,lem:hopf-lax-lipschitz-continuity}
+The function $u$ defined by the Hopf-Lax formula (21) is Lipschitz continuous, is differentiable a.e. in $\R^n \times (0,\infty)$, and solves the initial-value problem
+
+$$(32) \quad \begin{cases} u_t + H(Du) = 0 & \text{a.e. in } \R^n \times (0,\infty) \\ u = g & \text{on } \R^n \times \{t = 0\}. \end{cases}$$
+\end{theorem}
+
+\subsection{Weak Solutions, Uniqueness}
+\label{sec:hj-weak-solutions-uniqueness}
+
+\textbf{a. Semiconcavity.}
+
+In view of \cref{thm:hopf-lax-formula-as-solution} above it may seem reasonable to define a weak solution of the initial-value problem (18) to be a Lipschitz function which agrees with $g$ on $\R^n \times \{t = 0\}$, and solves the PDE a.e. on $\R^n \times (0,\infty)$. However, this turns out to be an inadequate definition, \textit{as such weak solutions would not in general be unique}.
+
+\begin{example}[Nonuniqueness of Lipschitz a.e.\ solutions]
+\label{ex:nonuniqueness-weak-solutions-hj}
+\dcref{ch3:3.3.3-ex-1}
+\group{Hamilton-Jacobi Equations}
+Consider the initial-value problem
+
+$$(33) \quad \begin{cases} u_t + |u_x|^2 = 0 & \text{in } \R \times (0,\infty) \\ u = 0 & \text{on } \R \times \{t = 0\}. \end{cases}$$
+
+One obvious solution is
+
+$$u_1(x,t) \equiv 0.$$
+
+However the function
+
+$$u_2(x,t) := \begin{cases} 0 & \text{if } |x| \geq t \\ x - t & \text{if } 0 \leq x \leq t \\ -x - t & \text{if } -t \leq x \leq 0 \end{cases}$$
+
+is Lipschitz continuous and also solves the PDE a.e. (everywhere, in fact, except on the lines $x = 0, \pm t$). It is easy to see that actually there are infinitely many Lipschitz functions satisfying (33). $\square$
+\end{example}
+
+This example shows we must presumably require more of a weak solution than merely that it satisfy the PDE a.e. We will look to the Hopf--Lax formula (21) for a further clue as to what is needed to ensure uniqueness. The following lemma demonstrates that $u$ inherits a kind of ``one-sided'' second-derivative estimate from the initial function $g$.
+
+\begin{lemma}[Semiconcavity]
+\label{lem:hopf-lax-semiconcavity-from-data}
+\dcref{ch3:3.3-lem-3}
+\group{Hamilton-Jacobi Equations}
+\uses{def:semiconcave-function,thm:hopf-lax-formula-derivation}
+Suppose there exists a constant $C$ such that
+$$(34) \quad g(x+z) - 2g(x) + g(x-z) \leq C|z|^2$$
+for all $x, z \in \R^n$. Define $u$ by the Hopf--Lax formula (21). Then
+$$u(x+z,t) - 2u(x,t) + u(x-z,t) \leq C|z|^2$$
+for all $x, z \in \R^n$, $t > 0$.
+\end{lemma}
+
+\begin{definition}[Semiconcave function]
+\label{def:semiconcave-function}
+\dcref{ch3:3.3.3-def-1}
+\group{Hamilton-Jacobi Equations}
+We say $g$ is \textit{semiconcave} provided (34) holds.
+\end{definition}
+
+\begin{remark}[Characterizations of semiconcavity]
+\label{rem:semiconcave-characterization}
+\dcref{ch3:3.3.3-rem-1}
+\group{Hamilton-Jacobi Equations}
+\uses{def:semiconcave-function}
+It is easy to check (34) is valid if $g$ is $C^2$ and $\sup_{\R^n} |D^2 g| < \infty$. Note that $g$ is semiconcave if and only if the mapping $x \mapsto g(x) - \frac{C}{2}|x|^2$ is concave for some constant $C$. $\square$
+\end{remark}
+
+\begin{proof}[Proof of \cref{lem:hopf-lax-semiconcavity-from-data}]
+Choose $y \in \R^n$ so that $u(x,t) = tL\left(\frac{x-y}{t}\right) + g(y)$. Then, putting $y+z$ and $y-z$ in the Hopf--Lax formulas for $u(x+z,t)$ and $u(x-z,t)$, we find
+$$u(x+z,t) - 2u(x,t) + u(x-z,t)$$
+$$\leq \left[tL\left(\frac{x-y}{t}\right) + g(y+z)\right] - 2\left[tL\left(\frac{x-y}{t}\right) + g(y)\right] + \left[tL\left(\frac{x-y}{t}\right) + g(y-z)\right]$$
+$$= g(y+z) - 2g(y) + g(y-z)$$
+$$\leq C|z|^2, \quad \text{by (34).}$$
+\end{proof}
+
+As a semiconcavity condition for $u$ will turn out to be important, we pause to identify some other circumstances under which it is valid. We will no longer assume $g$ to be semiconcave, but will suppose the Hamiltonian $H$ to be uniformly convex.
+
+\begin{definition}[Uniformly convex function]
+\label{def:uniformly-convex-hamiltonian}
+\dcref{ch3:3.3.3-def-2}
+\group{Hamilton-Jacobi Equations}
+A $C^2$ convex function $H : \R^n \to \R$ is called uniformly convex (with constant $\theta > 0$) if
+
+$$(35) \quad \sum_{i,j=1}^{n} H_{p_i p_j}(p)\xi_i \xi_j \geq \theta|\xi|^2 \quad \text{for all } p,\xi \in \R^n.$$
+\end{definition}
+
+We now prove that even if $g$ is not semiconcave, the uniform convexity of $H$ forces $u$ to become semiconcave for times $t > 0$: this is a kind of mild regularizing effect for the Hopf-Lax solution of the initial-value problem (18).
+
+\begin{lemma}[Semiconcavity again]
+\label{lem:hopf-lax-semiconcavity-uniform-convexity}
+\dcref{ch3:3.3-lem-4}
+\group{Hamilton-Jacobi Equations}
+\uses{def:uniformly-convex-hamiltonian,thm:hopf-lax-formula-derivation}
+Suppose that $H$ is uniformly convex (with constant $\theta$) and $u$ is defined by the Hopf-Lax formula (21). Then
+
+$$u(x+z,t) - 2u(x,t) + u(x-z,t) \leq \frac{1}{\theta t}|z|^2$$
+
+for all $x, z \in \R^n, t > 0.$
+\end{lemma}
+
+\begin{proof}
+1. We note first using Taylor's formula that (35) implies
+
+$$(36) \quad H\left(\frac{p_1 + p_2}{2}\right) \leq \frac{1}{2}H(p_1) + \frac{1}{2}H(p_2) - \frac{\theta}{8}|p_1 - p_2|^2.$$
+
+Next we claim that for the Lagrangian $L$ we have the estimate
+
+$$(37) \quad \frac{1}{2}L(q_1) + \frac{1}{2}L(q_2) \leq L\left(\frac{q_1+q_2}{2}\right) + \frac{1}{8\theta}|q_1 - q_2|^2$$
+
+for all $q_1, q_2 \in \R^n$. Verification is left as an exercise.
+
+2. Now choose $y$ so that $u(x,t) = tL\left(\frac{x-y}{t}\right) + g(y)$. Then using the same value of $y$ in the Hopf-Lax formulas for $u(x+z,t)$ and $u(x-z,t)$, we calculate
+
+$$u(x+z,t) - 2u(x,t) + u(x-z,t)$$
+
+$$\leq \left[tL\left(\frac{x+z-y}{t}\right) + g(y)\right] - 2\left[tL\left(\frac{x-y}{t}\right) + g(y)\right] + \left[tL\left(\frac{x-z-y}{t}\right) + g(y)\right]$$
+
+$$= 2t\left[\frac{1}{2}L\left(\frac{x+z-y}{t}\right) + \frac{1}{2}L\left(\frac{x-z-y}{t}\right) - L\left(\frac{x-y}{t}\right)\right]$$
+
+$$\leq 2t \cdot \frac{1}{8\theta}\left|\frac{2z}{t}\right| \leq \frac{1}{\theta t}|z|^2,$$
+
+the next-to-last inequality following from (37).
+\end{proof}
+
+\textbf{b. Weak solutions, uniqueness.}
+
+In this section we show that semiconcavity conditions of the sorts discovered for the Hopf-Lax solution $u$ in \cref{lem:hopf-lax-semiconcavity-from-data,lem:hopf-lax-semiconcavity-uniform-convexity} can be utilized as uniqueness criteria.
+
+\begin{definition}[Weak solution of the Hamilton--Jacobi initial-value problem]
+\label{def:weak-solution-hamilton-jacobi}
+\dcref{ch3:3.3.3-def-3}
+\group{Hamilton-Jacobi Equations}
+\uses{def:semiconcave-function}
+We say that a Lipschitz continuous function $u : \R^n \times [0,\infty) \to \R$ is a weak solution of the initial-value problem:
+
+$$(38) \quad \begin{cases} u_t + H(Du) = 0 & \text{in } \R^n \times (0,\infty) \\ u = g & \text{on } \R^n \times \{t = 0\} \end{cases}$$
+
+provided
+\begin{enumerate}
+\item[(a)] $u(x,0) = g(x)$ $(x \in \R^n)$,
+\item[(b)] $u_t(x,t) + H(Du(x,t)) = 0$ \textit{for a.e.} $(x,t) \in \R^n \times (0,\infty)$,
+\end{enumerate}
+and
+\begin{enumerate}
+\item[(c)] $u(x+z,t) - 2u(x,t) + u(x-z,t) \leq C \left(1 + \frac{1}{t}\right)|z|^2$
+\end{enumerate}
+for some constant $C \geq 0$ and all $x, z \in \R^n, t > 0$.
+\end{definition}
+
+Next we prove that a weak solution of (38) is unique, the key point being that this uniqueness assertion follows from the \textit{inequality condition} (c).
+
+\begin{theorem}[Uniqueness of weak solutions]
+\label{thm:uniqueness-weak-solutions-hj}
+\dcref{ch3:3.3-thm-7}
+\group{Hamilton-Jacobi Equations}
+\uses{def:weak-solution-hamilton-jacobi}
+Assume $H$ is $C^2$ and satisfies (19), and $g$ satisfies (20). Then there exists at most one weak solution of the initial-value problem (38).
+\end{theorem}
+
+\begin{proof}
+$^*$Omit on first reading.
+
+1. Suppose that $u$ and $\tilde{u}$ are two weak solutions of (38) and write $w := u - \tilde{u}$.
+
+Observe now at any point $(y,s)$ where both $u$ and $\tilde{u}$ are differentiable and solve our PDE, we have
+
+$$w_t(y,s) = u_t(y,s) - \tilde{u}_t(y,s)$$
+$$= -H(Du(y,s)) + H(D\tilde{u}(y,s))$$
+$$= -\int_0^1 \frac{d}{dr} H(rDu(y,s) + (1-r)D\tilde{u}(y,s)) \, dr$$
+$$= -\int_0^1 DH(rDu(y,s) + (1-r)D\tilde{u}(y,s)) \, dr \cdot (Du(y,s) - D\tilde{u}(y,s))$$
+$$=: -b(y,s) \cdot Dw(y,s).$$
+
+Consequently
+
+$$(39) \quad w_t + b \cdot Dw = 0 \quad \text{a.e.}$$
+
+2. Write $v := \phi(w) \geq 0$, where $\phi : \R \to [0, \infty)$ is a smooth function to be selected later. We multiply (39) by $\phi'(w)$ to discover
+
+(40)
+$$v_t + b \cdot Dv = 0 \quad \text{a.e.}$$
+
+3. Now choose $\varepsilon > 0$ and define $u^\varepsilon := \eta_\varepsilon * u, \tilde{u}^\varepsilon := \eta_\varepsilon * \tilde{u}$, where $\eta_\varepsilon$ is the standard mollifier in the $x$ and $t$ variables. Then according to \S C.4
+
+(41)
+$$|Du^\varepsilon| \leq \text{Lip}(u), \quad |D\tilde{u}^\varepsilon| \leq \text{Lip}(\tilde{u}),$$
+
+and
+
+(42)
+$$Du^\varepsilon \to Du, \quad D\tilde{u}^\varepsilon \to D\tilde{u} \quad \text{a.e., as } \varepsilon \to 0.$$
+
+Furthermore inequality (c) in the definition of weak solution implies
+
+(43)
+$$D^2 u^\varepsilon, D^2 \tilde{u}^\varepsilon \leq C \left(1 + \frac{1}{s}\right) I$$
+
+for an appropriate constant $C$ and all $\varepsilon > 0, y \in \R^n, s > 2\varepsilon$. Verification is left as an exercise.
+
+4. Write
+
+(44)
+$$b_\varepsilon(y,s) := \int_0^1 DH(rDu^\varepsilon(y,s) + (1-r)D\tilde{u}^\varepsilon(y,s)) \, dr.$$
+
+Then (40) becomes
+
+$$v_t + b_\varepsilon \cdot Dv = (b_\varepsilon - b) \cdot Dv \quad \text{a.e.};$$
+
+hence
+
+(45)
+$$v_t + \text{div}(vb_\varepsilon) = (\text{div} b_\varepsilon)v + (b_\varepsilon - b) \cdot Dv \quad \text{a.e.}$$
+
+5. Now
+
+$$\text{div} b_\varepsilon = \int_0^1 \sum_{k,l=1}^n H_{p_k p_l}(rDu^\varepsilon + (1-r)D\tilde{u}^\varepsilon)(ru^\varepsilon_{x_i x_k} + (1-r)\tilde{u}^\varepsilon_{x_i x_k}) \, dr$$
+
+(46)
+$$\leq C \left(1 + \frac{1}{s}\right)$$
+
+for some constant $C$, in view of (41), (43). Here we note that $H$ convex implies $D^2H \geq 0$.
+
+6. Fix $x_0 \in \R^n$, $t_0 > 0$, and set
+
+(47) \quad $R := \max\{|DH(p)| \mid |p| \leq \max(\text{Lip}(u), \text{Lip}(\bar{u}))\}$.
+
+Define also the cone
+
+$$C := \{(x,t) \mid 0 \leq t \leq t_0, |x - x_0| \leq R(t_0 - t)\}.$$
+
+Next write
+
+$$e(t) = \int_{B(x_0, R(t_0-t))} v(x,t)\,dx$$
+
+and compute for a.e. $t > 0$:
+
+$$\dot{e}(t) = \int_{B(x_0,R(t_0-t))} v_t\,dx - R \int_{\partial B(x_0, R(t_0-t))} v\,dS$$
+
+$$= \int_{B(x_0,R(t_0-t))} -\text{div}(\mathbf{b}e) + (\text{div}\,\mathbf{b}_\varepsilon)v + (\mathbf{b}_\varepsilon - \mathbf{b}) \cdot Dv\,dx$$
+
+$$- R \int_{\partial B(x_0, R(t_0-t))} v\,dS \quad \text{by (45)}$$
+
+$$= - \int_{\partial B(x_0, R(t_0-t))} v(\mathbf{b}_\varepsilon \cdot \nu + R)\,dS$$
+
+$$+ \int_{B(x_0, R(t_0-t))} (\text{div}\,\mathbf{b}_\varepsilon)v + (\mathbf{b}_\varepsilon - \mathbf{b}) \cdot Dv\,dx$$
+
+$$\leq \int_{B(x_0, R(t_0-t))} (\text{div}\,\mathbf{b}_\varepsilon)v + (\mathbf{b}_\varepsilon - \mathbf{b}) \cdot Dv\,dx \quad \text{by (41), (44)}$$
+
+$$\leq C\left(1 + \frac{1}{t}\right)e(t) + \int_{B(x_0, R(t_0-t))} (\mathbf{b}_\varepsilon - \mathbf{b}) \cdot Dv\,dx$$
+
+by (46). The last term on the right hand side goes to zero as $\varepsilon \to 0$, for a.e. $t_0 > 0$, according to (41), (42) and the Dominated Convergence Theorem. Thus
+
+(48) \quad $\dot{e}(t) \leq C\left(1 + \frac{1}{t}\right)e(t) \quad \text{for a.e.\ } 0 < t < t_0$.
+
+7. Fix $0 < \varepsilon < r < t$ and choose the function $\phi(z)$ to equal zero if
+
+$$|z| \leq \varepsilon[\text{Lip}(u) + \text{Lip}(\bar{u})]$$
+
+and to be positive otherwise. Since $u = \bar{u}$ on $\R^n \times \{t = 0\}$,
+
+$$v = \phi(w) = \phi(u - \bar{u}) = 0 \quad \text{at } \{t = \varepsilon\}.$$
+
+Thus $e(\varepsilon) = 0$. Consequently Gronwall's inequality (see \S B.2) and (48) imply
+$$e(r) \leq e(\varepsilon) e^{\int_r^\varepsilon C(1 + \frac{1}{s})ds} = 0.$$
+
+Hence
+$$|u - \tilde{u}| \leq \varepsilon[\text{Lip}(u) + \text{Lip}(\tilde{u})] \quad \text{on } B(x_0, R(t_0 - r)).$$
+
+This inequality is valid for all $\varepsilon > 0$, and so $u \equiv \tilde{u}$ in $B(x_0, R(t_0 - r))$. Therefore, in particular, $u(x_0, t_0) = \tilde{u}(x_0, t_0)$.
+\end{proof}
+
+In light of \cref{lem:hopf-lax-semiconcavity-from-data,lem:hopf-lax-semiconcavity-uniform-convexity,thm:uniqueness-weak-solutions-hj}, we have
+
+\begin{theorem}[Hopf--Lax formula as weak solution]
+\label{thm:hopf-lax-formula-weak-solution}
+\dcref{ch3:3.3-thm-8}
+\group{Hamilton-Jacobi Equations}
+\uses{lem:hopf-lax-semiconcavity-from-data,lem:hopf-lax-semiconcavity-uniform-convexity,thm:uniqueness-weak-solutions-hj}
+Suppose $H$ is $C^2$ and satisfies (19), and $g$ satisfies (20). If either $g$ is semiconcave or $H$ is uniformly convex, then
+$$u(x,t) = \min_{y \in \R^n} \left\{ tL\left(\frac{x - y}{t}\right) + g(y) \right\}$$
+is the unique weak solution of the initial-value problem (38) for the Hamilton-Jacobi equation.
+\end{theorem}
+
+\begin{example}[Explicit Hopf--Lax solution: $H(p) = \frac{1}{2}|p|^2$, $g = |x|$]
+\label{ex:hopf-lax-explicit-example-i}
+\dcref{ch3:3.3.3-ex-2}
+\group{Hamilton-Jacobi Equations}
+\uses{thm:hopf-lax-formula-weak-solution}
+Consider the initial-value problem:
+$$(49) \quad \begin{cases}
+u_t + \frac{1}{2}|Du|^2 = 0 & \text{in } \R^n \times (0, \infty) \\
+u = |x| & \text{on } \R^n \times \{t = 0\}.
+\end{cases}$$
+
+Here $H(p) = \frac{1}{2}|p|^2$ and so $L(q) = \frac{1}{2}|q|^2$. The Hopf-Lax formula for the unique, weak solution of (49) is
+
+$$(50) \quad u(x,t) = \min_{y \in \R^n} \left\{ \frac{|x - y|^2}{2t} + |y| \right\}.$$
+
+Assume $|x| > t$. Then
+$$D_y \left( \frac{|x - y|^2}{2t} + |y| \right) = \frac{y - x}{t} + \frac{y}{|y|} \quad (y \neq 0);$$
+
+and this expression equals zero if $x = y + \frac{y}{|y|}t$, $y = (|x| - t)\frac{x}{|x|} \neq 0$. Thus $u(x,t) = |x| - \frac{t}{2}$ if $|x| > t$. If $|x| \leq t$, the minimum in (50) is attained at $y = 0$. Consequently
+$$u(x,t) = \begin{cases}
+|x| - t/2 & \text{if } |x| \geq t \\
+\frac{|x|^2}{2t} & \text{if } |x| \leq t.
+\end{cases}$$
+Observe that the solution becomes semiconcave at times $t > 0$, even though the initial function $g(x) = |x|$ is not semiconcave. This accords with \cref{lem:hopf-lax-semiconcavity-uniform-convexity}.
+\end{example}
+
+\begin{example}[Explicit Hopf--Lax solution: $H(p) = \frac{1}{2}|p|^2$, $g = -|x|$]
+\label{ex:hopf-lax-explicit-example-ii}
+\dcref{ch3:3.3.3-ex-3}
+\group{Hamilton-Jacobi Equations}
+\uses{thm:hopf-lax-formula-weak-solution}
+We next examine the problem with reversed initial conditions:
+$$(51) \quad \begin{cases} u_t + \frac{1}{2}|Du|^2 = 0 & \text{in } \R^n \times (0,\infty) \\ u = -|x| & \text{on } \R^n \times \{t=0\}. \end{cases}$$
+Then
+$$u(x,t) = \min_{y \in \R^n} \left\{ \frac{|x-y|^2}{2t} - |y| \right\}.$$
+Now
+$$D_y \left( \frac{|x-y|^2}{2t} - |y| \right) = \frac{y-x}{t} - \frac{y}{|y|} \quad (y \neq 0),$$
+and this equals zero if $x = y - \frac{y}{|y|}t$, $y = (|x|+t)\frac{x}{|x|}$. Thus
+$$u(x,t) = -|x| - \frac{t}{2} \quad (x \in \R^n,\ t \geq 0).$$
+The initial function $g(x) = -|x|$ is semiconcave, and the solution remains so for times $t > 0$. $\square$
+\end{example}
+
+In Chapter 10 we will again study Hamilton--Jacobi PDE and discover another notion of weak solution, which is applicable even if $H$ is not convex.
+
+\section{Introduction to Conservation Laws}
+\label{sec:conservation-laws-intro}
+
+In this section we investigate the initial-value problem for scalar conservation laws in one space dimension:
+$$(1) \quad \begin{cases} u_t + F(u)_x = 0 & \text{in } \R \times (0,\infty) \\ u = g & \text{on } \R \times \{t = 0\}. \end{cases}$$
+Here $F : \R \to \R$ and $g : \R \to \R$ are given and $u : \R \times [0,\infty) \to \R$ is the unknown, $u = u(x,t)$. As noted in \S 3.2, the method of characteristics demonstrates that there does not in general exist a smooth solution of (1), existing for all times $t > 0$. By analogy with the developments in \S 3.3.3, we therefore look for some sort of weak or generalized solution.
+
+\subsection{Shocks, Entropy Condition}
+\label{sec:shocks-entropy-condition}
+
+\textbf{a. Distribution solutions; Rankine--Hugoniot condition.}
+
+We open our discussion by noting that since we cannot in general find a smooth solution of (1), we must devise some way to interpret a less regular function $u$ as somehow ``solving'' this initial-value problem. But as it stands, the PDE does not even make sense unless $u$ is differentiable. However, observe that if we \textit{temporarily} assume $u$ is smooth, we can as follows rewrite, so that the resulting expression does not directly involve the derivatives of $u$. The idea is to multiply the PDE in (1) by a smooth function $v$ and then to integrate by parts, thereby transferring the derivatives onto $v$.
+
+More precisely, assume
+
+(2)
+$$\left\{ \begin{array}{l}
+v : \R \times [0,\infty) \to \R \text{ is smooth, with} \\
+\text{compact support.}
+\end{array}\right.$$
+
+We call $v$ a \textit{test function}. Now multiply the PDE $u_t + F(u)_x = 0$ by $v$ and integrate by parts:
+
+$$0 = \int_0^\infty \int_{-\infty}^\infty (u_t + F(u)_x) v \, dx \, dt$$
+
+(3)
+$$= -\int_0^\infty \int_{-\infty}^\infty u v_t \, dx \, dt - \int_{-\infty}^\infty uv \, dx|_{t=0}$$
+$$- \int_0^\infty \int_{-\infty}^\infty F(u) v_x \, dx \, dt.$$
+
+In view of the initial condition $u = g$ on $\R \times \{t = 0\}$, we thereby obtain the identity
+
+(4)
+$$\int_0^\infty \int_{-\infty}^\infty u v_t + F(u) v_x \, dx \, dt + \int_{-\infty}^\infty gv \, dx|_{t=0} = 0.$$
+
+We derived this equality supposing $u$ to be a smooth solution of (1), but the resulting formula has meaning even if $u$ is only bounded.
+
+\begin{definition}[Integral solution]
+\label{def:integral-solution-conservation-law}
+\dcref{ch3:3.4.1-def-1}
+\group{Conservation Laws}
+We say that $u \in L^\infty(\R \times (0,\infty))$ is an integral solution of (1), \textit{provided equality} (4) \textit{holds for each test function} $v$ \textit{satisfying} (2).
+\end{definition}
+
+Suppose then that we have an integral solution of (1). What can we deduce about this solution from the identities (4)?
+
+We partially answer this question by looking at a situation for which $u$, although not continuous, has a particularly simple structure.
+
+\begin{proposition}[Rankine--Hugoniot condition]
+\label{prop:rankine-hugoniot-condition}
+\dcref{ch3:3.4.1-prop-1}
+\group{Conservation Laws}
+\uses{def:integral-solution-conservation-law}
+Suppose in some open region $V \subset \R \times (0, \infty)$ that $u$ is an integral solution of (1) which is smooth on either side of a smooth curve $C \subset V$, and that $u$ and its first derivatives are uniformly continuous in $V_l$ and in $V_r$, where $V_l$ is that part of $V$ on the left of the curve and $V_r$ that part on the right. Suppose further $C$ is represented parametrically as $\{(x,t) \mid x = s(t)\}$ for some smooth function $s(\cdot) : [0,\infty) \to \R$. Then
+$$F(u_l) - F(u_r) = \dot{s}(u_l - u_r)$$
+along $C$, where $u_l, u_r$ denote respectively the limits of $u$ from the left and from the right along $C$.
+\end{proposition}
+
+\begin{proof}
+First of all, choose a test function $v$ with compact support in $V_l$. Then (4) becomes
+
+$$
+(5) \quad 0 = \int_0^\infty \int_{-\infty}^\infty uv_t + F(u)v_x \, dx dt = -\int_0^\infty \int_{-\infty}^\infty [u_t + F(u)_x]v \, dx dt,
+$$
+
+the integration by parts being justified since $u$ is $C^1$ in $V_l$ and $v$ vanishes near the boundary of $V_l$. The identity (5) holds for all test functions $v$ with compact support in $V_l$, and so
+
+$$
+(6) \quad u_t + F(u)_x = 0 \quad \text{in } V_l.
+$$
+
+Likewise,
+
+$$
+(7) \quad u_t + F(u)_x = 0 \quad \text{in } V_r.
+$$
+
+Now select a test function $v$ with compact support in $V$, but which does not necessarily vanish along the curve $C$. Again employing (4), we deduce
+
+$$
+0 = \int_0^\infty \int_{-\infty}^\infty uv_t + F(u)v_x \, dx dt
+$$
+
+$$
+(8) \quad = \iint_{V_l} uv_t + F(u)v_x \, dx dt
+$$
+
+$$
++ \iint_{V_r} uv_t + F(u)v_x \, dx dt.
+$$
+
+Now since $v$ has compact support within $V$, we have
+
+$$
+\iint_{V_l} uv_t + F(u)v_x \, dx dt = -\iint_{V_l} [u_t + F(u)_x]v \, dx dt
+$$
+
+$$
+(9) \quad + \int_C (uv^2 + F(u)v^1)v \, dl
+$$
+
+$$
+= \int_C (uv^2 + F(u)v^1)v \, dl
+$$
+
+in view of (6). Here $\nu = (\nu^1, \nu^2)$ is the unit normal to the curve $C$, pointing from $V_l$ into $V_r$, and the subscript ``l'' denotes the limit from the left. Similarly, (7) implies
+
+$$
+\iint_{V_r} uv_t + F(u)v_x \, dx dt = -\int_C (u_r\nu^2 + F(u_r)\nu^1)v \, dl,
+$$
+
+\begin{figure}[h]\centering
+% [FIGURE: A coordinate system with $t$ axis (vertical) and $R$ axis (horizontal). A shaded region labeled $C$ is shown in the first quadrant, bounded by curves emanating from the origin.]
+\end{figure}
+
+Rankine-Hugoniot condition
+
+the subscript ``$r$'' denoting the limit from the right. Adding this identity to (9) and recalling (8) gives us:
+
+$$\int_C [(F(u_l) - F(u_r))v^1 + (u_l - u_r)v^2] v \, dl = 0.$$
+
+This equality holds for all test functions $v$ as above, and so
+
+(10) \quad $(F(u_l) - F(u_r))v^1 + (u_l - u_r)v^2 = 0$ \quad along $C$.
+
+Now suppose $C$ is represented parametrically as $\{(x,t) \mid x = s(t)\}$ for some smooth function $s(\cdot) : [0, \infty) \to \R$. We can then take $\nu = (v^1, v^2) = (1 + \dot{s}^2)^{-1/2}(1, -\dot{s})$. Consequently (10) implies
+
+(11) \quad $F(u_l) - F(u_r) = \dot{s}(u_l - u_r)$
+
+in $V$, along the curve $C$.
+\end{proof}
+
+\textbf{Notation.}
+
+$$\begin{cases}
+[[u]] = u_l - u_r = \text{jump in } u \text{ across the curve } C \\
+[[F(u)]] = F(u_l) - F(u_r) = \text{jump in } F(u) \\
+\sigma = \dot{s} = \text{speed of the curve } C.
+\end{cases}$$
+
+$\square$
+
+Let us then rewrite (11) as the identity
+$$(12) \quad [[F(u)]] = \sigma[[u]]$$
+along the discontinuity curve. This is the \textit{Rankine--Hugoniot condition}. Observe that the speed $\sigma$ and the values $u_l, u_r, F(u_l), F(u_r)$ will generally vary along the curve $C$. The point is that even though these quantities may change, the expressions $[[F(u)]] = F(u_l) - F(u_r)$ and $\sigma[[u]] = \dot{s}(u_l - u_r)$ must always exactly balance.
+
+\begin{example}[Shock waves for Burgers' equation]
+\label{ex:burgers-shock-formation}
+\dcref{ch3:3.4-ex-1}
+\group{Conservation Laws}
+\uses{prop:rankine-hugoniot-condition}
+Let us consider the initial-value problem for Burgers' equation:
+$$(13) \quad \begin{cases} u_t + \left(\frac{u^2}{2}\right)_x = 0 & \text{in } \R \times (0,\infty) \\ u = g & \text{on } \R \times \{t=0\}, \end{cases}$$
+with the initial data
+$$(14) \quad g(x) = \begin{cases} 1 & \text{if } x \leq 0 \\ 1-x & \text{if } 0 \leq x \leq 1 \\ 0 & \text{if } x \geq 1. \end{cases}$$
+According to the characteristic equations (cf.\ \S 3.2.5) any smooth solution $u$ of (13), (14), takes the constant value $z^0 = g(x^0)$ along the projected characteristic
+$$\mathbf{y}(s) = (g(x^0)s + x^0, s) \quad (s \geq 0)$$
+for each $x^0 \in \R$. Thus
+$$u(x,t) := \begin{cases} 1 & \text{if } x \leq t,\ 0 \leq t \leq 1 \\ \dfrac{1-x}{1-t} & \text{if } t \leq x \leq 1,\ 0 \leq t \leq 1 \\ 0 & \text{if } x \geq 1,\ 0 \leq t \leq 1. \end{cases}$$
+Observe that for $t \geq 1$ this method breaks down, since the projected characteristics then cross. So how should we define $u$ for $t \geq 1$?
+
+Let us set $s(t) = \frac{1+t}{2}$, and write
+$$u(x,t) := \begin{cases} 1 & \text{if } x < s(t) \\ 0 & \text{if } s(t) < x \end{cases}$$
+if $t \geq 1$. Now along the curve parameterized by $s(\cdot)$, $u_l = 1$, we have $u_r = 0$, $F(u_l) = \frac{1}{2}(u_l)^2 = \frac{1}{2}$, $F(u_r) = 0$. Thus $[[F(u)]] = \frac{1}{2} = \sigma[[u]]$, as required by the Rankine--Hugoniot condition (12). $\square$
+\end{example}
+
+\begin{figure}[h]\centering
+% [FIGURE: Characteristic lines emanating from a horizontal axis; lines labeled "u=0" fan out on the left more steeply than the vertical lines labeled "u=1" on the right, converging into a single bold ray labeled "shock" where the characteristics first cross.]
+\end{figure}
+
+Formation of a shock
+
+\textbf{b. Shocks, entropy condition.}
+
+We try now to solve a similar problem by the same techniques.
+
+\begin{example}[Rarefaction waves and nonphysical shocks]
+\label{ex:rarefaction-nonphysical-shock}
+\dcref{ch3:3.4-ex-2}
+\group{Conservation Laws}
+\uses{prop:rankine-hugoniot-condition,def:integral-solution-conservation-law}
+Again consider the initial-value problem (13), for which now we take
+
+(15)
+$$g(x) = \begin{cases} 0 & \text{if } x < 0 \\ 1 & \text{if } x > 0. \end{cases}$$
+
+The method of characteristics this time does not lead to any ambiguity in defining $u$, but does fail to provide any information within the wedge $\{0 < x < t\}$. To illustrate this lack of knowledge, let us first set
+
+$$u_1(x,t) := \begin{cases} 0 & \text{if } x < \frac{t}{2} \\ 1 & \text{if } x > \frac{t}{2}. \end{cases}$$
+
+It is easy to check that the Rankine--Hugoniot condition holds and, indeed, that $u$ is an integral solution of (13), (15). However, we can create another such solution by writing
+
+$$u_2(x,t) := \begin{cases} 1 & \text{if } x > t \\ \frac{x}{t} & \text{if } 0 < x < t \\ 0 & \text{if } x < 0. \end{cases}$$
+
+The function $u_2$, called a \textit{rarefaction wave}, is also a continuous integral solution of (13), (15).
+
+\begin{figure}[h]\centering
+% [FIGURE: Diagram showing vertical arrows on the left labeled "u=0" representing a constant state, transitioning to diagonal parallel lines on the right labeled "u=1" representing another constant state, with an abrupt discontinuity at the transition point.]
+\end{figure}
+
+A ``nonphysical'' shock
+
+\begin{figure}[h]\centering
+% [FIGURE: Diagram similar to the previous one, showing vertical arrows on the left labeled "u=0" and diagonal lines on the right labeled "u=1", but with curved lines in the middle region labeled "u=x/t" representing a smooth transition between the two constant states.]
+\end{figure}
+
+Rarefaction wave
+\end{example}
+
+Thus we see that \textit{integral solutions are not in general unique}. Presumably the class of integral solutions includes various ``nonphysical'' solutions, which we want somehow to exclude. Can we find some further criterion which ensures uniqueness?
+
+\textbf{Entropy condition.} Let us recall from \S 3.2.5 that for the general scalar conservation law of the form
+
+$$u_t + F(u)_x = 0,$$
+
+the solution $u$, whenever smooth, takes the constant value $z^0 = g(x^0)$ along the projected characteristic
+
+$$(16) \quad y(s) = (F'(g(x^0))s + x^0, s) \quad (s \geq 0).$$
+
+Now we know that typically we will encounter the crossing of characteristics, and resultant discontinuities in the solution, if we move \textit{forward} in time. However, we can hope that if we start at some point in $\R^n \times (0, \infty)$ and go backwards in time along a characteristic, we will not cross any others. In other words, let us consider the class of, say, piecewise-smooth integral solutions of (1) with the property that if we move backwards in $t$ along any characteristic, we will not encounter any lines of discontinuity for $u$.
+
+\begin{definition}[Shock, entropy condition]
+\label{def:shock-entropy-condition}
+\dcref{ch3:3.4.1-def-2}
+\group{Conservation Laws}
+\uses{prop:rankine-hugoniot-condition}
+Suppose at some point on a curve $C$ of discontinuities that $u$ has distinct left and right limits, $u_l$ and $u_r$, and that a characteristic from the left and a characteristic from the right hit $C$ at this point. Then in view of (16) we deduce
+
+$$(17) \quad F'(u_l) > \sigma > F'(u_r).$$
+
+These inequalities are called the \textit{entropy condition} (from a rough analogy with the thermodynamic principle that physical entropy cannot decrease as time goes forward). A curve of discontinuity for $u$ is called a \textit{shock} provided both the Rankine--Hugoniot identity (12) and the entropy inequalities (17) hold.
+\end{definition}
+
+\begin{remark}[Entropy condition under uniform convexity]
+\label{rem:entropy-condition-uniform-convexity}
+\dcref{ch3:3.4.1-rem-2}
+\group{Conservation Laws}
+\uses{def:shock-entropy-condition}
+Let us further interpret the entropy condition under the additional assumption that
+
+$$(18) \quad F \text{ is uniformly convex.}$$
+
+This means $F'' \geq \theta > 0$ for some constant $\theta$. Thus in particular $F'$ is strictly increasing. Then (17) is equivalent to our requiring the inequality
+
+$$(19) \quad u_l > u_r$$
+
+along any shock curve.
+\end{remark}
+
+\begin{example}[Shock and rarefaction combined for Burgers' equation]
+\label{ex:burgers-triangular-shock-wave}
+\dcref{ch3:3.4-ex-3}
+\group{Conservation Laws}
+\uses{def:shock-entropy-condition,ex:burgers-shock-formation,ex:rarefaction-nonphysical-shock,prop:rankine-hugoniot-condition}
+We again return to Burgers' equation (13), now for the initial function
+
+$$(20) \quad g(x) = \begin{cases} 0 & \text{if } x < 0 \\ 1 & \text{if } 0 \leq x \leq 1 \\ 0 & \text{if } x > 1. \end{cases}$$
+
+For $0 \leq t \leq 2$, we may combine the analysis in Examples 1 and 2 above to find
+
+$$(21) \quad u(x,t) := \begin{cases} 0 & \text{if } x < 0 \\ \frac{x}{t} & \text{if } 0 < x < t \\ 1 & \text{if } t < x < 1 + \frac{t}{2} \\ 0 & \text{if } x > 1 + \frac{t}{2} \end{cases} \quad (0 \leq t \leq 2).$$
+
+\begin{figure}[h]\centering
+% [FIGURE: A diagram showing characteristics and shock waves in the (x,t) plane. Vertical arrows appear at the top and bottom margins. Several diagonal characteristic lines are drawn, labeled with u = x/t in the middle region. The solution regions are marked with u = 0 (on left and right), u = 1 in a lower region, and a thick diagonal shock curve separating the u = x/t region from u = 0 on the right. The characteristic lines slope upward to the right.]
+\end{figure}
+
+For times $t \geq 2$, we expect the shock wave parametrized by $s(\cdot)$ to continue, with $u = x/t$ to the left of $s(\cdot)$, $u = 0$ to the right. This is compatible with the entropy condition (19). We calculate the behavior of the shock curve by applying the Rankine--Hugoniot jump condition (12). Now
+
+$$[[u]] = \frac{s(t)}{t}, \quad [[F(u)]] = \frac{1}{2}\left(\frac{s(t)}{t}\right)^2, \quad \sigma = \dot{s}(t)$$
+
+along the shock curve for $t \geq 0$. Thus (12) implies
+
+$$s(t) = \frac{s(t)}{2t} \quad (t \geq 2).$$
+
+Additionally $s(2) = 2$, and so we can solve this ODE to find $s(t) = (2t)^{1/2}$ ($t \geq 2$). Hence we may augment (21) by setting
+
+$$u(x,t) = \begin{cases} 0 & \text{if } x < 0 \\ \frac{x}{t} & \text{if } 0 < x < (2t)^{1/2} \quad (t \geq 2). \\ 0 & \text{if } x > (2t)^{1/2} \end{cases}$$
+
+See the illustration. $\square$
+\end{example}
+
+\subsection{Lax--Oleinik Formula}
+\label{sec:lax-oleinik-formula}
+
+We now try to obtain a formula for an appropriate weak solution of the initial-value problem (1), assuming as above that the flux function $F$ is uniformly convex. With no loss of generality we may as well also take
+
+$$(22) \quad F(0) = 0.$$
+
+As motivation, suppose now $g \in L^\infty(\R)$ and define
+
+(23)
+$$h(x) := \int_0^x g(y) \, dy \quad (x \in \R).$$
+
+Recall the Hopf--Lax formula from \S3.3 and set
+
+(24)
+$$w(x,t) := \min_{y \in \R} \left\{ tL\left(\frac{x-y}{t}\right) + h(y) \right\} \quad (x \in \R, t > 0),$$
+
+where
+
+(25)
+$$L = F^*.$$
+
+Thus $w$ is the unique, weak solution of this initial-value problem for the Hamilton--Jacobi equation:
+
+(26)
+$$\begin{cases}
+w_t + F(w_x) = 0 & \text{in } \R \times (0,\infty) \\
+w = h & \text{on } \R \times \{t = 0\}.
+\end{cases}$$
+
+For the moment assume $w$ is smooth. We now differentiate the PDE and its initial condition with respect to $x$, to deduce
+
+$$\begin{cases}
+w_{xt} + F(w_x)_x = 0 & \text{in } \R \times (0,\infty) \\
+w_x = g & \text{on } \R \times \{t = 0\}.
+\end{cases}$$
+
+Hence if we set $u = w_x$, we discover $u$ solves problem (1).
+
+The foregoing computation is only formal, as we know that $w$ defined by (24) is not in general smooth. But recall from \S3.3 that $w$ is in fact differentiable a.e. Consequently
+
+(27)
+$$u(x,t) := \frac{\partial}{\partial x} \left[ \min_{y \in \R} \left\{ tL\left(\frac{x-y}{t}\right) + h(y) \right\} \right]$$
+
+is defined for a.e. $(x,t)$ and is presumably a leading candidate for some sort of weak solution of the initial-value problem (1). Our intention henceforth is to justify this expectation.
+
+First, we will need to rewrite the expression (27) into a more useful form.
+
+\textbf{Notation.} Since $F$ is uniformly convex, $F'$ is strictly increasing and onto. Write
+
+(28)
+$$G := (F')^{-1}$$
+
+for the inverse of $F'$.
+
+\begin{theorem}[Lax--Oleinik formula]
+\label{thm:lax-oleinik-formula}
+\dcref{ch3:3.4-thm-1}
+\group{Conservation Laws}
+\uses{def:legendre-transform,thm:hopf-lax-formula-derivation}
+Assume $F : \R \to \R$ is smooth, uniformly convex, and $g \in L^\infty(\R)$.
+
+\textit{(i)} For each time $t > 0$, there exists for all but at most countably many values of $x \in \R$ a unique point $y(x,t)$ such that
+$$\min_{y \in \R} \left\{ tL\left(\frac{x-y}{t}\right) + h(y) \right\} = tL\left(\frac{x-y(x,t)}{t}\right) + h(y(x,t)).$$
+
+\textit{(ii)} The mapping $x \mapsto y(x,t)$ is nondecreasing.
+
+\textit{(iii)} For each time $t > 0$, the function $u$ defined by (27) is
+$$(29) \quad u(x,t) = G\left(\frac{x-y(x,t)}{t}\right)$$
+for a.e.\ $x$. In particular, the formula (29) holds for a.e.\ $(x,t) \in \R^n \times (0,\infty)$.
+\end{theorem}
+
+\begin{definition}[Lax--Oleinik formula]
+\label{def:lax-oleinik-formula}
+\dcref{ch3:3.4.2-def-1}
+\group{Conservation Laws}
+\uses{thm:lax-oleinik-formula}
+We call equation (29) the \textit{Lax--Oleinik formula} for the solution (1), where $h$ is defined by (23), $L$ by (25).
+\end{definition}
+
+\begin{proof}
+1. First, we note
+$$L(q) = \max_{p \in \R} (qp - F(p)) = qp^* - F(p^*),$$
+where $F'(p^*) = q$. But then $p^* = G(q)$ according to (28), and so
+$$L(q) = qG(q) - F(G(q)) \quad (q \in \R)$$
+(cf.\ \S 3.3.1). In particular, $L$ is $C^2$. Furthermore
+$$(30) \quad L'(q) = G(q) + qG'(q) - F'(G(q))G'(q) = G(q)$$
+by (28); and $L''(q) = G'(q) > 0$. This and (22) imply $L$ is nonnegative and strictly convex.
+
+2. Fix $t > 0$, $x_1 < x_2$. As in \S 3.3 there exists at least one point $y_1 \in \R$ such that
+$$(31) \quad \left\{tL\left(\frac{x_1-y_1}{t}\right) + h(y_1)\right\} = \min_{y \in \R}\left\{tL\left(\frac{x_1-y}{t}\right) + h(y)\right\}.$$
+We next claim
+$$(32) \quad tL\left(\frac{x_2-y_1}{t}\right) + h(y_1) < tL\left(\frac{x_2-y}{t}\right) + h(y) \quad \text{if } y < y_1.$$
+
+To see this, we calculate $x_2 - y_1 = \tau(x_1 - y_1) + (1-\tau)(x_2 - y)$ and $x_1 - y = (1-\tau)(x_1 - y_1) + \tau(x_2 - y)$ for
+
+$$0 < \tau := \frac{y_1 - y}{x_2 - x_1 + y_1 - y} < 1.$$
+
+Since $L'' > 0$, we thus have
+
+$$L\left(\frac{x_2-y_1}{t}\right) < \tau L\left(\frac{x_1-y_1}{t}\right) + (1-\tau)L\left(\frac{x_2-y}{t}\right),$$
+$$L\left(\frac{x_1-y}{t}\right) < (1-\tau)L\left(\frac{x_1-y_1}{t}\right) + \tau L\left(\frac{x_2-y}{t}\right);$$
+
+and hence
+
+$$(33) \quad L\left(\frac{x_2-y_1}{t}\right) + L\left(\frac{x_1-y}{t}\right) < L\left(\frac{x_1-y_1}{t}\right) + L\left(\frac{x_2-y}{t}\right).$$
+
+Now notice from (31) that
+
+$$tL\left(\frac{x_1-y_1}{t}\right) + h(y_1) \le tL\left(\frac{x_1-y}{t}\right) + h(y).$$
+
+We multiply (33) by $t$, add $h(y_1) + h(y)$ to both sides, and add the resulting expression to the above inequality to obtain (32).
+
+3. In view of (31), in computing the minimum of $tL\left(\frac{x_2-y}{t}\right) + h(y)$ we need only consider those $y \ge y_1$, where $y_1$ satisfies (31). Now for each $x \in \R$ and $t > 0$, define the point $y(x,t)$ to equal the smallest of those points $y$ giving the minimum of $tL\left(\frac{x-y}{t}\right) + h(y)$. Then the mapping $x \mapsto y(x,t)$ is nondecreasing and is thus continuous for all but at most countably many $x$. At a point $x$ of continuity of $y(\cdot,t)$, $y(x,t)$ is the unique value of $y$ yielding the minimum.
+
+4. According to the theory developed in \S3.3 for each fixed $t > 0$, the mapping
+
+$$x \mapsto w(x,t) := \min_{y \in \R}\left\{tL\left(\frac{x-y}{t}\right) + h(y)\right\}$$
+$$= tL\left(\frac{x-y(x,t)}{t}\right) + h(y(x,t))$$
+
+is differentiable a.e. Furthermore the mapping $x \mapsto y(x,t)$ is monotone and consequently differentiable a.e. as well. Thus given $t > 0$, for a.e. $x$ the mappings $x \mapsto L\left(\frac{x-y(x,t)}{t}\right)$ and so also $x \mapsto h(y(x,t))$ are differentiable as well.
+
+Consequently formula (27) becomes
+
+$$u(x,t) = \frac{\partial}{\partial x}\left[tL\left(\frac{x-y(x,t)}{t}\right) + h(y(x,t))\right]$$
+$$= L'\left(\frac{x-y(x,t)}{t}\right)(1-y_x(x,t)) + \frac{\partial}{\partial x}h(y(x,t)).$$
+
+But since $y \mapsto tL\left(\frac{x-y}{t}\right) + h(y)$ has a minimum at $y = y(x,t)$, the mapping $z \mapsto tL\left(\frac{x-y(x,t)}{t}\right) + h(y(x,t))$ has a minimum at $z = x$. Therefore
+
+$$-L'\left(\frac{x-y(x,t)}{t}\right)y_x(x,t) + \frac{\partial}{\partial x}h(y(x,t)) = 0,$$
+
+and hence
+
+$$u(x,t) = L'\left(\frac{x-y(x,t)}{t}\right) = G\left(\frac{x-y(x,t)}{t}\right),$$
+
+according to (30).
+\end{proof}
+
+We now investigate the precise sense in which formula (29) provides us with a solution of the initial-value problem (1).
+
+\begin{theorem}[Lax--Oleinik formula as integral solution]
+\label{thm:lax-oleinik-integral-solution}
+\dcref{ch3:3.4-thm-2}
+\group{Conservation Laws}
+\uses{thm:lax-oleinik-formula,def:integral-solution-conservation-law}
+Under the assumptions of \cref{thm:lax-oleinik-formula}, the function $u$ defined by (29) is an integral solution of the initial-value problem (1).
+\end{theorem}
+
+\begin{proof}
+As above, define
+
+$$w(x,t) = \min_{y \in \R} \left\{tL\left(\frac{x-y}{t}\right) + h(y)\right\} \quad (x \in \R, t > 0).$$
+
+Then \cref{thm:hopf-lax-formula-as-solution} tells us $w$ is Lipschitz continuous, is differentiable for a.e. $(x,t)$, and solves
+
+$$(34) \quad \begin{cases} w_t + F(w_x) = 0 & \text{a.e. in } \R \times (0,\infty) \\ w = h & \text{on } \R \times \{t = 0\}. \end{cases}$$
+
+Choose any test function $v$ satisfying (2). Multiply the PDE $w_t + F(w_x) = 0$ by $v_x$ and integrate over $\R \times (0,\infty)$:
+
+$$(35) \quad 0 = \int_0^\infty \int_{-\infty}^\infty [w_t + F(w_x)] v_x \, dx \, dt.$$
+
+Observe
+$$\int_0^\infty \int_{-\infty}^\infty w_t v_x \, dx\,dt = -\int_0^\infty \int_{-\infty}^\infty w v_{tx}\,dx\,dt - \int_{-\infty}^\infty w v_x\,dx\Big|_{t=0}$$
+$$= \int_0^\infty \int_{-\infty}^\infty w_x v_t\,dx\,dt + \int_{-\infty}^\infty w_x\,dx\Big|_{t=0}.$$
+These integrations by parts are valid since the mapping $x \mapsto w(x,t)$ is Lipschitz continuous, and thus absolutely continuous, for each time $t > 0$. Likewise $t \mapsto w(x,t)$ is absolutely continuous for each $x \in \R$. Now $w(x,0) = h(x) = \int_0^x g(y)\,dy$, and so $w_x(x,0) = g(x)$ for a.e.\ $x$. Consequently
+$$\int_0^\infty \int_{-\infty}^\infty w_t v_x\,dx\,dt = \int_0^\infty \int_{-\infty}^\infty w_x v_t\,dx\,dt + \int_{-\infty}^\infty gv\,dx\Big|_{t=0}.$$
+Substitute this identity into (35) and recall $u = w_x$ a.e., to derive the integral identity (4).
+\end{proof}
+
+\subsection{Weak Solutions, Uniqueness}
+\label{sec:conservation-laws-entropy-uniqueness}
+
+\textbf{a. Entropy condition revisited.}
+
+We have already seen in \S 3.4.1 that integral solutions of (1) are not generally unique. Since we believe the Lax--Oleinik formula does in fact provide the ``correct'' solution of this initial-value problem, we must see if it satisfies some appropriate form of the entropy condition discussed in \S 3.4.1. This is not straightforward, however, since it is not usually the case that the function $u$ defined by the Lax--Oleinik formula is smooth, or even piecewise smooth.
+
+We identify now a kind of ``one-sided'' derivative estimate for the function $u$ defined by the Lax--Oleinik formula (27). This estimate---which is an analogue for conservation laws of the semiconcavity estimate from \cref{lem:hopf-lax-semiconcavity-from-data,lem:hopf-lax-semiconcavity-uniform-convexity} in \S 3.3.3 for Hamilton--Jacobi equations---will turn out to be a uniqueness criterion.
+
+\begin{lemma}[A one-sided jump estimate]
+\label{lem:lax-oleinik-entropy-estimate}
+\dcref{ch3:3.4-lem-1}
+\group{Conservation Laws}
+\uses{thm:lax-oleinik-formula}
+Under the assumptions of \cref{thm:lax-oleinik-formula}, there exists a constant $C$ such that the function $u$ defined by the Lax--Oleinik formula (29) satisfies the inequality
+$$(36) \quad u(x+z,t) - u(x,t) \leq \frac{C}{t}z$$
+for all $t > 0$ and $x, z \in \R$, $z > 0$.
+\end{lemma}
+
+\begin{definition}[Entropy condition]
+\label{def:entropy-condition-inequality}
+\dcref{ch3:3.4.3-def-1}
+\group{Conservation Laws}
+\uses{lem:lax-oleinik-entropy-estimate}
+We call inequality (36) the entropy condition.
+\end{definition}
+
+\begin{remark}[Consequences of the entropy condition]
+\label{rem:entropy-condition-consequences}
+\dcref{ch3:3.4.3-rem-1}
+\group{Conservation Laws}
+\uses{def:entropy-condition-inequality}
+It follows from (36) that for $t > 0$ the function $x \mapsto u(x,t) - \frac{C}{t}x$ is nonincreasing, and consequently has left and right hand limits at each point. Thus also $x \mapsto u(x,t)$ has left and right hand limits at each point, with $u_l(x,t) \geq u_r(x,t)$. In particular, the original form of the entropy condition (19) holds at any point of discontinuity.
+\end{remark}
+
+\begin{proof}[Proof of \cref{lem:lax-oleinik-entropy-estimate}]
+We know from \S 3.3 that in computing the minimum in (29) we need only consider those $y$ such that $|\frac{x-y}{t}| \leq C$ for some constant $C$; verification is left to the reader. Consequently we may assume, upon redefining $G$ if necessary off some bounded interval, that $G$ is Lipschitz continuous.
+
+2. As $G = (F')^{-1}$ and $y(\cdot,t)$ are nondecreasing, we have
+$$u(x,t) = G\left(\frac{x-y(x,t)}{t}\right)$$
+$$\geq G\left(\frac{x-y(x+z,t)}{t}\right) \quad \text{for } z > 0$$
+$$\geq G\left(\frac{x+z-y(x+z,t)}{t}\right) - \frac{\text{Lip}(G)z}{t}$$
+$$= u(x+z,t) - \frac{\text{Lip}(G)z}{t}.$$
+\end{proof}
+
+\textbf{b. Weak solutions, uniqueness.}
+
+We now establish the important assertion that an integral solution which satisfies the entropy condition is unique.
+
+\begin{definition}[Entropy solution]
+\label{def:entropy-solution-conservation-law}
+\dcref{ch3:3.4.3-def-2}
+\group{Conservation Laws}
+\uses{def:entropy-condition-inequality}
+We say that a function $u \in L^\infty(\R \times (0,\infty))$ is an entropy solution of the \textit{initial-value problem}
+
+$$(37) \quad \begin{cases} u_t + F(u)_x = 0 & \text{in } \R \times (0,\infty) \\ u = g & \text{on } \R^n \times \{t = 0\} \end{cases}$$
+
+provided
+
+$$(i) \quad \int_0^\infty \int_{-\infty}^\infty uv_t + F(u)v_x \, dx \, dt + \int_{-\infty}^\infty gv \, dx \big|_{t=0} = 0$$
+
+for all test functions $v : \R \times [0,\infty) \to \R$ with compact support, and
+
+$$(ii) \quad u(x+z,t) - u(x,t) \leq C\left(1 + \frac{1}{t}\right)z$$
+
+for some constant $C \geq 0$ and a.e. $x, z \in \R$, $t > 0$, with $z > 0$.
+\end{definition}
+
+\begin{theorem}[Uniqueness of entropy solutions]
+\label{thm:uniqueness-entropy-solutions}
+\dcref{ch3:3.4-thm-3}
+\group{Conservation Laws}
+\uses{def:entropy-solution-conservation-law}
+Assume $F$ is convex and smooth. Then there exists—up to a set of measure zero—at most one entropy solution of (37).
+\end{theorem}
+
+\begin{proof}
+$^*$Omit on first reading.
+
+1. Assume that $u$ and $\bar{u}$ are two entropy solutions of (37), and write $w := u - \bar{u}$. Observe for any point $(x,t)$ that
+
+$$F(u(x,t)) - F(\bar{u}(x,t)) = \int_0^1 \frac{d}{dr} F(ru(x,t) + (1-r)\bar{u}(x,t)) \, dr$$
+
+$$= \int_0^1 F'(ru(x,t) + (1-r)\bar{u}(x,t)) \, dr \, (u(x,t) - \bar{u}(x,t))$$
+
+$$=: b(x,t)w(x,t).$$
+
+Consequently if $v$ is a test function as above,
+
+$$(38) \quad 0 = \int_0^\infty \int_{-\infty}^\infty (u - \bar{u})v_t + [F(u) - F(\bar{u})]v_x \, dx dt$$
+
+$$= \int_0^\infty \int_{-\infty}^\infty w[v_t + bv_x] \, dx dt.$$
+
+2. Now take $\varepsilon > 0$ and define $u^\varepsilon = n_\varepsilon * u$, $\bar{u}^\varepsilon = n_\varepsilon * \bar{u}$, where $n_\varepsilon$ is the standard mollifier in the $x$ and $t$ variables. Then according to \S C.4
+
+$$(39) \quad \|u^\varepsilon\|_{L^\infty} \leq \|u\|_{L^\infty}, \quad \|\bar{u}^\varepsilon\|_{L^\infty} \leq \|\bar{u}\|_{L^\infty},$$
+
+$$(40) \quad u^\varepsilon \to u, \quad \bar{u}^\varepsilon \to \bar{u} \quad \text{a.e., as } \varepsilon \to 0.$$
+
+Furthermore the entropy inequality (ii) implies
+
+$$(41) \quad u_x^\varepsilon(x,t), \, \bar{u}_x^\varepsilon(x,t) \leq C\left(1 + \frac{1}{t}\right)$$
+
+for an appropriate constant $C$ and all $\varepsilon > 0$, $x \in \R$, $t > 0$.
+
+3. Write
+
+$$b_\varepsilon(x,t) := \int_0^1 F'(ru^\varepsilon(x,t) + (1-r)\bar{u}^\varepsilon(x,t)) \, dr.$$
+
+Then (38) becomes
+
+$$(42) \quad 0 = \int_0^\infty \int_{-\infty}^\infty w[v_t + b_\varepsilon v_x] \, dx dt + \int_0^\infty \int_{-\infty}^\infty w[b - b_\varepsilon]v_x \, dx dt.$$
+
+4. Now select $T > 0$ and any smooth function $\psi: \R \times (0,T) \to \R$ with compact support. We choose $v$ to be the solution of the following terminal-value problem for a linear transport equation:
+
+$$(43) \quad \begin{cases} v_t^{\epsilon} + b_{\epsilon} v_x^{\epsilon} = \psi & \text{in } \R \times (0,T) \\ v = 0 & \text{on } \R \times \{t = T\}. \end{cases}$$
+
+Let us solve (43) by the method of characteristics. For this, fix $x \in \R$, $0 \le t \le T$, and denote by $x_{\epsilon}(\cdot)$ the solution of the ODE
+
+$$(44) \quad \begin{cases} \dot{x}_{\epsilon}(s) = b_{\epsilon}(x_{\epsilon}(s), s) & (s \ge t) \\ x_{\epsilon}(t) = x, \end{cases}$$
+
+and set
+
+$$(45) \quad v^{\epsilon}(x,t) := -\int_t^T \psi(x_{\epsilon}(s), s) \, ds \quad (x \in \R, 0 \le t \le T).$$
+
+Then $v^{\epsilon}$ is smooth and is the unique solution of (43). Since $|b_{\epsilon}|$ is bounded and $\psi$ has compact support, $v^{\epsilon}$ has compact support in $\R \times [0,T)$.
+
+5. We now claim that for each $s > 0$, there exists a constant $C_s$ such that
+
+$$(46) \quad |v_x^{\epsilon}| \le C_s \quad \text{on } \R \times (s,T).$$
+
+To prove this, first note that if $0 < s \le t \le T$, then
+
+$$b_{\epsilon,x}(x,t) = \int_0^1 F''(ru^{\epsilon} + (1-r)\bar{u}^{\epsilon})(ru_x^{\epsilon} + (1-r)\bar{u}_x^{\epsilon}) \, dr$$
+$$(47) \quad \le \frac{C}{t} \le \frac{C}{s}$$
+
+by (41), since $F$ is convex.
+
+Next, differentiate the PDE in (43) with respect to $x$:
+
+$$(48) \quad v_{tx}^{\epsilon} + b_{\epsilon} v_{xx}^{\epsilon} + b_{\epsilon,x} v_x^{\epsilon} = \psi_x.$$
+
+Now set $a(x,t) := e^{\lambda t} v_x^{\epsilon}(x,t)$, for
+
+$$(49) \quad \lambda = \frac{C}{s} + 1.$$
+
+Then
+
+$$a_t + b_{\epsilon} a_x = \lambda a + e^{\lambda t}[v_{xt}^{\epsilon} + b_{\epsilon} v_{xx}^{\epsilon}]$$
+$$= \lambda a + e^{\lambda t}[-b_{\epsilon,x} v_x^{\epsilon} + \psi_x] \quad \text{by (48)}$$
+$$(50) \quad = [\lambda - b_{\epsilon,x}] a + e^{\lambda t} \psi_x.$$
+
+Since $u^\epsilon$ has compact support, $a$ attains a nonnegative maximum over $\R \times [s,T]$ at some finite point $(x_0, t_0)$. If $t_0 = T$, then $u_x = 0$. If $0 \le t_0 < T$, then
+$$a_t(x_0, t_0) \le 0, \quad a_x(x_0, t_0) = 0.$$
+
+Consequently equation (50) gives
+
+(51)
+$$[\lambda - b_{e,x}]a + e^{\lambda t_0} \psi_x \le 0 \quad \text{at } (x_0, t_0).$$
+
+But since $b_{e,x} \le \frac{C}{s}$ and $\lambda$ is given by (49), inequality (51) implies
+$$a(x_0, t_0) \le -e^{\lambda t_0} \psi_x \le e^{\lambda T} \|\psi_x\|_{L^\infty}.$$
+
+A similar argument shows
+$$a(x_1, t_1) \ge -e^{\lambda T} \|\psi_x\|_{L^\infty}$$
+
+at any point $(x_1, t_1)$ where $a$ attains a nonpositive minimum. These two estimates and the definition of $a$ imply (46).
+
+6. We will need one more inequality, namely
+
+(52)
+$$\int_{-\infty}^{\infty} |u_x^\epsilon(x,t)| \, dx \le D$$
+
+for all $0 \le t \le \tau$ and some constant $D$, provided $\tau$ is small enough.
+
+To prove this, choose $\tau > 0$ so small that $\psi = 0$ on $\R \times (0, \tau)$. Then if $0 \le t \le \tau$, we see from (45) that $v$ is constant along the characteristic curve $x_c(\cdot)$ (solving (44)) for $t \le s \le \tau$. Select any partition $x_0 < x_1 < \cdots < x_N$. Then $y_0 < y_1 < \cdots < y_N$, where $y_i := x_i(s)$ $(i = 1, \ldots, N)$ for
+$$\begin{cases}
+\dot{x}_c(s) = b_c(x_c(s), s) & (t \le s \le \tau) \\
+x_c(t) = x_i.
+\end{cases}$$
+
+As $v^\epsilon$ is constant along each characteristic curve $x_i(\cdot)$, we have
+$$\sum_{i=1}^{N} |v^\epsilon(x_i, t) - v^\epsilon(x_{i-1}, t)| = \sum_{i=1}^{N} |v^\epsilon(y_i, \tau) - v^\epsilon(y_{i-1}, \tau)|$$
+$$\le \text{var} \, v^\epsilon(\cdot, \tau),$$
+
+``var'' denoting variation with respect to $x$. Taking the supremum over all such partitions, we find
+$$\int_{-\infty}^{\infty} |v_x^\epsilon(x,t)| \, dx = \text{var} \, v^\epsilon(\cdot, t) \le \text{var} \, v^\epsilon(\cdot, \tau) = \int_{-\infty}^{\infty} |v_x^\epsilon(x, \tau)| \, dx \le C,$$
+
+since $v^\varepsilon$ has constant support and estimate (41) is valid for $s = \tau$.
+
+7. Now, at last, we complete the proof by setting $v = v^\varepsilon$ in (42) and substituting, using (43):
+
+$$\int_0^\infty \int_{-\infty}^\infty w\psi \, dx\,dt = \int_0^\infty \int_{-\infty}^\infty w[b_\varepsilon - b]v_x^\varepsilon \, dx\,dt$$
+$$= \int_\tau^\infty \int_{-\infty}^\infty w[b_\varepsilon - b]v_x^\varepsilon \, dx\,dt$$
+$$+ \int_0^\tau \int_{-\infty}^\infty w[b_\varepsilon - b]v_x^\varepsilon \, dx\,dt$$
+$$=: I_\tau^\varepsilon + J_\tau^\varepsilon.$$
+
+Then in view of (40), (46), and the Dominated Convergence Theorem,
+$$I_\tau^\varepsilon \to 0 \quad \text{as } \varepsilon \to 0$$
+for each $\tau > 0$. On the other hand, if $0 < \tau < T$, we see
+$$|J_\tau^\varepsilon| \le \tau C \max_{0 \le t \le \tau} \int_{-\infty}^\infty |v_x^\varepsilon| \, dx \le \tau C, \quad \text{by (52).}$$
+
+Thus
+$$\int_0^\infty \int_{-\infty}^\infty w\psi \, dx\,dt = 0$$
+for all smooth functions $\psi$ as above, and so $w = u - \bar{u} = 0$ a.e.
+\end{proof}
+
+\subsection{Riemann's Problem}
+\label{sec:riemann-problem}
+
+The initial-value problem (1) with the piecewise-constant initial function
+$$(53) \quad g(x) = \begin{cases} u_l & \text{if } x < 0 \\ u_r & \text{if } x > 0 \end{cases}$$
+is called \textit{Riemann's problem} for the scalar conservation law (1). Here $u_l, u_r \in \R$ are the left and right \textit{initial states}, $u_l \ne u_r$.
+
+We continue to assume $F$ is uniformly convex and $C^2$, and as before we write $G = (F')^{-1}$.
+
+\begin{theorem}[Solution of Riemann's problem]
+\label{thm:riemann-problem-solution}
+\dcref{ch3:3.4-thm-4}
+\group{Conservation Laws}
+\uses{def:shock-entropy-condition,thm:uniqueness-entropy-solutions,prop:rankine-hugoniot-condition}
+(i) If $u_l > u_r$, the unique entropy solution of the Riemann problem (1), (53) is
+$$(54) \quad u(x,t) := \begin{cases} u_l & \text{if } \frac{x}{t} < \sigma \\ u_r & \text{if } \frac{x}{t} > \sigma \end{cases} \quad (x \in \R, t > 0),$$
+
+\begin{figure}[h]\centering
+% [FIGURE: Characteristic lines from a horizontal axis converging into a single bold ray labeled "x=\sigma t", with a region labeled "u=u_l" to the left of the ray and "u=u_r" to the right, illustrating a shock wave solution.]
+\end{figure}
+
+Shock wave solving Riemann's problem for $u_l > u_r$
+
+where
+$$(55) \quad \sigma := \frac{F(u_l) - F(u_r)}{u_l - u_r}.$$
+
+(ii) If $u_l < u_r$, the unique entropy solution of the Riemann problem (1), (53) is the rarefaction wave
+$$(56) \quad u(x,t) := \begin{cases} u_l & \text{if } \frac{x}{t} \leq F'(u_l) \\ G\left(\frac{x}{t}\right) & \text{if } F'(u_l) \leq \frac{x}{t} \leq F'(u_r) \\ u_r & \text{if } \frac{x}{t} \geq F'(u_r). \end{cases}$$
+\end{theorem}
+
+\begin{remark}[Interpretation of the two cases]
+\label{rem:riemann-problem-shock-vs-rarefaction}
+\dcref{ch3:3.4.4-rem-1}
+\group{Conservation Laws}
+\uses{thm:riemann-problem-solution}
+\textit{(i)} In the first case the states $u_l$ and $u_r$ are separated by a \textit{shock wave} with constant speed $\sigma$. In the second case the states $u_l$ and $u_r$ are separated by a \textit{rarefaction wave}.
+
+\textit{(ii)} We know from the theory set forth in \S\S 3.4.2--3.4.3 that the Lax--Oleinik formula must generate these solutions, and it is an interesting exercise to verify this directly. We will instead construct the functions (54), (56) from first principles and verify they are in fact entropy solutions. By uniqueness, then, they must agree with Lax--Oleinik formulas. This is a nice illustration of the power of the uniqueness assertion, \cref{thm:uniqueness-entropy-solutions}. $\square$
+\end{remark}
+
+\begin{proof}
+1. Assume $u_l > u_r$. Clearly $u$ defined by (54), (55) is then an integral solution of our PDE. In particular since $\sigma = [[F(u)]]/[[u]]$, the Rankine--Hugoniot condition holds. Furthermore note
+$$F'(u_r) < \sigma = \frac{F(u_l)-F(u_r)}{u_l-u_r} = \fint_{u_r}^{u_l} F'(r)\,dr < F'(u_l)$$
+in accordance with (17). Since $u_l > u_r$, the entropy condition holds as well. Uniqueness follows from \cref{thm:uniqueness-entropy-solutions}.
+
+2. Assume now that $u_l < u_r$. We must first check that $u$ defined by (56) solves the conservation law in the region $\{F'(u_l) < \frac{x}{t} < F'(u_r)\}$. To verify this, let us ask the general question as to when a function $u$ of the form
+
+$$u(x,t) = v\left(\frac{x}{t}\right)$$
+
+solves (1). We compute
+
+$$u_t + F(u)_x = u_t + F'(u)u_x$$
+$$= -v'\left(\frac{x}{t}\right) \frac{x}{t^2} + F'(u)v'\left(\frac{x}{t}\right) \frac{1}{t}$$
+$$= v'\left(\frac{x}{t}\right) \frac{1}{t} \left[F'(v) - \frac{x}{t}\right].$$
+
+Thus, assuming $v'$ never vanishes, we find $F'\left(v\left(\frac{x}{t}\right)\right) = \frac{x}{t}$. Hence
+
+$$u(x,t) = v\left(\frac{x}{t}\right) = G\left(\frac{x}{t}\right)$$
+
+solves the conservation law. Now $v\left(\frac{x}{t}\right) = u_l$ provided $\frac{x}{t} = F'(u_l)$; and similarly $v\left(\frac{x}{t}\right) = u_r$ if $\frac{x}{t} = F'(u_r)$.
+
+\begin{figure}[h]\centering
+% [FIGURE: Multiple characteristic lines emanating from the origin, labeled with u=u_l on the left, u=G(x/t) in the center region, and u=u_r on the right. The lines fan outward from a central point on a horizontal axis, illustrating a rarefaction wave solution.]
+\end{figure}
+
+Rarefaction wave solving Riemann's problem for $u_l < u_r$
+
+As a consequence we see that the rarefaction wave $u$ defined by (56) is continuous in $\R \times (0, \infty)$, and is a solution of the PDE $u_t + F(u)_x = 0$ in each of its regions of definition. It is easy to check that $u$ is thus an integral solution of (1), (53). Furthermore, since as noted in \S3.4.3 we may as well assume $G$ is Lipschitz continuous, we have
+
+$$u(x+z,t) - u(x,t) = G\left(\frac{x+z}{t}\right) - G\left(\frac{x}{t}\right) \leq \frac{\text{Lip}(G)z}{t}$$
+\end{proof}
+
+\subsection{Long Time Behavior}
+\label{sec:conservation-laws-long-time-behavior}
+
+\textbf{a. Decay in sup-norm.}
+
+We now employ the Lax--Oleinik formula (29) to study the behavior of our entropy solution $u$ of (1) as $t \to \infty$. We assume below that $F$ is smooth, uniformly convex, $F(0) = 0$, and $g$ is bounded and summable.
+
+\begin{theorem}[Asymptotics in $L^\infty$-norm]
+\label{thm:asymptotics-sup-norm}
+\dcref{ch3:3.4-thm-5}
+\group{Conservation Laws}
+\uses{thm:lax-oleinik-formula}
+There exists a constant $C$ such that
+
+$$|u(x,t)| \leq \frac{C}{t^{1/2}}$$
+
+for all $x \in \R, t > 0$.
+\end{theorem}
+
+\begin{proof}
+1. Set
+
+$$\sigma := F'(0);$$
+
+then
+
+$$G(\sigma) = 0,$$
+
+and therefore
+
+$$L(\sigma) = \sigma G(\sigma) - F(G(\sigma)) = 0, \quad L'(\sigma) = 0.$$
+
+2. In view of (60) and the uniform convexity of $L$,
+
+$$tL\left(\frac{x-y}{t}\right) = tL\left(\frac{x-y-\sigma t}{t} + \sigma\right)$$
+
+$$\geq t\left[L(\sigma) + L'(\sigma)\left(\frac{x-y-\sigma t}{t}\right) + \theta\left(\frac{x-y-\sigma t}{t}\right)^2\right]$$
+
+$$= \theta\frac{|x-y-\sigma t|^2}{t}$$
+
+for some constant $\theta > 0$. Since $h = \int_0^x g \, dy$ is bounded by $M := \|g\|_{L^1}$, we see from (61) that
+
+$$tL\left(\frac{x-y}{t}\right) + h(y) \geq \theta\frac{|x-y-\sigma t|^2}{t} - M.$$
+
+On the other hand,
+$$tL\left(\frac{x-(x-\sigma t)}{t}\right) + h(x-\sigma t) \leq M.$$
+
+Thus at the minimizing point $y(x,t)$ we have
+$$\theta\frac{|x-y(x,t)-\sigma t|^2}{t} \leq 2M;$$
+
+and so
+
+$$(62) \quad \left|\frac{x-y(x,t)}{t} - \sigma\right| \leq \frac{C}{t^{1/2}}$$
+
+for some constant $C$.
+
+3. But since $G(\sigma)=0$, for any $x \in \R$, $t > 0$ we have
+$$|u(x,t)| = \left|G\left(\frac{x-y(x,t)}{t}\right)\right|$$
+$$= \left|G\left(\frac{x-y(x,t)}{t} - \sigma + \sigma\right) - G(\sigma)\right|$$
+$$\leq \text{Lip}(G)\left|\frac{x-y(x,t)}{t} - \sigma\right| \leq \frac{C}{t^{1/2}},$$
+
+according to (62).
+\end{proof}
+
+\cref{ex:burgers-triangular-shock-wave} shows this $t^{-1/2}$ decay rate to be optimal.
+
+\textbf{b. Decay to N-wave.}
+
+Estimate (57) asserts that the $L^\infty$-norm of $u$ goes to zero as $t \to \infty$. On the other hand we note from \cref{ex:burgers-triangular-shock-wave} that the $L^1$-norm of $u$ need not go to zero; indeed, the integral of $u$ over $\R$ is conserved (Problem 13). We instead show here that $u$ evolves in $L^1$ into a simple shape, assuming now that
+
+$g$ has compact support.
+
+\begin{definition}[N-wave]
+\label{def:n-wave}
+\dcref{ch3:3.4.5-def-1}
+\group{Conservation Laws}
+Given constants $p, q, d, \sigma$, with $p, q \geq 0$, $d > 0$, we define the corresponding $N$-wave to be the function
+
+$$(63) \quad N(x,t) := \begin{cases} \frac{1}{d}\left(\frac{x}{t} - \sigma\right) & \text{if } -(pdt)^{1/2} < x - \sigma t < (qdt)^{1/2} \\ 0 & \text{otherwise.} \end{cases}$$
+
+\begin{figure}[h]\centering
+% [FIGURE: Diagram of an N-wave showing a triangular disturbance profile with a left wedge-shaped portion labeled (pdt)^{1/2} and a right sloping portion labeled (qdt)^{1/2}, centered around a horizontal baseline.]
+\end{figure}
+
+The constant $\sigma$ is the \textit{velocity} of the $N$-wave.
+\end{definition}
+
+Now define $\sigma$ by (58), set
+
+$$(64) \quad d := F''(0) > 0,$$
+
+and also write
+
+$$(65) \quad p := -2 \min_{y \in \R} \int_{-\infty}^{y} g \, dx, \quad q := 2 \max_{y \in \R} \int_{y}^{\infty} g \, dx.$$
+
+Note $p, q \geq 0$ and
+
+$$(66) \quad G'(\sigma) = \frac{1}{d}.$$
+
+\begin{theorem}[Asymptotics in $L^1$-norm]
+\label{thm:asymptotics-l1-norm-n-wave}
+\dcref{ch3:3.4-thm-6}
+\group{Conservation Laws}
+\uses{thm:asymptotics-sup-norm,def:n-wave}
+Assume that $p, q > 0$. Then there exists a constant $C$ such that
+
+$$(67) \quad \int_{-\infty}^{\infty} |u(x,t) - N(\cdot, t)| \, dx \leq \frac{C}{t^{1/2}}$$
+
+for all $t > 0$.
+\end{theorem}
+
+\begin{proof}
+1. From estimate (62) in the proof of \cref{thm:asymptotics-sup-norm} we have
+
+$$(68) \quad \left| \frac{(x - \sigma t) - y(x,t)}{t} \right| \leq \frac{C}{t^{1/2}},$$
+
+Now
+
+$$u(x,t) = G\left(\frac{x - y(x,t)}{t}\right)$$
+
+$$= G\left(\frac{(x - \sigma t) - y(x,t)}{t} + \sigma\right)$$
+
+$$= G(\sigma) + G'(\sigma)\left(\frac{(x - \sigma t) - y(x,t)}{t}\right)$$
+
+$$+ O\left(\left|\frac{(x - \sigma t) - y(x,t)}{t}\right|^2\right).$$
+
+Consequently (59), (66) and (68) imply
+
+$$(69) \quad \left|u(x,t) - \frac{1}{d}\frac{(x-\sigma t) - y(x,t)}{t}\right| \leq \frac{C}{t}.$$
+
+2. Since $g$ has compact support, we may assume for some constant $R > 0$ that $g \equiv 0$ on $\R \cap \{|x| \geq R\}$. Therefore
+
+$$h(x) = \begin{cases}
+h_- & \text{if } x \leq -R \\
+h_+ & \text{if } x \geq R,
+\end{cases}$$
+
+for constants $h_\pm$. A calculation shows
+
+$$(70) \quad \min_\R h = -\frac{p}{2} + h_- = -\frac{q}{2} + h_+.$$
+
+We next set
+
+$$(71) \quad \varepsilon = \varepsilon(t) := \frac{A}{t^{1/2}} \quad (t > 0),$$
+
+the constant $A$ to be selected later.
+
+3. We now claim that if $A$ is sufficiently large, then
+
+$$(72) \quad u(x,t) = 0 \quad \text{for } x - \sigma t < -R - (pd(1+\varepsilon)t)^{1/2}$$
+
+and
+
+$$(73) \quad u(x,t) = 0 \quad \text{for } x - \sigma t > R + (qd(1+\varepsilon)t)^{1/2}.$$
+
+In fact, since (64) implies
+
+$$L''(\sigma) = \frac{1}{d},$$
+
+we deduce from (61) and (62) that
+
+$$tL\left(\frac{x-y}{t}\right) = \frac{1}{d}\frac{|(x-\sigma t) - y|^2}{2t} + O(t^{-1/2}) \quad \text{as } t \to \infty.$$
+
+Hence
+
+$$(74) \quad tL\left(\frac{x-y}{t}\right) + h(y) = \frac{1}{d}\frac{|(x-\sigma t)-y|^2}{2t} + h(y) + O(t^{-1/2}).$$
+
+Assume
+
+$$(75) \quad x - \sigma t < -R - (pd(1+\varepsilon)t)^{1/2}.$$
+
+Then $h(x - \sigma t) = h_-$ and so
+
+$$tL\left(\frac{(x-(x-\sigma t))}{t}\right) + h(x-\sigma t) = tL(\sigma) + h_- = h_-.$$
+
+Now if $y \leq -R$, then
+
+$$tL\left(\frac{x-y}{t}\right) + h(y) \geq h_-,$$
+
+since $L \geq 0$. On the other hand if $y \geq -R$, we employ (74) and (70) to estimate
+
+$$tL\left(\frac{x-y}{t}\right) + h(y) \geq \frac{1}{d}\frac{|(x-\sigma t)-y|^2}{2t} - \frac{p}{2} + h_- + O\left(t^{-1/2}\right)$$
+
+$$\geq \frac{pd(1+\varepsilon)t}{2dt} - \frac{p}{2} + h_- + O\left(t^{-1/2}\right) \text{ by (75)}$$
+
+$$= \frac{pA}{2t_*^1} + h_- + O\left(t^{-1/2}\right) \text{ by (71)}$$
+
+$$\geq h_-,$$
+
+provided $A$ is large enough.
+
+We conclude that (75) forces $y(x,t) = x - \sigma t$, and so $u(x,t) = G(\sigma) = 0$. This establishes assertion (72), and the proof of (73) is analogous.
+
+4. Next we assert for $A$ and $t$ large enough that
+
+$$(76) \quad y(x,t) \geq -R \quad \text{if } x - \sigma t = R - (pd(1-\varepsilon)t)^{1/2}.$$
+
+To see this, notice that $y(x,t) \leq -R$ implies as above that
+
+$$tL\left(\frac{x-y}{t}\right) + h(y) \geq h_-.$$
+
+Select now a point $z$ such that $h(z) = \min h = -\frac{p}{2} + h_-$ and $|z| \leq R$. Then we can as before invoke (74) to estimate
+
+$$tL\left(\frac{x-z}{t}\right) + h(z) \leq \frac{1}{d}\frac{|(x-\sigma t)-z|^2}{2t} - \frac{p}{2} + h_- + O\left(t^{-1/2}\right)$$
+
+$$\leq \frac{pd(1-\varepsilon)t}{2dt} - \frac{p}{2} + h_- + O\left(t^{-1/2}\right)$$
+
+$$= -\frac{pA}{2t_*^1} + h_- + O\left(t^{-1/2}\right) < h_-,$$
+
+for $A$ large enough. This proves (76) and a similar argument establishes that
+
+$$(77) \quad u(x,t) \leq R \quad \text{if } x - \sigma t = -R + (gd(1-\varepsilon)t)^{1/2}.$$
+
+5. Remember from the proof of \cref{thm:lax-oleinik-formula} that the mapping $x \mapsto y(x,t)$ is nondecreasing. Hence (69), (76) and (77) imply for large $t$ that
+
+$$(78) \quad \left\{  \begin{array}{ll} |u(x,t) - \frac{1}{d}\left(\frac{x}{t} - \sigma\right)| \leq \frac{C}{t} & \text{if} \\ -(pd(1-\varepsilon)t)^{1/2} < x - \sigma t < -R + (gd(1-\varepsilon)t)^{1/2}. \end{array} \right.$$
+
+6. Owing to \cref{thm:asymptotics-sup-norm}, we have $|u| = O(t^{-1/2})$ and by definition $|N| = O(t^{-1/2})$. In addition (71) implies $((1+\varepsilon)t)^{\frac{1}{2}} - t^{\frac{1}{2}} = O(1)$. Using these bounds along with (72), (73) and (78), we estimate
+
+$$\int_{-\infty}^{\infty} |u(x,t) - N(x,t)| \, dx = O\left(t^{-1/2}\right),$$
+
+as desired.
+\end{proof}
+
+\begin{example}[Burgers' triangular shock wave as an $N$-wave]
+\label{ex:burgers-example-n-wave-specialization}
+\dcref{ch3:3.4.5-ex-1}
+\group{Conservation Laws}
+\uses{def:n-wave,ex:burgers-triangular-shock-wave,thm:asymptotics-l1-norm-n-wave}
+Observe we have $p = 0, q = 2, \sigma = 0, d = 1$ in \cref{ex:burgers-triangular-shock-wave} of \S 3.4.1. In this case
+
+$$N(x,t) = \begin{cases} \frac{x}{t} & \text{if } 0 < x < (2t)^{1/2} \\ 0 & \text{otherwise}, \end{cases}$$
+
+and so in fact $u \equiv N$ for times $t \geq 2$. $\square$
+\end{example}
+
+We will study \textit{systems of conservation laws} in Chapter 11.
+
+\section{Problems}
+\label{sec:ch3-problems}
+
+%ORIGINAL-NUMBER: 1
+\begin{exercise}
+Prove
+$$u(x,t,a,b) = a \cdot x - tH(a) + b \quad (a \in \R^n, b \in \R)$$
+is a complete integral of the Hamilton-Jacobi equation
+$$u_t + H(Du) = 0.$$
+\end{exercise}
+
+%ORIGINAL-NUMBER: 2
+\begin{exercise}
+(a) Write down the characteristic equations for the PDE
+$$(*)  \quad u_t + b \cdot Du = f \quad \text{in } \R^n \times (0,\infty),$$
+where $b \in \R^n$, $f = f(x,t)$.
+
+(b) Use the characteristic ODE to solve $(*)$ subject to the initial condition
+$$u = g \text{ on } \R^n \times \{t = 0\}.$$
+Make sure your answer agrees with formula (5) in \S2.1.2.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 3
+\begin{exercise}
+Solve using characteristics:
+
+(a) $x_1 u_{x_1} + x_2 u_{x_2} = 2u$, $u(x_1, 1) = g(x_1)$.
+
+(b) $uu_{x_1} + u_{x_2} = 1$, $u(x_1, x_1) = \frac{1}{2}x_1$.
+
+(c) $x_1 u_{x_1} + 2x_2 u_{x_2} = 3u$, $u(x_1, x_2, 0) = g(x_1, x_2)$.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 4
+\begin{exercise}
+Verify that formula (61) in \S3.2.5 provides an implicit solution of the scalar conservation law.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 5
+\begin{exercise}
+Write $L = H^*$, if $H : \R^n \to \R$ is convex.
+
+(a) Let $H(p) = \frac{1}{r}|p|^r$, for $1 < r < \infty$. Show
+$$L(q) = \frac{1}{s}|q|^s, \quad \text{where } \frac{1}{r} + \frac{1}{s} = 1.$$
+
+(b) Let $H(p) = \frac{1}{2}\sum_{i,j=1}^n a_{ij}p_i p_j + \sum_{i=1}^n b_i p_i$, where $A = ((a_{ij}))$ is a symmetric, positive definite matrix, $b \in \R^n$. Compute $L(q)$.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 6
+\begin{exercise}
+Let $H : \R^n \to \R$ be convex. We say $q$ belongs to the \textit{subdifferential} of $H$ at $p$, written
+$$q \in \partial H(p),$$
+if
+$$H(r) \geq H(p) + q \cdot (r - p) \quad \text{for all } r \in \R^n.$$
+Prove $q \in \partial H(p)$ if and only if $p \in \partial L(q)$ if and only if $p \cdot q = H(p) + L(q)$, where $L = H^*$.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 7
+\begin{exercise}
+Prove that the Hopf-Lax formula reads
+$$u(x,t) = \min_{y \in \R^n} \left\{ tL\left(\frac{x-y}{t}\right) + g(y)\right\}$$
+$$= \min_{y \in B(x, Rt)} \left\{ tL\left(\frac{x-y}{t}\right) + g(y)\right\}$$
+for $R = \sup_{\R^n} |DH(Dg)|$, $H = L^*$. (This proves \textit{finite propagation speed} for a Hamilton-Jacobi PDE with convex Hamiltonian and Lipschitz continuous initial function $g$. Hint: Use the previous problem.)
+\end{exercise}
+
+%ORIGINAL-NUMBER: 8
+\begin{exercise}
+Let $E$ be a closed subset of $\R^n$. Show that if the Hopf-Lax formula could be applied to the initial-value problem
+$$\begin{cases}
+u_t + |Du|^2 = 0 & \text{in } \R^n \times (0, \infty) \\
+u = \begin{cases} 0 & x \in E \\ +\infty & x \notin E \end{cases} & \text{on } \R^n \times \{t = 0\},
+\end{cases}$$
+it would give the solution
+
+$$u(x,t) = \frac{1}{4t}\dist(x, E)^2.$$
+\end{exercise}
+
+%ORIGINAL-NUMBER: 9
+\begin{exercise}
+Fill in all details for the proof of \cref{lem:hopf-lax-semiconcavity-uniform-convexity} in \S3.3.3.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 10
+\begin{exercise}
+Assume $u^1, u^2$ are two weak solutions of the initial-value problems
+$$
+\begin{cases}
+u_t^i + H(Du^i) = 0 & \text{in } \R^n \times (0, \infty) \\
+u^i = g^i & \text{on } \R^n \times \{t = 0\} \quad (i = 1,2),
+\end{cases}
+$$
+for $H$ as in \S3.3. Prove the $L^\infty$-contraction inequality
+$$\sup_{\R} |u^1(\cdot, t) - u^2(\cdot, t)| \leq \sup_{\R} |g^1 - g^2| \quad (t > 0).$$
+\end{exercise}
+
+%ORIGINAL-NUMBER: 11
+\begin{exercise}
+Show that
+$$u(x,t) = \begin{cases} -\frac{2}{3}\left(t + \sqrt{3x + t^2}\right) & \text{if } 4x + t^2 > 0 \\ 0 & \text{if } 4x + t^2 < 0 \end{cases}$$
+is an (unbounded) entropy solution of $u_t + \left(\frac{u^2}{2}\right)_x = 0$.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 12
+\begin{exercise}
+Assume $u(x+z) - u(x) \leq Ez$ for all $z > 0$. Let $u^\epsilon = \eta_\epsilon * u$, and show
+$$u_x^\epsilon \leq E.$$
+\end{exercise}
+
+%ORIGINAL-NUMBER: 13
+\begin{exercise}
+Assume $F(0) = 0$, $u$ is a continuous integral solution of the conservation law
+$$
+\begin{cases}
+u_t + F(u)_x = 0 & \text{in } \R \times (0, \infty) \\
+u = g & \text{on } \R \times \{t = 0\},
+\end{cases}
+$$
+and $u$ has compact support in $\R \times [0, \infty)$. Prove
+$$\int_{-\infty}^{\infty} u(x,t) dx = \int_{-\infty}^{\infty} g\,dx$$
+for all $t > 0$.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 14
+\begin{exercise}
+Compute explicitly the unique entropy solution of
+$$
+\begin{cases}
+u_t + \left(\frac{u^2}{2}\right)_x = 0 & \text{in } \R \times (0, \infty) \\
+u = g & \text{on } \R \times \{t = 0\},
+\end{cases}
+$$
+for
+$$g(x) = \begin{cases} 1 & \text{if } x < -1 \\ 0 & \text{if } -1 < x < 0 \\ 2 & \text{if } 0 < x < 1 \\ 0 & \text{if } x > 1. \end{cases}$$
+Draw a picture documenting your answer, being sure to illustrate what happens for all times $t > 0$.
+\end{exercise}
+
+\section{References}
+\label{sec:ch3-references}
+
+\textbf{Section 3.1} \quad A nice reference for this material is Courant--Hilbert \cite{CourantHilbert1962} [C-H, Chapter 2].
+
+\textbf{Section 3.2} \quad This derivation of the characteristic differential equations is found in Carath\'eodory \cite{Caratheodory1982}. The proof of \cref{thm:local-existence-characteristics} follows Garabedian \cite{Garabedian1964} [G, Chapter 2], John \cite{John1982} [J, Chapter 1], etc. Chester \cite{Chester1971} and Sneddon \cite{Sneddon1957} are also good texts for more on first-order PDE. \cref{ex:fully-nonlinear-halfspace-characteristics} in \S 3.2.2 is from Zwillinger \cite{Zwillinger1984}.
+
+\textbf{Section 3.3} \quad See Lions \cite{PLLions1982} [LI], Rund \cite{Rund1973} and Benton \cite{Benton1977} for more on Hamilton--Jacobi PDE. The uniqueness proof, which is due to A. Douglis, is from \cite{Benton1977} [BE].
+
+\textbf{Section 3.4} \quad See Lax \cite{Lax1973} and Smoller \cite{Smoller1983} [S, Chapters 15, 16] (from which I took the proof of \cref{thm:uniqueness-entropy-solutions}, due to O. Oleinik). \cref{thm:asymptotics-sup-norm,thm:asymptotics-l1-norm-n-wave} are from DiPerna \cite{DiPerna1983} and I am indebted to M. Struwe for help with the proofs. A good overall reference on nonlinear waves is Whitham \cite{Whitham1974}.

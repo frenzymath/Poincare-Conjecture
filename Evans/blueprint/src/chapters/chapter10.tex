@@ -1,0 +1,1289 @@
+% Source: Evans, "Partial Differential Equations" (2nd ed., AMS Graduate Studies in Mathematics vol. 19, 2010),
+% Chapter 10 "Hamilton-Jacobi Equations", PDF pages 542-568 of MathBooks/Evans Partial Differential Equations(1).pdf.
+% Transcribed page-by-page by vision subagents, then merged and restructured into
+% leanblueprint conventions (semantic \label, bracketed titles, \uses dependency edges) below.
+%
+% NOTE ON GAPS: as in chapter6.tex, chapter8.tex and chapter9.tex, a number of source pages were
+% returned by the vision transcription subagent as refusal placeholders rather than actual page
+% content (PDF pages 546, 551, 557, 567; equivalently book pages 543, 548, 554, 564). Every such
+% gap was closed by directly re-reading the corresponding pages of the source PDF with a
+% vision-capable Read call during this restructuring pass, so no content below is invented or
+% reconstructed purely from outside knowledge of the book -- it is a faithful transcription of the
+% actual page images.
+
+
+\begin{center}
+\begin{tabular}{l}
+10.1 \ Introduction, viscosity solutions \\
+10.2 \ Uniqueness \\
+10.3 \ Control theory, dynamic programming \\
+10.4 \ Problems \\
+10.5 \ References
+\end{tabular}
+\end{center}
+
+\section{Introduction, Viscosity Solutions}
+\label{sec:hj-introduction-viscosity-solutions}
+
+This chapter investigates the existence, uniqueness and other properties of appropriately defined weak solutions of the initial-value problem for the \textit{Hamilton-Jacobi equation}:
+\[
+\begin{cases}
+u_t + H(Du, x) = 0 & \text{in } \R^n \times (0, \infty) \\
+u = g & \text{on } \R^n \times \{t = 0\}.
+\end{cases}
+\tag{1}
+\]
+
+Here the Hamiltonian $H : \R^n \times \R^n \to \R$ is given, as is the initial function $g : \R^n \to \R$. The unknown is $u : \R^n \times [0, \infty) \to \R$, $u = u(x,t)$, and $Du = D_x u = (u_{x_1}, \ldots, u_{x_n})$. We will write $H = H(p, x)$, so that ``$p$'' is the name of the variable for which we substitute the gradient $Du$ in the PDE.
+
+We recall from our study of characteristics in \S3.2 that in general there can be no smooth solution of (1) lasting for all times $t \geq 0$. We recall further that if $H$ depends only on $p$ and is convex, then the Hopf-Lax formula (expression (21) in \S3.3.2, \cref{def:hopf-lax-formula}) provides us with a type of generalized solution.
+
+In this chapter we consider the general case that $H$ depends also on $x$ and, more importantly, is no longer necessarily convex in the variable $p$. We will discover in these new circumstances a different way to define a weak solution of (1).
+
+Our approach is to consider first this approximate problem:
+\[
+\begin{cases} u_t^\epsilon + H(Du^\epsilon, x) - \epsilon \Delta u^\epsilon = 0 & \text{in } \R^n \times (0, \infty) \\ u^\epsilon = g & \text{on } \R^n \times \{t = 0\}, \end{cases}
+\tag{2}
+\]
+for $\epsilon > 0$. The idea is that whereas (1) involves a fully nonlinear first-order PDE, (2) is an initial-value problem for a quasilinear parabolic PDE, which turns out to have a smooth solution. The term $\epsilon \Delta$ in (2) in effect regularizes the Hamilton-Jacobi equation. Then of course we hope that as $\epsilon \to 0$ the solutions $u^\epsilon$ of (2) will converge to some sort of weak solution of (1). This technique is the method of \textit{vanishing viscosity}.
+
+However, as $\epsilon \to 0$ we can expect to lose control over the various estimates of the function $u^\epsilon$ and its derivatives: these estimates depend strongly on the regularizing effect of $\epsilon \Delta$ and blow up as $\epsilon \to 0$. However, it turns out that we can often in practice at least be sure that the family $\{u^\epsilon\}_\epsilon$ is bounded and equicontinuous on compact subsets of $\R^n \times [0, \infty)$. Consequently the Arzel\`a-Ascoli compactness criterion, \S C.7, ensures that
+\[
+u^{\epsilon_j} \to u \quad \text{locally uniformly in } \R^n \times [0, \infty),
+\tag{3}
+\]
+for some subsequence $\{u^{\epsilon_j}\}_{j=1}^\infty$ and some limit function
+\[
+u \in C(\R^n \times [0, \infty)).
+\tag{4}
+\]
+
+Now we can surely expect that $u$ is some kind of solution of our initial-value problem (1), but as we only know $u$ is continuous, and have absolutely no information as to whether $Du$ and $u_t$ exist in any sense, such an interpretation is difficult.
+
+Similar problems have arisen before in Chapters 8 and 9, where we had to deal with the weak convergence of various would-be approximate solutions to other nonlinear partial differential equations. Remember in particular that in \S9.1 we solved a divergence structure quasilinear elliptic PDE by passing to limits using the method of Browder and Minty (\cref{rem:browder-minty-method}, \cref{thm:monotonicity-existence-weak-solution}). Roughly speaking, we there integrated by parts to throw ``hard-to-control'' derivatives onto a fixed test function, and only then tried to go to limits to discover a solution. We \textit{will} for the Hamilton-Jacobi equation (1) attempt something similar. We \textit{will} fix a smooth test function $v$ and will pass from (2) to (1) as $\epsilon \to 0$ by first ``putting the derivatives onto $v$''.
+
+But since (1) is fully nonlinear, and in particular is not of divergence structure, we cannot just integrate by parts, as we did in \S9.1, to switch to differentiations on $v$. Instead we will exploit the maximum principle to accomplish this transition, at least at certain points.
+
+We will call the solution we build a \textit{viscosity solution}, in honor of the vanishing viscosity technique. Our main goal will then be to discover an intrinsic characterization of such generalized solutions of (1).
+
+\subsection{Definitions}
+
+We henceforth assume that $H, u$ are continuous and will as necessary later add further hypotheses.
+
+\begin{remark}[Motivation for definition of viscosity solution]
+\label{rem:hj-viscosity-solution-motivation}
+\dcref{ch10:10.1-rem-1}
+\group{Viscosity Solutions}
+The technique alluded to above works as follows. Fix any smooth test function $v \in C^\infty(\R^n \times (0,\infty))$ and suppose
+\[
+\begin{cases} u - v \text{ has a } \textit{strict local maximum} \text{ at some point} \\ (x_0, t_0) \in \R^n \times (0,\infty). \end{cases}
+\tag{5}
+\]
+This means
+\[
+(u-v)(x_0, t_0) > (u-v)(x,t)
+\]
+for all points $(x,t)$ sufficiently close to $(x_0, t_0)$, with $(x,t) \neq (x_0, t_0)$.
+
+Now recall (3). We claim for each sufficiently small $\epsilon_j > 0$, there exists a point $(x_{\epsilon_j}, t_{\epsilon_j})$ such that
+\[
+u^{\epsilon_j} - v \text{ has a local maximum at } (x_{\epsilon_j}, t_{\epsilon_j})
+\tag{6}
+\]
+and
+\[
+(x_{\epsilon_j}, t_{\epsilon_j}) \to (x_0, t_0) \quad \text{as } j \to \infty.
+\tag{7}
+\]
+
+To confirm this, note that for each sufficiently small $r > 0$, (5) implies $\max_{\overline{B}}(u-v) < (u-v)(x_0, t_0)$, $B$ denoting the closed ball in $\R^{n+1}$ with center $(x_0, t_0)$ and radius $r$. In view of (3), $u^{\epsilon_j} \to u$ uniformly on $B$, and so $\max_{\overline{B}}(u^{\epsilon_j}-v) < (u^{\epsilon_j}-v)(x_0, t_0)$ provided $\epsilon_j$ is small enough. Consequently $u^{\epsilon_j} - v$ attains a local maximum at some point in the interior of $B$. We can next replace $r$ by a sequence of radii tending to zero to obtain (6), (7).
+
+Now owing to (6) we see that the equations
+\[
+Du^{\epsilon_j}(x_{\epsilon_j}, t_{\epsilon_j}) = Dv(x_{\epsilon_j}, t_{\epsilon_j}),
+\tag{8}
+\]
+\[
+u_t^{\epsilon_j}(x_{\epsilon_j}, t_{\epsilon_j}) = v_t(x_{\epsilon_j}, t_{\epsilon_j}),
+\tag{9}
+\]
+and the inequality
+\[
+-\Delta u^{\epsilon_j}(x_{\epsilon_j}, t_{\epsilon_j}) \geq -\Delta v(x_{\epsilon_j}, t_{\epsilon_j})
+\tag{10}
+\]
+hold. We consequently can calculate
+\[
+\begin{aligned}
+v_t(x_\epsilon, t_\epsilon) + H(Dv(x_\epsilon, t_\epsilon), x_\epsilon)
+&= u_t^\epsilon(x_\epsilon, t_\epsilon) + H(Du^\epsilon(x_\epsilon, t_\epsilon), x_\epsilon) && \text{by }(8),(9) \\
+&= \epsilon \Delta u^\epsilon(x_\epsilon, t_\epsilon) && \text{by }(2) \\
+&\leq \epsilon \Delta v(x_\epsilon, t_\epsilon) && \text{by }(10).
+\end{aligned}
+\tag{11}
+\]
+
+Now let $\epsilon \to 0$ and remember (7). Since $v$ is smooth and $H$ is continuous, we deduce
+\[
+v_t(x_0, t_0) + H(Dv(x_0, t_0), x_0) \leq 0.
+\tag{12}
+\]
+
+We have established this inequality assuming (5). Suppose now instead that
+\[
+u - v \text{ has a local maximum at }(x_0, t_0),
+\tag{13}
+\]
+but that this $\textit{maximum is not necessarily strict}$. Then $u - \bar{v}$ has a strict local maximum at $(x_0, t_0)$, for $\bar{v}(x, t) := v(x, t) + \delta(|x - x_0|^2 + (t - t_0)^2)$ ($\delta > 0$). We thus conclude as above that $\bar{v}_t(x_0, t_0) + H(D\bar{v}(x_0, t_0), x_0) \leq 0$; whereupon (12) again follows.
+
+Consequently (13) implies inequality (12). Similarly, we deduce the reverse inequality
+\[
+v_t(x_0, t_0) + H(Dv(x_0, t_0), x_0) \geq 0,
+\tag{14}
+\]
+provided
+\[
+u - v \text{ has a local minimum at }(x_0, t_0).
+\tag{15}
+\]
+The proof is exactly like that above, except that the inequalities in (10), and thus in (11), are reversed.
+
+In summary, we have discovered for any smooth function $v$ that inequality (12) follows from (13), and (14) from (15). We have in effect put the derivatives onto $v$, at the expense of certain inequalities holding. $\square$
+\end{remark}
+
+Our intention now is to \textit{define} a weak solution of (1) in terms of (12), (13) and (14), (15).
+
+\begin{definition}[Viscosity solution of the initial-value problem]
+\label{def:viscosity-solution-cauchy-problem}
+\dcref{ch10:10.1-def-1}
+\group{Viscosity Solutions}
+\uses{rem:hj-viscosity-solution-motivation}
+A bounded, uniformly continuous function $u$ is called a \textit{viscosity solution} of the \textit{initial-value problem} (1) for the \textit{Hamilton-Jacobi equation} provided:
+
+(i) $u = g$ on $\R^n \times \{t = 0\}$,
+
+and
+
+(ii) for each $v \in C^\infty(\R^n \times (0,\infty))$,
+
+if $u - v$ has a local maximum at a point $(x_0, t_0) \in \R^n \times (0,\infty)$, then
+\[
+v_t(x_0, t_0) + H(Dv(x_0, t_0), x_0) \leq 0,
+\tag{16}
+\]
+and
+
+if $u - v$ has a local minimum at a point $(x_0, t_0) \in \R^n \times (0,\infty)$, then
+\[
+v_t(x_0, t_0) + H(Dv(x_0, t_0), x_0) \geq 0.
+\tag{17}
+\]
+\end{definition}
+
+\begin{remark}[The defining inequalities, not the vanishing-viscosity construction, are the definition]
+\label{rem:viscosity-solution-definition-emphasis}
+\dcref{ch10:10.1-rem-2}
+\group{Viscosity Solutions}
+\uses{def:viscosity-solution-cauchy-problem}
+Note carefully that by definition a viscosity solution satisfies (16), (17), and so all subsequent deductions must be based on these inequalities. The previous discussion was purely motivational.
+
+For emphasis, we repeat the same point, which has caused some confusion among students. To verify that a given function $u$ is a viscosity solution of the Hamilton-Jacobi equation $u_t + H(Du, x) = 0$, we must confirm that (16), (17) hold for all smooth functions $v$. Now the argument above shows that \textit{if} $u$ is constructed using the vanishing viscosity method, it is indeed a viscosity solution. But we will also see later in \S10.3 that viscosity solutions can be built in entirely different ways, which have nothing whatsoever to do with vanishing viscosity.
+
+The point is that the inequalities (16), (17) provide an intrinsic characterization, and indeed the very definition, of our generalized solutions. $\square$
+\end{remark}
+
+We devote the rest of this chapter to demonstrating that viscosity solutions provide an appropriate and useful notion of weak solutions for our Hamilton-Jacobi PDE.
+
+\subsection{Consistency}
+
+\begin{proposition}[Classical solutions are viscosity solutions]
+\label{prop:classical-solutions-are-viscosity-solutions}
+\dcref{ch10:10.1-prop-1}
+\group{Viscosity Solutions}
+\uses{def:viscosity-solution-cauchy-problem}
+If $u \in C^1(\R^n \times [0,\infty))$ solves (1) and if $u$ is bounded and uniformly continuous, then $u$ is a viscosity solution. That is, any \textit{classical solution} of $u_t + H(Du,x) = 0$ \textit{is also a viscosity solution}.
+\end{proposition}
+\begin{proof}
+The proof is easy. If $v$ is smooth and $u - v$ obtains a local maximum at $(x_0, t_0)$, then
+\[
+\begin{cases} Du(x_0,t_0) = Dv(x_0,t_0) \\ u_t(x_0,t_0) = v_t(x_0,t_0). \end{cases}
+\]
+Consequently
+\[
+v_t(x_0, t_0) + H(Dv(x_0, t_0), x_0) = u_t(x_0, t_0) + H(Du(x_0, t_0), x_0) = 0,
+\]
+since $u$ solves (1). A similar equality holds at any point $(x_0, t_0)$ where $u - v$ has a local minimum.
+\end{proof}
+
+Next we assert that \textit{any sufficiently smooth viscosity solution is a classical solution}, and, even more, that \textit{if a viscosity solution is differentiable at some point, then it solves the Hamilton-Jacobi PDE there}. We will need the following calculus fact:
+
+\begin{lemma}[Touching by a $C^1$ function]
+\label{lem:touching-by-c1-function}
+\dcref{ch10:10.1-lem-1}
+\group{Viscosity Solutions}
+Assume $u : \R^n \to \R$ is continuous and is also differentiable at some point $x_0$. Then there exists a function $v \in C^1(\R^n)$ such that
+\[
+u(x_0) = v(x_0)
+\tag{18}
+\]
+and
+\[
+u - v \text{ has a strict local maximum at } x_0.
+\tag{19}
+\]
+\end{lemma}
+\begin{proof}
+1. We may as well assume
+\[
+x_0 = 0, \quad u(0) = Du(0) = 0;
+\tag{20}
+\]
+for otherwise we could consider $\tilde{u}(x) := u(x + x_0) - u(x_0) - Du(x_0) \cdot x$ in place of $u$.
+
+2. In view of (20) and our hypothesis, we have
+\[
+u(x) = |x| \rho_1(x),
+\tag{21}
+\]
+where
+\[
+\rho_1 : \R^n \to \R \text{ is continuous, } \rho_1(0) = 0.
+\tag{22}
+\]
+Set
+\[
+\rho_2(r) := \max_{x \in B(r)} \{|\rho_1(x)|\} \quad (r \geq 0).
+\tag{23}
+\]
+Then
+\[
+\rho_2 : [0, \infty) \to [0, \infty) \text{ is continuous, } \rho_2(0) = 0,
+\tag{24}
+\]
+and
+\[
+\rho_2 \text{ is nondecreasing.}
+\tag{25}
+\]
+
+3. Now write
+\[
+v(x) := \int_{|x|}^{2|x|} \rho_2(r) \, dr + |x|^2 \quad (x \in \R^n).
+\]
+Since $|v(x)| \leq |x| \rho_2(2|x|) + |x|^2$, we observe
+\[
+v(0) = Dv(0) = 0.
+\tag{26}
+\]
+Furthermore if $x \neq 0$, we have
+\[
+Dv(x) = \frac{2x}{|x|} \rho_2(2|x|) - \frac{x}{|x|} \rho_2(|x|) + 2x,
+\]
+and so $v \in C^1(\R^n)$.
+
+4. Finally note that if $x \neq 0$,
+\[
+\begin{aligned}
+u(x) - v(x) &= |x| \rho_1(x) - \int_{|x|}^{2|x|} \rho_2(r) \, dr - |x|^2 \\
+&\leq |x| \rho_2(|x|) - \int_{|x|}^{2|x|} \rho_2(r) \, dr - |x|^2 \\
+&\leq -|x|^2 \quad \text{by } (25) \\
+&< 0 = u(0) - v(0).
+\end{aligned}
+\]
+Thus $u - v$ has a strict local maximum at $0$, as required.
+\end{proof}
+
+\begin{theorem}[Consistency of viscosity solutions]
+\label{thm:consistency-viscosity-solutions}
+\dcref{ch10:10.1-thm-1}
+\group{Viscosity Solutions}
+\uses{def:viscosity-solution-cauchy-problem,lem:touching-by-c1-function}
+Let $u$ be a viscosity solution of (1), and suppose $u$ is differentiable at some point $(x_0, t_0) \in \R^n \times (0, \infty)$. Then
+\[
+u_t(x_0, t_0) + H(Du(x_0, t_0), x_0) = 0.
+\]
+\end{theorem}
+\begin{proof}
+1. Applying the lemma above to $u$, with $\R^{n+1}$ replacing $\R^n$ and $(x_0, t_0)$ replacing $x_0$, we deduce there exists a $C^1$ function $v$ such that
+\[
+u - v \text{ has a strict maximum at } (x_0, t_0).
+\tag{27}
+\]
+
+2. Now set $v^\epsilon := \eta_\epsilon * v$, $\eta_\epsilon$ denoting the usual mollifier in the $n + 1$ variables $(x,t)$. Then
+\[
+\begin{cases} v^\epsilon \to v \\ Dv^\epsilon \to Dv & \text{uniformly near } (x_0, t_0) \\ v_t^\epsilon \to v_t; \end{cases}
+\tag{28}
+\]
+and so (27) implies
+\[
+u - v^c \text{ has a maximum at some point } (x_c, t_c),
+\tag{29}
+\]
+with
+\[
+(x_c, t_c) \to (x_0, t_0) \text{ as } c \to 0.
+\tag{30}
+\]
+
+Applying then the definition of viscosity solution, we see
+\[
+v_t^c(x_c, t_c) + H(Dv^c(x_c, t_c), x_c) \le 0.
+\]
+Let $c \to 0$ and use (28), (30) to deduce
+\[
+v_t(x_0, t_0) + H(Dv(x_0, t_0), x_0) \le 0.
+\tag{31}
+\]
+But in view of (27), we see that since $u$ is differentiable at $(x_0, t_0)$,
+\[
+Du(x_0, t_0) = Dv(x_0, t_0), \quad u_t(x_0, t_0) = v_t(x_0, t_0).
+\]
+Substitute above, to conclude from (31) that
+\[
+u_t(x_0, t_0) + H(Du(x_0, t_0), x_0) \le 0.
+\tag{32}
+\]
+
+3. Now apply the lemma above to $-u$ in $\R^{n+1}$, to find a $C^1$ function $v$ such that $u - v$ has a strict minimum at $(x_0, t_0)$. Then, arguing as above, we likewise deduce
+\[
+u_t(x_0, t_0) + H(Du(x_0, t_0), x_0) \ge 0.
+\]
+This inequality and (32) complete the proof.
+\end{proof}
+
+\section{Uniqueness}
+\label{sec:hj-uniqueness}
+
+Our goal now is to establish the uniqueness of a viscosity solution of our initial-value problem for Hamilton-Jacobi PDE. To be slightly more general, let us fix a time $T > 0$ and consider the problem
+\[
+\begin{cases} u_t + H(Du, x) = 0 & \text{in } \R^n \times (0, T] \\ u = g & \text{on } \R^n \times \{t = 0\}. \end{cases}
+\tag{1}
+\]
+
+\begin{definition}[Viscosity solution on a finite time interval]
+\label{def:viscosity-solution-finite-horizon}
+\dcref{ch10:10.2-def-1}
+\group{Viscosity Solutions}
+\uses{def:viscosity-solution-cauchy-problem}
+We say that a bounded, uniformly continuous function $u$ is a viscosity solution of (1) provided $u = g$ on $\R^n \times \{t = 0\}$, and the inequalities in (16) (or (17)) from \S10.1 hold if $u - v$ has a local maximum (or minimum) at a point $(x_0, t_0) \in \R^n \times (0, T]$.
+\end{definition}
+
+\begin{lemma}[Extrema at a terminal time]
+\label{lem:extrema-at-terminal-time}
+\dcref{ch10:10.2-lem-1}
+\group{Viscosity Solutions}
+\uses{def:viscosity-solution-finite-horizon}
+Assume $u$ is a viscosity solution of (1) and $u - v$ has a local maximum (minimum) at a point $(x_0, t_0) \in \R^n \times (0, T]$. Then
+\[
+v_t(x_0, t_0) + H(Dv(x_0, t_0), x_0) \le 0 \quad (\ge 0).
+\tag{2}
+\]
+The point is that we are now allowing for $t_0 = T$.
+\end{lemma}
+\begin{proof}
+Assume $u - v$ has a local maximum at the point $(x_0, T)$; as before we may assume that this is a strict local maximum. Write
+\[
+\bar{v}(x,t) := v(x,t) + \frac{\epsilon}{T-t} \quad (x \in \R^n, 0 < t < T).
+\]
+Then for $\epsilon > 0$ small enough, $u - \bar{v}$ has a local maximum at a point $(x_{\epsilon}, t_{\epsilon})$, where $0 < t_{\epsilon} < T$ and $(x_{\epsilon}, t_{\epsilon}) \to (x_0, T)$. Consequently
+\[
+\bar{v}_t(x_{\epsilon}, t_{\epsilon}) + H(D\bar{v}(x_{\epsilon}, t_{\epsilon}), x_{\epsilon}) \leq 0,
+\]
+and so
+\[
+v_t(x_{\epsilon}, t_{\epsilon}) + \frac{\epsilon}{(T-t_{\epsilon})^2} + H(Dv(x_{\epsilon}, t_{\epsilon}), x_{\epsilon}) \leq 0.
+\]
+Letting $\epsilon \to 0$, we find
+\[
+v_t(x_0, T) + H(Dv(x_0, T), x_0) \leq 0.
+\]
+This proves (2) if $u - v$ has a maximum at $(x_0, T)$. A similar proof gives the reverse inequality should $u - v$ have a minimum at $(x_0, T)$.
+\end{proof}
+
+To go further, let us hereafter suppose the Hamiltonian $H$ to satisfy these conditions of Lipschitz continuity:
+
+\begin{definition}[Lipschitz hypothesis on the Hamiltonian]
+\label{def:hamiltonian-lipschitz-condition}
+\dcref{ch10:10.2-def-2}
+\group{Viscosity Solutions}
+\[
+\begin{cases}
+|H(p,x) - H(q,x)| \leq C|p - q| \\
+|H(p,x) - H(p,y)| \leq C|x - y|(1 + |p|)
+\end{cases}
+\tag{3}
+\]
+for $x, y, p, q \in \R^n$ and some constant $C \geq 0$.
+\end{definition}
+
+We come next to the central fact concerning viscosity solutions of the initial-value problem (1), namely uniqueness. This important assertion justifies our taking the inequalities (16) and (17) from \S10.1 as the foundation of our theory.
+
+\begin{theorem}[Uniqueness of viscosity solution]
+\label{thm:uniqueness-viscosity-solution-hj}
+\dcref{ch10:10.2-thm-1}
+\group{Viscosity Solutions}
+\uses{def:viscosity-solution-finite-horizon,lem:extrema-at-terminal-time,def:hamiltonian-lipschitz-condition}
+Under assumption (3) there exists at most one viscosity solution of (1).
+\end{theorem}
+
+\begin{remark}[Doubling of variables technique]
+\label{rem:doubling-variables-technique}
+\dcref{ch10:10.2-rem-1}
+\group{Viscosity Solutions}
+\uses{thm:uniqueness-viscosity-solution-hj}
+The following proof is based upon an unusual idea of ``doubling the number of variables''. See the proof of Theorem 3 in \S11.4.3 for a related technique. $\square$
+\end{remark}
+
+\begin{proof}
+(Omit on first reading.)
+
+1. Assume $u$ and $\tilde{u}$ are both viscosity solutions with the same initial conditions, but
+\[
+\sup_{\R^n \times [0,T]} (u - \tilde{u}) =: \sigma > 0.
+\tag{4}
+\]
+Choose $0 < \epsilon, \lambda < 1$ and set
+\[
+\begin{aligned}
+\Phi(x,y,t,s) :={}& u(x,t) - \tilde{u}(y,s) - \lambda(t + s) \\
+&- \frac{1}{\epsilon^2}(|x - y|^2 + (t - s)^2) - \epsilon(|x|^2 + |y|^2),
+\end{aligned}
+\tag{5}
+\]
+for $x,y \in \R^n$, $t,s \geq 0$. Then there exists a point $(x_0,y_0,t_0,s_0) \in \R^{2n} \times [0,T]^2$ such that
+\[
+\Phi(x_0,y_0,t_0,s_0) = \max_{\R^{2n} \times [0,T]^2} \Phi(x,y,t,s).
+\tag{6}
+\]
+
+2. We may fix $0 < \epsilon, \lambda < 1$ so small that (4) implies
+\[
+\Phi(x_0,y_0,t_0,s_0) \geq \sup_{\R^n \times [0,T]} \Phi(x,x,t,t) \geq \frac{\sigma}{2}.
+\tag{7}
+\]
+In addition, $\Phi(x_0,y_0,t_0,s_0) \geq \Phi(0,0,0,0)$; and therefore
+\[
+\begin{aligned}
+&\lambda(t_0 + s_0) + \frac{1}{\epsilon^2}(|x_0 - y_0|^2 + (t_0 - s_0)^2) + \epsilon(|x_0|^2 + |y_0|^2) \\
+&\qquad \leq u(x_0,t_0) - \tilde{u}(y_0,s_0) - u(0,0) + \tilde{u}(0,0).
+\end{aligned}
+\tag{8}
+\]
+Since $u$ and $\tilde{u}$ are bounded, we deduce
+\[
+|x_0 - y_0|, |t_0 - s_0| = O(\epsilon) \quad \text{as } \epsilon \to 0.
+\tag{9}
+\]
+Furthermore (8) implies $\epsilon(|x_0|^2 + |y_0|^2) = O(1)$, and consequently
+\[
+\epsilon(|x_0| + |y_0|) = \epsilon^{1/4}\epsilon^{3/4}(|x_0| + |y_0|) \leq \epsilon^{1/2} + C\epsilon^{3/2}(|x_0|^2 + |y_0|^2) \leq C\epsilon^{1/2}.
+\]
+Thus
+\[
+\epsilon(|x_0| + |y_0|) = O(\epsilon^{1/2}).
+\tag{10}
+\]
+
+3. Since $\Phi(x_0,y_0,t_0,s_0) \geq \Phi(x_0,x_0,t_0,t_0)$, we also have
+\[
+\begin{aligned}
+&u(x_0,t_0) - \tilde{u}(y_0,s_0) - \lambda(t_0 + s_0) - \frac{1}{\epsilon^2}(|x_0 - y_0|^2 + (t_0 - s_0)^2) \\
+&\qquad - \epsilon(|x_0|^2 + |y_0|^2) \geq u(x_0,t_0) - \tilde{u}(x_0,t_0) - 2\lambda t_0 - 2\epsilon|x_0|^2.
+\end{aligned}
+\]
+Hence
+\[
+\frac{1}{\epsilon^2}(|x_0 - y_0|^2 + (t_0 - s_0)^2) \leq \tilde{u}(x_0,t_0) - \tilde{u}(y_0,s_0) + \lambda(t_0 - s_0) + \epsilon(x_0 + y_0) \cdot (x_0 - y_0).
+\]
+In view of (9), (10) and the uniform continuity of $\tilde{u}$, we deduce
+\[
+|x_0 - y_0|, |t_0 - s_0| = o(\epsilon).
+\tag{11}
+\]
+
+4. Now write $\omega(\cdot)$ to denote the modulus of continuity of $u$; that is,
+\[
+|u(x,t) - u(y,s)| \leq \omega(|x-y| + |t-s|)
+\]
+for all $x, y \in \R^n$, $0 \leq t, s \leq T$, and $\omega(r) \to 0$ as $r \to 0$. Similarly, $\tilde{\omega}(\cdot)$ will denote the modulus of continuity of $\tilde{u}$.
+
+Then (7) implies
+\[
+\begin{aligned}
+\frac{\sigma}{2} &\leq u(x_0,t_0) - \tilde{u}(y_0,s_0) = u(x_0,t_0) - u(x_0,0) + u(x_0,0) - \tilde{u}(x_0,0) \\
+&\quad + \tilde{u}(x_0,0) - \tilde{u}(x_0,t_0) + \tilde{u}(x_0,t_0) - \tilde{u}(y_0,s_0) \\
+&\leq \omega(t_0) + \tilde{\omega}(t_0) + \tilde{\omega}(o(\epsilon)),
+\end{aligned}
+\]
+by (9),(11) and the initial condition. We can now take $\epsilon > 0$ to be so small that the foregoing implies $\frac{\sigma}{2} \leq \omega(t_0) + \tilde{\omega}(t_0)$; and this in turn implies $t_0 \geq \mu > 0$ for some constant $\mu > 0$. Similarly we have $s_0 \geq \mu > 0$.
+
+5. Now observe in light of (6) that the mapping $(x,t) \mapsto \Phi(x,y_0,t,s_0)$ has a maximum at the point $(x_0,t_0)$. In view of (5) then,
+\[
+u - v \text{ has a maximum at } (x_0,t_0)
+\]
+for
+\[
+v(x,t) := \tilde{u}(y_0,s_0) + \lambda(t + s_0) + \frac{1}{\epsilon^2}(|x - y_0|^2 + (t - s_0)^2) + \epsilon(|x|^2 + |y_0|^2).
+\]
+Since $u$ is a viscosity solution of (1) we conclude, using \cref{lem:extrema-at-terminal-time} if necessary, that
+\[
+u_t(x_0,t_0) + H(D_x v(x_0,t_0), x_0) \leq 0.
+\]
+Therefore
+\[
+\lambda + \frac{2(t_0 - s_0)}{\epsilon^2} + H\left(\frac{2}{\epsilon^2}(x_0 - y_0) + 2\epsilon x_0, x_0\right) \leq 0.
+\tag{12}
+\]
+
+We further observe that since the mapping $(y, s) \mapsto -\Phi(x_0, y, t_0, s)$ has a minimum at the point $(y_0, s_0)$,
+\[
+\tilde{u} - \bar{v} \text{ has a minimum at } (y_0, s_0)
+\]
+for
+\[
+\bar{v}(y, s) := u(x_0, t_0) - \lambda(t_0 + s) - \frac{1}{\epsilon^2}(|y - y_0|^2 + (t_0 - s)^2) - \epsilon(|x_0|^2 + |y|^2).
+\]
+As $\tilde{u}$ is a viscosity solution of (1), we know then that
+\[
+\bar{v}_s(y_0, s_0) + H(D_y\bar{v}(y_0, s_0), y_0) \geq 0.
+\]
+Consequently
+\[
+-\lambda + \frac{2(t_0 - s_0)}{\epsilon^2} + H\left(\frac{2}{\epsilon^2}(x_0 - y_0) - 2\epsilon y_0, y_0\right) \geq 0.
+\tag{13}
+\]
+
+6. Next, subtract (13) from (12):
+\[
+2\lambda \leq H\left(\frac{2}{\epsilon^2}(x_0 - y_0) - 2\epsilon y_0, y_0\right) - H\left(\frac{2}{\epsilon^2}(x_0 - y_0) + 2\epsilon x_0, x_0\right).
+\tag{14}
+\]
+In view of hypothesis (3) therefore,
+\[
+\lambda \leq C\epsilon(|x_0| + |y_0|) + C|x_0 - y_0|\left(1 + \frac{|x_0 - y_0|}{\epsilon^2} + \epsilon(|x_0| + |y_0|)\right).
+\tag{15}
+\]
+We employ estimates (10), (11) in (15), and then let $\epsilon \to 0$, to discover $0 < \lambda \leq 0$. This contradiction completes the proof.
+\end{proof}
+
+\section{Control Theory, Dynamic Programming}
+\label{sec:hj-control-theory-dynamic-programming}
+
+It remains for us to establish the existence of a viscosity solution to our initial-value problem for the Hamilton-Jacobi partial differential equation. One method would be now to prove the existence of a smooth solution $u^{\epsilon}$ of the regularized equation (2) in \S10.1 and then to make good enough uniform estimates. This technique in fact works, but requires knowledge of certain bounds for the heat equation beyond the scope of this book.
+
+In this section we provide an alternative approach of independent interest, which is suitable for Hamiltonians which are convex in $p$.
+
+We will first of all introduce some of the basic issues concerning \textit{control theory} for ordinary differential equations and the connection with Hamilton-Jacobi PDE afforded by the method of \textit{dynamic programming}. This discussion will make clearer the connections of the theory developed above in \S10.1-2 with that set forth earlier in \S3.3.1 (\cref{def:hamiltonian-from-lagrangian}). The remarkable fact is that the defining viscosity solution inequalities (16), (17) in \S10.1 are a consequence of the optimality conditions of control theory.
+
+\subsection{Introduction to Control Theory}
+
+\begin{definition}[Controlled ODE system and admissible controls]
+\label{def:controlled-ode-admissible-controls}
+\dcref{ch10:10.3-def-1}
+\group{Control Theory}
+We will now study the possibility of optimally controlling the solution $\mathbf{x}(\cdot)$ of the ordinary differential equation
+\[
+\begin{cases} \dot{\mathbf{x}}(s) = \mathbf{f}(\mathbf{x}(s), \alpha(s)) & (t < s < T) \\ \mathbf{x}(t) = x. \end{cases}
+\tag{1}
+\]
+Here $\dot{} = \frac{d}{ds}$, $T > 0$ is a fixed terminal time, and $x \in \R^n$ is a given initial point, taken on by our solution $\mathbf{x}(\cdot)$ at the starting time $t \geq 0$. At later times $t < s < T$, $\mathbf{x}(\cdot)$ evolves according to the ODE, where
+\[
+\mathbf{f} : \R^n \times A \to \R^n
+\]
+is a given bounded, Lipschitz continuous function, and $A$ is some given compact subset of, say, $\R^m$. The function $\alpha(\cdot)$ appearing in (1) is a \textit{control}, that is, some appropriate scheme for adjusting parameters from the set $A$ as time evolves, thereby affecting the dynamics of the system modeled by (1).
+
+Let us write
+\[
+\mathcal{A} = \{\alpha : [0,T] \to A \mid \alpha(\cdot) \text{ is measurable}\}
+\tag{2}
+\]
+to denote the set of \textit{admissible controls}. Then since
+\[
+|f(x,a)| \leq C, \quad |f(x,a) - f(y,a)| \leq C|x - y| \quad (x,y \in \R^n, a \in A)
+\tag{3}
+\]
+for some constant $C$, we see that for each control $\alpha(\cdot) \in \mathcal{A}$, the ODE (1) has a unique, Lipschitz continuous solution $\mathbf{x}(\cdot) = \mathbf{x}^{\alpha(\cdot)}(\cdot)$, existing on the time interval $[t, T]$ and solving the ODE for a.e. time $t < s < T$. We call $\mathbf{x}(\cdot)$ the \textit{response} of the system to the control $\alpha(\cdot)$, and $\mathbf{x}(s)$ the \textit{state} of the system at time $s$.
+\end{definition}
+
+\begin{figure}[h]\centering
+% [FIGURE: A trajectory diagram in $(x, t)$ space showing a curved path descending from the point $(x(T), T)$ at the top, with an intermediate point labeled $(x(s), s)$ along the trajectory.]
+\end{figure}
+
+$\dot{x}(s) = f(x(s), \alpha(s))$
+
+\textbf{Response of system to the control $\alpha(\cdot)$}
+
+Our goal is to find a control $\alpha^*(\cdot)$ which optimally steers the system. In order to define what ``optimal'' means however, we must first introduce a \textit{cost criterion}.
+
+\begin{definition}[Running cost, terminal cost, and the cost functional]
+\label{def:control-cost-functional}
+\dcref{ch10:10.3-def-2}
+\group{Control Theory}
+\uses{def:controlled-ode-admissible-controls}
+Given $x \in \R^n$ and $0 \le t \le T$, let us define for each admissible control $\alpha(\cdot) \in \mathcal{A}$ the corresponding cost
+\[
+C_{x,t}[\alpha(\cdot)] := \int_t^T h(x(s), \alpha(s)) \, ds + g(x(T)),
+\tag{4}
+\]
+where $x(\cdot) = x^{\alpha(\cdot)}(\cdot)$ solves the ODE (1) and
+\[
+h : \R^n \times A \to \R, \quad g : \R^n \to \R
+\]
+are given functions. We call $h$ the \textit{running cost per unit time} and $g$ the \textit{terminal cost}, and will henceforth assume
+\[
+\begin{cases} |h(x, a)|, |g(x)| \le C \\ |h(x, a) - h(y, a)|, |g(x) - g(y)| \le C|x - y| \end{cases} \quad (x, y \in \R^n, a \in A)
+\tag{5}
+\]
+for some constant $C$.
+
+Given now $x \in \R^n$ and $0 \le t \le T$, we would like to find if possible a control $\alpha^*(\cdot)$ which minimizes the cost functional (4) among all other admissible controls.
+\end{definition}
+
+\subsection{Dynamic Programming}
+
+\begin{definition}[Value function]
+\label{def:value-function}
+\dcref{ch10:10.3-def-3}
+\group{Control Theory}
+\uses{def:control-cost-functional}
+The method of \textit{dynamic programming} investigates the above minimization problem by turning attention to the \textit{value function}
+\[
+u(x,t) := \inf_{\alpha(\cdot) \in \mathcal{A}} C_{x,t}[\alpha(\cdot)] \quad (x \in \R^n, 0 \le t \le T).
+\tag{6}
+\]
+\end{definition}
+
+The plan is this: having defined $u(x,t)$ as the least cost given we start at the position $x$ at time $t$, we want to study $u$ as a function of $x$ and $t$. We are therefore embedding our given control problem (1), (4) into the larger class of all such problems, as $x$ and $t$ vary. The idea then is to show that $u$ solves a certain Hamilton-Jacobi type PDE, and finally to show conversely that a solution of this PDE helps us to synthesize an optimal feedback control.
+
+Hereafter, we fix $x \in \R^n$, $0 \leq t < T$.
+
+\begin{theorem}[Optimality conditions]
+\label{thm:dynamic-programming-optimality-conditions}
+\dcref{ch10:10.3-thm-1}
+\group{Control Theory}
+\uses{def:value-function,def:control-cost-functional}
+For each $h > 0$ so small that $t + h \leq T$, we have
+\[
+u(x,t) = \inf_{\alpha(\cdot) \in \mathcal{A}} \left\{ \int_t^{t+h} h(\mathbf{x}(s), \alpha(s)) ds + u(\mathbf{x}(t+h), t+h) \right\},
+\tag{7}
+\]
+where $\mathbf{x}(\cdot) = \mathbf{x}^{\alpha(\cdot)}(\cdot)$ solves the ODE (1) for the control $\alpha(\cdot)$.
+\end{theorem}
+\begin{proof}
+1. Choose any control $\alpha_1(\cdot) \in \mathcal{A}$ and solve the ODE
+\[
+\begin{cases}
+\dot{\mathbf{x}}_1(s) = f(\mathbf{x}_1(s), \alpha_1(s)) & (t < s < t+h) \\
+\mathbf{x}_1(t) = x.
+\end{cases}
+\tag{8}
+\]
+Fix $\epsilon > 0$ and choose then $\alpha_2(\cdot) \in \mathcal{A}$ so that
+\[
+u(\mathbf{x}_1(t+h), t+h) + \epsilon \geq \int_{t+h}^T h(\mathbf{x}_2(s), \alpha_2(s)) ds + g(\mathbf{x}_2(T)),
+\tag{9}
+\]
+where
+\[
+\begin{cases}
+\dot{\mathbf{x}}_2(s) = f(\mathbf{x}_2(s), \alpha_2(s)) & (t+h < s < T) \\
+\mathbf{x}_2(t+h) = \mathbf{x}_1(t+h).
+\end{cases}
+\tag{10}
+\]
+Now define the control
+\[
+\alpha_3(s) := \begin{cases}
+\alpha_1(s) & \text{if } t \leq s < t+h \\
+\alpha_2(s) & \text{if } t+h \leq s \leq T,
+\end{cases}
+\tag{11}
+\]
+and let
+\[
+\begin{cases}
+\dot{\mathbf{x}}_3(s) = f(\mathbf{x}_3(s), \alpha_3(s)) & (t < s < T) \\
+\mathbf{x}_3(t) = x.
+\end{cases}
+\tag{12}
+\]
+By uniqueness of solutions to the differential equation (1), we have
+\[
+\mathbf{x}_3(s) = \begin{cases}
+\mathbf{x}_1(s) & \text{if } t \leq s \leq t+h \\
+\mathbf{x}_2(s) & \text{if } t+h \leq s \leq T.
+\end{cases}
+\tag{13}
+\]
+
+Thus the definition (6) implies
+\[
+\begin{aligned}
+u(x,t) &\le C_{x,t}[\alpha_3(\cdot)] \\
+&= \int_t^T h(\mathbf{x}_3(s), \alpha_3(s)) \, ds + g(\mathbf{x}_3(T)) \\
+&= \int_t^{t+h} h(\mathbf{x}_1(s), \alpha_1(s)) \, ds + \int_{t+h}^T h(\mathbf{x}_2(s), \alpha_2(s)) \, ds + g(\mathbf{x}_2(T)) \\
+&\le \int_t^{t+h} h(\mathbf{x}_1(s), \alpha_1(s)) \, ds + u(\mathbf{x}_1(t+h), t+h) + \epsilon,
+\end{aligned}
+\]
+the last inequality resulting from (9). As $\alpha_1(\cdot) \in \mathcal{A}$ was arbitrary, we conclude
+\[
+u(x,t) \le \inf_{\alpha(\cdot) \in \mathcal{A}} \left\{ \int_t^{t+h} h(\mathbf{x}(s), \alpha(s)) \, ds + u(\mathbf{x}(t+h), t+h) \right\} + \epsilon,
+\tag{14}
+\]
+$\mathbf{x}(\cdot) = \mathbf{x}^{\alpha(\cdot)}(\cdot)$ solving (1).
+
+2. Fixing again $\epsilon > 0$, select now $\alpha_4(\cdot) \in \mathcal{A}$ so that
+\[
+u(x,t) + \epsilon \geq \int_t^T h(\mathbf{x}_4(s), \alpha_4(s)) \, ds + g(\mathbf{x}_4(T)),
+\tag{15}
+\]
+where
+\[
+\begin{cases}
+\dot{\mathbf{x}}_4(s) = f(\mathbf{x}_4(s), \alpha_4(s)) & (t < s < T) \\
+\mathbf{x}_4(t) = x.
+\end{cases}
+\]
+Observe then from (6) that
+\[
+u(\mathbf{x}_4(t+h), t+h) \le \int_{t+h}^T h(\mathbf{x}_4(s), \alpha_4(s)) \, ds + g(\mathbf{x}_4(T)).
+\tag{16}
+\]
+Therefore
+\[
+u(x,t) + \epsilon \geq \inf_{\alpha(\cdot) \in \mathcal{A}} \left\{ \int_t^{t+h} h(\mathbf{x}(s), \alpha(s)) \, ds + u(\mathbf{x}(t+h), t+h) \right\},
+\]
+$\mathbf{x}(\cdot) = \mathbf{x}^{\alpha(\cdot)}(\cdot)$ solving (1). This inequality and (14) complete the proof of (7).
+\end{proof}
+
+\subsection{Hamilton-Jacobi-Bellman Equation}
+
+Our eventual goal is writing down as a PDE an ``infinitesimal version'' of the optimality conditions (7). But first we must check that the value function $u$ is bounded and Lipschitz continuous.
+
+\begin{lemma}[Estimates for the value function]
+\label{lem:value-function-estimates}
+\dcref{ch10:10.3-lem-1}
+\group{Control Theory}
+\uses{def:value-function,def:control-cost-functional}
+There exists a constant $C$ such that
+\[
+|u(x,t)| \leq C,
+\]
+\[
+|u(x,t) - u(\hat{x},\hat{t})| \leq C(|x - \hat{x}| + |t - \hat{t}|)
+\]
+for all $x, \hat{x} \in \R^n$, $0 \leq t, \hat{t} \leq T$.
+\end{lemma}
+\begin{proof}
+1. Clearly hypothesis (5) implies $u$ is bounded on $\R^n \times [0,T]$.
+
+2. Fix $x, \hat{x} \in \R^n$, $0 \leq t < T$. Let $\epsilon > 0$ and then choose $\hat{\alpha}(\cdot) \in \mathcal{A}$ so that
+\[
+u(\hat{x}, t) + \epsilon \geq \int_t^T h(\hat{x}(s), \hat{\alpha}(s)) \, ds + g(\hat{x}(T)),
+\tag{17}
+\]
+where $\hat{x}(\cdot)$ solves the ODE
+\[
+\begin{cases} \dot{\hat{x}}(s) = \mathbf{f}(\hat{x}(s), \hat{\alpha}(s)) & (t < s < T) \\ \hat{x}(t) = \hat{x}. \end{cases}
+\tag{18}
+\]
+Then
+\[
+\begin{aligned}
+u(x, t) - u(\hat{x}, t) &\leq \int_t^T h(x(s), \hat{\alpha}(s)) \, ds + g(x(T)) \\
+&\qquad - \int_t^T h(\hat{x}(s), \hat{\alpha}(s)) \, ds - g(\hat{x}(T)) + \epsilon,
+\end{aligned}
+\tag{19}
+\]
+where $x(\cdot)$ solves
+\[
+\begin{cases} \dot{x}(s) = \mathbf{f}(x(s), \hat{\alpha}(s)) & (t < s < T) \\ x(t) = x. \end{cases}
+\tag{20}
+\]
+Since $\mathbf{f}$ is Lipschitz continuous, (18), (20) and Gronwall's inequality (\S B.2) imply $|x(s) - \hat{x}(s)| \leq C|x - \hat{x}|$ ($t \leq s \leq T$). Hence we deduce from (5) and (19) that $u(x,t) - u(\hat{x}, t) \leq C|x - \hat{x}| + \epsilon$. The same argument with the roles of $x$ and $\hat{x}$ reversed implies
+\[
+|u(x,t) - u(\hat{x}, t)| \leq C|x - \hat{x}| \quad (x, \hat{x} \in \R^n, \, 0 \leq t \leq T).
+\]
+
+3. Now let $x \in \R^n$, $0 < t < \hat{t} \leq T$. Take $\epsilon > 0$ and choose $\alpha(\cdot) \in \mathcal{A}$ so that
+\[
+u(x, t) + \epsilon \geq \int_t^T h(x(s), \alpha(s)) \, ds + g(x(T)),
+\]
+$x(\cdot)$ solving the ODE (1). Define
+\[
+\hat{\alpha}(s) := \alpha(s + t - \hat{t}) \quad \text{for} \quad \hat{t} \leq s \leq T
+\]
+and let $\hat{x}(\cdot)$ solve
+\[
+\begin{cases}
+\dot{\hat{x}}(s) = \mathbf{f}(\hat{x}(s), \hat{\alpha}(s)) & (t < s < T) \\
+\hat{x}(t) = x.
+\end{cases}
+\]
+Then $\hat{x}(s) = x(s + t - \hat{t})$. Hence
+\[
+\begin{aligned}
+u(x, \hat{t}) - u(x, t) &\leq \int_t^T h(\hat{x}(s), \hat{\alpha}(s))\,ds + g(\hat{x}(T)) \\
+&\qquad - \int_t^T h(x(s), \alpha(s))\,ds - g(x(T)) + \epsilon \\
+&= - \int_{T+t-\hat{t}}^T h(x(s), \alpha(s))\,ds + g(x(T + t - \hat{t})) - g(x(T)) + \epsilon \\
+&\leq C|t - \hat{t}| + \epsilon.
+\end{aligned}
+\tag{21}
+\]
+
+Next pick $\hat{\alpha}(\cdot)$ so that
+\[
+u(x, \hat{t}) + \epsilon \geq \int_t^T h(\hat{x}(s), \hat{\alpha}(s))\,ds + g(\hat{x}(T)),
+\]
+where
+\[
+\begin{cases}
+\dot{\hat{x}}(s) = \mathbf{f}(\hat{x}(s), \hat{\alpha}(s)) & (t < s < T) \\
+\hat{x}(t) = x.
+\end{cases}
+\]
+Define
+\[
+\alpha(s) := \begin{cases}
+\hat{\alpha}(s + \hat{t} - t) & \text{if } t \leq s \leq T + t - \hat{t} \\
+\hat{\alpha}(T) & \text{if } T + t - \hat{t} \leq s \leq T,
+\end{cases}
+\]
+and let $\mathbf{x}(\cdot)$ solve (1). Then $\alpha(s) = \hat{\alpha}(s + \hat{t} - t)$, $x(s) = \hat{x}(s + \hat{t} - t)$ for $t \leq s \leq T + t - \hat{t}$. Consequently
+\[
+\begin{aligned}
+u(x, t) - u(x, \hat{t}) &\leq \int_t^T h(x(s), \alpha(s))\,ds + g(x(T)) \\
+&\qquad - \int_t^T h(x(s), \alpha(s))\,ds - g(\hat{x}(T)) + \epsilon \\
+&= \int_{T+t-\hat{t}}^T h(x(s), \alpha(s))\,ds + g(x(T)) - g(x(T + t - \hat{t})) + \epsilon \\
+&\leq C|t - \hat{t}| + \epsilon.
+\end{aligned}
+\]
+This inequality and (21) prove
+\[
+|u(x, t) - u(x, \hat{t})| \leq C|t - \hat{t}| \quad (0 \leq t \leq \hat{t} \leq T, x \in \R^n).
+\]
+
+\begin{figure}[h]\centering
+% [FIGURE: End of proof symbol (small square)]
+\end{figure}
+\end{proof}
+
+We prove next that the value function solves a Hamilton-Jacobi type partial differential equation.
+
+\begin{theorem}[A PDE for the value function]
+\label{thm:value-function-solves-hjb-equation}
+\dcref{ch10:10.3-thm-2}
+\group{Control Theory}
+\uses{lem:value-function-estimates,thm:dynamic-programming-optimality-conditions,def:value-function}
+The value function $u$ is the unique viscosity solution of this terminal-value problem for the Hamilton-Jacobi-Bellman equation:
+\[
+\begin{cases}
+u_t + \min_{a \in A}\{f(x,a) \cdot Du + h(x,a)\} = 0 & \text{in } \R^n \times (0,T) \\
+u = g & \text{on } \R^n \times \{t = T\}.
+\end{cases}
+\tag{22}
+\]
+\end{theorem}
+
+\begin{remark}[The Hamilton-Jacobi-Bellman Hamiltonian]
+\label{rem:hjb-hamiltonian-formula}
+\dcref{ch10:10.3-rem-1}
+\group{Control Theory}
+\uses{thm:value-function-solves-hjb-equation,def:hamiltonian-lipschitz-condition}
+The Hamilton-Jacobi Bellman PDE has the form
+\[
+u_t + H(Du, x) = 0 \quad \text{in } \R^n \times (0,T),
+\]
+for the Hamiltonian
+\[
+H(p,x) := \min_{a \in A}\{f(x,a) \cdot p + h(x,a)\} \quad (p, x \in \R^n).
+\tag{23}
+\]
+From the inequalities (5) in \S10.3, we deduce that $H$ satisfies the estimates (3) from \cref{def:hamiltonian-lipschitz-condition} in \S10.2. $\square$
+\end{remark}
+
+Since (22) is a \textit{terminal-value problem}, we must specify what we mean by a solution.
+
+\begin{definition}[Viscosity solution of a terminal-value problem]
+\label{def:viscosity-solution-terminal-value-problem}
+\dcref{ch10:10.3-def-4}
+\group{Control Theory}
+\uses{def:viscosity-solution-cauchy-problem}
+Let us say that a bounded, uniformly continuous function $u$ is a \textit{viscosity solution} of (22) provided:
+
+(i) $u = g$ on $\R^n \times \{t = T\}$,
+
+and
+
+(ii) for each $v \in C^\infty(\R^n \times (0,T))$
+
+\[
+\begin{cases}
+\text{if } u - v \text{ has a local maximum at a point } (x_0, t_0) \in \R^n \times (0,T), \\
+\text{then} \\
+v_t(x_0, t_0) + H(Dv(x_0, t_0), x_0) \geq 0,
+\end{cases}
+\tag{24}
+\]
+and
+\[
+\begin{cases}
+\text{if } u - v \text{ has a local minimum at a point } (x_0, t_0) \in \R^n \times (0,T), \\
+\text{then} \\
+v_t(x_0, t_0) + H(Dv(x_0, t_0), x_0) \leq 0.
+\end{cases}
+\tag{25}
+\]
+
+Observe that for our terminal-value problem (22) we \textit{reverse} the sense of the inequalities from those for the initial-value problem (\cref{def:viscosity-solution-cauchy-problem}).
+\end{definition}
+
+\begin{remark}[Correspondence with the initial-value problem via time reversal]
+\label{rem:terminal-value-time-reversal}
+\dcref{ch10:10.3-rem-2}
+\group{Control Theory}
+\uses{def:viscosity-solution-terminal-value-problem,def:viscosity-solution-cauchy-problem}
+The reader should check that if $u$ is the viscosity solution of (22), then $w(x,t) := u(x, T - t)$ ($x \in \R^n$, $0 \leq t \leq T$) is the viscosity solution of the initial-value problem
+\[
+\begin{cases}
+w_t - H(Dw, x) = 0 & \text{in } \R^n \times (0,T) \\
+w = g & \text{on } \R^n \times \{t = 0\}.
+\end{cases}
+\]
+\end{remark}
+
+\begin{proof}[Proof of \cref{thm:value-function-solves-hjb-equation}]
+1. In view of \cref{lem:value-function-estimates}, $u$ is bounded and Lipschitz continuous. In addition, we see directly from (4) and (6) that
+\[
+u(x,T) = \inf_{\alpha(\cdot)\in \mathcal{A}} C_{x,T}[\alpha(\cdot)] = g(x) \quad (x \in \R^n).
+\]
+
+2. Now let $v \in C^\infty(\R^n \times (0,T))$, and assume
+\[
+u - v \text{ has a local maximum at a point } (x_0,t_0) \in \R^n \times (0,T).
+\]
+We must prove
+\[
+v_t(x_0, t_0) + \min_{a\in A}\{f(x_0, a) \cdot Dv(x_0, t_0) + h(x_0, a)\} \geq 0.
+\tag{26}
+\]
+Suppose not. Then there exist $a \in A$ and $\theta > 0$ such that
+\[
+v_t(x,t) + f(x,a) \cdot Dv(x,t) + h(x,a) \leq -\theta < 0
+\tag{27}
+\]
+for all points $(x,t)$ sufficiently close to $(x_0, t_0)$, say
+\[
+|x - x_0| + |t - t_0| < \delta.
+\tag{28}
+\]
+Since $u - v$ has a local maximum at $(x_0, t_0)$, we may as well also suppose
+\[
+\begin{cases} (u - v)(x,t) \leq (u - v)(x_0, t_0) \\ \text{for all $(x,t)$ satisfying (28)}. \end{cases}
+\tag{29}
+\]
+Consider now the constant control $\alpha(s) = a$ $(t_0 \leq s \leq T)$ and the corresponding dynamics
+\[
+\begin{cases} \dot{x}(s) = f(x(s), a) \quad (t_0 < s < T) \\ x(t_0) = x. \end{cases}
+\tag{30}
+\]
+Choose $0 < h < \delta$ so small that $|\mathbf{x}(s) - x_0| < \delta$ for $t_0 \leq s \leq t_0 + h$. Then
+\[
+v_t(\mathbf{x}(s),s)+f(\mathbf{x}(s),a) \cdot Dv(\mathbf{x}(s),s)+h(\mathbf{x}(s),a) \leq -\theta \quad (t_0 \leq s \leq t_0+h),
+\tag{31}
+\]
+according to (27), (28). But utilizing (29) we find
+\[
+\begin{aligned}
+u(\mathbf{x}(t_0 + h), t_0 + h) - u(x_0, t_0) &\leq v(\mathbf{x}(t_0 + h), t_0 + h) - v(x_0, t_0) \\
+&= \int_{t_0}^{t_0+h} \frac{d}{ds} v(\mathbf{x}(s), s)\, ds \\
+&= \int_{t_0}^{t_0+h} v_t(\mathbf{x}(s), s) + Dv(\mathbf{x}(s), s) \cdot \dot{\mathbf{x}}(s)\, ds \\
+&= \int_{t_0}^{t_0+h} v_t(\mathbf{x}(s), s) + f(\mathbf{x}(s), a) \cdot Dv(\mathbf{x}(s), s)\, ds.
+\end{aligned}
+\tag{32}
+\]
+In addition, the optimality condition (7) provides us with the inequality
+\[
+u(x_0, t_0) \le \int_{t_0}^{t_0+h} h(x(s), a) \, ds + u(x(t_0 + h), t_0 + h).
+\tag{33}
+\]
+Combining (32) and (33), we discover
+\[
+0 \le \int_{t_0}^{t_0+h} v_t(x(s), s) + f(x(s), a) \cdot Dv(x(s), s) + h(x(s), a) \, ds \le -\theta h,
+\]
+according to (31). This contradiction establishes (26).
+
+3. Now suppose
+\[
+u - v \text{ has a local minimum at a point } (x_0, t_0) \in \R^n \times (0, T);
+\]
+we must prove
+\[
+v_t(x_0, t_0) + \min_{a \in A} \{f(x_0, a) \cdot Dv(x_0, t_0) + h(x_0, a)\} \le 0.
+\tag{34}
+\]
+Suppose not. Then there exists $\theta > 0$ such that
+\[
+v_t(x, t) + f(x, a) \cdot Dv(x, t) + h(x, a) \ge \theta > 0
+\tag{35}
+\]
+for all $a \in A$ and all $(x, t)$ sufficiently close to $(x_0, t_0)$, say
+\[
+|x - x_0| + |t - t_0| < \delta.
+\tag{36}
+\]
+Since $u - v$ has a local minimum at $(x_0, t_0)$, we may as well also suppose
+\[
+\begin{cases} (u - v)(x, t) \ge (u - v)(x_0, t_0) \\ \text{for all } (x, t) \text{ satisfying (36).} \end{cases}
+\tag{37}
+\]
+Choose $0 < h < \delta$ so small that $|x(s) - x_0| < \delta$ for $t_0 \le s \le t_0 + h$, where $x(\cdot)$ solves
+\[
+\begin{cases} \dot{x}(s) = f(x(s), \alpha(s)) & (t_0 < s < T) \\ x(t_0) = x_0 \end{cases}
+\tag{38}
+\]
+for some control $\alpha(\cdot) \in \mathcal{A}$. This is possible owing to hypothesis (3) in \S10.3.
+
+Then utilizing (37), we find for any control $\alpha(\cdot)$ that
+\[
+\begin{aligned}
+u(x(t_0 + h), t_0 + h) - u(x_0, t_0) &\ge v(x(t_0 + h), t_0 + h) - v(x_0, t_0) \\
+&= \int_{t_0}^{t_0+h} \frac{d}{ds} v(x(s), s) \, ds \\
+&= \int_{t_0}^{t_0+h} v_t(x(s), s) + f(x(s), \alpha(s)) \cdot Dv(x(s), s) \, ds,
+\end{aligned}
+\tag{39}
+\]
+by (38). On the other hand, according to the optimality condition (7) we can select a control $\alpha(\cdot) \in \mathcal{A}$ so that
+\[
+u(x_0, t_0) \geq \int_{t_0}^{t_0+h} h(x(s), \alpha(s)) \, ds + u(x(t_0+h), t_0+h) - \frac{\theta h}{2}.
+\tag{40}
+\]
+Combining (39) and (40), we discover
+\[
+\frac{\theta h}{2} \geq \int_{t_0}^{t_0+h} v_t(x(s), s) + f(x(s), \alpha(s)) \cdot Dv(x(s), s) + h(x(s), \alpha(s)) \, ds \geq \theta h,
+\]
+according to (35). This contradiction proves (34).
+\end{proof}
+
+\begin{remark}[Design of optimal controls]
+\label{rem:design-of-optimal-controls}
+\dcref{ch10:10.3-rem-3}
+\group{Control Theory}
+\uses{thm:value-function-solves-hjb-equation}
+We have now shown that the value function $u$, defined by (6), is the unique viscosity solution of the terminal-value problem (22) for the Hamilton-Jacobi-Bellman equation. How does this PDE help us solve the problem of synthesizing an optimal control? In informal terms, the method is this. Given an initial time $0 < t \leq T$ and an initial state $x \in \R^n$, we consider the optimal ODE
+\[
+\begin{cases} \dot{x}^*(s) = f(x^*(s), \alpha^*(s)) & (t < s < T) \\ x^*(t) = x, \end{cases}
+\tag{41}
+\]
+where at each time $s$, $\alpha^*(s) \in A$ is selected so that
+\[
+\begin{aligned}
+f(x^*(s), \alpha^*(s)) \cdot Du(x^*(s), s) + h(x^*(s), \alpha^*(s)) \\
+= H(Du(x^*(s), s), x^*(s)).
+\end{aligned}
+\tag{42}
+\]
+In other words, given the system is at the point $x^*(s)$ at time $s$, we adjust the optimal control value $\alpha^*(s)$ so as to attain the minimum in the definition (23) of the Hamiltonian $H$. We call $\alpha^*(\cdot)$ so defined a \textit{feedback control}.
+
+It is easy to check that this prescription does in fact generate a minimum cost trajectory, at least in regions where $u$ and $\alpha^*(\cdot)$ are smooth (so that (42) makes sense). There are however problems in interpreting (42) at points where the gradient $Du$ does not exist. $\square$
+\end{remark}
+
+\subsection{Hopf-Lax Formula Revisited}
+
+Remember that earlier in \S3.3 we investigated this initial-value problem for the Hamilton-Jacobi equation:
+\[
+\begin{cases} u_t + H(Du) = 0 & \text{in } \R^n \times (0, T) \\ u = g & \text{on } \R^n \times \{t = 0\}, \end{cases}
+\tag{43}
+\]
+under the assumptions that
+\[
+p \mapsto H(p) \text{ is convex}, \quad \lim_{|p| \to \infty} \frac{H(p)}{|p|} = +\infty,
+\]
+and
+\[
+g : \R^n \to \R \text{ is Lipschitz continuous.}
+\]
+Notice that we are now taking $0 \le t \le T$, to be consistent with \S10.2. We introduced as well the Hopf-Lax formula (\cref{def:hopf-lax-formula}) for a solution:
+\[
+u(x,t) = \min_{y \in \R^n} \left\{ tL \left( \frac{x-y}{t} \right) + g(y) \right\} \quad (x \in \R^n, t > 0),
+\tag{44}
+\]
+where $L$ is the Legendre transform of $H$ (\cref{def:legendre-transform}):
+\[
+L(q) = \sup_{p \in \R^n} \{ p \cdot q - H(p) \} \quad (q \in \R^n).
+\tag{45}
+\]
+
+In order to tie together the theory set forth here and in \S3.3, let us now check that the Hopf-Lax formula gives the correct viscosity solution, as defined in \S10.1. (The proof is really just a special case of that for \cref{thm:value-function-solves-hjb-equation}.)
+
+\begin{theorem}[Hopf-Lax formula as viscosity solution]
+\label{thm:hopf-lax-formula-viscosity-solution}
+\dcref{ch10:10.3-thm-3}
+\group{Hopf-Lax Formula}
+\uses{def:viscosity-solution-finite-horizon,thm:value-function-solves-hjb-equation,def:hopf-lax-formula,lem:hopf-lax-functional-identity,thm:convex-duality-hamiltonian-lagrangian,lem:hopf-lax-lipschitz-continuity}
+Assume in addition that $g$ is bounded. Then the unique viscosity solution of the initial-value problem (43) is given by the formula (44).
+\end{theorem}
+\begin{proof}
+1. As shown in \S3.3 (\cref{lem:hopf-lax-lipschitz-continuity}) the function $u$ defined by (44) is Lipschitz continuous and takes on the initial function $g$ at time $t = 0$. It is easy to verify as well that $u$ is also bounded on $\R^n \times (0,T]$, since $g$ is bounded.
+
+2. Now let $v \in C^\infty(\R^n \times (0, \infty))$ and assume $u - v$ has a local maximum at $(x_0, t_0) \in \R^n \times (0, \infty)$. According to Lemma 1 in \S3.3.2 (\cref{lem:hopf-lax-functional-identity}),
+\[
+u(x_0, t_0) = \min_{x \in \R^n} \left\{ (t_0 - t)L \left( \frac{x_0 - x}{t_0 - t} \right) + u(x,t) \right\}
+\tag{46}
+\]
+for each $0 \le t < t_0$. Thus for each $0 \le t < t_0$, $x \in \R^n$
+\[
+u(x_0, t_0) \le (t_0 - t)L \left( \frac{x_0 - x}{t_0 - t} \right) + u(x,t).
+\tag{47}
+\]
+But since $u - v$ has a local maximum at $(x_0, t_0)$,
+\[
+u(x_0, t_0) - v(x_0, t_0) \ge u(x,t) - v(x,t)
+\]
+for $(x,t)$ close to $(x_0, t_0)$. Combining this estimate with (47), we find
+\[
+v(x_0, t_0) - v(x, t) \leq (t_0 - t)L\left(\frac{x_0 - x}{t_0 - t}\right)
+\tag{48}
+\]
+for $t < t_0$, $(x,t)$ close to $(x_0, t_0)$. Now write $h = t_0 - t$ and set $x = x_0 - hq$, where $q \in \R^n$ is given. Inequality (48) becomes
+\[
+v(x_0, t_0) - v(x_0 - hq, t_0 - h) \leq hL(q).
+\]
+Divide by $h > 0$ and send $h \to 0$:
+\[
+v_t(x_0, t_0) + Dv(x_0, t_0) \cdot q - L(q) \leq 0.
+\]
+This is true for all $q \in \R^n$ and so
+\[
+v_t(x_0, t_0) + H(Dv(x_0, t_0)) \leq 0,
+\tag{49}
+\]
+since
+\[
+H(p) = \sup_{q \in \R^n} \{p \cdot q - L(q)\},
+\tag{50}
+\]
+by the convex duality of $H$ and $L$ (\cref{thm:convex-duality-hamiltonian-lagrangian}). We have, as desired, established the inequality (49) whenever $u - v$ has a local maximum at $(x_0, t_0)$.
+
+3. Now suppose instead $u - v$ has a local minimum at a point $(x_0, t_0) \in \R^n \times (0, T)$. We must prove
+\[
+v_t(x_0, t_0) + H(Dv(x_0, t_0)) \geq 0.
+\tag{51}
+\]
+Suppose to the contrary estimate (51) fails; in which case
+\[
+v_t(x, t) + H(Dv(x, t)) \leq -\theta < 0
+\]
+for some $\theta > 0$ and all points $(x,t)$ close enough to $(x_0, t_0)$. In view of (50)
+\[
+v_t(x, t) + Dv(x, t) \cdot q - L(q) \leq -\theta
+\tag{52}
+\]
+for all $(x, t)$ near $(x_0, t_0)$ and all $q \in \R^n$.
+
+Now from (46) we see that if $h > 0$ is small enough
+\[
+u(x_0, t_0) = hL\left(\frac{x_0 - x_1}{h}\right) + u(x_1, t_0 - h)
+\tag{53}
+\]
+for some point $x_1$ close to $x_0$. We then compute
+\[
+\begin{aligned}
+v(x_0, t_0) - v(x_1, t_0 - h) &= \int_0^1 \frac{d}{ds} v(sx_0 + (1-s)x_1, t_0 + (s-1)h) \, ds \\
+&= \int_0^1 Dv(sx_0 + (1-s)x_1, t_0 + (s-1)h) \cdot (x_0 - x_1) \\
+&\qquad + v_t(sx_0 + (1-s)x_1, t_0 + (s-1)h)h \, ds \\
+&= h \left( \int_0^1 Dv(\cdots) \cdot q + v_t(\cdots) \, ds \right),
+\end{aligned}
+\]
+where $q = \frac{x_0 - x_1}{h}$. Now if $h > 0$ is sufficiently small, we may apply (52), to find
+\[
+v(x_0, t_0) - v(x_1, t_0 - h) \le hL \left( \frac{x_0 - x_1}{h} \right) - \theta h.
+\]
+But then (53) forces
+\[
+v(x_0, t_0) - v(x_1, t_0 - h) \le u(x_0, t_0) - u(x_1, t_0 - h) - \theta h,
+\]
+a contradiction, since $u - v$ has a local minimum at $(x_0, t_0)$. Consequently the desired inequality (51) is indeed valid.
+\end{proof}
+
+\section{Problems}
+\label{sec:hj-problems}
+
+%ORIGINAL-NUMBER: 1
+\begin{exercise}
+Let $\{u^k\}_{k=1}^\infty$ be viscosity solutions of the Hamilton-Jacobi equations
+\[
+u_t^k + H(Du^k, x) = 0 \quad \text{in } \R^n \times (0, \infty)
+\]
+($k = 1, \ldots$), and suppose $u^k \to u$ uniformly. Assume as well that $H$ is continuous. Show $u$ is a viscosity solution of
+\[
+u_t + H(Du, x) = 0 \quad \text{in } \R^n \times (0, \infty).
+\]
+Hence the uniform limit of viscosity solutions is a viscosity solution.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 2
+\begin{exercise}
+Let $u^i$ $(i = 1, 2)$ be viscosity solutions of
+\[
+\begin{cases}
+u_t^i + H(Du^i, x) = 0 & \text{in } \R^n \times (0, \infty) \\
+u^i = g^i & \text{on } \R^n \times \{t = 0\}.
+\end{cases}
+\]
+Assume $H$ satisfies condition (3) in \S10.2. Prove the \textit{contraction property}
+\[
+\sup_{\R^n} |u^1(\cdot, t) - u^2(\cdot, t)| \le \sup_{\R^n} |g^1 - g^2| \quad (t \ge 0).
+\]
+\end{exercise}
+
+%ORIGINAL-NUMBER: 3
+\begin{exercise}
+Suppose for each $\epsilon > 0$ that $u^\epsilon$ is a smooth solution of the parabolic equation
+\[
+u_t^\epsilon + H(Du^\epsilon, x) - \epsilon \sum_{i,j=1}^n a^{ij} u^\epsilon_{x_i x_j} = 0
+\]
+in $\R^n \times (0, \infty)$, where the smooth coefficients $a^{ij}$ $(i,j = 1, \ldots, n)$ satisfy the uniform ellipticity condition from Chapter 6 (\cref{def:uniform-ellipticity}). Suppose also that $H$ is continuous, and that $u^\epsilon \to u$ uniformly as $\epsilon \to 0$.
+
+Prove that $u$ is a viscosity solution of $u_t + H(Du, x) = 0$. (This exercise shows that viscosity solutions do not depend upon the precise structure of the parabolic smoothing.)
+\end{exercise}
+
+%ORIGINAL-NUMBER: 4
+\begin{exercise}
+(i) Show that $u(x) := 1 - |x|$ is a viscosity solution of
+\[
+\begin{cases} |u'| = 1 & \text{in } (-1,1) \\ u(-1) = u(1) = 0. \end{cases}
+\tag{$*$}
+\]
+This means that for each $v \in C^\infty(-1,1)$, if $u - v$ has a maximum (minimum) at a point $x_0 \in (-1,1)$, then $|v'(x_0)| \le 1 (\ge 1)$.
+
+(ii) Show that $\tilde{u}(x) := |x| - 1$ is \textit{not} a viscosity solution of $(*)$.
+
+(iii) Show that $\tilde{u}$ is a viscosity solution of
+\[
+\begin{cases} -|\tilde{u}'| = -1 & \text{in } (-1,1) \\ \tilde{u}(-1) = \tilde{u}(1) = 0. \end{cases}
+\tag{$**$}
+\]
+(Hint: What is the meaning of a viscosity solution of $(**)$?)
+
+(iv) Why do problems $(*)$, $(**)$ have different viscosity solutions?
+\end{exercise}
+
+%ORIGINAL-NUMBER: 5
+\begin{exercise}
+Let $U \subset \R^n$ be open, bounded. Set $u(x) := \dist(x,\partial U)$ $(x \in U)$. Prove $u$ is Lipschitz continuous and is a viscosity solution of the eikonal equation (\cref{ex:eikonal-equation})
+\[
+|Du| = 1 \quad \text{in } U.
+\]
+This means that for each $v \in C^\infty(U)$, if $u - v$ has a maximum (minimum) at a point $x_0 \in U$, then $|Dv(x_0)| \le 1 (\ge 1)$.
+\end{exercise}
+
+\section{References}
+\label{sec:hj-references}
+
+\noindent\textbf{Section 10.1.} The definition of viscosity solutions presented here is due to Crandall--Evans--Lions~\cite{CrandallEvansLions1984}, who recast an earlier definition set forth in the basic paper~\cite{CrandallLions1983} of Crandall--Lions.
+
+\noindent\textbf{Section 10.2.} The uniqueness proof follows Crandall--Evans--Lions~\cite{CrandallEvansLions1984}, with some recent improvements the author learned from M. Crandall.
+
+\noindent\textbf{Section 10.3.} P.-L. Lions~\cite{PLLions1982} observed the connection between the definition of viscosity solution and the optimality conditions of control theory. The books of Fleming--Soner~\cite{FlemingSoner1993} and Bardi--Capuzzo Dolcetta~\cite{BardiCapuzzoDolcetta1997} provide much more information about viscosity solutions and the connections with deterministic and stochastic optimal control.

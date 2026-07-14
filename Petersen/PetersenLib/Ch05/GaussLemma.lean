@@ -1,5 +1,5 @@
 import PetersenLib.Ch05.ExponentialMap
-import PetersenLib.Vendored.OpenGA.Exponential.GaussLemma
+import OpenGALib.Riemannian.Exponential.GaussLemma
 
 /-!
 # Petersen Ch. 5, §5.5.2–5.5.3 — the Gauss Lemma and the radial isometry
@@ -38,7 +38,7 @@ open scoped Manifold Topology ContDiff ENNReal
 
 namespace PetersenLib
 
-open PetersenLib.Geodesic
+open Riemannian Riemannian.Geodesic
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
   [Module.Finite ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]

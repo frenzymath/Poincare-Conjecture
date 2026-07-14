@@ -1,4 +1,4 @@
-import PetersenLib.Vendored.OpenGA.Geodesic.CovariantDerivative
+import OpenGALib.Riemannian.Geodesic.CovariantDerivative
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 
 /-!
@@ -41,7 +41,7 @@ open scoped Manifold Topology ContDiff Matrix
 
 namespace PetersenLib
 
-open PetersenLib.Tensor
+open Riemannian Riemannian.Tensor
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
   [Module.Finite ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]

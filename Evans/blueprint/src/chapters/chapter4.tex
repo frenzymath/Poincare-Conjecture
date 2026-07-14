@@ -1,0 +1,1970 @@
+% Source: Evans, "Partial Differential Equations" (2nd ed., AMS Graduate Studies in Mathematics vol. 19, 2010),
+% Chapter 4 "Other Ways to Represent Solutions", PDF pages 175-244 of MathBooks/Evans Partial Differential Equations(1).pdf.
+% Transcribed page-by-page by vision subagents, then merged and restructured into
+% leanblueprint conventions (semantic \label, bracketed titles, \uses dependency edges) below.
+%
+% NOTE ON GAPS: as in chapter1.tex/chapter2.tex/chapter3.tex, a number of source pages
+% were returned by the vision transcription subagent as refusal placeholders rather than
+% actual page content. Unlike those earlier chapters, here every such gap (PDF pages
+% 175, 185, 186, 187, 189, 190, 191, 198, 199, 206, 208, 224, 225, 235, 236, 240, 243)
+% was closed by directly re-reading the corresponding pages of the source PDF with a
+% vision-capable Read call during this restructuring pass, so no content below is
+% invented or reconstructed from outside knowledge of the book -- it is a faithful
+% transcription of the actual page images. A few individual cross-reference section
+% numbers that were hard to read with full confidence are flagged inline with
+% "% TODO-VERIFY" comments.
+
+
+This chapter collects together a wide variety of techniques that are sometimes useful for finding certain more-or-less explicit solutions to various partial differential equations, or at least representation formulas for solutions.
+
+\section{Separation of Variables}
+\label{sec:separation-of-variables}
+
+The method of \textit{separation of variables} tries to construct a solution $u$ to a given partial differential equation as some sort of combination of functions of fewer variables. In other words, the idea is to guess that $u$ can be written as, say, a sum or product of as yet undetermined constituent functions, to plug this guess into the PDE, and finally to choose the simpler functions to ensure $u$ really is a solution. This technique is best understood in examples.
+
+\begin{example}[Separation of variables for the heat equation]
+\label{ex:heat-equation-separation-of-variables}
+\dcref{ch4:4.1-ex-1}
+\group{Separation of Variables}
+Let $U \subset \R^n$ be a bounded, open set with smooth boundary. We consider the initial/boundary-value problem for the heat equation
+$$\begin{cases}
+u_t - \Delta u = 0 & \text{in } U \times (0,\infty) \\
+u = 0 & \text{on } \partial U \times [0,\infty) \\
+u = g & \text{on } U \times \{t = 0\},
+\end{cases}$$
+where $g : U \to \R$ is given. We conjecture there exists a solution having the multiplicative form
+$$(2) \quad u(x,t) = v(t)w(x) \quad (x \in U, t \geq 0);$$
+that is, we look for a solution of (1) with the variables $x = (x_1, \ldots, x_n) \in U$ ``separated'' from the variable $t \in [0, T]$.
+
+Will this work? To find out, we compute
+$$u_t(x,t) = v'(t)w(x), \quad \Delta u(x,t) = v(t)\Delta w(x).$$
+Hence
+$$0 = u_t(x,t) - \Delta u(x,t) = v'(t)w(x) - v(t)\Delta w(x)$$
+if and only if
+$$(3) \quad \frac{v'(t)}{v(t)} = \frac{\Delta w(x)}{w(x)}$$
+for all $x \in U$ and $t > 0$ such that $w(x), v(t) \neq 0$. Now observe the left hand side of (3) depends only on $t$ and the right hand side depends only on $x$. This is impossible unless each is constant, say
+$$\frac{v'(t)}{v(t)} = \mu = \frac{\Delta w(x)}{w(x)} \quad (t \geq 0, x \in U).$$
+Then
+$$(4) \quad v' = \mu v,$$
+$$(5) \quad \Delta w = \mu w.$$
+We must solve these equations for the unknowns $w, v$ and $\mu$.
+
+Notice first that if $\mu$ is known, the solution of (4) is $v = de^{\mu t}$ for an arbitrary constant $d$. Consequently we need only investigate equation (5).
+
+We say that $\lambda$ is an \textit{eigenvalue} of the operator $-\Delta$ on $U$ (subject to zero boundary conditions) provided there exists a function $w$, not identically equal to zero, solving
+$$\begin{cases}
+-\Delta w = \lambda w & \text{in } U \\
+w = 0 & \text{on } \partial U.
+\end{cases}$$
+The function $w$ is a corresponding \textit{eigenfunction}. (See Chapter 6 for the theory of eigenvalues, eigenfunctions.)
+
+If $\lambda$ is an eigenvalue and $w$ is a related eigenfunction, we set $\mu = -\lambda$ above, to find
+$$(6) \quad u = de^{-\lambda t}w$$
+solves
+$$(7) \quad \begin{cases}
+u_t - \Delta u = 0 & \text{in } U \times (0, \infty) \\
+u = 0 & \text{on } \partial U \times [0, \infty),
+\end{cases}$$
+with the initial condition $u(\cdot, 0) = dw$. Thus the function $u$ defined by (6) solves problem (1), provided $g = dw$. More generally, if $\lambda_1, \ldots, \lambda_m$ are eigenvalues, $w_1, \ldots, w_m$ corresponding eigenfunctions, and $d_1, \ldots, d_m$ are constants, then
+$$(8) \quad u = \sum_{k=1}^{m} d_k e^{-\lambda_k t} w_k$$
+solves (7), with the initial condition $u(\cdot, 0) = \sum_{k=1}^{m} d_k w_k$. If we can find $m, w_1, \ldots,$ etc. such that $\sum_{k=1}^{m} d_k w_k = g$, we are done.
+
+We can hope to generalize further by trying to find a countable sequence $\lambda_1, \ldots$ of eigenvalues with corresponding eigenfunctions $w_1, \ldots$, so that
+$$(9) \quad \sum_{k=1}^{\infty} d_k w_k = g \quad \text{in } U$$
+for appropriate constants $d_1, \ldots$. Then presumably
+$$(10) \quad u = \sum_{k=1}^{\infty} d_k e^{-\lambda_k t} w_k$$
+will be the solution of the initial-value problem (1).
+
+This is an attractive representation formula for the solution, but depends upon (a) our being able to find eigenvalues, eigenfunctions and constants satisfying (9), and (b) our verifying that the series in (10) converges in some appropriate sense. We will discuss these matters further in Chapters 6, 7, within the context of Galerkin approximations. $\square$
+\end{example}
+
+Note that within this example we implicitly used the following notion.
+
+\begin{definition}[Eigenvalue and eigenfunction]
+\label{def:eigenvalue-eigenfunction}
+\dcref{ch4:4.1-def-1}
+\group{Separation of Variables}
+We say that $\lambda$ is an \textit{eigenvalue} of the operator $-\Delta$ on a bounded open set $U$ (subject to zero boundary conditions) provided there exists a function $w$, not identically equal to zero, solving
+$$\begin{cases}
+-\Delta w = \lambda w & \text{in } U \\
+w = 0 & \text{on } \partial U.
+\end{cases}$$
+The function $w$ is a corresponding \textit{eigenfunction}.
+\end{definition}
+
+\begin{remark}[Nonlinear extensions require linearity]
+\label{rem:separation-of-variables-linearity-remark}
+\dcref{ch4:4.1-rem-1}
+\group{Separation of Variables}
+\uses{ex:heat-equation-separation-of-variables}
+Take note that only our solution (6) is determined by separation of variables; the more complicated forms (8) and (10) depend upon the linearity of the heat equation. $\square$
+\end{remark}
+
+\begin{example}[Separation of variables for the porous medium equation]
+\label{ex:porous-medium-separation-of-variables}
+\dcref{ch4:4.1-ex-2}
+\group{Similarity Solutions}
+Let us next apply the separation of variables technique to discover a solution of the \textit{porous medium equation}
+$$(11) \quad u_t - \Delta(u^\gamma) = 0 \quad \text{in } \R^n \times (0, \infty),$$
+where $u \ge 0$ and $\gamma > 1$ is a constant. The expression (11) is a nonlinear diffusion equation, in which the rate of diffusion of some density $u$ depends upon $u$ itself. This PDE describes flow in porous media, thin-film lubrication, and a variety of other phenomena.
+
+As in the previous example, we seek a solution of the form
+$$(12) \quad u(x,t) = v(t)w(x) \quad (x \in \R^n, t \ge 0).$$
+Inserting into (11), we discover that
+$$(13) \quad \frac{v'(t)}{v(t)^\gamma} = \mu = \frac{\Delta w^\gamma(x)}{w(x)}$$
+for some constant $\mu$ and all $x \in \R^n$, $t \ge 0$, such that $w(x), v(t) \ne 0$.
+
+We solve the ODE for $v$ and find
+$$v = ((1 - \gamma)\mu t + \lambda)^{\frac{1}{1-\gamma}},$$
+for some constant $\lambda$, which we will take to be positive. To discover $w$, we must then solve the PDE
+$$(14) \quad \Delta(w^\gamma) = \mu w.$$
+Let us now guess that
+$$w = |x|^\alpha,$$
+for some constant $\alpha$ that must be determined. Then
+$$(15) \quad \mu w - \Delta(w^\gamma) = \mu|x|^\alpha - \alpha\gamma(\alpha\gamma + n - 2)|x|^{\alpha\gamma - 2}.$$
+So in order that (14) hold in $\R^n$, we should first require that $\alpha = \alpha\gamma - 2$, and hence
+$$(16) \quad \alpha = \frac{2}{\gamma - 1}.$$
+Returning to (15), we see that we must further set
+$$(17) \quad \mu = \alpha\gamma(\alpha\gamma + n - 2) > 0.$$
+In summary then, for each $\lambda > 0$ the function
+$$u = ((1 - \gamma)\mu t + \lambda)^{\frac{1}{1-\gamma}}|x|^\alpha$$
+solves the porous medium equation (11), the parameters $\alpha$, $\mu$ defined by (16), (17). $\square$
+\end{example}
+
+\begin{remark}[Finite-time blow-up]
+\label{rem:porous-medium-blowup-remark}
+\dcref{ch4:4.1-rem-2}
+\group{Similarity Solutions}
+\uses{ex:porous-medium-separation-of-variables}
+Observe that since $\gamma > 1$, this solution blows up for $x \neq 0$ as $t \to t_*$, for $t_* := \frac{1}{(\gamma-1)\mu}$. Physically, a huge amount of mass ``diffuses in from infinity'' in finite time. See \S4.2.2 for another, better behaved solution of the porous medium equation, and see \S9.4.1 for more on blow-up phenomena for nonlinear diffusion equations.
+$\square$
+\end{remark}
+
+In the previous example separation of variables worked owing to the homogeneity of the nonlinearity, which is compatible with functions $u$ having the multiplicative form (12). In other circumstances it is profitable to look for a solution in which the variables are separated additively:
+
+\begin{example}[Additive separation of variables for the Hamilton--Jacobi equation]
+\label{ex:hamilton-jacobi-additive-separation}
+\dcref{ch4:4.1-ex-3}
+\group{Separation of Variables}
+\uses{ex:hamilton-jacobi-complete-integral}
+Let us turn once again to the Hamilton-Jacobi equation
+$$(18) \quad u_t + H(Du) = 0 \quad \text{in } \R^n \times (0, \infty)$$
+and look for a solution $u$ having the form
+$$u(x,t) = w(x) + v(t) \quad (x \in \R^n, t \geq 0).$$
+Then
+$$0 = u_t(x,t) + H(Du(x,t)) = v'(t) + H(Dw(x))$$
+if and only if
+$$H(Dw(x)) = \mu = -v'(t) \quad (x \in \R^n, t > 0)$$
+for some constant $\mu$. Consequently if
+$$H(Dw) = \mu$$
+for some $\mu \in \R$, then
+$$u(x,t) = w(x) - \mu t + b$$
+will for any constant $b$ solve $u_t + H(Du) = 0$. In particular, if we choose $w(x) = a \cdot x$ for some $a \in \R^n$ and set $\mu = H(a)$, we discover the solution
+$$u = a \cdot x - H(a)t + b$$
+already noted in \cref{ex:hamilton-jacobi-complete-integral} (\S3.1).
+$\square$
+\end{example}
+
+\section{Similarity Solutions}
+\label{sec:similarity-solutions}
+
+When investigating partial differential equations it is often profitable to look for specific solutions $u$, the form of which reflects various symmetries in the structure of the PDE. We have already seen this idea in our derivation of the fundamental solutions for Laplace's and the heat equations in \cref{def:fundamental-solution-laplace} (\S2.2.1) and \cref{def:fundamental-solution-heat-equation} (\S2.3.1), and our discovery of rarefaction waves for conservation laws in \cref{thm:riemann-problem-solution} (\S3.4.4). Following are some other applications of this important method.
+
+\subsection{Plane and Traveling Waves, Solitons}
+\label{sec:plane-traveling-waves-solitons}
+
+Consider first a partial differential equation involving the two variables $x \in \R$, $t \in \R$.
+
+\begin{definition}[Traveling wave and plane wave]
+\label{def:traveling-wave-plane-wave}
+\dcref{ch4:4.2.1-def-1}
+\group{Traveling Waves}
+A solution $u$ of the form
+$$(1) \quad u(x,t) = v(x - \sigma t) \quad (x \in \R, t \in \R)$$
+is called a \textit{traveling wave} (with speed $\sigma$ and \textit{profile} $v$). More generally, a solution $u$ of a PDE in the $n + 1$ variables $x = (x_1,\ldots,x_n) \in \R^n$, $t \in \R$ having the form
+$$(2) \quad u(x,t) = v(y \cdot x - \sigma t) \quad (x \in \R^n, t \in \R)$$
+is called a \textit{plane wave} (with \textit{wavefront} normal to $y \in \R^n$, \textit{velocity} $\frac{\sigma}{|y|}$, and \textit{profile} $v$).
+\end{definition}
+
+\textbf{a. Exponential solutions.}
+
+In view of the Fourier transform (discussed later, in \S4.3.1), it is particularly enlightening when studying linear partial differential equations to consider complex-valued plane wave solutions.
+
+\begin{example}[Exponential plane wave solutions of linear PDE]
+\label{ex:exponential-plane-wave-solutions}
+\dcref{ch4:4.2.1-ex-1}
+\group{Traveling Waves}
+\uses{def:traveling-wave-plane-wave}
+Consider complex-valued plane wave solutions of the form
+$$(3) \quad u(x,t) = e^{i(y \cdot x + \omega t)},$$
+where $\omega \in \C$ and $y = (y_1,\ldots,y_n) \in \R^n$, $\omega$ being the \textit{frequency} and $\{y_i\}_{i=1}^n$ the \textit{wave numbers}. We will next substitute trial solutions of the form (3) into various linear PDE, paying particular attention to the relationship between $y$ and $\omega$ forced by the structure of the equation.
+
+(i) \textbf{Heat equation}. If $u$ is given by (3), we compute
+$$u_t - \Delta u = (i\omega + |y|^2)u = 0,$$
+provided $\omega = i|y|^2$. Hence
+$$u = e^{iy \cdot x - |y|^2 t}$$
+solves the heat equation for each $y \in \R^n$. Taking real and imaginary parts, we discover further that $e^{-|y|^2 t}\cos(y \cdot x)$ and $e^{-|y|^2 t}\sin(y \cdot x)$ are solutions as well. Notice in this example that since $\omega$ is purely imaginary, there results a real, negative exponential term $e^{-|y|^{2}t}$ in the formulas, which corresponds to \textit{dissipation}.
+
+(ii) \textbf{Wave equation}. Upon our substituting (3) into the wave equation, we discover
+$$u_{tt} - \Delta u = (-\omega^2 + |y|^2)u = 0,$$
+provided $\omega = \pm|y|$. Consequently
+$$u = e^{i(y \cdot x \pm |y|t)}$$
+solves the wave equation, as do the pair of functions $\cos(y \cdot x \pm |y|t)$ and $\sin(y \cdot x \pm |y|t)$. Since $\omega$ is real, there are no dissipation effects in these solutions.
+
+(iii) \textbf{Dispersive equations}. We now let $n = 1$ and substitute $u = e^{i(yx+\omega t)}$ into \textit{Airy's equation}
+$$u_t + u_{xxx} = 0.$$
+We calculate
+$$u_t + u_{xxx} = i(\omega - y^3)u = 0,$$
+whenever $\omega = y^3$. Thus
+$$u = e^{i(yx+y^3t)}$$
+solves Airy's equation, and once again as $\omega$ is real there is no dissipation. Notice however that the velocity of propagation is $y^2$, which depends nonlinearly upon the frequency of the initial value $e^{iyx}$. Thus waves of different frequencies propagate at different velocities: the PDE creates \textit{dispersion}.
+
+Likewise, if $n \geq 1$ and we substitute $u = e^{i(y \cdot x + \omega t)}$ into \textit{Schr\"odinger's equation}
+$$iu_t + \Delta u = 0,$$
+we compute
+$$iu_t + \Delta u = -(\omega + |y|^2)iu = 0.$$
+Consequently $\omega = -|y|^2$, and
+$$u = e^{i(y \cdot x - |y|^2 t)}.$$
+Again, the solution displays dispersion. $\square$
+\end{example}
+
+\textbf{b. Solitons.}
+
+\begin{example}[Solitons for the Korteweg--de Vries equation]
+\label{ex:kdv-soliton-traveling-wave}
+\dcref{ch4:4.2.1-ex-2}
+\group{Traveling Waves}
+\uses{def:traveling-wave-plane-wave}
+We consider next the \textit{Korteweg--de Vries} (KdV) equation in the form
+$$(4) \quad u_t + 6uu_x + u_{xxx} = 0 \text{ in } \R \times (0,\infty),$$
+this nonlinear dispersive equation being a model for surface waves in water. We seek a traveling wave solution having the structure
+$$(5) \quad u(x,t) = v(x - \sigma t) \quad (x \in \R, t > 0).$$
+Then $u$ solves the KdV equation (4), provided $v$ satisfies the ODE
+$$(6) \quad -\sigma v' + 6vv' + v'' = 0 \quad \left(' = \frac{d}{ds}\right).$$
+We integrate (6) by first noting
+$$(7) \quad -\sigma v + 3v^2 + v'' = a,$$
+$a$ denoting some constant. Multiply this equality by $v'$ to obtain
+$$-\sigma v v' + 3v^2 v' + v'' v' = av',$$
+and so deduce
+$$(8) \quad \frac{(v')^2}{2} = -v^3 + \frac{\sigma}{2} v^2 + av + b$$
+where $b$ is another arbitrary constant.
+
+We investigate (8) by looking now only for solutions $v$ which satisfy $v, v', v'' \to 0$ as $s \to \pm\infty$. (In which case the function $u$ having the form (5) is called a \textit{solitary wave}.) Then (7), (8) imply $a = b = 0$. Equation (8) thereupon simplifies to read
+$$\frac{(v')^2}{2} = v^2 \left(-v + \frac{\sigma}{2}\right).$$
+Hence $v' = \pm v(\sigma - 2v)^{1/2}$.
+
+We take the minus sign above for computational convenience, and obtain then this implicit formula for $v$:
+$$(9) \quad s = -\int_0^{v(s)} \frac{dz}{z(\sigma - 2z)^{1/2}} + c,$$
+for some constant $c$. Now substitute $z = \frac{\sigma}{2} \sech^2 \theta$. It follows that $\frac{dz}{d\theta} = -\sigma \sech^2 \theta \tanh \theta$ and $z(\sigma - 2z)^{1/2} = \frac{\sigma^{3/2}}{2} \sech^2 \theta \tanh \theta$. Hence (9) becomes
+$$(10) \quad s = \frac{2}{\sqrt{\sigma}} \theta + c,$$
+where $\theta$ is implicitly given by the relation
+$$(11) \quad \frac{\sigma}{2} \sech^2 \theta = v(s).$$
+We lastly combine (10) and (11), to compute
+$$v(s) = \frac{\sigma}{2} \sech^2 \left(\frac{\sqrt{\sigma}}{2}(s-c)\right) \quad (s \in \R).$$
+Conversely, it is routine to check $v$ so defined actually solves the ODE (6). The upshot is that
+$$u(x,t) = \frac{\sigma}{2} \sech^2 \left(\frac{\sqrt{\sigma}}{2}(x - \sigma t - c)\right) \quad (x \in \R, t \geq 0)$$
+is a solution of the KdV equation for each $c \in \R$, $\sigma > 0$. A solution of this form is called a \textit{soliton}. Note the velocity of the soliton depends upon its height.
+\end{example}
+
+\begin{remark}[Complete integrability of the KdV equation]
+\label{rem:kdv-complete-integrability}
+\dcref{ch4:4.2.1-rem-1}
+\group{Traveling Waves}
+\uses{ex:kdv-soliton-traveling-wave}
+The KdV equation is in fact utterly remarkable, in that it is \textit{completely integrable}, which means that in principle the exact solution can be computed for essentially arbitrary initial data. The relevant techniques are however beyond the scope of this book; see Drazin \cite{Drazin1983} for more information.
+$\square$
+\end{remark}
+
+\textbf{c. Traveling waves for a bistable equation.}
+
+Consider next the scalar reaction-diffusion equation
+$$(12) \quad u_t - u_{xx} = f(u) \quad \text{in } \R \times (0,\infty),$$
+where $f: \R \to \R$ has a ``cubic-like'' shape.
+
+\begin{figure}[h]\centering
+% [FIGURE: A coordinate system showing the graph of function f. The curve starts from the lower left, crosses the x-axis at 0, dips below the x-axis between 0 and 1, has a local minimum around 0.5, rises back to cross the x-axis at 1, and continues upward to the upper right. The x-axis is labeled with 0, a point around 0.5, and 1.]
+\end{figure}
+
+\noindent Graph of the function $f$
+
+We assume, more precisely, $f$ is smooth and verifies
+$$
+(13) \quad \begin{cases}
+\text{(a)} & f(0) = f(a) = f(1) = 0 \\
+\text{(b)} & f < 0 \text{ on } (0, a), \quad f > 0 \text{ on } (a, 1) \\
+\text{(c)} & f'(0) < 0, \quad f'(1) < 0 \\
+\text{(d)} & \int_0^1 f(z) \, dz > 0
+\end{cases}
+$$
+for some point $0 < a < 1$.
+
+\begin{theorem}[Existence of a traveling wave for the bistable reaction-diffusion equation]
+\label{thm:bistable-traveling-wave-existence}
+\dcref{ch4:4.2.1-thm-1}
+\group{Traveling Waves}
+\uses{def:traveling-wave-plane-wave}
+Let $f$ satisfy the hypotheses (13) for some $0 < a < 1$. Then there exists a velocity $\sigma$ and a traveling wave solution
+$$
+(14) \quad u(x,t) = v(x - \sigma t)
+$$
+of the reaction-diffusion PDE (12), with
+$$u \to 0 \text{ as } x \to -\infty, \quad u \to 1 \text{ as } x \to +\infty.$$
+\end{theorem}
+\begin{proof}
+Now since $f' < 0$ at $z = 0, 1$, the constants $0$ and $1$ are stable solutions of the PDE (and since $f' \geq 0$ at $z = a$, the constant $a$ is an unstable solution). So we want our traveling wave (14) to interpolate between the two stable states $z = 0, 1$ at $x = \pm\infty$.
+
+Plugging (14) into (12), we see $v$ must satisfy the ordinary differential equation
+$$
+(15) \quad v'' + \sigma v' + f(v) = 0 \quad \left(' = \frac{d}{ds}\right),
+$$
+subject to the conditions
+$$
+(16) \quad \lim_{s \to +\infty} v(s) = 1, \quad \lim_{s \to -\infty} v(s) = 0, \quad \lim_{s \to \pm\infty} v'(s) = 0.
+$$
+
+We outline now (without complete proofs) a \textit{phase plane analysis} of the ODE problem (15), (16). We begin by setting
+$$w := v'.$$
+Then (15), (16) transform into the autonomous first-order system:
+$$
+(17) \quad \begin{cases}
+v' = w \\
+w' = -\sigma w - f(v),
+\end{cases}
+$$
+with
+$$
+(18) \quad \lim_{s \to +\infty} (v, w) = (1, 0), \quad \lim_{s \to -\infty} (v, w) = (0, 0).
+$$
+
+Now $(0,0)$ and $(1,0)$ are critical points for the system (17), and the eigenvalues of the corresponding linearizations are
+$$(19) \quad \lambda_0^{\pm} = \frac{-\sigma \pm (\sigma^2 - 4f'(0))^{1/2}}{2}, \quad \lambda_1^{\pm} = \frac{-\sigma \pm (\sigma^2 - 4f'(1))^{1/2}}{2}.$$
+In view of (13)(c), $\lambda_0^{\pm}, \lambda_1^{\pm}$ are real, with differing sign, and thus $(0,0)$ and $(1,0)$ are saddle points for the flow (17). Consequently an ``unstable curve'' $W^u$ leaves $(0,0)$ and a ``stable curve'' $W^s$ approaches $(1,0)$, as drawn. Furthermore, by calculating eigenvectors corresponding to (19) we see
+$$(20) \quad \begin{cases} W^u \text{ is tangent to the line } w = \lambda_0^+ v \text{ at } (0,0) \\ W^s \text{ is tangent to the line } w = \lambda_1^-(v-1) \text{ at } (1,0). \end{cases}$$
+
+\begin{figure}[h]\centering
+% [FIGURE: A phase-plane diagram in the (v,w) plane showing two saddle points at (0,0) and (1,0), with an unstable curve W^u leaving (0,0) and a stable curve W^s entering (1,0), each nearly tangent to the lines w = lambda_0^+ v and w = lambda_1^-(v-1) respectively near those points; the two curves arc up and nearly meet over the interval between them. Labeled "Stable and unstable curves".]
+\end{figure}
+
+Note that $\lambda_0^{\pm}, \lambda_1^{\pm}, W^u$ and $W^s$ depend upon the parameter $\sigma$. Our intention is to find $\sigma < 0$ so that
+$$(21) \quad W^u = W^s \quad \text{in the region } \{v>0, w>0\}.$$
+Then we will have a solution of (17), (18), whose path in the phase plane is a heteroclinic orbit connecting $(0,0)$ to $(1,0)$.
+
+To establish (21), we fix now a small number $\varepsilon > 0$ and let $L$ denote the vertical line through the point $(a+\varepsilon, 0)$. We claim
+$$(22) \quad W^s \cap L \neq \emptyset, \quad W^u \cap L \neq \emptyset$$
+if $\sigma < 0$. To check this assertion, define
+$$E(v,w) := \frac{w^2}{2} + \int_0^v f(z)\,dz \quad (v,w\in\R)$$
+and compute
+$$\frac{d}{dt}E(v(t),w(t)) = w(t)w'(t) + f(v(t))v'(t) = -\sigma w^2(t) \quad \text{by (17)}.$$
+As $\sigma < 0$, we see that $E$ is nondecreasing along trajectories of the ODE (17). Note also the level sets of $E$ have the shapes illustrated.
+
+\begin{figure}[h]\centering
+% [FIGURE: A phase-plane diagram in the (v,w) plane showing nested closed level curves of the function E(v,w) around the point (a,0), together with a pair of curves emanating from and returning to the saddle point (0,0) that enclose these closed curves, and the point (1,0) marked further along the v-axis. Labeled "Level curves of E".]
+\end{figure}
+
+Consider next the region $R$, as drawn. The unstable curve enters $R$ from $(0,0)$ and cannot exit through the bottom, top or left hand side. Using (17) we deduce that $W^u$ must exit $R$ through the line $L$, at a point $(a+\varepsilon, w_0(\sigma))$. Similarly we argue $W^s$ must hit $L$ at a point $(a+\varepsilon, w_1(\sigma))$. This verifies claim (22).
+
+We next observe
+$$(23) \quad w_0(0) < w_1(0);$$
+this follows since trajectories of (17) for $\sigma=0$ are contained in level sets of $E$. We assert further that
+$$(24) \quad w_0(\sigma) > w_1(\sigma)$$
+
+\begin{figure}[h]\centering
+% [FIGURE: A shaded region R in the (v,w) plane, bounded on the right by the vertical line L through (a+eps,0), containing the unstable curve W^u leaving the saddle point (0,0) and curving upward to exit through L; the points (a,0) and (1,0) are marked on the v-axis. Labeled "The region R".]
+\end{figure}
+
+\begin{figure}[h]\centering
+% [FIGURE: A shaded region S in the (v,w) plane bounded on the right by the vertical line L and below by a line segment T of slope beta through the origin, with a trajectory curve entering the region from the origin and moving up and to the right. Labeled "The region S".]
+\end{figure}
+
+provided $\sigma<0$ and $|\sigma|$ is large enough. To see this, fix $\beta>0$ and consider the region $S$, as drawn.
+
+Now along the line segment $T := \{0\le v \le a+\varepsilon, w=\beta v\}$, we have
+$$\frac{w'}{v'} = \frac{-\sigma w - f(v)}{w} = -\sigma - \frac{f(v)}{\beta v}.$$
+Since $\left|\frac{f(v)}{v}\right|$ is bounded for $0 \le v \le a + \varepsilon$, we see
+$$(25) \quad \frac{w'}{v'} \ge -\sigma - \frac{C}{\beta} > \beta \quad \text{on } T,$$
+provided $\sigma < 0$ and $|\sigma|$ is large enough.
+
+The calculation (25) shows that $W^u$ cannot exit $S$ through the line segment $T$, and so $w_0(\sigma) \ge \beta(a + \varepsilon)$ if $\sigma = \sigma(\beta)$ is sufficiently negative. On the other hand, $w_1(\sigma) \le w_1(0)$ for all $\sigma \le 0$. Thus we see that (23) will follow once we choose $\beta$ large enough and then $\sigma$ sufficiently negative.
+
+Since $w_0$ and $w_1$ depend smoothly on $\sigma$, we deduce from (22) and (23) that there exists $\sigma < 0$ with
+$$(26) \quad w_0(\sigma) = w_1(\sigma).$$
+For this velocity $\sigma$ there consequently exists a solution of the ODE (17), (18). Hence we have found for our reaction-diffusion PDE (12) a traveling wave of the form (14).
+\end{proof}
+
+\begin{remark}[Uniqueness of the bistable traveling wave velocity]
+\label{rem:bistable-traveling-wave-velocity-uniqueness}
+\dcref{ch4:4.2.1-rem-2}
+\group{Traveling Waves}
+\uses{thm:bistable-traveling-wave-existence,ex:kdv-soliton-traveling-wave}
+A more refined analysis demonstrates that the velocity $\sigma$ verifying (26) is unique. Hence given the nonlinearity $f$ satisfying hypotheses (13), there exists a \textit{unique} velocity for which there is a corresponding traveling wave. Compare this assertion with \cref{ex:kdv-soliton-traveling-wave}, where we found soliton traveling waves for each given velocity. $\square$
+\end{remark}
+
+\subsection{Similarity Under Scaling}
+\label{sec:similarity-under-scaling}
+
+We next illustrate the possibility of finding other types of ``similarity'' solutions to PDE.
+
+\begin{example}[A scaling invariant solution of the porous medium equation: Barenblatt's solution]
+\label{ex:porous-medium-scaling-invariant-barenblatt}
+\dcref{ch4:4.2.2-ex-1}
+\group{Similarity Solutions}
+\uses{def:fundamental-solution-heat-equation}
+Consider again the \textit{porous medium equation}
+$$(27) \quad u_t - \Delta(u^\gamma) = 0 \quad \text{in } \R^n \times (0, \infty),$$
+where $u \ge 0$ and $\gamma > 1$ is a constant.
+
+As in our earlier derivation of the fundamental solution of the heat equation in \S2.3.1, let us look for a solution $u$ having the form
+$$(28) \quad u(x,t) = \frac{1}{t^\alpha} v\left(\frac{x}{t^\beta}\right) \quad (x \in \R^n, t > 0),$$
+where the constants $\alpha, \beta$ and the function $v : \R^n \to \R$ must be determined. Remember that we come upon (28) if we seek a solution $u$ of (27) invariant under the \textit{dilation scaling}
+$$u(x,t) \mapsto \lambda^\alpha u(\lambda^\beta x, \lambda t),$$
+so that
+$$u(x,t) = \lambda^\alpha u(\lambda^\beta x, \lambda t)$$
+for all $\lambda>0$, $x\in\R^n$, $t>0$. Setting $\lambda = t^{-1}$, we obtain (28) for $v(y) := u(y,1)$.
+
+We insert (28) into (27), and discover
+$$(29) \quad \alpha t^{-(\alpha+1)} v(y) + \beta t^{-(\alpha+1)} y\cdot Dv(y) + t^{-(\alpha\gamma+2\beta)} \Delta(v^\gamma)(y) = 0$$
+for $y = t^{-\beta}x$. In order to convert (29) into an expression involving the variable $y$ alone, let us require
+$$(30) \quad \alpha + 1 = \alpha\gamma + 2\beta.$$
+Then (29) reduces to
+$$(31) \quad \alpha v + \beta y\cdot Dv + \Delta(v^\gamma) = 0.$$
+At this point we have effected a reduction from $n+1$ to $n$ variables. We simplify further by supposing $v$ is radial; that is, $v(y) = w(|y|)$ for some $w:\R\to\R$. Then (31) becomes
+$$(32) \quad \alpha w + \beta r w' + (w^\gamma)'' + \frac{n-1}{r}(w^\gamma)' = 0,$$
+where $r=|y|$, $' = \frac{d}{dr}$. Now if we set
+$$(33) \quad \alpha = n\beta,$$
+(32) thereupon simplifies to read
+$$(r^{n-1}(w^\gamma)')' + \beta(r^n w)' = 0.$$
+Thus
+$$r^{n-1}(w^\gamma)' + \beta r^n w = a$$
+for some constant $a$. Assuming $\lim_{r\to\infty} w, w' = 0$, we conclude $a=0$; whence
+$$(w^\gamma)' = -\beta r w.$$
+But then
+$$(w^{\gamma-1})' = -\frac{(\gamma-1)}{\gamma}\beta r.$$
+Consequently
+$$w^{\gamma-1} = b - \frac{\gamma-1}{2\gamma}\beta r^2,$$
+$b$ a constant; and so
+$$(34) \quad w = \left(b - \frac{\gamma-1}{2\gamma}\beta r^2\right)^{+\frac{1}{\gamma-1}},$$
+where we took the positive part of the right hand side of (34) to ensure $w\ge 0$. Recalling $v(y)=w(r)$ and (28), we obtain
+$$(35) \quad u(x,t) = \frac{1}{t^\alpha}\left(b - \frac{\gamma-1}{2\gamma}\beta\frac{|x|^2}{t^{2\beta}}\right)^{+\frac{1}{\gamma-1}} \quad (x\in\R^n, t>0),$$
+where, from (30), (33),
+$$(36) \quad \alpha = \frac{n}{n(\gamma-1)+2}, \quad \beta = \frac{1}{n(\gamma-1)+2}.$$
+The formulas (35), (36) are Barenblatt's solution to the porous medium equation. $\square$
+\end{example}
+
+\begin{remark}[Finite propagation speed for the porous medium equation]
+\label{rem:porous-medium-finite-propagation-speed}
+\dcref{ch4:4.2.2-rem-1}
+\group{Similarity Solutions}
+\uses{ex:porous-medium-scaling-invariant-barenblatt}
+Observe that Barenblatt's solution has compact support for each time $t>0$. This is a general feature for (appropriately defined) weak, nonnegative solutions of the porous medium equation with compactly supported initial data. The nonlinear parabolic PDE (27) becomes degenerate wherever $u=0$, and so the set $\{u>0\}$ moves with \textit{finite propagation speed}. Consequently the porous medium equation (27) is often regarded as a better model of diffusive spreading than the linear heat equation (which predicts infinite propagation speed). $\square$
+\end{remark}
+
+\section{Transform Methods}
+\label{sec:transform-methods}
+
+In this section we develop some of the theory of Fourier and Laplace transforms, which provides extremely powerful tools for converting certain linear partial differential equations into either algebraic equations or else differential equations involving fewer variables.
+
+\subsection{Fourier Transform}
+\label{sec:fourier-transform}
+
+In this section all functions are complex-valued, and $\bar{\ }$ denotes the complex conjugate.
+
+\textbf{a. Definitions and elementary properties.}
+
+\begin{definition}[Fourier transform on $L^1$]
+\label{def:fourier-transform-l1}
+\dcref{ch4:4.3.1-def-1}
+\group{Fourier Transform}
+If $u\in L^1(\R^n)$, we define its \textit{Fourier transform}
+$$(1) \quad \hat u(y) := \frac{1}{(2\pi)^{n/2}}\int_{\R^n} e^{-ix\cdot y}u(x)\,dx \quad (y\in\R^n)$$
+and its \textit{inverse Fourier transform}
+$$(2) \quad \check u(y) := \frac{1}{(2\pi)^{n/2}}\int_{\R^n} e^{ix\cdot y}u(x)\,dx \quad (y\in\R^n).$$
+Since $|e^{\pm ix\cdot y}|=1$ and $u\in L^1(\R^n)$, these integrals converge for each $y\in\R^n$.
+\end{definition}
+
+We intend now to extend definitions (1), (2) to functions $u\in L^2(\R^n)$.
+
+\begin{theorem}[Plancherel's Theorem]
+\label{thm:plancherel-theorem}
+\dcref{ch4:4.3.1-thm-1}
+\group{Fourier Transform}
+\uses{def:fourier-transform-l1,ex:bessel-potentials,lem:integral-fundamental-solution-heat}
+Assume $u \in L^1(\R^n) \cap L^2(\R^n)$. Then $\hat u, \check u \in L^2(\R^n)$ and
+$$(3) \quad \|\hat u\|_{L^2(\R^n)} = \|\check u\|_{L^2(\R^n)} = \|u\|_{L^2(\R^n)}.$$
+\end{theorem}
+\begin{proof}
+1. First we note that if $v, w \in L^1(\R^n)$, then $\hat v, \hat w \in L^\infty(\R^n)$. Also
+$$(4) \quad \int_{\R^n} v(x)\hat w(x)\,dx = \int_{\R^n} \hat v(y)w(y)\,dy,$$
+since both expressions equal $\frac{1}{(2\pi)^{n/2}}\int_{\R^n}\int_{\R^n} e^{-ix\cdot y}v(x)w(y)\,dx\,dy$. Furthermore, as we will explicitly compute below in \cref{ex:bessel-potentials} (Example 1 of \S4.3.1),
+% TODO-VERIFY: the source page reads this cross-reference as "Example 1 of §4.3.2" or "§4.3.1" -- the small numeral was difficult to read with full confidence from the scanned page image. The formula being invoked is explicitly computed as formula (13) within Example 1 (Bessel potentials) of §4.3.1's own "b. Applications" subsection, which is the more internally consistent reading and is what is cited here; please check against a physical/library copy if precision matters.
+$$\int_{\R^n} e^{ix\cdot y-t|x|^2}\,dx = \left(\frac{\pi}{t}\right)^{n/2}e^{-\frac{|y|^2}{4t}} \quad (t>0).$$
+Consequently if $\varepsilon>0$ and $v_\varepsilon(x):=e^{-\varepsilon|x|^2}$, we have $\hat v_\varepsilon(y) = \frac{e^{-\frac{|y|^2}{4\varepsilon}}}{(2\varepsilon)^{n/2}}$. Thus (4) implies for each $\varepsilon>0$ that
+$$(5) \quad \int_{\R^n} \hat w(y)e^{-\varepsilon|y|^2}\,dy = \frac{1}{(2\varepsilon)^{n/2}}\int_{\R^n} w(x)e^{-\frac{|x|^2}{4\varepsilon}}\,dx.$$
+
+2. Now take $u\in L^1(\R^n)\cap L^2(\R^n)$ and set $v(x):=\bar u(-x)$. Let $w:=u*v\in L^1(\R^n)\cap C(\R^n)$ and check (cf. \cref{thm:fourier-transform-properties} below) that
+$$\hat w = (2\pi)^{n/2}\hat u\hat v \in L^\infty(\R^n).$$
+But
+$$\hat v(y) = \frac{1}{(2\pi)^{n/2}} \int_{\R^n} e^{-ix \cdot y} \hat u(-x)\, dx = \hat u(y);$$
+and so $\hat w = (2\pi)^{n/2}|\hat u|^2$.
+
+Now $w$ is continuous and thus
+$$\lim_{\varepsilon \to 0} \frac{1}{(2\varepsilon)^{n/2}} \int_{\R^n} w(x)e^{-\frac{|x|^2}{4\varepsilon}} dx = (2\pi)^{n/2}w(0),$$
+where we employed the lemma from \cref{lem:integral-fundamental-solution-heat} (\S2.3.1). Since $\hat w = (2\pi)^{n/2}|\hat u|^2 \geq 0$, we deduce upon sending $\varepsilon \to 0^+$ in (5) that $\hat w$ is summable, with
+$$\int_{\R^n} \hat w(y) dy = (2\pi)^{n/2}w(0).$$
+Hence
+$$\int_{\R^n} |\hat u|^2 dy = w(0) = \int_{\R^n} u(x)v(-x) dx = \int_{\R^n} |u|^2 dx.$$
+The proof for $\check u$ is similar.
+\end{proof}
+
+\begin{definition}[Fourier transform on $L^2$]
+\label{def:fourier-transform-l2}
+\dcref{ch4:4.3.1-def-2}
+\group{Fourier Transform}
+\uses{thm:plancherel-theorem}
+In view of the equality (3) we can define the Fourier transforms of a function $u \in L^2(\R^n)$ as follows. Choose a sequence $\{u_k\}_{k=1}^\infty \subset L^1(\R^n) \cap L^2(\R^n)$ with
+$$u_k \to u \text{ in } L^2(\R^n).$$
+According to (3), $\|\hat{u}_k - \hat{u}_j\|_{L^2(\R^n)} = \|u_k - u_j\|_{L^2(\R^n)}$, and thus $\{\hat{u}_k\}_{k=1}^\infty$ is a Cauchy sequence in $L^2(\R^n)$. This sequence consequently converges to a limit, which we define to be $\hat{u}$:
+$$\hat{u}_k \to \hat{u} \text{ in } L^2(\R^n).$$
+The definition of $\hat{u}$ does not depend upon the choice of approximating sequence $\{u_k\}_{k=1}^\infty$. We similarly define $\check u$.
+\end{definition}
+
+Next we record some useful formulas.
+
+\begin{theorem}[Properties of Fourier transform]
+\label{thm:fourier-transform-properties}
+\dcref{ch4:4.3.1-thm-2}
+\group{Fourier Transform}
+\uses{def:fourier-transform-l2,thm:plancherel-theorem}
+Assume $u, v \in L^2(\R^n)$. Then
+
+(i) $\int_{\R^n} u\bar{v} dx = \int_{\R^n} \hat{u}\overline{\hat{v}} dy$,
+
+(ii) $\widehat{D^\alpha u} = (iy)^\alpha \hat{u}$ for each multiindex $\alpha$ such that $D^\alpha u \in L^2(\R^n)$,
+
+(iii) $(u * v)^\wedge = (2\pi)^{n/2}\hat{u}\hat{v}$,
+
+(iv) $u = (\hat{u})^\vee$.
+\end{theorem}
+\begin{proof}
+1. Let $u, v \in L^2(\R^n)$ and $\alpha \in \C$. Then
+$$\|u + \alpha v\|^2_{L^2(\R^n)} = \|\hat{u} + \overline{\alpha}\hat{v}\|^2_{L^2(\R^n)}.$$
+Expanding, we deduce
+$$\int_{\R^n} |u|^2 + |\alpha v|^2 + \overline{u}(\alpha v) + u(\overline{\alpha}\overline{v}) dx = \int_{\R^n} |\hat{u}|^2 + |\overline{\alpha}\hat{v}|^2 + \hat{\overline{u}}(\overline{\alpha}\hat{v}) + \hat{u}(\overline{\alpha}\overline{\hat{v}}) dy;$$
+and so according to \cref{thm:plancherel-theorem},
+$$\int_{\R^n} \alpha\overline{u}v + \overline{\alpha}u\overline{v} dx = \int_{\R^n} \alpha\overline{\hat{u}}\hat{v} + \overline{\alpha}\hat{u}\overline{\hat{v}} dy.$$
+Take $\alpha = 1, i$ and combine the resulting equalities to deduce
+$$\int_{\R^n} uv \, dx = \int_{\R^n} \hat{u}\hat{v} \, dy.$$
+This proves (i).
+
+2. If $u$ is smooth and has compact support, we calculate
+$$\widehat{D^\alpha u}(y) = \frac{1}{(2\pi)^{n/2}} \int_{\R^n} e^{-ix \cdot y} D^\alpha u(x) dx$$
+$$= \frac{(-1)^{|\alpha|}}{(2\pi)^{n/2}} \int_{\R^n} D^\alpha_x(e^{-ix \cdot y})u(x) dx$$
+$$= \frac{1}{(2\pi)^{n/2}} \int_{\R^n} e^{-ix \cdot y}(iy)^\alpha u(x) dx = (iy)^\alpha \hat{u}(y).$$
+By approximation the same formula is true if $D^\alpha u \in L^2(\R^n)$.
+
+3. We compute for $u, v \in L^1(\R^n) \cap L^2(\R^n)$ and $y \in \R^n$ that
+$$(u * v)^\wedge(y) = \frac{1}{(2\pi)^{n/2}} \int_{\R^n} e^{-ix \cdot y} \int_{\R^n} u(z)v(x - z) dz \, dx$$
+$$= \frac{1}{(2\pi)^{n/2}} \int_{\R^n} e^{-iz \cdot y}u(z) \left(\int_{\R^n} e^{-i(x-z) \cdot y}v(x - z) dx\right) dz$$
+$$= \int_{\R^n} e^{-iz \cdot y}u(z) dz \, \hat{v}(y) = (2\pi)^{n/2}\hat{u}(y)\hat{v}(y).$$
+
+4. Fix $z \in \R^n$, $\varepsilon > 0$ and write $v_\varepsilon(x) := e^{ix \cdot z - \varepsilon|x|^2}$. Then
+$$\hat{v}_\varepsilon(y) = \frac{1}{(2\pi)^{n/2}} \int_{\R^n} e^{-ix \cdot (y-z) - \varepsilon|x|^2} dx = \frac{1}{(2\varepsilon)^{n/2}} e^{-\frac{|y-z|^2}{4\varepsilon}},$$
+where we followed computations from the proof of \cref{thm:plancherel-theorem}. Utilizing formula (4), we deduce for $u \in L^1(\R^n) \cap L^2(\R^n)$ that
+$$\int_{\R^n} \hat{u}(y)e^{iz \cdot y - \varepsilon|y|^2} dy = \frac{1}{(2\varepsilon)^{n/2}} \int_{\R^n} u(x)e^{-\frac{|x-z|^2}{4\varepsilon}} dz.$$
+The expression on the right converges to $(2\pi)^{n/2}u(z)$ as $\varepsilon \to 0^+$, for each Lebesgue point of $u$. Thus
+$$\frac{1}{(2\pi)^{n/2}} \int_{\R^n} \hat{u}(y)e^{iz \cdot y} dy = u(z) \quad \text{for a.e. } z.$$
+This proves (iv).
+\end{proof}
+
+\textbf{b. Applications.}
+
+The Fourier transform is an especially powerful technique for studying linear, constant-coefficient partial differential equations.
+
+\begin{example}[Bessel potentials]
+\label{ex:bessel-potentials}
+\dcref{ch4:4.3.1-ex-1}
+\group{Fourier Transform}
+\uses{thm:fourier-transform-properties}
+We investigate first the PDE
+$$(6) \quad -\Delta u + u = f \quad \text{in } \R^n,$$
+where $f \in L^2(\R^n)$. To find an explicit formula for $u$, we take the Fourier transform, recalling \cref{thm:fourier-transform-properties}(ii) to obtain
+$$(7) \quad (1 + |y|^2)\hat{u}(y) = \hat{f}(y) \quad (y \in \R^n).$$
+The effect of the Fourier transform has been to convert the PDE (6) into the algebraic equation (7), the solution of which is trivial:
+$$\hat{u} = \frac{\hat{f}}{1 + |y|^2}.$$
+Thus
+$$(8) \quad u = \left(\frac{\hat{f}}{1 + |y|^2}\right)^\vee,$$
+and so the only real problem is to rewrite the right hand side of (8) into a more explicit form.
+
+Invoking \cref{thm:fourier-transform-properties}(iii), we see
+$$(9) \quad u = \frac{f * B}{(2\pi)^{n/2}},$$
+where
+$$(10) \quad \hat{B} = \frac{1}{1 + |y|^2}.$$
+We solve for $B$ as follows. Since $\frac{1}{a} = \int_0^\infty e^{-ta} dt$ for each $a > 0$, we have $\frac{1}{1+|y|^2} = \int_0^\infty e^{-t(1+|y|^2)} dt$. Thus
+$$(11) \quad B = \left(\frac{1}{1 + |y|^2}\right)^\vee = \frac{1}{(2\pi)^{n/2}} \int_0^\infty e^{-t} \left(\int_{\R^n} e^{ix \cdot y - t|y|^2} dy\right) dt.$$
+Now if $a, b \in \R$, $b > 0$, and we set $z = b^{1/2}x - \frac{a}{2b^{1/2}}i$, we find
+$$\int_{-\infty}^\infty e^{iax - bx^2} dx = \frac{e^{-a^2/4b}}{b^{1/2}} \int_\Gamma e^{-z^2} dz,$$
+$\Gamma$ denoting the contour $\left\{\text{Im}(z) = -\frac{a}{2b^{1/2}}\right\}$ in the complex plane. Deforming $\Gamma$ into the real axis, we compute $\int_\Gamma e^{-z^2} dz = \int_{-\infty}^\infty e^{-x^2} dx = \pi^{1/2}$; and hence
+$$(12) \quad \int_{-\infty}^\infty e^{iax - bx^2} dx = e^{-a^2/4b} \left(\frac{\pi}{b}\right)^{1/2}.$$
+Thus
+$$(13) \quad \int_{\R^n} e^{ix \cdot y - t|y|^2} dy = \prod_{j=1}^n \int_{-\infty}^\infty e^{ix_j y_j - ty_j^2} dy_j = \left(\frac{\pi}{t}\right)^{n/2} e^{-|x|^2/4t}$$
+by (12). Consequently, we conclude from (11), (13) that
+$$(14) \quad B(x) = \frac{1}{2\pi^{n/2}} \int_0^\infty \frac{e^{-t - |x|^2/4t}}{t^{n/2}} dt \quad (x \in \R^n).$$
+$B$ is called a \textit{Bessel potential}. Employing (9), we derive then the formula
+$$(15) \quad u(x) = \frac{1}{(4\pi)^{n/2}} \int_0^\infty \int_{\R^n} \frac{e^{-t - |x-y|^2/4t}}{t^{n/2}} f(y) dy\,dt \quad (x \in \R^n)$$
+for the solution of (6).
+\end{example}
+
+\begin{example}[Fundamental solution of the heat equation, via Fourier transform]
+\label{ex:fourier-transform-heat-fundamental-solution}
+\dcref{ch4:4.3.1-ex-2}
+\group{Fourier Transform}
+\uses{thm:fourier-transform-properties,ex:bessel-potentials,thm:heat-equation-initial-value-solution}
+Consider again the initial-value problem for the heat equation
+$$(16) \quad \begin{cases} u_t - \Delta u = 0 & \text{in } \R^n \times (0,\infty) \\ u = g & \text{on } \R^n \times \{t = 0\}. \end{cases}$$
+We establish a new method for solving (16) by computing $\hat{u}$, the Fourier transform of $u$ in \textit{the spatial variables $x$ only}. Thus
+$$\begin{cases} \hat{u}_t + |y|^2 \hat{u} = 0 & \text{for } t > 0 \\ \hat{u} = \hat{g} & \text{for } t = 0; \end{cases}$$
+whence
+$$\hat{u} = e^{-t|y|^2} \hat{g}.$$
+Consequently $u = (e^{-t|y|^2} \hat{g})^\vee$, and therefore
+$$(17) \quad u = \frac{g * F}{(2\pi)^{n/2}},$$
+where $\hat{F} = e^{-t|y|^2}$. But then
+$$F = (e^{-t|y|^2})^\vee = \frac{1}{(2\pi)^{n/2}} \int_{\R^n} e^{ix \cdot y - t|y|^2} dy = \frac{1}{(2t)^{n/2}} e^{-\frac{|x|^2}{4t}}$$
+by (13). Invoking (17), we compute
+$$(18) \quad u(x,t) = \frac{1}{(4\pi t)^{n/2}} \int_{\R^n} e^{-\frac{|x-y|^2}{4t}} g(y) dy \quad (x \in \R^n, t > 0),$$
+in agreement with \cref{thm:heat-equation-initial-value-solution} (\S2.3.1). The Fourier transform has provided us with a new derivation of the fundamental solution of the heat equation. $\square$
+\end{example}
+
+\begin{example}[Fundamental solution of Schr\"odinger's equation]
+\label{ex:schrodinger-fundamental-solution}
+\dcref{ch4:4.3.1-ex-3}
+\group{Fourier Transform}
+\uses{thm:plancherel-theorem,ex:fourier-transform-heat-fundamental-solution}
+Let us next look at the initial-value problem for Schr\"odinger's equation
+$$(19) \quad \begin{cases} iu_t + \Delta u = 0 & \text{in } \R^n \times (0,\infty) \\ u = g & \text{on } \R^n \times \{t = 0\}. \end{cases}$$
+Here $u$ and $g$ are complex-valued.
+
+If we formally replace $t$ by $it$ on the right hand side of (18), we obtain the formula
+$$(20) \quad u(x,t) = \frac{1}{(4\pi it)^{n/2}} \int_{\R^n} e^{\frac{i|x-y|^2}{4t}} g(y) dy \quad (x \in \R^n, t > 0),$$
+where we interpret $i^{\frac{1}{2}}$ as $e^{\frac{i\pi}{4}}$. This expression clearly makes sense for all times $t > 0$, provided $g \in L^1(\R^n)$. Furthermore if $|y|^2 g \in L^1(\R^n)$, we can check by a direct calculation that $u$ solves $iu_t + \Delta u = 0$ in $\R^n \times (0,\infty)$. (We will not discuss here the sense in which $u(\cdot,t) \to g$ as $t \to 0^+$, but see \S4.5.3 below and Problem 5.)
+
+Let us next rewrite formula (20) as
+$$u(x,t) = \frac{e^{\frac{i|x|^2}{4t}}}{(4\pi it)^{n/2}} \int_{\R^n} e^{-\frac{ix \cdot y}{2t}} e^{\frac{i|y|^2}{4t}} g(y)\, dy.$$
+Since $|e^{\frac{i|x|^2}{4t}}|, |e^{\frac{i|y|^2}{4t}}| = 1$, we can check as in \cref{thm:plancherel-theorem} that if $g \in L^1(\R^n) \cap L^2(\R^n)$, then
+$$(21) \quad \|u(\cdot,t)\|_{L^2(\R^n)} = \|g\|_{L^2(\R^n)} \quad (t > 0).$$
+Hence the mapping $g \mapsto u(\cdot,t)$ preserves the $L^2$-norm. Therefore we can extend formula (20) to functions $g \in L^2(\R^n)$, in the same way that we extended the definition of Fourier transform. $\square$
+\end{example}
+
+\begin{remark}[Fundamental solution of Schr\"odinger's equation and time reversibility]
+\label{rem:schrodinger-time-reversibility}
+\dcref{ch4:4.3.1-rem-1}
+\group{Fourier Transform}
+\uses{ex:schrodinger-fundamental-solution,thm:backwards-uniqueness-heat-equation}
+We call
+$$(22) \quad \Psi(x,t) := \frac{1}{(4\pi it)^{n/2}} e^{\frac{i|x|^2}{4t}} \quad (x \in \R^n, t \neq 0)$$
+the \textit{fundamental solution} of Schr\"odinger's equation. Note that formula (20), $u = g * \Psi$, makes sense for all times $t \neq 0$, even $t < 0$. Thus we in fact have solved
+$$(23) \quad \begin{cases} iu_t + \Delta u = 0 & \text{in } \R^n \times (-\infty, \infty) \\ u = g & \text{on } \R^n \times \{t = 0\}. \end{cases}$$
+In particular, Schr\"odinger's equation is \textit{reversible in time}, whereas the heat equation is not (in spite of \cref{thm:backwards-uniqueness-heat-equation}, Theorem 11 in \S2.3.4). $\square$
+\end{remark}
+
+\begin{example}[The wave equation via Fourier transform]
+\label{ex:fourier-transform-wave-equation}
+\dcref{ch4:4.3.1-ex-4}
+\group{Fourier Transform}
+\uses{thm:fourier-transform-properties,ex:exponential-plane-wave-solutions}
+We next analyze the initial-value problem for the wave equation
+$$(24) \quad \begin{cases} u_{tt} - \Delta u = 0 & \text{in } \R^n \times (0,\infty) \\ u = g, u_t = 0 & \text{on } \R^n \times \{t = 0\}, \end{cases}$$
+where for simplicity we suppose the initial velocity to be zero. Take as before $\hat{u}$ to be the Fourier transform of $u$ in the variable $x \in \R^n$. Then
+$$(25) \quad \begin{cases} \hat{u}_{tt} + |y|^2 \hat{u} = 0 & \text{for } t > 0 \\ \hat{u} = \hat{g}, \hat{u}_t = 0 & \text{for } t = 0. \end{cases}$$
+This is an ODE for each fixed $y\in\R^n$. We look for a solution having the form $\hat u = \beta e^{t\gamma}$ ($\beta,\gamma\in\C$). Plugging into (25) gives $\gamma^2+|y|^2=0$ and so $\gamma=\pm i|y|$. Remembering the initial conditions from (25), we deduce
+$$\hat u = \frac{\hat g}{2}(e^{it|y|}+e^{-it|y|}).$$
+Inverting, we find
+$$u(x,t) = \left[\frac{\hat g}{2}(e^{it|y|}+e^{-it|y|})\right]^\vee;$$
+and consequently
+$$(26) \quad u(x,t) = \frac{1}{(2\pi)^{n/2}}\int_{\R^n} \frac{\hat g(y)}{2}\left(e^{i(x\cdot y+t|y|)}+e^{i(x\cdot y-t|y|)}\right)dy$$
+for $x\in\R^n$, $t\ge 0$. We will further analyze this formula in certain asymptotic limits later, in \S4.5.3. See also \cref{ex:exponential-plane-wave-solutions}, Example 1(ii) in \S4.2.1. $\square$
+\end{example}
+
+\begin{example}[Telegraph equation]
+\label{ex:telegraph-equation-fourier-transform}
+\dcref{ch4:4.3.1-ex-5}
+\group{Fourier Transform}
+\uses{thm:fourier-transform-properties}
+The initial-value problem for the one-dimensional \textit{telegraph equation} is
+$$(27) \quad \begin{cases} u_{tt}+2du_t-u_{xx}=0 & \text{in } \R\times(0,\infty) \\ u=g, u_t=h & \text{on } \R\times\{t=0\}, \end{cases}$$
+for $d>0$, the term ``$2du_t$'' representing a physical damping of wave propagation. As before
+$$(28) \quad \begin{cases} \hat u_{tt}+2d\hat u_t+|y|^2\hat u=0 & \text{for } t>0 \\ \hat u=\hat g, \hat u_t=\hat h & \text{for } t=0. \end{cases}$$
+We again seek a solution of the form $\hat u=\beta e^{t\gamma}$ ($\beta,\gamma\in\C$). Plugging into (28), we deduce $\gamma^2+2d\gamma+|y|^2=0$; whence $\gamma=-d\pm(d^2-|y|^2)^{1/2}$. Consequently
+$$\hat u(y,t) = \begin{cases} e^{-dt}(\beta_1(y)e^{\gamma(y)t}+\beta_2(y)e^{-\gamma(y)t}) & \text{if } |y|\le d \\ e^{-dt}(\beta_1(y)e^{i\delta(y)t}+\beta_2(y)e^{-i\delta(y)t}) & \text{if } |y|\ge d \end{cases}$$
+for $\gamma(y):=(d^2-|y|^2)^{1/2}$ ($|y|\le d$), $\delta(y):=(|y|^2-d^2)^{1/2}$ ($|y|\ge d$), where $\beta_1(y)$ and $\beta_2(y)$ are selected so that
+$$\hat g(y) = \beta_1(y)+\beta_2(y)$$
+and
+$$\hat h(y) = \begin{cases} \beta_1(y)(\gamma(y)-d)+\beta_2(y)(-\gamma(y)-d) & \text{if } |y|\le d \\ \beta_1(y)(i\delta(y)-d)+\beta_2(y)(-i\delta(y)-d) & \text{if } |y|\ge d. \end{cases}$$
+We thereby obtain the representation formula:
+$$u(x,t) = \frac{e^{-dt}}{(2\pi)^{n/2}}\int_{\{|y|\le d\}} \beta_1(y)e^{ixy+\gamma(y)t}+\beta_2(y)e^{ixy-\gamma(y)t}\,dy$$
+$$+ \frac{e^{-dt}}{(2\pi)^{n/2}}\int_{\{|y|\ge d\}} \beta_1(y)e^{i(xy+\delta(y)t)}+\beta_2(y)e^{i(xy-\delta(y)t)}\,dy.$$
+Notice the terms $e^{-dt}$, which correspond to damping as $t\to\infty$. $\square$
+\end{example}
+
+\subsection{Laplace Transform}
+\label{sec:laplace-transform}
+
+Remember that we write $\R_+=(0,\infty)$.
+
+\begin{definition}[Laplace transform]
+\label{def:laplace-transform}
+\dcref{ch4:4.3.2-def-1}
+\group{Laplace Transform}
+If $u\in L^1(\R_+)$, we define its \textit{Laplace transform} to be
+$$(29) \quad u^{\#}(s) := \int_0^\infty e^{-st}u(t)\,dt \quad (s\ge 0).$$
+\end{definition}
+
+Whereas the Fourier transform is most appropriate for functions defined on all of $\R$ (or $\R^n$), the Laplace transform is useful for functions defined only on $\R_+$. In practice this means that for a partial differential equation involving time, it may be useful to perform a Laplace transform in $t$, holding the space variables $x$ fixed. (This is the opposite of the technique from Examples 2--5 above.)
+
+\begin{example}[Resolvents and Laplace transform]
+\label{ex:resolvent-laplace-transform}
+\dcref{ch4:4.3.2-ex-1}
+\group{Laplace Transform}
+\uses{def:laplace-transform,ex:bessel-potentials}
+Consider again the heat equation
+$$(30) \quad \begin{cases} v_t-\Delta v=0 & \text{in } U\times(0,\infty) \\ v=f & \text{on } U\times\{t=0\}, \end{cases}$$
+and perform a Laplace transform with respect to time:
+$$v^{\#}(x,s) = \int_0^\infty e^{-st}v(x,t)\,dt \quad (s>0).$$
+What PDE does $v^{\#}$ satisfy? We compute
+$$\Delta v^{\#}(x,s) = \int_0^\infty e^{-st}\Delta v(x,t)\,dt = \int_0^\infty e^{-st}v_t(x,t)\,dt$$
+$$= s\int_0^\infty e^{-st}v(x,t)\,dt + e^{-st}v\Big|_{t=0}^{t=\infty} = sv^{\#}(x,s) - f(x).$$
+Think now of $s>0$ being fixed, and write $u(x):=v^{\#}(x,s)$. Then
+$$(31) \quad -\Delta u+su=f \quad \text{in } U.$$
+Thus the solution of the resolvent equation (31) with right hand side $f$ is the Laplace transform of the solution of the heat equation (30) with initial data $f$. (If $U=\R^n$ and $s=1$, we could now represent $v$ in terms of the fundamental solution, to rederive formula (15).) $\square$
+\end{example}
+
+The connection between the resolvent equation and the Laplace transform will be made clearer by the discussion in §7.4 of semigroup theory.
+
+\begin{example}[Wave equation from the heat equation, via Laplace transform]
+\label{ex:wave-equation-from-heat-laplace-transform}
+\dcref{ch4:4.3.2-ex-2}
+\group{Laplace Transform}
+\uses{def:laplace-transform,thm:wave-equation-odd-dimensions-solution}
+Next we employ some Laplace transform ideas to provide a new derivation of the solution for the wave equation (cf. \S2.4.1), based---surprisingly---upon the heat equation.
+
+Suppose $u$ is a bounded, smooth solution of the initial-value problem:
+$$
+(32) \quad \begin{cases} u_{tt} - \Delta u = 0 & \text{in } \R^n \times (0, \infty) \\ u = g, \, u_t = 0 & \text{on } \R^n \times \{t = 0\}, \end{cases}
+$$
+where $n$ is odd and $g$ is smooth, with compact support. We extend $u$ to negative times by writing
+$$(33) \quad u(x,t) = u(x, -t) \quad \text{if } x \in \R^n, \, t < 0.$$
+Then
+$$u_{tt} - \Delta u = 0 \quad \text{in } \R^n \times \R.$$
+Next define
+$$(34) \quad v(x,t) := \frac{1}{(4\pi t)^{1/2}} \int_{-\infty}^{\infty} e^{-s^2/4t} u(x,s) \, ds \quad (x \in \R^n, \, t > 0).$$
+Hence
+$$\lim_{t \to 0} v = g \quad \text{uniformly on } \R^n.$$
+In addition
+\begin{align*}
+\Delta v(x,t) &= \frac{1}{(4\pi t)^{1/2}} \int_{-\infty}^{\infty} e^{-s^2/4t} \Delta u(x,s) \, ds \\
+&= \frac{1}{(4\pi t)^{1/2}} \int_{-\infty}^{\infty} e^{-s^2/4t} u_{ss}(x,s) \, ds \\
+&= \frac{1}{(4\pi t)^{1/2}} \int_{-\infty}^{\infty} \frac{s}{2t} e^{-s^2/4t} u_s(x,s) \, ds \\
+&= \frac{1}{(4\pi t)^{1/2}} \int_{-\infty}^{\infty} \left(\frac{s^2}{4t^2} - \frac{1}{2t}\right) e^{-s^2/4t} u(x,s) \, ds = v_t(x,t).
+\end{align*}
+Consequently $v$ solves this initial-value problem for the heat equation:
+$$\begin{cases} v_t - \Delta v = 0 & \text{in } \R^n \times (0, \infty) \\ v = g & \text{on } \R^n \times \{t = 0\}. \end{cases}$$
+As $v$ is bounded, we deduce from \S2.3 that
+$$(35) \quad v(x,t) = \frac{1}{(4\pi t)^{n/2}} \int_{\R^n} e^{-|x-y|^2/4t} g(y) \, dy.$$
+
+We equate (34) with (35), recall (33), and set $\lambda = \frac{1}{4t}$, thereby obtaining the identity
+$$\int_0^\infty u(x,s)e^{-\lambda s^2} ds = \frac{1}{2}\left(\frac{\lambda}{\pi}\right)^{\frac{n-1}{2}} \int_{\R^n} e^{-\lambda|x-y|^2} g(y) dy.$$
+Thus
+$$(36) \quad \int_0^\infty u(x,s)e^{-\lambda s^2} ds = \frac{n\alpha(n)}{2} \left(\frac{\lambda}{\pi}\right)^{\frac{n-1}{2}} \int_0^\infty e^{-\lambda r^2} r^{n-1} G(x;r) dr,$$
+for all $\lambda > 0$, where
+$$(37) \quad G(x;r) = \int_{\partial B(x,r)} g(y) dS(y).$$
+We will solve (36), (37) for $u$. To do so, we write $n = 2k+1$ and note $-\frac{1}{2r}\frac{d}{dr}(e^{-\lambda r^2}) = \lambda e^{-\lambda r^2}$. Hence
+$$\lambda^{\frac{n-1}{2}} \int_0^\infty e^{-\lambda r^2} r^{n-1} G(x;r) dr = \int_0^\infty \lambda^k e^{-\lambda r^2} r^{2k} G(x;r) dr$$
+$$= \frac{(-1)^k}{2^k} \int_0^\infty \left[\left(\frac{1}{r}\frac{d}{dr}\right)^k (e^{-\lambda r^2})\right] r^{2k} G(x;r) dr$$
+$$= \frac{1}{2^k} \int_0^\infty r \left[\left(\frac{1}{r}\frac{\partial}{\partial r}\right)^k (r^{2k-1} G(x;r))\right] e^{-\lambda r^2} dr,$$
+where we integrated by parts $k$ times for the last equality.
+
+Owing to (36) (with $r$ replacing $s$ in the expression on the left), we deduce
+$$\int_0^\infty u(x,r)e^{-\lambda r^2} dr = \frac{n\alpha(n)}{\pi^{\frac{n-1}{2}} 2^{k+1}} \int_0^\infty r \left[\left(\frac{1}{r}\frac{\partial}{\partial r}\right)^k (r^{2k-1} G(x;r))\right] e^{-\lambda r^2} dr.$$
+Upon substituting $\tau = r^2$ we see that each side above, taken as a function of $\lambda$, is a Laplace transform. As two Laplace transforms agree only if the original functions were identical, we deduce
+$$(38) \quad u(x,t) = \frac{n\alpha(n)}{\pi^k 2^{k+1}} t \left(\frac{1}{t}\frac{\partial}{\partial t}\right)^k (t^{2k-1} G(x,t)).$$
+Now $n = 2k+1$ and $\alpha(n) = \frac{\pi^{n/2}}{\Gamma(\frac{n}{2}+1)} = \frac{\pi^{\frac{n+1}{2}}}{\Gamma(\frac{n}{2}+1)}$. Since $\Gamma\left(\frac{1}{2}\right) = \pi^{1/2}$ and $\Gamma(x+1) = x\Gamma(x)$ for $x > 0$ (cf. Rudin \cite{Rudin1976}, Chapter 8), we can compute
+$$\frac{n\alpha(n)}{\pi^k 2^{k+1}} = \frac{\pi n^{1/2}}{\pi^k 2^{k+1} \Gamma\left(\frac{n}{2}+1\right)} = \frac{1}{(n-2)(n-4) \cdots 5 \cdot 3} = \frac{1}{\gamma_n}.$$
+We insert this deduction into (38) and simplify:
+$$(39) \quad u(x,t) = \frac{1}{\gamma_n} \frac{\partial}{\partial t}\left(\frac{1}{t}\frac{\partial}{\partial t}\right)^{\frac{n-3}{2}}\left(t^{n-2}\int_{\partial B(x,t)} g \, dS\right) \quad (x \in \R^n, t > 0).$$
+This is formula (31) in \cref{thm:wave-equation-odd-dimensions-solution} (\S2.4.1, for $h = 0$). $\square$
+\end{example}
+
+\section{Converting Nonlinear into Linear PDE}
+\label{sec:converting-nonlinear-into-linear-pde}
+
+In this section we describe several techniques which are sometime useful for converting certain nonlinear equations into linear equations.
+
+\subsection{Hopf--Cole Transformation}
+\label{sec:hopf-cole-transformation}
+
+\textbf{a. A parabolic PDE with quadratic nonlinearity.}
+
+\begin{example}[The Hopf--Cole transformation for a quadratic-nonlinearity parabolic PDE]
+\label{ex:hopf-cole-quadratic-nonlinearity}
+\dcref{ch4:4.4.1-ex-1}
+\group{Nonlinear to Linear PDE}
+\uses{ex:fourier-transform-heat-fundamental-solution}
+We consider first of all an initial-value problem for a quasilinear parabolic equation:
+$$(1) \quad \begin{cases}
+u_t - a\Delta u + b|Du|^2 = 0 & \text{in } \R^n \times (0, \infty) \\
+u = g & \text{on } \R^n \times \{t = 0\},
+\end{cases}$$
+where $a > 0$. This sort of nonlinear PDE arises in stochastic optimal control theory.
+
+Assuming for the moment $u$ is a smooth solution of (1), we set
+$$w := \phi(u),$$
+where $\phi : \R \to \R$ is a smooth function, as yet unspecified. We will try to choose $\phi$ so that $w$ solves a linear equation. We have
+$$w_t = \phi'(u)u_t, \quad \Delta w = \phi'(u)\Delta u + \phi''(u)|Du|^2;$$
+and consequently (1) implies
+$$w_t = \phi'(u)u_t = \phi'(u)[a\Delta u - b|Du|^2]$$
+$$= a\Delta w - [a\phi''(u) + b\phi'(u)]|Du|^2$$
+$$= a\Delta w,$$
+provided we choose $\phi$ to satisfy $a\phi'' + b\phi' = 0$. We solve this differential equation by setting $\phi = e^{-\frac{bu}{a}}$. Thus we see that if $u$ solves (1), then
+$$(2) \quad w = e^{-\frac{bu}{a}}$$
+solves this initial-value problem for the heat equation (with conductivity $a$):
+$$(3) \quad \begin{cases} w_t - a \Delta w = 0 & \text{in } \R^n \times (0, \infty) \\ w = e^{-\frac{bg}{a}} & \text{on } \R^n \times \{t = 0\}. \end{cases}$$
+Formula (2) is the \textit{Hopf-Cole transformation}.
+
+Now the unique bounded solution of (3) is
+$$w(x,t) = \frac{1}{(4\pi at)^{n/2}} \int_{\R^n} e^{-\frac{|x-y|^2}{4at} - \frac{bg(y)}{a}} dy \quad (x \in \R^n, t > 0);$$
+and, since (2) implies
+$$u = -\frac{a}{b} \log w,$$
+we obtain thereby the explicit formula
+$$(4) \quad u(x,t) = -\frac{a}{b} \log \left( \frac{1}{(4\pi at)^{n/2}} \int_{\R^n} e^{-\frac{|x-y|^2}{4at} - \frac{b}{a}g(y)} dy \right) \quad (x \in \R^n, t > 0)$$
+for a solution of quasilinear initial-value problem (1).
+\end{example}
+
+\textbf{b. Burgers' equation with viscosity.}
+
+\begin{example}[Viscous Burgers' equation via the Hopf--Cole transformation]
+\label{ex:viscous-burgers-hopf-cole}
+\dcref{ch4:4.4.1-ex-2}
+\group{Nonlinear to Linear PDE}
+\uses{ex:hopf-cole-quadratic-nonlinearity,def:integral-solution-conservation-law}
+As a further application, we examine now for $n = 1$ the initial-value problem for the \textit{viscous Burgers' equation}:
+$$(5) \quad \begin{cases} u_t - au_{xx} + uu_x = 0 & \text{in } \R \times (0, \infty) \\ u = g & \text{on } \R \times (0, \infty). \end{cases}$$
+If we set
+$$(6) \quad w(x,t) := \int_{-\infty}^x u(y,t) dy$$
+and
+$$(7) \quad h(x) := \int_{-\infty}^x g(y) dy$$
+(cf. \S3.4), we have
+$$(8) \quad \begin{cases} w_t - aw_{xx} + \frac{1}{2}w_x^2 = 0 & \text{in } \R \times (0, \infty) \\ w = h & \text{on } \R \times \{t = 0\}. \end{cases}$$
+This is an equation of the form (1) for $n = 1$, $b = \frac{1}{2}$; and so (4) provides the formula
+$$(9) \quad w(x,t) = -2a \log \left( \frac{1}{(4\pi at)^{1/2}} \int_{\R} e^{-\frac{|x-y|^2}{4at} - \frac{h(y)}{2a}} dy \right).$$
+But then since $u = w_x$, we find upon differentiating (9) that
+$$(10) \quad u(x,t) = \frac{\int_{-\infty}^\infty \frac{x-y}{t} e^{-\frac{|x-y|^2}{4at} - \frac{h(y)}{2a}} dy}{\int_{-\infty}^\infty e^{-\frac{|x-y|^2}{4at} - \frac{h(y)}{2a}} dy} \quad (x \in \R, t > 0)$$
+is a solution of problem (5), where $h$ is defined by (7). We will scrutinize this formula further in \S4.5.2.
+\end{example}
+
+\subsection{Potential Functions}
+\label{sec:potential-functions}
+
+\begin{example}[Potential functions for Euler's equations]
+\label{ex:euler-equations-potential-function}
+\dcref{ch4:4.4.2-ex-1}
+\group{Nonlinear to Linear PDE}
+Another technique is to utilize a \textit{potential function} to convert a nonlinear system of PDE into a single linear PDE. We consider as an example \textit{Euler's equations} for inviscid, incompressible fluid flow:
+$$\begin{cases}
+\text{(a)} & \mathbf{u}_t + \mathbf{u} \cdot D\mathbf{u} = -Dp + \mathbf{f} & \text{in } \R^3 \times (0,\infty) \\
+\text{(b)} & \Div \mathbf{u} = 0 & \text{in } \R^3 \times (0,\infty) \\
+\text{(c)} & \mathbf{u} = \mathbf{g} & \text{on } \R^3 \times \{t = 0\}.
+\end{cases}$$
+Here the unknowns are the \textit{velocity field} $\mathbf{u} = (u^1, u^2, u^3)$ and the scalar \textit{pressure} $p$; the \textit{external force} $\mathbf{f} = (f^1, f^2, f^3)$ and initial velocity $\mathbf{g} = (g^1, g^2, g^3)$ are given. Here $D$ as usual denotes the gradient in the spatial variables $x = (x_1, x_2, x_3)$. The vector equation 11(a) means
+$$u^i_t + \sum_{j=1}^3 u^j u^i_{x_j} = -p_{x_i} + f^i \quad (i = 1,2,3).$$
+We will assume
+$$\Div \mathbf{g} = 0.$$
+If furthermore there exists a scalar function $h : \R^3 \times (0,\infty) \to \R$ such that
+$$\mathbf{f} = Dh,$$
+we say that the external force is derived from the \textit{potential} $h$.
+
+We will try to find a solution $(\mathbf{u}, p)$ of (11) for which the velocity field $\mathbf{u}$ is also derived from a potential, say
+$$\mathbf{u} = Dv.$$
+Our flow will then be irrotational, as $\curl \mathbf{u} \equiv 0$. Now equation (11)(b) says
+$$0 = \Div \mathbf{u} = \Delta v$$
+and so $v$ must be harmonic as a function of $x$, for each time $t > 0$. Thus if we can find a smooth function $v$ satisfying (15) and $Dv(\cdot, 0) = \mathbf{g}$, we can then recover $\mathbf{u}$ from $v$ by (14).
+
+How do we compute the pressure $p$? Let us observe that if $\mathbf{u} = Dv$, then $\mathbf{u} \cdot D\mathbf{u} = \frac{1}{2}D(|Dv|^2)$. Consequently (11)(a) reads $D(v_t + \frac{1}{2}|Dv|^2) = D(-p + h)$, in view of (13). Therefore we may take
+$$v_t + \frac{1}{2}|Dv|^2 + p = h.$$
+This is \textit{Bernoulli's law}. But now we can employ (16) to compute $p$, since $v$ and $h$ are already known.
+\end{example}
+
+\subsection{Hodograph and Legendre Transforms}
+\label{sec:hodograph-legendre-transforms}
+
+\textbf{a. Hodograph transform.}
+
+\begin{example}[Hodograph transform for steady irrotational fluid flow]
+\label{ex:hodograph-transform-irrotational-flow}
+\dcref{ch4:4.4.3-ex-1}
+\group{Nonlinear to Linear PDE}
+The \textit{hodograph transform} is a technique for converting certain quasilinear systems of PDE into linear systems, by reversing the roles of the dependent and independent variables. As this method is most easily understood by an example, we investigate here the equations of steady, two-dimensional, irrational fluid flow:
+$$(17) \quad \begin{cases} \text{(a)} & (\sigma^2(\mathbf{u}) - (u^1)^2)u^1_{x_1} - u^1 u^2(u^1_{x_2} + u^2_{x_1}) \\ & +((\sigma^2(\mathbf{u}) - (u^2)^2)u^2_{x_2} = 0 \\ \text{(b)} & u^1_{x_2} - u^2_{x_1} = 0 \end{cases}$$
+in $\R^2$. The unknown is the \textit{velocity field} $\mathbf{u} = (u^1, u^2)$, and the function $\sigma(\cdot) : \R^2 \to \R$, the local \textit{sound speed}, is given.
+
+The system (17) is quasilinear. Let us now, however, no longer regard $u^1$ and $u^2$ as functions of $x_1$ and $x_2$:
+$$(18) \quad u^1 = u^1(x_1, x_2), \quad u^2 = u^2(x_1, x_2),$$
+but rather regard $x^1$ and $x^2$ as functions of $u_1$ and $u_2$:
+$$(19) \quad x^1 = x^1(u_1, u_2), \quad x^2 = x^2(u_1, u_2).$$
+We have exchanged sub- and superscripts in the notation to emphasize the interchange between independent and dependent variables.
+
+According to the Inverse Function Theorem (\S C.5) we can, locally at least, invert equations (18) to yield (19), provided
+$$(20) \quad J = \frac{\partial(u^1, u^2)}{\partial(x_1, x_2)} = u^1_{x_1} u^2_{x_2} - u^1_{x_2} u^2_{x_1} \neq 0$$
+in some region of $\R^2$. Assuming now (20) holds, we calculate
+$$(21) \quad \begin{cases} u^2_{x_2} = Jx^1_{u_1}, & u^2_{x_1} = -Jx^2_{u_1} \\ u^1_{x_2} = -Jx^1_{u_2}, & u^1_{x_1} = Jx^2_{u_2}. \end{cases}$$
+We insert (21) into (17), to discover
+$$(22) \quad \begin{cases} \text{(a)} & (\sigma^2(\mathbf{u}) - u^2_1)x^2_{u_2} + u_1 u_2(x^2_{u_2} + x^2_{u_1}) + (\sigma^2(\mathbf{u}) - u^2_2)x^1_{u_1} = 0 \\ \text{(b)} & x^1_{u_2} - x^2_{u_1} = 0. \end{cases}$$
+This is a \textit{linear} system for $\mathbf{x} = (x^1, x^2)$, as a function of $\mathbf{u} = (u_1, u_2)$.
+\end{example}
+
+\begin{remark}[Simplifying the hodograph system via a potential function]
+\label{rem:hodograph-potential-simplification}
+\dcref{ch4:4.4.3-rem-1}
+\group{Nonlinear to Linear PDE}
+\uses{ex:hodograph-transform-irrotational-flow}
+We can utilize the method of potential functions (\cref{ex:euler-equations-potential-function}, \S4.4.2) to simplify (22) further. Indeed, equation (22)(b) suggests that we look for a single function $z=z(u)$ such that
+$$\begin{cases} x^1 = z_{u_1} \\ x^2 = z_{u_2}. \end{cases}$$
+Then (22)(a) transforms into the linear, second-order PDE
+$$(23) \quad (\sigma^2(u)-u_1^2)z_{u_2u_2} + 2u_1u_2 z_{u_1u_2} + (\sigma^2(u)-u_2^2)z_{u_1u_1} = 0. \quad \square$$
+\end{remark}
+
+\textbf{b. Legendre transform.}
+
+\begin{example}[Legendre transform for the minimal surface equation]
+\label{ex:legendre-transform-minimal-surface}
+\dcref{ch4:4.4.3-ex-2}
+\group{Nonlinear to Linear PDE}
+\uses{def:legendre-transform}
+A technique closely related to the hodograph transform is the classical \textit{Legendre transform}, a version of which we have already encountered before, in \cref{def:legendre-transform} (\S3.3). The idea is to regard the components of the gradient of a solution as new independent variables.
+
+Once again an example is instructive. We investigate the \textit{minimal surface equation} (cf. Example 4 in §8.1.2)
+$$\Div\left(\frac{Du}{(1+|Du|^2)^{1/2}}\right) = 0,$$
+which for $n=2$ may be rewritten as
+$$(24) \quad (1+u_{x_2}^2)u_{x_1x_1} - 2u_{x_1}u_{x_2}u_{x_1x_2} + (1+u_{x_1}^2)u_{x_2x_2} = 0.$$
+Let us now assume that at least in some region of $\R^2$, we can invert the relations
+$$(25) \quad p^1 = u_{x_1}(x_1,x_2), \quad p^2 = u_{x_2}(x_1,x_2),$$
+to solve for
+$$(26) \quad x^1 = x^1(p_1,p_2), \quad x^2 = x^2(p_1,p_2).$$
+The Inverse Function Theorem assures us we can do so in a neighborhood of any point where
+$$(27) \quad J = \det D^2u \neq 0.$$
+Now define
+$$(28) \quad v(p) := \mathbf{x}(p) \cdot p - u(\mathbf{x}(p)),$$
+where $\mathbf{x} = (x^1, x^2)$ is given by (26), $p = (p_1, p_2)$. We discover after some calculations that
+$$(29) \quad \begin{cases} u_{x^1 x^1} = Jv_{p_2 p_2} \\ u_{x^1 x^2} = -Jv_{p_1 p_2} \\ u_{x^2 x^2} = Jv_{p_1 p_1}. \end{cases}$$
+Upon substituting the identities (29) into (24), we derive for $v$ the \textit{linear} equation
+$$(30) \quad (1 + p_2^2)v_{p_2 p_2} + 2p_1 p_2 v_{p_1 p_2} + (1 + p_1^2)v_{p_1 p_1} = 0.$$
+\end{example}
+
+\begin{remark}[Practical difficulty of the hodograph and Legendre techniques]
+\label{rem:hodograph-legendre-practical-difficulty}
+\dcref{ch4:4.4.3-rem-2}
+\group{Nonlinear to Linear PDE}
+\uses{ex:hodograph-transform-irrotational-flow,ex:legendre-transform-minimal-surface}
+The hodograph and Legendre transform techniques for obtaining linear out of nonlinear PDE are in practice tricky to use, as it is usually not possible to transform given boundary conditions very easily. $\square$
+\end{remark}
+
+\section{Asymptotics}
+\label{sec:asymptotics}
+
+It is often the case that even when explicit representation formulas can be had for solutions of partial differential equations, these are too complicated to be of much immediate use. In such circumstances it sometimes becomes profitable to study the formulas in various asymptotic limits, whereupon simplifications often appear.
+
+Following are several rather complicated examples, illustrating typical issues involved in asymptotics for PDE. The results in this section are explained only heuristically, mostly without formal proofs.
+
+\subsection{Singular Perturbations}
+\label{sec:singular-perturbations}
+
+\begin{definition}[Singular perturbation]
+\label{def:singular-perturbation}
+\dcref{ch4:4.5.1-def-1}
+\group{Asymptotics}
+A \textit{singular perturbation} is a modification of a given PDE by adding a small multiple $\varepsilon$ times a higher order term. In accordance with the informal principle that the behavior of solutions is governed primarily by the highest order terms, a solution $u^\varepsilon$ of the perturbed problem will often behave analytically quite differently from a solution $u$ of the original equation.
+\end{definition}
+
+\begin{example}[Transport and small diffusion]
+\label{ex:transport-small-diffusion-singular-perturbation}
+\dcref{ch4:4.5.1-ex-1}
+\group{Asymptotics}
+\uses{def:singular-perturbation}
+We illustrate this idea by studying formally the effects of small diffusion upon the transport of dye within a moving fluid in $\R^2$.
+
+\begin{figure}[h]\centering
+% [FIGURE: A curve C in the plane starting at the origin 0 and following the trajectory x(t) of the vector field b, with a nearby point x = x(t) + y*nu(x(t)) indicated via the outward normal nu at x(t). Labeled "Flow of dye without diffusion".]
+\end{figure}
+
+Suppose we are given a smooth vector field $\mathbf{b}:\R^2\to\R^2$, $\mathbf{b}=(b^1,b^2)$, representing the steady fluid velocity. Assume dye has been continuously injected at unit rate into the fluid at the origin, and let $u(x)$ represent the density of dye at the point $x\in\R^2$, $x=(x_1,x_2)$. Then, formally at least as we shall see,
+$$(1) \quad \Div(u\mathbf{b}) = \delta_0 \quad \text{in } \R^2,$$
+where $\delta_0$ is the Dirac measure on $\R^2$ giving unit mass to the point 0. This PDE implies that the dye density is transported with the fluid motion at points $x\neq 0$.
+
+Consider now for $\varepsilon>0$ the singular perturbation:
+$$(2) \quad -\varepsilon\Delta u^\varepsilon + \Div(u^\varepsilon\mathbf{b}) = \delta_0 \quad \text{in } \R^2.$$
+The new term ``$\varepsilon\Delta$'' represents a small, isotropic diffusion of the dye within the background fluid motion. We are interested in understanding in an approximate way the structure of the solution $u^\varepsilon$ of (2) and, in particular, describing if and how $u^\varepsilon$ approximates $u$ for small $\varepsilon>0$.
+
+\textbf{a. Analysis of problem (1).}
+
+We turn our attention first to the unperturbed PDE (1). Consider the characteristic ODE
+$$(3) \quad \begin{cases} \dot{\mathbf{x}}(t) = \mathbf{b}(\mathbf{x}(t)) & (t\ge 0) \\ \mathbf{x}(0) = 0, \end{cases}$$
+the solution $\mathbf{x}(t)=(x^1(t),x^2(t))$ of which we assume to trace out a curve $C$, as drawn.
+
+Given a point $x\in\R^2$ near $C$, we write
+$$(4) \quad x = \mathbf{x}(t) + y\boldsymbol\nu(\mathbf{x}(t)),$$
+where $\nu = (\nu^1, \nu^2)$ is the (upward pointing) unit normal to $C$, $y \in \R$, and $t$ is the time required for the solution of the ODE (3) to reach the point $\mathbf{x}(t)$ along $C$ closest to $x$. We hereafter regard $(t,y)$ as providing a new coordinate system near the curve $C$; so that $x = (x^1(y,t), x^2(y,t))$.
+
+Using (3) and (4), we compute
+$$\frac{\partial(x^1, x^2)}{\partial(t,y)} = \det\begin{pmatrix} \frac{\partial x^1}{\partial t} & \frac{\partial x^1}{\partial y} \\ \frac{\partial x^2}{\partial t} & \frac{\partial x^2}{\partial y} \end{pmatrix} = \det\begin{pmatrix} b^1 + y\dot{u}^1 & \nu^1 \\ b^2 + y\dot{u}^2 & \nu^2 \end{pmatrix}.$$
+Let us write $\sigma = |\mathbf{b}|$, $\nu = (-b^2, b^1)/\sigma$ and $\dot{\nu} = -\sigma\kappa\boldsymbol{\tau} = -\kappa\mathbf{b}$ (where $\sigma = \text{speed}$, $\kappa = \text{curvature}$, $\boldsymbol{\tau} = \frac{\mathbf{b}}{\sigma} = \text{unit tangent}$). We then simplify, to obtain
+$$(5) \quad \frac{\partial(x^1, x^2)}{\partial(t,y)} = \sigma(1 - \kappa y).$$
+Return now to the PDE (1), which we rewrite to read
+$$(6) \quad \mathbf{b} \cdot Du + (\Div\,\mathbf{b})u = \delta_0 \quad \text{in } \R^2.$$
+As in \S3.2 we see $u = 0$ off the curve $C$. Let us next guess $u$ has the form
+$$(7) \quad u(x) = \rho(t)\delta(y)$$
+in the $(t,y)$-coordinates, $\delta$ denoting the Dirac measure on $\R$ giving unit mass to the origin.
+
+What is $\rho(t)$? To compute it, take $R$ to be a small, smooth region in the $(x_1, x_2)$-plane, with boundary intersecting the curve $C$ at the points $\mathbf{x}(t_1)$ and $\mathbf{x}(t_2)$, $0 < t_1 < t_2$. Let $R'$ denote the corresponding region in the $(t,y)$-plane. Then using (5) we calculate
+$$\int_R u\, dx = \int_{R'} \rho(t)\delta(y)\sigma(t)(1 - \kappa y)\, dy\, dt = \int_{t_1}^{t_2} \rho(t)\sigma(t)\, dt.$$
+Now $\int_R u\, dx$ represents the total amount of dye within the region $R$, which is to say, the total amount released between times $t_1$ and $t_2$. This is simply $t_2 - t_1$. Thus
+$$\int_{t_1}^{t_2} \rho(t)\sigma(t)\, dt = t_2 - t_1.$$
+This identity holds for all $0 < t_1 < t_2$, and so $\rho(t) = \sigma(t)^{-1}$. Hence (7) says
+$$(8) \quad u(x,t) = \delta(y)/\sigma(t)$$
+is a solution of (1), or $\sigma(t) := |\mathbf{b}(\mathbf{x}(t))|$, $t \geq 0$. In other words, $u$ represents the density along the curve $C$ of the dye, whose concentration varies inversely with the speed of the fluid.
+
+We can further confirm this formula as follows. Let $v \in C_c^\infty(\R^2)$. Then using (5), we compute
+$$\int_{\R^2} Dv \cdot \mathbf{b}u \, dx = \int_{\R^2} Dv \cdot \mathbf{b} \frac{\delta(y)}{\sigma(t)} \sigma(t)(1 - \kappa y) \, dy dt$$
+$$= \int_0^\infty Dv(\mathbf{x}(t)) \cdot \mathbf{b}(\mathbf{x}(t)) \, dt$$
+$$= \int_0^\infty \frac{d}{dt} v(\mathbf{x}(t)) \, dt = -v(0).$$
+Hence we may indeed interpret $u$ defined by (8) as a weak solution of the unperturbed PDE (1).
+
+\textbf{b. Analysis of problem (2) for $0 < \varepsilon \ll 1$.}
+
+We look now at the perturbed problem (2). We expect that at time $t > 0$, the diffusing dye will fill a ball of radius approximately $O((\varepsilon t)^{1/2})$ about the point $\mathbf{x}(t)$. The dye will thus be mostly concentrated in a plume as drawn, about the curve $C$.
+
+\begin{figure}[h]\centering
+% [FIGURE: A curved line (labeled $0$) with an elliptical plume of shaded dye spreading around it, with a label indicating the plume width is $O((\varepsilon t)^{1/2})$. The figure is titled "Flow of dye with diffusion".]
+\end{figure}
+
+We wish to understand the structure of the solution $u^\varepsilon$ of (2) within this plume, as $\varepsilon \to 0$.
+
+Since the width is presumably of order $O(\varepsilon^{1/2})$ for times $0 < t_1 \leq t \leq t_2$ and the total mass of dye corresponding to the same time interval is $t_2 - t_1$, we expect $u^\varepsilon$ to be of order $O(\varepsilon^{-1/2})$ along $C$. This suggests that for us to understand the asymptotics as $\varepsilon \to 0$, we should turn our attention to the \textit{rescaled variables}
+$$(9) \quad z := \varepsilon^{-1/2} y, \quad v^\varepsilon := \varepsilon^{1/2} u^\varepsilon,$$
+the powers of $\varepsilon$ selected so that $z, v^\varepsilon = O(1)$.
+
+We must therefore rewrite the PDE (2) in terms of the new variables $t, z$ and $v^\epsilon$. For this, we need first to study the structure of the velocity field $\mathbf{b}$ along the curve $C$. Let us therefore write
+$$(10) \quad \mathbf{b} = \sigma(t)\tau + \{\alpha(t)\tau + \beta(t)\nu\}y + O(y^2),$$
+where, as noted before, $\tau = \mathbf{b}/\sigma$ is a unit tangent vector to $C$. Now for any smooth function $w$:
+$$w_t = w_{x^1} \frac{\partial x^1}{\partial t} + w_{x^2} \frac{\partial x^2}{\partial t} = w_{x^1}\sigma(1-\kappa y)\tau^1 + w_{x^2}\sigma(1-\kappa y)\tau^2$$
+and
+$$w_y = w_{x^1} \frac{\partial x^1}{\partial y} + w_{x^2} \frac{\partial x^2}{\partial y} = w_{x^1}\nu^1 + w_{x^2}\nu^2.$$
+Thus
+$$(11) \quad w_{x^1} = \frac{w_t \nu^2 - w_y \sigma(1-\kappa y)\tau^2}{\sigma(1-\kappa y)}, \qquad w_{x^2} = \frac{-w_t \nu^1 + w_y\sigma(1-\kappa y)\tau^1}{\sigma(1-\kappa y)}.$$
+Therefore using (10), (11) (for $w = u^\epsilon$), we can compute:
+$$\mathbf{b} \cdot Du^\epsilon = [\sigma\tau + (\alpha\tau + \beta\nu)y + O(y^2)] \cdot Du^\epsilon$$
+$$= \frac{u_t^\epsilon}{(1-\kappa y)} + \frac{\alpha y u_t^\epsilon}{\sigma(1-\kappa y)} + \beta y u_y^\epsilon + O(y^2|Du^\epsilon|).$$
+Since $v^\epsilon = \epsilon^{1/2}u^\epsilon, z = \epsilon^{-1/2}y$, we can rewrite the foregoing as
+$$(12) \quad \mathbf{b} \cdot Dv^\epsilon = v_t^\epsilon + \beta z v_z^\epsilon + O(\epsilon^{1/2}).$$
+Similarly, we calculate using (10) and (11) (for $w = b^1, b^2$) that
+$$\Div\mathbf{b} = \frac{1}{\sigma(1-\kappa y)}[b_t^1 \nu^2 - b_t^2 \nu^1] + [r^1 b_y^2 - r^2 b_y^1]$$
+$$= \frac{1}{\sigma(1-\kappa y)}[(\sigma\tau^1)_t \nu^2 - (\sigma\tau^2)_t \nu^1]$$
+$$+ [r^1(\alpha\tau^2 + \beta\nu^2) - r^2(\alpha\tau^1 + \beta\nu^1)] + O(y)$$
+$$= \left(\frac{\dot{\sigma}}{\sigma} + \beta\right) + O(y).$$
+Here we used the identity $\dot{\tau} = \sigma\kappa\nu$. It follows that
+$$(13) \quad (\Div\mathbf{b})v^\epsilon = \left(\frac{\dot{\sigma}}{\sigma} + \beta\right)v^\epsilon + O(\epsilon^{1/2}).$$
+In addition, a similar heuristic argument, the details of which we omit, suggests that
+$$(14) \quad \varepsilon \Delta u^{\varepsilon} = v_{zz}^{\varepsilon} + O(\varepsilon^{1/2}).$$
+Combining now (12)--(14) and recalling (2), we at last deduce $v^{\varepsilon}$ satisfies
+$$(15) \quad v_t^{\varepsilon} - v_{zz}^{\varepsilon} + (\beta z v^{\varepsilon})_z + \frac{\dot{\sigma}}{\sigma} v^{\varepsilon} = O(\varepsilon^{1/2}).$$
+We suppose now that as $\varepsilon \to 0$, the functions $v^{\varepsilon}$ converge in some sense to a limit:
+$$(16) \quad v^{\varepsilon} \to v \text{ in } \R^2.$$
+Then presumably from (15) we will have
+$$(17) \quad v_t - v_{zz} + (\beta z v)_z + \frac{\dot{\sigma}}{\sigma} v = 0 \text{ in } \R \times (0, \infty).$$
+We therefore expect
+$$(18) \quad u^{\varepsilon} = \varepsilon^{-1/2} v^{\varepsilon} = \varepsilon^{-1/2}(v + o(1)),$$
+with $v$ solving (17). The PDE (17) is consequently a \textit{parabolic approximation} (in the variables $t, z = \varepsilon^{-1/2} y$) to our elliptic equation (2). The proper initial condition should be
+$$(19) \quad v = \frac{\beta(z)}{\sigma(0)} \text{ on } \R \times \{t = 0\}.$$
+We will see in Problem 6 that an explicit solution of (18), (19) can be found, in terms of the solution of an ODE involving $\beta$.
+\end{example}
+
+\subsection{Laplace's Method}
+\label{sec:laplaces-method}
+
+Laplace's method concerns the asymptotics as $\varepsilon \to 0$ of integrals involving expressions of the form $e^{-I/\varepsilon}$, $I$ denoting some given function.
+
+\begin{example}[Vanishing viscosity method for Burgers' equation]
+\label{ex:vanishing-viscosity-burgers}
+\dcref{ch4:4.5.2-ex-1}
+\group{Asymptotics}
+\uses{ex:viscous-burgers-hopf-cole,thm:lax-oleinik-formula}
+We next investigate the limit as $\varepsilon \to 0$ of the solution $u^{\varepsilon}$ of the initial-value problem for the viscous Burgers' equation
+$$(20) \quad \begin{cases} u_t^{\varepsilon} + u^{\varepsilon} u_x^{\varepsilon} - \varepsilon u_{xx}^{\varepsilon} = 0 & \text{in } \R \times (0, \infty) \\ u^{\varepsilon} = g & \text{on } \R \times \{t = 0\}. \end{cases}$$
+Remembering formula (10) from \cref{ex:viscous-burgers-hopf-cole} (\S4.4.1), we note
+$$(21) \quad u^{\varepsilon}(x,t) = \frac{\int_{-\infty}^{\infty} \frac{x-y}{t} e^{-\frac{K(x,y,t)}{\varepsilon}} dy}{\int_{-\infty}^{\infty} e^{-\frac{K(x,y,t)}{\varepsilon}} dy},$$
+for
+$$(22) \quad K(x,y,t) := \frac{|x - y|^2}{2t} + h(y) \quad (x,y \in \R, t > 0),$$
+where $h$ is an antiderivative of $g$.
+
+What happens to $u^{\varepsilon}$ as $\varepsilon \to 0$? Mathematically the term ``$\varepsilon u^{\varepsilon}_{yy}$'' in (20) makes the partial differential equation act somewhat like the heat equation, in that the solution $u^{\varepsilon}$ is infinitely differentiable in $\R^n \times (0, \infty)$, in spite of the nonlinearity. This follows from the explicit formula (21). On the other hand, an obvious guess is that the solutions $u^{\varepsilon}$ should converge as $\varepsilon \to 0$ to a solution $u$ of the conservation law
+$$(23) \quad \begin{cases} u_t + \left(\frac{u^2}{2}\right)_x = 0 & \text{in } \R \times (0,\infty) \\ u = g & \text{on } \R \times \{t = 0\}. \end{cases}$$
+Physically, we regard the term ``$\varepsilon u^{\varepsilon}_{yy}$'' as imposing an ``artificial viscosity'' effect, which we are now sending to zero. We expect that this \textit{vanishing viscosity} technique should allow us to recover the correct entropy solution $u$ of (23), which may have discontinuities across shock waves, as the limit of the solutions $u^{\varepsilon}$ of (20), which are smooth.
+
+We must understand the limiting behavior of the expression on the right hand side of (21), as $\varepsilon \to 0$.
+
+\begin{lemma}[Laplace-method asymptotics for a ratio of Gaussian-type integrals]
+\label{lem:laplace-method-asymptotics-lemma}
+\dcref{ch4:4.5.2-lem-1}
+\group{Asymptotics}
+Suppose that $k,l : \R \to \R$ are continuous functions, that $l$ grows at most linearly and that $k$ grows at least quadratically. Assume also there exists a unique point $y_0 \in \R$ such that
+$$k(y_0) = \min_{y \in \R} k(y).$$
+Then
+$$(24) \quad \lim_{\varepsilon \to 0} \frac{\int_{-\infty}^{\infty} l(y) e^{-\frac{k(y)}{\varepsilon}} dy}{\int_{-\infty}^{\infty} e^{-\frac{k(y)}{\varepsilon}} dy} = l(y_0).$$
+\end{lemma}
+\begin{proof}
+Write $k_0 = k(y_0)$. Then the function
+$$\mu_\varepsilon(y) := \frac{e^{\frac{k_0-k(y)}{\varepsilon}}}{\int_{-\infty}^{\infty} e^{\frac{k_0-k(z)}{\varepsilon}} dz} \quad (y \in \R)$$
+satisfies
+$$(25) \quad \begin{cases}
+\mu_\varepsilon \geq 0, & \int_{-\infty}^{\infty} \mu_\varepsilon(y) dy = 1, \\
+\mu_\varepsilon(y) \to 0 \text{ exponentially fast for } y \neq y_0, \text{ as } \varepsilon \to 0.
+\end{cases}$$
+Consequently
+$$\lim_{\varepsilon \to 0} \frac{\int_{-\infty}^{\infty} l(y)e^{-\frac{k(y)}{\varepsilon}} dy}{\int_{-\infty}^{\infty} e^{-\frac{k(y)}{\varepsilon}} dy} = \lim_{\varepsilon \to 0} \int_{-\infty}^{\infty} l(y)\mu_\varepsilon(y) dy = l(y_0).$$
+\end{proof}
+
+Return now to (21), (22). We observe $K(x, y, t) = tL\left(\frac{x-y}{t}\right) + h(y)$, where $L = F'$ for $F(z) = \frac{z^2}{2}$. According to the analysis in \S3.4, for each time $t > 0$ the mapping $y \mapsto K(x, y, t)$ attains its minimum at a unique point $y = y(x, t)$ for all but at most countably many points $x$. But then \cref{lem:laplace-method-asymptotics-lemma} implies
+$$(26) \quad \lim_{\varepsilon \to 0} u^\varepsilon(x, t) = \frac{x - y(x,t)}{t} = G\left(\frac{x - y(x,t)}{t}\right) = u(x, t)$$
+for $G := (F')^{-1}$.
+
+The final equality in (26) is the Lax--Oleinik formula (\cref{thm:lax-oleinik-formula}) for the unique entropy solution of the initial-value problem (23). It is a powerful endorsement of the methods from \S3.4 that this formula has reappeared in the context of vanishing viscosity. (See also Problem 3.) $\square$
+
+We will later discuss the vanishing viscosity method for symmetric hyperbolic systems in \S7.3.2, for Hamilton--Jacobi equations in \S10.1, and for systems of conservation laws in \S11.4.
+\end{example}
+
+\subsection{Geometric Optics, Stationary Phase}
+\label{sec:geometric-optics-stationary-phase}
+
+This section investigates the behavior of certain highly oscillatory solutions of the wave equation. We begin with some crude, but instructive, calculations.
+
+\textbf{a. Geometric optics.}
+
+\begin{example}[Oscillating solutions and the geometric optics ansatz]
+\label{ex:geometric-optics-oscillating-solutions}
+\dcref{ch4:4.5.3-ex-1}
+\group{Asymptotics}
+\uses{thm:characteristic-ode-structure}
+Let us once more turn our attention to the wave equation
+$$(27) \quad u_t - \Delta u = 0 \quad \text{in } \R^n \times (0,\infty),$$
+and we now regard the solution $u$ as taking complex values. We fix $\varepsilon > 0$ and seek a solution $u = u^\varepsilon$ of (27) having the form
+$$(28) \quad u^\varepsilon(x,t) = e^{ip^\varepsilon(x,t)/\varepsilon} a^\varepsilon(x,t) \quad (x \in \R^n, t \geq 0),$$
+the real-valued function $p^\varepsilon$ representing the \textit{phase}, and the real-valued function $a^\varepsilon$ representing the \textit{amplitude}. The proposed form (28) for the solution is called the \textit{geometric optics ansatz}. The idea is that highly oscillatory solutions of the wave equation can be understood by studying a PDE for the phase function in the limit as $\varepsilon \to 0$. Following is a formal demonstration.
+
+Substituting (28) into (27), we find after some computations that
+$$0 = u_t^\varepsilon - \Delta u^\varepsilon = e^{ip^\varepsilon/\varepsilon} \left( \frac{ip_t^\varepsilon}{\varepsilon} a^\varepsilon - \left(\frac{p_t^\varepsilon}{\varepsilon}\right)^2 a^\varepsilon + 2\frac{ip_t^\varepsilon a_t^\varepsilon}{\varepsilon} + a_{tt}^\varepsilon \right)$$
+$$- e^{ip^\varepsilon/\varepsilon} \left( \frac{i\Delta p^\varepsilon}{\varepsilon} a^\varepsilon - \frac{|Dp^\varepsilon|^2}{\varepsilon^2} a^\varepsilon + \frac{2i Dp^\varepsilon \cdot Da^\varepsilon}{\varepsilon} + \Delta a^\varepsilon \right).$$
+We cancel the term $e^{ip^\varepsilon/\varepsilon}$ and take the real part of the resulting expression, to find
+$$(29) \quad a^\varepsilon((p_t^\varepsilon)^2 - |Dp^\varepsilon|^2) = \varepsilon^2(a_{tt}^\varepsilon - \Delta a^\varepsilon).$$
+Now if as $\varepsilon \to 0$
+$$(30) \quad p^\varepsilon \to p, \quad a^\varepsilon \to a \neq 0$$
+in some sense, then presumably from (29) it follows that
+$$(31) \quad p_t \pm |Dp| = 0 \quad \text{in } \R^n \times (0,\infty).$$
+We may informally regard the straight line characteristics of these Hamilton--Jacobi PDE as rays along which the solution (28) concentrates in the high-frequency limit as $\varepsilon \to 0$.
+
+More generally, let us consider the second-order hyperbolic PDE
+$$(32) \quad u_{tt} - \sum_{k,l=1}^n a^{kl}(x) u_{x_k x_l} = 0 \quad \text{in } \R^n \times (0,\infty)$$
+with $a^{kl} = a^{lk}$ $(k, l = 1, \ldots, n)$. We again look for a complex-valued solution $u = u^\varepsilon$ of the form (28), and calculate
+$$0 = u_{tt}^\varepsilon - \sum_{k,l=1}^n a^{kl} u_{x_k x_l}^\varepsilon$$
+$$= e^{ip^\varepsilon/\varepsilon} \left( \frac{ip_t^\varepsilon}{\varepsilon} a^\varepsilon - \left( \frac{p_t^\varepsilon}{\varepsilon} \right)^2 a^\varepsilon + \frac{2ip_t^\varepsilon a_t^\varepsilon}{\varepsilon} + a_{tt}^\varepsilon \right)$$
+$$- e^{ip^\varepsilon/\varepsilon} \left( \sum_{k,l=1}^n a^{kl} \left( \frac{ip_{x_k x_l}^\varepsilon}{\varepsilon} a^\varepsilon - \frac{p_{x_k}^\varepsilon p_{x_l}^\varepsilon}{\varepsilon^2} a^\varepsilon + \frac{2ip_{x_k}^\varepsilon a_{x_l}^\varepsilon}{\varepsilon} + a_{x_k x_l}^\varepsilon \right) \right).$$
+We once again cancel $e^{ip^\varepsilon/\varepsilon}$ and take real parts to find
+$$a^\varepsilon \left( (p_t^\varepsilon)^2 - \sum_{k,l=1}^n a^{kl} p_{x_k}^\varepsilon p_{x_l}^\varepsilon \right) = \varepsilon^2 \left( a_{tt}^\varepsilon - \sum_{k,l=1}^n a^{kl} a_{x_k x_l}^\varepsilon \right).$$
+Hence if (30) holds in some sense, we may then expect
+$$(33) \quad p_t \pm \left( \sum_{k,l=1}^n a^{kl} p_{x_k} p_{x_l} \right)^{1/2} = 0 \quad \text{in } \R^n \times (0, \infty).$$
+See below and also \S4.6.1, \S7.2.4 for further elaboration of these ideas. $\square$
+\end{example}
+
+\textbf{b. Stationary phase.}
+
+The foregoing example suggests that the Hamilton--Jacobi PDE (31) somehow ``controls the high frequency asymptotics for the wave equation''. However the range of validity of the geometric optics ansatz is highly uncertain in the preceding strictly formal computations. To understand more clearly the behavior of the solution, we employ next the method of \textit{stationary phase}, which is a variant of Laplace's method had by replacing the $-1$ in the exponent (cf. \cref{lem:laplace-method-asymptotics-lemma}, \S4.5.2) with $i$.
+
+\begin{example}[Stationary phase for the wave equation]
+\label{ex:stationary-phase-wave-equation}
+\dcref{ch4:4.5.3-ex-2}
+\group{Asymptotics}
+\uses{ex:fourier-transform-wave-equation}
+Look again at the initial-value problem for the wave equation
+$$(34) \quad \begin{cases} u_t^\varepsilon - \Delta u^\varepsilon = 0 & \text{in } \R^n \times (0, \infty) \\ u^\varepsilon = g^\varepsilon, \quad u_t^\varepsilon = 0 & \text{on } \R^n \times \{t = 0\}, \end{cases}$$
+where we hereafter assume $g^\varepsilon$ to have the rapidly oscillating structure
+$$(35) \quad g^\varepsilon(x) = a(x) e^{i\varphi(x)/\varepsilon} \quad (x \in \R^n).$$
+Here $\varepsilon > 0$, $a, p \in C_c^\infty(\R^n)$, and we suppose
+$$(36) \quad Dp \neq 0 \text{ on the support of } a.$$
+Utilizing formula (26) from \cref{ex:fourier-transform-wave-equation} (\S4.3.2), we can write
+$$u^\varepsilon(x,t) = \frac{1}{(2\pi)^{n/2}} \int_{\R^n} \frac{\hat{g}^\varepsilon(y)}{2}\left(e^{i(x \cdot y + t|y|)} + e^{i(x \cdot y - t|y|)}\right) dy \quad (x \in \R^n, t > 0).$$
+Invoking (35), we see
+$$(37) \quad u^\varepsilon(x,t) = \frac{1}{2}(I_+^\varepsilon(x,t) + I_-^\varepsilon(x,t)),$$
+where
+$$I_\pm^\varepsilon(x,t) = \frac{1}{(2\pi)^n} \int_{\R^n} \int_{\R^n} a(z)e^{i((x-z) \cdot y \pm t|y| + p(z)/\varepsilon)} dy dz.$$
+Changing variables gives
+$$(38) \quad I_\pm^\varepsilon(x,t) = \frac{1}{(2\pi\varepsilon)^n} \int_{\R^n} \int_{\R^n} a(z)e^{i\varphi_\pm(x,y,z,t)} dy dz,$$
+for
+$$(39) \quad \varphi_\pm(x,y,z,t) := (x-z) \cdot y \pm t|y| + p(z).$$
+We want to study the asymptotics of $I_\pm^\varepsilon$ as $\varepsilon \to 0$. Let us pause in this example and develop some general machinery, which we will later apply to (38), (39). $\square$
+\end{example}
+
+\Cref{ex:stationary-phase-wave-equation} motivates our considering general integral expressions of the form
+$$(40) \quad I_\varepsilon := \int_{\R^n} e^{i\varphi(y)/\varepsilon} a(y) dy \quad (x \in \R^n),$$
+where $a, \varphi$ are smooth functions, $a$ has compact support, and $\varepsilon > 0$. We wish to understand the limiting behavior of $I_\varepsilon$ as $\varepsilon \to 0$.
+
+We first examine the special case that $\varphi$ is linear in $y$:
+
+\begin{lemma}[Asymptotics for linear phase]
+\label{lem:stationary-phase-linear-asymptotics}
+\dcref{ch4:4.5.3-lem-1}
+\group{Asymptotics}
+Let $a \in C_c^\infty(\R^n)$ and $p \in \R^n$, $p \neq 0$. Then for $m = 1,2,\ldots$
+$$\int_{\R^n} e^{i\frac{p \cdot y}{\varepsilon}} a(y) dy = O(\varepsilon^m) \quad \text{as } \varepsilon \to 0.$$
+\end{lemma}
+\begin{proof}
+Without loss we may assume $p = (p_1,\ldots,p_n)$, $p_1 \neq 0$. Then for $m = 1,2,\ldots$
+$$\int_{\R^n} e^{i\frac{p \cdot y}{\varepsilon}} a(y) dy = \left(\frac{\varepsilon}{i p_1}\right)^m \int_{\R^n} \frac{\partial^m}{\partial y_1^m}\left(e^{i\frac{p \cdot y}{\varepsilon}}\right) a(y) dy$$
+$$= \left(\frac{-\varepsilon}{i p_1}\right)^m \int_{\R^n} e^{i\frac{p \cdot y}{\varepsilon}} \frac{\partial^m}{\partial y_1^m} a(y) dy = O(\varepsilon^m).$$
+\end{proof}
+
+Next we suppose $\varphi$ is quadratic in $y$:
+
+\begin{lemma}[Asymptotics for quadratic phase]
+\label{lem:stationary-phase-quadratic-asymptotics}
+\dcref{ch4:4.5.3-lem-2}
+\group{Asymptotics}
+Let $a \in C_c^\infty(\R^n)$ and suppose $A$ is a real, nonsingular, symmetric matrix. Then
+$$(41) \quad \frac{1}{(2\pi)^{n/2}} \int_{\R^n} e^{\frac{i}{2\varepsilon}y \cdot A y} a(y) dy = \frac{e^{i\frac{\pi}{4}\operatorname{sgn}\,A}}{|\det A|^{1/2}} (a(0) + O(\varepsilon)) \quad \text{as}\, \varepsilon \to 0.$$
+Here $\operatorname{sgn} A$, the \textit{signature of} $A$, denotes the number of positive eigenvalues of $A$ minus the number of negative eigenvalues.
+\end{lemma}
+\begin{proof}
+1. First we claim for each $\phi \in C_c^\infty(\R^n)$ that
+$$(42) \quad \lim_{\delta \to 0^+} \int_{\R^n} \int_{\R^n} e^{ix \cdot Ax - \delta|x|^2 - i x \cdot y} \phi(y) dx dy$$
+$$= \frac{\pi^{n/2}}{|\det A|^{1/2}} e^{i\frac{\pi}{4}\operatorname{sgn}\,A} \int_{\R^n} e^{-\frac{i}{4}y \cdot A^{-1} y} \phi(y) dy.$$
+To confirm this, we start by assuming $A$ is diagonal:
+$$(43) \quad A = \operatorname{diag}(\lambda_1, \ldots, \lambda_n) \quad (\lambda_k \neq 0, k = 1, \ldots, n).$$
+Now for fixed $y, \lambda \in \R$ and $\delta > 0$, we have
+$$\int_{\R} e^{i \lambda x^2 - \delta x^2 - i x y} dx = e^{\frac{iy^2}{4(i\lambda - \delta)}} \int_{\R} e^{(i\lambda-\delta)\left(x - \frac{iy}{2(i\lambda-\delta)}\right)^2} dx$$
+$$= \frac{e^{\frac{iy^2}{4(i\lambda - \delta)}}}{(\delta - i\lambda)^{1/2}} \int_{\Gamma} e^{-z^2} dz,$$
+where $\Gamma = \{z = (\delta - i\lambda)^{1/2}\left(x - \frac{iy}{2(i\lambda-\delta)}\right) \mid x \in \R\}$ and we take $\text{Re}(\delta - i\lambda)^{1/2} > 0$. Thus $\Gamma$ is a line in the complex plane, which intersects the $x$-axis at an angle less than $\frac{\pi}{4}$. We consequently may deform the integral over $\Gamma$ into the integral along the real axis: see Problem 7. Hence $\int_{\R} e^{-z^2} dz = \int_{\R} e^{-x^2} dx = \pi^{1/2}$, and thus
+$$\int_{\R} e^{ix\lambda^2 - \delta x^2 - ixy} dx = \frac{\pi^{1/2}}{(\delta - i\lambda)^{1/2}} e^{\frac{iy^2}{4(i\lambda - \delta)}}.$$
+Since $A$ has the diagonal form (43), we consequently deduce
+$$J_\delta(y) := \int_{\R^n} e^{ix \cdot Ax - \delta|x|^2 - ixy} dx$$
+$$= \prod_{k=1}^{n} \int_{\R} e^{i\lambda_k x_k^2 - \delta x_k^2 - ix_k y_k} dx_k = \pi^{n/2} \prod_{k=1}^{n} \frac{e^{\frac{iy_k^2}{4(i\lambda_k - \delta)}}}{(\delta - i\lambda_k)^{1/2}}.$$
+
+2. Now let $\phi \in C_c^\infty(\R^n)$. Then
+$$\int_{\R^n} \phi(y) J_\delta(y) dy = \pi^{n/2} \int_{\R^n} \phi(y) \prod_{k=1}^{n} \frac{e^{\frac{iy_k^2}{4(i\lambda_k - \delta)}}}{(\delta - i\lambda_k)^{1/2}} dy.$$
+Applying the Dominated Convergence Theorem, we deduce
+$$(44) \quad \lim_{\delta \to 0} \int_{\R^n} \phi(y) J_\delta(y) dy = \pi^{n/2} \int_{\R^n} \phi(y) \prod_{k=1}^{n} \frac{e^{-\frac{iy_k^2}{4\lambda_k}}}{(-i\lambda_k)^{1/2}} dy.$$
+Recall we are supposing $\text{Re}(-i\lambda_k)^{1/2} > 0$. Thus if $\lambda_k > 0$, $(-i\lambda_k)^{1/2} = |\lambda_k|^{1/2} e^{-i\pi/4}$. If instead $\lambda_k < 0$, then $(-i\lambda_k)^{1/2} = |\lambda_k|^{1/2} e^{i\pi/4}$. Therefore
+$$\prod_{k=1}^n (-i\lambda_k)^{1/2} = |\det A|^{1/2} e^{-i\frac{\pi}{4} \operatorname{sgn} A},$$
+and so (44) gives (42), provided $A$ is diagonal.
+
+If $A$ is not diagonal, we rotate to new coordinates to diagonalize $A$, and again verify (42).
+
+3. Let us now write $\alpha_\varepsilon(y) := e^{\frac{i}{2\varepsilon} y \cdot Ay}$. Then if $a \in C_c^\infty(\R^n)$,
+$$\int_{\R^n} a(x) \alpha_\varepsilon(x) dx = \int_{\R^n} \hat{a}(y) \hat{\alpha}_\varepsilon(-y) dy.$$
+According to (42) (with $\frac{1}{2\varepsilon} A$ replacing $A$):
+$$\hat{\alpha}_\varepsilon(y) = \frac{\varepsilon^{n/2}}{|\det A|^{1/2}} e^{i\pi/4 \operatorname{sgn} A} e^{-\frac{i\varepsilon}{2} y \cdot A^{-1} y}$$
+$$= \frac{\varepsilon^{n/2}}{|\det A|^{1/2}} e^{i\pi/4 \operatorname{sgn} A} (1 + O(\varepsilon|y|^2)),$$
+$\delta_x$ interpreted as in (42). Consequently
+$$\frac{1}{(2\pi)^{n/2}} \int_{\R^n} a(x)\alpha_\varepsilon(x) \, dx = \frac{e^{i\frac{\pi}{4} \operatorname{sgn} A}}{|\det A|^{1/2}} \int_{\R^n} \hat{a}(y)(1 + O(\varepsilon|y|^2)) \, dy.$$
+But $\int_{\R^n} \hat{a}(y) \, dy = (2\pi)^n \hat{a}(0)$ and $\int_{\R^n} \hat{a}(y)|y|^2 \, dy < \infty$. Formula (41) follows.
+\end{proof}
+
+For a general phase function $\phi$, we will employ the following result to change variables and thereby convert locally to one of the earlier cases.
+
+\begin{lemma}[Changing coordinates near a critical point]
+\label{lem:stationary-phase-changing-coordinates}
+\dcref{ch4:4.5.3-lem-3}
+\group{Asymptotics}
+Assume $\phi : \R^n \to \R$ is smooth.
+
+(i) Suppose that
+$$D\phi(0) \neq 0.$$
+Then there exists a smooth function $\Phi : \R^n \to \R^n$ such that
+$$(45) \quad \begin{cases} \Phi(0) = 0, \quad D\Phi(0) = I, \quad \text{and} \\ \phi(\Phi(x)) = \phi(0) + D\phi(0) \cdot x & \text{for } |x| \text{ small}. \end{cases}$$
+
+(ii) (Morse Lemma) Suppose instead that
+$$D\phi(0) = 0, \quad \det D^2\phi(0) \neq 0.$$
+Then there exists a smooth function $\Phi : \R^n \to \R^n$ such that
+$$(46) \quad \begin{cases} \Phi(0) = 0, \quad D\Phi(0) = I, \quad \text{and} \\ \phi(\Phi(x)) = \phi(0) + \frac{1}{2} x \cdot D^2\phi(0) x & \text{for } |x| \text{ small}. \end{cases}$$
+
+In other words, we can change variables near 0 to make $\phi$ affine in case (i), quadratic in case (ii).
+\end{lemma}
+\begin{proof}
+1. Assume $\mathbf{r}_n := D\phi(0) \neq 0$. Then there exist vectors $\mathbf{r}_1, \ldots, \mathbf{r}_{n-1}$ so that $\{\mathbf{r}_k\}_{k=1}^n$ is an orthonormal basis of $\R^n$. Define $\mathbf{f} : \R^n \times \R^n \to \R^n$ by
+$$\mathbf{f}(x,y) := (\mathbf{r}_1 \cdot (y-x), \ldots, \mathbf{r}_{n-1} \cdot (y-x), \phi(y) - \phi(0) - D\phi(0) \cdot x).$$
+Therefore
+$$D_y \mathbf{f}(0,0) = \begin{pmatrix} \mathbf{r}_1 \\ \vdots \\ \mathbf{r}_n \end{pmatrix},$$
+the $\{\mathbf{r}_k\}_{k=1}^n$ regarded as row vectors, and so $\det D_y \mathbf{f}(0,0) \neq 0$. The Implicit Function Theorem (\S C.6) implies we can find $\Phi : \R^n \to \R^n$ such that $\Phi(0) = 0$ and
+$$\mathbf{f}(x, \Phi(x)) = 0 \quad \text{for } |x| \text{ small}.$$
+In particular,
+$$\begin{cases}
+\phi(\Phi(x)) = \phi(0) + D\phi(0) \cdot x \\
+r_k \cdot (\Phi(x) - x) = 0 \quad (k = 1, \ldots, n-1).
+\end{cases}$$
+Differentiating with respect to $x$, we deduce as well
+$$(D\Phi(0) - I)r_k = 0 \quad (k = 1,\ldots,n)$$
+and so $D\Phi(0) = I$. This proves assertion (i).
+
+2. Fix $x \in \R^n$. Then $\psi(t) := \phi(tx)$ satisfies
+$$\psi(1) = \psi(0) + \psi'(0) + \int_0^1 (1-t)\psi''(t) dt.$$
+Thus if $D\phi(0) = 0$, we have
+$$\phi(x) = \phi(0) + \frac{1}{2} x \cdot \mathbf{A}(x)x$$
+for the symmetric matrix
+$$\mathbf{A}(x) := 2 \int_0^1 (1-t)D^2\phi(tx) dt.$$
+Observe $\mathbf{A}(0) = D^2\phi(0)$. Let us hereafter suppose $D^2\phi(0)$ is nonsingular, and so the same is true for $\mathbf{A}(x)$, provided $|x|$ is small. Furthermore, we may assume upon rotating to new coordinates if necessary that
+$$\mathbf{A}(0) = D^2\phi(0) \text{ is diagonal.}$$
+
+3. We now claim that there exists for each $m \in \{0,1,\ldots,n\}$ a smooth mapping $\Phi_m : \R^n \to \R^n$, such that
+$$(47) \quad \begin{cases}
+\Phi_m(0) = 0, D\Phi_m(0) = I, \text{ and} \\
+\phi(\Phi_m(x)) = \phi(0) + \frac{1}{2}\sum_{i=1}^m \phi_{x_i x_i}(0)x_i^2 + \frac{1}{2}\sum_{i,j=m+1}^n a_{ij}^m(x)x_i x_j,
+\end{cases}$$
+for $|x|$ small, where $\mathbf{A}_m = ((a_{ij}^m))$ is smooth and symmetric.
+
+Observe in particular that (47) implies
+$$(48) \quad a_{ij}^m(0) = \phi_{x_i x_j}(0) \quad (i,j = m+1,\ldots,n),$$
+and thus $a_{m+1,m+1}^m(x) \neq 0$ for $|x|$ sufficiently small.
+
+4. Assertion (47) for $m = 0$ is the identity $\phi(x) = \phi(0) + \frac{1}{2}x\cdot \mathbf{A}(x)x$ from part 2, with $\mathbf{A}_0 = \mathbf{A}$ and $\Phi_0$ the identity mapping. So next assume by induction that (47) holds for some $m \in \{0,\ldots,n-1\}$ and write
+$$\varphi_m(x) := \phi(\Phi_m(x)).$$
+Then
+$$(49) \quad \varphi_m(x) = \phi(0) + \frac{1}{2}\sum_{i=1}^m \phi_{x_i x_i}(0)x_i^2 + \frac{1}{2}\sum_{i,j=m+1}^n a_{m}^{ij}(x)x_i x_j \quad \text{for } |x| \text{ small}.$$
+Define a mapping $\Pi_{m+1} : \R^n \to \R^n$, $\Pi_{m+1}(y) = x$, by writing
+$$\Pi_{m+1}(y) := \left(y_1,\ldots,y_m, \left[\frac{a_m^{m+1,m+1}(y)}{\phi_{x_{m+1}x_{m+1}}(0)}\right]^{1/2}\left[y_{m+1} + \sum_{j=m+2}^n y_j\frac{a_m^{m+1,j}(y)}{a_m^{m+1,m+1}(y)}\right],\ldots,y_n\right)$$
+for small $|y|$. It follows then from (49) that
+$$\varphi_m(y) = \phi(0) + \frac{1}{2}\sum_{i=1}^{m+1} \phi_{x_i x_i}(0)x_i^2 + \frac{1}{2}\sum_{i,j=m+2}^n b_{m+1}^{ij}(y)x_i x_j,$$
+where
+$$b_{m+1}^{ij}(y) := \begin{cases}
+a_m^{ij}(y) - \frac{a_m^{m+1,i}(y)a_m^{m+1,j}(y)}{a_m^{m+1,m+1}(y)} & i,j = m+2,\ldots,n\\
+0 & \text{otherwise}.
+\end{cases}$$
+Since $D^2\phi(0)$ is diagonal, (48) implies
+$$\Pi_{m+1}(0) = 0, \quad D\Pi_{m+1} = I.$$
+Consequently we can define for small $|x|$ the inverse mapping $\mathbf{E}_{m+1} := \Pi_{m+1}^{-1}$, $y = \mathbf{E}_{m+1}(x)$. Therefore
+$$\varphi_m(\mathbf{E}_{m+1}(x)) = \phi(0) + \frac{1}{2}\sum_{i=1}^{m+1} \phi_{x_i x_i}(0)x_i^2 + \frac{1}{2}\sum_{i,j=m+2}^n a_{m+1}^{ij}(x)x_i x_j,$$
+for $\mathbf{A}_{m+1} := \mathbf{B}_{m+1} \circ \mathbf{E}_{m+1}$. This is statement (47), with $m+1$ replacing $m$ and with $\Phi_{m+1} := \Phi_m \circ \mathbf{E}_{m+1}$.
+
+The case $m = n$ is assertion (ii) of the lemma.
+\end{proof}
+
+\begin{proposition}[The stationary phase asymptotic formula]
+\label{prop:stationary-phase-asymptotic-formula}
+\dcref{ch4:4.5.3-prop-1}
+\group{Asymptotics}
+\uses{lem:stationary-phase-linear-asymptotics,lem:stationary-phase-quadratic-asymptotics,lem:stationary-phase-changing-coordinates}
+Let $I_\varepsilon = \int_{\R^n} e^{i\phi(y)/\varepsilon} a(y) \, dy$ as in (40), and assume
+$$(52) \quad \begin{cases}
+D\phi \text{ vanishes within the support of } a \\
+\text{only at the points } y_1, \ldots, y_N,
+\end{cases}$$
+and furthermore
+$$(53) \quad D^2\phi(y_k) \text{ is nonsingular} \quad (k = 1, \ldots, N).$$
+Then
+$$(54) \quad I_\varepsilon = (2\pi\varepsilon)^{n/2} \sum_{k=1}^N \frac{e^{i\phi(y_k)/\varepsilon}}{|\det D^2\phi(y_k)|^{1/2}} e^{i\frac{\pi}{4} \operatorname{sgn}(D^2\phi(y_k))} (a(y_k) + O(\varepsilon)),$$
+as $\varepsilon \to 0$.
+\end{proposition}
+\begin{proof}
+Fix $\delta > 0$ so small the balls $\{B(y_k, \delta)\}_{k=1}^N$ are disjoint. Then for $m = 1, \ldots,$
+$$\left|\int_{\R^n \setminus \bigcup_{k=1}^N B(y_k,\delta)} e^{i\phi(y)/\varepsilon} a(y) \, dy\right| = O(\varepsilon^m) \quad \text{as } \varepsilon \to 0.$$
+This follows since we can employ \cref{lem:stationary-phase-changing-coordinates}(i) to change variables near any point $y \notin \bigcup_{k=1}^N B(y, \delta)$ to make $\phi$ affine, with nonvanishing gradient. Thus \cref{lem:stationary-phase-linear-asymptotics} and a partition of unity argument gives the stated estimate.
+
+On the other hand if $\delta > 0$ is small enough, we can employ \cref{lem:stationary-phase-changing-coordinates}(ii) to compute
+$$\int_{B(y_k,\delta)} e^{i\phi(y)/\varepsilon} a(y) \, dy = \int_{\Phi^{-1}(B(y_k,\delta))} e^{i\phi(\Phi(x))/\varepsilon} a(\Phi(x))|\det D\Phi(x)| \, dx$$
+$$= e^{i\phi(y_k)/\varepsilon} \int_{\Phi^{-1}(B(y_k,\delta))} e^{i\frac{1}{2\varepsilon}(x-y_k) \cdot D^2\phi(y_k)(x-y_k)} a(\Phi(x))
+|\det D\Phi(x)| \, dx$$
+$$= e^{i\phi(y_k)/\varepsilon} \frac{(2\pi\varepsilon)^{n/2}}{|\det D^2\phi(y_k)|^{1/2}} e^{i\frac{\pi}{4} \operatorname{sgn}(D^2\phi(y_k))} (a(y_k) + O(\varepsilon)),$$
+according to \cref{lem:stationary-phase-quadratic-asymptotics}. We thereby obtain the asymptotic formula (54).
+\end{proof}
+
+\begin{example}[Stationary phase for the wave equation, continued]
+\label{ex:stationary-phase-wave-equation-continued}
+\dcref{ch4:4.5.3-ex-3}
+\group{Asymptotics}
+\uses{ex:stationary-phase-wave-equation,prop:stationary-phase-asymptotic-formula}
+We can now apply the foregoing theory to (38), which states
+$$I_+^\varepsilon(x,t) = \frac{1}{(2\pi\varepsilon)^n}\int_{\R^n}\int_{\R^n} a(z)e^{\frac{i}{\varepsilon}\phi_+(x,y,z,t)}\,dy\,dz.$$
+This is of the form (40), with $(x,t)$ replacing $x$ and $(y,z)$ replacing $y$.
+
+Define for fixed $x\in\R^n$, $t>0$, the set where the mapping $(y,z)\mapsto \phi_+(x,y,z,t)$ is stationary:
+$$S^+ := \{(y,z) \mid D_{y,z}\phi_+(x,y,z,t)=0\}.$$
+Recall from (39) that $\phi_+(x,y,z,t) = (x-z)\cdot y+t|y|+p(z)$; and so
+$$\begin{cases} D_y\phi_+ = (x-z)+t\frac{y}{|y|} & (y\neq 0), \\ D_z\phi_+ = -y+Dp(z). \end{cases}$$
+Consequently
+$$(55) \quad S^+ = \left\{(y,z) \mid x = z - \frac{tDp(z)}{|Dp(z)|}, y=Dp(z)\right\},$$
+and we here and henceforth assume that $y=Dp(z)\neq 0$ if $(y,z)\in S^+$.
+
+Now if $y\neq 0$,
+$$D^2_{y,z}\phi_+ = \begin{pmatrix} D_y^2\phi_+ & D_{yz}^2\phi_+ \\ D_{yz}^2\phi_+ & D_z^2\phi_+ \end{pmatrix}_{2n\times 2n} = \begin{pmatrix} \frac{t}{|y|}\mathbf{P}(y) & -I \\ -I & D^2p \end{pmatrix},$$
+for $\mathbf{P}(y) := I - \frac{y\otimes y}{|y|^2}$. We have $y=Dp(z)$ on the stationary set $S^+$, and so
+$$\det(D^2_{y,z}\phi_+) = (-1)^n \det\left(I - \frac{t}{|Dp|}D^2p\,\mathbf{P}(Dp)\right).$$
+Now the symmetric matrix $\boldsymbol\Sigma(z):=\frac{\mathbf{P}(Dp)}{|Dp|}D^2p\,\mathbf{P}(Dp)$ has $n$ real eigenvalues $\lambda_1(z),\ldots,\lambda_n(z)$. Since $\boldsymbol\Sigma(z)Dp=0$, we may take $\lambda_n(z)=0$. The other eigenvalues $\lambda_1(z),\ldots,\lambda_{n-1}(z)$ turn out to be the principal curvatures $\kappa_1(z),\ldots,\kappa_{n-1}(z)$ of the level surface of $p$ passing through $z$. Since $\mathbf{P}^2=\mathbf{P}$, the nonzero eigenvalues of $\frac{1}{|Dp|}D^2p\,\mathbf{P}(Dp)$ are the nonzero principal curvatures. Thus on $S^+$,
+$$(56) \quad \det(D^2_{y,z}\phi_+) = (-1)^n \prod_{i=1}^{n-1}(1-t\kappa_i(z)).$$
+
+We apply the stationary phase estimates for $x_0\in\R^n$ and small $t_0>0$. If $t_0$ is small enough, we can invoke the Implicit Function Theorem to solve uniquely the expressions
+$$x_0 = z - t_0\frac{Dp(z)}{|Dp(z)|}, \quad y=Dp(z)$$
+for $y_0=y(x_0,t_0)$, $z_0=z(x_0,t_0)$. Thus the asymptotic formula (54) (with $2n$ replacing $n$) implies
+$$I_+^\varepsilon(x_0,t_0) = \frac{1}{(2\pi\varepsilon)^n}\int_{\R^n}\int_{\R^n} a(z)e^{\frac{i}{\varepsilon}\phi_+(x_0,y,z,t_0)}\,dy\,dz$$
+$$(57) \quad = \frac{e^{i\frac{\pi}{4}\operatorname{sgn}(D^2_{y,z}\phi_+)}}{|\det D^2_{yz}\phi_+|^{1/2}} e^{i\phi_+/\varepsilon}[a(z_0)+O(\varepsilon)] \quad \text{as } \varepsilon\to 0,$$
+$\phi_+$ and $D^2_{yz}\phi_+$ evaluated at $(x_0,y_0,z_0,t_0)$. Recall further that (56) gives us an explicit function for $\det(D^2_{yz}\phi_+)$. A similar asymptotic formula holds for $I_-^\varepsilon(x_0,t_0)$. Since $u^\varepsilon(x_0,t_0)=\frac{1}{2}(I_+^\varepsilon(x_0,t_0)+I_-^\varepsilon(x_0,t_0))$, we derive detailed information concerning the limits as $\varepsilon\to0$, at least for small times $t_0>0$. $\square$
+\end{example}
+
+\begin{remark}[Optics and stationary phase]
+\label{rem:optics-stationary-phase-connection}
+\dcref{ch4:4.5.3-rem-1}
+\group{Asymptotics}
+\uses{ex:geometric-optics-oscillating-solutions,ex:stationary-phase-wave-equation-continued,thm:characteristic-ode-structure}
+It remains to discuss briefly the connections between the formal geometric optics and the stationary phase approaches. Recall that the former brought us to the two Hamilton-Jacobi equations
+$$(58) \quad p_t \pm |Dp| = 0$$
+for the phase function of $u^\varepsilon = a_\varepsilon e^{\frac{ip\varepsilon}{\varepsilon}} = (a+o(1))e^{\frac{ip+o(1)}{\varepsilon}}$. Now the characteristic equations for the PDE $p_t-|Dp|=0$ are
+$$(59) \quad \begin{cases} \dot{\mathbf{x}}(s) = -\frac{\mathbf{p}(s)}{|\mathbf{p}(s)|} \\ \dot{\mathbf{p}}(s) = 0, \end{cases}$$
+as previously discussed in \cref{thm:characteristic-ode-structure} (\S3.2.2). In particular given a point $x\in\R^n$, $t>0$, where $t$ is small, the projected characteristic $\mathbf{x}(\cdot)$ is a straight line, starting at the unique point $z$ satisfying
+$$z = x+t\frac{Dp(z)}{|Dp(z)|}.$$
+But this relation is precisely what determines the stationary set $S^+$ above. Likewise, the characteristics of the partial differential equation $p_t+|Dp|=0$ determine the stationary set $S^-$ for $\phi_-$. $\square$
+\end{remark}
+
+\subsection{Homogenization}
+\label{sec:homogenization}
+
+\textit{Homogenization theory} studies the effects of high-frequency oscillations in the coefficients upon solutions of PDE. In the simplest setting we are given a partial differential equation with two natural \textit{length scales}, a macroscopic scale of order 1 and a microscopic scale of order $\varepsilon$, the latter measuring the period of the oscillations. For fixed, but small, $\varepsilon > 0$ the solution $u^\varepsilon$ of the PDE will in general be complicated, having different behaviors on the two length scales.
+
+Homogenization theory studies the limiting behavior $u^\varepsilon \to u$ as $\varepsilon \to 0$. The idea is that in this limit the high-frequency effects will ``average out'', and there will be a simpler, effective limiting PDE that $u$ solves. One of the difficulties is even to guess the form of the limiting partial differential equation, and for this formal, multiscale expansions in $\varepsilon$ may be useful.
+
+\begin{example}[Periodic homogenization of an elliptic equation]
+\label{ex:periodic-homogenization-elliptic}
+\dcref{ch4:4.5.4-ex-1}
+\group{Asymptotics}
+This example assumes some familiarity with the theory of divergence-structure, second-order elliptic PDE, as developed later in Chapter 6.
+
+Let $U$ denote an open, bounded subset of $\R^n$, with smooth boundary $\partial U$, and consider this boundary-value problem for a divergence structure PDE:
+$$(60) \quad \begin{cases}
+-\sum_{i,j=1}^{n} (a^{ij}(\frac{x}{\varepsilon}) u^\varepsilon_{x_i})_{x_j} = f & \text{in } U \\
+u^\varepsilon = 0 & \text{in } \partial U
+\end{cases}$$
+Here $f : U \to \R$ is given, as are the coefficients $a^{ij}$ $(i, j = 1, \ldots, n)$. We will assume the uniform ellipticity condition
+$$\sum_{i,j=1}^{n} a^{ij}(y)\xi_i\xi_j \geq \theta|\xi|^2$$
+for some constant $\theta > 0$ and all $y, \xi \in \R^n$. We suppose also
+$$(61) \quad \text{the mapping } y \mapsto a^{ij}(y) \text{ is } Q\text{-periodic} \quad (y \in \R^n),$$
+$Q$ denoting the unit cube in $\R^n$. Thus the coefficients $a^{ij}(\frac{x}{\varepsilon})$ in (60) are rapidly oscillating in $x$ for small $\varepsilon > 0$, and we inquire as to the effect this has upon the solution $u^\varepsilon$. (In applications $u^\varepsilon$ represents, say, the electric field within a nonisotropic body having small-scale, periodic structure.)
+
+In the following heuristic discussion let us assume
+$$(62) \quad u^\varepsilon \to u \quad \text{as } \varepsilon \to 0$$
+in some suitable sense and try to determine an equation which $u$ satisfies. The trick is to suppose $u^\varepsilon$ admits the following \textit{two-scale expansion}:
+$$(63) \quad u^\varepsilon(x) = u_0(x, x/\varepsilon) + \varepsilon u_1(x, x/\varepsilon) + \varepsilon^2 u_2(x, x/\varepsilon) + \ldots,$$
+where $u_i: U \times Q \to \R$ ($i = 0, 1, \ldots$), $u_i = u_i(x, y)$. We are thus thinking of the terms $u_i$ as being both functions of the macroscopic variable $x$ and periodic functions of the microscopic variable $y = \frac{x}{\varepsilon}$. The plan is to plug (63) into (60), and to determine thereby $u_0, u_1$, etc. We are primarily interested in $u = u_0$.
+
+Now if $v(x) = w(x, x/\varepsilon)$ for some function $w = w(x, y)$, then $\frac{\partial v}{\partial x_i} = \left(\frac{\partial}{\partial x_i} + \frac{1}{\varepsilon} \frac{\partial}{\partial y_i}\right) w$, $i = 1, \ldots, n$. Thus, writing
+$$Lv = -\sum_{i,j=1}^n (a^{ij}(x/\varepsilon)v_{x_i})_{x_j},$$
+we have
+$$(64) \quad L = \frac{1}{\varepsilon^2} L_1 + \frac{1}{\varepsilon} L_2 + L_3,$$
+where
+$$(65) \quad \begin{cases}
+\text{(a)} & L_1 w := -\sum_{i,j=1}^n (a^{ij}(y) w_{y_i})_{y_j}, \\
+\text{(b)} & L_2 w := -\sum_{i,j=1}^n (a^{ij}(y) w_{x_i})_{y_j} + (a^{ij}(y) w_{y_i})_{x_j}, \\
+\text{(c)} & L_3 w := -\sum_{i,j=1}^n (a^{ij}(y) w_{x_i})_{x_j}.
+\end{cases}$$
+Next plug the expansion (63) into the PDE $Lu^\varepsilon = f$, and utilize the decomposition (64), (65) to find
+$$\frac{1}{\varepsilon^2} L_1 u_0 + \frac{1}{\varepsilon}(L_1 u_1 + L_2 u_0) + (L_1 u_2 + L_2 u_1 + L_3 u_0)$$
+$$+ \{\text{terms involving } \varepsilon, \varepsilon^2, \ldots\} = f.$$
+Equating like powers of $\varepsilon$, we deduce
+$$(66) \quad \begin{cases}
+\text{(a)} & L_1 u_0 = 0, \\
+\text{(b)} & L_1 u_1 + L_2 u_0 = 0, \\
+\text{(c)} & L_1 u_2 + L_2 u_1 + L_3 u_0 = f, \quad \text{etc.}
+\end{cases}$$
+We examine these PDE to deduce information concerning $u_0, u_1, u_2$. Now in view of (65)(a), (66)(a) for each fixed $x$, $u_0(x, y)$ solves $L_1 u_0 = 0$ and is $Q$-periodic. It turns out that the only such solutions are constant in $y$. Thus in fact
+$$(67) \quad u_0 = u(x) \text{ depends only on } x.$$
+Next employ (67), (65)(b), (66)(b) to discover
+$$(68) \quad L_1 u_1 = \sum_{i,j=1}^n a^{ij}(y)u_{y_j} u_{x_i}.$$
+We can as follows separate variables to represent $u_1$ more simply. For $i = 1, \ldots, n$, let $\chi^i = \chi^i(y)$ solve
+$$(69) \quad \begin{cases} L_1 \chi^i = -\sum_{j=1}^n a^{ij}(y)u_j & \text{in } Q \\ \chi^i & Q\text{-periodic} \end{cases}$$
+As the right hand side of the PDE in (69) has integral zero over $Q$, this problem has a solution $\chi^i$ (unique up to an additive constant). Here we are applying the \textit{Fredholm alternative}: see Chapter 6.
+
+Using (69) we obtain
+$$(70) \quad u_1(x, y) = -\sum_{i=1}^n \chi^i(y)u_{x_i}(x) + \tilde{u}_1(x),$$
+$\tilde{u}_1$ denoting an arbitrary function of $x$ alone.
+
+Finally let us recall (66)(c):
+$$(71) \quad L_1 u_2 = f - L_2 u_1 - L_3 u_0.$$
+In view of (65)(c) this PDE will have a $Q$-periodic solution (in the variable $y$) only if the integral of the right hand side over $Q$ is zero. Thus we require
+$$(72) \quad \int_Q L_2 u_1 + L_3 u_0 \, dy = \int_Q f \, dy = f(x).$$
+Owing to (65)(b) and (70),
+$$\int_Q L_2 u_1 \, dy = -\sum_{j,k=1}^n \left( \int_Q a^{jk}(y)u_{1,y_k} \, dy \right)_{x_j}$$
+$$= \sum_{i,j,k=1}^n \left( \int_Q a^{jk}(y)\chi^i_{y_k}(y) \, dy \right) u_{x_i x_j}.$$
+Since $u = u_0$, this calculation and (72) imply
+$$-\sum_{i,j=1}^{n}\left(\int_Q a^{ij}(y) - \sum_{k=1}^{n}a^{jk}(y)\chi^i_{y_k}(y)\,dy\right)u_{x_i x_j}(x) = f(x).$$
+That is,
+$$(73) \quad \begin{cases} -\sum_{i,j=1}^{n} \bar{a}^{ij} u_{x_i x_j} = f & \text{in } U \\ u = 0 & \text{on } \partial U, \end{cases}$$
+where
+$$(74) \quad \bar{a}^{ij} := \int_Q a^{ij}(y) - \sum_{k=1}^{n} a^{jk}(y) \chi^i_{y_k}(y)\,dy \quad (i,j=1,\ldots,n)$$
+are the \textit{homogenized coefficients}, and $\chi^i$ solves the \textit{corrector problem} (69) $(i=1,\ldots,n)$. Thus we expect $u^\varepsilon \to u$ as $\varepsilon \to 0$, and $u$ to solve the limit problem (73).
+
+This example clearly illustrates the power of the multiscale expansion method. It is not at all readily apparent that the high-frequency oscillations in the coefficients of (60) lead to a constant coefficient PDE of the precise form (73), (74).
+\end{example}
+
+\section{Power Series}
+\label{sec:power-series}
+
+We discuss in this final section solving boundary-value problems for partial differential equations by looking for solutions expressed as power series.
+
+\subsection{Noncharacteristic Surfaces}
+\label{sec:noncharacteristic-surfaces}
+
+We begin with some fairly general comments concerning the solvability of the $k^{\text{th}}$-order quasilinear PDE
+$$(1) \quad \sum_{|\alpha|=k} a_\alpha(D^{k-1}u,\ldots,u,x)D^\alpha u + a_0(D^{k-1}u,\ldots,u,x) = 0$$
+in some open region $U \subset \R^n$. Let us assume that $\Gamma$ is a smooth, $(n-1)$-dimensional hypersurface in $U$, the unit normal to which at any point $x^0 \in \Gamma$ is $\nu(x^0) = \nu = (\nu_1,\ldots,\nu_n)$.
+
+\begin{definition}[Normal derivative]
+\label{def:normal-derivative-notation}
+\dcref{ch4:4.6.1-def-1}
+\group{Power Series Methods}
+The $j^{\text{th}}$ normal derivative of $u$ at $x^0 \in \Gamma$ is
+$$\frac{\partial^j u}{\partial \nu^j} := \sum_{|\alpha|=j} D^\alpha u \nu^\alpha = \sum_{\alpha_1 + \cdots + \alpha_n = j} \frac{\partial^j u}{\partial x_1^{\alpha_1} \cdots \partial x_n^{\alpha_n}} \nu_1^{\alpha_1} \cdots \nu_n^{\alpha_n}.$$
+\end{definition}
+
+\begin{definition}[Cauchy problem and Cauchy data]
+\label{def:cauchy-problem-cauchy-data}
+\dcref{ch4:4.6.1-def-2}
+\group{Power Series Methods}
+\uses{def:normal-derivative-notation}
+Let $g_0, \ldots, g_{k-1}: \Gamma \to \R$ be $k$ given functions. The \textit{Cauchy problem} is to find a function $u$ solving the PDE (1), subject to the boundary conditions
+$$(2) \quad u = g_0, \quad \frac{\partial u}{\partial \nu} = g_1, \ldots, \frac{\partial^{k-1} u}{\partial \nu^{k-1}} = g_{k-1} \quad \text{on } \Gamma.$$
+We say that the equations (2) prescribe the \textit{Cauchy data} $g_0, \ldots, g_{k-1}$ on $\Gamma$.
+\end{definition}
+
+We now pose a basic question:
+$$(3) \quad \begin{cases} \text{Assuming } u \text{ is a smooth solution of the PDE (1),} \\ \text{do conditions (2) allow us to compute } \textit{all} \text{ the partial} \\ \text{derivatives of } u \text{ along } \Gamma? \end{cases}$$
+This must certainly be so, if we are ever going to be able to calculate the terms of a power series representation formula for $u$.
+
+\textbf{a. Flat boundaries.}
+
+We examine first the special circumstance that $U = \R^n$ and $\Gamma$ is the plane $\{x_n = 0\}$. In this situation we can take $\nu = e_n$, and so the Cauchy conditions (2) read
+$$(4) \quad u = g_0, \quad \frac{\partial u}{\partial x_n} = g_1, \ldots, \frac{\partial^{k-1} u}{\partial x_n^{k-1}} = g_{k-1} \quad \text{on } \{x_n = 0\}.$$
+Which further partial derivatives of $u$ can we compute along the plane $\Gamma = \{x_n = 0\}$? First, notice that since $u = g_0$ on all of $\Gamma$ we can differentiate tangentially, that is, with respect to $x_i$ ($i = 1, \ldots, n-1$), to find
+$$\frac{\partial u}{\partial x_i} = \frac{\partial g_0}{\partial x_i} \quad (i = 1, \ldots, n-1).$$
+Since we also know from (4) that
+$$\frac{\partial u}{\partial x_n} = g_1,$$
+we can determine the full gradient $Du$ along $\Gamma = \{x_n = 0\}$. Similarly, we have
+$$\begin{cases} \frac{\partial^2 u}{\partial x_n \partial x_i} = \frac{\partial g_1}{\partial x_i} & (i = 1, \ldots, n-1) \\ \frac{\partial^2 u}{\partial x_n^2} = g_2, \end{cases}$$
+and hence we can compute $D^2u$ on $\Gamma$. Next, we see
+$$\frac{\partial^3 u}{\partial x_i \partial x_j \partial x_m} = \begin{cases}
+\frac{\partial^2 g_0}{\partial x_i \partial x_m} & \text{if } i,j,m = 1,\ldots,n-1 \\
+\frac{\partial^2 g_1}{\partial x_i \partial x_j} & \text{if } i,j = 1,\ldots,n-1; m = n \\
+\frac{\partial g_2}{\partial x_i} & \text{if } i = 1,\ldots,n-1; j = m = n \\
+g_3 & \text{if } i = j = m = n
+\end{cases}$$
+along $\Gamma$, and so we can compute $D^3u$ there. Continuing, it is straightforward to check that employing the Cauchy conditions (4) we can compute $u, Du, \ldots, D^{k-1}u$ on $\Gamma$.
+
+Difficulties will arise, however, when we try to calculate $D^ku$. In this circumstance it is not hard to verify that we can determine each partial derivative of $u$ of order $k$ along $\Gamma = \{x_n = 0\}$ from the Cauchy data (4), except for the $k^{\text{th}}$-order normal derivative
+$$\frac{\partial^k u}{\partial x_n^k}.$$
+Here, at last, we turn to PDE (1) for help. We observe from (1) that if the coefficient $a_{(0,\ldots,0,k)}$ is nonzero, we can then solve for
+$$(5) \quad \frac{\partial^k u}{\partial x_n^k} = -\frac{1}{a_{(0,\ldots,0,k)}} \left[ \sum_{\substack{|\alpha|=k \\ \alpha \neq (0,\ldots,0,k)}} a_\alpha D^\alpha u + a_0 \right],$$
+with the coefficients $a_\alpha$ ($|\alpha| = k$) and $a_0$ evaluated at $(D^{k-1}u, \ldots, u, x)$ along $\Gamma$. Now in view of the remarks above, everything on the right hand side of equality (5) can be calculated in terms of the Cauchy data along the plane $\Gamma$, and thus we have a formula for the missing $k^{\text{th}}$ partial derivative. Consequently we can in fact compute all of $D^k u$ on $\Gamma$, provided
+$$(6) \quad a_{(0,\ldots,0,k)} \neq 0.$$
+
+\begin{definition}[Noncharacteristic plane]
+\label{def:noncharacteristic-plane-flat}
+\dcref{ch4:4.6.1-def-3}
+\group{Power Series Methods}
+We say that the plane $\Gamma = \{x_n = 0\}$ is \textit{noncharacteristic} for the PDE (1), if the function $a_{(0,\ldots,0,k)}$ is nonzero for all values of its arguments.
+\end{definition}
+
+Can we calculate still higher partial derivatives? Assuming the noncharacteristic condition (6), we observe that we can now augment our list (4) of Cauchy data with the new equality
+$$(7) \quad \frac{\partial^k u}{\partial x_n^k} = g_k \quad \text{on } \Gamma = \{x_n = 0\},$$
+$g_k$ denoting the right hand side of (5). But then we can, as before, compute all of $D^{k+1}u$ along $\Gamma$, except for the term
+$$\frac{\partial^{k+1}u}{\partial x_n^{k+1}}.$$
+Again we employ the PDE (1). We differentiate (1) with respect to $x_n$, evaluate the resulting expression on the plane $\Gamma$, and rearrange to find
+$$\frac{\partial^{k+1}u}{\partial x_n^{k+1}} = \frac{1}{a_{(0,\ldots,0,k)}}\{\cdots\},$$
+the dots denoting the sum of various expressions, each of which can be computed along $\Gamma$ in terms of $g_0,\ldots,g_k$. Consequently we can ascertain all of $D^{k+1}u$ on $\Gamma$, and an induction verifies that in fact we can compute all the partial derivatives of $u$ on the plane $\Gamma$.
+
+\textbf{b. General surfaces.}
+
+We now propose to generalize the results obtained above to the general case that $\Gamma$ is a smooth hypersurface with normal vector field $\nu$.
+
+\begin{definition}[Noncharacteristic surface]
+\label{def:noncharacteristic-surface}
+\dcref{ch4:4.6.1-def-4}
+\group{Power Series Methods}
+\uses{def:cauchy-problem-cauchy-data}
+We say the surface $\Gamma$ is \textit{noncharacteristic} for the partial differential equation (1) provided
+$$(8) \quad \sum_{|\alpha|=k} a_\alpha \nu^\alpha \ne 0 \quad \text{on } \Gamma,$$
+for all values of the arguments of the coefficients $a_\alpha$ ($|\alpha| = k$).
+\end{definition}
+
+\begin{theorem}[Cauchy data and noncharacteristic surfaces]
+\label{thm:cauchy-data-noncharacteristic-surfaces}
+\dcref{ch4:4.6.1-thm-1}
+\group{Power Series Methods}
+\uses{def:noncharacteristic-surface,def:cauchy-problem-cauchy-data,def:noncharacteristic-plane-flat}
+Assume that $\Gamma$ is noncharacteristic for the PDE (1). Then if $u$ is a smooth solution of (1) and $u$ satisfies the Cauchy conditions (2), we can uniquely compute all the partial derivatives of $u$ along $\Gamma$ in terms of $\Gamma$, the functions $g_0, \ldots, g_{k-1}$, and the coefficients $a_\alpha$ ($|\alpha| = k$), $a_0$.
+\end{theorem}
+\begin{proof}
+We will reduce to the special case considered above.
+
+For this, let us choose any point $x^0 \in \Gamma$ and recall \S C.1 to find smooth maps $\Phi, \Psi : \R^n \to \R^n$, so that $\Psi = \Phi^{-1}$ and
+$$\Phi(\Gamma \cap B(x^0, r)) \subset \{y_n = 0\}$$
+for some $r > 0$. Define
+$$v(y) := u(\Psi(y));$$
+so that
+$$(9) \quad u(x) = v(\Phi(x)).$$
+It is relatively easy to check now $v$ satisfies a quasilinear partial differential equation having the form
+$$(10) \quad \sum_{|\alpha|=k} b_\alpha D^\alpha v + b_0 = 0.$$
+
+2. We claim
+$$(11) \quad b_{(0,\ldots,0,k)} \neq 0 \text{ on } \{y_n = 0\}.$$
+Indeed from (9) we see that for any multiindex $\alpha$ with $|\alpha| = k$, we have
+$$D^\alpha u = \frac{\partial^k v}{\partial y_n^k}(D\Phi^n)^\alpha + \left\{\text{terms not involving } \frac{\partial^k v}{\partial y_n^k}\right\}.$$
+Thus from (1) it follows that
+$$0 = \sum_{|\alpha|=k} a_\alpha D^\alpha u + a_0$$
+$$= \sum_{|\alpha|=k} a_\alpha(D\Phi^n)^\alpha \frac{\partial^k v}{\partial y_n^k} + \left\{\text{terms not involving } \frac{\partial^k v}{\partial y_n^k}\right\};$$
+and so
+$$b_{(0,\ldots,0,k)} = \sum_{|\alpha|=k} a_\alpha(D\Phi^n)^\alpha.$$
+But $D\Phi^n$ is parallel to $\nu$ on $\Gamma$. Consequently $b_{(0,\ldots,0,k)}$ is a nonzero multiple of the term
+$$\sum_{|\alpha|=k} a_\alpha \nu^\alpha \neq 0.$$
+This verifies the claim (11).
+
+3. Let us now define the functions $h_0, h_1, \ldots, h_{k-1} : \R^{n-1} \to \R$ by
+$$(12) \quad v = h_0, \quad \frac{\partial v}{\partial y_n} = h_1, \ldots, \quad \frac{\partial^{k-1} v}{\partial y_n^{k-1}} = h_{k-1} \text{ on } \{y_n = 0\}.$$
+Thus we can compute $h_0, \ldots, h_{k-1}$ near $y = 0$ in terms of $\Phi$ and the functions $g_0, \ldots, g_{k-1}$. But then, using (11) and the special case discussed above, we see that we can calculate all of the partial derivatives of $v$ on $\{y_n = 0\}$ near $y = 0$.
+
+And finally, upon recalling (9), we at last observe we can compute all the partial derivatives of $u$ on $\Gamma$ near $x^0$.
+\end{proof}
+
+\begin{remark}[Noncharacteristic condition via a level set function]
+\label{rem:noncharacteristic-condition-level-set}
+\dcref{ch4:4.6.1-rem-1}
+\group{Power Series Methods}
+\uses{def:noncharacteristic-surface}
+It is sometimes convenient to recast the noncharacteristic condition (8) into a somewhat different form, by representing $\Gamma$ as the zero set of a function $w : \R^n \to \R$. So assume that we are given a function $w$ with
+$$\Gamma = \{w = 0\}$$
+and $Dw \neq 0$ on $\Gamma$. Then $\nu = \pm \frac{Dw}{|Dw|}$ on $\Gamma$, and so the noncharacteristic condition (8) becomes
+$$(13) \qquad \sum_{|\alpha|=k} a_\alpha(Dw)^\alpha \neq 0 \text{ on } \Gamma. \qquad \square$$
+\end{remark}
+
+\subsection{Real Analytic Functions}
+\label{sec:real-analytic-functions}
+
+We review in this section the representation of real-valued functions by power series.
+
+\begin{definition}[Real analytic function]
+\label{def:real-analytic-function}
+\dcref{ch4:4.6.2-def-1}
+\group{Power Series Methods}
+A function $f : \R^n \to \R$ is called \textit{(real) analytic near} $x_0$ if there exist $r > 0$ and constants $\{f_\alpha\}$ such that
+$$f(x) = \sum_{\alpha} f_\alpha(x - x_0)^\alpha \quad (|x - x_0| < r),$$
+the sum taken over all multiindices $\alpha$.
+\end{definition}
+
+\begin{remark}[Basic properties of real analytic functions]
+\label{rem:real-analytic-function-remarks}
+\dcref{ch4:4.6.2-rem-1}
+\group{Power Series Methods}
+\uses{def:real-analytic-function}
+(i) Remember that we write $x^\alpha = x_1^{\alpha_1} \cdots x_n^{\alpha_n}$, for the multiindex $\alpha = (\alpha_1, \ldots, \alpha_n)$.
+
+(ii) If $f$ is analytic near $x_0$, then $f$ is $C^\infty$ near $x_0$. Furthermore the constants $f_\alpha$ are computed as $f_\alpha = \frac{D^\alpha f(x_0)}{\alpha!}$, where $\alpha! = \alpha_1 !\alpha_2! \cdots \alpha_n!$. Thus $f$ equals its Taylor expansion about $x_0$:
+$$f(x) = \sum_\alpha \frac{1}{\alpha!} D^\alpha f(x_0)(x - x_0)^\alpha \quad (|x - x_0| < r).$$
+To simplify, we hereafter take $x_0 = 0$.
+\end{remark}
+
+\begin{example}[Power series for a simple rational function]
+\label{ex:real-analytic-example-rational-function}
+\dcref{ch4:4.6.2-ex-1}
+\group{Power Series Methods}
+\uses{def:real-analytic-function}
+If $r > 0$, set
+$$f(x) := \frac{r}{r - (x_1 + \cdots + x_n)} \quad \text{for } |x| < r/\sqrt{n}.$$
+Then
+$$f(x) = \frac{1}{1 - \left(\frac{x_1+\cdots+x_n}{r}\right)} = \sum_{k=0}^\infty \left(\frac{x_1 + \cdots + x_n}{r}\right)^k$$
+$$= \sum_{k=0}^\infty \frac{1}{r^k} \sum_{|\alpha|=k} \binom{k}{\alpha} x^\alpha = \sum_\alpha \frac{|\alpha|!}{r^{|\alpha|} \alpha!} x^\alpha.$$
+We employed the Multinomial Theorem for the third equality above and recalled that $\binom{|\alpha|}{\alpha}=\frac{|\alpha|!}{\alpha!}$. This power series is absolutely convergent for $|x|<r/\sqrt n$. Indeed,
+$$\sum_\alpha \frac{|\alpha|!}{r^{|\alpha|}\alpha!}|x^\alpha| = \sum_{k=0}^\infty \left(\frac{|x_1|+\cdots+|x_n|}{r}\right)^k < \infty,$$
+since $|x_1|+\cdots+|x_n|\le |x|\sqrt n < r$.
+\end{example}
+
+We will see momentarily that the simple power series illustrated in this example is rather important, since we can use it to majorize, and so confirm the convergence of, other power series.
+
+\begin{definition}[Majorizes]
+\label{def:power-series-majorizes}
+\dcref{ch4:4.6.2-def-2}
+\group{Power Series Methods}
+Let
+$$f = \sum_\alpha f_\alpha x^\alpha, \quad g = \sum_\alpha g_\alpha x^\alpha$$
+be two power series. We say $g$ \textit{majorizes} $f$, written
+$$g \gg f,$$
+provided
+$$g_\alpha \ge |f_\alpha| \quad \text{for all multiindices } \alpha.$$
+\end{definition}
+
+\begin{lemma}[Majorants]
+\label{lem:power-series-majorants}
+\dcref{ch4:4.6.2-lem-1}
+\group{Power Series Methods}
+\uses{def:power-series-majorizes,ex:real-analytic-example-rational-function}
+(i) If $g\gg f$ and $g$ converges for $|x|<r$, then $f$ also converges for $|x|<r$.
+
+(ii) If $f=\sum_\alpha f_\alpha x^\alpha$ converges for $|x|<r$ and $0<s\sqrt n<r$, then $f$ has a majorant for $|x|<s\sqrt n$.
+\end{lemma}
+\begin{proof}
+1. To verify assertion (i), we check
+$$\sum_\alpha |f_\alpha x^\alpha| \le \sum_\alpha g_\alpha|x_1|^{\alpha_1}\cdots|x_n|^{\alpha_n} < \infty \quad \text{if } |x|<r.$$
+
+2. Let $0<s\sqrt n<r$ and set $y:=s(1,\ldots,1)$. Then $|y|=s\sqrt n<r$ and so $\sum_\alpha f_\alpha y^\alpha$ converges. Thus there exists a constant $C$ such that
+$$|f_\alpha y^\alpha| \le C \quad \text{for each multiindex } \alpha.$$
+In particular,
+$$|f_\alpha| \le \frac{C}{y_1^{\alpha_1}\cdots y_n^{\alpha_n}} = \frac{C}{s^{|\alpha|}} \le C\frac{|\alpha|!}{s^{|\alpha|}\alpha!}.$$
+But then
+$$g(x) := \frac{Cs}{s-(x_1+\cdots+x_n)} = C\sum_\alpha \frac{|\alpha|!}{s^{|\alpha|}\alpha!}x^\alpha$$
+majorizes $f$ for $|x|<s\sqrt n$.
+\end{proof}
+
+\begin{remark}[Vector-valued power series notation]
+\label{rem:vector-valued-power-series-notation}
+\dcref{ch4:4.6.2-rem-2}
+\group{Power Series Methods}
+\uses{def:power-series-majorizes}
+We will later need to extend our notation to vector-valued series. So given power series $\{f^k\}_{k=1}^m,\{g^k\}_{k=1}^m$, we set $\mathbf{f}=(f^1,\ldots,f^m)$, $\mathbf{g}=(g^1,\ldots,g^m)$, and write
+$$\mathbf{g}\gg\mathbf{f}$$
+to mean
+$$g^k \gg f^k \quad (k=1,\ldots,m). \qquad \square$$
+\end{remark}
+
+\subsection{Cauchy--Kovalevskaya Theorem}
+\label{sec:cauchy-kovalevskaya-theorem}
+
+We turn now to our primary task of building a power series solution for the $k^{th}$-order quasilinear partial differential equation (1), with analytic Cauchy data (2) specified on an analytic, noncharacteristic hypersurface $\Gamma$.
+
+\textbf{a. Reduction to a first-order system.}
+
+We intend to construct a solution $u$ as a power series, but must first transform the boundary-value problem (1), (2) into a more convenient form.
+
+First of all, upon flattening out the boundary by an analytic mapping (as in \S4.6.1), we can reduce to the situation that $\Gamma\subset\{x_n=0\}$. Additionally, by subtracting off appropriate analytic functions, we may assume the Cauchy data are identically zero. Consequently we may assume without loss that our problem reads:
+$$(14) \quad \begin{cases} \sum_{|\alpha|=k} a_\alpha(D^{k-1}u,\ldots,u,x)D^\alpha u \\ \qquad + a_0(D^{k-1}u,\ldots,u,x) = 0 & \text{for } |x|<r \\ u = \frac{\partial u}{\partial x_n} = \cdots = \frac{\partial^{k-1}u}{\partial x_n^{k-1}} = 0 & \text{for } |x'|<r, x_n=0, \end{cases}$$
+$r>0$ to be found. As usual we write $x'=(x_1,\ldots,x_{n-1})$.
+
+Finally we transform to a first-order \textit{system}. To do so we introduce the function
+$$\mathbf{u} := \left(u, \frac{\partial u}{\partial x_1},\ldots,\frac{\partial u}{\partial x_n}, \frac{\partial^2 u}{\partial x_1^2},\ldots,\frac{\partial^{k-1}u}{\partial x_n^{k-1}}\right),$$
+the components of which are all the partial derivatives of $u$ of order less than $k$. Let $m$ hereafter denote the number of components of $\mathbf{u}$ by $m$, so that $\mathbf{u}:\R^n\to\R^m$, $\mathbf{u}=(u^1,\ldots,u^m)$. Observe from the boundary condition in (14) that $\mathbf{u}=0$ for $|x'|<r$, $x_n=0$.
+
+Now for $k\in\{1,\ldots,m-1\}$, we can compute $u^k_{x_n}$ in terms of $\{\mathbf{u}_{x_j}\}_{j=1}^{n-1}$. Furthermore in view of the noncharacteristic condition $a_{(0,\ldots,0,k)}\neq 0$ near $0$, we can utilize the PDE in (14) also to solve for $u_{x_n}^m$ in terms of $\mathbf{u}$ and $\{\mathbf{u}_{x_j}\}_{j=1}^{n-1}$.
+
+Employing these relations, we can consequently transform (14) into a boundary-value problem for a first-order system for $\mathbf{u}$, the coefficients of which are analytic functions. This system is of the general form:
+$$(15) \quad \begin{cases}
+\mathbf{u}_{x_n} = \sum_{j=1}^{n-1} \mathbf{B}_j(\mathbf{u}, \mathbf{x}')\mathbf{u}_{x_j} + \mathbf{c}(\mathbf{u}, \mathbf{x}') & \text{for } |\mathbf{x}'| < r \\
+\mathbf{u} = 0 & \text{for } |\mathbf{x}'| < r, x_n = 0,
+\end{cases}$$
+where we are given the analytic functions $\mathbf{B}_j : \R^m \times \R^{n-1} \to \mathbb{M}^{m \times m}$ ($j = 1,\ldots,n-1$) and $\mathbf{c} : \R^m \times \R^{n-1} \to \R^m$. We will write $\mathbf{B}_j = ((b_j^{kl}))$ and $\mathbf{c} = (c^1,\ldots,c^m)$. Carefully note that we have assumed $\{\mathbf{B}_j\}_{j=1}^{n-1}$ and $\mathbf{c}$ do not depend on $x_n$. We can always reduce to this situation by introducing if necessary a new component $u^{m+1}$ of the unknown $\mathbf{u}$, with $u^{m+1} = x_n$.
+
+In particular, the components of the system of partial differential equations in (15) read
+$$(16) \quad u_{x_n}^k = \sum_{j=1}^{n-1}\sum_{l=1}^m b_j^{kl}(\mathbf{u},\mathbf{x}')u_{x_j}^l + c^k(\mathbf{u}, \mathbf{x}') \quad (k = 1,\ldots,m).$$
+
+\textbf{b. Power series for solutions.}
+
+Having reduced to the special form (15), we can now expand $\mathbf{u}$ into a power series, and, more importantly, verify that this series converges near 0.
+
+\begin{theorem}[Cauchy--Kovalevskaya Theorem]
+\label{thm:cauchy-kovalevskaya}
+\dcref{ch4:4.6.3-thm-1}
+\group{Power Series Methods}
+\uses{def:cauchy-problem-cauchy-data,thm:cauchy-data-noncharacteristic-surfaces,lem:power-series-majorants,rem:vector-valued-power-series-notation,def:real-analytic-function}
+Assume $\{\mathbf{B}_j\}_{j=1}^{n-1}$ and $\mathbf{c}$ are real analytic functions. Then there exist $r > 0$ and a real analytic function
+$$(17) \quad \mathbf{u} = \sum_{\alpha} \mathbf{u}_\alpha \mathbf{x}^\alpha$$
+solving the boundary-value problem (15).
+\end{theorem}
+\begin{proof}
+1. We must compute the coefficients
+$$(18) \quad \mathbf{u}_\alpha = \frac{D^\alpha \mathbf{u}(0)}{\alpha!}$$
+in terms of $\{\mathbf{B}_j\}_{j=1}^{n-1}$ and $\mathbf{c}$, and then show that the power series (18) so obtained in fact converges if $|\mathbf{x}| < r$ and $r > 0$ is small enough.
+
+2. As the functions $\{\mathbf{B}_j\}_{j=1}^{n-1}$ and $c$ are analytic, we can write
+$$(19) \quad \mathbf{B}_j(z,x') = \sum_{\gamma,\delta} \mathbf{B}_{j,\gamma,\delta}z^\gamma x'^\delta \quad (j = 1, \ldots, n-1)$$
+and
+$$(20) \quad c(z,x') = \sum_{\gamma,\delta} c_{\gamma,\delta}z^\gamma x'^\delta,$$
+these power series convergent if $|z| + |x'| < s$ for some small $s > 0$. Thus
+$$(21) \quad \mathbf{B}_{j,\gamma,\delta} = \frac{D_z^\gamma D_{x'}^\delta \mathbf{B}_j(0,0)}{(\gamma + \delta)!}, \quad c_{\gamma,\delta} = \frac{D_z^\gamma D_{x'}^\delta c(0,0)}{(\gamma + \delta)!}$$
+for $j = 1, \ldots, n-1$ and all multiindices $\gamma, \delta$.
+
+3. Since $\mathbf{u} \equiv 0$ on $\{x_n = 0\}$, we have
+$$(22) \quad \mathbf{u}_\alpha = \frac{D^\alpha \mathbf{u}(0)}{\alpha!} = 0 \text{ for all multiindices } \alpha \text{ with } \alpha_n = 0.$$
+Now fix $i \in \{1, \ldots, n-1\}$ and differentiate (16) with respect to $x_i$:
+$$u^k_{x_n x_i} = \sum_{j=1}^{n-1} \sum_{l=1}^m \left( b_j^{kl} u_{x_i x_j}^l + b_{j,x_i}^{kl} u_{x_j}^l + \sum_{p=1}^m b_{j,x_p}^{kl} u_{x_i}^p u_{x_j}^l \right) + c_{x_i}^k + \sum_{p=1}^m c_{x_p}^k u_{x_i}^p.$$
+In view of (22), we conclude $u^k_{x_n x_i}(0) = c_{x_i}^k(0,0)$.
+
+If $\alpha$ is a multiindex having the form $\alpha = (\alpha_1, \ldots, \alpha_{n-1}, 1) = (\alpha', 1)$, we likewise prove by induction that
+$$D^\alpha u^k(0) = D^{\alpha'}c^k(0,0).$$
+Next suppose $\alpha = (\alpha', 2)$. Then
+$$D^\alpha u^k = D^{\alpha'}(u^k_{x_n})_{x_n}$$
+$$= D^{\alpha'} \left( \sum_{j=1}^{n-1} \sum_{l=1}^m b_j^{kl} u_{x_j}^l + c^k \right)_{x_n} \quad \text{by (16)}$$
+$$= D^{\alpha'} \left( \sum_{j=1}^{n-1} \sum_{l=1}^m \left(b_j^{kl} u_{x_j x_n}^l + \sum_{p=1}^m b_{j,x_p}^{kl} u_{x_n}^p u_{x_j}^l\right) + c_{x_n}^k \right).$$
+Thus
+$$D^\alpha u^k(0) = D^{\alpha'} \left( \sum_{j=1}^{n-1} \sum_{l=1}^m b_j^{kl} u_{x_j x_n}^l + \sum_{p=1}^m c_{x_p}^k u_{x_n}^p \right) \bigg|_{x=u=0}.$$
+The expression on the right hand side can be worked out to be a polynomial \textit{with nonnegative coefficients} involving various derivatives of $\{\mathbf{B}_j\}_{j=1}^n$ and $\mathbf{c}$, and the derivatives $D^\beta u$, where $\beta_n \leq 1$.
+
+More generally, for each multiindex $\alpha$ and each $k \in \{1,\ldots,m\}$, we compute
+$$D^\alpha u^k(0) = p_\alpha^k(\ldots, D_x^\gamma D_\xi^\delta \mathbf{B}_j, \ldots, D_x^\gamma D_\xi^\delta \mathbf{c}, \ldots, D^\beta u, \ldots)|_{x=u^0=0},$$
+where $p_\alpha^k$ denotes some polynomial with nonnegative coefficients.
+
+Recalling (18)--(21), we deduce for each $\alpha, k$ that
+$$(23) \quad u_\alpha^k = q_\alpha^k(\ldots, \mathbf{B}_{j,\gamma,\delta}, \ldots, \mathbf{c}_{\gamma,\delta}, \ldots, \mathbf{u}_\beta, \ldots),$$
+where
+$$(24) \quad q_\alpha^k \text{ is a polynomial \textit{with nonnegative coefficients}}$$
+and
+$$(25) \quad \beta_n \leq \alpha_n - 1 \text{ for each multiindex } \beta \text{ on the right hand side of (23)}.$$
+Thus far we have merely demonstrated that if there is a smooth solution of (15), then we can compute all of its derivatives at 0 in terms of known quantities. This of course we already know from \cref{thm:cauchy-data-noncharacteristic-surfaces} and the discussion in \S4.6.1, since the plane $\{x_n = 0\}$ is noncharacteristic.
+
+4. We now intend to employ (22)--(25) and the \textit{method of majorants} to show the power series (17) actually converges if $|x| < r$ and $r$ is small. For this, let us first suppose
+$$(26) \quad \mathbf{B}_j^* \gg \mathbf{B}_j \quad (j = 1, \ldots, n-1)$$
+and
+$$(27) \quad \mathbf{c}^* \gg \mathbf{c},$$
+where
+$$\mathbf{B}_j^* := \sum_{\gamma,\delta} \mathbf{B}_{j,\gamma,\delta}^* z^\gamma x^\delta \quad (j = 1, \ldots, n-1)$$
+and
+$$\mathbf{c}^* := \sum_{\gamma,\delta} c_{\gamma,\delta}^* z^\gamma x^\delta,$$
+these power series convergent for $|z|+|x'|<s$. Then
+$$(28) \quad 0\le |\mathbf{B}_{j,\gamma,\delta}| \le \mathbf{B}^*_{j,\gamma,\delta}, \quad 0\le |\mathbf{c}_{\gamma,\delta}| \le \mathbf{c}^*_{\gamma,\delta}$$
+for all $j,\gamma,\delta$.
+
+We consider next the new boundary-value problem
+$$(29) \quad \begin{cases} \mathbf{u}^*_{x_n} = \sum_{j=1}^{n-1} \mathbf{B}^*_j(\mathbf{u}^*,x')\mathbf{u}^*_{x_j} + \mathbf{c}^*(\mathbf{u}^*,x') & \text{for } |x|<r \\ \mathbf{u}^*=0 & \text{for } |x'|<r, x_n=0, \end{cases}$$
+and, as above, look for a solution having the form
+$$(30) \quad \mathbf{u}^* = \sum_\alpha \mathbf{u}^*_\alpha x^\alpha,$$
+where
+$$(31) \quad \mathbf{u}^*_\alpha = \frac{D^\alpha\mathbf{u}^*(0)}{\alpha!}.$$
+
+5. We claim
+$$0\le |u^k_\alpha| \le u^{k*}_\alpha \quad \text{for each multiindex } \alpha.$$
+The proof is by induction. The general step follows since
+$$|u_\alpha^k| = |q_\alpha^k(\ldots,\mathbf{B}_{j,\gamma,\delta},\ldots,\mathbf{c}_{\gamma,\delta},\ldots,\mathbf{u}_\beta,\ldots)| \quad \text{by (23)}$$
+$$\le q_\alpha^k(\ldots,|\mathbf{B}_{j,\gamma,\delta}|,\ldots,|\mathbf{c}_{\gamma,\delta}|,\ldots,|\mathbf{u}_\beta|,\ldots) \quad \text{by (24)}$$
+$$\le q_\alpha^k(\ldots,\mathbf{B}^*_{j,\gamma,\delta},\ldots,\mathbf{c}^*_{\gamma,\delta},\ldots,\mathbf{u}^*_\beta,\ldots) \quad \text{by (24), (28) and induction}$$
+$$= u_\alpha^{k*}.$$
+Thus
+$$(32) \quad \mathbf{u}^* \gg \mathbf{u},$$
+and so it suffices to prove that the power series (30) converges near zero.
+
+6. As demonstrated in the proof of assertion (ii) of \cref{lem:power-series-majorants}, if we choose
+$$\mathbf{B}^*_j := \frac{Cr}{r-(x_1+\cdots+x_{n-1})-(z_1+\cdots+z_m)}\begin{pmatrix} 1 & \cdots & 1 \\ & \ddots & \\ 1 & \cdots & 1 \end{pmatrix}$$
+for $j = 1,\ldots,n-1$, and
+$$c^* := \frac{Cr}{r-(x_1+\cdots+x_{n-1})-(z_1+\cdots+z_m)}(1,\ldots,1),$$
+then (26), (27) will hold if $C$ is large enough, $r > 0$ is small enough, and $|x'| + |z| < r$.
+
+Hence the problem (29) reads
+$$\begin{cases}
+u^*_{x_n} = \frac{Cr}{r - (x_1 + \cdots + x_{n-1}) - (u^{1*} + \cdots + u^{m*})} \left(\sum_{j \neq n} u^*_{x_j} + 1\right) & \text{for } |x| < r \\
+u^* = 0 & \text{for } |x'| < r, x_n = 0
+\end{cases}$$
+However, this problem has an explicit solution, namely
+$$(33) \quad u^* = v^*(1, \ldots, 1),$$
+for
+$$(34) \quad v^*(x) := \frac{1}{mn}\left[(r - (x_1 + \cdots + x_{n-1})) - \left[(r - (x_1 + \cdots + x_{n-1}))^2 - 2mnCrx_n\right]^{1/2}\right].$$
+This expression is analytic for $|x| < r$, provided $r > 0$ is sufficiently small. Thus $u^*$ defined by (33) necessarily has the form (30), (31), the power series (30) converging for $|x| < r$. As $u^* \gg u$, the power series (17) converges as well for $|x| < r$.
+
+This defines the analytic function $u$ near 0. Since the Taylor expansions of the analytic functions $u_{x_n}$ and $\sum_{j=1}^{n-1} \mathbf{B}_j(u,x)u_{x_j} + c(u,x)$ agree at 0, they agree as well throughout the region $|x| < r$.
+\end{proof}
+
+\begin{remark}[The Cauchy--Kovalevskaya Theorem for fully nonlinear equations]
+\label{rem:cauchy-kovalevskaya-fully-nonlinear}
+\dcref{ch4:4.6.3-rem-1}
+\group{Power Series Methods}
+\uses{thm:cauchy-kovalevskaya}
+The Cauchy-Kovalevskaya Theorem is valid also for fully nonlinear, analytic PDE: see Folland \cite{Folland1976}. $\square$
+\end{remark}
+
+\section{Problems}
+\label{sec:ch4-problems}
+
+%ORIGINAL-NUMBER: 1
+\begin{exercise}
+Use separation of variables to find a nontrivial solution $u$ of the PDE
+$$u^2_{x_1}u_{x_1x_1} + 2u_{x_1}u_{x_2}u_{x_1x_2} + u^2_{x_2}u_{x_2x_2} = 0 \quad \text{in } \R^2.$$
+\end{exercise}
+
+%ORIGINAL-NUMBER: 2
+\begin{exercise}
+Consider Laplace's equation $\Delta u = 0$ in $\R^2$, taken with the Cauchy data
+$$u = 0, \quad \frac{\partial u}{\partial x_2} = \frac{1}{n}\sin(nx_1) \quad \text{on } \{x_2 = 0\}.$$
+Employ separation of variables to derive the solution
+$$u = \frac{1}{n^2} \sin(nx_1) \sinh(nx_2).$$
+What happens to $u$ as $n \to \infty$? Is the Cauchy problem for Laplace's equation well-posed? (This example is due to Hadamard.)
+\end{exercise}
+
+%ORIGINAL-NUMBER: 3
+\begin{exercise}
+Consider the viscous conservation law
+$$(*)  \quad u_t + F(u)_x - au_{xx} = 0 \quad \text{in } \R \times (0, \infty),$$
+where $a > 0$ and $F$ is uniformly convex.
+
+(i) Show $u$ solves $(*)$ if $u(x, t) = v(x - \sigma t)$ and $v$ is defined implicitly by the formula
+$$s = \int_c^{v(s)} \frac{a}{F(z) - \sigma z + b} \, dz \quad (s \in \R),$$
+where $b$ and $c$ are constants.
+
+(ii) Demonstrate that we can find a traveling wave satisfying
+$$\lim_{s \to -\infty} v(s) = u_l, \quad \lim_{s \to \infty} v(s) = u_r$$
+for $u_l > u_r$, if and only if
+$$\sigma = \frac{F(u_l) - F(u_r)}{u_l - u_r}.$$
+
+(iii) Let $u^\varepsilon$ denote the above traveling wave solution of $(*)$ for $a = \varepsilon$, with $u^\varepsilon(0, 0) = \frac{u_l + u_r}{2}$. Compute $\lim_{\varepsilon \to 0} u^\varepsilon$ and explain your answer.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 4
+\begin{exercise}
+Prove that if $u$ is the solution of problem (23) for Schr\"odinger's equation in \S4.3 given by formula (20), then
+$$\|u(\cdot, t)\|_{L^\infty(\R^n)} \leq \frac{1}{(4\pi |t|)^{n/2}} \|g\|_{L^1(\R^n)}$$
+for each $t \neq 0$.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 5
+\begin{exercise}
+Utilize Lemma 2 in \S4.5.3 to discuss the sense in which $u$ defined by formula (20) in \S4.3.1 converges to the initial data $g$ as $t \to 0^+$.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 6
+\begin{exercise}
+Show that we can construct an explicit solution of the initial-value problem (18), (19) from Example 1 in \S4.5.1, having the form
+$$v(z, t) = \frac{1}{\sigma(t)} \frac{1}{(\pi\gamma(t))^{1/2}} e^{-z^2/\gamma(t)} \quad (z \in \R, t > 0),$$
+the function $\gamma(t)$ to be found. Substitute into the PDE and determine an ODE $\gamma$ should satisfy. What is the initial condition for this ODE?
+\end{exercise}
+
+%ORIGINAL-NUMBER: 7
+\begin{exercise}
+Justify in the proof of Lemma 2 in \S4.5.3 the transformation of the integral of $e^{-z^2}$ over the line $\Gamma$ to the integral over the real axis.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 8
+\begin{exercise}
+Let $n=1$ and suppose that $u^\varepsilon$ solves the problem
+$$\begin{cases} -(a(\frac{x}{\varepsilon})u^\varepsilon_x)_x = f & \text{in } (0,1) \\ u^\varepsilon(0)=u^\varepsilon(1)=0, \end{cases}$$
+where $a$ is a smooth, positive function, which is 1-periodic. Assume also that $f\in L^2(0,1)$.
+
+(i) Show that $u^\varepsilon\rightharpoonup u$ weakly in $H_0^1(0,1)$, where $u$ solves
+$$\begin{cases} -\bar a u_{xx}=f & \text{in } (0,1) \\ u(0)=u(1)=0, \end{cases}$$
+for $\bar a := (\int_0^1 a(y)^{-1}\,dy)^{-1}$.
+
+(ii) Check that this answer agrees with the conclusions (73), (74) in \S4.5.4.
+
+(This problem requires knowledge of energy estimates, Sobolev spaces, etc. from Chapters 5, 6.)
+\end{exercise}
+
+%ORIGINAL-NUMBER: 9
+\begin{exercise}
+Show that the line $\{t=0\}$ is characteristic for the heat equation $u_t=u_{xx}$. Show there does not exist an analytic solution $u$ of the heat equation in $\R \times \R$, with $u=\frac{1}{1+x^2}$ on $\{t=0\}$. (Hint: Assume there is an analytic solution, compute its coefficients, and show that the resulting power series diverges except at $(0,0)$. This example is due to Kovalevskaya.)
+\end{exercise}
+
+\section{References}
+\label{sec:ch4-references}
+
+\textbf{Section 4.1} \quad See for instance Pinsky \cite{Pinsky1991}, Strauss \cite{Strauss1992}, Thoe--Zachmanoglou \cite{ThoeZachmanoglou1986}, Weinberger \cite{Weinberger1965}, etc. for more on separation of variables.
+
+\textbf{Section 4.2} \quad C. Jones provided the discussion of traveling waves for the bistable equation, and J.-L. Vazquez showed me the derivation of Barenblatt's solution. P. Olver's book \cite{Olver1986} explains much more about symmetry methods for PDE.
+
+\textbf{Section 4.3} \quad Stein--Weiss \cite{SteinWeiss1971}, Stein \cite{Stein1993}, H\"ormander \cite{Hormander1983}, Rauch \cite{Rauch1992}, Treves \cite{Treves1975}, etc. provide much more information concerning Fourier transform techniques. M. Weinstein helped me with Schr\"odinger's equation. Example 5 is from Pinsky \cite{Pinsky1991}, and the solution of the wave equation in \S4.3.2 is from Pinsky--Taylor \cite{PinskyTaylor1997}.
+
+\textbf{Section 4.4} \quad See Courant--Hilbert \cite{CourantHilbert1962} for more on the hodograph and Legendre transforms.
+
+\textbf{Section 4.5} \quad J. Neu contributed \S4.5.1. Section 4.5.3 is based upon some classroom lectures of J. Ralston, following H\"ormander \cite{Hormander1971}. The discussion of homogenization in \S4.5.4 follows Bensoussan--Lions--Papanicolaou \cite{BensoussanLionsPapanicolaou1978}.
+
+\textbf{Section 4.6} \quad See Folland \cite{Folland1976}, Chapter 1, John \cite{John1982}, Chapter 3, DiBenedetto \cite{DiBenedetto1995}, Chapter 1.
+
+\textbf{Section 4.7} \quad Problem 1 is due to Aronsson, and Problem 9 is from Mikhailov \cite{Mikhailov1978}.

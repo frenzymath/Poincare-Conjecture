@@ -1,0 +1,336 @@
+% Source: Evans, "Partial Differential Equations" (2nd ed., AMS Graduate Studies in Mathematics vol. 19, 2010),
+% Chapter E "Measure Theory", PDF pages 647-652 of MathBooks/Evans Partial Differential Equations(1).pdf.
+% Transcribed page-by-page by vision subagents, then merged and restructured into
+% leanblueprint conventions (semantic \label, bracketed titles, \uses dependency edges) below.
+%
+% NOTE: PDF page 647 opens with the tail end of Appendix D "Linear Functional Analysis"
+% -- Theorem 7 on the existence of an orthonormal eigenbasis for a compact symmetric
+% operator, continuing directly from appendixD.tex's final result (the lemma on bounds
+% on the spectrum of a symmetric operator). This leftover fragment is transcribed here,
+% at the point where it physically occurs in the source page range handed to this pass,
+% immediately before the "APPENDIX E: MEASURE THEORY" title. It uses the \dcref{appD:...}
+% numbering of Appendix D (it is literally Appendix D's Theorem 7), not \dcref{appE:...}.
+%
+% NOTE ON GAPS (resolved): PDF page 650 originally returned a vision-subagent refusal
+% placeholder rather than actual page content, leaving a gap between the "integrable"/
+% "summable" definitions (end of \S E.2) and Theorem 6 (Lebesgue's Differentiation
+% Theorem, start of \S E.4). That gap has since been closed by directly re-reading the
+% source page image: it contained the essential-supremum notation closing \S E.2,
+% then the entirety of \S E.3 "Convergence Theorems for Integrals" (Fatou's Lemma, the
+% Monotone Convergence Theorem, and the Dominated Convergence Theorem), then the opening
+% sentence of \S E.4 "Differentiation" (there is no separate Fubini/product-measures
+% section -- that was only a placeholder guess, not the book's actual content).
+
+\begin{theorem}[Eigenvectors of a compact, symmetric operator]
+\label{thm:eigenvectors-compact-symmetric-operator}
+\dcref{appD:thm-7}
+\group{Fredholm Theory}
+\uses{def:hilbert-space,def:separable-space,def:compact-linear-operator,def:adjoint-symmetric-operator,def:eigenvalue-eigenvector-appendix-d,thm:fredholm-alternative,thm:spectrum-of-compact-operator,lem:bounds-on-spectrum-symmetric-operator}
+\textit{Let $H$ be a separable Hilbert space, and suppose $S : H \to H$ is a compact and symmetric operator. Then there exists a countable orthonormal basis of $H$ consisting of eigenvectors of $S$.}
+\end{theorem}
+
+\begin{proof}
+1. Let $\{\eta_k\}$ comprise the sequence of distinct eigenvalues of $S$, excepting 0. Set $\eta_0 = 0$. Write $H_0 = N(S)$, $H_k = N(S - \eta_k I)$ ($k = 1, \ldots$). Then $0 \leq \dim H_0 \leq \infty$, and $0 < \dim H_k < \infty$, according to the Fredholm alternative.
+
+2. Let $u \in H_k$, $v \in H_l$ for $k \neq l$. Then $Su = \eta_k u$, $Sv = \eta_l v$ and so
+$$\eta_k (u, v) = (Su, v) = (u, Sv) = \eta_l (u, v).$$
+As $\eta_k \neq \eta_l$, we deduce $(u, v) = 0$. Consequently we see the subspaces $H_k$ and $H_l$ are orthogonal.
+
+3. Now let $\tilde{H}$ be the smallest subspace of $H$ containing $H_0, H_1, \ldots$. Thus $\tilde{H} = \{\sum_{k=0}^m a_k u_k \mid m \in \{0, \ldots\}$, $u_k \in H_k$, $a_k \in \mathbb{R}\}$. We next demonstrate $\tilde{H}$ is dense in $H$. Clearly $S(\tilde{H}) \subset \tilde{H}$. Furthermore $S(\tilde{H}^\perp) \subset \tilde{H}^\perp$: indeed if $u \in \tilde{H}^\perp$ and $v \in \tilde{H}$, then $(Su, v) = (u, Sv) = 0$.
+
+Now the operator $\tilde{S} = S|_{\tilde{H}^\perp}$ is compact and symmetric. In addition $\sigma(\tilde{S}) = \{0\}$, since any nonzero eigenvalue of $\tilde{S}$ would be an eigenvalue of $S$ as well. According to the lemma then, $(\tilde{S}u, u) = 0$ for all $u \in \tilde{H}^\perp$. But if $u, v \in \tilde{H}^\perp$,
+$$2(\tilde{S}u, v) = (\tilde{S}(u + v), u + v) - (\tilde{S}u, u) - (\tilde{S}v, v) = 0.$$
+Hence $\tilde{S} = 0$. Consequently $\tilde{H}^\perp \subset N(S) \subset \tilde{H}$, and so $\tilde{H}^\perp = \{0\}$. Thus $\tilde{H}$ is dense in $H$.
+
+4. Choose an orthonormal basis for each subspace $H_k$ ($k = 0, \ldots$), noting that since $H$ is separable, $H_0$ has a countable orthonormal basis. We obtain thereby an orthonormal basis of eigenvectors. $\square$
+\end{proof}
+
+Most of these proofs are from \cite{Brezis1983}. See also \cite[Chapter 5]{GilbargTrudinger1983} and \cite{Yosida1980}.
+
+\section{Measure Theory}
+\label{sec:measure-theory}
+
+This appendix provides a quick outline of some fundamentals of measure theory.
+
+\subsection{Lebesgue Measure}
+\label{sec:lebesgue-measure}
+
+Lebesgue measure provides a way of describing the ``size'' or ``volume'' of certain subsets of $\mathbb{R}^n$.
+
+\begin{definition}[$\sigma$-algebra]
+\label{def:sigma-algebra}
+\dcref{appE:E.1-def-1}
+\group{Measure Theory}
+A collection $\mathcal{M}$ of subsets of $\mathbb{R}^n$ is called a $\sigma$-algebra if
+
+(i) $\emptyset, \mathbb{R}^n \in \mathcal{M}$,
+
+(ii) $A \in \mathcal{M}$ implies $\mathbb{R}^n - A \in \mathcal{M}$,
+
+and
+
+(iii) if $\{A_k\}_{k=1}^{\infty} \subset \mathcal{M}$, then $\bigcup_{k=1}^{\infty} A_k, \bigcap_{k=1}^{\infty} A_k \in \mathcal{M}$.
+\end{definition}
+
+\begin{theorem}[Existence of Lebesgue measure and Lebesgue measurable sets]
+\label{thm:existence-lebesgue-measure}
+\dcref{appE:thm-1}
+\group{Measure Theory}
+\uses{def:sigma-algebra}
+\textit{There exist a $\sigma$-algebra $\mathcal{M}$ of subsets of $\mathbb{R}^n$ and a mapping}
+$$| \cdot | : \mathcal{M} \to [0, +\infty]$$
+\textit{with the following properties:}
+
+\begin{enumerate}
+\item[(i)] \textit{Every open subset of $\mathbb{R}^n$, and thus every closed subset of $\mathbb{R}^n$, belong to $\mathcal{M}$.}
+\item[(ii)] \textit{If $B$ is any ball in $\mathbb{R}^n$, then $|B|$ equals the $n$-dimensional volume of $B$.}
+\item[(iii)] \textit{If $\{A_k\}_{k=1}^{\infty} \subset \mathcal{M}$ and the sets $\{A_k\}_{k=1}^{\infty}$ are pairwise disjoint, then}
+$$(1) \quad \left| \bigcup_{k=1}^{\infty} A_k \right| = \sum_{k=1}^{\infty} |A_k| \quad \text{(``countable additivity")}.$$
+\item[(iv)] \textit{If $A \subseteq B$, where $B \in \mathcal{M}$ and $|B| = 0$, then $A \in \mathcal{M}$ and $|A| = 0$.}
+\end{enumerate}
+
+\textbf{Notation.} The sets in $\mathcal{M}$ are called \textit{Lebesgue measurable sets} and $| \cdot |$ is $n$-dimensional \textit{Lebesgue measure}. $\square$
+\end{theorem}
+
+\begin{remark}[Basic properties of Lebesgue measure]
+\label{rem:lebesgue-measure-properties}
+\dcref{appE:E.1-rem-1}
+\group{Measure Theory}
+\uses{thm:existence-lebesgue-measure}
+(i) From (ii) and (iii), we see that $|A|$ equals the volume of any set $A$ with piecewise smooth boundary.
+
+(ii) We deduce from (1) that
+$$(2) \quad |\emptyset| = 0,$$
+and
+$$(3) \quad \left| \bigcup_{k=1}^{\infty} A_k \right| \leq \sum_{k=1}^{\infty} |A_k| \quad \text{(``countable subadditivity")}$$
+for any countable collection of measurable sets $\{A_k\}_{k=1}^{\infty}$.
+\end{remark}
+
+\begin{definition}[Almost everywhere]
+\label{def:almost-everywhere}
+\dcref{appE:E.1-def-2}
+\group{Measure Theory}
+\uses{thm:existence-lebesgue-measure}
+If some property holds everywhere on $\mathbb{R}^n$, except for a measurable set with Lebesgue measure zero, we say the property holds \textit{almost everywhere}, abbreviated ``a.e.''. $\square$
+\end{definition}
+
+\subsection{Measurable Functions and Integration}
+\label{sec:measurable-functions-integration}
+
+\begin{definition}[Measurable function]
+\label{def:measurable-function}
+\dcref{appE:E.2-def-1}
+\group{Measure Theory}
+\uses{def:sigma-algebra}
+Let $f : \mathbb{R}^n \to \mathbb{R}$. We say $f$ is a measurable function if
+$$f^{-1}(U) \in \mathcal{M}$$
+for each open subset $U \subset \mathbb{R}$.
+\end{definition}
+
+Note in particular that if $f$ is continuous, then $f$ is measurable. The sum and product of two measurable functions are measurable. In addition if $\{f_k\}_{k=0}^{\infty}$ are measurable functions, then so are $\limsup f_k$ and $\liminf f_k$.
+
+\begin{theorem}[Egoroff's Theorem]
+\label{thm:egoroffs-theorem}
+\dcref{appE:thm-2}
+\group{Measure Theory}
+\uses{def:measurable-function,def:almost-everywhere}
+Let $\{f_k\}_{k=1}^{\infty}$, $f$ be measurable functions, and
+$$f_k \to f \quad \text{a.e. on } A,$$
+where $A \subset \mathbb{R}^n$ is measurable, $|A| < \infty$. Then for each $\varepsilon > 0$ there exists a measurable subset $E \subset A$ such that
+\begin{align*}
+\text{(i)} & \quad |A - E| \le \varepsilon \\
+\text{and} \\
+\text{(ii)} & \quad f_k \to f \text{ uniformly on } E.
+\end{align*}
+\end{theorem}
+
+Now if $f$ is a nonnegative, measurable function, it is possible, by an approximation of $f$ with simple functions, to define the Lebesgue integral
+$$\int_{\mathbb{R}^n} f \, dx.$$
+Cf. \S\ref{sec:banach-space-valued-functions} below. This agrees with the usual integral if $f$ is continuous or Riemann integrable. If $f$ is measurable, but is not necessarily nonnegative, we define
+$$\int_{\mathbb{R}^n} f \, dx = \int_{\mathbb{R}^n} f^+ \, dx - \int_{\mathbb{R}^n} f^- \, dx,$$
+provided at least one of the terms on the right hand side is finite. In this case we say $f$ is \textit{integrable}.
+
+\begin{definition}[Summable function]
+\label{def:summable-function}
+\dcref{appE:E.2-def-2}
+\group{Measure Theory}
+\uses{def:measurable-function}
+A measurable function $f$ is summable if
+$$\int_{\mathbb{R}^n} |f| \, dx < \infty.$$
+\end{definition}
+
+\begin{remark}[Integrable versus summable terminology]
+\label{rem:integrable-vs-summable-terminology}
+\dcref{appE:E.2-rem-1}
+\group{Measure Theory}
+\uses{def:summable-function}
+Note carefully our terminology: a measurable function is \textit{integrable} if it has an integral (which may equal $+\infty$ or $-\infty$) and is \textit{summable} if this integral is finite. $\square$
+\end{remark}
+
+\begin{definition}[Essential supremum]
+\label{def:essential-supremum}
+\dcref{appE:E.2-def-3}
+\group{Measure Theory}
+If the real-valued function $f$ is measurable, we define the \textit{essential supremum} of $f$ to be
+$$\text{ess sup } f := \inf\{\mu \in \R \mid |\{f > \mu\}| = 0\}. \qquad \square$$
+\end{definition}
+
+\subsection{Convergence Theorems for Integrals}
+\label{sec:convergence-theorems-for-integrals}
+
+The Lebesgue theory of integration is especially useful since it provides the following powerful convergence theorems.
+
+\begin{theorem}[Fatou's Lemma]
+\label{thm:fatous-lemma}
+\dcref{appE:thm-3}
+\group{Measure Theory}
+\uses{def:summable-function}
+Assume the functions $\{f_k\}_{k=1}^{\infty}, f$ are nonnegative and summable. Then
+$$\int_{\R^n} \liminf_{k \to \infty} f_k \, dx \leq \liminf_{k \to \infty} \int_{\R^n} f_k \, dx.$$
+\end{theorem}
+
+\begin{theorem}[Monotone Convergence Theorem]
+\label{thm:monotone-convergence-theorem}
+\dcref{appE:thm-4}
+\group{Measure Theory}
+\uses{def:summable-function}
+Assume the functions $\{f_k\}_{k=1}^{\infty}$ are measurable, with
+$$f_1 \leq f_2 \leq \cdots \leq f_k \leq f_{k+1} \leq \cdots.$$
+Then
+$$\int_{\R^n} \lim_{k \to \infty} f_k \, dx = \lim_{k \to \infty} \int_{\R^n} f_k \, dx.$$
+\end{theorem}
+
+\begin{theorem}[Dominated Convergence Theorem]
+\label{thm:dominated-convergence-theorem}
+\dcref{appE:thm-5}
+\group{Measure Theory}
+\uses{def:summable-function}
+Assume the functions $\{f_k\}_{k=1}^{\infty}$ are integrable and
+$$f_k \to f \quad \text{a.e.}$$
+Suppose also
+$$|f_k| \leq g \quad \text{a.e.},$$
+for some summable function $g$. Then
+$$\int_{\R^n} f_k \, dx \to \int_{\R^n} f \, dx.$$
+\end{theorem}
+
+\subsection{Differentiation}
+\label{sec:differentiation}
+
+An important fact is that a summable function is ``approximately continuous'' at almost every point.
+
+\begin{theorem}[Lebesgue's Differentiation Theorem]
+\label{thm:lebesgue-differentiation-theorem}
+\dcref{appE:thm-6}
+\group{Measure Theory}
+\uses{def:summable-function,def:almost-everywhere}
+Let $f : \mathbb{R}^n \to \mathbb{R}$ be \textit{locally summable}.
+
+\begin{enumerate}
+\item[(i)] Then for a.e. point $x_0 \in \mathbb{R}^n$,
+$$\fint_{B(x_0,r)} f \, dx \to f(x_0) \quad \text{as } r \to 0.$$
+\item[(ii)] In fact, for a.e. point $x_0 \in \mathbb{R}^n$,
+$$(4) \quad \fint_{B(x_0,r)} |f(x) - f(x_0)| \, dx \to 0 \quad \text{as } r \to 0.$$
+\end{enumerate}
+
+A point $x_0$ at which (4) holds is called a \textit{Lebesgue point} of $f$.
+\end{theorem}
+
+\begin{remark}[$L^p$ version of the Lebesgue point theorem]
+\label{rem:lebesgue-differentiation-lp}
+\dcref{appE:E.4-rem-1}
+\group{Measure Theory}
+\uses{thm:lebesgue-differentiation-theorem}
+More generally, if $f \in L^p_{\text{loc}}(\mathbb{R}^n)$ for some $1 \le p < \infty$, then for a.e. point $x_0 \in \mathbb{R}^n$ we have
+$$\fint_{B(x_0,r)} |f(x) - f(x_0)|^p \, dx \to 0 \quad \text{as } r \to 0.$$
+\end{remark}
+
+\subsection{Banach Space-Valued Functions}
+\label{sec:banach-space-valued-functions}
+
+We extend the notions of measurability, integrability, etc. to mappings
+$$f : [0, T] \to X$$
+where $T > 0$ and $X$ is a real Banach space, with norm $\| \cdot \|$.
+
+\begin{definition}[Simple function]
+\label{def:simple-function-banach-valued}
+\dcref{appE:E.5-def-1}
+\group{Vector-Valued Integration}
+\uses{def:sigma-algebra}
+A function $s : [0, T] \to X$ is called \textit{simple} if it has the form
+$$(5) \quad s(t) = \sum_{i=1}^{m} \chi_{E_i}(t) u_i \quad (0 \le t \le T),$$
+where each $E_i$ is a \textit{Lebesgue measurable} subset of $[0, T]$ and $u_i \in X$ ($i = 1, \ldots, m$).
+\end{definition}
+
+\begin{definition}[Strongly measurable function]
+\label{def:strongly-measurable-function}
+\dcref{appE:E.5-def-2}
+\group{Vector-Valued Integration}
+\uses{def:simple-function-banach-valued,def:almost-everywhere}
+A function $f : [0, T] \to X$ is \textit{strongly measurable} if there exist simple functions $s_k : [0, T] \to X$ such that
+$$s_k(t) \to f(t) \quad \text{for a.e. } 0 \le t \le T.$$
+\end{definition}
+
+\begin{definition}[Weakly measurable function]
+\label{def:weakly-measurable-function}
+\dcref{appE:E.5-def-3}
+\group{Vector-Valued Integration}
+\uses{def:measurable-function,def:bounded-linear-functional-dual-space}
+A function $f : [0, T] \to X$ is \textit{weakly measurable} if for each $u^* \in X^*$, the mapping $t \mapsto \langle u^*, f(t) \rangle$ is Lebesgue measurable.
+\end{definition}
+
+\begin{definition}[Almost separably valued]
+\label{def:almost-separably-valued}
+\dcref{appE:E.5-def-4}
+\group{Vector-Valued Integration}
+\uses{def:separable-space}
+We say $f : [0,T] \to X$ is almost separably valued if there exists a subset $N \subset [0,T]$, with $|N| = 0$, such that the set $\{f(t) \mid t \in [0,T] - N\}$ is separable.
+\end{definition}
+
+\begin{theorem}[Pettis]
+\label{thm:pettis-theorem}
+\dcref{appE:thm-7}
+\group{Vector-Valued Integration}
+\uses{def:strongly-measurable-function,def:weakly-measurable-function,def:almost-separably-valued}
+The mapping $f : [0,T] \to X$ is strongly measurable if and only if $f$ is weakly measurable and is almost separably valued.
+\end{theorem}
+
+\begin{definition}[Integral of a simple function]
+\label{def:integral-of-simple-function}
+\dcref{appE:E.5-def-5}
+\group{Vector-Valued Integration}
+\uses{def:simple-function-banach-valued}
+If $s(t) = \sum_{i=1}^m \chi_{E_i}(t)u_i$ is simple, we define
+$$(6) \quad \int_0^T s(t) \, dt := \sum_{i=1}^m |E_i|u_i.$$
+\end{definition}
+
+\begin{definition}[Summable Banach space-valued function]
+\label{def:summable-banach-valued-function}
+\dcref{appE:E.5-def-6}
+\group{Vector-Valued Integration}
+\uses{def:integral-of-simple-function}
+We say $f : [0,T] \to X$ is summable if there exists a sequence $\{s_k\}_{k=1}^\infty$ of simple functions such that
+$$(7) \quad \int_0^T \|s_k(t) - f(t)\| \, dt \to 0 \text{ as } k \to \infty.$$
+\end{definition}
+
+\begin{definition}[Bochner integral]
+\label{def:bochner-integral}
+\dcref{appE:E.5-def-7}
+\group{Vector-Valued Integration}
+\uses{def:summable-banach-valued-function,def:integral-of-simple-function}
+If $f$ is summable, we define
+$$(8) \quad \int_0^T f(t) \, dt = \lim_{k \to \infty} \int_0^T s_k(t) \, dt.$$
+\end{definition}
+
+\begin{theorem}[Bochner]
+\label{thm:bochner-theorem}
+\dcref{appE:thm-8}
+\group{Vector-Valued Integration}
+\uses{def:strongly-measurable-function,def:summable-banach-valued-function,def:bochner-integral,def:summable-function}
+A strongly measurable function $f : [0,T] \to X$ is summable if and only if $t \mapsto \|f(t)\|$ is summable. In this case
+$$\left\| \int_0^T f(t) \, dt \right\| \leq \int_0^T \|f(t)\| \, dt,$$
+and
+$$\left\langle u^*, \int_0^T f(t) \, dt \right\rangle = \int_0^T \langle u^*, f(t) \rangle \, dt$$
+for each $u^* \in X^*$.
+\end{theorem}
+
+A good book for measure theory is \cite{Folland1984}. See \cite[Chapter V, Sections 4--5]{Yosida1980} for proofs of \cref{thm:pettis-theorem} and \cref{thm:bochner-theorem}.

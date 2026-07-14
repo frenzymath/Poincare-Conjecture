@@ -1,0 +1,2362 @@
+% Source: Evans, "Partial Differential Equations" (2nd ed., AMS Graduate Studies in Mathematics vol. 19, 2010),
+% Chapter 9 "Nonvariational Techniques", PDF pages 494-541 of MathBooks/Evans Partial Differential Equations(1).pdf.
+% Transcribed page-by-page by vision subagents, then merged and restructured into
+% leanblueprint conventions (semantic \label, bracketed titles, \uses dependency edges) below.
+%
+% NOTE ON GAPS: as in chapter6.tex and chapter8.tex, a number of source pages were returned by
+% the vision transcription subagent as refusal placeholders rather than actual page content
+% (PDF pages 503, 513, 515, 528, 533, 537; equivalently book pages 500, 510, 512, 525, 530, 534).
+% Every such gap was closed by directly re-reading the corresponding pages of the source PDF
+% with a vision-capable Read call during this restructuring pass, so no content below is
+% invented or reconstructed purely from outside knowledge of the book -- it is a faithful
+% transcription of the actual page images.
+
+
+\begin{center}
+\begin{tabular}{l}
+9.1 \ Monotonicity methods \\
+9.2 \ Fixed point methods \\
+9.3 \ Method of subsolutions and supersolutions \\
+9.4 \ Nonexistence \\
+9.5 \ Geometric properties of solutions \\
+9.6 \ Gradient flows \\
+9.7 \ Problems \\
+9.8 \ References
+\end{tabular}
+\end{center}
+
+We gather in this chapter various techniques for proving the existence, nonexistence, uniqueness, and various other properties of solutions for nonlinear elliptic and parabolic partial differential equations that are \textit{not} of variational form.
+
+\section{Monotonicity Methods}
+\label{sec:monotonicity-methods}
+
+Let us look first at this boundary-value problem for a divergence structure quasilinear PDE:
+\[
+\begin{cases}
+-\Div\,\mathbf{a}(Du) = f & \text{in } U \\
+u = 0 & \text{on } \partial U,
+\end{cases}
+\tag{1}
+\]
+where $f \in L^2(U)$ is given, as is the smooth vector field $\mathbf{a} : \R^n \to \R^n$, $\mathbf{a} = (a^1,\ldots,a^n)$. As usual the unknown is $u : \overline{U} \to \R$, $u = u(x)$, where $U$ is a bounded, open subset of $\R^n$ with smooth boundary. Now if there exists a function $F : \R^n \to \R$ such that $\mathbf{a}$ is the gradient of $F$,
+\[
+\mathbf{a}(p) = DF(p) \quad (p \in \R^n),
+\tag{2}
+\]
+then (1) is the Euler--Lagrange equation corresponding to the Lagrangian $L(p,z,x) = F(p) - f(x)z$. However if there exists no such potential $F$, the \textbf{variational methods from Chapter 8 simply do not apply} to the problem (1).
+
+We inquire instead if there is rather some direct method of constructing a solution of (1), and in particular ask what are reasonable conditions to place upon the nonlinearity. For motivation let us note that if (2) were valid and if $F$ were convex (the natural assumption for the variational theory, as we have seen in \cref{thm:weak-lower-semicontinuity-convex-lagrangian}), then for each $p, q \in \R^n$:
+\[
+(\mathbf{a}(p) - \mathbf{a}(q)) \cdot (p - q) = \sum_{i=1}^n (F_{p_i}(p) - F_{p_i}(q))(p_i - q_i)
+\]
+\[
+= \int_0^1 \sum_{i,j=1}^n F_{p_i p_j}(p + t(q-p))(p_j - q_j)(p_i - q_i) \, dt \geq 0,
+\]
+the last inequality following from the convexity of $F$.
+
+This calculation suggests the following
+
+\begin{definition}[Monotone vector field]
+\label{def:monotone-vector-field}
+\dcref{ch9:9.1-def-1}
+\group{Nonlinear Elliptic PDE}
+A \textit{vector field} $\mathbf{a} : \R^n \to \R^n$ is called \textit{monotone} provided
+\[
+(\mathbf{a}(p) - \mathbf{a}(q)) \cdot (p - q) \geq 0
+\tag{3}
+\]
+for all $p, q \in \R^n$.
+\end{definition}
+
+We will show below that the quasilinear PDE does indeed possess a weak solution, under the primary structural assumption that the nonlinearity be monotone. Later we will realize that this condition in effect says that $-\Div\,\mathbf{a}(Du) = f$ is a nonlinear elliptic partial differential equation. So let us henceforth assume that the smooth vector field $\mathbf{a}$ is monotone, and that
+\[
+|\mathbf{a}(p)| \leq C(1 + |p|),
+\tag{4}
+\]
+\[
+\mathbf{a}(p) \cdot p \geq \alpha|p|^2 - \beta
+\tag{5}
+\]
+for all $p \in \R^n$ and appropriate constants $C, \alpha > 0, \beta \geq 0$. We will see momentarily that (5) amounts to a coercivity condition on the nonlinearity. We intend now to build a solution of the boundary-value problem (1) as the limit of certain finite dimensional approximations, thereby extending Galerkin's method from Chapter 7 to a new class of nonlinear problems.
+
+More precisely, assume that the functions $w_k = w_k(x)$ ($k = 1, \ldots$) are smooth and
+\[
+\{w_k\}_{k=1}^{\infty} \text{ is an orthonormal basis of } H_0^1(U),
+\]
+taken with the inner product $(u,v) = \int_U Du \cdot Dv\, dx$. (We could for instance take $\{w_k\}_{k=1}^{\infty}$ to be the set of appropriately normalized eigenfunctions for $-\Delta$ in $H_0^1(U)$.)
+
+We will look for a function $u_m \in H_0^1(U)$ of the form
+\[
+u_m = \sum_{k=1}^m d_m^k w_k,
+\tag{6}
+\]
+where we hope to select the coefficients $d_m^k$ so that
+\[
+\int_U \mathbf{a}(Du_m) \cdot Dw_k\, dx = \int_U f w_k\, dx \quad (k = 1, \ldots, m).
+\tag{7}
+\]
+This amounts to our requiring that $u_m$ solves the ``projection'' of the problem (1) onto the finite dimensional subspace spanned by $\{w_k\}_{k=1}^m$.
+
+We start with a technical assertion.
+
+\begin{lemma}[Zeros of a vector field]
+\label{lem:zeros-of-a-vector-field}
+\dcref{ch9:9.1-lem-1}
+\group{Nonlinear Elliptic PDE}
+\uses{thm:brouwer-fixed-point-theorem}
+Assume the continuous function $\mathbf{v} : \R^n \to \R^n$ satisfies
+\[
+\mathbf{v}(x) \cdot x \geq 0 \quad \text{if } |x| = r,
+\tag{8}
+\]
+for some $r > 0$. Then there exists a point $x \in B(0,r)$ such that
+\[
+\mathbf{v}(x) = 0.
+\]
+\end{lemma}
+\begin{proof}
+Suppose the assertion were false; then $\mathbf{v}(x) \neq 0$ for all $x \in B(0,r)$. Define the continuous mapping $\mathbf{w} : B(0,r) \to \partial B(0,r)$ by setting
+\[
+\mathbf{w}(x) := -\frac{r}{|\mathbf{v}(x)|}\mathbf{v}(x) \quad (x \in B(0,r)).
+\]
+According to Brouwer's fixed point theorem (\cref{thm:brouwer-fixed-point-theorem}), there exists a point $z \in B(0,r)$ with
+\[
+\mathbf{w}(z) = z.
+\tag{9}
+\]
+But then $z \in \partial B(0,r)$, and so (8) and (9) imply the contradiction
+\[
+r^2 = z \cdot z = \mathbf{w}(z) \cdot z = -\frac{r}{|\mathbf{v}(z)|}\mathbf{v}(z) \cdot z \leq 0. \qedhere
+\]
+\end{proof}
+
+\begin{theorem}[Construction of approximate solutions]
+\label{thm:monotonicity-approximate-solutions}
+\dcref{ch9:9.1-thm-1}
+\group{Nonlinear Elliptic PDE}
+\uses{lem:zeros-of-a-vector-field}
+For each integer $m = 1, \ldots$, there exists a function $u_m$ of the form (6) satisfying the identities (7).
+\end{theorem}
+\begin{proof}
+1. Define the continuous function $\mathbf{v} : \R^m \to \R^m$, $\mathbf{v} = (v^1, \ldots, v^m)$, by setting
+\[
+v^k(d) := \int_U \mathbf{a}\left(\sum_{j=1}^m d_j Du_j\right) \cdot Du_k - fw_k \, dx \quad (k = 1, \ldots, m)
+\tag{10}
+\]
+for each point $d = (d_1, \ldots, d_m) \in \R^m$. Now
+\[
+\mathbf{v}(d) \cdot d = \int_U \mathbf{a}\left(\sum_{j=1}^m d_j Du_j\right) \cdot \left(\sum_{j=1}^m d_j Du_j\right) - f\left(\sum_{j=1}^m d_j w_j\right) dx
+\]
+\[
+\geq \int_U \left[\alpha\left|\sum_{j=1}^m d_j Du_j\right|^2 - \beta - f\left(\sum_{j=1}^m d_j w_j\right)\right] dx \quad \text{by (5)}
+\]
+\[
+= \alpha|d|^2 - \beta|U| - \sum_{j=1}^m d_j \int_U f w_j \, dx
+\]
+\[
+\geq \frac{\alpha}{2}|d|^2 - \beta|U| - C\sum_{j=1}^m (f, w_j)^2_{L^2(U)}.
+\]
+Now let $u \in H^1_0(U)$ solve the PDE $-\Delta u = f$. Then
+\[
+\int_U Du \cdot Dw_j \, dx = \int_U f w_j \, dx \quad (j = 1, \ldots),
+\]
+and consequently
+\[
+\sum_{j=1}^m (f, w_j)^2_{L^2(U)} = \sum_{j=1}^m (u, w_j)^2 \leq \|u\|^2_{H^1_0(U)} \leq C\|f\|^2_{L^2(U)}.
+\]
+Hence $\mathbf{v}(d) \cdot d \geq \frac{\alpha}{2}|d|^2 - C$, for some constant $C$, and so $\mathbf{v}(d) \cdot d \geq 0$ if $|d| = r$, provided we select $r > 0$ sufficiently large.
+
+2. We apply the lemma, to conclude that $\mathbf{v}(d) = 0$ for some point $d \in \R^m$. Then (10) implies $u_m$ defined by (6) satisfies (7).
+\end{proof}
+
+We want to take the limit as $m \to \infty$, and for this will require some uniform estimates.
+
+\begin{theorem}[Energy estimates]
+\label{thm:monotonicity-energy-estimates}
+\dcref{ch9:9.1-thm-2}
+\group{Energy Estimates}
+\uses{thm:monotonicity-approximate-solutions,thm:poincares-inequality-connected}
+There exists a constant $C$, depending only on $U$ and $\mathbf{a}$, such that
+\[
+\|u_m\|_{H^1_0(U)} \leq C(1 + \|f\|_{L^2(U)})
+\tag{11}
+\]
+for $m = 1, 2, \ldots$.
+\end{theorem}
+\begin{proof}
+Multiply equality (7) by $d^k_m$ and sum for $k = 1, \ldots, m$:
+\[
+\int_U \mathbf{a}(Du_m) \cdot Du_m \, dx = \int_U f u_m \, dx.
+\]
+In view of the coercivity inequality (5), we find
+\[
+\alpha \int_U |Du_m|^2 dx \leq C + \int_U f u_m \, dx \leq C + \epsilon \int_U u^2_m \, dx + \frac{1}{4\epsilon} \int_U f^2 dx.
+\]
+We recall Poincaré's inequality, and then choose $\epsilon > 0$ small enough to deduce (11).
+\end{proof}
+
+We wish now to employ the $L^2$ inequalities (11) to pass to limits as $m \to \infty$, obtaining thereby a weak solution of problem (1), which is to say, a function $u \in H^1_0(U)$ satisfying the identity
+\[
+\int_U \mathbf{a}(Du) \cdot Dv \, dx = \int_U fv \, dx \quad \text{for all } v \in H^1_0(U).
+\tag{12}
+\]
+Employing estimate (11) we can extract a subsequence $\{u_{m_j}\}_{j=1}^\infty$ that converges weakly in $H^1_0(U)$ to a limit $u$, which we hope to show verifies (12). However, we encounter a major problem here: we cannot directly conclude that
+\[
+\mathbf{a}(Du_{m_j}) \to \mathbf{a}(Du)
+\]
+in any sense whatsoever. Take note: \textit{nonlinearities are (usually) not continuous with respect to weak convergence.} (See Problem 2.)
+
+What saves us is the monotonicity assumption on vector field $\mathbf{a}$.
+
+\begin{theorem}[Existence of weak solution]
+\label{thm:monotonicity-existence-weak-solution}
+\dcref{ch9:9.1-thm-3}
+\group{Nonlinear Elliptic PDE}
+\uses{thm:monotonicity-approximate-solutions,thm:monotonicity-energy-estimates,def:monotone-vector-field}
+There exists a weak solution of the nonlinear boundary-value problem (1).
+\end{theorem}
+\begin{proof}
+1. As noted in the foregoing discussion, we can extract a subsequence $\{u_{m_j}\}_{j=1}^\infty \subset \{u_m\}_{m=1}^\infty$ and a function $u \in H^1_0(U)$ such that
+\[
+u_{m_j} \to u \quad \text{weakly in } H^1_0(U)
+\tag{13}
+\]
+and
+\[
+u_{m_j} \to u \text{ in } L^2(U).
+\tag{14}
+\]
+We must show $u$ satisfies (12).
+
+2. In view of the growth condition (4), $\{\mathbf{a}(Du_m)\}_{m=1}^\infty$ is bounded in $L^2(U;\R^n)$; and so we may as well suppose---upon passing to a further subsequence if necessary---that
+\[
+\mathbf{a}(Du_{m_j}) \to \xi \text{ weakly in } L^2(U;\R^n),
+\tag{15}
+\]
+for some $\xi \in L^2(U;\R^n)$. Using identity (7), we deduce
+\[
+\int_U \xi \cdot Dw_k dx = \int_U fw_k dx
+\]
+for each $k = 1, \ldots$. And so
+\[
+\int_U \xi \cdot Dv dx = \int_U fv dx \quad \text{for each } v \in H_0^1(U).
+\tag{16}
+\]
+
+3. To proceed further, let us note from the monotonicity condition (3) that
+\[
+\int_U (\mathbf{a}(Du_m) - \mathbf{a}(Dw)) \cdot (Du_m - Dw) dx \geq 0
+\tag{17}
+\]
+for $m = 1, \ldots$ and all $w \in H_0^1(U)$. But as observed before, equation (7) yields the identity
+\[
+\int_U \mathbf{a}(Du_m) \cdot Du_m dx = \int_U fu_m dx.
+\]
+Substitute into (17), to find:
+\[
+\int_U fu_m - \mathbf{a}(Du_m) \cdot Dw - \mathbf{a}(Dw) \cdot (Du_m - Dw) dx \geq 0.
+\]
+Let $m = m_j \to \infty$ and recall (13)--(15), to deduce
+\[
+\int_U fu - \xi \cdot Dw - \mathbf{a}(Dw) \cdot (Du - Dw) dx \geq 0.
+\]
+We simplify using identity (16) with $v = u$, and discover
+\[
+\int_U (\xi - \mathbf{a}(Dw)) \cdot D(u - w) dx \geq 0 \quad \text{for all } w \in H_0^1(U).
+\tag{18}
+\]
+
+4. Fix any $v \in H_0^1(U)$ and set $w := u - \lambda v$ ($\lambda > 0$) in (18). We obtain then
+\[
+\int_U (\xi - \mathbf{a}(Du - \lambda Dv)) \cdot Dv dx \geq 0.
+\]
+Send $\lambda \to 0$:
+\[
+\int_U (\xi - \mathbf{a}(Du)) \cdot Dv dx \geq 0 \quad \text{for all } v \in H_0^1(U).
+\tag{19}
+\]
+Replacing $v$ by $-v$, we deduce that in fact equality holds above. Then (16) and (19) taken together yield
+\[
+\int_U \mathbf{a}(Du) \cdot Dv dx = \int_U fv dx \quad \text{for all } v \in H_0^1(U).
+\]
+Hence $u$ is indeed a weak solution of (1).
+\end{proof}
+
+\begin{remark}[Method of Browder and Minty]
+\label{rem:browder-minty-method}
+\dcref{ch9:9.1-rem-1}
+\group{Nonlinear Elliptic PDE}
+\uses{thm:monotonicity-existence-weak-solution}
+This use of monotonicity is the \textit{method of Browder and Minty}, a remarkable technique which somehow employs the inequality condition of monotonicity to justify passing to weak limits within a nonlinearity.
+\end{remark}
+
+Let us assume now the vector field $\mathbf{a}$ satisfies the condition of \textit{strict monotonicity}; that is,
+\[
+(\mathbf{a}(p) - \mathbf{a}(q)) \cdot (p - q) \geq \theta|p - q|^2
+\tag{20}
+\]
+for all $p, q \in \R^n$ and some constant $\theta > 0$.
+
+\begin{theorem}[Uniqueness of weak solution]
+\label{thm:monotonicity-uniqueness-weak-solution}
+\dcref{ch9:9.1-thm-4}
+\group{Nonlinear Elliptic PDE}
+\uses{thm:monotonicity-existence-weak-solution}
+Assume the strict monotonicity property (20) holds. Then there exists only one weak solution of (1).
+\end{theorem}
+\begin{proof}
+Assume that $u$ and $\bar{u}$ are two weak solutions. Consequently
+\[
+\int_U \mathbf{a}(Du) \cdot Dv dx = \int_U \mathbf{a}(D\bar{u}) \cdot Dv dx = \int_U fv dx,
+\]
+and so
+\[
+\int_U [\mathbf{a}(Du) - \mathbf{a}(D\bar{u})] \cdot Dv dx = 0
+\]
+for each $v \in H_0^1(U)$. We set $v := u - \bar{u}$, and use (20) to deduce
+\[
+\int_U |Du - D\bar{u}|^2 dx = 0.
+\]
+Thus $u = \bar{u}$ a.e. in $U$.
+\end{proof}
+
+\begin{remark}[$H^2$ regularity under strict monotonicity]
+\label{rem:monotonicity-h2-regularity}
+\dcref{ch9:9.1-rem-2}
+\group{Elliptic Regularity}
+\uses{thm:monotonicity-uniqueness-weak-solution,thm:interior-h2-regularity}
+Under the strengthened monotonicity assumption (20) our weak solution $u$ in fact belongs to $H^2(U)$, and so satisfies
+\[
+-\Div\,\mathbf{a}(Du) = f \quad \text{a.e. in } U.
+\]
+To demonstrate this, we select $q, \xi \in \R^n$ and set $p = q + h\xi$, $h \neq 0$, in (20). We obtain, after dividing by $h^2$, the inequality
+\[
+\sum_{i=1}^{n} \frac{a^i(q + h\xi) - a^i(q)}{h} \xi_i \geq \theta|\xi|^2.
+\]
+Now send $h \to 0$:
+\[
+\sum_{i,j=1}^{n} a^i_{p_j}(q)\xi_i\xi_j \geq \theta|\xi|^2 \quad (q, \xi \in \R^n).
+\tag{21}
+\]
+We can thus interpret the nonlinear PDE $-\Div\,\mathbf{a}(Du) = f$ as being uniformly elliptic. The proof of $H^2$ regularity of the weak solution now follows almost precisely as in the proof of Theorem 1 in \cref{thm:interior-h2-regularity}.
+\end{remark}
+
+\section{Fixed Point Methods}
+\label{sec:fixed-point-methods}
+
+We study next the applicability of topological \textit{fixed point theorems} to nonlinear partial differential equations. There are at least three distinct classes of such abstract theorems that are useful. These are:
+
+\noindent (a) fixed point theorems for \textit{strict contractions},
+
+\noindent (b) fixed point theorems for \textit{compact mappings},
+
+\noindent and
+
+\noindent (c) fixed point theorems for \textit{order-preserving operators}.
+
+We present below applications of types (a) and (b). The utility of order-preserving properties for nonlinear PDE will be explained later, in \cref{sec:subsolutions-supersolutions}.
+
+\subsection{Banach's Fixed Point Theorem}
+\label{sec:banachs-fixed-point-theorem}
+
+Hereafter $X$ denotes a Banach space. The simplest fixed point theorem of all is:
+
+\begin{theorem}[Banach's Fixed Point Theorem]
+\label{thm:banach-fixed-point-theorem}
+\dcref{ch9:9.2-thm-1}
+\group{Fixed Point Theorems}
+Assume
+\[
+A : X \to X
+\]
+is a nonlinear mapping, and suppose that
+\[
+\|A[u] - A[\bar{u}]\| \leq \gamma \|u - \bar{u}\| \quad (u, \bar{u} \in X)
+\tag{1}
+\]
+for some constant $\gamma < 1$. Then $A$ has a unique fixed point.
+\end{theorem}
+
+\begin{definition}[Strict contraction]
+\label{def:strict-contraction}
+\dcref{ch9:9.2.1-def-1}
+\group{Fixed Point Theorems}
+We say that $A$ is a strict contraction if (1) holds.
+\end{definition}
+
+\begin{proof}[Proof of \cref{thm:banach-fixed-point-theorem}]
+Fix any point $u_0 \in X$ and thereafter iteratively define $u_{k+1} = A[u_k]$ for $k = 0, 1, \ldots$. Then
+\[
+\|A[u_{k+1}] - A[u_k]\| \le \gamma \|u_{k+1} - u_k\| = \gamma \|A[u_k] - A[u_{k-1}]\|,
+\]
+and so
+\[
+\|A[u_{k+1}] - A[u_k]\| \le \gamma^k \|A[u_0] - u_0\|
+\]
+for $k = 1, 2, \ldots$. Consequently if $k \ge l$,
+\[
+\|u_k - u_l\| = \|A[u_{k-1}] - A[u_{l-1}]\| \le \sum_{j=l-1}^{k-2} \|A[u_{j+1}] - A[u_j]\|
+\]
+\[
+\le \|A[u_0] - u_0\| \sum_{j=l-1}^{k-2} \gamma^j.
+\]
+Hence $\{u_k\}_{k=1}^{\infty}$ is a Cauchy sequence in $X$, and so there exists a point $u \in X$ with $u_k \to u$ in $X$. Clearly then $A[u] = u$. Hence $u$ is a fixed point for $A$, and hypothesis (1) ensures uniqueness.
+\end{proof}
+
+Applications of Banach's fixed point theorem to nonlinear PDE usually involve perturbation arguments of various sorts: given a well-behaved linear elliptic partial differential equation, it is often straightforward to cast a small nonlinear modification as a contraction mapping. The hallmark of such proofs is the occurrence of a parameter which must be taken small enough to ensure the strict contraction property.
+
+Sometimes however we can eliminate such a smallness hypothesis by an iteration, as now illustrated.
+
+\begin{example}[Reaction-diffusion equations]
+\label{ex:reaction-diffusion-banach-fixed-point}
+\dcref{ch9:9.2-ex-1}
+\group{Fixed Point Theorems}
+\uses{def:sobolev-space-time-banach}
+Let us investigate the solvability of the initial/boundary-value problem for the \textit{reaction-diffusion system}
+\[
+\begin{cases}
+\mathbf{u}_t - \Delta \mathbf{u} = f(\mathbf{u}) & \text{in } U_T \\
+\mathbf{u} = 0 & \text{on } \partial U \times [0,T] \\
+\mathbf{u} = \mathbf{g} & \text{on } U \times \{t = 0\}.
+\end{cases}
+\tag{2}
+\]
+Here $\mathbf{u} = (u^1, \ldots, u^m)$, $\mathbf{g} = (g^1, \ldots, g^m)$, and as usual $U_T = U \times (0, T]$, where $U \subset \R^n$ is open and bounded, with smooth boundary. The time $T > 0$ is fixed. We assume that the initial function $\mathbf{g}$ belongs to $H^1_0(U; \R^m)$. Concerning the nonlinearity, let us suppose
+\[
+f : \R^m \to \R^m \text{ is Lipschitz continuous.}
+\tag{3}
+\]
+\end{example}
+
+This hypothesis in particular implies
+\[
+|\mathbf{f}(\mathbf{z})| \leq C(1 + |\mathbf{z}|)
+\tag{4}
+\]
+for each $\mathbf{z} \in \R^m$ and some constant $C$.
+
+Adapting the terminology from \S7.1, we say that a function
+\[
+\mathbf{u} \in L^2(0,T; H_0^1(U;\R^m)), \text{ with } \mathbf{u}' \in L^2(0,T; H^{-1}(U;\R^m)),
+\tag{5}
+\]
+is a \textit{weak solution} of (2) provided
+\[
+\langle \mathbf{u}', \mathbf{v} \rangle + B[\mathbf{u},\mathbf{v}] = (\mathbf{f}(\mathbf{u}),\mathbf{v}) \quad \text{a.e. } 0 \le t \le T
+\tag{6}
+\]
+for each $\mathbf{v} \in H_0^1(U;\R^m)$, and
+\[
+\mathbf{u}(0) = \mathbf{g}.
+\tag{7}
+\]
+In (6) $\langle\ ,\ \rangle$ denotes the pairing of $H^{-1}(U;\R^m)$ and $H_0^1(U;\R^m)$, $B[\ ,\ ]$ is the bilinear form associated with $-\Delta$ in $H_0^1(U;\R^m)$, and $(\ ,\ )$ denotes the inner product in $L^2(U;\R^m)$. The norm in $H_0^1(U;\R^m)$ is taken to be
+\[
+\|\mathbf{u}\|_{H_0^1(U;\R^m)} = \left(\int_U |D\mathbf{u}|^2 dx\right)^{\frac12}.
+\]
+
+Recall from \S5.9.2 that (5) implies $\mathbf{u} \in C([0,T]; L^2(U;\R^m))$, after possible redefinition of $\mathbf{u}$ on a set of measure zero.
+
+\begin{definition}[Weak solution of the reaction-diffusion system]
+\label{def:weak-solution-reaction-diffusion-system}
+\dcref{ch9:9.2.1-def-2}
+\group{Fixed Point Theorems}
+\uses{ex:reaction-diffusion-banach-fixed-point,thm:mappings-into-better-spaces}
+A function $\mathbf{u}$ satisfying (5) is a \textit{weak solution} of (2) provided (6) and (7) hold.
+\end{definition}
+
+\begin{theorem}[Existence for the reaction-diffusion system]
+\label{thm:reaction-diffusion-banach-existence}
+\dcref{ch9:9.2-thm-2}
+\group{Fixed Point Theorems}
+\uses{thm:banach-fixed-point-theorem,def:strict-contraction,def:weak-solution-reaction-diffusion-system}
+There exists a unique weak solution of (2).
+\end{theorem}
+\begin{proof}
+1. We will apply Banach's theorem in the space
+\[
+X = C([0,T]; L^2(U;\R^m)),
+\]
+with the norm
+\[
+\|\mathbf{v}\| = \max_{0 \le t \le T} \|\mathbf{v}(t)\|_{L^2(U;\R^m)}.
+\]
+Let the operator $A$ be defined as follows. Given a function $\mathbf{u} \in X$, set $\mathbf{h}(t) := \mathbf{f}(\mathbf{u}(t))$ ($0 \le t \le T$). In light of the growth estimate (4), we see $\mathbf{h} \in L^2(0,T;L^2(U;\R^m))$. Consequently the theory set forth in \S7.1 ensures that the linear parabolic PDE
+\[
+\begin{cases}
+\mathbf{w}_t - \Delta \mathbf{w} = \mathbf{h} & \text{in } U_T \\
+\mathbf{w} = \mathbf{0} & \text{on } \partial U \times [0,T] \\
+\mathbf{w} = \mathbf{g} & \text{on } U \times \{t=0\}
+\end{cases}
+\tag{8}
+\]
+has a unique weak solution
+\[
+\mathbf{w} \in L^2(0,T; H_0^1(U;\R^m)), \text{ with } \mathbf{w}' \in L^2(0,T; H^{-1}(U;\R^m)).
+\tag{9}
+\]
+Thus $\mathbf{w} \in X$ satisfies
+\[
+(\mathbf{w}',\mathbf{v}) + B[\mathbf{w},\mathbf{v}] = (\mathbf{h},\mathbf{v}) \quad \text{a.e. } 0 \le t \le T
+\tag{10}
+\]
+for each $\mathbf{v} \in H_0^1(U;\R^m)$, and $\mathbf{w}(0) = \mathbf{g}$.
+
+Define $A : X \to X$ by setting $A[\mathbf{u}] = \mathbf{w}$.
+
+2. We now claim that
+\[
+\begin{cases}
+\text{if } T > 0 \text{ is small enough, then} \\
+A \text{ is a strict contraction.}
+\end{cases}
+\tag{11}
+\]
+To prove this, choose $\mathbf{u}, \bar{\mathbf{u}} \in X$, and define $\mathbf{w} = A[\mathbf{u}]$, $\bar{\mathbf{w}} = A[\bar{\mathbf{u}}]$ as above. Consequently $\mathbf{w}$ verifies (10) for $\mathbf{h} = \mathbf{f}(\mathbf{u})$, and $\bar{\mathbf{w}}$ satisfies a similar identity for $\mathbf{h} := \mathbf{f}(\bar{\mathbf{u}})$.
+
+We calculate as in \S7.1
+\[
+\frac{d}{dt}\|\mathbf{w} - \bar{\mathbf{w}}\|^2_{L^2(U;\R^m)} + 2\|\mathbf{w} - \bar{\mathbf{w}}\|^2_{H_0^1(U;\R^m)}
+\]
+\[
+= 2(\mathbf{w} - \bar{\mathbf{w}}, \mathbf{h} - \bar{\mathbf{h}})
+\]
+\[
+\le \epsilon\|\mathbf{w} - \bar{\mathbf{w}}\|^2_{L^2(U;\R^m)} + \frac{1}{\epsilon}\|\mathbf{f}(\mathbf{u}) - \mathbf{f}(\bar{\mathbf{u}})\|^2_{L^2(U;\R^m)}
+\]
+\[
+\le cC\|\mathbf{w} - \bar{\mathbf{w}}\|^2_{H_0^1(U;\R^m)} + \frac{1}{\epsilon}\|\mathbf{f}(\mathbf{u}) - \mathbf{f}(\bar{\mathbf{u}})\|^2_{L^2(U;\R^m)},
+\tag{12}
+\]
+by Poincaré's inequality. Selecting $\epsilon > 0$ sufficiently small, we deduce
+\[
+\frac{d}{dt}\|\mathbf{w} - \bar{\mathbf{w}}\|^2_{L^2(U;\R^m)} \le C\|\mathbf{f}(\mathbf{u}) - \mathbf{f}(\bar{\mathbf{u}})\|^2_{L^2(U;\R^m)} \le C\|\mathbf{u} - \bar{\mathbf{u}}\|^2_{L^2(U;\R^m)},
+\]
+since $\mathbf{f}$ is Lipschitz. Consequently
+\[
+\|\mathbf{w}(s) - \bar{\mathbf{w}}(s)\|^2_{L^2(U;\R^m)} \le C \int_0^s \|\mathbf{u}(t) - \bar{\mathbf{u}}(t)\|^2_{L^2(U;\R^m)} dt
+\tag{13}
+\]
+\[
+\le CT\|\mathbf{u} - \bar{\mathbf{u}}\|^2
+\]
+for each $0 \le s \le T$. Maximizing the left hand side with respect to $s$, we discover
+\[
+\|\mathbf{w} - \bar{\mathbf{w}}\|^2 \le CT\|\mathbf{u} - \bar{\mathbf{u}}\|^2.
+\]
+Hence
+\[
+\|A[\mathbf{u}] - A[\bar{\mathbf{u}}]\| \le (CT)^{1/2}\|\mathbf{u} - \bar{\mathbf{u}}\|,
+\tag{14}
+\]
+and thus $A$ is a strict contraction, provided $T > 0$ is so small that $(CT)^{1/2} = \gamma < 1$.
+
+3. Given any $T > 0$ we select $T_1 > 0$ so small that $(CT_1)^{1/2} < 1$. We can then apply Banach's fixed point theorem to find a weak solution $\mathbf{u}$ of the problem (2) existing on the time interval $[0, T_1]$. Since $\mathbf{u}(t) \in H_0^1(U; \R^m)$ for a.e. $0 \le t < T_1$, we can upon redefining $T_1$ if necessary assume $\mathbf{u}(T_1) \in H_0^1(U; \R^m)$. We can then repeat the argument above to extend our solution to the time interval $[T_1, 2T_1]$. Continuing, after finitely many steps we construct a weak solution existing on the full interval $[0, T]$.
+
+4. To demonstrate uniqueness, suppose both $\mathbf{u}$ and $\tilde{\mathbf{u}}$ are two weak solutions of (2). Then we have $\mathbf{w} = \mathbf{u}$, $\tilde{\mathbf{w}} = \tilde{\mathbf{u}}$ in inequality (13); whence
+\[
+\|\mathbf{u}(s) - \tilde{\mathbf{u}}(s)\|_{L^2(U;\R^m)}^2 \le C \int_0^s \|\mathbf{u}(t) - \tilde{\mathbf{u}}(t)\|_{L^2(U;\R^m)}^2 dt
+\]
+for $0 \le s \le T$. According to Gronwall's inequality, $\mathbf{u} = \tilde{\mathbf{u}}$.
+\end{proof}
+
+\begin{remark}[Chemical interpretation of the reaction-diffusion system]
+\label{rem:reaction-diffusion-chemical-interpretation}
+\dcref{ch9:9.2.1-rem-1}
+\group{Fixed Point Theorems}
+\uses{thm:reaction-diffusion-banach-existence}
+In common applications problem (2) records the evolution of the densities $u^1, \ldots, u^m$ of various chemicals, which both diffuse within a medium and interact with each other. The diffusion term is $\Delta \mathbf{u}$ (or more generally $(a_1 \Delta u^1, \ldots, a_m \Delta u^m)$ where the constants $a_k > 0$ characterize the diffusion of the $k^{\text{th}}$ chemical). The reaction term $\mathbf{f}(\mathbf{u})$ models the chemistry. In the foregoing example we made the unreasonable assumption that $\mathbf{f}$ is globally Lipschitz. In more realistic models $\mathbf{f}$ is often a polynomial in $\mathbf{u}$ and there are interesting problems as to the global existence or blow-up of a solution. (A simple such problem is treated in \cref{sec:blow-up}.)
+\end{remark}
+
+\subsection{Schauder's, Schaefer's Fixed Point Theorems}
+\label{sec:schauder-schaefer-fixed-point-theorems}
+
+Next we extend Brouwer's fixed point theorem (\cref{thm:brouwer-fixed-point-theorem}) to Banach spaces. The key assumption is now compactness. Throughout this section $X$ continues to denote a real Banach space.
+
+\begin{theorem}[Schauder's Fixed Point Theorem]
+\label{thm:schauders-fixed-point-theorem}
+\dcref{ch9:9.2-thm-3}
+\group{Fixed Point Theorems}
+\uses{thm:brouwer-fixed-point-theorem}
+Suppose $K \subset X$ is compact and convex, and assume also
+\[
+A : K \to K
+\]
+is continuous. Then $A$ has a fixed point in $K$.
+\end{theorem}
+\begin{proof}
+1. Fix $\epsilon > 0$ and choose finitely many points $u_1, \ldots, u_{N_\epsilon} \in K$, so that the open balls $\{B^0(u_i, \epsilon)\}_{i=1}^{N_\epsilon}$ cover $K$:
+\[
+K \subset \bigcup_{i=1}^{N_\epsilon} B^0(u_i, \epsilon).
+\tag{15}
+\]
+This is possible since $K$ is compact. Let $K_{\epsilon}$ denote the closed convex hull of the points $\{u_1, \ldots, u_{N_{\epsilon}}\}$:
+\[
+K_{\epsilon} := \left\{\sum_{i=1}^{N_{\epsilon}} \lambda_i u_i \;\middle|\; 0 \leq \lambda_i \leq 1, \sum_{i=1}^{N_{\epsilon}} \lambda_i = 1\right\}.
+\]
+Then $K_{\epsilon} \subset K$, since $K$ is convex. Now define $P_{\epsilon} : K \to K_{\epsilon}$ by writing
+\[
+P_{\epsilon}[u] := \frac{\sum_{i=1}^{N_{\epsilon}} \dist(u, K - B^0(u_i, \epsilon))u_i}{\sum_{i=1}^{N_{\epsilon}} \dist(u, K - B^0(u_i, \epsilon))} \quad (u \in K).
+\]
+The denominator is never zero, because of (15). Now clearly $P_{\epsilon}$ is continuous, and furthermore for each $u \in K$, we have
+\[
+\|P_{\epsilon}[u] - u\| \leq \frac{\sum_{i=1}^{N_{\epsilon}} \dist(u, K - B^0(u_i, \epsilon))\|u_i - u\|}{\sum_{i=1}^{N_{\epsilon}} \dist(u, K - B^0(u_i, \epsilon))} \leq \epsilon.
+\tag{16}
+\]
+
+2. Consider next the operator $A_{\epsilon} : K_{\epsilon} \to K_{\epsilon}$ defined by
+\[
+A_{\epsilon}[u] := P_{\epsilon}[A[u]] \quad (u \in K_{\epsilon}).
+\]
+Now $K_{\epsilon}$ is homeomorphic to the closed unit ball in $\R^{M_{\epsilon}}$ for some $M_{\epsilon} \leq N_{\epsilon}$. Brouwer's fixed point theorem (\cref{thm:brouwer-fixed-point-theorem}) therefore ensures the existence of a point $u_{\epsilon} \in K_{\epsilon}$ with
+\[
+A_{\epsilon}[u_{\epsilon}] = u_{\epsilon}.
+\]
+
+3. As $K$ is compact, there exists a subsequence $\epsilon_j \to 0$ and a point $u \in K$, such that $u_{\epsilon_j} \to u$ in $X$. We claim $u$ is a fixed point of $A$. Indeed, using estimate (16) we deduce
+\[
+\|u_{\epsilon_j} - A[u_{\epsilon_j}]\| = \|A_{\epsilon_j}[u_{\epsilon_j}] - A[u_{\epsilon_j}]\| = \|P_{\epsilon_j}[A[u_{\epsilon_j}]] - A[u_{\epsilon_j}]\| \leq \epsilon_j.
+\]
+Consequently, since $A$ is continuous, we conclude $u = A[u]$.
+\end{proof}
+
+We next transform Schauder's fixed point theorem into an alternative form which is often more useful for applications to nonlinear partial differential equations.
+
+\begin{definition}[Compact mapping]
+\label{def:compact-mapping-banach-space}
+\dcref{ch9:9.2.2-def-1}
+\group{Fixed Point Theorems}
+A nonlinear mapping $A : X \to X$ is called \textit{compact} provided for each bounded sequence $\{u_k\}_{k=1}^{\infty}$ the sequence $\{A[u_k]\}_{k=1}^{\infty}$ is precompact; that is, there exists a subsequence $\{u_{k_j}\}_{j=1}^{\infty}$ such that $\{A[u_{k_j}]\}_{j=1}^{\infty}$ converges in $X$.
+\end{definition}
+
+\begin{theorem}[Schaefer's Fixed Point Theorem]
+\label{thm:schaefers-fixed-point-theorem}
+\dcref{ch9:9.2-thm-4}
+\group{Fixed Point Theorems}
+\uses{thm:schauders-fixed-point-theorem,def:compact-mapping-banach-space}
+Suppose
+\[
+A : X \to X
+\]
+is a continuous and compact mapping. Assume further that the set
+\[
+\{u \in X \mid u = \lambda A[u] \text{ for some } 0 \le \lambda \le 1\}
+\]
+is bounded. Then $A$ has a fixed point.
+\end{theorem}
+
+\begin{remark}[The method of a priori estimates]
+\label{rem:a-priori-estimates-method}
+\dcref{ch9:9.2.2-rem-1}
+\group{Fixed Point Theorems}
+\uses{thm:schaefers-fixed-point-theorem}
+The assertion is that if we have a bound on any possible fixed points of any of the operators $\lambda A$ for $0 \le \lambda \le 1$, then we have the existence of a fixed point for $A$. This is in accordance with the remarkable informal principle that ``if we can prove appropriate estimates for solutions of a nonlinear PDE, under the assumption that such solutions exist, then in fact these solutions do exist''. This is the method of \textit{a priori}\footnote{\textit{a priori} = from before (Latin).} estimates.
+\end{remark}
+
+The advantage of Schaefer's theorem over Schauder's for applications is that we do not have to identify an explicit convex, compact set.
+
+\begin{proof}[Proof of \cref{thm:schaefers-fixed-point-theorem}]
+1. Choose a constant $M$ so large that
+\[
+\|u\| < M \text{ if } u = \lambda A[u] \text{ for some } 0 \le \lambda \le 1.
+\tag{17}
+\]
+Define then
+\[
+\tilde{A}[u] := \begin{cases} A[u] & \text{if } \|A[u]\| \le M \\ \dfrac{MA[u]}{\|A[u]\|} & \text{if } \|A[u]\| \ge M. \end{cases}
+\tag{18}
+\]
+Observe $\tilde{A} : B(0,M) \to B(0,M)$. Now set $K = $ closed convex hull of $\tilde{A}(B(0,M))$. Then since $A$ and thus $\tilde{A}$ are compact mappings, $K$ is a compact, convex subset of $X$. Furthermore $\tilde{A} : K \to K$.
+
+2. Invoking Schauder's fixed point theorem, we infer the existence of a point $u \in K$ with
+\[
+\tilde{A}[u] = u.
+\tag{19}
+\]
+We now claim additionally that $u$ is a fixed point of $A$. For if not, then according to (18) and (19) we would have
+\[
+\|A[u]\| > M
+\]
+and
+\[
+u = \lambda A[u] \quad \text{for} \quad \lambda = \frac{M}{\|A[u]\|} < 1.
+\tag{20}
+\]
+But $\|u\| = \|A[u]\| = M$, a contradiction to (17) and (20).
+\end{proof}
+
+Applications of Schauder's and Schaefer's fixed point theorems to PDE depend upon quite different considerations than applications of Banach's theorem. The crucial assumption is now not that some parameter be small, but rather that we have some sort of compactness. As the inverses of linear elliptic operators are typically smoothing, compactness is indeed available for certain nonlinear elliptic equations. Following is a quick, albeit fairly crude, example:
+
+\begin{example}[A quasilinear elliptic PDE]
+\label{ex:quasilinear-elliptic-schaefer}
+\dcref{ch9:9.2-ex-2}
+\group{Fixed Point Theorems}
+We present now a simple application of Schaefer's theorem by solving the semilinear boundary-value problem
+\[
+\begin{cases}
+-\Delta u + b(Du) + \mu u = 0 & \text{in } U \\
+u = 0 & \text{on } \partial U,
+\end{cases}
+\tag{21}
+\]
+where $U$ is bounded and $\partial U$ is smooth. We assume $b : \R^n \to \R$ is smooth, Lipschitz continuous, and thus satisfies the growth condition
+\[
+|b(p)| \le C(|p| + 1)
+\tag{22}
+\]
+for some constant $C$ and all $p \in \R^n$.
+\end{example}
+
+\begin{theorem}[Existence for the quasilinear elliptic PDE]
+\label{thm:schaefer-quasilinear-existence}
+\dcref{ch9:9.2-thm-5}
+\group{Fixed Point Theorems}
+\uses{thm:schaefers-fixed-point-theorem,def:compact-mapping-banach-space,thm:second-derivatives-minimizers}
+If $\mu > 0$ is sufficiently large, there exists a function $u \in H^2(U) \cap H^1_0(U)$ solving the boundary-value problem (21).
+\end{theorem}
+\begin{proof}
+1. Given $u \in H^1_0(U)$, set
+\[
+f := -b(Du).
+\tag{23}
+\]
+Owing to estimate (22), we see that $f \in L^2(U)$. Now let $w \in H^1_0(U)$ be the unique weak solution of the linear problem
+\[
+\begin{cases}
+-\Delta w + \mu w = f & \text{in } U \\
+w = 0 & \text{on } \partial U.
+\end{cases}
+\tag{24}
+\]
+By the regularity theory proved in \cref{thm:second-derivatives-minimizers}, we know additionally that $w \in H^2(U)$, with the estimate
+\[
+\|w\|_{H^2(U)} \le C\|f\|_{L^2(U)}
+\tag{25}
+\]
+for some constant $C$.
+
+Let us henceforth write $A[u] = w$ whenever $w$ is derived from $u$ via (23), (24). In light of (22) and (25), we have the estimate
+\[
+\|A[u]\|_{H^2(U)} \leq C(\|u\|_{H_0^1(U)} + 1).
+\tag{26}
+\]
+
+2. We now assert that $A : H_0^1(U) \to H_0^1(U)$ is continuous and compact. Indeed, if
+\[
+u_k \to u \quad \text{in } H_0^1(U),
+\tag{27}
+\]
+then in view of estimate (26) we have
+\[
+\sup_k \|w_k\|_{H^2(U)} < \infty,
+\tag{28}
+\]
+for $w_k = A[u_k]$ $(k = 1, \ldots)$. Thus there is a subsequence $\{w_{k_j}\}_{j=1}^\infty$ and a function $w \in H_0^1(U)$ with
+\[
+w_{k_j} \to w \quad \text{in } H_0^1(U).
+\tag{29}
+\]
+Now
+\[
+\int_U Dw_{k_j} \cdot Dv + \mu w_{k_j} v \, dx = -\int_U b(Du_{k_j}) v \, dx
+\]
+for each $v \in H_0^1(U)$. Consequently using (22), (27) and (29), we see
+\[
+\int_U Dw \cdot Dv + \mu w v \, dx = -\int_U b(Du) v \, dx
+\]
+for each $v \in H_0^1(U)$. Thus $w = A[u]$.
+
+Hence (27) implies $A[u_k] \to A[u]$ in $H_0^1(U)$, and so $A$ is continuous. A similar argument shows that $A$ is compact, since if $\{u_k\}_{k=1}^\infty$ is bounded in $H_0^1(U)$, estimate (26) asserts that $\{A[u_k]\}_{k=1}^\infty$ is bounded in $H^2(U)$, and so possesses a strongly convergent subsequence in $H_0^1(U)$.
+
+3. Finally, we must show that if $\mu$ is large enough, the set
+\[
+\{u \in H_0^1(U) \mid u = \lambda A[u] \text{ for some } 0 \leq \lambda \leq 1\}
+\]
+is bounded in $H_0^1(U)$. So assume $u \in H_0^1(U)$,
+\[
+u = \lambda A[u] \quad \text{for some } 0 < \lambda \leq 1.
+\]
+Then $\frac{u}{\lambda} = A[u]$; or, in other words, $u \in H^2(U) \cap H_0^1(U)$ and
+\[
+-\Delta u + \mu u = \lambda b(Du) \quad \text{a.e. in } U.
+\]
+Multiply this identity by $u$ and integrate over $U$, to compute
+\[
+\int_U |Du|^2 + \mu|u|^2 dx = -\int_U \lambda b(Du)u dx \leq \int_U C(|Du| + 1)|u| dx
+\]
+\[
+\leq \frac{1}{2}\int_U |Du|^2 dx + C\int_U |u|^2 + 1 dx.
+\]
+Thus if $\mu > 0$ is sufficiently large, we have $\|u\|_{H_0^1(U)} \leq C$, for some constant $C$ that does not depend on $0 \leq \lambda \leq 1$.
+
+4. Applying Schaefer's fixed point theorem in the space $X = H_0^1(U)$, we conclude that $A$ has a fixed point $u \in H_0^1(U) \cap H^2(U)$, which in turn solves our semilinear PDE (21).
+\end{proof}
+
+\begin{remark}[Remark and warning]
+\label{rem:iteration-scheme-warning}
+\dcref{ch9:9.2.2-rem-2}
+\group{Fixed Point Theorems}
+\uses{thm:schaefer-quasilinear-existence}
+A plausible plan for constructively solving (21) would be to select some $u^0$ and then iteratively solve the linear boundary-value problems
+\[
+\begin{cases}
+-\Delta u^{k+1} + \mu u^{k+1} = -b(Du^k) & \text{in } U \\
+u^{k+1} = 0 & \text{on } \partial U
+\end{cases} \quad (k = 0, 1, \ldots).
+\]
+However, we \textit{cannot} assert that $\{u^k\}_{k=0}^\infty$ then converges to a solution of (21). Schauder's and Schaefer's fixed point theorems do not say that any sequence converges to a fixed point. (But see the proof in \cref{sec:subsolutions-supersolutions} following.)
+\end{remark}
+
+See Gilbarg--Trudinger~\cite{GilbargTrudinger1983} for much more sophisticated applications of fixed point theorems to nonlinear elliptic PDE.
+
+\section{Method of Subsolutions and Supersolutions}
+\label{sec:subsolutions-supersolutions}
+
+Our application of Schaefer's theorem above in \cref{sec:schauder-schaefer-fixed-point-theorems} depends upon the regularity estimates for solutions of elliptic equations. We turn attention now to another basic property of elliptic PDE, namely the maximum principle, and demonstrate how various resulting comparison arguments can be used to solve certain semilinear problems. The idea is to exploit \textit{ordering properties} for solutions. More precisely, we will show that if we can find a subsolution $\underline{u}$ and a supersolution $\bar{u}$ of a particular boundary-value problem, and if furthermore $\underline{u} \leq \bar{u}$, then there in fact exists a solution satisfying
+\[
+\underline{u} \leq u \leq \bar{u}.
+\]
+
+We will investigate this boundary-value problem for the nonlinear Poisson equation:
+\[
+\begin{cases}
+-\Delta u = f(u) & \text{in } U \\
+u = 0 & \text{on } \partial U,
+\end{cases}
+\tag{1}
+\]
+where $f : \R \to \R$ is smooth, with
+\[
+|f'| \leq C \quad (z \in \R)
+\tag{2}
+\]
+for some constant $C$.
+
+\begin{definition}[Weak sub- and supersolutions]
+\label{def:weak-sub-supersolution}
+\dcref{ch9:9.3-def-1}
+\group{Sub- and Supersolutions}
+\begin{enumerate}
+\item[(i)] We say that $\bar{u} \in H^1(U)$ is a \textit{weak supersolution} of problem (1) if
+\[
+\int_U D\bar{u} \cdot Dv \, dx \geq \int_U f(\bar{u})v \, dx
+\tag{3}
+\]
+for each $v \in H^1_0(U), v \geq 0$ a.e.
+\item[(ii)] Similarly, $\underline{u} \in H^1(U)$ is a \textit{weak subsolution} provided
+\[
+\int_U D\underline{u} \cdot Dv \, dx \leq \int_U f(\underline{u})v \, dx
+\tag{4}
+\]
+for each $v \in H^1_0(U), v \geq 0$ a.e.
+\item[(iii)] We say $u \in H^1_0(U)$ is a \textit{weak solution} of (1) if
+\[
+\int_U Du \cdot Dv \, dx = \int_U f(u)v \, dx
+\]
+for each $v \in H^1_0(U)$.
+\end{enumerate}
+\end{definition}
+
+\begin{remark}[Classical interpretation]
+\label{rem:sub-supersolution-c2-case}
+\dcref{ch9:9.3-rem-1}
+\group{Sub- and Supersolutions}
+\uses{def:weak-sub-supersolution}
+If $\bar{u}, \underline{u} \in C^2(U)$, then from (3) and (4) it follows that
+\[
+-\Delta \bar{u} \geq f(\bar{u}), \quad -\Delta \underline{u} \leq f(\underline{u}) \quad \text{in } U.
+\]
+\end{remark}
+
+\begin{theorem}[Existence of a solution between sub- and supersolutions]
+\label{thm:existence-between-sub-supersolutions}
+\dcref{ch9:9.3-thm-1}
+\group{Sub- and Supersolutions}
+\uses{def:weak-sub-supersolution,thm:first-existence-weak-solutions}
+Assume there exist a weak supersolution $\bar{u}$ and a weak subsolution $\underline{u}$ of (1), satisfying
+\[
+\underline{u} \leq 0, \quad \bar{u} \geq 0 \quad \text{on } \partial U \text{ in the trace sense}, \quad \underline{u} \leq \bar{u} \text{ a.e. in } U.
+\tag{5}
+\]
+Then there exists a weak solution $u$ of (1), such that
+\[
+\underline{u} \leq u \leq \bar{u} \quad \text{a.e. in } U.
+\]
+\end{theorem}
+\begin{proof}
+1. Fix a number $\lambda > 0$ so large that
+\[
+\text{the mapping } z \mapsto f(z) + \lambda z \text{ is nondecreasing};
+\tag{6}
+\]
+this is possible as a consequence of hypothesis (2).
+
+Now write $u_0 = \underline{u}$, and then given $u_k$ ($k = 0, 1, 2, \ldots$) inductively define $u_{k+1} \in H_0^1(U)$ to be the unique weak solution of the linear boundary-value problem
+\[
+\begin{cases}
+-\Delta u_{k+1} + \lambda u_{k+1} = f(u_k) + \lambda u_k & \text{in } U \\
+u_{k+1} = 0 & \text{on } \partial U.
+\end{cases}
+\tag{7}
+\]
+
+2. We claim
+\[
+\underline{u} = u_0 \leq u_1 \leq \cdots \leq u_k \leq \cdots \quad \text{a.e. in } U.
+\tag{8}
+\]
+To confirm this, first note from (7) for $k = 0$ that
+\[
+\int_U Du_1 \cdot Dv + \lambda u_1 v \, dx = \int_U (f(u_0) + \lambda u_0)v \, dx
+\tag{9}
+\]
+for each $v \in H_0^1(U)$. Subtract (9) from (4), recall $u_0 = \underline{u}$, and set
+\[
+v := (u_0 - u_1)^+ \in H_0^1(U), \quad v \geq 0 \text{ a.e.}
+\]
+We find
+\[
+\int_U D(u_0 - u_1) \cdot D(u_0 - u_1)^+ + \lambda(u_0 - u_1)(u_0 - u_1)^+ \, dx \leq 0.
+\tag{10}
+\]
+But
+\[
+D(u_0 - u_1)^+ = \begin{cases} D(u_0 - u_1) & \text{a.e. on } \{u_0 \geq u_1\} \\ 0 & \text{a.e. on } \{u_0 \leq u_1\}. \end{cases}
+\]
+(See Problem 17 in Chapter 5.) Consequently,
+\[
+\int_{\{u_0 \geq u_1\}} |D(u_0 - u_1)|^2 + \lambda(u_0 - u_1)^2 \, dx \leq 0;
+\]
+so that $u_0 \leq u_1$ a.e. in $U$.
+
+Now assume inductively
+\[
+u_{k-1} \leq u_k \quad \text{a.e. in } U.
+\tag{11}
+\]
+From (7) we find
+\[
+\int_U Du_{k+1} \cdot Dv + \lambda u_{k+1}v \, dx = \int_U (f(u_k) + \lambda u_k)v \, dx
+\tag{12}
+\]
+and
+\[
+\int_U Du_k \cdot Dv + \lambda u_k v \, dx = \int_U (f(u_{k-1}) + \lambda u_{k-1})v \, dx
+\]
+for each $v \in H_0^1(U)$. Subtract and set $v := (u_k - u_{k+1})^+$. We deduce
+\[
+\int_{\{u_k \geq u_{k+1}\}} |D(u_k - u_{k+1})|^2 + \lambda(u_k - u_{k+1})^2 \, dx
+\]
+\[
+= \int_U [(f(u_{k-1}) + \lambda u_{k-1}) - (f(u_k) + \lambda u_k)](u_k - u_{k+1})^+ \, dx \leq 0,
+\]
+the last inequality holding in view of (11) and (6). Therefore $u_k \leq u_{k+1}$ a.e. in $U$, as asserted.
+
+3. Next we show
+\[
+u_k \leq \bar{u} \quad \text{a.e. in } U \quad (k = 0,1,\ldots).
+\tag{13}
+\]
+Statement (13) is valid for $k = 0$ by hypothesis (5). Assume now for induction
+\[
+u_k \leq \bar{u} \quad \text{a.e. in } U.
+\tag{14}
+\]
+Then subtracting (3) from (12) and taking $v := (u_{k+1} - \bar{u})^+$, we find
+\[
+\int_{\{u_{k+1} \geq \bar{u}\}} |D(u_{k+1} - \bar{u})|^2 + \lambda(u_{k+1} - \bar{u})^2 dx
+\]
+\[
+\leq \int_U [(f(u_k) + \lambda u_k) - (f(\bar{u}) + \lambda \bar{u})](u_{k+1} - \bar{u})^+ \, dx \leq 0,
+\]
+by (14) and (6). Thus $u_{k+1} \leq \bar{u}$ a.e. in $U$.
+
+4. In light of (8) and (13), we have
+\[
+\underline{u} \leq \cdots \leq u_k \leq u_{k+1} \leq \cdots \leq \bar{u} \quad \text{a.e. in } U.
+\tag{15}
+\]
+Therefore
+\[
+u(x) := \lim_{k \to \infty} u_k(x)
+\]
+exists for a.e. $x$. Furthermore we have
+\[
+u_k \to u \quad \text{in } L^2(U),
+\tag{16}
+\]
+as guaranteed by the Dominated Convergence Theorem and (15). Finally, since we have $\|f(u_k)\|_{L^2(U)} \leq C(\|u_k\|_{L^2(U)} + 1)$, we deduce from (7) that
+\[
+\sup_k \|u_k\|_{H_0^1(U)} < \infty.
+\]
+Hence there is a subsequence $\{u_{k_j}\}_{j=1}^\infty$ which converges weakly in $H_0^1(U)$ to $u \in H_0^1(U)$.
+
+5. We at last verify that $u$ is a weak solution of problem (1). For this, fix $v \in H_0^1(U)$. Then from (7) we find
+\[
+\int_U Du_{k+1} \cdot Dv + \lambda u_{k+1} v \, dx = \int_U (f(u_k) + \lambda u_k) v \, dx.
+\]
+Let $k \to \infty$:
+\[
+\int_U Du \cdot Dv + \lambda u v \, dx = \int_U (f(u) + \lambda u) v \, dx.
+\]
+Canceling the term involving $\lambda$, we at last confirm that
+\[
+\int_U Du \cdot Dv \, dx = \int_U f(u) v \, dx,
+\]
+as desired.
+\end{proof}
+
+This proof illustrates the use of integration-by-parts, rather than the maximum principle, to establish comparisons between sub- and supersolutions.
+
+\section{Nonexistence}
+\label{sec:nonexistence}
+
+We now complement the theory in \cref{sec:monotonicity-methods,sec:fixed-point-methods,sec:subsolutions-supersolutions} with some \textit{nonexistence} assertions for solutions of various nonlinear partial differential equations. The overall procedure will be to assume there exists a solution, and then to obtain certain inequalities, which in turn force a contradiction.
+
+\subsection{Blow-up}
+\label{sec:blow-up}
+
+We begin by considering an initial/boundary-value problem for a parabolic equation with a simple quadratic nonlinearity:
+\[
+\begin{cases}
+u_t - \Delta u = u^2 & \text{in } U_T \\
+u = 0 & \text{on } \partial U \times (0,T) \\
+u = g & \text{on } U \times \{t = 0\}.
+\end{cases}
+\tag{1}
+\]
+We will show that if $T > 0$ and $g \geq 0$ are large enough in an appropriate sense, then there does \textit{not} exist a smooth solution $u$ of (1). We can regard the nonlinear heat equation in (1) as a simple reaction-diffusion equation (cf. \cref{ex:reaction-diffusion-banach-fixed-point}). The nonlinear term alone corresponds to the ODE
+\[
+\dot{u} = u^2 \quad \left(\dot{} = \frac{d}{dt}\right),
+\tag{2}
+\]
+which certainly blows up in finite time, provided $u(0) > 0$. The purely diffusive effects on the other hand yield the heat equation, which tends to smooth out irregularities. The following analysis must therefore untangle the competing effects of blow-up from the $u^2$ term and smoothing from the $\Delta u$ term.
+
+We proceed by choosing $w_1$ to be an eigenfunction corresponding to the principal eigenvalue $\lambda_1 > 0$ of $-\Delta$ in $H_0^1(U)$. Then owing to the theory in \cref{def:principal-eigenvalue}, $w_1$ is smooth,
+\[
+\begin{cases}
+-\Delta w_1 = \lambda_1 w_1 & \text{in } U \\
+w_1 = 0 & \text{on } \partial U,
+\end{cases}
+\]
+and we may furthermore assume
+\[
+w_1 > 0 \text{ in } U, \quad \int_U w_1 \, dx = 1.
+\tag{3}
+\]
+Suppose $u$ is a smooth solution of (1), with $g \geq 0, g \not\equiv 0$; so that $u > 0$ within $U_T$ by the strong maximum principle. Define
+\[
+\eta(t) := \int_U u(x,t)w_1(x) \, dx \quad (0 \le t \le T).
+\]
+Then
+\[
+\dot{\eta}(t) = \int_U u_t w_1 \, dx = \int_U (\Delta u + u^2)w_1 \, dx
+\]
+\[
+= \int_U u\Delta w_1 + u^2 w_1 \, dx = -\lambda_1 \eta(t) + \int_U u^2 w_1 \, dx.
+\tag{4}
+\]
+Furthermore
+\[
+\eta(t) = \int_U u w_1 \, dx = \int_U u w_1^{1/2}w_1^{1/2}\, dx
+\]
+\[
+\leq \left(\int_U u^2 w_1\, dx\right)^{1/2}\left(\int_U w_1\, dx\right)^{1/2}
+\]
+\[
+= \left(\int_U u^2 w_1\, dx\right)^{1/2} \quad \text{by (3)}.
+\tag{5}
+\]
+Consequently
+\[
+\eta(t)^2 \le \int_U u^2 w_1 \, dx.
+\]
+Employing this inequality in (4), we find
+\[
+\dot{\eta}(t) \ge -\lambda_1\eta(t) + \eta(t)^2 \quad (0 \le t \le T).
+\tag{6}
+\]
+
+\begin{theorem}[Blow-up for large initial data]
+\label{thm:blowup-large-data}
+\dcref{ch9:9.4.1-thm-1}
+\group{Nonexistence}
+\uses{def:principal-eigenvalue}
+Let $u$ be a smooth solution of (1) with $g \geq 0$, $g \not\equiv 0$, and set $w_1$, $\eta(t)$ as above. If
+\[
+\eta(0) = \int_U gw_1 \, dx > \lambda_1,
+\]
+then $u$ cannot exist as a smooth solution on all of $[0,T]$ for $T$ large enough; more precisely, either the solution fails to be smooth enough to justify the calculation below, or else
+\[
+\lim_{t \to t_*} \int_U u(x,t)w_1(x) \, dx = \infty
+\]
+for some $0 < t_* \le t^*$, where $t^*$ is as in (10) below. In this case we say $u$ ``blows up'' at time $t_*$.
+\end{theorem}
+\begin{proof}
+Writing $\xi(t) := e^{\lambda_1 t}\eta(t)$ gives
+\[
+\dot{\xi}(t) = e^{\lambda_1 t}\dot{\eta}(t) + \lambda_1 e^{\lambda_1 t}\eta(t) \geq e^{\lambda_1 t}\eta(t)^2 = e^{-\lambda_1 t}\xi(t)^2
+\]
+for $0 \leq t \leq T$, by (6). Thus
+\[
+\left(\frac{-1}{\xi(t)}\right)' = \frac{\dot{\xi}(t)}{\xi(t)^2} \geq e^{-\lambda_1 t};
+\]
+so that integrating we find
+\[
+\frac{-1}{\xi(t)} \geq \frac{-1}{\xi(0)} + \frac{1 - e^{-\lambda_1 t}}{\lambda_1}.
+\]
+Rearranging, we deduce
+\[
+\xi(t) \geq \frac{\xi(0)\lambda_1}{\lambda_1 - \xi(0)(1 - e^{-\lambda_1 t})},
+\tag{7}
+\]
+provided the denominator is not zero.
+
+But now suppose
+\[
+\eta(0) = \xi(0) > \lambda_1.
+\tag{8}
+\]
+Then
+\[
+\xi(t) \to +\infty \quad \text{as} \quad t \to t^*,
+\tag{9}
+\]
+where
+\[
+t^* := \frac{-1}{\lambda_1} \log\left(\frac{\eta(0) - \lambda_1}{\eta(0)}\right).
+\tag{10}
+\]
+The conclusion is that \textit{if}
+\[
+\eta(0) = \int_U gw_1 \, dx > \lambda_1,
+\]
+then there cannot exist a smooth solution $u$ of (1). Furthermore, either the solution is not smooth enough to justify the calculation above, or else
+\[
+\lim_{t \to t_*} \int_U u(x,t)w_1(x) \, dx = \infty
+\]
+for some $0 < t_* \leq t^*$. In this case we say $u$ ``blows up'' at time $t_*$.
+\end{proof}
+
+\subsection{Derrick--Pohozaev Identity}
+\label{sec:derrick-pohozaev-identity}
+
+We investigate next a nonlinear elliptic PDE to which different differential inequality methods apply, namely the nonlinear boundary-value problem
+\[
+\begin{cases}
+-\Delta u = |u|^{p-1} u & \text{in } U \\
+u = 0 & \text{on } \partial U.
+\end{cases}
+\tag{11}
+\]
+Now the theory in \cref{thm:existence-nontrivial-solution-semilinear-elliptic} applies to (11) provided
+\[
+1 < p < \frac{n+2}{n-2},
+\tag{12}
+\]
+and proves the existence of a nontrivial solution $u \not\equiv 0$. Let us now instead suppose
+\[
+\frac{n+2}{n-2} < p < \infty.
+\tag{13}
+\]
+Our goal is to demonstrate under a certain geometric condition on $U$ that (13) implies $u \equiv 0$ is the only smooth solution of (11). We see therefore that the restriction to condition (12) in \cref{thm:existence-nontrivial-solution-semilinear-elliptic} was in some sense natural, and consequently say $p = \frac{n+2}{n-2}$ is a \textit{critical exponent}.
+
+\begin{definition}[Star-shaped domain]
+\label{def:star-shaped-domain}
+\dcref{ch9:9.4.2-def-1}
+\group{Nonexistence}
+An open set $U$ is called \textit{star-shaped with respect to} $0$ provided for each $x \in \overline{U}$, the line segment
+\[
+\{\lambda x \mid 0 \leq \lambda \leq 1\}
+\]
+lies in $\overline{U}$.
+\end{definition}
+
+\begin{figure}[h]\centering
+% [FIGURE: A star-shaped region depicted as a shaded blob-like shape with a protruding section. An arrow labeled $\nu$ points outward from the right side of the boundary, indicating the outward normal direction.]
+\end{figure}
+
+A star-shaped domain
+
+Clearly if $U$ is convex and $0 \in U$, then $U$ is star-shaped with respect to 0. But a general star-shaped region need not be convex.
+
+\begin{lemma}[Normals to a star-shaped region]
+\label{lem:normals-star-shaped-region}
+\dcref{ch9:9.4.2-lem-1}
+\group{Nonexistence}
+\uses{def:star-shaped-domain}
+Assume $\partial U$ is $C^1$ and $U$ is star-shaped with respect to 0. Then
+\[
+x \cdot \nu(x) \geq 0 \quad \text{for all } x \in \partial U,
+\]
+where $\nu$ denotes the unit outward normal.
+\end{lemma}
+\begin{proof}
+1. Since $\partial U$ is $C^1$, if $x \in \partial U$ then for each $\epsilon > 0$ there exists $\delta > 0$ such that $|y - x| < \delta$ and $y \in \overline{U}$ imply $\nu(x) \cdot \frac{y-x}{|y-x|} \leq \epsilon$. In particular
+\[
+\limsup_{\substack{y \to x \\ y \in \overline{U}}} \nu(x) \cdot \frac{(y-x)}{|y-x|} \leq 0.
+\]
+Let $y = \lambda x$ for $0 < \lambda < 1$. Then $y \in \overline{U}$, since $U$ is star-shaped. Thus
+\[
+\nu(x) \cdot \frac{x}{|x|} = - \lim_{\lambda \to 1^-} \nu(x) \cdot \frac{(\lambda x - x)}{|\lambda x - x|} \geq 0. \qedhere
+\]
+\end{proof}
+
+We next prove that there can exist no nontrivial solution to problem (11) for supercritical growth, provided $U$ is star-shaped. The proof is a remarkable calculation initiated by multiplying the PDE $-\Delta u = |u|^{p-1}u$ by $x \cdot Du$ and continually integrating by parts.
+
+\begin{theorem}[Nonexistence of nontrivial solution]
+\label{thm:derrick-pohozaev-nonexistence}
+\dcref{ch9:9.4.2-thm-1}
+\group{Nonexistence}
+\uses{def:star-shaped-domain,lem:normals-star-shaped-region}
+Assume $u \in C^2(\overline{U})$ is a solution of problem (11), and the exponent $p$ satisfies inequality (13). Suppose further $U$ is star-shaped with respect to 0, and $\partial U$ is $C^1$. Then
+\[
+u \equiv 0 \quad \text{within } U.
+\]
+\end{theorem}
+\begin{proof}
+1. We multiply the PDE by $x \cdot Du$ and integrate over $U$, to find
+\[
+\int_U (-\Delta u)(x \cdot Du) dx = \int_U |u|^{p-1}u(x \cdot Du) dx.
+\tag{14}
+\]
+We rewrite this expression as
+\[
+A = B.
+\]
+
+2. The term on the left is
+\[
+A := -\sum_{i,j=1}^{n}\int_U u_{x_ix_j}u_{x_j}x_i\,dx
+\]
+\[
+= \sum_{i,j=1}^{n}\int_U u_{x_i}(x_iu_{x_j})_{x_j}dx - \sum_{i,j=1}^{n}\int_{\partial U}u_{x_i}\nu^j x_iu_{x_j}dS
+\]
+\[
+=: A_1 + A_2.
+\tag{15}
+\]
+
+3. Now
+\[
+A_1 = \sum_{i,j=1}^{n}\int_U u_{x_i}\delta_{ij}u_{x_j} + u_{x_i}x_iu_{x_jx_j}dx
+\]
+\[
+= \int_U|Du|^2 + \sum_{i=1}^{n}\left(\frac{|Du|^2}{2}\right)_{x_i} x_i \, dx
+\]
+\[
+= \left(1 - \frac{n}{2}\right)\int_U|Du|^2dx + \int_{\partial U}\frac{|Du|^2}{2}(\nu \cdot x)dS.
+\tag{16}
+\]
+On the other hand, since $u = 0$ on $\partial U$, $Du(x)$ is parallel to the normal $\nu(x)$ at each point $x \in \partial U$. Thus $Du(x) = \pm|Du(x)|\nu(x)$. Using this equality we calculate
+\[
+A_2 = -\int_{\partial U}|Du|^2(\nu \cdot x)dS.
+\tag{17}
+\]
+Combine (15)--(17), to deduce
+\[
+A = \frac{2-n}{2}\int_U|Du|^2dx - \frac{1}{2}\int_{\partial U}|Du|^2(\nu \cdot x)dS.
+\]
+
+4. Returning to (14), we compute
+\[
+B := \sum_{j=1}^{n}\int_U|u|^{p-1}u \, u_{x_j}x_j\,dx
+\]
+\[
+= \sum_{j=1}^{n}\int_U\left(\frac{|u|^{p+1}}{p+1}\right)_{x_j}x_j dx = -\frac{n}{p+1}\int_U|u|^{p+1}dx.
+\]
+
+5. This calculation and (14) yield
+\[
+\left(\frac{n-2}{2}\right)\int_U|Du|^2dx + \frac{1}{2}\int_{\partial U}|Du|^2(\nu \cdot x)dS = \frac{n}{p+1}\int_U|u|^{p+1}dx.
+\tag{18}
+\]
+In view of the lemma above, we then obtain the inequality
+\[
+\left(\frac{n-2}{2}\right)\int_U |Du|^2 dx \leq \frac{n}{p+1}\int_U |u|^{p+1} dx.
+\tag{19}
+\]
+But once we multiply the PDE $-\Delta u = |u|^{p-1}u$ by $u$ and integrate by parts, we produce the equality
+\[
+\int_U |Du|^2 dx = \int_U |u|^{p+1} dx.
+\]
+Substituting into (19), we thus conclude
+\[
+\left(\frac{n-2}{2} - \frac{n}{p+1}\right)\int_U |u|^{p+1}dx \leq 0.
+\]
+Hence if $u \neq 0$, it follows that $\frac{n-2}{2} - \frac{n}{p+1} \leq 0$; that is, $p \leq \frac{n+2}{n-2}$.
+\end{proof}
+
+\begin{remark}[Derrick--Pohozaev identity]
+\label{rem:derrick-pohozaev-identity-name}
+\dcref{ch9:9.4.2-rem-1}
+\group{Nonexistence}
+\uses{thm:derrick-pohozaev-nonexistence}
+Equality (18) is sometimes called the \textit{Derrick--Pohozaev identity}.
+\end{remark}
+
+\section{Geometric Properties of Solutions}
+\label{sec:geometric-properties-of-solutions}
+
+\subsection{Star-shaped Level Sets}
+\label{sec:star-shaped-level-sets}
+
+We explain in this section a simple method that is occasionally useful for studying the geometric properties of the level sets of solutions to various PDE. The easiest such case occurs when we look at harmonic functions in an open set $U$ having the form
+\[
+U = W \setminus \overline{V},
+\]
+where $V \Subset W$, for open sets $V, W$, each of which is star-shaped with respect to $0$. Write
+\[
+\Gamma_0 = \partial W, \quad \Gamma_1 = \partial V.
+\]
+We consider the problem
+\[
+\begin{cases}
+-\Delta u = 0 & \text{in } U \\
+u = 1 & \text{on } \Gamma_1 \\
+u = 0 & \text{on } \Gamma_0.
+\end{cases}
+\tag{1}
+\]
+Physically $u$ corresponds to the electrostatic potential generated within the region $U$, once we fix the potential value to be one on $\Gamma_1$ and zero on $\Gamma_0$. According to the strong maximum principle $0 < u < 1$ within $U$.
+
+\begin{theorem}[Star-shaped level sets]
+\label{thm:star-shaped-level-sets}
+\dcref{ch9:9.5.1-thm-1}
+\group{Symmetry of Solutions}
+\uses{def:star-shaped-domain,lem:normals-star-shaped-region,thm:strong-maximum-principle-laplace}
+For each $0 < \lambda < 1$ the level set
+\[
+\Gamma_\lambda := \{x \in U \mid u(x) = \lambda\}
+\]
+is a smooth surface and is the boundary of a set star-shaped with respect to $0$.
+\end{theorem}
+\begin{proof}
+1. For each $\mu > 0$, the function $x \mapsto u(\mu x)$ is harmonic, and thus so is
+\[
+v(x) := \frac{d}{d\mu}(u(\mu x))\Big|_{\mu=1} = Du(x) \cdot x \quad (x \in U).
+\]
+Now since $u = 0$ on $\Gamma_0$, $Du(x)$ points in the direction of $-\nu(x)$ at each point $x \in \partial W$. Additionally, we have $x \cdot \nu(x) \geq 0$ on $\Gamma_0$, since $W$ is star-shaped with respect to $0$. Consequently $v = Du \cdot x \leq 0$ on $\Gamma_0$. Similarly $v \leq 0$ on $\Gamma_1$. According then to the strong maximum principle for harmonic functions, $v < 0$ in $U$. In particular, $Du \neq 0$ within $U$. Consequently the Implicit Function Theorem implies that $\Gamma_\lambda$ is a smooth surface for $0 < \lambda < 1$.
+
+2. Extend $u$ to equal $1$ on all of $V$ and write
+\[
+U_\lambda := \{x \in W \mid u > \lambda\}.
+\]
+Then $U_\lambda$ is an open subset of $W$ and $\partial U_\lambda = \Gamma_\lambda$. By the strong maximum principle, $U_\lambda$ is connected.
+
+Now let $x \in \Gamma_\lambda$ and let $\nu(x)$ denote the outer unit normal to $\Gamma_\lambda$ at $x$. Then $Du(x)$ points in the direction of $-\nu(x)$. Since $v(x) < 0$, we have $x \cdot \nu(x) > 0$. This inequality holds for each $x \in \Gamma_\lambda$.
+
+3. It follows that $\Gamma_\lambda$ is the boundary of a set star-shaped with respect to $0$. To see this, return to the proof of the lemma in \cref{lem:normals-star-shaped-region}, and notice that if $\Gamma_\lambda$ were not star-shaped with respect to $0$, we could then find a point $x \in \Gamma_\lambda$ for which $y = \mu x \notin \Gamma_\lambda$ if $\mu$ is close to $1$, $\mu < 1$. But then we can derive the contradiction
+\[
+\nu(x) \cdot \frac{x}{|x|} = -\lim_{\mu \to 1^-} \nu(x) \cdot \frac{(\mu x - x)}{|\mu x - x|} \leq 0. \qedhere
+\]
+\end{proof}
+
+\subsection{Radial Symmetry}
+\label{sec:radial-symmetry}
+
+In this section we take $U = B^0(0,1)$ to be the open unit ball in $\R^n$ and investigate this boundary-value problem for a semilinear Poisson PDE:
+\[
+\begin{cases}
+-\Delta u = f(u) & \text{in } U \\
+u = 0 & \text{on } \partial U.
+\end{cases}
+\tag{2}
+\]
+We are interested in \textit{positive solutions}:
+\[
+u > 0 \text{ in } U,
+\tag{3}
+\]
+and will assume $f : \R \to \R$ is Lipschitz continuous, but is otherwise arbitrary. Our intention is to prove that $u$ is necessarily radial, that is, $u(x)$ depends only on $r = |x|$. This is quite an unexpectedly strong conclusion, since we are making essentially no assumption on the nonlinearity.
+
+\subsubsection{Maximum Principles}
+\label{sec:maximum-principles-radial-symmetry}
+
+Our proofs will depend upon an extension of the maximum principle for second-order elliptic PDE.
+
+\begin{lemma}[A refinement of Hopf's Lemma]
+\label{lem:hopf-lemma-refinement}
+\dcref{ch9:9.5.2-lem-1}
+\group{Maximum Principles}
+\uses{lem:hopfs-lemma,thm:strong-maximum-principle-c-zero}
+Suppose $V \subset \R^n$ is open, $v \in C^2(\overline{V})$, and $c \in L^\infty(V)$. Assume
+\[
+\begin{cases} -\Delta v + cv \geq 0 & \text{in } V \\ v \geq 0 & \text{in } V. \end{cases}
+\tag{4}
+\]
+Suppose also $v \not\equiv 0$.
+\begin{enumerate}
+\item[(i)] If $x^0 \in \partial V$, $v(x^0) = 0$, and $V$ satisfies the interior ball condition at $x^0$, then
+\[
+\frac{\partial v}{\partial \nu}(x^0) < 0.
+\tag{5}
+\]
+\item[(ii)] Furthermore,
+\[
+v > 0 \text{ in } V.
+\tag{6}
+\]
+\end{enumerate}
+Observe that we are here making no hypothesis concerning the sign of the zeroth-order coefficient $c$.
+\end{lemma}
+\begin{proof}
+Let $w := e^{-\lambda x_1}v$, where $\lambda > 0$ will be selected below. Then $v = e^{\lambda x_1}w$, and so
+\[
+cv \geq \Delta v = \Delta(e^{\lambda x_1}w) = \lambda^2 v + 2\lambda e^{\lambda x_1}w_{x_1} + e^{\lambda x_1}\Delta w.
+\]
+Thus
+\[
+-\Delta w - 2\lambda w_{x_1} \geq (\lambda^2 - c)w \geq 0 \text{ in } V,
+\]
+if $\lambda = \|c\|_{L^\infty}^{1/2}$.
+
+Consequently $w$ is a supersolution for the elliptic operator $Kw := -\Delta w - 2\lambda w_{x_1}$, which has no zeroth-order term. The strong maximum principle implies $w > 0$ in $V$. According to Hopf's Lemma (\cref{lem:hopfs-lemma}) therefore, $\frac{\partial w}{\partial \nu}(x^0) < 0$. But
+\[
+\frac{\partial w}{\partial \nu}(x^0) = Dw(x^0) \cdot \nu(x^0) = e^{-\lambda x_1} \frac{\partial v}{\partial \nu}(x^0)
+\]
+since $v(x^0) = 0$. Assertion (i) therefore holds, and assertion (ii) follows since $w > 0$ in $V$.
+\end{proof}
+
+\begin{lemma}[Boundary estimates]
+\label{lem:boundary-estimates-radial-symmetry}
+\dcref{ch9:9.5.2-lem-2}
+\group{Maximum Principles}
+\uses{lem:hopf-lemma-refinement}
+Let $u \in C^2(\overline{U})$ satisfy (2), (3). Then for each point $x^0 \in \partial U \cap \{x_n > 0\}$, either
+\[
+u_{x_n}(x^0) < 0
+\tag{7}
+\]
+or else
+\[
+u_{x_n}(x^0) = 0, \quad u_{x_nx_n}(x^0) > 0.
+\tag{8}
+\]
+In either case, $u$ is strictly decreasing as a function of $x_n$ near $x^0$.
+\end{lemma}
+\begin{proof}
+1. Fix any point $x^0 \in \partial U \cap \{x_n > 0\}$ and let $\nu = \nu(x^0) = (\nu_1, \ldots, \nu_n)$ denote the outer unit normal to $\partial U$ at $x^0$. Note $\nu_n > 0$.
+
+2. We first claim
+\[
+u_{x_n}(x^0) < 0,
+\]
+provided
+\[
+f(0) \geq 0.
+\tag{9}
+\]
+Indeed
+\[
+0 = -\Delta u - f(u) = -\Delta u - f(u) + f(0) - f(0)
+\]
+\[
+\leq -\Delta u + cu,
+\]
+for $c(x) := -\int_0^1 f'(su(x)) ds$. According to Lemma 1, $\frac{\partial u}{\partial \nu}(x^0) < 0$. Since $Du$ is parallel to $\nu$ on $\partial U$ and $\nu_n > 0$, we conclude $u_{x_n}(x^0) < 0$.
+
+3. Now suppose
+\[
+f(0) < 0.
+\tag{10}
+\]
+If $u_{x_n}(x^0) < 0$, we are done. Otherwise, since $Du$ is parallel to $\nu$,
+\[
+Du(x^0) = 0.
+\tag{11}
+\]
+As (2) is invariant under a rotation of coordinate axes, we may as well suppose $x^0 = (0,\ldots,1)$, $\nu = (0,\ldots,1)$.
+
+4. We assert
+\[
+u_{x_ix_j}(x^0) = -f(0)\nu_i \nu_j \quad \text{for each } i,j = 1,\ldots,n.
+\tag{12}
+\]
+Since $u = 0$ on $\partial U$, we have $u(x', \gamma(x')) = 0$ for all $x' \in \R^{n-1}$, $|x'| \le 1$, where $\gamma(x') = (1-|x'|^2)^{1/2}$. Differentiating with respect to $x_i$ and $x_j$ ($i,j = 1,\ldots,n-1$) and using (11), we conclude
+\[
+u_{x_ix_j}(x^0) = 0 \quad (i,j = 1,\ldots,n-1).
+\tag{13}
+\]
+Since $u_{x_n} \le 0$ on $\partial U \cap \{x_n > 0\}$ and $u_{x_n}(x^0) = 0$, the mapping $x' \mapsto u_{x_n}(x', \gamma(x'))$ has a maximum at $x' = 0$. Thus
+\[
+u_{x_nx_i}(x^0) = 0 \quad (i = 1,\ldots,n-1).
+\tag{14}
+\]
+Finally, (13), (14) and the PDE (2) force $u_{x_nx_n}(x^0) = -f(0)$. This equality is (12) for $\nu = (0,\ldots,1)$. Returning to the original coordinate axes, we obtain (12).
+
+5. Setting $i = j = n$ in (12), we find using (10) that
+\[
+u_{x_nx_n}(x^0) = -f(0)\nu_n \nu_n > 0. \qedhere
+\]
+\end{proof}
+
+\subsubsection{Moving Planes}
+\label{sec:moving-planes}
+
+We introduce next a ``moving plane'' $P_\lambda$, across which we will reflect our partial differential equation.
+
+\begin{definition}[Moving plane notation]
+\label{def:moving-plane-notation}
+\dcref{ch9:9.5.2-def-1}
+\group{Maximum Principles}
+\begin{enumerate}
+\item[(i)] If $0 \le \lambda \le 1$, define the plane
+\[
+P_\lambda := \{x \in \R^n \mid x_n = \lambda\}.
+\]
+\item[(ii)] Write $x_\lambda := (x_1, \ldots, x_{n-1}, 2\lambda - x_n)$ to denote the \textit{reflection} of $x$ in $P_\lambda$.
+\item[(iii)] $E_\lambda := \{x \in U \mid \lambda < x_n < 1\}$.
+\end{enumerate}
+\end{definition}
+
+\begin{theorem}[Radial symmetry]
+\label{thm:radial-symmetry-positive-solutions}
+\dcref{ch9:9.5.2-thm-2}
+\group{Symmetry of Solutions}
+\uses{lem:hopf-lemma-refinement,lem:boundary-estimates-radial-symmetry,def:moving-plane-notation}
+Let $u \in C^2(\overline{U})$ solve (2), (3). Then $u$ is radial; that is,
+\[
+u(x) = v(r) \quad (r = |x|)
+\]
+for some strictly decreasing function $v : [0, 1] \to [0, \infty)$.
+\end{theorem}
+
+\begin{figure}[h]\centering
+% [FIGURE: A circle with center O and radius $\lambda$. A horizontal line passes through the circle. On this line to the left is a point labeled $P_\lambda$, and to the right is a point labeled $E_\lambda$. Inside the circle near the top are two points labeled $x$ and $x_\lambda$. A dashed horizontal line passes through the center. The diagram illustrates reflection through a plane.]
+\end{figure}
+
+Reflection through a plane
+
+\begin{proof}
+1. We consider for each $0 \le \lambda < 1$ the statement
+\[
+u(x) < u(x_\lambda) \text{ for each point } x \in E_\lambda.
+\tag{$15_\lambda$}
+\]
+
+2. According to Lemma 2, ($15_\lambda$) is valid for each $\lambda < 1$, $\lambda$ sufficiently close to 1. Set
+\[
+\lambda_0 := \inf\{0 \le \lambda < 1 \mid (15_\mu) \text{ holds for each } \lambda \le \mu < 1\}.
+\tag{16}
+\]
+We will prove:
+\[
+\lambda_0 = 0.
+\tag{17}
+\]
+Assume instead $\lambda_0 > 0$. Write $w(x) := u(x_{\lambda_0}) - u(x)$ $(x \in E_{\lambda_0})$. Then
+\[
+-\Delta w = f(u(x_{\lambda_0})) - f(u(x)) = -cw \text{ in } E_{\lambda_0},
+\]
+for $c(x) := -\int_0^1 f'(su(x_{\lambda_0}) + (1-s)u(x)) \, ds$. As $w \ge 0$ in $E_{\lambda_0}$, we deduce from Lemma 1 (applied to $V = E_{\lambda_0}$) that $w > 0$ in $E_{\lambda_0}$, $w_{x_n} > 0$ on $P_{\lambda_0} \cap U$. Thus
+\[
+u(x) < u(x_{\lambda_0}) \text{ in } E_{\lambda_0},
+\tag{18}
+\]
+and
+\[
+u_{x_n} < 0 \text{ on } P_{\lambda_0} \cap U.
+\tag{19}
+\]
+Using (18), (19) and Lemma 2, we conclude
+\[
+u(x) < u(x_{\lambda_0-\varepsilon}) \text{ in } E_{\lambda_0-\varepsilon} \text{ for all } 0 \le \varepsilon \le \varepsilon_0,
+\tag{20}
+\]
+if $\varepsilon_0$ is small enough. Assertion (20) contradicts our choice (16) of $\lambda_0$, if $\lambda_0 > 0$.
+
+3. Since $\lambda_0 = 0$, we see $u(x_1, \ldots, x_{n-1}, -x_n) \ge u(x_1, \ldots, x_n)$ for all $x \in U \cap \{x_n > 0\}$. A similar argument in $U \cap \{x_n < 0\}$ shows $u(x_1, \ldots, x_{n-1}, -x_n) \le u(x_1, \ldots, x_n)$ for all $x \in U \cap \{x_n > 0\}$. Thus $u$ is symmetric in the plane $P_0$ and $u_{x_n} = 0$ on $P_0$.
+
+This argument applies as well after any rotation of coordinate axes, and so the theorem follows.
+\end{proof}
+
+\section{Gradient Flows}
+\label{sec:gradient-flows}
+
+In this section we augment our discussion of abstract semigroup theory for linear operators (\cref{def:semigroup-contraction-semigroup}) by introducing certain nonlinear semigroups, generated by convex functions. Applications include various nonlinear second-order parabolic partial differential equations.
+
+\subsection{Convex Functions on Hilbert Spaces}
+\label{sec:convex-functions-hilbert-spaces}
+
+Convexity has been an essential ingredient in much of our analysis of nonlinear PDE thus far. We now broaden our view by considering convex functions defined on (possibly infinite dimensional) Hilbert spaces.
+
+Hereafter $H$ will denote a real Hilbert space, with inner product $(\cdot, \cdot)$ and norm $\|\cdot\|$.
+
+\begin{definition}[Convex function on a Hilbert space]
+\label{def:convex-function-hilbert-space}
+\dcref{ch9:9.6.1-def-1}
+\group{Convex Analysis}
+A function
+\[
+I : H \to (-\infty, \infty]
+\]
+is \textit{convex} provided
+\[
+I[\tau u + (1-\tau)v] \le \tau I[u] + (1-\tau)I[v]
+\]
+for all $u, v \in H$ and each $0 \le \tau \le 1$.
+\end{definition}
+
+Note carefully that we allow $I$ to take on the value $+\infty$ (but not $-\infty$). The function $I$ is called \textit{proper} if $I$ is not identically equal to $+\infty$. The \textit{domain of} $I$ is
+\[
+D(I) := \{u \in H \mid I[u] < +\infty\}.
+\]
+
+\begin{definition}[Lower semicontinuous]
+\label{def:lower-semicontinuous-hilbert-functional}
+\dcref{ch9:9.6.1-def-2}
+\group{Convex Analysis}
+We say $I : H \to (-\infty, +\infty]$ is \textit{lower semicontinuous} if
+\[
+\begin{cases} u_k \to u \text{ in } H \text{ implies} \\ I[u] \le \liminf_{k \to \infty} I[u_k]. \end{cases}
+\]
+\end{definition}
+
+As in the finite dimensional case (cf. \S B.1), it is important to understand when the graph of $I$ has a supporting hyperplane.
+
+\begin{definition}[Subdifferential]
+\label{def:subdifferential-hilbert}
+\dcref{ch9:9.6.1-def-3}
+\group{Convex Analysis}
+\uses{def:convex-function-hilbert-space}
+Let $I : H \to (-\infty, +\infty]$ be convex and proper.
+\begin{enumerate}
+\item[(i)] For each $u \in H$, we write
+\[
+\partial I[u] := \{v \in H \mid I[w] \ge I[u] + (v, w-u) \text{ for all } w \in H\}.
+\tag{1}
+\]
+The mapping $\partial I : H \to 2^H$ is the \textit{subdifferential} of $I$.
+\item[(ii)] We say $u \in D(\partial I)$, the domain of $\partial I$, provided $\partial I[u] \ne \emptyset$.
+\end{enumerate}
+\end{definition}
+
+The geometric interpretation of (1) is that $v \in \partial I[u]$ if and only if $v$ is the ``slope'' of an affine functional touching the graph of $I$ from below at the point $u$. Since this graph may have a ``corner'' at $u$, $\partial I[u]$ could be multivalued.
+
+\begin{theorem}[Properties of subdifferentials]
+\label{thm:properties-of-subdifferentials}
+\dcref{ch9:9.6-thm-1}
+\group{Convex Analysis}
+\uses{def:subdifferential-hilbert,def:lower-semicontinuous-hilbert-functional,thm:weak-lower-semicontinuity-convex-lagrangian}
+Let $I : H \to (-\infty, +\infty]$ be convex, proper and lower semicontinuous. Then
+\begin{enumerate}
+\item[(i)] $D(\partial I) \subseteq D(I)$.
+\item[(ii)] If $v \in \partial I[u]$ and $\tilde{v} \in \partial I[\tilde{u}]$, then
+\[
+(v - \tilde{v}, u - \tilde{u}) \geq 0 \quad \text{(monotonicity)}.
+\]
+\item[(iii)] $I[u] = \min_{w \in H} I[w]$ if and only if $0 \in \partial I[u]$.
+\item[(iv)] For each $w \in H$ and $\lambda > 0$, the problem
+\[
+u + \lambda \partial I[u] \ni w
+\]
+has a unique solution $u \in D(\partial I)$.
+\end{enumerate}
+Assertion (iv) means that there exists $u \in D(\partial I)$ and $v \in \partial I[u]$ such that
+\[
+u + \lambda v = w.
+\]
+\end{theorem}
+\begin{proof}
+1. Let $u \in D(\partial I)$, $v \in \partial I[u]$. Then $I[w] \geq I[u] + (v, w - u)$ for all $w \in H$. Since $I$ is proper, there exists a point $u_0$ with $I[u_0] < +\infty$. Thus $I[u] \leq I[u_0] + (v, u - u_0) < \infty$ and so $u \in D(I)$. This proves (i).
+
+2. Given $v \in \partial I[u]$, $\tilde{v} \in \partial I[\tilde{u}]$, we know
+\[
+I[\tilde{u}] \geq I[u] + (v, \tilde{u} - u), \quad I[u] \geq I[\tilde{u}] + (\tilde{v}, u - \tilde{u}).
+\]
+As (i) implies $I[u], I[\tilde{u}] < +\infty$, we may add the foregoing inequalities and rearrange to obtain (ii).
+
+3. If $I[u] = \min I$, then
+\[
+I[w] \geq I[u] + (0, w - u) \text{ for all } w \in H.
+\tag{2}
+\]
+Hence $0 \in \partial I[u]$. If conversely $0 \in \partial I[u]$, then (2) holds, and so $I[u] = \min I$.
+
+4. Given $w \in H$ and $\lambda > 0$, define
+\[
+J[u] := \tfrac{1}{2}\|u\|^2 + \lambda I[u] - (u, w) \quad (u \in H).
+\tag{3}
+\]
+We intend to show that $J$ attains its minimum over $H$.
+
+Let us first claim that
+\[
+\begin{cases} u_k \to u \text{ weakly in } H \text{ implies} \\ I[u] \leq \liminf_{k \to \infty} I[u_k]. \end{cases}
+\tag{4}
+\]
+In other words, we are asserting for a convex function $I$ that lower semicontinuity with respect to strong convergence of sequences implies lower semicontinuity with respect to weak convergence. To see this, suppose $u_k \rightharpoonup u$ in $H$ and
+\[
+\liminf_{k \to \infty} I[u_k] = \lim_{j \to \infty} I[u_{k_j}] = l < \infty
+\]
+for some subsequence $\{u_{k_j}\}_{j=1}^\infty \subset \{u_k\}_{k=1}^\infty$. For each $\varepsilon > 0$ the set $K_\varepsilon = \{w \in H \mid I[w] \le l+\varepsilon\}$ is closed and convex, and is thus weakly closed according to Mazur's Theorem (\S D.4). Since all but finitely many of the points $\{u_{k_j}\}_{j=1}^\infty$ lie in $K_\varepsilon$, $u$ lies in $K_\varepsilon$, and consequently
+\[
+I[u] \le l + \varepsilon = \liminf_{k \to \infty} I[u_k] + \varepsilon.
+\]
+This is true for each $\varepsilon > 0$ and thus (4) follows.
+
+5. Next we assert that
+\[
+I[u] \geq -C - C\|u\| \quad (u \in H)
+\tag{5}
+\]
+for some constant $C$. To verify this claim we suppose to the contrary that for each $k = 1,2,\ldots$ there exists a point $u_k \in H$ such that
+\[
+I[u_k] \leq -k - k\|u_k\|.
+\tag{6}
+\]
+If the sequence $\{u_k\}_{k=1}^\infty$ is bounded in $H$, there exists according to \S D.4 a weakly convergent subsequence: $u_{k_j} \rightharpoonup u$. But then (4) and (6) imply the contradiction $I[u] = -\infty$. Thus we may as well assume, passing if necessary to a subsequence, that $\|u_k\| \to \infty$. Select $u_0 \in H$ so that $I[u_0] < \infty$. Set
+\[
+z_k := \frac{u_k}{\|u_k\|} + \left(1 - \frac{1}{\|u_k\|}\right) u_0 \quad (k = 1,2,\ldots).
+\]
+Then convexity implies
+\[
+I[z_k] \le \frac{1}{\|u_k\|}I[u_k] + \left(1 - \frac{1}{\|u_k\|}\right) I[u_0] \le -k + |I[u_0]|.
+\]
+As $\{z_k\}_{k=1}^\infty$ is bounded, we can extract a weakly convergent subsequence: $z_{k_j} \rightharpoonup z$, and again derive the contradiction $I[z] = -\infty$. We thereby establish the claim (5).
+
+6. Return now to the function $J$ defined by (3). Choose a minimizing sequence $\{u_k\}_{k=1}^\infty \subset H$ so that
+\[
+J[u_k] \to \inf_{w\in H} J[w] = m.
+\]
+Owing to (3), (5) $m$ is a finite number. Thus we deduce from (3), (5) that the sequence $\{u_k\}_{k=1}^\infty$ is bounded. We may then extract a weakly convergent subsequence: $u_{k_j} \rightharpoonup u$. As the mapping $u \mapsto \|u\|^2$ is weakly lower semicontinuous, $J$ has a minimum at $u$. Then assertion (iii) says $0 \in \partial J[u]$. A computation verifies that $\partial J[u] = u - w + \lambda \partial I[u]$, and so
+\[
+u + \lambda \partial I[u] \ni w.
+\]
+
+7. To confirm uniqueness, suppose as well
+\[
+\tilde{u} + \lambda \partial I[\tilde{u}] \ni w.
+\]
+Then $u + \lambda v = w$, $\tilde{u} + \lambda \tilde{v} = w$ for $v \in \partial I[u]$, $\tilde{v} \in \partial I[\tilde{u}]$. Owing to the monotonicity assertion (ii),
+\[
+0 \le (u - \tilde{u}, v - \tilde{v}) = \left(u - \tilde{u}, -\frac{u}{\lambda} + \frac{\tilde{u}}{\lambda}\right) = -\frac{1}{\lambda}\|u - \tilde{u}\|^2.
+\]
+Since $\lambda > 0$, $u = \tilde{u}$.
+\end{proof}
+
+We introduce next nonlinear analogues of the operators $R_\lambda$, $A_\lambda$ introduced in \S7.4.
+
+\begin{definition}[Nonlinear resolvent and Yosida approximation]
+\label{def:nonlinear-resolvent-yosida}
+\dcref{ch9:9.6.1-def-4}
+\group{Convex Analysis}
+\uses{thm:properties-of-subdifferentials}
+\begin{enumerate}
+\item[(1)] For each $\lambda > 0$ define the \textit{nonlinear resolvent} $J_\lambda : H \to D(\partial I)$ by setting
+\[
+J_\lambda[w] := u,
+\]
+where $u$ is the unique solution of
+\[
+u + \lambda \partial I[u] \ni w.
+\]
+\item[(2)] For each $\lambda > 0$ define the \textit{Yosida approximation} $A_\lambda : H \to H$ by
+\[
+A_\lambda[w] := \frac{w - J_\lambda[w]}{\lambda} \quad (w \in H).
+\tag{7}
+\]
+\end{enumerate}
+Think of $A_\lambda$ as a sort of regularization or smoothing of the operator $A = \partial I$.
+\end{definition}
+
+\begin{theorem}[Properties of $J_\lambda$, $A_\lambda$]
+\label{thm:properties-resolvent-yosida}
+\dcref{ch9:9.6-thm-2}
+\group{Convex Analysis}
+\uses{def:nonlinear-resolvent-yosida,thm:properties-of-subdifferentials}
+For each $\lambda > 0$ and $w, \tilde{w} \in H$, the following statements hold:
+\begin{enumerate}
+\item[(i)] $\|J_\lambda[w] - J_\lambda[\tilde{w}]\| \le \|w - \tilde{w}\|$,
+\item[(ii)] $\|A_\lambda[w] - A_\lambda[\tilde{w}]\| \le \frac{2}{\lambda}\|w - \tilde{w}\|$,
+\item[(iii)] $0 \le (w - \tilde{w}, A_\lambda[w] - A_\lambda[\tilde{w}])$,
+\item[(iv)] $A_\lambda[w] \in \partial I[J_\lambda[w]]$.
+\item[(v)] If $w \in D(\partial I)$, then
+\[
+\sup_{\lambda > 0} \|A_\lambda[w]\| \le |A^0[w]|,
+\]
+where $|A^0[w]| := \min_{z \in \partial I[w]} \|z\|$.
+\item[(vi)] For each $w \in \overline{D(\partial I)}$,
+\[
+\lim_{\lambda \to 0} J_\lambda[w] = w.
+\]
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+1. Let $u = J_\lambda[w]$, $\bar{u} = J_\lambda[\bar{w}]$. Then $u + \lambda v = w$, $\bar{u} + \lambda \bar{v} = \bar{w}$ for some $v \in \partial I[u]$, $\bar{v} \in \partial I[\bar{u}]$. Therefore
+\[
+\|w - \bar{w}\|^2 = \|u - \bar{u} + \lambda(v - \bar{v})\|^2
+\]
+\[
+= \|u - \bar{u}\|^2 + 2\lambda(u - \bar{u}, v - \bar{v}) + \lambda^2\|v - \bar{v}\|^2
+\]
+\[
+\ge \|u - \bar{u}\|^2,
+\]
+according to \cref{thm:properties-of-subdifferentials}(ii). This proves assertion (i), and assertion (ii) follows at once from the definition (7) of the Yosida approximation $A_\lambda$.
+
+2. We verify (iii) by using (7) to compute:
+\[
+(w - \bar{w}, A_\lambda[w] - A_\lambda[\bar{w}]) = \frac{1}{\lambda}(\|w - \bar{w}\|^2 - (w - \bar{w}, J_\lambda[w] - J_\lambda[\bar{w}]))
+\]
+\[
+\ge \frac{1}{\lambda}(\|w - \bar{w}\|^2 - \|w - \bar{w}\| \|J_\lambda[w] - J_\lambda[\bar{w}]\|) \ge 0,
+\]
+according to (i).
+
+3. To prove (iv), note $u = J_\lambda[w]$ if and only if $u + \lambda v = w$ for some $v \in \partial I[u] = \partial I[J_\lambda[w]]$. But
+\[
+v = \frac{w - u}{\lambda} = \frac{w - J_\lambda[w]}{\lambda} = A_\lambda[w].
+\]
+
+4. Assume next $w \in D(\partial I)$, $z \in \partial I[w]$. Let $u = J_\lambda[w]$; so that $u + \lambda v = w$, where $v \in \partial I[u]$. By monotonicity
+\[
+0 \le (w - u, z - v) = \left(w - J_\lambda[w], z - \frac{w - J_\lambda[w]}{\lambda}\right) = (\lambda A_\lambda[w], z - A_\lambda[w]).
+\]
+Consequently
+\[
+\lambda\|A_\lambda[w]\|^2 \le (\lambda A_\lambda[w], z) \le \lambda\|A_\lambda[w]\| \|z\|,
+\]
+and so
+\[
+\|A_\lambda[w]\| \le \|z\|.
+\]
+This estimate is valid for all $\lambda > 0$, $z \in \partial I[w]$. Assertion (v) follows.
+
+5. If $w \in D(\partial I)$, then
+\[
+\|J_\lambda[w] - w\| = \lambda\|A_\lambda[w]\| \le \lambda|A^0[w]|,
+\]
+and hence $J_\lambda[w] \to w$ as $\lambda \to 0$. Now let $w \in \overline{D(\partial I)} - D(\partial I)$. There exists for each $\varepsilon > 0$ a point $\hat{w} \in D(\partial I)$ with $\|w - \hat{w}\| \le \varepsilon$. Then
+\[
+\|J_\lambda[w] - w\| \le \|J_\lambda[w] - J_\lambda[\hat{w}]\| + \|J_\lambda[\hat{w}] - \hat{w}\| + \|w - \hat{w}\|
+\]
+\[
+\le 2\|w - \hat{w}\| + \|J_\lambda[\hat{w}] - \hat{w}\|
+\]
+\[
+\le 2\varepsilon + \|J_\lambda[\hat{w}] - \hat{w}\|.
+\]
+Since $\hat{w} \in D(\partial I)$, $J_\lambda[\hat{w}] \to \hat{w}$ as $\lambda \to 0$. Thus
+\[
+\limsup_{\lambda \to 0} \|J_\lambda[w] - w\| \le 2\varepsilon
+\]
+for each $\varepsilon > 0$.
+\end{proof}
+
+\subsection{Subdifferentials and Nonlinear Semigroups}
+\label{sec:subdifferentials-nonlinear-semigroups}
+
+As above, let $H$ be a real Hilbert space, and take $I : H \to (-\infty, +\infty]$ to be convex, proper, lower-semicontinuous. Let us for simplicity assume as well
+\[
+\partial I \text{ is densely defined, i.e. } \overline{D(\partial I)} = H.
+\tag{8}
+\]
+By analogy with the theory of linear semigroups set forth in \S7.4, we propose now to study the differential equation
+\[
+\begin{cases} \mathbf{u}'(t) + A[\mathbf{u}(t)] \ni 0 & (t \ge 0) \\ \mathbf{u}(0) = u, \end{cases}
+\tag{9}
+\]
+where $u \in H$ is given and $A = \partial I$ is a nonlinear, discontinuous operator, which is perhaps multivalued. Assuming for the moment (9) has a unique solution for each initial point $u$, we write
+\[
+\mathbf{u}(t) = S(t)u \quad (t \ge 0)
+\tag{10}
+\]
+and regard $S(t)$ so defined as a mapping from $H$ into $H$ for each time $t \ge 0$.
+
+\begin{remark}[Nonlinear semigroup notation]
+\label{rem:nonlinear-semigroup-notation}
+\dcref{ch9:9.6.2-rem-1}
+\group{Nonlinear Semigroups}
+We will employ the notation (10) to emphasize similarities with linear semigroup theory, previously introduced in \S7.4. But carefully note here and afterwards that the mapping $u \mapsto S(t)u$ is in general \textit{nonlinear}.
+\end{remark}
+
+As in \S7.4 it is reasonable to expect further that
+\[
+S(0)u = u \quad (u \in H),
+\tag{11}
+\]
+\[
+S(t + s)u = S(t)S(s)u \quad (t, s \geq 0, u \in H),
+\tag{12}
+\]
+and for each $u \in H$
+\[
+\text{the mapping } t \mapsto S(t)u \text{ is continuous from } [0, \infty) \text{ into } H.
+\tag{13}
+\]
+
+\begin{definition}[Nonlinear (contraction) semigroup]
+\label{def:nonlinear-contraction-semigroup}
+\dcref{ch9:9.6.2-def-1}
+\group{Nonlinear Semigroups}
+\begin{enumerate}
+\item[(i)] A family $\{S(t)\}_{t \geq 0}$ of nonlinear operators mapping $H$ into $H$ is called a \textit{nonlinear semigroup} if conditions (11)--(13) are satisfied.
+\item[(ii)] We say $\{S(t)\}_{t \geq 0}$ is a \textit{contraction semigroup} if in addition
+\[
+\|S(t)u - S(t)\hat{u}\| \leq \|u - \hat{u}\| \quad (t \geq 0, u, \hat{u} \in H).
+\tag{14}
+\]
+\end{enumerate}
+\end{definition}
+
+Our intention is to show that the operator $A = \partial I$ generates a nonlinear semigroup of contractions on $H$. In particular we will prove that the ODE
+\[
+\begin{cases} \mathbf{u}'(t) \in -\partial I[\mathbf{u}(t)] & (t \geq 0) \\ \mathbf{u}(0) = u, \end{cases}
+\tag{15}
+\]
+for a given initial point $u \in H$, is well-posed. This is a kind of infinite dimensional ``gradient flow'' governed by $\partial I$. Later in \cref{sec:gradient-flow-applications} we will see that certain quasilinear parabolic PDE can be cast into the abstract form (15).
+
+\begin{theorem}[Solution of gradient flow]
+\label{thm:solution-of-gradient-flow}
+\dcref{ch9:9.6-thm-3}
+\group{Nonlinear Semigroups}
+\uses{thm:properties-resolvent-yosida,def:nonlinear-contraction-semigroup}
+For each $u \in D(\partial I)$ there exists a unique function
+\[
+\mathbf{u} \in C([0, \infty); H), \text{ with } \mathbf{u}' \in L^\infty(0, \infty; H),
+\tag{16}
+\]
+such that
+\begin{enumerate}
+\item[(i)] $\mathbf{u}(0) = u$,
+\item[(ii)] $\mathbf{u}(t) \in D(\partial I)$ for each $t > 0$,
+\end{enumerate}
+and
+\begin{enumerate}
+\item[(iii)] $\mathbf{u}'(t) \in -\partial I[\mathbf{u}(t)]$ for a.e. $t \geq 0$.
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+1. We first build approximate solutions by solving for each $\lambda > 0$ the ODE
+\[
+\begin{cases} \mathbf{u}'_\lambda(t) + A_\lambda[\mathbf{u}_\lambda(t)] = 0 & (t \ge 0) \\ \mathbf{u}_\lambda(0) = u. \end{cases}
+\tag{17}
+\]
+According to Theorem 2,(ii) the Yosida approximation $A_\lambda : H \to H$ is an everywhere defined, Lipschitz continuous mapping, and thus (17) has a unique solution $\mathbf{u}_\lambda \in C^1([0,\infty); H)$.
+
+Our plan is to show that as $\lambda \to 0^+$, the functions $\mathbf{u}_\lambda$ converge to a solution of (15). This is subtle, however, as the operator $A = \partial I$ is in general nonlinear, multivalued, and not everywhere defined.
+
+2. First, let us take another point $v \in H$ and consider as well the ODE
+\[
+\begin{cases} \mathbf{v}'_\lambda(t) + A_\lambda[\mathbf{v}_\lambda(t)] = 0 & (t \ge 0) \\ \mathbf{v}_\lambda(0) = v. \end{cases}
+\tag{18}
+\]
+Then
+\[
+\frac{1}{2}\frac{d}{dt}\|\mathbf{u}_\lambda - \mathbf{v}_\lambda\|^2 = (\mathbf{u}'_\lambda - \mathbf{v}'_\lambda, \mathbf{u}_\lambda - \mathbf{v}_\lambda)
+\]
+\[
+= (-A_\lambda[\mathbf{u}_\lambda] + A_\lambda[\mathbf{v}_\lambda], \mathbf{u}_\lambda - \mathbf{v}_\lambda) \le 0,
+\]
+owing to Theorem 2,(iii). Hence
+\[
+\|\mathbf{u}_\lambda(t) - \mathbf{v}_\lambda(t)\| \le \|u - v\| \quad (t \ge 0).
+\tag{19}
+\]
+In particular, if $h > 0$ and $v = \mathbf{u}_\lambda(h)$, then by uniqueness $\mathbf{v}_\lambda(t) = \mathbf{u}_\lambda(t+h)$. Consequently (19) implies
+\[
+\|\mathbf{u}_\lambda(t+h) - \mathbf{u}_\lambda(t)\| \le \|\mathbf{u}(h) - u\|.
+\]
+Divide by $h$ and send $h \to 0$:
+\[
+\|\mathbf{u}'_\lambda(t)\| \le \|\mathbf{u}'_\lambda(0)\| = \|A_\lambda[u]\| \le |A^0[u]|,
+\tag{20}
+\]
+the last inequality resulting from Theorem 2,(v).
+
+3. We next take $\lambda, \mu > 0$ and compute:
+\[
+\frac{1}{2}\frac{d}{dt}\|\mathbf{u}_\lambda - \mathbf{u}_\mu\|^2 = (\mathbf{u}'_\lambda - \mathbf{u}'_\mu, \mathbf{u}_\lambda - \mathbf{u}_\mu)
+\]
+\[
+= (-A_\lambda[\mathbf{u}_\lambda] + A_\mu[\mathbf{u}_\mu], \mathbf{u}_\lambda - \mathbf{u}_\mu).
+\tag{21}
+\]
+Now
+\[
+\mathbf{u}_\lambda - \mathbf{u}_\mu = (\mathbf{u}_\lambda - J_\lambda[\mathbf{u}_\lambda]) + (J_\lambda[\mathbf{u}_\lambda] - J_\mu[\mathbf{u}_\mu]) + (J_\mu[\mathbf{u}_\mu] - \mathbf{u}_\mu)
+\]
+\[
+= \lambda A_\lambda[\mathbf{u}_\lambda] + J_\lambda[\mathbf{u}_\lambda] - J_\mu[\mathbf{u}_\mu] - \mu A_\mu[\mathbf{u}_\mu].
+\]
+Consequently
+\[
+(A_\lambda[\mathbf{u}_\lambda] - A_\mu[\mathbf{u}_\mu], \mathbf{u}_\lambda - \mathbf{u}_\mu) = (A_\lambda[\mathbf{u}_\lambda] - A_\mu[\mathbf{u}_\mu], J_\lambda[\mathbf{u}_\lambda] - J_\mu[\mathbf{u}_\mu])
+\]
+\[
++ (A_\lambda[\mathbf{u}_\lambda] - A_\mu[\mathbf{u}_\mu], \lambda A_\lambda[\mathbf{u}_\lambda] - \mu A_\mu[\mathbf{u}_\mu]).
+\tag{22}
+\]
+Since $A_\lambda[\mathbf{u}_\lambda] \in \partial I[J_\lambda[\mathbf{u}_\lambda]]$ and $A_\mu[\mathbf{u}_\mu] \in \partial I[J_\mu[\mathbf{u}_\mu]]$, the monotonicity property implies that the first term on the right hand side of (22) is nonnegative. Thus
+\[
+(A_\lambda[\mathbf{u}_\lambda] - A_\mu[\mathbf{u}_\mu], \mathbf{u}_\lambda - \mathbf{u}_\mu) \geq \lambda\|A_\lambda[\mathbf{u}_\lambda]\|^2 + \mu\|A_\mu[\mathbf{u}_\mu]\|^2 - (\lambda + \mu)\|A_\lambda[\mathbf{u}_\lambda]\| \|A_\mu[\mathbf{u}_\mu]\|.
+\]
+Since
+\[
+(\lambda + \mu)\|A_\lambda[\mathbf{u}_\lambda]\| \|A_\mu[\mathbf{u}_\mu]\| \leq \lambda\left(\|A_\lambda[\mathbf{u}_\lambda]\|^2 + \frac{1}{4}\|A_\mu[\mathbf{u}_\mu]\|^2\right)
+\]
+\[
++ \mu\left(\|A_\mu[\mathbf{u}_\mu]\|^2 + \frac{1}{4}\|A_\lambda[\mathbf{u}_\lambda]\|^2\right),
+\]
+we deduce
+\[
+(A_\lambda[\mathbf{u}_\lambda] - A_\mu[\mathbf{u}_\mu], \mathbf{u}_\lambda - \mathbf{u}_\mu) \geq -\frac{\lambda}{4}\|A_\mu[\mathbf{u}_\mu]\|^2 - \frac{\mu}{4}\|A_\lambda[\mathbf{u}_\lambda]\|^2.
+\]
+But $\|A_\lambda[\mathbf{u}_\lambda]\| = \|\mathbf{u}'_\lambda\| \leq |A^0[u]|$ according to (20); whence
+\[
+(A_\lambda[\mathbf{u}_\lambda] - A_\mu[\mathbf{u}_\mu], \mathbf{u}_\lambda - \mathbf{u}_\mu) \geq -\frac{\lambda + \mu}{4}|A^0[u]|^2.
+\]
+Recalling (21), (22), we obtain the inequality
+\[
+\frac{d}{dt}\|\mathbf{u}_\lambda - \mathbf{u}_\mu\|^2 \leq \frac{(\lambda + \mu)}{2}|A^0[u]|^2 \quad (t \geq 0);
+\]
+and hence
+\[
+\|\mathbf{u}_\lambda(t) - \mathbf{u}_\mu(t)\|^2 \leq \frac{(\lambda + \mu)}{2}t|A^0u|^2 \quad (t \geq 0).
+\tag{23}
+\]
+In view of estimate (23) there exists a function $\mathbf{u} \in C([0, \infty); H)$ such that
+\[
+\mathbf{u}_\lambda \to \mathbf{u} \quad \text{uniformly in } C([0, T], H)
+\]
+as $\lambda \to 0$, for each time $T > 0$. Furthermore estimate (20) implies
+\[
+\mathbf{u}'_\lambda \to \mathbf{u}' \quad \text{weakly in } L^2(0, T; H)
+\tag{24}
+\]
+for each $T > 0$, and
+\[
+\|\mathbf{u}'(t)\| \leq |A^0[u]| \quad \text{for a.e. } t.
+\tag{25}
+\]
+
+4. We must show $\mathbf{u}(t) \in D(\partial I)$ for each $t \geq 0$ and
+\[
+\mathbf{u}'(t) + \partial I[\mathbf{u}(t)] \ni 0 \quad \text{for a.e. } t \geq 0.
+\]
+Now
+\[
+\|J_\lambda[\mathbf{u}_\lambda](t) - \mathbf{u}_\lambda(t)\| = \lambda\|A_\lambda[\mathbf{u}_\lambda](t)\| = \lambda\|\mathbf{u}'_\lambda(t)\| \leq \lambda|A^0[u]|
+\]
+by (20). Hence
+\[
+J_\lambda[\mathbf{u}_\lambda] \to \mathbf{u} \text{ uniformly in } C([0,T]; H)
+\tag{26}
+\]
+for each $T > 0$.
+
+For each time $t \geq 0$,
+\[
+-\mathbf{u}'_\lambda(t) = A_\lambda[\mathbf{u}_\lambda(t)] \in \partial I[J_\lambda[\mathbf{u}_\lambda(t)]].
+\]
+Thus given $w \in H$, we have:
+\[
+I[w] \geq I[J_\lambda[\mathbf{u}_\lambda(t)]] - (\mathbf{u}'_\lambda(t), w - J_\lambda[\mathbf{u}_\lambda(t)]).
+\]
+Consequently if $0 \leq s \leq t$,
+\[
+(t - s)I[w] \geq \int_s^t I[J_\lambda[\mathbf{u}_\lambda(r)]] \, dr - \int_s^t (\mathbf{u}'_\lambda(r), w - J_\lambda[\mathbf{u}_\lambda(r)]) \, dr.
+\]
+In view of (26), the lower semicontinuity of $I$, and Fatou's Lemma (\S E.3), we conclude upon sending $\lambda \to 0$ that
+\[
+(t - s)I[w] \geq \int_s^t I[\mathbf{u}(r)] \, dr - \int_s^t (\mathbf{u}'(r), w - \mathbf{u}(r)) \, dr
+\]
+for each $0 \leq s \leq t$. Therefore
+\[
+I[w] \geq I[\mathbf{u}(t)] + (-\mathbf{u}'(t), w - \mathbf{u}(t))
+\]
+if $t$ is a Lebesgue point of $\mathbf{u}'$, $I[\mathbf{u}]$. Hence for a.e. $t \geq 0$,
+\[
+I[w] \geq I[\mathbf{u}(t)] + (-\mathbf{u}'(t), w - \mathbf{u}(t))
+\]
+for all $w \in H$. Thus $\mathbf{u}(t) \in D(\partial I)$, with
+\[
+-\mathbf{u}'(t) \in \partial I[\mathbf{u}(t)]
+\]
+for a.e. $t \geq 0$.
+
+5. Finally we prove $\mathbf{u}(t) \in D(\partial I)$ for each $t \geq 0$. To see this, fix $t \geq 0$ and choose $t_k \to t$ such that $\mathbf{u}(t_k) \in D(\partial I)$, $-\mathbf{u}'(t_k) \in \partial I[\mathbf{u}(t_k)]$. In view of (25) we may assume, upon passing if necessary to a subsequence, that
+\[
+\mathbf{u}'(t_k) \rightharpoonup \mathbf{v} \quad \text{weakly in } H.
+\]
+Fix $w \in H$. Then
+\[
+I[w] \geq I[\mathbf{u}(t_k)] + (-\mathbf{u}'(t_k), w - \mathbf{u}(t_k)).
+\]
+Let $t_k \to t$ and recall that $\mathbf{u} \in C([0, \infty); H)$ and $I$ is lower semicontinuous. We obtain the inequality
+\[
+I[w] \geq I[\mathbf{u}(t)] + (-\mathbf{v}, w - \mathbf{u}(t)).
+\]
+Hence $\mathbf{u}(t) \in D(\partial I)$ and $-\mathbf{v} \in \partial I[\mathbf{u}(t)]$.
+
+6. We have shown $\mathbf{u}$ satisfies assertions (i)--(iii). To prove uniqueness, assume $\tilde{\mathbf{u}}$ is another solution and compute
+\[
+\frac{1}{2} \frac{d}{dt} \|\mathbf{u} - \tilde{\mathbf{u}}\|^2 = (\mathbf{u}' - \tilde{\mathbf{u}}', \mathbf{u} - \tilde{\mathbf{u}}) \leq 0 \quad \text{for a.e. } t \geq 0,
+\]
+since $-\mathbf{u}' \in \partial I[\mathbf{u}]$, $-\tilde{\mathbf{u}}' \in \partial I[\tilde{\mathbf{u}}]$.
+\end{proof}
+
+\begin{remark}[Extension to $\overline{D(\partial I)}$]
+\label{rem:gradient-flow-semigroup-extension}
+\dcref{ch9:9.6.2-rem-2}
+\group{Nonlinear Semigroups}
+\uses{thm:solution-of-gradient-flow}
+\begin{enumerate}
+\item[(i)] The operator $A = \partial I$ in fact generates a nonlinear contraction semigroup on all of $H$. If $\mathbf{u}, \mathbf{v} \in D(\partial I)$, we write as above
+\[
+\lim_{\lambda \to 0} \mathbf{u}_\lambda(t) = \mathbf{u}(t) = S(t)\mathbf{u}
+\]
+and
+\[
+\lim_{\lambda \to 0} \mathbf{v}_\lambda(t) = \mathbf{v}(t) = S(t)\mathbf{v}.
+\]
+Owing to (19) we see
+\[
+\|S(t)\mathbf{u} - S(t)\mathbf{v}\| \leq \|\mathbf{u} - \mathbf{v}\| \quad (t \geq 0)
+\]
+if $\mathbf{u}, \mathbf{v} \in D(\partial I)$. Using this inequality we uniquely extend the semigroup of nonlinear operators $\{S(t)\}_{t \geq 0}$ to $H = \overline{D(\partial I)}$.
+\item[(ii)] We have assumed that $D(\partial I)$ is dense in $H$ purely to streamline the exposition: in general $\{S(t)\}_{t \geq 0}$ is a semigroup of contractions on $\overline{D(\partial I)} \subseteq H$.
+\end{enumerate}
+\end{remark}
+
+\subsection{Applications}
+\label{sec:gradient-flow-applications}
+
+We now illustrate how some of the abstract theory set forth in \cref{sec:convex-functions-hilbert-spaces,sec:subdifferentials-nonlinear-semigroups} applies to certain nonlinear parabolic partial differential equations.
+
+Let us hereafter suppose $U$ is a bounded, open subset of $\R^n$, with smooth boundary $\partial U$. We choose $H = L^2(U)$, and set
+\[
+I[u] := \begin{cases} \int_U L(Du) \, dx & \text{if } u \in H_0^1(U) \\ +\infty & \text{otherwise,} \end{cases}
+\tag{27}
+\]
+where $L : \R^n \to \R$ is smooth, convex, and satisfies
+\[
+|D^2L(p)| \leq C \quad (p \in \R^n),
+\tag{28}
+\]
+\[
+\sum_{i,j=1}^n L_{p_ip_j}(p)\xi_i\xi_j \geq \theta|\xi|^2 \quad (p,\xi \in \R^n)
+\tag{29}
+\]
+for constants $C, \theta > 0$.
+
+\begin{theorem}[Characterization of $\partial I$]
+\label{thm:characterization-subdifferential-uniformly-convex-lagrangian}
+\dcref{ch9:9.6-thm-4}
+\group{Convex Analysis}
+\uses{def:convex-function-hilbert-space,def:subdifferential-hilbert,thm:weak-lower-semicontinuity-convex-lagrangian,def:monotone-vector-field,thm:second-derivatives-minimizers}
+\begin{enumerate}
+\item[(i)] $I : H \to (-\infty, +\infty]$ is convex, proper and lower semicontinuous.
+\item[(ii)] $D(\partial I) = H^2(U) \cap H_0^1(U)$.
+\item[(iii)] If $u \in D(\partial I)$, then $\partial I$ is single-valued and
+\[
+\partial I[u] = -\sum_{i=1}^n (L_{p_i}(Du))_{x_i} \quad \text{a.e.}
+\]
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+1. $I$ is clearly proper and convex. Furthermore, since $I$ is weakly sequentially lower semicontinuous (cf.\ Theorem 1 in \cref{thm:weak-lower-semicontinuity-convex-lagrangian}), $I$ is lower semicontinuous.
+
+2. Define the nonlinear operator $A$ by setting
+\[
+\begin{cases}
+D(A) := H^2(U) \cap H_0^1(U), \\
+A[u] := -\sum_{i=1}^n (L_{p_i}(Du))_{x_i} \quad (u \in D(A)).
+\end{cases}
+\]
+We must prove $A = \partial I$.
+
+3. First let $u \in D(A)$, $v = A[u]$, $w \in L^2(U)$. If $w \notin H_0^1(U)$, then $I[w] = +\infty$ and so clearly
+\[
+I[w] \geq I[u] + (v, w - u).
+\tag{30}
+\]
+Assume next $w \in H_0^1(U)$. Thus
+\[
+(v, w - u) = - \int_U \sum_{i=1}^n (L_{p_i}(Du))_{x_i}(w - u) \, dx
+\]
+\[
+= \int_U \sum_{i=1}^n L_{p_i}(Du)(Dw - Du) \, dx.
+\]
+Since $L$ is convex,
+\[
+L(Dw) \geq L(Du) + D_p L(Du) \cdot (Dw - Du) \quad \text{a.e. in } U.
+\]
+Integrating over $U$ gives (30).
+
+4. We have thus far shown that $A \subseteq \partial I$, that is, $D(A) \subseteq D(\partial I)$ and $Au \in \partial I[u]$ for $u \in D(A)$. To conclude, we must prove that $A \supseteq \partial I$.
+
+Select any function $f \in L^2(U)$. If we minimize the functional
+\[
+J[w] := \int_U L(Dw) + \frac{w^2}{2} - fw \, dx
+\]
+over the admissible class $\mathcal{A} = H_0^1(U)$, we will find $u \in H_0^1(U)$, which is a weak solution of
+\[
+u - \sum_{i=1}^n (L_{p_i}(Du))_{x_i} = f \quad \text{in } U.
+\tag{31}
+\]
+According to calculations similar to those for the proof of Theorem 1,(ii) in \cref{thm:second-derivatives-minimizers}, we see that in fact $u \in H^2(U)$, with the estimate
+\[
+\|u\|_{H^2(U)} \leq C\|f\|_{L^2(U)}.
+\tag{32}
+\]
+Thus $u \in D(A)$, and $u + A[u] = f$. Consequently the range of $I + A$ is all of $H$. But this implies $A = \partial I$. For if $v \in D(\partial I)$, $w \in \partial I[v]$, then there exists $u \in D(A)$ such that $v + A[u] = v + w$. Since $A[u] \in \partial I[u]$, $w \in \partial I[v]$, the uniqueness assertion of Theorem 1,(iv) implies $u = v$, $w = A[u]$. Thus $A = \partial I$.
+\end{proof}
+
+\begin{example}[Quasilinear parabolic PDE via gradient flows]
+\label{ex:quasilinear-parabolic-gradient-flow}
+\dcref{ch9:9.6.3-ex-1}
+\group{Nonlinear Semigroups}
+\uses{thm:characterization-subdifferential-uniformly-convex-lagrangian,thm:solution-of-gradient-flow}
+We can now look at the initial/boundary-value problem:
+\[
+\begin{cases}
+u_t - \sum_{i=1}^n (L_{p_i}(Du))_{x_i} = 0 & \text{in } U \times (0, \infty) \\
+u = 0 & \text{on } \partial U \times (0, \infty) \\
+u = g & \text{on } U \times \{t = 0\},
+\end{cases}
+\tag{33}
+\]
+where $g \in L^2(U)$. In accordance with Theorem 4, we can recast this problem into the abstract form
+\[
+\begin{cases} u'(t) = -\partial I[u(t)] & (t \geq 0) \\ u(0) = g. \end{cases}
+\tag{34}
+\]
+We apply Theorem 3. If $g \in H^2(U) \cap H^1_0(U)$, there exists a unique function
+\[
+u \in C([0,\infty); L^2(U)), \text{ with } u' \in L^\infty((0,\infty); L^2(U)),
+\]
+that is, a weak solution of (33). In view of the estimate
+\[
+\|u(t)\|_{H^2(U)} \leq C\|u'(t)\|_{L^2(U)},
+\]
+we see $u \in L^\infty((0,\infty); H^2(U) \cap H^1_0(U))$ as well.
+\end{example}
+
+Note that this operator $A = \partial I$, arising as the negative divergence of the gradient of a convex Lagrangian, is precisely of the monotone vector field type introduced in \cref{def:monotone-vector-field}.
+
+\section{Problems}
+\label{sec:problems-ch9}
+
+In these problems $U$ always denotes a bounded, open subset of $\R^n$, with smooth boundary.
+
+%ORIGINAL-NUMBER: 1
+\begin{exercise}
+Assume the vector field $\mathbf{v}$ is smooth. Give another proof of the lemma in \S9.1 for this case by solving the ODE
+\[
+\begin{cases} \dot{x}(t) = -\mathbf{v}(x(t)) & (t \geq 0) \\ x(0) = y. \end{cases}
+\]
+Let us write the solution as $x(t, y)$ to display the dependence on the initial point $y$. For each fixed time $t > 0$, the map $y \mapsto x(t, y)$ is continuous and so has a fixed point. Conclude $\mathbf{v}$ has a zero in the closed ball $B(0, r)$.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 2
+\begin{exercise}
+Assume $a : \R \to \R$ is continuous and $a(f_n) \to a(f)$ weakly in $L^2(0, 1)$ whenever $f_n \to f$ weakly in $L^2(0, 1)$. Show $a$ is an affine function; that is, $a$ has the form
+\[
+a(z) = \alpha z + \beta \quad (z \in \R)
+\]
+for constants $\alpha, \beta$.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 3
+\begin{exercise}
+Assume
+\[
+\begin{cases} u_t - \Delta u = f & \text{in } U \times (0,\infty) \\ u = 0 & \text{on } \partial U \times (0,\infty) \\ u = g & \text{on } U \times \{t = 0\}, \end{cases}
+\]
+where $g \in L^2(U)$, $f \in L^\infty(U_T)$ for each $T > 0$. Suppose $\tau > 0$ and $f$ is $\tau$-periodic in $t$; that is, $f(x, t) = f(x, t + \tau)$ $(x \in U, t \geq 0)$. Prove there exists a unique function $g \in L^2(U)$ for which the corresponding solution $u$ is $\tau$-periodic.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 4
+\begin{exercise}
+Consider the nonlinear boundary-value problem
+\[
+\begin{cases}
+-\Delta u + b(Du) = f & \text{in } U \\
+u = 0 & \text{on } \partial U.
+\end{cases}
+\]
+Use Banach's fixed point theorem to show there exists a unique weak solution $u \in H^2(U) \cap H^1_0(U)$ provided $b : \R^n \to \R$ is Lipschitz continuous, with $\text{Lip}(b)$ small enough.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 5
+\begin{exercise}
+Assume $f : \R \to \R$ is Lipschitz continuous, bounded, with $f(0) = 0$ and $f'(0) > \lambda_1$, $\lambda_1$ denoting the principal eigenvalue for $-\Delta$ on $H^1_0(U)$. Use the method of sub- and supersolutions to show there exists a weak solution $u$ of
+\[
+\begin{cases}
+-\Delta u = f(u) & \text{in } U \\
+u = 0 & \text{on } \partial U \\
+u > 0 & \text{in } U.
+\end{cases}
+\]
+\end{exercise}
+
+%ORIGINAL-NUMBER: 6
+\begin{exercise}
+Assume that $\underline{u}, \bar{u}$ are smooth sub- and supersolutions of the boundary-value problem (1) in \S9.3. Use the maximum principle to verify directly
+\[
+\underline{u} = u_0 \le u_1 \le \cdots \le u_k \le \cdots \le \bar{u},
+\]
+where the $\{u_k\}_{k=0}^{\infty}$ are defined as in \S9.3.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 7
+\begin{exercise}
+Let $\epsilon > 0$. Define
+\[
+\beta_\epsilon(z) := \begin{cases} 0 & \text{if } z \ge 0 \\ \frac{z}{\epsilon} & \text{if } z \le 0, \end{cases}
+\]
+and suppose $u_\epsilon \in H^1_0(U)$ is the weak solution of
+\[
+\begin{cases}
+-\Delta u_\epsilon + \beta_\epsilon(u_\epsilon) = f & \text{in } U \\
+u_\epsilon = 0 & \text{on } \partial U,
+\end{cases}
+\tag{$*$}
+\]
+where $f \in L^2(U)$. Prove that as $\epsilon \to 0$, $u^\epsilon \to u$ weakly in $H^1_0(U)$, $u$ being the unique solution of the variational inequality
+\[
+\int_U Du \cdot D(w - u) \, dx \ge \int_U f(w - u) \, dx
+\]
+for all $w \in H^1_0(U)$ with $w \ge 0$ a.e. Approximating the variational inequality by $(*)$ is the \textit{penalty method}.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 8
+\begin{exercise}
+Let $K \subset \R^n$ be a closed, convex, nonempty set. Define
+\[
+I[x] := \begin{cases} 0 & \text{if } x \in K \\ +\infty & \text{if } x \notin K. \end{cases}
+\]
+Explicitly determine $A = \partial I$, $J_\lambda = (I + \lambda A)^{-1}$, $A_\lambda = \frac{I-J_\lambda}{\lambda}$ ($\lambda > 0$) in terms of the geometry of $K$.
+\end{exercise}
+
+%ORIGINAL-NUMBER: 9
+\begin{exercise}
+Give a simple example showing the flow
+\[
+u' \in -\partial I[u] \quad (t > 0)
+\tag{$*$}
+\]
+may be irreversible. (That is, find a Hilbert space $H$ and a convex, proper, lower semicontinuous function $I : H \to (-\infty, +\infty]$ such that the semigroup solution of $(*)$ satisfies
+\[
+S(t)u = S(t)\bar{u}
+\]
+for some $t > 0$ and $u \neq \bar{u}$.)
+\end{exercise}
+
+\section{References}
+\label{sec:references-ch9}
+
+\noindent\textbf{Section 9.1.} See J.-L. Lions~\cite{Lions1969} and Zeidler~\cite{Zeidler1985} (Vol.~2). The booklet~\cite{Evans1990} is a survey of methods for confronting weak convergence problems for nonlinear PDE.
+
+\noindent\textbf{Section 9.2.} Zeidler~\cite{Zeidler1985} (Vol.~1) has more on fixed point techniques. Consult also Gilbarg--Trudinger~\cite{GilbargTrudinger1983} (Chapter 11).
+
+\noindent\textbf{Section 9.3.} See Smoller~\cite{Smoller1983} (Chapter 10).
+
+\noindent\textbf{Section 9.4.} \cref{sec:blow-up} is based upon Payne~\cite{Payne1975} (\S9).
+
+\noindent\textbf{Section 9.5.} \cref{sec:radial-symmetry} is due to Gidas--Ni--Nirenberg~\cite{GidasNiNirenberg1979}.
+
+\noindent\textbf{Section 9.6.} This material is from Brezis~\cite{Brezis1973}, which contains much more on nonlinear semigroups on Hilbert spaces. See Barbu~\cite{Barbu1976} or Zeidler~\cite{Zeidler1985} (Vol.~2) for nonlinear semigroup theory in Banach spaces.

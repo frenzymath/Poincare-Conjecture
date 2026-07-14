@@ -14,7 +14,7 @@ require mathlib from git
 -- Shared Riemannian-geometry infrastructure (Levi-Civita, geodesics,
 -- exponential map, curvature) maintained in the DoCarmo project; same
 -- mathlib pin and toolchain.
-require OpenGALib from "../OpenGA"
+require OpenGALib from "../DoCarmo"
 
 @[default_target]
 lean_lib MorganTianLib where

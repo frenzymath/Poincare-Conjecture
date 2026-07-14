@@ -50,6 +50,8 @@ open scoped Manifold Topology ContDiff Interval
 
 namespace PetersenLib
 
+open Riemannian
+
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
   [Module.Finite ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}

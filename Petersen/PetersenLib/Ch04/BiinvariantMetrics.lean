@@ -31,7 +31,7 @@ structure avoids the diamond with no loss of content.
 is *minus* Petersen's `R(X,Y,Z,W) = ¼ ([X,Y],[W,Z])` (same slot order; his
 last two slots appear through `[W,Z]`, ours through `[z,t]`). This is the
 do Carmo-style convention of the project's algebraic layer, where
-`algSectionalCurvature B x y = B x y x y / wedgeSq x y`: with our sign,
+`sectionalCurvature B x y = B x y x y / wedgeSq x y`: with our sign,
 `B x y x y = ¼ ‖[x,y]‖² ≥ 0`, so the sectional curvature of a biinvariant
 metric is nonnegative, matching the layer in which the round sphere has
 positive sectional curvature.
@@ -44,6 +44,8 @@ open scoped RealInnerProductSpace
 noncomputable section
 
 namespace PetersenLib
+
+open Riemannian
 
 variable {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
 variable {bracket : V →ₗ[ℝ] V →ₗ[ℝ] V}
@@ -87,7 +89,7 @@ theorem koszulReduction (hskew : ∀ x : V, bracket x x = 0)
 of a biinvariant metric, `B(x,y,z,t) = ¼ ⟪[[x,y],z], t⟫`. This is *minus*
 Petersen's `R(X,Y,Z,W) = ¼ ([X,Y],[W,Z])` (see the module docstring): the sign
 is chosen so that `B x y x y = ¼ ‖[x,y]‖² ≥ 0`, the do Carmo-style convention
-expected by the project's `algSectionalCurvature`. The definition is stated for an
+expected by the project's `sectionalCurvature`. The definition is stated for an
 arbitrary bilinear `bracket`; the biinvariance hypotheses enter only in the
 theorems about it. -/
 def biinvariantCurvatureForm (bracket : V →ₗ[ℝ] V →ₗ[ℝ] V) : V → V → V → V → ℝ :=
@@ -199,9 +201,9 @@ metric has nonnegative sectional curvature,
 nonnegative by Cauchy–Schwarz. -/
 theorem biinvariantNonnegCurvatureRemark (hskew : ∀ x : V, bracket x x = 0)
     (had : ∀ x y z : V, ⟪bracket x y, z⟫ = -⟪y, bracket x z⟫) :
-    ∀ x y : V, 0 ≤ algSectionalCurvature (biinvariantCurvatureForm bracket) x y := by
+    ∀ x y : V, 0 ≤ sectionalCurvature (biinvariantCurvatureForm bracket) x y := by
   intro x y
-  unfold algSectionalCurvature
+  unfold sectionalCurvature
   apply div_nonneg
   · rw [biinvariantCurvatureForm_self hskew had x y]
     exact mul_nonneg (by norm_num) real_inner_self_nonneg

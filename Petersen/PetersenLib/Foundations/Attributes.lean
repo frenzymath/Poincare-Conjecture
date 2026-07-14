@@ -1,16 +1,11 @@
-import Mathlib.Tactic.Common
+import OpenGALib.Util.Attributes
 
 /-!
 # Simp attributes — declarations
 
-Pure attribute registration, intentionally without imports of lemmas
-that consume the attributes. Vendored (minimal subset) from the shared
-OpenGALib core (`OpenGALib/Util/Attributes.lean`, identical in the
-openga and DoCarmo projects).
+This module previously registered a minimal vendored subset of the shared
+OpenGALib simp attributes.  It now re-exports the live shared declarations
+so the `metric_simp` (and `riem_simp`) attributes are registered exactly
+once, avoiding a duplicate-registration collision when both Petersen and
+OpenGALib appear in the same import graph.
 -/
-
-/-- Simp set for `metricInner` algebra normalisation: bilinearity, sign
-rules, zero / neg / sub / self_nonneg. Tagged on the lemmas in
-`Foundations/RiemannianMetric.lean`; downstream proofs can invoke
-`simp only [metric_simp]` for routine inner-product calculations. -/
-register_simp_attr metric_simp

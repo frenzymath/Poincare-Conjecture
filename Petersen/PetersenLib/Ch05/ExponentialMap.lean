@@ -1,6 +1,6 @@
 import PetersenLib.Ch05.Geodesics
-import PetersenLib.Vendored.OpenGA.Exponential.StrictDerivative
-import PetersenLib.Vendored.OpenGA.Exponential.Ray
+import OpenGALib.Riemannian.Exponential.StrictDerivative
+import OpenGALib.Riemannian.Exponential.Ray
 
 /-!
 # Petersen Ch. 5, §5.5.1 — the exponential map and Riemannian coordinates
@@ -41,7 +41,7 @@ open scoped Manifold Topology ContDiff ENNReal
 
 namespace PetersenLib
 
-open PetersenLib.Geodesic
+open Riemannian Riemannian.Geodesic Riemannian.Exponential
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
   [Module.Finite ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]

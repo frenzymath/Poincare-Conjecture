@@ -1,4 +1,4 @@
-import PetersenLib.Vendored.OpenGA.Geodesic.UniformExistence
+import OpenGALib.Riemannian.Geodesic.UniformExistence
 
 /-! # Petersen Ch. 5, §5.2 — local existence and uniqueness of geodesics
 
@@ -39,6 +39,8 @@ open Bundle Manifold Set Filter Metric
 open scoped Manifold Topology ContDiff NNReal
 
 namespace PetersenLib
+
+open Riemannian Riemannian.Geodesic
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
   [Module.Finite ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]

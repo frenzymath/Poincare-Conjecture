@@ -1,7 +1,7 @@
 import PetersenLib.Ch05.MetricStructure
 import PetersenLib.Ch01.ArcLength
 import PetersenLib.Ch03.DistanceFunctions
-import PetersenLib.Vendored.OpenGA.Geodesic.HopfRinow.MetricBridge
+import OpenGALib.Riemannian.Geodesic.HopfRinow.MetricBridge
 
 /-!
 # Petersen Ch. 5, §5.3 — distance functions and segments (Lemma 5.3.2)
@@ -27,6 +27,8 @@ open Bundle Manifold Set Filter MeasureTheory
 open scoped Manifold Topology ContDiff
 
 namespace PetersenLib
+
+open Riemannian
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
   [Module.Finite ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -100,8 +102,9 @@ theorem metricInner_le_sqrt_mul_sqrt (g : RiemannianMetric I M) (x : M)
       ≤ Real.sqrt (g.metricInner x u u) * Real.sqrt (g.metricInner x v v) := by
   letI : Bundle.RiemannianBundle (fun x : M ↦ TangentSpace I x) := ⟨g.toRiemannianMetric⟩
   have h1 : g.metricInner x u v = @inner ℝ _ _ u v := rfl
-  rw [h1, ← norm_tangent_eq_sqrt_metricInner g x u,
-    ← norm_tangent_eq_sqrt_metricInner g x v]
+  have h2 : g.metricInner x u u = @inner ℝ _ _ u u := rfl
+  have h3 : g.metricInner x v v = @inner ℝ _ _ v v := rfl
+  rw [h1, h2, h3, ← norm_eq_sqrt_real_inner u, ← norm_eq_sqrt_real_inner v]
   exact real_inner_le_norm u v
 
 /-- **Math.** Petersen Lemma 5.3.2 (pointwise bound): along a curve `γ` through

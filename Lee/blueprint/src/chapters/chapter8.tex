@@ -1,0 +1,1485 @@
+% Source: Lee, "Introduction to Riemannian Manifolds" (2nd ed.), Chapter 8 "Riemannian Submanifolds", PDF pages 236-273 of /home/axel/MathBooks/Introduction to Riemannian Manifolds (Second Edition) 2(1).pdf.
+% Transcribed page-by-page by vision subagents (haiku), then merged and restructured into
+% leanblueprint conventions (semantic \label, bracketed titles, \uses dependency edges, \dcref to Lee's own numbering) below.
+
+This chapter has a dual purpose: first to apply the theory of curvature to Riemannian submanifolds, and then to use these concepts to derive a precise quantitative interpretation of the curvature tensor.
+
+After introducing some basic definitions and terminology concerning Riemannian submanifolds, we define a vector-valued bilinear form called the \emph{second fundamental form}, which measures the way a submanifold curves within the ambient manifold. We then prove the fundamental relationships between the intrinsic and extrinsic geometries of a submanifold, including the \emph{Gauss formula}, which relates the Riemannian connection on the submanifold to that of the ambient manifold, and the \emph{Gauss equation}, which relates their curvatures. We then show how the second fundamental form measures the extrinsic curvature of submanifold geodesics.
+
+Using these tools, we focus on the special case of hypersurfaces, and use the second fundamental form to define some real-valued curvature quantities called the \emph{principal curvatures, mean curvature}, and \emph{Gaussian curvature}. Specializing even more to hypersurfaces in Euclidean space, we describe various concrete geometric interpretations of these quantities. Then we prove Gauss's \emph{Theorema Egregium}, which shows that the Gaussian curvature of a surface in $\mathbb{R}^3$ can be computed intrinsically from the curvature tensor of the induced metric.
+
+In the last section, we introduce the promised quantitative geometric interpretation of the curvature tensor. It allows us to compute \emph{sectional curvatures}, which are just the Gaussian curvatures of 2-dimensional submanifolds swept out by geodesics tangent to 2-planes in the tangent space. Finally, we compute the sectional curvatures of our frame-homogeneous model Riemannian manifolds---Euclidean spaces, spheres, and hyperbolic spaces.
+
+\section{The Second Fundamental Form}
+
+Suppose $(M,g)$ is a Riemannian submanifold of a Riemannian manifold $(\tilde{M},\tilde{g})$. Recall that this means that $M$ is a submanifold of $\tilde{M}$ endowed with the induced metric $g = \iota_M^* \tilde{g}$ (where $\iota_M : M \hookrightarrow \tilde{M}$ is the inclusion map). Our goal in this chapter is to study the relationship between the geometry of $M$ and that of $\tilde{M}$.
+
+Although we focus our attention in this chapter on embedded submanifolds for simplicity, the results we present are all local, so they apply in much greater generality. In particular, if $M \subseteq \tilde{M}$ is an immersed submanifold, then every point of $M$ has a neighborhood in $M$ that is embedded in $\tilde{M}$, so the results of this chapter can be applied by restricting to such a neighborhood. Even more generally, if $(M,g)$ is any Riemannian manifold and $F : M \to \tilde{M}$ is an isometric immersion (meaning that $F^* \tilde{g} = g$), then again every point $p \in M$ has a neighborhood $U \subseteq M$ such that $F|_U$ is an embedding, so the results apply to $F(U) \subseteq \tilde{M}$. We leave it to the reader to sort out the minor modifications in notation and terminology needed to handle these more general situations.
+
+The results in the first section of this chapter apply virtually without modification to \textit{Riemannian} submanifolds of pseudo-Riemannian manifolds (ones on which the induced metric is positive definite), so we state most of our theorems in that case. Recall that when the ambient metric $\tilde{g}$ is indefinite, this includes the assumption that the induced metric $g = \iota_M^* \tilde{g}$ is positive definite. Some of the results can also be extended to pseudo-Riemannian submanifolds of mixed signature, but there are various pitfalls to watch out for in that case; so for simplicity we restrict to the case of Riemannian submanifolds. See \cite{dC92} for a thorough treatment of pseudo-Riemannian submanifolds.
+
+Also, most of these results can be adapted to manifolds and submanifolds with boundary, simply by embedding everything in slightly larger manifolds without boundary, but one might need to be careful about the statements of some of the results when the submanifold intersects the boundary. Since the interaction of submanifolds with boundaries is not our primary concern here, for simplicity we state all of these results in the case of empty boundary only.
+
+Throughout this chapter, therefore, we assume that $(\tilde{M}, \tilde{g})$ is a Riemannian or pseudo-Riemannian manifold of dimension $m$, and $(M,g)$ is an embedded $n$-dimensional Riemannian submanifold of $\tilde{M}$. We call $\tilde{M}$ the \textbf{ambient manifold}. We will denote covariant derivatives and curvatures associated with $(M,g)$ in the usual way $(\nabla, R, Rm, \text{etc.})$, and write those associated with $(\tilde{M}, \tilde{g})$ with tildes $(\tilde{\nabla}, \tilde{R}, \widetilde{Rm}, \text{etc.})$. We can unambiguously use the inner product notation $\langle v, w \rangle$ to refer either to $g$ or to $\tilde{g}$, since $g$ is just the restriction of $\tilde{g}$ to pairs of vectors in $TM$.
+
+Our first main task is to compare the Levi-Civita connection of $M$ with that of $\tilde{M}$. The starting point for doing so is the orthogonal decomposition of sections of the ambient tangent bundle $T\tilde{M}|_M$ into tangential and orthogonal components. Just as we did for submanifolds of $\mathbb{R}^n$ in Chapter 4, we define orthogonal projection maps called \textbf{tangential} and \textbf{normal projections}:
+\begin{align*}
+\pi^T : T\tilde{M}|_M &\to TM, \\
+\pi^\perp : T\tilde{M}|_M &\to NM.
+\end{align*}
+
+In terms of an adapted orthonormal frame $(E_1, \ldots, E_m)$ for $M$ in $\tilde{M}$, these are just the usual projections onto $\text{span}(E_1, \ldots, E_n)$ and $\text{span}(E_{n+1}, \ldots, E_m)$ respectively, so both projections are smooth bundle homomorphisms (i.e., they are linear on fibers and map smooth sections to smooth sections). If $X$ is a section of $T\tilde{M}|_M$, we often use the shorthand notations $X^{\top} = \pi^{\top} X$ and $X^{\perp} = \pi^{\perp} X$ for its tangential and normal projections.
+
+% [FIGURE 8.1: The second fundamental form, showing surface M embedded in ambient manifold M̃, with point p, vectors X and Y in tangent space T_p M, their second fundamental form II(X,Y), and the ambient covariant derivative  \nabla ̄_X Y]
+
+If $X, Y$ are vector fields in $\mathfrak{X}(M)$, we can extend them to vector fields on an open subset of $\tilde{M}$ (still denoted by $X$ and $Y$), apply the ambient covariant derivative operator $\bar{\nabla}$, and then decompose at points of $M$ to get
+\begin{equation}
+\bar{\nabla}_X Y = (\bar{\nabla}_X Y)^{\top} + (\bar{\nabla}_X Y)^{\perp}.
+\tag{8.1}
+\end{equation}
+
+We wish to interpret the two terms on the right-hand side of this decomposition. Let us focus first on the normal component. We define the \textbf{second fundamental form of $M$} to be the map $\text{II}: \mathfrak{X}(M) \times \mathfrak{X}(M) \to \Gamma(NM)$ (read ``two'') given by
+\[
+\text{II}(X, Y) = (\bar{\nabla}_X Y)^{\perp},
+\]
+where $X$ and $Y$ are extended arbitrarily to an open subset of $\tilde{M}$ (Fig. 8.1). Since $\pi^{\perp}$ maps smooth sections to smooth sections, $\text{II}(X, Y)$ is a smooth section of $NM$.
+
+The term \textbf{first fundamental form}, by the way, was originally used to refer to the induced metric $g$ on $M$. Although that usage has mostly been replaced by more descriptive terminology, we seem unfortunately to be stuck with the name ``second fundamental form.'' The word ``form'' in both cases refers to bilinear form, not differential form.
+
+\begin{proposition}[Properties of the Second Fundamental Form]
+\label{prop:second-fundamental-form-properties}
+\dcref{ch8:8.1}
+
+Suppose $(M, g)$ is an embedded Riemannian submanifold of a Riemannian or pseudo-Riemannian manifold $(\tilde{M}, \tilde{g})$, and let $X, Y \in \mathfrak{X}(M)$.
+
+\begin{enumerate}[label=(\alph*)]
+\item $\text{II}(X, Y)$ is independent of the extensions of $X$ and $Y$ to an open subset of $\tilde{M}$.
+\item $\text{II}(X, Y)$ is bilinear over $C^{\infty}(M)$ in $X$ and $Y$.
+\item $\text{II}(X, Y)$ is symmetric in $X$ and $Y$.
+\item The value of $\text{II}(X, Y)$ at a point $p \in M$ depends only on $X_p$ and $Y_p$.
+\end{enumerate}
+\end{proposition}
+
+Proof. Choose particular extensions of $X$ and $Y$ to a neighborhood of $M$ in $\tilde{M}$, and for simplicity denote the extended vector fields also by $X$ and $Y$. We begin by proving that $\text{II}(X,Y)$ is symmetric in $X$ and $Y$ when defined in terms of these extensions. The symmetry of the connection $\tilde{\nabla}$ implies
+\[
+\text{II}(X,Y) - \text{II}(Y,X) = (\tilde{\nabla}_X Y - \tilde{\nabla}_Y X)^\perp = [X,Y]^\perp.
+\]
+
+Since $X$ and $Y$ are tangent to $M$ at all points of $M$, so is their Lie bracket (Cor.~A.40). Therefore $[X,Y]^\perp = 0$, so $\text{II}$ is symmetric.
+
+Because $\tilde{\nabla}_X Y|_p$ depends only on $X_p$, it follows that the value of $\text{II}(X,Y)$ at $p$ depends only on $X_p$, and in particular is independent of the extension chosen for $X$. Because $\tilde{\nabla}_X Y$ is linear over $C^\infty(\tilde{M})$ in $X$, and every $f \in C^\infty(M)$ can be extended to a smooth function on a neighborhood of $M$ in $\tilde{M}$, it follows that $\text{II}(X,Y)$ is linear over $C^\infty(M)$ in $X$. By symmetry, the same claims hold for $Y$. \qed
+
+As a consequence of the preceding proposition, for every $p \in M$ and all vectors $v,w \in T_p M$, it makes sense to interpret $\text{II}(v,w)$ as the value of $\text{II}(V,W)$ at $p$, where $V$ and $W$ are any vector fields on $M$ such that $V_p = v$ and $W_p = w$, and we will do so from now on without further comment.
+
+We have not yet identified the tangential term in the decomposition of $\tilde{\nabla}_X Y$. Proposition 5.12(b) showed that in the special case of a submanifold of a Euclidean or pseudo-Euclidean space, it is none other than the covariant derivative with respect to the Levi-Civita connection of the induced metric on $M$. The following theorem shows that the same is true in the general case. Therefore, we can interpret the second fundamental form as a measure of the difference between the intrinsic Levi-Civita connection on $M$ and the ambient Levi-Civita connection on $\tilde{M}$.
+
+\begin{theorem}[The Gauss Formula]
+\label{thm:gauss-formula}
+\dcref{ch8:8.2}
+\uses{prop:second-fundamental-form-properties}
+\uses{ex:tangential-connection-submanifold}
+\uses{prop:tangential-connection-compatible-metric}
+\uses{prop:tangential-connection-symmetric}
+
+Suppose $(M,g)$ is an embedded Riemannian submanifold of a Riemannian or pseudo-Riemannian manifold $(\tilde{M},\tilde{g})$. If $X,Y \in \mathfrak{X}(M)$ are extended arbitrarily to smooth vector fields on a neighborhood of $M$ in $\tilde{M}$, the following formula holds along $M$:
+\[
+\tilde{\nabla}_X Y = \nabla_X Y + \text{II}(X,Y).
+\]
+\end{theorem}
+
+\textbf{Proof.} Because of the decomposition (8.1) and the definition of the second fundamental form, it suffices to show that $(\tilde{\nabla}_X Y)^\top = \nabla_X Y$ at all points of $M$.
+
+Define a map $\nabla^\top: \mathfrak{X}(M) \times \mathfrak{X}(M) \to \mathfrak{X}(M)$ by
+\[
+\nabla^\top_X Y = (\tilde{\nabla}_X Y)^\top,
+\]
+where $X$ and $Y$ are extended arbitrarily to an open subset of $\tilde{M}$. We examined a special case of this construction, in which $\tilde{g}$ is a Euclidean or pseudo-Euclidean metric, in Example 4.9. It follows exactly as in that example that $\nabla^\top$ is a connection on $M$, and exactly as in the proofs of Propositions 5.8 and 5.9 that it is symmetric and compatible with $g$. The uniqueness of the Riemannian connection on $M$ then shows that $\nabla^\top = \nabla$. \qed
+
+The Gauss formula can also be used to compare intrinsic and extrinsic covariant derivatives along curves. If $\gamma : I \to M$ is a smooth curve and $X$ is a vector field along $\gamma$ that is everywhere tangent to $M$, then we can regard $X$ as either a vector field along $\gamma$ in $\bar{M}$ or a vector field along $\gamma$ in $M$. We let $\bar{D}_t X$ and $D_t X$ denote its covariant derivatives along $\gamma$ as a curve in $\bar{M}$ and as a curve in $M$, respectively. The next corollary shows how the two covariant derivatives are related.
+
+\begin{corollary}[The Gauss Formula Along a Curve]
+\label{cor:gauss-formula-along-curve}
+\dcref{ch8:8.3}
+\uses{thm:gauss-formula}
+
+Suppose $(M,g)$ is an embedded Riemannian submanifold of a Riemannian or pseudo-Riemannian manifold $(\bar{M}, \bar{g})$, and $\gamma : I \to M$ is a smooth curve. If $X$ is a smooth vector field along $\gamma$ that is everywhere tangent to $M$, then
+\begin{equation}
+\bar{D}_t X = D_t X + \Pi(\gamma', X).
+\tag{8.2}
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+For each $t_0 \in I$, we can find an adapted orthonormal frame $(E_1, \ldots, E_m)$ in a neighborhood of $\gamma(t_0)$. (Recall that our default assumption is that $\dim \bar{M} = m$ and $\dim M = n$.) In terms of this frame, $X$ can be written $X(t) = \sum_{i=1}^n X^i(t) E_i|_{\gamma(t)}$. Applying the product rule and the Gauss formula, and using the fact that each vector field $E_i$ is extendible, we get
+\begin{align*}
+\bar{D}_t X &= \sum_{i=1}^n \left( \dot{X}^i E_i + X^i \bar{\nabla}_{\gamma'} E_i \right) \\
+&= \sum_{i=1}^n \left( \dot{X}^i E_i + X^i \nabla_{\gamma'} E_i + X^i \Pi(\gamma', E_i) \right) \\
+&= D_t X + \Pi(\gamma', X).
+\end{align*}
+\end{proof}
+
+Although the second fundamental form is defined in terms of covariant derivatives of vector fields \emph{tangent} to $M$, it can also be used to evaluate extrinsic covariant derivatives of \emph{normal} vector fields, as the following proposition shows. To express it concisely, we introduce one more notation. For each normal vector field $N \in \Gamma(NM)$, we obtain a scalar-valued symmetric bilinear form $\Pi_N : \mathfrak{X}(M) \times \mathfrak{X}(M) \to C^\infty(M)$ by
+\begin{equation}
+\Pi_N(X,Y) = \langle N, \Pi(X,Y) \rangle.
+\tag{8.3}
+\end{equation}
+
+Let $W_N : \mathfrak{X}(M) \to \mathfrak{X}(M)$ denote the self-adjoint linear map associated with this bilinear form, characterized by
+\begin{equation}
+\langle W_N(X), Y \rangle = \Pi_N(X,Y) = \langle N, \Pi(X,Y) \rangle.
+\tag{8.4}
+\end{equation}
+
+The map $W_N$ is called the \textbf{Weingarten map in the direction of $N$}. Because the second fundamental form is bilinear over $C^\infty(M)$, it follows that $W_N$ is linear over $C^\infty(M)$ and thus defines a smooth bundle homomorphism from $TM$ to itself.
+
+\begin{proposition}[The Weingarten Equation]
+\label{prop:weingarten-equation}
+\dcref{ch8:8.4}
+
+Suppose $(M,g)$ is an embedded Riemannian submanifold of a Riemannian or pseudo-Riemannian manifold $(\bar{M}, \bar{g})$. For every $X \in \mathfrak{X}(M)$ and $N \in \Gamma(NM)$, the following equation holds:
+\begin{equation}
+(\widetilde{\nabla}_X N)^T = -W_N(X),
+\tag{8.5}
+\end{equation}
+when $N$ is extended arbitrarily to an open subset of $\widetilde{M}$.
+\end{proposition}
+
+\noindent\textbf{Proof.} Note that at points of $M$, the covariant derivative $\widetilde{\nabla}_X N$ is independent of the choice of extensions of $X$ and $N$ by Proposition 4.26. Let $Y \in \mathfrak{X}(M)$ be arbitrary, extended to a vector field on an open subset of $\widetilde{M}$. Since $\langle N, Y \rangle$ vanishes identically along $M$ and $X$ is tangent to $M$, the following holds at points of $M$:
+\begin{align*}
+0 &= X\langle N, Y \rangle\\
+&= \langle \widetilde{\nabla}_X N, Y \rangle + \langle N, \widetilde{\nabla}_X Y \rangle\\
+&= \langle \widetilde{\nabla}_X N, Y \rangle + \langle N, \nabla_X Y + \Pi(X,Y) \rangle\\
+&= \langle \widetilde{\nabla}_X N, Y \rangle + \langle N, \Pi(X,Y) \rangle\\
+&= \langle \widetilde{\nabla}_X N, Y \rangle + \langle W_N(X), Y \rangle.
+\end{align*}
+
+Since $Y$ was an arbitrary vector field tangent to $M$, this implies
+\[
+0 = (\widetilde{\nabla}_X N + W_N(X))^T = (\widetilde{\nabla}_X N)^T + W_N(X),
+\]
+which is equivalent to (8.5). \qed
+
+In addition to describing the difference between the intrinsic and extrinsic connections, the second fundamental form plays an even more important role in describing the difference between the curvature tensors of $\widetilde{M}$ and $M$. The explicit formula, also due to Gauss, is given in the following theorem.
+
+\begin{theorem}[The Gauss Equation]
+\label{thm:gauss-equation}
+\dcref{ch8:8.5}
+\uses{prop:covariant-derivative-depends-on-curve}
+
+Suppose $(M, g)$ is an embedded Riemannian submanifold of a Riemannian or pseudo-Riemannian manifold $(\widetilde{M}, \widetilde{g})$. For all $W, X, Y, Z \in \mathfrak{X}(M)$, the following equation holds:
+\[
+\widetilde{Rm}(W, X, Y, Z) = Rm(W, X, Y, Z) - \langle \Pi(W, Z), \Pi(X, Y) \rangle + \langle \Pi(W, Y), \Pi(X, Z) \rangle.
+\]
+\end{theorem}
+
+\noindent\textbf{Proof.} Let $W, X, Y, Z$ be extended arbitrarily to an open subset of $\widetilde{M}$. At points of $M$, using the definition of the curvature and the Gauss formula, we get
+\begin{align*}
+\widetilde{Rm}(W, X, Y, Z) &= \langle \widetilde{\nabla}_W \widetilde{\nabla}_X Y - \widetilde{\nabla}_X \widetilde{\nabla}_W Y - \widetilde{\nabla}_{[W,X]} Y, Z \rangle\\
+&= \langle \widetilde{\nabla}_W (\nabla_X Y + \Pi(X,Y)) - \widetilde{\nabla}_X (\nabla_W Y + \Pi(W,Y)) - \widetilde{\nabla}_{[W,X]} Y, Z \rangle.
+\end{align*}
+
+Apply the Weingarten equation to each of the terms involving $\Pi$ (with $\Pi(X,Y)$ or $\Pi(W,Y)$ playing the role of $N$) to get
+\begin{align*}
+\widetilde{Rm}(W, X, Y, Z) &= \langle \widetilde{\nabla}_W \nabla_X Y, Z \rangle - \langle \Pi(X, Y), \Pi(W, Z) \rangle\\
+&\quad - \langle \widetilde{\nabla}_X \nabla_W Y, Z \rangle + \langle \Pi(W, Y), \Pi(X, Z) \rangle - \langle \widetilde{\nabla}_{[W,X]} Y, Z \rangle.
+\end{align*}
+
+Decomposing each term involving $\tilde{\nabla}$ into its tangential and normal components, we see that only the tangential component survives, because $Z$ is tangent to $M$. The Gauss formula allows each such term to be rewritten in terms of $\nabla$, giving
+\begin{align*}
+\widetilde{\mathrm{Rm}}(W, X, Y, Z) &= \langle \nabla_W \nabla_X Y, Z \rangle - \langle \nabla_X \nabla_W Y, Z \rangle - \langle \nabla_{[W,X]} Y, Z \rangle \\
+&\quad - \langle \text{II}(X, Y), \text{II}(W, Z) \rangle + \langle \text{II}(W, Y), \text{II}(X, Z) \rangle \\
+&= \langle R(W, X)Y, Z \rangle \\
+&\quad - \langle \text{II}(X, Y), \text{II}(W, Z) \rangle + \langle \text{II}(W, Y), \text{II}(X, Z) \rangle. \qed
+\end{align*}
+
+There is one other fundamental submanifold equation, which relates the normal part of the ambient curvature endomorphism to derivatives of the second fundamental form. We will not have need for it, but we include it here for completeness. To state it, we need to introduce a connection on the normal bundle of a Riemannian submanifold.
+
+If $(M, g)$ is a Riemannian submanifold of a Riemannian or pseudo-Riemannian manifold $(\tilde{M}, \tilde{g})$, the \textbf{normal connection} $\nabla^\perp: \mathfrak{X}(M) \times \Gamma(NM) \to \Gamma(NM)$ is defined by
+\[
+\nabla^\perp_X N = (\tilde{\nabla}_X N)^\perp,
+\]
+where $N$ is extended to a smooth vector field on a neighborhood of $M$ in $\tilde{M}$.
+
+\begin{proposition}
+\label{prop:normal-connection-well-defined}
+\dcref{ch8:8.6}
+If $(M, g)$ is an embedded Riemannian submanifold of a Riemannian or pseudo-Riemannian manifold $(\tilde{M}, \tilde{g})$, then $\nabla^\perp$ is a well-defined connection in $NM$, which is compatible with $\tilde{g}$ in the sense that for any two sections $N_1, N_2$ of $NM$ and every $X \in \mathfrak{X}(M)$, we have
+\[
+X\langle N_1, N_2 \rangle = \langle \nabla^\perp_X N_1, N_2 \rangle + \langle N_1, \nabla^\perp_X N_2 \rangle.
+\]
+\end{proposition}
+
+\begin{exercise}
+\label{exer:prove-normal-connection}
+\dcref{ch8:8.7}
+\uses{prop:normal-connection-well-defined}
+Prove the preceding proposition.
+\end{exercise}
+
+We need the normal connection primarily to make sense of tangential covariant derivatives of the second fundamental form. To do so, we make the following definitions. Let $F \to M$ denote the bundle whose fiber at each point $p \in M$ is the set of bilinear maps $T_p M \times T_p M \to N_p M$. It is easy to check that $F$ is a smooth vector bundle over $M$, and that smooth sections of $F$ correspond to smooth maps $\mathfrak{X}(M) \times \mathfrak{X}(M) \to \Gamma(NM)$ that are bilinear over $C^\infty(M)$, such as the second fundamental form. Define a connection $\nabla^F$ in $F$ as follows: if $B$ is any smooth section of $F$, let $\nabla^F_X B$ be the smooth section of $F$ defined by
+\[
+(\nabla^F_X B)(Y, Z) = \nabla^\perp_X(B(Y, Z)) - B(\nabla_X Y, Z) - B(Y, \nabla_X Z).
+\]
+
+\begin{exercise}
+\label{exer:connection-in-bundle}
+\dcref{ch8:8.8}
+Prove that $\nabla^F$ is a connection in $F$.
+\end{exercise}
+
+Now we are ready to state the last of the fundamental equations for submanifolds. This equation was independently discovered (in the special case of surfaces in $\mathbb{R}^3$) by Karl M. Peterson (1853), Gaspare Mainardi (1856), and Delfino Codazzi (1868--1869), and is sometimes designated by various combinations of these three names. For the sake of simplicity we use the traditional but historically inaccurate name \emph{Codazzi equation}.
+
+\begin{theorem}[The Codazzi Equation]
+\label{thm:codazzi-equation}
+\dcref{ch8:8.9}
+\uses{thm:gauss-equation}
+
+Suppose $(M, g)$ is an embedded Riemannian submanifold of a Riemannian or pseudo-Riemannian manifold $(\bar{M}, \bar{g})$. For all $W, X, Y \in \mathfrak{X}(M)$, the following equation holds:
+\begin{equation}
+(\bar{R}(W, X)Y)^{\perp} = (\nabla_W^{\perp} \Pi)(X, Y) - (\nabla_X^{\perp} \Pi)(W, Y).
+\tag{8.6}
+\end{equation}
+\end{theorem}
+
+\emph{Proof.} It suffices to show that both sides of (8.6) give the same result when we take their inner products with an arbitrary smooth normal vector field $N$ along $M$:
+\begin{equation}
+\langle \bar{R}(W, X)Y, N \rangle = \langle (\nabla_W^{\perp} \Pi)(X, Y), N \rangle - \langle (\nabla_X^{\perp} \Pi)(W, Y), N \rangle.
+\tag{8.7}
+\end{equation}
+
+We begin as in the proof of the Gauss equation: after extending the vector fields to a neighborhood of $M$ and applying the Gauss formula, we obtain
+\[
+\overline{\text{Rm}}(W, X, Y, N) = \langle \bar{\nabla}_W (\nabla_X Y + \Pi(X, Y)) - \bar{\nabla}_X (\nabla_W Y + \Pi(W, Y)) - \bar{\nabla}_{[W,X]} Y, N \rangle.
+\]
+
+Now when we expand the covariant derivatives, we need only pay attention to the normal components. This yields
+\begin{align*}
+\overline{\text{Rm}}(W, X, Y, N) &= \langle \Pi(W, \nabla_X Y) + (\nabla_W^{\perp} \Pi)(X, Y) + \Pi(\nabla_W Y, Y) + \Pi(X, \nabla_W Y), N \rangle \\
+&\quad - \langle \Pi(X, \nabla_W Y) + (\nabla_X^{\perp} \Pi)(W, Y) + \Pi(\nabla_X W, Y) + \Pi(W, \nabla_X Y), N \rangle \\
+&\quad - \langle \Pi([W, X], Y), N \rangle.
+\end{align*}
+
+The terms involving $\nabla_X Y$ and $\nabla_W Y$ cancel each other in pairs, and three other terms sum to zero because $\nabla_W X - \nabla_X W - [W, X] = 0$. What remains is (8.7). \qed
+
+\section{Curvature of a Curve}
+
+By studying the curvatures of curves, we can give a more geometric interpretation of the second fundamental form. Suppose $(M, g)$ is a Riemannian or pseudo-Riemannian manifold, and $\gamma: I \to M$ is a smooth unit-speed curve in $M$. We define the \emph{(geodesic) curvature} of $\gamma$ as the length of the acceleration vector field, which is the function $\kappa: I \to \mathbb{R}$ given by
+\[
+\kappa(t) = |D_t \gamma'(t)|.
+\]
+
+If $\gamma$ is an arbitrary regular curve in a Riemannian manifold (not necessarily of unit speed), we first find a unit-speed reparametrization $\tilde{\gamma} = \gamma \circ \varphi$, and then define the curvature of $\gamma$ at $t$ to be the curvature of $\tilde{\gamma}$ at $\varphi^{-1}(t)$. In a pseudo-Riemannian manifold, the same approach works, but we have to restrict the definition to curves $\gamma$ such that $|\gamma'(t)|$ is everywhere nonzero. Problem 8-6 gives a formula that can be used in the Riemannian case to compute the geodesic curvature directly without explicitly finding a unit-speed reparametrization.
+
+From the definition, it follows that a smooth unit-speed curve has vanishing geodesic curvature if and only if it is a geodesic, so the geodesic curvature of a curve can be regarded as a quantitative measure of how far it deviates from being a geodesic. If $M = \mathbb{R}^n$ with the Euclidean metric, the geodesic curvature agrees with the notion of curvature introduced in advanced calculus courses.
+
+Now suppose $(\tilde{M}, \tilde{g})$ is a Riemannian or pseudo-Riemannian manifold and $(M, g)$ is a Riemannian submanifold. Every regular curve $\gamma: I \to M$ has two distinct geodesic curvatures: its \emph{intrinsic curvature} $\kappa$ as a curve in $M$, and its \emph{extrinsic curvature} $\tilde{\kappa}$ as a curve in $\tilde{M}$. The second fundamental form can be used to compute the relationship between the two.
+
+\begin{proposition}[Geometric Interpretation of II]
+\label{prop:geometric-interpretation-ii}
+\dcref{ch8:8.10}
+\uses{cor:gauss-formula-along-curve}
+Suppose $(M, g)$ is an embedded Riemannian submanifold of a Riemannian or pseudo-Riemannian manifold $(\tilde{M}, \tilde{g})$, $p \in M$, and $v \in T_p M$.
+
+(a) $\text{II}(v, v)$ is the $\tilde{g}$-acceleration at $p$ of the $g$-geodesic $\gamma_v$.
+
+(b) If $v$ is a unit vector, then $|\text{II}(v, v)|$ is the $\tilde{g}$-curvature of $\gamma_v$ at $p$.
+\end{proposition}
+
+\emph{Proof.} Suppose $\gamma: (-\varepsilon,\varepsilon) \to M$ is any regular curve with $\gamma(0) = p$ and $\gamma'(0) = v$. Applying the Gauss formula (Corollary 8.3) to the vector field $\gamma'$ along $\gamma$, we obtain
+\[
+\tilde{D}_t \gamma' = D_t \gamma' + \text{II}(\gamma', \gamma').
+\]
+If $\gamma$ is a $g$-geodesic in $M$, this formula simplifies to
+\[
+\tilde{D}_t \gamma' = \text{II}(\gamma', \gamma').
+\]
+Both conclusions of the proposition follow from this. $\square$
+
+Note that the second fundamental form is completely determined by its values of the form $\text{II}(v,v)$ for unit vectors $v$, by the following lemma.
+
+\begin{lemma}
+\label{lem:symmetric-bilinear-form-unit-vectors}
+\dcref{ch8:8.11}
+Suppose $V$ is an inner product space, $W$ is a vector space, and $B, B': V \times V \to W$ are symmetric and bilinear. If $B(v,v) = B'(v,v)$ for every unit vector $v \in V$, then $B = B'$.
+\end{lemma}
+
+\emph{Proof.} Every vector $v \in V$ can be written $v = \lambda \hat{v}$ for some unit vector $\hat{v}$, so the bilinearity of $B$ and $B'$ implies $B(v,v) = B'(v,v)$ for every $v$, not just unit vectors. The result then follows from the following polarization identity, which is proved in exactly the same way as its counterpart (2.2) for inner products:
+\[
+B(v,w) = \frac{1}{2}\left(B(v+w, v+w) - B(v-w, v-w)\right).
+\]
+$\square$
+
+Because the intrinsic and extrinsic accelerations of a curve are usually different, it is generally not the case that a $\tilde{g}$-geodesic that starts tangent to $M$ stays in $M$; just think of a sphere in Euclidean space, for example. A Riemannian submanifold $(M, g)$ of $(\tilde{M}, \tilde{g})$ is said to be \textbf{totally geodesic} if every $\tilde{g}$-geodesic that is tangent to $M$ at some time $t_0$ stays in $M$ for all $t$ in some interval $(t_0 - \varepsilon, t_0 + \varepsilon)$.
+
+\begin{proposition}
+\label{prop:totally-geodesic-equivalence}
+\dcref{ch8:8.12}
+\uses{thm:gauss-formula}
+\uses{lem:symmetric-bilinear-form-unit-vectors}
+
+Suppose $(M, g)$ is an embedded Riemannian submanifold of a Riemannian or pseudo-Riemannian manifold $(\tilde{M}, \tilde{g})$. The following are equivalent:
+
+(a) $M$ is totally geodesic in $\tilde{M}$.
+
+(b) Every $g$-geodesic in $M$ is also a $\tilde{g}$-geodesic in $\tilde{M}$.
+
+(c) The second fundamental form of $M$ vanishes identically.
+\end{proposition}
+
+Proof. We will prove (a) $\Rightarrow$ (b) $\Rightarrow$ (c) $\Rightarrow$ (a). First assume that $M$ is totally geodesic. Let $\gamma: I \to M$ be a $g$-geodesic. For each $t_0 \in I$, let $\tilde{\gamma}: \tilde{I} \to \tilde{M}$ be the $\tilde{g}$-geodesic with $\tilde{\gamma}(t_0) = \gamma(t_0)$ and $\tilde{\gamma}'(t_0) = \gamma'(t_0)$. The hypothesis implies that there is some open interval $I_0$ containing $t_0$ such that $\tilde{\gamma}(t) \in M$ for $t \in I_0$. On $I_0$, the Gauss formula (8.2) for $\tilde{\gamma}'$ reads
+\[
+0 = \tilde{D}_t \tilde{\gamma}' = D_t \tilde{\gamma}' + \Pi(\tilde{\gamma}', \tilde{\gamma}').
+\]
+Because the first term on the right is tangent to $M$ and the second is normal, the two terms must vanish individually. In particular, $D_t \tilde{\gamma}' \equiv 0$ on $I_0$, which means that $\tilde{\gamma}$ is also a $g$-geodesic there. By uniqueness of geodesics, therefore, $\gamma = \tilde{\gamma}$ on $I_0$, so it follows in turn that $\gamma$ is a $\tilde{g}$-geodesic there. Since the same is true in a neighborhood of every $t_0 \in I$, it follows that $\gamma$ is a $\tilde{g}$-geodesic on its whole domain.
+
+Next assume that every $g$-geodesic is a $\tilde{g}$-geodesic. Let $p \in M$ and $v \in T_p M$ be arbitrary, and let $\gamma = \gamma_v: I \to M$ be the $g$-geodesic with $\gamma(0) = p$ and $\gamma'(0) = v$. The hypothesis implies that $\gamma$ is also a $\tilde{g}$-geodesic. Thus $\tilde{D}_t \gamma' = D_t \gamma' = 0$, so the Gauss formula yields $\Pi(\gamma', \gamma') = 0$ along $\gamma$. In particular, $\Pi(v, v) = 0$. By Lemma 8.11, this implies that $\Pi$ is identically zero.
+
+Finally, assume that $\Pi \equiv 0$, and let $\tilde{\gamma}: I \to \tilde{M}$ be a $\tilde{g}$-geodesic such that $\tilde{\gamma}(t_0) \in M$ and $\tilde{\gamma}'(t_0) \in TM$ for some $t_0 \in I$. Let $\gamma: I \to M$ be the $g$-geodesic with the same initial conditions: $\gamma(t_0) = \tilde{\gamma}(t_0)$ and $\gamma'(t_0) = \tilde{\gamma}'(t_0)$. The Gauss formula together with the hypothesis $\Pi \equiv 0$ implies that $\tilde{D}_t \gamma' = D_t \gamma' = 0$, so $\gamma$ is also a $\tilde{g}$-geodesic. By uniqueness of geodesics, therefore, $\tilde{\gamma} = \gamma$ on the intersection of their domains, which implies that $\tilde{\gamma}(t)$ lies in $M$ for $t$ in some open interval around $t_0$. \qed
+
+\section{Hypersurfaces}
+
+Now we specialize the preceding considerations to the case in which $M$ is a \textbf{hypersurface} (i.e., a submanifold of codimension 1) in $\tilde{M}$. Throughout this section, our default assumption is that $(M, g)$ is an embedded $n$-dimensional Riemannian submanifold of an $(n + 1)$-dimensional Riemannian manifold $(\tilde{M}, \tilde{g})$. (The analogous formulas in the pseudo-Riemannian case are a little different; see Problem 8-19.)
+
+\section{The Scalar Second Fundamental Form and the Shape Operator}
+
+In this situation, at each point of $M$ there are exactly two unit normal vectors. In terms of any local adapted orthonormal frame $(E_1,\ldots,E_{n+1})$, the two choices are $\pm E_{n+1}$. In a small enough neighborhood of each point of $M$, therefore, we can always choose a smooth unit normal vector field along $M$.
+
+If both $M$ and $\tilde{M}$ are orientable, we can use an orientation to pick out a global smooth unit normal vector field along all of $M$. In general, though, this might or might not be possible. Since all of our computations in this chapter are local, we will always assume that we are working in a small enough neighborhood that a smooth unit normal field exists. We will address as we go along the question of how various quantities depend on the choice of normal vector field.
+
+Having chosen a distinguished smooth unit normal vector field $N$ on the hypersurface $M \subset \tilde{M}$, we can replace the vector-valued second fundamental form $\text{II}$ by a simpler scalar-valued form. The \textbf{scalar second fundamental form} of $M$ is the symmetric covariant 2-tensor field $h \in \Gamma(S^2 T^* M)$ defined by $h = \text{II}_N$ (see (8.3)); in other words,
+\begin{equation}
+h(X,Y) = \langle N, \text{II}(X,Y) \rangle.
+\tag{8.8}
+\end{equation}
+
+Using the Gauss formula $\tilde{\nabla}_X Y = \nabla_X Y + \text{II}(X,Y)$ and noting that $\nabla_X Y$ is orthogonal to $N$, we can rewrite the definition as
+\begin{equation}
+h(X,Y) = \langle N, \tilde{\nabla}_X Y \rangle.
+\tag{8.9}
+\end{equation}
+
+Also, since $N$ is a unit vector spanning $NM$ at each point, the definition of $h$ is equivalent to
+\begin{equation}
+\text{II}(X,Y) = h(X,Y)N.
+\tag{8.10}
+\end{equation}
+
+Note that replacing $N$ by $-N$ multiplies $h$ by $-1$, so the sign of $h$ depends on which unit normal is chosen; but $h$ is otherwise independent of the choices.
+
+The choice of unit normal field also determines a Weingarten map $W_N : \mathfrak{X}(M) \to \mathfrak{X}(M)$ by (8.4); in the case of a hypersurface, we use the notation $s = W_N$ and call it the \textbf{shape operator} of $M$. Alternatively, we can think of $s$ as the $(1,1)$-tensor field on $M$ obtained from $h$ by raising an index. It is characterized by
+\[
+\langle sX, Y \rangle = h(X,Y) \quad \text{for all } X,Y \in \mathfrak{X}(M).
+\]
+
+Because $h$ is symmetric, $s$ is a self-adjoint endomorphism of $TM$, that is,
+\[
+\langle sX, Y \rangle = \langle X, sY \rangle \quad \text{for all } X,Y \in \mathfrak{X}(M).
+\]
+
+As with $h$, the sign of $s$ depends on the choice of $N$.
+
+In terms of the tensor fields $h$ and $s$, the formulas of the last section can be rewritten somewhat more simply. For this purpose, we will use two tensor operations defined in Chapter 7: the \textbf{Kulkarni--Nomizu product} of symmetric 2-tensors $h,k$ is
+\[
+h \owedge k(w, x, y, z) = h(w, z)k(x, y) + h(x, y)k(w, z) - h(w, y)k(x, z) - h(x, z)k(w, y),
+\]
+and the \emph{exterior covariant derivative} of a smooth symmetric 2-tensor field $T$ is
+\[
+(DT)(x, y, z) = -(\nabla T)(x, y, z) + (\nabla T)(x, z, y).
+\]
+
+\begin{theorem}[Fundamental Equations for a Hypersurface]
+\label{thm:fundamental-equations-hypersurface}
+\dcref{ch8:8.13}
+
+Suppose $(M, g)$ is a Riemannian hypersurface in a Riemannian manifold $(\bar{M}, \bar{g})$, and $N$ is a smooth unit normal vector field along $M$.
+
+(a) \textsc{The Gauss Formula for a Hypersurface}: If $X, Y \in \mathfrak{X}(M)$ are extended to an open subset of $\bar{M}$, then
+\[
+\bar{\nabla}_X Y = \nabla_X Y + h(X, Y)N.
+\]
+
+(b) \textsc{The Gauss Formula for a Curve in a Hypersurface}: If $\gamma: I \to M$ is a smooth curve and $X: I \to TM$ is a smooth vector field along $\gamma$, then
+\[
+\bar{D}_t X = D_t X + h(\gamma', X)N.
+\]
+
+(c) \textsc{The Weingarten Equation for a Hypersurface}: For every $X \in \mathfrak{X}(M)$,
+\begin{equation}
+\bar{\nabla}_X N = -sX.
+\tag{8.11}
+\end{equation}
+
+(d) \textsc{The Gauss Equation for a Hypersurface}: For all $W, X, Y, Z \in \mathfrak{X}(M)$,
+\[
+\overline{Rm}(W, X, Y, Z) = Rm(W, X, Y, Z) - \tfrac{1}{2}(h \owedge h)(W, X, Y, Z).
+\]
+
+(e) \textsc{The Codazzi Equation for a Hypersurface}: For all $W, X, Y \in \mathfrak{X}(M)$,
+\begin{equation}
+\overline{Rm}(W, X, Y, N) = (Dh)(Y, W, X).
+\tag{8.12}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Parts (a), (b), and (d) follow immediately from substituting (8.10) into the general versions of the Gauss formula and Gauss equation. To prove (c), note first that the general version of the Weingarten equation can be written $(\bar{\nabla}_X N)^{\top} = -sX$. Since $\langle \bar{\nabla}_X N, N \rangle = \frac{1}{2}X(|N|^2) = 0$, it follows that $\bar{\nabla}_X N$ is tangent to $M$, so (c) follows.
+
+To prove the hypersurface Codazzi equation, note that the fact that $N$ is a unit vector field implies
+\[
+0 = X|N|^2_{\bar{g}} = 2\langle \nabla^{\perp}_X N, N \rangle_{\bar{g}}.
+\]
+
+Since $N$ spans the normal bundle, this implies that $N$ is parallel with respect to the normal connection. Moreover,
+\begin{align*}
+(\nabla_W^\perp II)(X, Y) &= \nabla_W^\perp(II(X,Y)) - II(\nabla_W X, Y) - II(X, \nabla_W Y)\\
+&= \nabla_W^\perp(h(X, Y)N) - II(\nabla_W X, Y) - II(X, \nabla_W Y)\\
+&= \bigl(W(h(X, Y)) - h(\nabla_W X, Y) - h(X, \nabla_W Y)\bigr)N\\
+&= \nabla_W(h)(X, Y)N.
+\end{align*}
+
+Inserting this into the general form (8.6) of the Codazzi equation and using the fact that $\nabla h$ is symmetric in its first two indices yields
+\begin{align*}
+\widetilde{Rm}(W, X, Y, N) &= \nabla_W(h)(X, Y) - \nabla_X(h)(W, Y)\\
+&= (\nabla h)(X, Y, W) - (\nabla h)(W, Y, X)\\
+&= (\nabla h)(Y, X, W) - (\nabla h)(Y, W, X),
+\end{align*}
+which is equivalent to (8.12). \qed
+\end{proof}
+
+\section{Principal Curvatures}
+
+At every point $p \in M$, we have seen that the shape operator $s$ is a self-adjoint linear endomorphism of the tangent space $T_p M$. To analyze such an operator, we recall some linear-algebraic facts about self-adjoint endomorphisms.
+
+\begin{lemma}
+\label{lem:self-adjoint-eigenvector-extremum}
+\dcref{ch8:8.14}
+Suppose $V$ is a finite-dimensional inner product space and $s: V \to V$ is a self-adjoint linear endomorphism. Let $C$ denote the set of unit vectors in $V$. There is a vector $v_0 \in C$ where the function $v \mapsto \langle sv, v \rangle$ achieves its maximum among elements of $C$, and every such vector is an eigenvector of $s$ with eigenvalue $\lambda_0 = \langle sv_0, v_0 \rangle$.
+\end{lemma}
+
+\begin{exercise}
+\label{exer:lagrange-multiplier-eigenvector}
+\dcref{ch8:8.15}
+\uses{prop:lagrange-multiplier-rule}
+Use the Lagrange multiplier rule (Prop. A.29) to prove this lemma.
+\end{exercise}
+
+\begin{proposition}[Finite-Dimensional Spectral Theorem]
+\label{prop:finite-dimensional-spectral-theorem}
+\dcref{ch8:8.16}
+\uses{lem:self-adjoint-eigenvector-extremum}
+Suppose $V$ is a finite-dimensional inner product space and $s: V \to V$ is a self-adjoint linear endomorphism. Then $V$ has an orthonormal basis of $s$-eigenvectors, and all of the eigenvalues are real.
+\end{proposition}
+
+\begin{proof}
+The proof is by induction on $n = \dim V$. The $n = 1$ result is easy, so assume that the theorem holds for some $n \geq 1$ and suppose $\dim V = n + 1$. Lemma 8.14 shows that $s$ has a unit eigenvector $b_0$ with a real eigenvalue $\lambda_0$. Let $B \subseteq V$ be the span of $b_0$. Since $s(B) \subseteq B$, self-adjointness of $s$ implies $s(B^\perp) \subseteq B^\perp$. The inductive hypothesis applied to $s|_{B^\perp}$ implies that $B^\perp$ has an orthonormal basis $(b_1, \ldots, b_n)$ of $s$-eigenvectors with real eigenvalues, and then $(b_0, b_1, \ldots, b_n)$ is the desired basis of $V$. \qed
+\end{proof}
+
+Applying this proposition to the shape operator $s: T_p M \to T_p M$, we see that $s$ has real eigenvalues $\kappa_1, \ldots, \kappa_n$, and there is an orthonormal basis $(b_1, \ldots, b_n)$ for $T_p M$ consisting of $s$-eigenvectors, with $sb_i = \kappa_i b_i$ for each $i$ (no summation). In this basis, both $h$ and $s$ are represented by diagonal matrices, and $h$ has the expression
+\[
+h(v,w) = \kappa_1 v^1 w^1 + \cdots + \kappa_n v^n w^n.
+\]
+
+The eigenvalues of $s$ at a point $p \in M$ are called the \emph{principal curvatures of $M$ at $p$}, and the corresponding eigenspaces are called the \emph{principal directions}. The principal curvatures all change sign if we reverse the normal vector, but the principal directions and principal curvatures are otherwise independent of the choice of coordinates or bases.
+
+There are two combinations of the principal curvatures that play particularly important roles for hypersurfaces. The \emph{Gaussian curvature} is defined as $K = \det(s)$, and the \emph{mean curvature} as $H = (1/n) \operatorname{tr}(s) = (1/n) \operatorname{tr}_g(h)$. Since the determinant and trace of a linear endomorphism is basis-independent, these are well defined once a unit normal is chosen. In terms of the principal curvatures, they are
+\[
+K = \kappa_1 \kappa_2 \cdots \kappa_n, \quad H = \frac{1}{n}(\kappa_1 + \cdots + \kappa_n),
+\]
+as can be seen by expressing $s$ in terms of an orthonormal basis of eigenvectors. If $N$ is replaced by $-N$, then $H$ changes sign, while $K$ is multiplied by $(-1)^n$.
+
+\section{Computations in Semigeodesic Coordinates}
+
+Semigeodesic coordinates (Prop.~6.41) provide an extremely convenient tool for computing the invariants of hypersurfaces.
+
+Let $(\tilde{M}, \tilde{g})$ be an $(n+1)$-dimensional Riemannian manifold, and let $(x^1, \ldots, x^n, v)$ be semigeodesic coordinates on an open subset $U \subseteq \tilde{M}$. (For example, they might be Fermi coordinates for the hypersurface $M_0 = v^{-1}(0)$; see Example~6.43.) For each real number $a$ such that $v^{-1}(a) \ne \emptyset$, the level set $M_a = v^{-1}(a)$ is a properly embedded hypersurface in $U$. Let $g_a$ denote the induced metric on $M_a$. Corollary~6.42 shows that $\tilde{g}$ is given by
+\begin{equation}
+\tilde{g} = dv^2 + \sum_{\alpha,\beta=1}^n g_{\alpha\beta}(x^1, \ldots, x^n, v) dx^\alpha dx^\beta.
+\tag{8.13}
+\end{equation}
+
+The restrictions of $(x^1, \ldots, x^n)$ give smooth coordinates for each hypersurface $M_a$, and in those coordinates the induced metric $g_a$ is given by $g_a = g_{\alpha\beta} dx^\alpha dx^\beta|_{v=a}$. (Here we use the summation convention with Greek indices running from $1$ to $n$.) The vector field $\partial_v = \partial_{n+1}$ restricts to a unit normal vector field along each hypersurface $M_a$.
+
+As the next proposition shows, semigeodesic coordinates give us a simple formula for the second fundamental forms of all of the submanifolds $M_a$ at once.
+
+\begin{proposition}
+\label{prop:semigeodesic-coordinates-second-form}
+\dcref{ch8:8.17}
+With notation as above, the components in $(x^1, \ldots, x^n)$-coordinates of the scalar second fundamental form, the shape operator, and the mean curvature of $M_a$ (all with respect to the unit normal $\partial_v$) are given by the following formulas:
+\[
+(h_a)_{\alpha\beta} = -\frac{1}{2} \partial_v g_{\alpha\beta}|_{v=a}, \qquad
+(s_a)_\beta^\alpha = -\frac{1}{2}g^{\alpha\gamma}\partial_v g_{\gamma\beta}|_{v=a}, \qquad
+H_a = -\frac{1}{2n}g^{\alpha\beta}\partial_v g_{\alpha\beta}|_{v=a}.
+\]
+\end{proposition}
+
+Proof. The normal component of $\overline{\nabla}_\alpha \partial_\beta$ is $\overline{\Gamma}^{n+1}_{\alpha\beta}\partial_v$, which Corollary 6.42 shows is equal to $-\frac{1}{2}\partial_v g_{\alpha\beta}\partial_v$ (noting that the roles of $g$ and $\tilde{g}$ in that corollary are being played here by $\tilde{g}$ and $g_a$, respectively). Equation (8.9) evaluated at points of $M_a$ gives
+\[
+(h_a)_{\alpha\beta} = \langle \overline{\nabla}_\alpha \partial_\beta, N \rangle_{\tilde{g}} = \langle -\tfrac{1}{2}\partial_v g_{\alpha\beta}\partial_v, \partial_v \rangle_{\tilde{g}} = -\tfrac{1}{2}\partial_v g_{\alpha\beta}.
+\]
+
+The formulas for $s_a$ and $H_a$ follow by using $(g^{\alpha\gamma})$ (the inverse matrix of $(g_{\alpha\gamma})$) to raise an index and then taking the trace. $\square$
+
+\section{Minimal Hypersurfaces}
+
+A natural question that has received a great deal of attention over the past century is this: Given a simple closed curve $C$ in $\mathbb{R}^3$, is there an embedded or immersed surface $M$ with $\partial M = C$ that has least area among all surfaces with the same boundary? If so, what is it? Such surfaces are models of the soap films that are produced when a closed loop of wire is dipped in soapy water.
+
+More generally, we can consider the analogous question for hypersurfaces in Riemannian manifolds. Suppose $M$ is a compact codimension-1 submanifold with nonempty boundary in an $(n+1)$-dimensional Riemannian manifold $(\tilde{M}, \tilde{g})$. By analogy with the case of surfaces in $\mathbb{R}^3$, it is traditional to use the term \emph{area} to refer to the $n$-dimensional volume of $M$ with its induced Riemannian metric, and to say that $M$ is \emph{area-minimizing} if it has the smallest area among all compact embedded hypersurfaces in $\tilde{M}$ with the same boundary. One key observation is the following theorem, which is an analogue for hypersurfaces of Theorem 6.4 about length-minimizing curves.
+
+\begin{theorem}
+\label{thm:area-minimizing-zero-mean-curvature}
+\dcref{ch8:8.18}
+\uses{thm:minimizing-geodesic-unit-speed}
+\uses{ex:fermi-coordinates-hypersurface}
+Let $M$ be a compact codimension-1 submanifold with nonempty boundary in an $(n+1)$-dimensional Riemannian manifold $(\tilde{M}, \tilde{g})$. If $M$ is area-minimizing, then its mean curvature is identically zero.
+\end{theorem}
+
+Proof. Let $g$ denote the induced metric on $M$. The fact that $M$ minimizes area among hypersurfaces with the same boundary means, in particular, that it minimizes area among small perturbations of $M$ in a neighborhood of a single point. We will exploit this idea to prove that $M$ must have zero mean curvature everywhere.
+
+Let $p \in \operatorname{Int} M$ be arbitrary, let $(x^1,\ldots,x^n,v)$ be Fermi coordinates for $M$ on an open set $U \subset \tilde{M}$ containing $p$ (see Example 6.43), and let $\tilde{U} = U \cap M$. By taking $\tilde{U}$ sufficiently small, we can arrange that $\tilde{U}$ is a regular coordinate ball in $M$ (see p. 374) and $\tilde{U} \cap \partial M = \emptyset$. We use $(x^1, \ldots, x^n)$ as coordinates on $M$, and observe the summation convention with Greek indices running from 1 to $n$.
+
+% [FIGURE 8.2: A smooth curved surface representing the hypersurface M_t, with a small dashed elliptical coordinate neighborhood U containing point p marked on its interior]
+
+Let $\varphi$ be an arbitrary smooth real-valued function on $M$ with compact support in $\tilde{U}$. For sufficiently small $t$, define a set $M_t \subseteq \tilde{M}$ by
+\[
+M_t = (M \sim \tilde{U}) \cup \{z \in U : v(z) = t\varphi(x^1(z), \ldots, x^n(z))\}.
+\]
+
+(See Fig. 8.2.) Then $M_t$ is an embedded smooth hypersurface in $\tilde{M}$, which agrees with $M$ outside of $\tilde{U}$ and which coincides with the graph of $v = t\varphi$ in $U$. Let $f_t : \tilde{U} \to U$ be the graph parametrization of $M_t \cap U$, given in Fermi coordinates by
+\[
+f_t(x^1, \ldots, x^n) = (x^1, \ldots, x^n, t\varphi(x)).
+\]
+
+Using this map, for each $t$ we can define a diffeomorphism $F_t : M \to M_t$ by
+\[
+F_t(z) = \begin{cases} z, & z \in M \sim \operatorname{supp} \varphi, \\ f_t(z), & z \in \tilde{U}. \end{cases}
+\]
+
+For each $t$, let $\tilde{g}_t = \iota_t^* \tilde{g}$ denote the induced Riemannian metric on $M_t$, and let $g_t = F_t^* \tilde{g}_t = F_t^* \tilde{g}$ denote the pulled-back metric on $M$. When $t = 0$, we have $M_0 = M$, and both $g_0$ and $\tilde{g}_0$ are equal to the induced metric $g$ on $M$. Since $\tilde{g}$ is given by (8.13) in Fermi coordinates, a simple computation shows that in $\tilde{U}$, $g_t = F_t^* \tilde{g}$ has the coordinate expression $g_t = (g_t)_{\alpha\beta} \, dx^\alpha \, dx^\beta$, where
+\begin{equation}
+(g_t)_{\alpha\beta} = t^2 \frac{\partial \varphi}{\partial x^\alpha}(x) \frac{\partial \varphi}{\partial x^\beta}(x) + g_{\alpha\beta}(x, t\varphi(x)),
+\tag{8.15}
+\end{equation}
+while on $M \sim \tilde{U}$, $g_t$ is equal to $g$ and thus is independent of $t$.
+
+Since each $M_t$ is a smooth hypersurface with the same boundary as $M$, our hypothesis guarantees that $\operatorname{Area}(M_t, \tilde{g}_t)$ achieves a minimum at $t = 0$. Because $F_t$ is an isometry from $(M, g_t)$ to $(M_t, \tilde{g}_t)$, we can express this area as follows:
+\[
+\operatorname{Area}(M_t, \tilde{g}_t) = \operatorname{Area}(M, g_t) = \operatorname{Area}(M \sim \tilde{U}, g) + \operatorname{Area}(\tilde{U}, g_t).
+\]
+
+The first term on the right is independent of $t$, and we can compute the second term explicitly in coordinates $(x^1,\ldots,x^n)$ on $\tilde{U}$:
+\[
+\text{Area}(\tilde{U}, g_t) = \int_{\tilde{U}} \sqrt{\det g_t} \, dx^1 \cdots dx^n,
+\]
+where $\det g_t$ denotes the determinant of the matrix $((g_t)_{\alpha\beta})$ defined by (8.15). The integrand above is a smooth function of $t$ and $(x^1,\ldots,x^n)$, so the area is a smooth function of $t$. We have
+\begin{equation}
+\frac{d}{dt}\bigg|_{t=0} \text{Area}(M_t, \tilde{g}_t) = \int_{\tilde{U}} \frac{\partial}{\partial t}\bigg|_{t=0} \sqrt{\det g_t} \, dx^1 \cdots dx^n
+= \int_{\tilde{U}} \frac{1}{2}(\det g)^{-1/2} \frac{\partial}{\partial t}\bigg|_{t=0} (\det g_t) \, dx^1 \cdots dx^n.
+\tag{8.16}
+\end{equation}
+
+(The differentiation under the integral sign is justified because the integrand is smooth and has compact support in $\tilde{U}$.)
+
+To compute the derivative of the determinant, note that the expansion by minors along, say, row $\alpha$ shows that the partial derivative of $\det$ with respect to the matrix entry in position $(\alpha,\beta)$ is equal to the cofactor $\cof^{\alpha\beta}$, and thus by the chain rule,
+\begin{equation}
+\frac{\partial}{\partial t}\bigg|_{t=0} (\det g_t) = \cof^{\alpha\beta} \frac{\partial}{\partial t}\bigg|_{t=0} (g_t)_{\alpha\beta}.
+\tag{8.17}
+\end{equation}
+
+On the other hand, Cramer's rule shows that the $(\alpha,\beta)$ component of the inverse matrix is given by $g^{\alpha\beta} = (\det g)^{-1}\cof^{\alpha\beta}$. Thus from (8.17) and (8.15) we obtain
+\[
+\frac{\partial}{\partial t}\bigg|_{t=0} (\det g_t) = (\det g)g^{\alpha\beta} \frac{\partial}{\partial t}\bigg|_{t=0} (g_t)_{\alpha\beta} = (\det g)g^{\alpha\beta} \frac{\partial g_{\alpha\beta}}{\partial v} \varphi.
+\]
+
+Inserting this into (8.16) and using the result of Proposition 8.17, we conclude that
+\begin{equation}
+\frac{d}{dt}\bigg|_{t=0} \text{Area}(M_t, \tilde{g}_t) = \int_{\tilde{U}} \frac{1}{2}(\det g)^{1/2} g^{\alpha\beta} \frac{\partial g_{\alpha\beta}}{\partial v} \varphi \, dx^1 \cdots dx^n
+= -n \int_{\tilde{U}} H\varphi \, dV_g,
+\tag{8.18}
+\end{equation}
+where $H$ is the mean curvature of $(M,g)$. Since $\text{Area}(M_t, \tilde{g}_t)$ attains a minimum at $t=0$, we conclude that $\int_{\tilde{U}} H\varphi \, dV_g = 0$ for every such $\varphi$.
+
+Now suppose for the sake of contradiction that $H(p) \neq 0$. If $H(p)>0$, we can let $\varphi$ be a smooth nonnegative bump function that is positive at $p$ and supported in a small neighborhood of $p$ on which $H > 0$. The argument above shows that $\int_{\tilde{U}} H\varphi \, dV_g = 0$, which is impossible because the integrand is nonnegative on $\tilde{U}$ and positive on an open set. A similar argument rules out $H(p) < 0$. Since $p$ was an arbitrary point in $\text{Int} M$, we conclude that $H = 0$ on $\text{Int}M$, and then by continuity on all of $M$. \qed
+
+Because of the result of Theorem 8.18, a hypersurface (immersed or embedded, with or without boundary) that has mean curvature identically equal to zero is called a \emph{minimal hypersurface} (or a \emph{minimal surface} when it has dimension 2). It is an unfortunate historical accident that the term ``minimal hypersurface'' is defined in this way, because in fact, a minimal hypersurface is just a critical point for the area, not necessarily area-minimizing. It can be shown that as in the case of geodesics, a small enough piece of every minimal hypersurface is area-minimizing.
+
+As a complement to the above theorem about hypersurfaces that minimize area with fixed boundary, we have the following result about hypersurfaces that minimize area while enclosing a fixed volume.
+
+\begin{theorem}
+\label{thm:constant-mean-curvature-isoperimetric}
+\dcref{ch8:8.19}
+\uses{thm:area-minimizing-zero-mean-curvature}
+\uses{thm:tubular-neighborhood}
+
+Suppose $(\tilde{M},\tilde{g})$ is a Riemannian $(n+1)$-manifold, $D \subseteq \tilde{M}$ is a compact regular domain, and $M = \partial D$. If $M$ has the smallest surface area among boundaries of compact regular domains with the same volume as $D$, then $M$ has constant mean curvature (computed with respect to the outward unit normal).
+\end{theorem}
+
+\textbf{Proof.} Let $g$ denote the induced metric on $M$. Assume for the sake of contradiction that the mean curvature $H$ of $M$ is not constant, and let $p,q \in M$ be points such that $H(p) < H(q)$.
+
+Since $M$ is compact, it has an $\varepsilon$-tubular neighborhood for some $\varepsilon > 0$ by Theorem 5.25. As in the previous proof, let $(x^1,\ldots,x^n,v)$ be Fermi coordinates for $M$ on an open set $\tilde{U} \subseteq \tilde{M}$ containing $p$, and let $U = \tilde{U} \cap M$. We may assume that $U$ is a regular coordinate ball in $M$ and the image of the chart is a set of the form $\hat{U} \times (-\varepsilon,\varepsilon)$ for some open subset $\hat{U} \subseteq \mathbb{R}^n$. Similarly, let $(y^1,\ldots,y^n,w)$ be Fermi coordinates for $M$ on an open set $\tilde{W} \subseteq \tilde{M}$ containing $q$ and satisfying the analogous conditions, and let $W = \tilde{W} \cap M$. By replacing $v$ with its negative if necessary, we can arrange that $D \cap \tilde{U}$ is the set where $v \le 0$, and similarly for $w$. Also, by shrinking both domains, we can assume that the mean curvature of $M$ satisfies $H \le H_1$ on $U$ and $H \ge H_2$ on $W$, where $H_1, H_2$ are constants such that $H(p) < H_1 < H_2 < H(q)$.
+
+Let $\varphi$ and $\psi$ be smooth real-valued functions on $M$, with $\varphi$ compactly supported in $U$ and $\psi$ compactly supported in $W$, and satisfying $\int_U \varphi \, dV_g = \int_W \psi \, dV_g = 1$.
+
+For sufficiently small $s,t \in \mathbb{R}$, define a subset $D_{s,t} \subseteq \tilde{M}$ as follows:
+\begin{align*}
+D_{s,t} &= \{z \in \tilde{U} : v(z) \le s\varphi(x^1(z),\ldots,x^n(z))\} \\
+&\quad \cup \{z \in \tilde{W} : w(z) \le t\psi(y^1(z),\ldots,y^n(z))\} \\
+&\quad \cup \left(D \setminus (\tilde{U} \cup \tilde{W})\right),
+\end{align*}
+and let $M_{s,t} = \partial D_{s,t}$, so $D_{0,0} = D$ and $M_{0,0} = M$ (see Fig. 8.3). For sufficiently small $s$ and $t$, the set $D_{s,t}$ is a regular domain and $M_{s,t}$ is a compact smooth hypersurface, and $\text{Vol}(D_{s,t})$ and $\text{Area}(M_{s,t})$ are both smooth functions of $(s,t)$. For convenience, write $V(s,t) = \text{Vol}(D_{s,t})$ and $A(s,t) = \text{Area}(M_{s,t})$.
+
+The same argument that led to (8.18) shows that
+\[
+\frac{\partial A}{\partial s}(0,0) = -n \int_U H\varphi \, dV_g, \quad \frac{\partial A}{\partial t}(0,0) = -n \int_W H\psi \, dV_g.
+\]
+
+% [FIGURE 8.3: Cross-section of the domain D with hatched regions indicating the perturbed domain $D_{s,t}$]
+
+To compute the partial derivatives of the volume, we just note that if we hold $t = 0$ fixed and let $s$ vary, the only change in volume occurs in the part of $D_{s,t}$ contained in $\tilde{U}$, so the fundamental theorem of calculus gives
+\[
+\frac{\partial V}{\partial s}(0,0) = \frac{d}{ds}\bigg|_{s=0} \text{Vol}(D_{s,0} \cap \tilde{U})
+= \frac{d}{ds}\bigg|_{s=0} \int_U \left(\int_{-\varepsilon}^{s\varphi(x)} \sqrt{\det\bar{g}(x,v)}\,dv\right) dx^1 \cdots dx^n
+\]
+\[
+= \int_U \left(\frac{d}{ds}\bigg|_{s=0} \int_{-\varepsilon}^{s\varphi(x)} \sqrt{\det\bar{g}(x,v)}\,dv\right) dx^1 \cdots dx^n
+= \int_U \varphi(x)\sqrt{\det\bar{g}(x,0)}\,dx^1 \cdots dx^n = \int_U \varphi\,dV_g = 1,
+\]
+where the differentiation under the integral sign in the third line is justified just like (8.16), and in the last line we used the fact that $g_{\alpha\beta}(x) = \bar{g}_{\alpha\beta}(x,0)$ in these coordinates. Similarly, $\partial V/\partial t(0,0) = 1$.
+
+Because $V(0,0) = \text{Vol}(D)$ and $\partial V/\partial t(0,0) \neq 0$, the implicit function theorem guarantees that there is a smooth function $\lambda : (-\delta, \delta) \to \mathbb{R}$ for some $\delta > 0$ such that $V(s, \lambda(s)) \equiv \text{Vol}(D)$. The chain rule then implies
+\[
+0 = \frac{d}{ds}\bigg|_{s=0} V(s, \lambda(s)) = \frac{\partial V}{\partial s}(0,0) + \lambda'(0)\frac{\partial V}{\partial t}(0,0) = 1 + \lambda'(0).
+\]
+
+Thus $\lambda'(0) = -1$.
+
+Our hypothesis that $M$ minimizes area implies that
+\[
+0 = \frac{d}{ds}\bigg|_{s=0} A(s, \lambda(s)) = \frac{\partial A}{\partial s}(0,0) + \lambda'(0) \frac{\partial A}{\partial t}(0,0)
+= -n \int_U H\varphi \, dV_g + n \int_W H\psi \, dV_g,
+\]
+and thus $\int_U H\varphi \, dV_g = \int_W H\psi \, dV_g$. But our choice of $U$ and $W$ together with the fact that $\int_U \varphi \, dV_g = \int_W \psi \, dV_g = 1$ guarantees that $\int_U H\varphi \, dV_g \leq H_1 < H_2 \leq \int_W H\psi \, dV_g$, which is a contradiction. \qed
+
+We do not pursue minimal or constant-mean-curvature hypersurfaces any further in this book, but you can find a good introductory treatment in \cite{CM11}.
+
+\section{Hypersurfaces in Euclidean Space}
+
+Now we specialize even further, to hypersurfaces in Euclidean space. In this section, we assume that $M \subseteq \mathbb{R}^{n+1}$ is an embedded $n$-dimensional submanifold with the induced Riemannian metric. The Euclidean metric will be denoted as usual by $\bar{g}$, and covariant derivatives and curvatures associated with $\bar{g}$ will be indicated by a bar. The induced metric on $M$ will be denoted by $g$.
+
+In this setting, because $\overline{Rm} = 0$, the Gauss and Codazzi equations take even simpler forms:
+\begin{equation}
+\tfrac{1}{2}h \owedge h = Rm,
+\tag{8.19}
+\end{equation}
+\begin{equation}
+Dh = 0,
+\tag{8.20}
+\end{equation}
+or in terms of a local frame for $M$,
+\begin{equation}
+h_{il}h_{jk} - h_{ik}h_{jl} = R_{ijkl},
+\tag{8.21}
+\end{equation}
+\begin{equation}
+h_{ij;k} - h_{ik;j} = 0.
+\tag{8.22}
+\end{equation}
+
+In particular, this means that the Riemann curvature tensor of a hypersurface in $\mathbb{R}^{n+1}$ is completely determined by the second fundamental form. A symmetric 2-tensor field that satisfies $Dh = 0$ is called a \textbf{Codazzi tensor}, so (8.20) can be expressed succinctly by saying that $h$ is a Codazzi tensor.
+
+\begin{exercise}
+\label{exer:codazzi-tensor-characterization}
+\dcref{ch8:8.20}
+Show that a smooth 2-tensor field $h$ on a Riemannian manifold is a Codazzi tensor if and only if both $h$ and $\nabla h$ are symmetric.
+\end{exercise}
+
+The equations (8.19)--(8.20) can be viewed as compatibility conditions for the existence of an embedding or immersion into Euclidean space with prescribed first and second fundamental forms. If $(M, g)$ is a Riemannian $n$-manifold and $h$ is a given smooth symmetric 2-tensor field on $M$, then Theorem 8.13 shows that these two equations are necessary conditions for the existence of an isometric immersion $M \to \mathbb{R}^{n+1}$ for which $h$ is the scalar second fundamental form. (Note that an immersion is locally an embedding, so the theorem applies in a neighborhood of each point.) It is a remarkable fact that the Gauss and Codazzi equations are actually sufficient, at least locally. A sketch of a proof of this fact, called the \emph{fundamental theorem of hypersurface theory}, can be found in [Pet16, pp. 108--109].
+
+% [FIGURE 8.4: Geometric interpretation of h(v,v) showing a curved surface with normal vector N_p, velocity vector v =  \gamma '(0) tangent to the surface, curve  \gamma (t), and the geometric relation h(v,v)N_p =  \gamma ''(0)]
+
+In the setting of a hypersurface $M \subseteq \mathbb{R}^{n+1}$, we can give some very concrete geometric interpretations of the quantities we have defined so far. We begin with curves. For every unit vector $v \in T_p M$, let $\gamma = \gamma_v : I \to M$ be the $g$-geodesic in $M$ with initial velocity $v$. Then the Gauss formula shows that the ordinary Euclidean acceleration of $\gamma$ at $0$ is $\gamma''(0) = D_t \gamma'(0) = h(v,v)N_p$ (Fig. 8.4). This is also the Euclidean curvature vector of $\gamma$ at $0$, and $h(v,v) = \langle \gamma''(0), N_p \rangle > 0$ if and only if $\gamma''(0)$ points in the same direction as $N_p$. In other words, $h(v,v)$ is positive if $\gamma$ is curving in the direction of $N_p$, and negative if it is curving away from $N_p$.
+
+The next proposition shows that this Euclidean curvature can be interpreted in terms of the radius of the ``best circular approximation,'' as mentioned in Chapter 1.
+
+\begin{proposition}
+\label{prop:osculating-circle}
+\dcref{ch8:8.21}
+Suppose $\gamma: I \to \mathbb{R}^m$ is a unit-speed curve, $t_0 \in I$, and $\kappa(t_0) \neq 0$.
+
+\emph{(a)} There is a unique unit-speed parametrized circle $c: \mathbb{R} \to \mathbb{R}^m$, called the \emph{osculating circle at $\gamma(t_0)$}, with the property that $c$ and $\gamma$ have the same position, velocity, and acceleration at $t = t_0$.
+
+\emph{(b)} The Euclidean curvature of $\gamma$ at $t_0$ is $\kappa(t_0) = 1/R$, where $R$ is the radius of the osculating circle.
+\end{proposition}
+
+\emph{Proof.} An easy geometric argument shows that every circle in $\mathbb{R}^m$ with center $q$ and radius $R$ has a unit-speed parametrization of the form
+\[
+c(t) = q + R \cos\left(\frac{t - t_0}{R}\right)v + R \sin\left(\frac{t - t_0}{R}\right)w,
+\]
+where $(v, w)$ is a pair of orthonormal vectors in $\mathbb{R}^m$. By direct computation, such a parametrization satisfies
+\[
+c(t_0) = q + Rv, \quad c'(t_0) = w, \quad c''(t_0) = -\frac{1}{R}v.
+\]
+
+Thus if we put
+\[
+R = \frac{1}{|\gamma''(t_0)|} = \frac{1}{\kappa(t_0)}, \quad v = -R\gamma''(t_0), \quad w = \gamma'(t_0), \quad q = \gamma(t_0) - Rv,
+\]
+we obtain a circle satisfying the required conditions, and its radius is equal to $1/\kappa(t_0)$ by construction. Uniqueness is left as an exercise. $\square$
+
+\begin{exercise}
+\label{exer:osculating-circle-uniqueness}
+\dcref{ch8:8.22}
+Complete the proof of the preceding proposition by proving uniqueness of the osculating circle.
+\end{exercise}
+
+\section{Computations in Euclidean Space}
+
+When we wish to \emph{compute} the invariants of a Euclidean hypersurface $M \subseteq \mathbb{R}^{n+1}$, it is usually unnecessary to go to all the trouble of computing Christoffel symbols. Instead, it is usually more effective to use either a defining function or a parametrization to compute the scalar second fundamental form, and then use (8.21) to compute the curvature. Here we describe several contexts in which this computation is not too hard.
+
+Usually the computations are simplest if the hypersurface is presented in terms of a local parametrization. Suppose $M \subseteq \mathbb{R}^{n+1}$ is a smooth embedded hypersurface, and let $X: U \to \mathbb{R}^{n+1}$ be a smooth local parametrization of $M$. The coordinates $(u^1,\ldots,u^n)$ on $U \subseteq \mathbb{R}^n$ thus give local coordinates for $M$. The coordinate vector fields $\partial_i = \partial/\partial u^i$ push forward to vector fields $dX(\partial_i)$ on $M$, which we can view as sections of the restricted tangent bundle $T\mathbb{R}^{n+1}|_M$, or equivalently as $\mathbb{R}^{n+1}$-valued functions. If we think of $X(u) = (X^1(u),\ldots,X^{n+1}(u))$ as a vector-valued function of $u$, these vectors can be written as
+\[
+dX_u(\partial_i) = \partial_i X(u) = (\partial_i X^1(u),\ldots,\partial_i X^{n+1}(u)).
+\]
+
+For simplicity, write $X_i = \partial_i X$.
+
+Once these vector fields are computed, a unit normal field can be computed as follows: Choose any coordinate vector field $\partial/\partial x^{n}$ that is not contained in $\operatorname{span}(X_1,\ldots,X_n)$ (there will always be one, at least in a neighborhood of each point). Then apply the Gram--Schmidt algorithm to the local frame $(X_1,\ldots,X_n,\partial/\partial x^{n})$ along $M$ to obtain an adapted orthonormal frame $(E_1,\ldots,E_{n+1})$. The two choices of unit normal are $N = \pm E_{n+1}$.
+
+The next proposition gives a formula for the second fundamental form that is often easy to use for computation.
+
+\begin{proposition}
+\label{prop:second-fundamental-form-coordinate-formula}
+\dcref{ch8:8.23}
+Suppose $M \subseteq \mathbb{R}^{n+1}$ is an embedded hypersurface, $X: U \to M$ is a smooth local parametrization of $M$, $(X_1,\ldots,X_n)$ is the local frame for $TM$ determined by $X$, and $N$ is a unit normal field on $M$. Then the scalar second fundamental form is given by
+\begin{equation}
+h(X_i, X_j) = \left\langle \frac{\partial^2 X}{\partial u^i \partial u^j}, N \right\rangle.
+\tag{8.23}
+\end{equation}
+\end{proposition}
+
+Proof. Let $u_0 = (u_0^1, \ldots, u_0^n)$ be an arbitrary point of $U$ and let $p = X(u_0) \in M$. For each $i \in \{1,\ldots,n\}$, the curve $\gamma(t) = X(u_0^1, \ldots, u_0^i + t, \ldots, u_0^n)$ is a smooth curve in $M$ whose initial velocity is $X_i$. Regarding the normal field $N$ as a smooth map from $M$ to $\mathbb{R}^{n+1}$, we have
+\[
+\frac{\partial}{\partial u^i} N(X(u_0)) = (N \circ \gamma)'(0) = \nabla_{X_i} N(X(u_0)).
+\]
+
+Because $X_j = \partial X/\partial u^j$ is tangent to $M$ and $N$ is normal, the following expression is zero for all $u \in U$:
+\[
+\left\langle \frac{\partial X}{\partial u^j}(u), N(X(u)) \right\rangle.
+\]
+
+Differentiating with respect to $u^i$ and using the product rule for ordinary inner products in $\mathbb{R}^{n+1}$ yields
+\[
+0 = \left\langle \frac{\partial^2 X}{\partial u^i \partial u^j}(u), N(X(u)) \right\rangle + \left\langle \frac{\partial X}{\partial u^j}(u), \nabla_{X_i} N(X(u)) \right\rangle.
+\]
+
+By the Weingarten equation (8.11), the last term on the right becomes
+\[
+\langle X_j(u), -s(X_i(u)) \rangle = -h(X_j(u), X_i(u)).
+\]
+
+Inserting this above yields (8.23). $\square$
+
+Here is an application of this formula: it shows how the principal curvatures give a concise description of the local shape of an embedded hypersurface by approximating the surface with the graph of a quadratic function.
+
+\begin{proposition}
+\label{prop:principal-curvatures-local-shape}
+\dcref{ch8:8.24}
+
+Suppose $M \subset \mathbb{R}^{n+1}$ is a Riemannian hypersurface. Let $p \in M$, and let $k_1, \ldots, k_n$ denote the principal curvatures of $M$ at $p$ with respect to some choice of unit normal. Then there is an isometry $\varphi: \mathbb{R}^{n+1} \to \mathbb{R}^{n+1}$ that takes $p$ to the origin and takes a neighborhood of $p$ in $M$ to a graph of the form $x^{n+1} = f(x^1, \ldots, x^n)$, where
+\begin{equation}
+f(x) = \frac{1}{2}(k_1(x^1)^2 + \cdots + k_n(x^n)^2) + O(|x|^3).
+\tag{8.24}
+\end{equation}
+\end{proposition}
+
+Proof. Replacing $M$ by its image under a translation and a rotation (which are Euclidean isometries), we may assume that $p$ is the origin and $T_p M$ is equal to the span of $(\partial_1, \ldots, \partial_n)$. Then after reflecting in the $(x^1, \ldots, x^n)$-hyperplane if necessary, we may assume that the chosen unit normal is $(0, \ldots, 0, 1)$. By an orthogonal transformation in the first $n$ variables, we can also arrange that the scalar second fundamental form at $0$ is diagonal with respect to the basis $(\partial_1, \ldots, \partial_n)$, with diagonal entries $(k_1, \ldots, k_n)$.
+
+It follows from the implicit function theorem that there is some neighborhood $U$ of $0$ such that $M \cap U$ is the graph of a smooth function of the form $x^{n+1} = f(x^1, \ldots, x^n)$ with $f(0) = 0$. A smooth local parametrization of $M$ is then given by $X(u) = (u^1, \ldots, u^n, f(u))$, and the fact that $T_0 M$ is spanned by $(\partial/\partial x^1, \ldots, \partial/\partial x^n)$ guarantees that $\partial_1 f(0) = \cdots = \partial_n f(0) = 0$. Because $X_i = \partial/\partial x^i$ at $0$, Proposition 8.23 then yields
+\[
+h\left(\frac{\partial}{\partial x^i}, \frac{\partial}{\partial x^j}\right) = \left\langle \left(0, \ldots, 0, \frac{\partial^2 f}{\partial x^i \partial x^j}(0)\right), (0, \ldots, 0, 1)\right\rangle = \frac{\partial^2 f}{\partial x^i \partial x^j}(0).
+\]
+
+It follows from our normalization that the matrix of second derivatives of $f$ at $0$ is diagonal, and its diagonal entries are the principal curvatures of $M$ at that point. Then (8.24) follows from Taylor's theorem. \qed
+
+Here is another approach. When it is practical to write down a smooth vector field $N = N^i \partial_i$ on an open subset of $\mathbb{R}^{n+1}$ that restricts to a unit normal vector field along $M$, then the shape operator can be computed straightforwardly using the Weingarten equation and observing that the Euclidean covariant derivatives of $N$ are just ordinary directional derivatives in Euclidean space. Thus for every vector $X = X^j \partial_j$ tangent to $M$, we have
+\begin{equation}
+s X = -\bar{\nabla}_X N = -\sum_{i,j=1}^{n+1} X^j (\partial_j N^i) \partial_i.
+\tag{8.25}
+\end{equation}
+
+One common way to produce such a smooth vector field is to work with a local defining function for $M$: Recall that this is a smooth real-valued function defined on some open subset $U \subseteq \mathbb{R}^{n+1}$ such that $U \cap M$ is a regular level set of $F$ (see Prop.\ A.27). The definition ensures that $\text{grad } F$ (the gradient of $F$ with respect to $\bar{g}$) is nonzero on some neighborhood of $M \cap U$, so a convenient choice for a unit normal vector field along $M$ is
+\[
+N = \frac{\text{grad } F}{|\text{grad } F|}.
+\]
+
+Here is an application.
+
+\begin{example}[Shape Operators of Spheres]
+\label{ex:shape-operators-spheres}
+\dcref{ch8:8.25}
+\uses{prop:existence-local-defining-functions}
+The function $F: \mathbb{R}^{n+1} \to \mathbb{R}$ defined by $F(x) = |x|^2$ is a smooth defining function for each sphere $S^n(R)$. The gradient of this function is $\text{grad } F = 2 \sum_i x^i \partial_i$, which has length $2R$ along $S^n(R)$. The smooth vector field
+\[
+N = \frac{1}{R} \sum_{i=1}^{n+1} x^i \partial_i
+\]
+thus restricts to a unit normal along $S^n(R)$. (It is the outward pointing normal.) The shape operator is now easy to compute:
+\[
+s X = -\frac{1}{R} \sum_{i,j=1}^{n+1} X^j (\partial_j x^i) \partial_i = -\frac{1}{R} X.
+\]
+\end{example}
+
+Therefore $s = (-1/R)\operatorname{Id}$. The principal curvatures, therefore, are all equal to $-1/R$, and it follows that the mean curvature is $H = -1/R$ and the Gaussian curvature is $(-1/R)^n$.
+
+For surfaces in $\mathbb{R}^3$, either of the above methods can be used. When a parametrization $X$ is given, the normal vector field is particularly easy to compute: because $X_1$ and $X_2$ span the tangent space to $M$ at each point, their cross product is a nonzero normal vector, so one choice of unit normal is
+\begin{equation}
+N = \frac{X_1 \times X_2}{|X_1 \times X_2|}.
+\tag{8.26}
+\end{equation}
+
+Problems 8-1, 8-2, and 8-3 will give you practice in carrying out these computations for surfaces presented in various ways.
+
+\section{The Gaussian Curvature of a Surface Is Intrinsic}
+
+Because the Gaussian and mean curvatures are defined in terms of a particular embedding of $M$ into $\mathbb{R}^{n+1}$, there is little reason to suspect that they have much to do with the intrinsic Riemannian geometry of $(M,g)$. The next exercise illustrates the fact that the mean curvature has no intrinsic meaning.
+
+\begin{exercise}
+\label{exer:plane-cylinder-isometric}
+\dcref{ch8:8.26}
+Let $M_1 \subset \mathbb{R}^3$ be the plane $\{z = 0\}$, and let $M_2 \subset \mathbb{R}^3$ be the cylinder $\{x^2 + y^2 = 1\}$. Show that $M_1$ and $M_2$ are locally isometric, but the former has mean curvature zero, while the latter has mean curvature $\pm 1/2$, depending on which normal is chosen.
+\end{exercise}
+
+The amazing discovery made by Gauss was that the Gaussian curvature of a surface in $\mathbb{R}^3$ is actually an intrinsic invariant of the Riemannian manifold $(M,g)$. He was so impressed with this discovery that he called it \emph{Theorema Egregium}, Latin for ``excellent theorem.''
+
+\begin{theorem}[Gauss's Theorema Egregium]
+\label{thm:theorema-egregium}
+\dcref{ch8:8.27}
+\uses{cor:curvature-tensor-dim-2}
+Suppose $(M,g)$ is an embedded 2-dimensional Riemannian submanifold of $\mathbb{R}^3$. For every $p \in M$, the Gaussian curvature of $M$ at $p$ is equal to one-half the scalar curvature of $g$ at $p$, and thus the Gaussian curvature is a local isometry invariant of $(M,g)$.
+\end{theorem}
+
+\emph{Proof.} Let $p \in M$ be arbitrary, and choose an orthonormal basis $(b_1, b_2)$ for $T_p M$. In this basis $g$ is represented by the identity matrix, and the shape operator has the same matrix as the scalar second fundamental form. Thus $K(p) = \det(s^i_j) = \det(h_{ij})$, and the Gauss equation (8.21) reads
+\[
+\operatorname{Rm}_p(b_1, b_2, b_2, b_1) = h_{11}h_{22} - h_{12}h_{21} = \det(h_{ij}) = K(p).
+\]
+
+On the other hand, Corollary 7.27 shows that $\operatorname{Rm} = \frac{1}{4}S\, g \owedge g$, and thus by the definition of the Kulkarni-Nomizu product we have
+\[
+Rm_p(b_1, b_2, b_2, b_1) = \tfrac{1}{2}S(p)(2g_{11}g_{22} - 2g_{12}g_{21}) = \tfrac{1}{2}S(p). \qquad\square
+\]
+
+% [FIGURE 8.5: A plane section showing geodesics emanating from point p on a manifold M, with the plane  \Pi  and its image S_ \Pi  meeting at the surface]
+
+Motivated by the \emph{Theorema Egregium}, for an abstract Riemannian 2-manifold $(M,g)$, not necessarily embedded in $\mathbb{R}^3$, we define the \textbf{Gaussian curvature} to be $K = \frac{1}{2}S$, where $S$ is the scalar curvature. If $M$ is a Riemannian submanifold of $\mathbb{R}^3$, then the \emph{Theorema Egregium} shows that this new definition agrees with the original definition of $K$ as the determinant of the shape operator. The following result is a restatement of Corollary 7.27 using this new definition.
+
+\begin{corollary}
+\label{cor:riemann-two-manifold-curvatures}
+\dcref{ch8:8.28}
+\uses{cor:curvature-tensor-dim-2}
+If $(M, g)$ is a Riemannian 2-manifold, the following relationships hold:
+\[
+Rm = \frac{1}{2}K g \owedge g, \quad Rc = Kg, \quad S = 2K.
+\]
+\end{corollary}
+
+\section{Sectional Curvatures}
+
+Now, finally, we can give a quantitative geometric interpretation to the curvature tensor in dimensions higher than 2. Suppose $M$ is a Riemannian $n$-manifold (with $n \geq 2$), $p$ is a point of $M$, and $V \subseteq T_p M$ is a star-shaped neighborhood of zero on which $\exp_p$ is a diffeomorphism onto an open set $U \subseteq M$. Let $\Pi$ be any 2-dimensional linear subspace of $T_p M$. Since $\Pi \cap V$ is an embedded 2-dimensional submanifold of $V$, it follows that $S_\Pi = \exp_p(\Pi \cap V)$ is an embedded 2-dimensional submanifold of $U \subseteq M$ containing $p$ (Fig.\ 8.5), called the \textbf{plane section determined by $\Pi$}. Note that $S_\Pi$ is just the set swept out by geodesics whose initial velocities lie in $\Pi$, and $T_p S_\Pi$ is exactly $\Pi$.
+
+We define the \textbf{sectional curvature of $\Pi$}, denoted by $\sec(\Pi)$, to be the intrinsic Gaussian curvature at $p$ of the surface $S_\Pi$ with the metric induced from the embedding $S_\Pi \subseteq M$. If $(v,w)$ is any basis for $\Pi$, we also use the notation $\sec(v,w)$ for $\sec(\Pi)$.
+
+The next theorem shows how to compute the sectional curvatures in terms of the curvature of $(M,g)$. To make the formula more concise, we introduce the following notation. Given vectors $v, w$ in an inner product space $V$, we set
+\begin{equation}
+|v \wedge w| = \sqrt{|v|^2 |w|^2 - \langle v,w \rangle^2}.
+\tag{8.27}
+\end{equation}
+
+It follows from the Cauchy--Schwarz inequality that $|v \wedge w| \geq 0$, with equality if and only if $v$ and $w$ are linearly dependent, and $|v \wedge w| = 1$ when $v$ and $w$ are orthonormal. (One can define an inner product on the space $\Lambda^2(V)$ of contravariant alternating 2-tensors, analogous to the inner product on forms defined in Problem 2-16, and this is the associated norm; see Problem 8-33(a).)
+
+\begin{proposition}[Formula for the Sectional Curvature]
+\label{prop:sectional-curvature-formula}
+\dcref{ch8:8.29}
+
+Let $(M, g)$ be a Riemannian manifold and $p \in M$. If $v, w$ are linearly independent vectors in $T_p M$, then the sectional curvature of the plane spanned by $v$ and $w$ is given by
+\[
+\sec(v,w) = \frac{Rm_p(v,w,w,v)}{|v \wedge w|^2}.
+\]
+\end{proposition}
+
+Proof. Let $\Pi \subseteq T_p M$ be the subspace spanned by $(v,w)$. For this proof, we denote the induced metric on $S_\Pi$ by $\bar{g}$, and its associated curvature tensor by $\overline{Rm}$. By definition, $\sec(v,w)$ is equal to $\bar{K}(p)$, the Gaussian curvature of $\bar{g}$ at $p$.
+
+We show first that the second fundamental form of $S_\Pi$ in $M$ vanishes at $p$. To see why, let $z \in \Pi$ be arbitrary, and let $\gamma = \gamma_z$ be the $g$-geodesic with initial velocity $z$, whose image lies in $S_\Pi$ for $t$ sufficiently near $0$. By the Gauss formula for vector fields along curves,
+\[
+0 = D_t \gamma' = \bar{D}_t \gamma' + \Pi(\gamma', \gamma').
+\]
+
+Since the two terms on the right-hand side are orthogonal, each must vanish identically. Evaluating at $t = 0$ gives $\Pi(z,z) = 0$. Since $z$ was an arbitrary element of $\Pi = T_p(S_\Pi)$ and $\Pi$ is symmetric, polarization shows that $\Pi = 0$ at $p$. (We cannot in general expect $\Pi$ to vanish at other points of $S_\Pi$---it is only at $p$ that all $g$-geodesics starting tangent to $S_\Pi$ remain in $S_\Pi$.) The Gauss equation then tells us that the curvature tensors of $M$ and $S_\Pi$ are related at $p$ by
+\[
+Rm_p(u,v,w,x) = \overline{Rm}_p(u,v,w,x)
+\]
+whenever $u, v, w, x \in \Pi$.
+
+Now choose an orthonormal basis $(b_1, b_2)$ for $\Pi$. Based on the observations above, we see that the sectional curvature of $\Pi$ is
+\[
+\bar{K}(p) = \tfrac{1}{2} \bar{S}(p)
+= \tfrac{1}{2} \sum_{i,j=1}^2 \overline{Rm}_p(b_i, b_j, b_j, b_i)
+= \tfrac{1}{2} \overline{Rm}_p(b_1, b_2, b_2, b_1) + \tfrac{1}{2} \overline{Rm}_p(b_2, b_1, b_1, b_2)
+= \overline{Rm}_p(b_1, b_2, b_2, b_1) = Rm_p(b_1, b_2, b_2, b_1).
+\]
+
+To see how to compute this in terms of an arbitrary basis, let $(v,w)$ be any basis for $\Pi$. The Gram--Schmidt algorithm yields an orthonormal basis as follows:
+\[
+b_1 = \frac{v}{|v|}, \qquad b_2 = \frac{w - \langle w, b_1 \rangle b_1}{|w - \langle w, b_1 \rangle b_1|}.
+\]
+
+Then by the preceding computation,
+\begin{align*}
+\hat{K}(p) &= \text{Rm}_p(b_1, b_2, b_2, b_1)\\
+&= \text{Rm}_p\left( \frac{v}{|v|}, \frac{w - \langle w, b_1 \rangle b_1}{|w - \langle w, b_1 \rangle b_1|}, \frac{w - \langle w, b_1 \rangle b_1}{|w - \langle w, b_1 \rangle b_1|}, \frac{v}{|v|} \right)\\
+&= \frac{\text{Rm}_p(v, w, w, v)}{|v|^2 |w - \langle w, b_1 \rangle b_1|^2}. \tag{8.29}
+\end{align*}
+where we have used the fact that $\text{Rm}(v, b_1, \cdot, \cdot) = \text{Rm}(\cdot, \cdot, b_1, v) = 0$ because $b_1$ is a multiple of $v$. To simplify the denominator of this last expression, we substitute $b_1 = v/|v|$ to obtain
+\[
+|v|^2 |w - \langle w, b_1 \rangle b_1|^2 = |v|^2 \left( |w|^2 - 2\frac{\langle w,v \rangle^2}{|v|^2} + \frac{\langle w,v \rangle^2}{|v|^2} \right)
+= |v|^2 |w|^2 - \langle v,w \rangle^2 = |v \wedge w|^2.
+\]
+
+Inserting this into (8.29) proves the theorem. \qed
+
+\begin{exercise}
+\label{exer:metric-scaling-sectional-curvature}
+\dcref{ch8:8.30}
+\uses{thm:conformal-transformation-curvature}
+Suppose $(M,g)$ is a Riemannian manifold and $\tilde{g} = \lambda g$ for some positive constant $\lambda$. Use Theorem 7.30 to prove that for every $p \in M$ and plane $\Pi \subseteq T_p M$, the sectional curvatures of $\Pi$ with respect to $\tilde{g}$ and $g$ are related by $\sec_{\tilde{g}}(\Pi) = \lambda^{-1} \sec_g(\Pi)$.
+\end{exercise}
+
+Proposition 8.29 shows that one important piece of quantitative information provided by the curvature tensor is that it encodes the sectional curvatures of all plane sections. It turns out, in fact, that this is \emph{all} of the information contained in the curvature tensor: as the following proposition shows, the sectional curvatures completely determine the curvature tensor.
+
+\begin{proposition}
+\label{prop:sectional-curvature-determines-curvature-tensor}
+\dcref{ch8:8.31}
+Suppose $R_1$ and $R_2$ are algebraic curvature tensors on a finite-dimensional inner product space $V$. If for every pair of linearly independent vectors $v, w \in V$,
+\[
+\frac{R_1(v, w, w, v)}{|v \wedge w|^2} = \frac{R_2(v, w, w, v)}{|v \wedge w|^2},
+\]
+then $R_1 = R_2$.
+\end{proposition}
+
+Proof. Let $R_1$ and $R_2$ be tensors satisfying the hypotheses, and set $D = R_1 - R_2$. Then $D$ is an algebraic curvature tensor, and $D(v, w, w, v) = 0$ for all $v, w \in V$. (This is true by hypothesis when $v$ and $w$ are linearly independent, and it is true by the symmetries of $D$ when they are not.) We need to show that $D = 0$. For all vectors $v, w, x$, the symmetries of $D$ give
+\[
+0 = D(v + w, x, x, v + w)
+\]
+\begin{align*}
+&= D(v,x,x,v) + D(v,x,x,w) + D(w,x,x,v) + D(w,x,x,w)\\
+&= 2D(v,x,x,w).
+\end{align*}
+
+From this it follows that
+\begin{align*}
+0 &= D(v, x + u, x + u, w)\\
+&= D(v,x,x,w) + D(v,x,u,w) + D(v,u,x,w) + D(v,u,u,w)\\
+&= D(v,x,u,w) + D(v,u,x,w).
+\end{align*}
+
+Therefore $D$ is antisymmetric in every adjacent pair of arguments. Now the algebraic Bianchi identity yields
+\begin{align*}
+0 &= D(v,w,x,u) + D(w,x,v,u) + D(x,v,w,u)\\
+&= D(v,w,x,u) - D(w,v,x,u) - D(v,x,w,u)\\
+&= 3D(v,w,x,u).
+\end{align*}
+Since $0 = 3D(v,w,x,u)$ for all $v,w,x,u \in V$, this shows that $D \equiv 0$, and therefore $R_1 = R_2$. \qed
+
+We can also give a geometric interpretation of the Ricci and scalar curvatures on a Riemannian manifold. Since the Ricci tensor is symmetric and bilinear, Lemma 8.11 shows that it is completely determined by its values of the form $\text{Rc}(v,v)$ for unit vectors $v$.
+
+\begin{proposition}[Geometric Interpretation of Ricci and Scalar Curvatures]
+\label{prop:geometric-interpretation-ricci-scalar-curvatures}
+\dcref{ch8:8.32}
+\uses{lem:symmetric-bilinear-form-unit-vectors}
+
+Let $(M, g)$ be a Riemannian $n$-manifold and $p \in M$.
+
+\begin{enumerate}
+\item[(a)] For every unit vector $v \in T_p M$, $\text{Rc}_p(v,v)$ is the sum of the sectional curvatures of the 2-planes spanned by $(v,b_2), \ldots, (v,b_n)$, where $(b_1, \ldots, b_n)$ is any orthonormal basis for $T_p M$ with $b_1 = v$.
+
+\item[(b)] The scalar curvature at $p$ is the sum of all sectional curvatures of the 2-planes spanned by ordered pairs of distinct basis vectors in any orthonormal basis.
+\end{enumerate}
+\end{proposition}
+
+\emph{Proof.} Given any unit vector $v \in T_p M$, let $(b_1, \ldots, b_n)$ be as in the hypothesis. Then $\text{Rc}_p(v,v)$ is given by
+\[
+\text{Rc}_p(v,v) = R_{11}(p) = R_{k11}^k(p) = \sum_{k=1}^n \text{Rm}_p(b_k, b_1, b_1, b_k) = \sum_{k=2}^n \sec(b_1, b_k).
+\]
+
+For the scalar curvature, we let $(b_1, \ldots, b_n)$ be any orthonormal basis for $T_p M$, and compute
+\[
+S(p) = R_j^j(p) = \sum_{j=1}^n \text{Rc}_p(b_j, b_j) = \sum_{j,k=1}^n \text{Rm}_p(b_k, b_j, b_j, b_k)
+= \sum_{j \neq k} \sec(b_j, b_k). \qquad\square
+\]
+
+One consequence of this proposition is that if $(M, g)$ is a Riemannian manifold in which all sectional curvatures are positive, then the Ricci and scalar curvatures are both positive as well. The analogous statement holds if ``positive'' is replaced by ``negative,'' ``nonpositive,'' or ``nonnegative.''
+
+If the opposite sign convention is chosen for the curvature tensor, then the right-hand side of the formula for sectional curvature has to be adjusted accordingly, with $\overline{Rm}_p(v, w, v, w)$ taking the place of $Rm_p(v, w, v, w)$. This is so that whatever sign convention is chosen for the curvature tensor, the notion of positive or negative sectional, Ricci, or scalar curvature has the same meaning for everyone.
+
+\section{Sectional Curvatures of the Model Spaces}
+
+We can now compute the sectional curvatures of our three families of frame-homogeneous model spaces. A Riemannian metric or Riemannian manifold is said to have \emph{constant sectional curvature} if the sectional curvatures are the same for all planes at all points.
+
+\begin{lemma}
+\label{lem:frame-homogeneous-constant-sectional-curvature}
+\dcref{ch8:8.33}
+If a Riemannian manifold $(M, g)$ is frame-homogeneous, then it has constant sectional curvature.
+\end{lemma}
+
+\begin{proof}
+Frame homogeneity implies, in particular, that given two 2-planes at the same or different points, there is an isometry taking one to the other. The result follows from the isometry invariance of the curvature tensor. \qed
+\end{proof}
+
+Thus to compute the sectional curvature of one of our model spaces, it suffices to compute the sectional curvature for one plane at one point in each space.
+
+\begin{theorem}[Sectional Curvatures of the Model Spaces]
+\label{thm:sectional-curvatures-model-spaces}
+\dcref{ch8:8.34}
+\uses{ex:shape-operators-spheres}
+\uses{prob:hyperbolic-constant-curvature}
+The following Riemannian manifolds have the indicated constant sectional curvatures:
+\begin{enumerate}
+\item[(a)] $(\mathbb{R}^n, \bar{g})$ has constant sectional curvature $0$.
+\item[(b)] $(\mathbb{S}^n(R), \bar{g}_R)$ has constant sectional curvature $1/R^2$.
+\item[(c)] $(\mathbb{H}^n(R), \bar{g}_R)$ has constant sectional curvature $-1/R^2$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+First we consider the simplest case: Euclidean space. Since the curvature tensor of $\mathbb{R}^n$ is identically zero, clearly all sectional curvatures are zero. This is also easy to see geometrically, since each plane section is actually a plane, which has zero Gaussian curvature.
+
+Next consider the sphere $S^n(R)$. We need only compute the sectional curvature of the plane $\Pi$ spanned by $(\partial_1, \partial_2)$ at the point $(0, \ldots, 0, 1)$. The geodesics with initial velocities in $\Pi$ are great circles in the $(x^1, x^2, x^{n+1})$-subspace. Therefore $S_\Pi$ is isometric to the round 2-sphere of radius $R$ embedded in $\mathbb{R}^3$. As Example 8.25 showed, $S^2(R)$ has Gaussian curvature $1/R^2$. Therefore $S^n(R)$ has constant sectional curvature equal to $1/R^2$.
+
+Finally, the proof for hyperbolic spaces is left to Problem 8-28. \qed
+\end{proof}
+
+Note that for every real number $c$, exactly one of the model spaces listed above has constant sectional curvature $c$. These spaces will play vital roles in our comparison and local-to-global theorems in the last two chapters of the book.
+
+\begin{exercise}
+\label{exer:constant-sectional-curvature-rp}
+\dcref{ch8:8.35}
+\uses{ex:real-projective-space-metric}
+Show that the metric on real projective space $\mathbb{RP}^n$ defined in Example 2.34 has constant positive sectional curvature.
+\end{exercise}
+
+Since the sectional curvatures determine the curvature tensor, one would expect to have an explicit formula for the full curvature tensor when the sectional curvature is constant. Such a formula is provided in the following proposition.
+
+\begin{proposition}
+\label{prop:constant-sectional-curvature}
+\dcref{ch8:8.36}
+\uses{prob:curvature-tensors-constant-curvature}
+A Riemannian metric $g$ has constant sectional curvature $c$ if and only if its curvature tensor satisfies
+\[
+Rm = \frac{1}{2}c\, g \owedge g.
+\]
+
+In this case, the Ricci tensor and scalar curvature of $g$ are given by the formulas
+\[
+Rc = (n-1)cg; \quad S = n(n-1)c,
+\]
+and the Riemann curvature endomorphism is
+\[
+R(v,w)x = c(\langle w,x\rangle v - \langle v,x\rangle w).
+\]
+
+In terms of any basis,
+\[
+R_{ijkl} = c(g_{il}g_{jk} - g_{ik}g_{jl}); \quad R_{ij} = (n-1)cg_{ij}.
+\]
+\end{proposition}
+
+\noindent\emph{Proof.} Problem 8-29. \qed
+
+The basic concepts of Riemannian metrics and sectional curvatures in arbitrary dimensions were introduced by Bernhard Riemann in a famous 1854 lecture at Göttingen University [Spi97, Vol. II, Chap. 4]. These were just a few of the seminal accomplishments in his tragically short life.
+
+\section{Problems}
+
+\begin{exercise}
+\label{prob:graph-submanifold-shape}
+\dcref{ch8:8-1}
+\uses{ex:metrics-in-graph-coordinates}
+Suppose $U$ is an open set in $\mathbb{R}^n$ and $f: U \to \mathbb{R}$ is a smooth function. Let $M = \{(x, f(x)) : x \in U\} \subseteq \mathbb{R}^{n+1}$ be the graph of $f$, endowed with the induced Riemannian metric and upward unit normal (see Example 2.19).
+
+\begin{enumerate}
+\item[(a)] Compute the components of the shape operator in graph coordinates, in terms of $f$ and its partial derivatives.
+\item[(b)] Let $M \subseteq \mathbb{R}^{n+1}$ be the $n$-dimensional paraboloid defined as the graph of $f(x) = |x|^2$. Compute the principal curvatures of $M$.
+\end{enumerate}
+
+(Used on p. 361.)
+\end{exercise}
+
+\begin{exercise}
+\label{prob:hypersurface-defining-function}
+\dcref{ch8:8-2}
+Let $(M, g)$ be an embedded Riemannian hypersurface in a Riemannian manifold $(\bar{M}, \bar{g})$, let $F$ be a local defining function for $M$, and let $N = \grad F / |\grad F|$.
+
+(a) Show that the scalar second fundamental form of $M$ with respect to the unit normal $N$ is given by
+\[
+h(X,Y) = -\frac{\bar{\nabla}^2 F(X,Y)}{|\operatorname{grad} F|}
+\]
+for all $X,Y \in \mathfrak{X}(M)$.
+
+(b) Show that the mean curvature of $M$ is given by
+\[
+H = -\frac{1}{n} \operatorname{div}_{\bar{g}} \left( \frac{\operatorname{grad} F}{|\operatorname{grad} F|} \right),
+\]
+where $n = \dim M$ and $\operatorname{div}_{\bar{g}}$ is the divergence operator of $\bar{g}$ (see Problem 5-14). [Hint: First prove the following linear-algebra lemma: If $V$ is a finite-dimensional inner product space, $w \in V$ is a unit vector, and $A: V \to V$ is a linear map that takes $w^{\perp}$ to $w^{\perp}$, then $\operatorname{tr}(A|_{w^{\perp}}) = \operatorname{tr} B$, where $B: V \to V$ is defined by $Bx = Ax - \langle x, w \rangle Aw$.]
+\end{exercise}
+
+\begin{exercise}
+\label{prob:surface-revolution-shape-principal-curvatures}
+\dcref{ch8:8-3}
+\uses{ex:surfaces-of-revolution}
+
+Let $C$ be an embedded smooth curve in the half-plane $H = \{(r,z) : r > 0\}$, and let $S_C \subseteq \mathbb{R}^3$ be the surface of revolution determined by $C$ as in Example 2.20. Let $\gamma(t) = (a(t), b(t))$ be a unit-speed local parametrization of $C$, and let $X$ be the local parametrization of $S_C$ given by (2.11).
+
+(a) Compute the shape operator and principal curvatures of $S_C$ in terms of $a$ and $b$, and show that the principal directions at each point are tangent to the meridians and latitude circles.
+
+(b) Show that the Gaussian curvature of $S_C$ at a point $X(t,\theta)$ is equal to $-a''(t)/a(t)$.
+\end{exercise}
+
+\begin{exercise}
+\label{prob:surface-revolution-constant-gaussian-curvature}
+\dcref{ch8:8-4}
+\uses{cor:local-uniqueness-constant-curvature}
+
+Show that there is a surface of revolution in $\mathbb{R}^3$ that has constant Gaussian curvature equal to 1 but does not have constant principal curvatures. [Remark: We will see in Chapter 10 that this surface is locally isometric to $S^2$ (see Cor. 10.15), so this gives an example of two nonflat hypersurfaces in $\mathbb{R}^3$ that are locally isometric but have different principal curvatures.]
+\end{exercise}
+
+\begin{exercise}
+\label{prob:paraboloid-isotropic-one-point}
+\dcref{ch8:8-5}
+
+Let $S \subseteq \mathbb{R}^3$ be the paraboloid given by $z = x^2 + y^2$, with the induced metric. Prove that $S$ is isotropic at only one point. (Used on p. 56.)
+\end{exercise}
+
+\begin{exercise}
+\label{prob:geodesic-curvature-non-unit-speed-curve}
+\dcref{ch8:8-6}
+
+Suppose $(M, g)$ is a Riemannian manifold, and $\gamma: I \to M$ is a regular (but not necessarily unit-speed) curve in $M$. Show that the geodesic curvature of $\gamma$ at $t \in I$ is
+\[
+\kappa(t) = \frac{|\gamma'(t) \times D_t \gamma'(t)|}{|\gamma'(t)|^3},
+\]
+where the norm in the numerator is the one defined by (8.27). Show also that in $\mathbb{R}^3$ with the Euclidean metric, the formula can be written
+\[
+\kappa(t) = \frac{|\gamma'(t) \times \gamma''(t)|}{|\gamma'(t)|^3}.
+\]
+\end{exercise}
+
+\begin{exercise}
+\label{prob:catenoid-minimal-surface}
+\dcref{ch8:8-7}
+For $w > 0$, let $M_w \subseteq \mathbb{R}^3$ be the surface of revolution obtained by revolving the curve $\gamma(t) = (w \cosh(t/w), t)$ around the $z$-axis, called a \textbf{catenoid}. Show that $M_w$ is a minimal surface for each $w$.
+\end{exercise}
+
+\begin{exercise}
+\label{prob:catenoid-boundary-minimal}
+\dcref{ch8:8-8}
+\uses{prob:catenoid-minimal-surface}
+For $h > 0$, let $C_h \subseteq \mathbb{R}^3$ be the one-dimensional submanifold $\{(x, y, z) : x^2 + y^2 = 1, z = \pm h\}$; it is the union of two unit circles lying in the $z = \pm h$ planes. Let $h_0 = 1/\sinh c$, where $c$ is the unique positive solution to the equation $c \tanh c = 1$. Prove that if $h < h_0$, then there are two distinct positive values $w_1 < w_2$ such that the portions of the catenoids $M_{w_1}$ and $M_{w_2}$ lying in the region $|z| \leq h$ are minimal surfaces with boundary $C_h$ (using the notation of Problem 8-7), while if $h = h_0$, there is exactly one such value, and if $h > h_0$, there are none. [Remark: This phenomenon can be observed experimentally. If you dip two parallel wire circles into soapy water, as long as they are close together they will form an area-minimizing soap film in the shape of a portion of a catenoid (the one with the larger ``waist,'' $M_{w_2}$ in the notation above). As you pull the circles apart, the ``waist'' of the catenoid gets smaller, until the ratio of the distance between the circles to their diameter reaches $h_0 \approx 0.6627$, at which point the film will burst and the only soap film that can be formed is two disjoint flat disks.]
+\end{exercise}
+
+\begin{exercise}
+\label{prob:gauss-map}
+\dcref{ch8:8-9}
+Let $M \subseteq \mathbb{R}^{n+1}$ be a Riemannian hypersurface, and let $N$ be a smooth unit normal vector field along $M$. At each point $p \in M$, $N_p \in T_p \mathbb{R}^{n+1}$ can be thought of as a unit vector in $\mathbb{R}^{n+1}$ and therefore as a point in $S^n$. Thus each choice of unit normal vector field defines a smooth map $\nu : M \to S^n$, called the \textbf{Gauss map} of $M$. Show that $\nu^* dV_g = (-1)^n K \, dV_g$, where $K$ is the Gaussian curvature of $M$.
+\end{exercise}
+
+\begin{exercise}
+\label{prob:product-metric-submanifolds}
+\dcref{ch8:8-10}
+\uses{exer:prove-lemma-2-11}
+\uses{prob:product-metric-curvature}
+Suppose $g = g_1 \oplus g_2$ is a product metric on $M_1 \times M_2$ as in (2.12). (See also Problem 7-6.)
+
+\begin{enumerate}
+\item[(a)] Show that for each point $p_i \in M_i$, the submanifolds $M_1 \times \{p_2\}$ and $\{p_1\} \times M_2$ are totally geodesic.
+
+\item[(b)] Show that $\sec(\Pi) = 0$ for every 2-plane $\Pi \subseteq T_{(p_1,p_2)}(M_1 \times M_2)$ spanned by $v_1 \in T_{p_1} M_1$ and $v_2 \in T_{p_2} M_2$.
+
+\item[(c)] Show that if $M_1$ and $M_2$ both have nonnegative sectional curvature, then $M_1 \times M_2$ does too; and if $M_1$ and $M_2$ both have nonpositive sectional curvature, then $M_1 \times M_2$ does too.
+
+\item[(d)] Now suppose $(M_i, g_i)$ has constant sectional curvature $c_i$ for $i = 1,2$; let $n_i = \dim M_i$. Show that $(M, g)$ is Einstein if and only if $c_1(n_1 - 1) = c_2(n_2 - 1)$; and $(M, g)$ has constant sectional curvature if and only if $n_1 = n_2 = 1$ or $c_1 = c_2 = 0$.
+\end{enumerate}
+
+(Used on p. 366.)
+\end{exercise}
+
+\begin{exercise}
+\label{prob:surface-affine-plane-curvature}
+\dcref{ch8:8-11}
+Suppose $M \subseteq \mathbb{R}^3$ is a smooth surface, $p \in M$, and $N_p$ is a normal vector to $M$ at $p$. Show that if $\Pi \subseteq \mathbb{R}^3$ is any affine plane containing $p$ and parallel to $N_p$, then there is a neighborhood $U$ of $p$ in $\mathbb{R}^3$ such that $M \cap \Pi \cap U$ is a smooth embedded curve in $\Pi$, and the principal curvatures of $M$ at $p$ are equal to the minimum and maximum signed Euclidean curvatures of these curves as $\Pi$ varies. [Remark: This justifies the informal recipe for computing principal curvatures given in Chapter 1.]
+\end{exercise}
+
+\begin{exercise}
+\label{prob:riemannian-immersion-bounded-sectional-curvatures}
+\dcref{ch8:8-12}
+Suppose $\pi: (\tilde{M}, \tilde{g}) \to (M, g)$ is a Riemannian immersion, and $(\tilde{M}, \tilde{g})$ has all sectional curvatures bounded below by a constant $c$. Use O'Neill's formula (Problem 7-14) to show that the sectional curvatures of $(M, g)$ are bounded below by the same constant.
+\end{exercise}
+
+\begin{exercise}
+\label{prob:complex-projective-space-curvature}
+\dcref{ch8:8-13}
+Let $p: S^{2n+1} \to \mathbb{CP}^n$ be the Riemannian submersion described in Example 2.30. In this problem, we identify $\mathbb{C}^{n+1}$ with $\mathbb{R}^{2n+2}$ by means of coordinates $(x^1, y^1, \ldots, x^{n+1}, y^{n+1})$ defined by $z^j = x^j + iy^j$.
+
+(a) Show that the vector field
+\[
+S = x^j \frac{\partial}{\partial y^j} - y^j \frac{\partial}{\partial x^j}
+\]
+on $\mathbb{C}^{n+1}$ is tangent to $S^{2n+1}$ and spans the vertical space $V_z$ at each point $z \in S^{2n+1}$. (The implicit summation here is from 1 to $n+1$.)
+
+(b) Show that for all horizontal vector fields $W, Z$ on $S^{2n+1}$,
+\[
+[W, Z]^V = -d\omega(W, Z)S = 2\langle W, JZ \rangle S,
+\]
+where $\omega$ is the 1-form on $\mathbb{C}^{n+1}$ given by
+\[
+\omega = S^\flat = \sum_j x^j dy^j - y^j dx^j,
+\]
+and $J: T\mathbb{C}^{n+1} \to T\mathbb{C}^{n+1}$ is the real-linear orthogonal map given by
+\[
+J\left(a^j \frac{\partial}{\partial x^j} + b^j \frac{\partial}{\partial y^j}\right) = a^j \frac{\partial}{\partial y^j} - b^j \frac{\partial}{\partial x^j}.
+\]
+(This is just multiplication by $i = \sqrt{-1}$ in complex coordinates. Notice that $J \circ J = -\text{Id}$.)
+
+(c) Using O'Neill's formula (Problem 7-14), show that the curvature tensor of $\mathbb{CP}^n$ satisfies
+\[
+\text{Rm}(w, x, y, z) = \langle \tilde{w}, \tilde{z} \rangle \langle \tilde{x}, \tilde{y} \rangle - \langle \tilde{w}, \tilde{y} \rangle \langle \tilde{x}, \tilde{z} \rangle
+- 2\langle \tilde{w}, J\tilde{x} \rangle \langle \tilde{y}, J\tilde{z} \rangle - \langle \tilde{w}, J\tilde{y} \rangle \langle \tilde{x}, J\tilde{z} \rangle
++ \langle \tilde{w}, J\tilde{z} \rangle \langle \tilde{x}, J\tilde{y} \rangle,
+\]
+for every $q \in \mathbb{CP}^n$ and $w, x, y, z \in T_q\mathbb{CP}^n$, where $\tilde{w}, \tilde{x}, \tilde{y}, \tilde{z}$ are horizontal lifts of $w, x, y, z$ to an arbitrary point $\tilde{q} \in p^{-1}(q) \subseteq S^{2n+1}$.
+
+(d) Using the notation of part (c), show that for orthonormal vectors $w, x \in T_q\mathbb{CP}^n$, the sectional curvature of the plane spanned by $\{w, x\}$ is
+\[
+\sec(w, x) = 1 + 3\langle \tilde{w}, J\tilde{x} \rangle^2.
+\]
+\end{exercise}
+
+\begin{exercise}
+\label{prob:einstein-sectional-curvature}
+\dcref{ch8:8-14}
+Show that a Riemannian 3-manifold is Einstein if and only if it has constant sectional curvature.
+\end{exercise}
+
+\begin{exercise}
+\label{prob:homogeneous-isotropic-3-manifold}
+\dcref{ch8:8-15}
+\uses{prob:complex-projective-space-curvature}
+Suppose $(M, g)$ is a 3-dimensional Riemannian manifold that is homogeneous and isotropic. Show that $g$ has constant sectional curvature. Show that the analogous result in dimension 4 is not true. [Hint: See Problem 8-13.]
+\end{exercise}
+
+\begin{exercise}
+\label{prob:berger-metric-su2}
+\dcref{ch8:8-16}
+For each $a > 0$, let $g_a$ be the Berger metric on $\text{SU}(2)$ defined in Problem 3-10. Compute the sectional curvatures with respect to $g_a$ of the planes spanned by $(X, Y)$, $(Y, Z)$, and $(Z, X)$. Prove that if $a \neq 1$, then $(\text{SU}(2), g_a)$ is homogeneous but not isotropic anywhere.
+\end{exercise}
+
+\begin{exercise}
+\label{prob:lie-group-bi-invariant-metric-ch8}
+\dcref{ch8:8-17}
+Let $G$ be a Lie group with a bi-invariant metric $g$ (see Problem 7-13).
+
+(a) Suppose $X$ and $Y$ are orthonormal elements of $\text{Lie}(G)$. Show that $\sec(X_p, Y_p) = \frac{1}{4}|[X, Y]|^2$ for each $p \in G$, and conclude that the sectional curvatures of $(G, g)$ are all nonnegative.
+
+(b) Show that every Lie subgroup of $G$ is totally geodesic in $G$.
+
+(c) Now suppose $G$ is connected. Show that $G$ is flat if and only if it is abelian.
+\end{exercise}
+
+\begin{exercise}
+\label{prob:convex-hypersurface}
+\dcref{ch8:8-18}
+Suppose $(M, g)$ is a Riemannian hypersurface in a Riemannian manifold $(\overline{M}, \overline{g})$, and $N$ is a unit normal vector field along $M$. We say that $M$ is \textbf{convex} (with respect to $N$) if its scalar second fundamental form satisfies $h(v, v) \leq 0$ for all $v \in TM$. Show that if $M$ is convex and $\overline{M}$ has sectional curvatures bounded below by a constant $c$, then all sectional curvatures of $M$ are bounded below by $c$.
+\end{exercise}
+
+\begin{exercise}
+\label{prob:lorentz-hypersurface-formulas}
+\dcref{ch8:8-19}
+\uses{thm:fundamental-equations-hypersurface}
+Suppose $(M, g)$ is a Riemannian hypersurface in an $(n + 1)$-dimensional Lorentz manifold $(\overline{M}, \overline{g})$, and $N$ is a smooth unit normal vector field along $M$. Define the \textbf{scalar second fundamental form} $h$ and the \textbf{shape operator} $s$ by requiring that $\text{II}(X, Y) = h(X, Y)N$ and $\langle sX, Y \rangle = h(X, Y)$ for all $X, Y \in \mathfrak{X}(M)$. Prove the following Lorentz analogues of the formulas of Theorem 8.13 (with notation as in that theorem):
+
+(a) \textsc{Gauss Formula:} $\overline{\nabla}_X Y = \nabla_X Y + h(X, Y)N$.
+
+(b) \textsc{Gauss Formula for a Curve:} $\overline{D}_t X = D_t X + h(\gamma', X)N$.
+
+(c) \textsc{Weingarten Equation:} $\overline{\nabla}_X N = sX$.
+
+(d) \textsc{Gauss Equation:} $\overline{Rm}(W, X, Y, Z) = (Rm + \frac{1}{2} h \owedge h)(W, X, Y, Z)$.
+
+(e) \textsc{Codazzi Equation:} $\overline{Rm}(W, X, Y, N) = -(Dh)(Y, W, X)$.
+\end{exercise}
+
+\begin{exercise}
+\label{prob:lorentz-einstein-field-equation}
+\dcref{ch8:8-20}
+\uses{prob:lorentz-hypersurface-formulas}
+Suppose $(\overline{M}, \overline{g})$ is an $(n + 1)$-dimensional Lorentz manifold, and assume that $\overline{g}$ satisfies the Einstein field equation with a cosmological constant:
+\[
+\overline{Rc} - \frac{1}{2}\overline{S}\bar{g} + \Lambda\bar{g} = T,
+\]
+where $\Lambda$ is a constant and $T$ is a smooth symmetric 2-tensor field (see p.\ 211). Let $(M, g)$ be a Riemannian hypersurface in $\bar{M}$, and let $h$ be its scalar second fundamental form as defined in Problem 8-19. Use the results of Problem 8-19 to show that $g$ and $h$ satisfy the following \textbf{Einstein constraint equations} on $M$:
+\[
+S - 2\Lambda - |h|_g^2 + (\operatorname{tr}_g h)^2 = 2\rho,
+\]
+\[
+\operatorname{div} h - d(\operatorname{tr}_g h) = J,
+\]
+where $S$ is the scalar curvature of $g$, $\operatorname{div} h$ the divergence of $h$ with respect to $g$ as defined in Problem 5-16, $\rho$ is the function $\rho = T(N, N)$, and $J$ is the 1-form $J(X) = T(N, X)$. [Remark: When $J$ and $\rho$ are both zero, these equations, known as the \textbf{vacuum Einstein constraint equations}, are necessary conditions for $g$ and $h$ to be the metric and second fundamental form of a Riemannian hypersurface in an $(n+1)$-dimensional Lorentz manifold satisfying the vacuum Einstein field equation with cosmological constant $\Lambda$. It was proved in 1950 by Yvonne Choquet-Bruhat that these conditions are also sufficient; for a proof, see [CB09, pp.\ 166--168].]
+\end{exercise}
+
+\begin{exercise}[The associated quadratic form]
+\label{prob:associated-quadratic-form}
+\dcref{ch8:8-21}
+
+For every linear endomorphism $A : \mathbb{R}^n \to \mathbb{R}^n$, the \textbf{associated quadratic form} is the function $Q : \mathbb{R}^n \to \mathbb{R}$ defined by $Q(x) = \langle Ax, x \rangle$. Prove that
+\[
+\int_{S^{n-1}} Q \, dV_g = \frac{1}{n}(\operatorname{tr} A)\operatorname{Vol}(S^{n-1}).
+\]
+
+[Hint: Show that $\int_{S^{n-1}} x^i x^j \, dV_g = 0$ when $i \ne j$ by examining the effect of the isometry
+\[
+(x^1, \ldots, x^i, \ldots, x^j, \ldots, x^n) \mapsto (x^1, \ldots, x^j, \ldots, -x^i, \ldots, x^n),
+\]
+and compute $\int_{S^{n-1}} (x^i)^2 \, dV_g$ using the fact that $\sum_i (x^i)^2 = 1$ on the sphere.] [Remark: It is a standard fact of linear algebra that the trace of $A$ is independent of the choice of basis. This gives a geometric interpretation to the trace as $n$ times the average value of the associated quadratic form $Q$.]
+(Used on p.\ 313.)
+\end{exercise}
+
+\begin{exercise}[Ricci curvature without choice of basis]
+\label{prob:ricci-curvature-without-basis}
+\dcref{ch8:8-22}
+\uses{prob:associated-quadratic-form}
+
+Let $(M, g)$ be a Riemannian $n$-manifold and $p \in M$. Proposition 8.32 gave a geometric interpretation of the Ricci curvature at $p$ based on a choice of orthonormal basis. This problem describes an interpretation that does not refer to a basis. For each unit vector $v \in T_p M$, prove that
+\[
+\operatorname{Rc}_p(v, v) = \frac{n-1}{\operatorname{Vol}(S_v^{\perp})} \int_{w \in S_v^{\perp}} \sec(v, w) \, d\bar{V}_g,
+\]
+where $S_v^{\perp}$ denotes the set of unit vectors in $T_p M$ that are orthogonal to $v$ and $\bar{g}$ denotes the Riemannian metric on $S_v^{\perp}$ induced from the flat metric $g_p$ on $T_p M$. [Hint: Use Problem 8-21.]
+\end{exercise}
+
+\begin{exercise}
+\label{prob:lie-group-isometric-action-dimension}
+\dcref{ch8:8-23}
+\uses{prob:lie-group-dimension-bound}
+Suppose $(M,g)$ is a connected $n$-dimensional Riemannian manifold, and a Lie group $G$ acts isometrically and effectively on $M$. Problem 5-12 showed that $\dim G \le n(n+1)/2$. Prove that if equality holds, then $g$ has constant sectional curvature.
+\end{exercise}
+
+\begin{exercise}
+\label{prob:k-point-homogeneous-ch8}
+\dcref{ch8:8-24}
+\uses{prob:k-point-homogeneous}
+Let $(M,g)$ be a connected Riemannian manifold. Recall the definition of $k$-point homogeneous from Problem 6-18. Prove the following:
+\begin{enumerate}
+\item[(a)] If $(M,g)$ is homogeneous, then it has constant scalar curvature.
+\item[(b)] If $(M,g)$ is 2-point homogeneous, then it is Einstein.
+\item[(c)] If $(M,g)$ is 3-point homogeneous, then it has constant sectional curvature.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+\label{prob:weyl-tensor-product-metric}
+\dcref{ch8:8-25}
+\uses{prob:product-metric-curvature}
+For $i = 1,2$, suppose $(M_i, g_i)$ is a Riemannian manifold of dimension $n_i \ge 2$ with constant sectional curvature $c_i$; and let $g = g_1 \oplus g_2$ be the product metric on $M = M_1 \times M_2$. Show that the Weyl tensor of $g$ is given by
+\[
+W = \frac{c_1 + c_2}{2(n-1)(n-2)} \left( n_2(n_2-1)h_1 \owedge h_1 - 2(n_1-1)(n_2-1)h_1 \owedge h_2 + n_1(n_1-1)h_2 \owedge h_2 \right),
+\]
+where $n = n_1 + n_2$ and $h_i = \pi_i^* g_i$ for $i = 1,2$. Conclude that $(M,g)$ is locally conformally flat if and only if $c_2 = -c_1$. (See also Problem 7-6.)
+
+(Used on p.~67.)
+\end{exercise}
+
+\begin{exercise}
+\label{prob:weyl-tensor-4d}
+\dcref{ch8:8-26}
+Let $(M,g)$ be a 4-dimensional Riemannian manifold. Given $p \in M$ and an orthonormal basis $(b_i)$ for $T_p M$, prove that the Weyl tensor at $p$ satisfies
+\[
+W_{1221} = \frac{1}{3}(k_{12} + k_{34}) - \frac{1}{6}(k_{13} + k_{14} + k_{23} + k_{24}),
+\]
+where $k_{ij}$ is the sectional curvature of the plane spanned by $(b_i, b_j)$.
+\end{exercise}
+
+\begin{exercise}
+\label{prob:fubini-study-not-conformal-flat}
+\dcref{ch8:8-27}
+\uses{prob:complex-projective-space-curvature}
+\uses{prob:weyl-tensor-4d}
+Prove that the Fubini-Study metric on $\mathbb{CP}^2$ is not locally conformally flat.
+
+[Hint: Use Problems 8-13 and 8-26.]
+\end{exercise}
+
+\begin{exercise}
+\label{prob:hyperbolic-constant-curvature}
+\dcref{ch8:8-28}
+\uses{thm:sectional-curvatures-model-spaces}
+\uses{thm:gauss-equation}
+\uses{prob:lorentz-hypersurface-formulas}
+Complete the proof of Theorem 8.34 by showing in two ways that the hyperbolic space of radius $R$ has constant sectional curvature equal to $-1/R^2$.
+
+\begin{enumerate}
+\item[(a)] In the hyperboloid model, compute the second fundamental form of $\mathbb{H}^n(R) \subset \mathbb{R}^{n,1}$ at the point $(0,\ldots,0,R)$, and use either the general form of the Gauss equation (Thm.\ 8.5) or the formulas of Problem 8-19.
+
+\item[(b)] In the Poincar\'e ball model, use formula (7.44) for the conformal transformation of the curvature to compute the Riemann curvature tensor at the origin.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+\label{prob:curvature-tensors-constant-curvature}
+\dcref{ch8:8-29}
+\uses{prop:constant-sectional-curvature}
+Prove Proposition 8.36 (curvature tensors on constant-curvature spaces).
+\end{exercise}
+
+\begin{exercise}
+\label{prob:ricci-tensor-hypersurface}
+\dcref{ch8:8-30}
+Suppose $M \subseteq \mathbb{R}^{n+1}$ is a hypersurface with the induced Riemannian metric. Show that the Ricci tensor of $M$ satisfies
+\[
+Rc(v,w) = \langle nHsv - s^2v, w\rangle,
+\]
+where $H$ and $s$ are the mean curvature and shape operator of $M$, respectively, and $s^2v = s(sv)$.
+\end{exercise}
+
+\begin{exercise}
+\label{prob:k-points-hyperbolic-geodesic}
+\dcref{ch8:8-31}
+For $1 < k \leq n$, show that any $k$ points in the hyperbolic space $\mathbb{H}^n(R)$ lie in a totally geodesic $(k-1)$-dimensional submanifold, which is isometric to $\mathbb{H}^{k-1}(R)$.
+\end{exercise}
+
+\begin{exercise}
+\label{prob:lie-group-fixed-point-geodesic}
+\dcref{ch8:8-32}
+Suppose $(M, g)$ is a Riemannian manifold and $G$ is a Lie group acting smoothly and isometrically on $M$. Let $S \subseteq M$ be the fixed point set of $G$, that is, the set of points $p \in M$ such that $\varphi(p) = p$ for all $\varphi \in G$. Show that each connected component of $S$ is a smoothly embedded totally geodesic submanifold of $M$. (The reason for restricting to a single connected component is that different components may have different dimensions.)
+\end{exercise}
+
+\begin{exercise}
+\label{prob:curvature-operator}
+\dcref{ch8:8-33}
+\uses{prob:complex-projective-space-curvature}
+Suppose $(M, g)$ is a Riemannian manifold. Let $\Lambda^2(TM)$ denote the bundle of 2-vectors (alternating contravariant 2-tensors) on $M$.
+
+(a) Show that there is a unique fiber metric on $\Lambda^2(TM)$ whose associated norm satisfies
+\[
+|w \wedge x|^2 = |w|^2|x|^2 - \langle w,x\rangle^2
+\]
+for all tangent vectors $w, x$ at every point $q \in M$.
+
+(b) Show that there is a unique bundle endomorphism $\mathcal{R}: \Lambda^2(TM) \to \Lambda^2(TM)$, called the \textbf{curvature operator} of $g$, that satisfies
+\begin{equation}
+\langle \mathcal{R}(w \wedge x), y \wedge z\rangle = -\text{Rm}(w,x,y,z)
+\tag{8.30}
+\end{equation}
+for all tangent vectors $w, x, y, z$ at a point of $M$, where the inner product on the left-hand side is the one described in part (a).
+
+(c) A Riemannian metric is said to have \textbf{positive curvature operator} if $\mathcal{R}$ is positive definite, and \textbf{negative curvature operator} if $\mathcal{R}$ is negative definite. Show that positive curvature operator implies positive sectional curvature, and negative curvature operator implies negative sectional curvature. [Remark: This is the reason for the negative sign in (8.30). If the Riemann curvature tensor is defined as the negative of ours, the negative sign should be omitted.]
+
+(d) Show that the converse need not be true, by using the results of Problem 8-13 to compute the following expression on $\mathbb{CP}^2$ with the Fubini--Study metric:
+\[
+\langle \mathcal{R}(w \wedge x + y \wedge z), w \wedge x + y \wedge z\rangle,
+\]
+where $w, x, y, z$ are orthonormal vectors at an arbitrary point of $\mathbb{CP}^2$, chosen so that their horizontal lifts satisfy $\bar{y} = J\bar{w}$ and $\bar{z} = J\bar{x}$.
+\end{exercise}
