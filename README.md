@@ -1,90 +1,44 @@
-# Poincaré Conjecture
+<h1 align="center">Poincaré Conjecture</h1>
 
-A Lean 4 formalization effort around the **Poincaré Conjecture**: a machine-checked
-blueprint for the proof (after Morgan–Tian), built on a shared, formally verified
-foundation of Riemannian geometry.
+[![Project site](https://img.shields.io/badge/website-project%20site-0969da?style=flat-square&logo=githubpages&logoColor=white)](https://frenzymath.github.io/Poincare-Conjecture/)
+[![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-blue?style=flat-square)](LICENSE)
+[![Lean 4](https://img.shields.io/badge/Lean-4-6f42c1?style=flat-square)](https://lean-lang.org/)
+[![Powered by mathlib](https://img.shields.io/badge/powered%20by-mathlib-d73a49?style=flat-square)](https://github.com/leanprover-community/mathlib4)
 
-The repository is a small monorepo of **symmetrically structured projects** on top of
-one **shared foundation library**, so there is a single source of truth for the
-geometry and no divergent copies to keep in sync.
+<p align="center">
+  A Lean 4 formalization of the Poincaré conjecture,<br>
+  following Morgan–Tian and built on a shared foundation in Riemannian geometry.
+</p>
 
-## Architecture
+<p align="center">
+  <strong><a href="https://frenzymath.github.io/Poincare-Conjecture/">Explore the formalization on the website →</a></strong>
+</p>
 
-```
-DoCarmo/  ──(OpenGALib)──►  Petersen/      require OpenGALib from "../DoCarmo"
-                      └──►  MorganTian/    require OpenGALib from "../DoCarmo"
-```
+> [!IMPORTANT]
+> This is an active, incomplete formalization. The website distinguishes verified Lean declarations from statements still in progress or awaiting formalization.
 
-- **`DoCarmo/`** — the shared **foundation**. Its `OpenGALib` is the machine-verified
-  Riemannian-geometry library (the *Riemannian Geometry Challenge*, developed following
-  do Carmo). Everything else depends on it. Upstream: <https://github.com/MathNetwork/OpenGA>.
-- **`Petersen/`**, **`MorganTian/`** — **consumer** blueprint projects, each with its own
-  library that depends on the single shared `OpenGALib` via a local-path dependency.
+## The conjecture
 
-### Formalized projects (blueprint + Lean)
+> [!NOTE]
+> **Poincaré conjecture.** Let $M$ be a closed, connected topological $3$-manifold. If $\pi_1(M)=0$, then $M \cong S^3$.
 
-| Project | Role | Source | Library |
-|---|---|---|---|
-| [`DoCarmo/`](DoCarmo) | foundation | M. P. do Carmo, *Riemannian Geometry* | `OpenGALib` (shared) |
-| [`Petersen/`](Petersen) | consumer | P. Petersen, *Riemannian Geometry* (GTM 171) | `PetersenLib` → `OpenGALib` |
-| [`MorganTian/`](MorganTian) | consumer | Morgan–Tian, *Ricci Flow & the Poincaré Conjecture* ([arXiv:math/0607607](https://arxiv.org/abs/math/0607607)) | `MorganTianLib` → `OpenGALib` |
+Henri Poincaré posed the problem in 1904 while laying the foundations of three-dimensional topology. In 1982, Richard Hamilton introduced Ricci flow and proposed using it to deform a manifold toward a geometrically understandable form. Grigori Perelman's 2002–2003 preprints supplied the decisive ideas, entropy, noncollapsing, and control of singularities, needed to complete Hamilton's program. The detailed account by Morgan and Tian is the principal proof track followed here.
 
-### Blueprint-only projects (formalization pending)
+## Projects
 
-Machine-checked blueprints for the remaining background, awaiting Lean formalization.
+| Track | Purpose |
+|---|---|
+| [Morgan–Tian](https://frenzymath.github.io/Poincare-Conjecture/MorganTian/dashboard.html) | Ricci flow and the Poincaré conjecture |
+| [do Carmo](https://frenzymath.github.io/Poincare-Conjecture/DoCarmo/dashboard.html) | Shared Riemannian geometry foundation |
+| [Petersen](https://frenzymath.github.io/Poincare-Conjecture/Petersen/dashboard.html) | Riemannian geometry |
+| [Lee](https://frenzymath.github.io/Poincare-Conjecture/Lee/dashboard.html) | Complementary Riemannian geometry |
+| [Hatcher](https://frenzymath.github.io/Poincare-Conjecture/Hatcher/dashboard.html) | Algebraic topology |
+| [Evans](https://frenzymath.github.io/Poincare-Conjecture/Evans/dashboard.html) | Partial differential equations |
 
-| Project | Topic | Source |
-|---|---|---|
-| [`Lee/`](Lee) | Riemannian geometry | J. M. Lee, *Introduction to Riemannian Manifolds*, 2nd ed. (GTM 176) |
-| [`Hatcher/`](Hatcher) | Algebraic topology | A. Hatcher, *Algebraic Topology* |
-| [`Evans/`](Evans) | Analysis — PDEs & 2nd-order elliptic theory | L. C. Evans, *Partial Differential Equations* (GSM 19) |
-
-## Project layout
-
-Every project directory has the same shape:
-
-```
-<Project>/
-├── blueprint/src/          LaTeX blueprint (content.tex, chapters/ChNN_*.tex, refs.bib)
-├── <Lib>/                  Lean 4 source (library root)
-├── <Lib>.lean              library root module
-├── lakefile.lean           Lake build config
-├── lake-manifest.json
-├── lean-toolchain          pinned Lean version (identical across projects)
-├── hgraph/config.yaml      blueprint ↔ Lean dependency-graph config
-└── README.md
-```
-
-The blueprint's `\lean{...}` anchors name the Lean declarations that discharge each
-statement, keeping the informal proof and the formal code in lock-step.
-
-Blueprint-only projects have just `blueprint/src/`, `hgraph/config.yaml`, and `README.md`
-(no Lean library or lakefile yet); the rest lands when their formalization begins.
-
-## Building
-
-The foundation builds first; consumers pick it up via the local path dependency.
-
-```bash
-cd DoCarmo && lake exe cache get && lake build     # shared foundation
-cd ../MorganTian && lake build                     # consumer (finds OpenGALib at ../DoCarmo)
-cd ../Petersen   && lake build
-```
-
-All projects pin the same Lean toolchain and mathlib revision.
+The principal proof track follows J. W. Morgan and G. Tian, *Ricci Flow and the Poincaré Conjecture* ([arXiv:math/0607607](https://arxiv.org/abs/math/0607607)). The supporting tracks formalize the geometry, topology, and analysis needed along the way.
 
 ## Contributing
 
-Contributions go through **pull requests** — `main` is protected and takes no direct
-pushes. Open an issue to discuss scope, then submit a focused PR against the relevant
-project. CI runs `lake build`; a PR must be green before review. Review covers two
-dimensions, tracked per PR:
+Contributions are welcome through [issues](https://github.com/frenzymath/Poincare-Conjecture/issues) and focused [pull requests](https://github.com/frenzymath/Poincare-Conjecture/pulls). See the [contribution guide](CONTRIBUTING.md) to get started.
 
-- **Mathematics** — correctness and fidelity of the blueprint statement to its source.
-- **Lean** — validity of the formal code discharging it.
-
-After cloning, enable the repository's git hooks:
-
-```bash
-git config core.hooksPath .githooks
-```
+Licensed under [Apache 2.0](LICENSE).
