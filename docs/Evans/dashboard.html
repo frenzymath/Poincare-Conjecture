@@ -123,6 +123,7 @@ pre.lean{background:#f8f9fb;border:1px solid var(--line);border-radius:8px;paddi
 #pv{position:fixed;z-index:60;max-width:480px;max-height:72vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:11px;
  box-shadow:0 10px 34px rgba(20,25,35,.2);padding:12px 14px;font-size:13.5px;display:none;pointer-events:auto}
 #pv pre.lean{white-space:pre-wrap;word-break:break-word}
+#pv.pv-graph{width:min(760px,94vw);max-width:94vw}   /* explicit width so the local-dependency graph (width:100%) has room to be readable */
 #pv .pk{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700}
 #pv .pt{font-weight:640;font-style:italic;margin:2px 0 5px}
 #scrim{position:fixed;inset:0;background:rgba(20,25,35,.3);z-index:70;display:none}
@@ -650,7 +651,7 @@ function stats(){const es=DATA.entries;const c={total:es.length};S.forEach(s=>c[
 
 /* ---- hover preview (statements + lean code) ---- */
 const pv=document.getElementById("pv");let pvT,pvHideT,pvPinned=false;
-function showPv(html,x,y){pv.innerHTML=html;pv.style.display="block";const w=pv.offsetWidth,h=pv.offsetHeight;
+function showPv(html,x,y){pv.innerHTML=html;pv.classList.toggle("pv-graph",!!pv.querySelector(".pv-graphwrap"));pv.style.display="block";const w=pv.offsetWidth,h=pv.offsetHeight;
   pv.style.left=Math.min(x+14,innerWidth-w-10)+"px";pv.style.top=Math.max(10,Math.min(y+16,innerHeight-h-10))+"px";typeset(pv)}
 function showPvPinned(html,x,y){pvPinned=false;showPv(html,x,y);pvPinned=true}
 function hidePv(){pv.style.display="none";pvPinned=false}
@@ -659,7 +660,7 @@ pv.addEventListener("mouseenter",()=>clearTimeout(pvHideT));pv.addEventListener(
 function stmtPv(id){const e=BYID[id];if(!e)return null;const r=REFS[e.label]||{};
   return `<div class="pk">${(r.abbr||abbrOf(e.kind))} ${r.num||''}</div><div class="pt">${detex(e.title)}</div><div>${proseHtml(e.body).slice(0,1200)}</div>`}
 function leanPv(name){const code=LEANCODE[name];return code?`<div class="pk">Lean · ${esc(name)}</div><pre class="lean">${leanHi(code)}</pre>`:null}
-function graphPv(id){const e=BYID[id];if(!e)return null;return `<div class="pk">Local dependencies</div>${depGraph(e)}`}
+function graphPv(id){const e=BYID[id];if(!e)return null;return `<div class="pv-graphwrap"><div class="pk">Local dependencies</div>${depGraph(e)}</div>`}
 function leanTagPv(id){const e=BYID[id];if(!e)return null;
   if(e.lean&&e.lean.length)return e.lean.map(l=>`<div class="pk">Lean · ${esc(l.name)}${l.status?' · '+l.status.replace('_',' '):''}</div>${l.code?`<pre class="lean">${leanHi(l.code)}</pre>`:''}`).join("");
   if(e.mathlib_name)return `<div class="pk">Mathlib</div><div style="margin-top:4px">${esc([].concat(e.mathlib_name).join(', '))}</div>`;return null}
@@ -1120,8 +1121,17 @@ function gmPreSvg(){if(!GVSVG||GM.expanded.size>0)return null;return GVSVG.group
    re-renders instead of silently operating on a detached, removed element. */
 function gmZoomAt(mx,my,f){const s=GM.pz;if(!s)return;const nk=Math.max(0.05,Math.min(8,s.k*f)),sc=nk/s.k;
   s.x=mx-(mx-s.x)*sc;s.y=my-(my-s.y)*sc;s.k=nk;GM.pzApply()}
-function gmPanZoom(host,svg){const vb=(svg.getAttribute("viewBox")||"").split(/\s+/).map(Number);
-  const gw=vb[2]||1000,gh=vb[3]||1000;svg.removeAttribute("width");svg.removeAttribute("height");
+function gmPanZoom(host,svg){
+  /* Size to the TRUE content bounds (getBBox), not the viewBox: d3-graphviz's
+     fit(false) leaves a container-sized viewBox while the graph extends far
+     beyond it, so overflow:hidden cropped everything but the top-left corner. */
+  let bx=0,by=0,gw=0,gh=0;
+  try{const bb=svg.getBBox();bx=bb.x;by=bb.y;gw=bb.width;gh=bb.height;}catch(_){}
+  if(!(gw>0&&gh>0)){const vb=(svg.getAttribute("viewBox")||"").split(/\s+/).map(Number);
+    bx=vb[0]||0;by=vb[1]||0;gw=vb[2]||1000;gh=vb[3]||1000;}
+  const pad=24;bx-=pad;by-=pad;gw+=2*pad;gh+=2*pad;
+  svg.setAttribute("viewBox",bx+" "+by+" "+gw+" "+gh);
+  svg.removeAttribute("width");svg.removeAttribute("height");
   svg.style.position="absolute";svg.style.transformOrigin="0 0";svg.style.left="0";svg.style.top="0";
   svg.style.width=gw+"px";svg.style.height=gh+"px";svg.style.willChange="transform";
   const st={k:1,x:0,y:0,gw,gh};GM.pz=st;
