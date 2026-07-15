@@ -24,7 +24,7 @@ Blueprint contributions should follow the cited source faithfully and preserve t
 - Add `\leanok` only when the declaration has been checked and fully proves the stated result.
 - Include a precise source reference when adding or changing mathematical content.
 
-Do not edit generated files in `docs/` or project-level `dashboard.html` files by hand. After changing a blueprint, regenerate the site with `hgraph` installed:
+Do not edit generated files in `docs/` or project-level `dashboard.html` files by hand. After changing a blueprint, regenerate the site with [hgraph](https://github.com/AxelDlv00/hgraph) installed:
 
 ```bash
 bash scripts/build-site.sh

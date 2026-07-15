@@ -1,9 +1,15 @@
 <h1 align="center">Poincaré Conjecture</h1>
+<p align="center">
+  Frenzymath - PKU@AI4Math
+</p>
 
-[![Project site](https://img.shields.io/badge/website-project%20site-0969da?style=flat-square&logo=githubpages&logoColor=white)](https://frenzymath.github.io/Poincare-Conjecture/)
-[![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-blue?style=flat-square)](LICENSE)
-[![Lean 4](https://img.shields.io/badge/Lean-4-6f42c1?style=flat-square)](https://lean-lang.org/)
-[![Powered by mathlib](https://img.shields.io/badge/powered%20by-mathlib-d73a49?style=flat-square)](https://github.com/leanprover-community/mathlib4)
+<div align="center">
+
+[![Website: Live](https://img.shields.io/badge/Website-Live-0969da?style=flat-square)](https://frenzymath.github.io/Poincare-Conjecture/)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-yellow?style=flat-square)](LICENSE)
+[![Lean: v4.30.0-rc2](https://img.shields.io/badge/Lean-v4.30.0--rc2-6f42c1?style=flat-square)](https://github.com/leanprover/lean4/tree/v4.30.0-rc2)
+</div>
+
 
 <p align="center">
   A Lean 4 formalization of the Poincaré conjecture,<br>
@@ -36,6 +42,17 @@ Henri Poincaré posed the problem in 1904 while laying the foundations of three-
 | [Evans](https://frenzymath.github.io/Poincare-Conjecture/Evans/dashboard.html) | Partial differential equations |
 
 The principal proof track follows J. W. Morgan and G. Tian, *Ricci Flow and the Poincaré Conjecture* ([arXiv:math/0607607](https://arxiv.org/abs/math/0607607)). The supporting tracks formalize the geometry, topology, and analysis needed along the way.
+
+## Preview locally
+
+The project website is generated with [hgraph](https://github.com/AxelDlv00/hgraph). After [installing hgraph](https://github.com/AxelDlv00/hgraph#install), rebuild and serve the site from the repository root:
+
+```bash
+bash scripts/build-site.sh
+python3 -m http.server 8000 --directory docs --bind 127.0.0.1
+```
+
+Open <http://127.0.0.1:8000/> to explore the blueprints, dependency graphs, and formalization progress locally before submitting a pull request.
 
 ## Contributing
 

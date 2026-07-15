@@ -59,6 +59,13 @@ def statement_section() -> str:
             '<p class="pc-bridge">Perelman proves this classification by evolving '
             'a Riemannian metric under Ricci flow, resolving singularities by '
             'surgery, and recovering the topology from finite-time extinction.</p>'
+            '<p class="pc-history">Henri Poincaré posed the problem in 1904 while '
+            'laying the foundations of three-dimensional topology. In 1982, Richard '
+            'Hamilton introduced Ricci flow and proposed using it to deform a manifold '
+            'toward a geometrically understandable form. Grigori Perelman\'s 2002–2003 '
+            'preprints supplied the decisive ideas, entropy, noncollapsing, and control '
+            'of singularities, needed to complete Hamilton\'s program. The detailed '
+            'account by Morgan and Tian is the principal proof track followed here.</p>'
             '</section>')
 
 
@@ -127,6 +134,7 @@ _STYLE = r"""<style>
 .pc-theorem p{margin:0;font:500 clamp(18px,2.2vw,22px)/1.65 Georgia,"Times New Roman",serif;text-align:left}
 .pc-theorem .katex{font-size:1.06em}
 .pc-bridge{max-width:66ch;margin:0 auto;color:var(--fg);font-size:14px;line-height:1.7}
+.pc-history{max-width:66ch;margin:16px auto 0;color:var(--muted);font-size:14px;line-height:1.7}
 .pc-term{position:relative;display:inline-block;cursor:help;border-bottom:1px dotted var(--accent);outline:none}
 .pc-term:focus-visible{border-radius:2px;outline:2px solid color-mix(in srgb,var(--accent) 35%,transparent);outline-offset:3px}
 .pc-tip{position:absolute;left:50%;top:calc(100% + 10px);transform:translateX(-50%);
