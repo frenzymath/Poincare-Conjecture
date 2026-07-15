@@ -47,6 +47,10 @@ def statement_section() -> str:
         r'Here $\cong$ denotes homeomorphism and $S^3=\{x\in\mathbb{R}^4:\lVert x\rVert=1\}$.',
         'conclusion')
     return ('<section class="pc-statement">'
+            '<aside class="pc-beta" role="note"><strong>Beta version.</strong> '
+            'This repository is public for development and transparency, but its '
+            'contents are preliminary and do not yet constitute an official release.'
+            '</aside>'
             '<div class="pc-heading">'
             '<div class="pc-kicker">Geometric topology</div>'
             '<h2 id="pc-title">The Poincaré Conjecture</h2>'
@@ -121,6 +125,9 @@ _STYLE = r"""<style>
 .overview{margin:44px -24px 0;padding:44px 24px 52px;background:var(--panel);
  border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .pc-statement{max-width:760px;margin:0 auto}
+.pc-beta{margin:0 auto 28px;padding:13px 16px;background:var(--soft);color:var(--fg);
+ border:1px solid var(--line);border-left:4px solid #bf8700;border-radius:0 6px 6px 0;
+ font-size:13.5px;line-height:1.6}
 .pc-heading{text-align:center;max-width:650px;margin:0 auto}
 .pc-kicker{text-transform:uppercase;letter-spacing:.09em;color:var(--accent);
  font-weight:800;font-size:11px;margin-bottom:8px}

@@ -10,7 +10,6 @@
 [![Lean: v4.30.0-rc2](https://img.shields.io/badge/Lean-v4.30.0--rc2-6f42c1?style=flat-square)](https://github.com/leanprover/lean4/tree/v4.30.0-rc2)
 </div>
 
-
 <p align="center">
   A Lean 4 formalization of the Poincaré conjecture,<br>
   following Morgan–Tian and built on a shared foundation in Riemannian geometry.
@@ -22,6 +21,9 @@
 
 > [!IMPORTANT]
 > This is an active, incomplete formalization. The website distinguishes verified Lean declarations from statements still in progress or awaiting formalization.
+
+> [!WARNING]
+> **Beta version.** This repository is public for development and transparency, but its contents are preliminary and do not yet constitute an official release.
 
 ## The conjecture
 
