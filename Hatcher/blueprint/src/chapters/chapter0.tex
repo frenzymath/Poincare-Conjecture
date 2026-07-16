@@ -42,6 +42,9 @@ Examples of this sort lead to the following general definition.
 \begin{definition}[Deformation retraction]
 \label{def:deformation-retraction}
 \group{Homotopy Theory}
+\lean{HatcherLib.DeformationRetract}
+\leanok
+\uses{def:retraction,def:homotopy-rel-a}
 A \textbf{deformation retraction} of a space $X$ onto a subspace $A$ is a family of maps
 $f_t : X \to X$, $t \in I$, such that $f_0 = \one$ (the identity map), $f_1(X) = A$, and
 $f_t|_A = \one$ for all $t$. The family $f_t$ should be continuous in the sense that the
@@ -63,6 +66,8 @@ be described by means of the following definition.
 \begin{definition}[Mapping cylinder]
 \label{def:mapping-cylinder}
 \group{Homotopy Theory}
+\lean{HatcherLib.MappingCylinder}
+\leanok
 For a map $f : X \to Y$, the \textbf{mapping cylinder} $M_f$ is the quotient space of the
 disjoint union $(X \times I) \sqcup Y$ obtained by identifying each $(x,1) \in X \times I$ with
 $f(x) \in Y$.
@@ -87,6 +92,8 @@ considerably more complicated example, the so-called `house with two rooms'.
 \begin{definition}[Homotopy]
 \label{def:homotopy}
 \group{Homotopy Theory}
+\lean{HatcherLib.Homotopy}
+\leanok
 A \textbf{homotopy} is a family of maps $f_t : X \to Y$, $t \in I$, such that the associated
 map $F : X \times I \to Y$ given by $F(x,t) = f_t(x)$ is continuous.
 \end{definition}
@@ -97,6 +104,8 @@ homotopy (\cref{def:homotopy}).
 \begin{definition}[Homotopic maps]
 \label{def:homotopic-maps}
 \group{Homotopy Theory}
+\lean{HatcherLib.Homotopic}
+\leanok
 \uses{def:homotopy}
 Two maps $f_0, f_1 : X \to Y$ are \textbf{homotopic} if there exists a homotopy $f_t$
 connecting them, and one writes $f_0 \simeq f_1$.
@@ -105,6 +114,8 @@ connecting them, and one writes $f_0 \simeq f_1$.
 \begin{definition}[Retraction]
 \label{def:retraction}
 \group{Homotopy Theory}
+\lean{HatcherLib.IsRetraction}
+\leanok
 A \textbf{retraction} of $X$ onto a subspace $A$ is a map $r : X \to X$ such that
 $r(X) = A$ and $r|_A = \one$. Equivalently, from a more formal viewpoint, a retraction
 is a map $r : X \to X$ with $r^2 = r$, since this equation says exactly that $r$ is the
@@ -128,6 +139,8 @@ D, O, P, Q, R. In Chapter 1 we will develop techniques to prove this.
 \begin{definition}[Homotopy relative to a subspace]
 \label{def:homotopy-rel-a}
 \group{Homotopy Theory}
+\lean{HatcherLib.HomotopyRel}
+\leanok
 \uses{def:homotopy}
 A homotopy $f_t : X \to X$ that gives a deformation retraction of $X$ onto a subspace
 $A$ has the property that $f_t|_A = \one$ for all $t$. In general, a homotopy $f_t : X \to Y$
@@ -146,12 +159,36 @@ situation, we make the following definition.
 \begin{definition}[Homotopy equivalence and homotopy type]
 \label{def:homotopy-equivalence}
 \group{Homotopy Theory}
+\lean{HatcherLib.HomotopyEquiv}
+\leanok
 \uses{def:homotopy,def:homotopic-maps}
 A map $f : X \to Y$ is called a \textbf{homotopy equivalence} if there is a map
 $g : Y \to X$ such that $fg \simeq \one$ and $gf \simeq \one$. The spaces $X$ and $Y$ are said to
 be \textbf{homotopy equivalent} or to have the same \textbf{homotopy type}. The notation is
 $X \simeq Y$.
 \end{definition}
+
+\begin{proposition}[A deformation retraction is a homotopy equivalence]
+\label{prop:deformation-retract-homotopy-equivalence}
+\group{Homotopy Theory}
+\lean{HatcherLib.DeformationRetract.homotopyEquiv}
+\leanok
+\uses{def:deformation-retraction,def:homotopy-equivalence}
+If $X$ deformation retracts onto a subspace $A$, then the inclusion
+$i : A \hookrightarrow X$ is a homotopy equivalence; in particular $A \simeq X$.
+\end{proposition}
+
+\begin{proof}
+\leanok
+\uses{def:retraction}
+Let $f_t : X \to X$ be the deformation retraction, with terminal retraction
+$f_1 = r$ satisfying $r(X) \subset A$ and $r|_A = \one$, and let $i : A \hookrightarrow X$
+be the inclusion. Corestricting $r$ to its image gives a map $\bar r : X \to A$.
+Because $r|_A = \one$, for every $a \in A$ we have $\bar r\, i(a) = r(a) = a$, so
+$\bar r\, i = \one_A$. Conversely $i\, \bar r = r = f_1$, and the family $f_t$ is a
+homotopy from $f_0 = \one_X$ to $f_1 = r$, so $i\, \bar r \simeq \one_X$. Thus $i$
+and $\bar r$ are inverse homotopy equivalences, and $A \simeq X$.
+\end{proof}
 
 It is an easy exercise to check that this is an equivalence relation, in contrast with
 the nonsymmetric notion of deformation retraction. For example, the three graphs
@@ -170,6 +207,8 @@ its other end $X$ if $f$ is a homotopy equivalence. This is shown in
 \begin{definition}[Contractible space]
 \label{def:contractible}
 \group{Homotopy Theory}
+\lean{HatcherLib.IsContractible}
+\leanok
 \uses{def:homotopy-equivalence}
 A space having the homotopy type of a point is called \textbf{contractible}. This
 amounts to requiring that the identity map of the space be \textbf{nullhomotopic}, that is,
@@ -238,6 +277,8 @@ A natural generalization of this is to construct a space by the following proced
 \begin{definition}[CW complex]
 \label{def:cell-complex}
 \group{CW Complexes}
+\lean{HatcherLib.IsCWComplex}
+\leanok
 \begin{enumerate}
 \item[(1)] Start with a discrete set $X^0$, whose points are regarded as 0-cells.
 \item[(2)] Inductively, form the $n$-skeleton $X^n$ from $X^{n-1}$ by attaching $n$-cells
@@ -267,6 +308,7 @@ such $n$ is the \textbf{dimension of $X$}, the maximum dimension of cells of $X$
 \label{ex:cw-graph}
 \dcref{ch0:0.1}
 \group{CW Complexes}
+\mathlibok
 \uses{def:cell-complex}
 A 1-dimensional cell complex $X = X^1$ is what is called a \textbf{graph} in algebraic
 topology. It consists of vertices (the 0-cells) to which edges (the 1-cells) are attached.
@@ -379,6 +421,7 @@ $\partial D^i$, and similarly for $\CP^n$.
 \begin{definition}[Subcomplex]
 \label{def:subcomplex}
 \group{CW Complexes}
+\mathlibok
 \uses{def:cell-complex}
 A \textbf{subcomplex} of a cell complex $X$ is a closed subspace $A \subset X$ that is a
 union of cells of $X$. Since $A$ is closed, the characteristic map of each cell in $A$ has
@@ -389,6 +432,7 @@ in $A$ is contained in $A$, so $A$ is a cell complex in its own right.
 \begin{definition}[CW pair]
 \label{def:cw-pair}
 \group{CW Complexes}
+\mathlibok
 \uses{def:subcomplex}
 A pair $(X,A)$ consisting of a cell complex $X$ and a subcomplex $A$ will be
 called a \textbf{CW pair}.
@@ -847,6 +891,8 @@ homotopy $f_t : X \to Y$ of the given $f_0$.
 \begin{definition}[Homotopy extension property]
 \label{def:homotopy-extension-property}
 \group{CW Complexes}
+\lean{HatcherLib.HasHEP}
+\leanok
 \uses{def:homotopy}
 If the pair $(X,A)$ is such that the extension problem above can always be solved,
 one says that $(X,A)$ has the \textbf{homotopy extension property}. Thus $(X,A)$ has
@@ -857,12 +903,18 @@ $A \times I \to Y$ that agree on $A \times \{0\}$ can be extended to a map $X \t
 \begin{proposition}[HEP is equivalent to a retraction property]
 \label{prop:hep-iff-retract}
 \group{CW Complexes}
+\lean{HatcherLib.hasHEP_iff_isRetract}
+\leanok
 \uses{def:homotopy-extension-property,def:retraction}
-A pair $(X,A)$ has the homotopy extension property if and only if
-$X \times \{0\} \cup A \times I$ is a retract of $X \times I$.
+Let $A$ be a closed subspace of $X$. Then the pair $(X,A)$ has the homotopy
+extension property if and only if $X \times \{0\} \cup A \times I$ is a retract of
+$X \times I$. (The forward implication holds for an arbitrary subspace $A$; only
+the converse uses closedness. For non-closed $A$ the converse still holds by a
+more delicate argument, deferred to the Appendix.)
 \end{proposition}
 
 \begin{proof}
+\leanok
 For one implication, the homotopy extension property for $(X,A)$ implies that the
 identity map $X \times \{0\} \cup A \times I \to X \times \{0\} \cup A \times I$ extends to a map
 $X \times I \to X \times \{0\} \cup A \times I$, so $X \times \{0\} \cup A \times I$ is a retract of $X \times I$.
@@ -955,12 +1007,15 @@ contractible subcomplex is a homotopy equivalence.
 \label{prop:quotient-by-contractible-hep-homotopy-equiv}
 \dcref{ch0:0.17}
 \group{CW Complexes}
+\lean{HatcherLib.collapseMk_homotopyEquiv}
+\leanok
 \uses{def:homotopy-extension-property,def:contractible,def:homotopy-equivalence}
 If the pair $(X,A)$ satisfies the homotopy extension property and $A$ is
 contractible, then the quotient map $q : X \to X/A$ is a homotopy equivalence.
 \end{proposition}
 
 \begin{proof}
+\leanok
 Let $f_t : X \to X$ be a homotopy extending a contraction of $A$, with $f_0 = \one$.
 Since $f_t(A) \subset A$ for all $t$, the composition $qf_t : X \to X/A$ sends $A$ to a point
 and hence factors as a composition $X \xrightarrow{q} X/A \to X/A$. Denoting the latter
@@ -1001,19 +1056,46 @@ $X_0 \sqcup_f X_1 \simeq X_0 \sqcup_g X_1 \rel X_0$.
 \end{proof}
 
 We finish this chapter with a technical result whose proof will involve several
-applications of the homotopy extension property.
+applications of the homotopy extension property. It uses the following stability of
+the property under taking products with the interval, which Hatcher invokes inline.
+
+\begin{lemma}[The homotopy extension property is preserved by products with $I$]
+\label{lem:hep-product-interval}
+\group{CW Complexes}
+\lean{HatcherLib.HasHEPMap.prodMap_id}
+\leanok
+\uses{def:homotopy-extension-property}
+If the pair $(X,A)$ has the homotopy extension property, then so does the pair
+$(X \times I, A \times I)$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+Write $C(I,Y)$ for the space of continuous maps $I \to Y$. A homotopy, in a fresh
+parameter $u \in I$, of a map defined on $X \times I$ is the same datum as a homotopy
+in $u$ of a map defined on $X$ with values in $C(I,Y)$: this is the exponential
+correspondence between maps $X \times I \times I \to Y$ and maps $X \times I \to C(I,Y)$.
+Under it, the extension problem for the pair $(X \times I, A \times I)$ with target $Y$
+becomes the extension problem for $(X,A)$ with target $C(I,Y)$, which is solvable by the
+homotopy extension property of $(X,A)$. Evaluating the resulting extension at each
+point of $I$ recovers the desired map $X \times I \times I \to Y$. (No hypothesis on
+$A$, such as closedness, is needed.)
+\end{proof}
 
 \begin{proposition}[A homotopy equivalence restricting to the identity on $A$ is a homotopy equivalence rel $A$]
 \label{prop:hep-homotopy-equivalence-rel-a}
 \dcref{ch0:0.19}
 \group{CW Complexes}
-\uses{def:homotopy-extension-property,def:homotopy-equivalence}
+\lean{HatcherLib.hep_homotopy_equiv_rel}
+\leanok
+\uses{def:homotopy-extension-property,def:homotopy-equivalence,lem:hep-product-interval}
 Suppose $(X,A)$ and $(Y,A)$ satisfy the homotopy extension property, and
 $f : X \to Y$ is a homotopy equivalence with $f|_A = \one$. Then $f$ is a homotopy
 equivalence rel $A$.
 \end{proposition}
 
 \begin{proof}
+\leanok
 Let $g : Y \to X$ be a homotopy inverse for $f$. There will be three steps to the proof.
 
 \textbf{(1)} Construct a homotopy from $g$ to a map $g_1$ with $g_1|_A = \one$. Let
@@ -1055,13 +1137,20 @@ $f g_1 \simeq f_1 g_1 \simeq \one \rel A$.
 \label{cor:hep-inclusion-homotopy-equiv-deformation-retract}
 \dcref{ch0:0.20}
 \group{CW Complexes}
+\lean{HatcherLib.hep_inclusion_deformation_retract}
+\leanok
 \uses{prop:hep-homotopy-equivalence-rel-a}
 If $(X,A)$ satisfies the homotopy extension property and the inclusion
 $A \hookrightarrow X$ is a homotopy equivalence, then $A$ is a deformation retract of $X$.
 \end{corollary}
 
 \begin{proof}
-Apply \cref{prop:hep-homotopy-equivalence-rel-a} to the inclusion $A \hookrightarrow X$.
+\leanok
+Apply \cref{prop:hep-homotopy-equivalence-rel-a} to the inclusion $A \hookrightarrow X$,
+viewed as the map of pairs $(A,A) \to (X,A)$ whose restriction to $A$ is the identity.
+The proposition upgrades the given homotopy inverse to a retraction $r : X \to A$ with
+$r|_A = \one$ and $\iota r \simeq \one_X \rel A$, which is exactly a deformation
+retraction of $X$ onto $A$.
 \end{proof}
 
 \begin{corollary}[Homotopy equivalences are exactly deformation retractions of mapping cylinders]
