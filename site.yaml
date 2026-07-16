@@ -1,59 +1,118 @@
 # Landing-page manifest for the Poincaré Conjecture reference site.
-#   hgraph site --manifest site.yaml --out docs/index.html --overview site/overview.html
-# `root:` points at each project (dir containing hgraph/) to compute progress;
-# `href:` is the link target inside the built site (docs/<Project>/dashboard.html).
+#   bash scripts/build-site.sh        (syncs every project, then builds docs/)
+# `root:` points at each project (dir containing hgraph/): it is both where the
+# progress is computed and the route the card links to — the site is one app
+# that hash-routes to #/<root> and reads docs/<root>/data.json, which
+# `hgraph site` writes. There is no per-project dashboard.html any more (so no
+# `href:` to keep in step; docs/<root>/dashboard.html is just a redirect stub).
+# `category:` groups the cards under a heading, in order of first appearance,
+# so the order below is the reading order: the geometry, then what it is all
+# for, then the supporting subjects. The card names the *book* (author +
+# book_title) because the section already names the subject.
+#
 # Add a project = add one entry here.
+#
+# image: is a cover, relative to this file; it is inlined into the page and
+# downscaled to card size on the way in. `image_fit: contain` shows the whole
+# cover — the card panel is landscape and a cover is portrait, so the default
+# `cover` fit would crop it down to a band.
 title: Formalizing the Poincaré Conjecture
 subtitle: >
   A Lean 4 formalization of the proof of the Poincaré conjecture, built on a
   shared, machine-checked foundation of the geometry and analysis it relies on.
 overview: site/overview.html
 
+# Optional: a line under each category heading. Keyed by the projects'
+# `category:` below — drop an entry and that heading simply has no subtitle.
+categories:
+  Riemannian Geometry: >
+    The core machinery — metrics, connections, curvature and geodesics, and the
+    comparison theorems that turn curvature bounds into topology.
+  Ricci Flow & the Poincaré Conjecture: >
+    What the rest is for — deforming a metric by its curvature, cutting out the
+    singularities, and reading off the topology of what survives.
+  Algebraic Topology: >
+    The invariants the conjecture is phrased in: the fundamental group, covering
+    spaces, and homology.
+  Partial Differential Equations: >
+    The analysis the flow rests on — Sobolev spaces and second-order elliptic
+    theory.
+
 projects:
   - name: Riemannian Geometry
     root: DoCarmo
-    href: DoCarmo/dashboard.html
-    tag: do Carmo
+    category: Riemannian Geometry
+    author: Manfredo P. do Carmo
+    book_title: Riemannian Geometry
+    image: site/img/docarmo.jpg
+    image_alt: Cover of do Carmo, Riemannian Geometry (Birkhäuser)
+    image_fit: contain
+    tag: OpenGALib
     blurb: >
       The shared foundation (OpenGALib) — metrics, connections, curvature,
       geodesics, and comparison theorems up to the Sphere Theorem.
 
   - name: Riemannian Geometry
     root: Petersen
-    href: Petersen/dashboard.html
-    tag: Petersen
+    category: Riemannian Geometry
+    author: Peter Petersen
+    book_title: Riemannian Geometry
+    image: site/img/petersen.jpg
+    image_alt: Cover of Petersen, Riemannian Geometry (Springer GTM 171, 3rd ed.)
+    image_fit: contain
+    tag: PetersenLib · GTM 171
     blurb: >
       A complementary development on the shared foundation — examples, geodesics
       and distance, Killing fields, and convergence/finiteness theorems.
 
-  - name: Ricci Flow & the Poincaré Conjecture
-    root: MorganTian
-    href: MorganTian/dashboard.html
-    tag: Morgan–Tian
-    blurb: >
-      Ricci flow with surgery, κ-solutions, and canonical neighborhoods —
-      the analytic heart of the proof, after Morgan–Tian (arXiv:math/0607607).
-
   - name: Riemannian Geometry
     root: Lee
-    href: Lee/dashboard.html
-    tag: Lee
+    category: Riemannian Geometry
+    author: John M. Lee
+    book_title: Introduction to Riemannian Manifolds
+    image: site/img/lee.jpg
+    image_alt: Cover of Lee, Introduction to Riemannian Manifolds (Springer GTM 176, 2nd ed.)
+    image_fit: contain
+    tag: GTM 176
     blurb: >
       Introduction to Riemannian Manifolds (Lee, GTM 176) — a complementary
       geometry reference. Blueprint complete; Lean formalization not yet begun.
 
+  - name: Ricci Flow & the Poincaré Conjecture
+    root: MorganTian
+    category: Ricci Flow & the Poincaré Conjecture
+    author: John Morgan & Gang Tian
+    book_title: Ricci Flow and the Poincaré Conjecture
+    image: site/img/morgantian.jpg
+    image_alt: Cover of Morgan & Tian, Ricci Flow and the Poincaré Conjecture (Clay Mathematics Monographs 3)
+    image_fit: contain
+    tag: Clay Monographs 3
+    blurb: >
+      Ricci flow with surgery, κ-solutions, and canonical neighborhoods —
+      the analytic heart of the proof, after Morgan–Tian (arXiv:math/0607607).
+
   - name: Algebraic Topology
     root: Hatcher
-    href: Hatcher/dashboard.html
-    tag: Hatcher
+    category: Algebraic Topology
+    author: Allen Hatcher
+    book_title: Algebraic Topology
+    image: site/img/hatcher.jpg
+    image_alt: Cover of Hatcher, Algebraic Topology (Cambridge University Press)
+    image_fit: contain
+    tag: blueprint only
     blurb: >
       Fundamental group, covering spaces, homology and cohomology (Hatcher).
       Blueprint only — formalization pending.
 
   - name: Partial Differential Equations
     root: Evans
-    href: Evans/dashboard.html
-    tag: Evans
+    category: Partial Differential Equations
+    author: Lawrence C. Evans
+    book_title: Partial Differential Equations
+    image: site/img/evans.jpg
+    image_alt: Cover of Evans, Partial Differential Equations (AMS GSM 19)
+    image_fit: contain
+    tag: blueprint only
     blurb: >
       Analysis foundations — Sobolev spaces and second-order elliptic PDE
       (Evans, GSM 19). Blueprint only — formalization pending.
