@@ -9,12 +9,13 @@ set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"; cd "$HERE"
 command -v hgraph >/dev/null || { echo "error: hgraph not on PATH"; exit 1; }
 
-PROJECTS=(DoCarmo Petersen MorganTian Lee Hatcher Evans)
+PROJECTS=(DoCarmo Petersen MorganTian Lee LeeSmooth Hatcher Evans)
 declare -A TITLE=(
   [DoCarmo]="Riemannian Geometry — do Carmo (OpenGALib)"
   [Petersen]="Riemannian Geometry — Petersen"
   [MorganTian]="Ricci Flow & the Poincaré Conjecture — Morgan–Tian"
   [Lee]="Introduction to Riemannian Manifolds — Lee"
+  [LeeSmooth]="Introduction to Smooth Manifolds — Lee"
   [Hatcher]="Algebraic Topology — Hatcher"
   [Evans]="Partial Differential Equations — Evans"
 )

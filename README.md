@@ -7,7 +7,7 @@
 
 [![Website: Live](https://img.shields.io/badge/Website-Live-0969da?style=flat-square)](https://frenzymath.github.io/Poincare-Conjecture/)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-yellow?style=flat-square)](LICENSE)
-[![Lean: v4.30.0-rc2](https://img.shields.io/badge/Lean-v4.30.0--rc2-6f42c1?style=flat-square)](https://github.com/leanprover/lean4/tree/v4.30.0-rc2)
+[![Lean: v4.30.0](https://img.shields.io/badge/Lean-v4.30.0-6f42c1?style=flat-square)](https://github.com/leanprover/lean4/tree/v4.30.0)
 </div>
 
 <p align="center">
@@ -40,6 +40,7 @@ Henri Poincaré posed the problem in 1904 while laying the foundations of three-
 | [do Carmo](https://frenzymath.github.io/Poincare-Conjecture/DoCarmo/dashboard.html) | Shared Riemannian geometry foundation |
 | [Petersen](https://frenzymath.github.io/Poincare-Conjecture/Petersen/dashboard.html) | Riemannian geometry |
 | [Lee](https://frenzymath.github.io/Poincare-Conjecture/Lee/dashboard.html) | Complementary Riemannian geometry |
+| [Lee — Smooth Manifolds](https://frenzymath.github.io/Poincare-Conjecture/LeeSmooth/dashboard.html) | Prerequisite smooth-manifolds volume (GTM 218); imported and audited, substantially incomplete |
 | [Hatcher](https://frenzymath.github.io/Poincare-Conjecture/Hatcher/dashboard.html) | Algebraic topology |
 | [Evans](https://frenzymath.github.io/Poincare-Conjecture/Evans/dashboard.html) | Partial differential equations |
 
