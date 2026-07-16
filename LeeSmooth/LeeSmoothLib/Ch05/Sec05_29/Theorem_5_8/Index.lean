@@ -1,0 +1,3 @@
+import LeeSmoothLib.Ch05.Sec05_29.Theorem_5_8.Common
+import LeeSmoothLib.Ch05.Sec05_29.Theorem_5_8.LocalSliceAtlas
+import LeeSmoothLib.Ch05.Sec05_29.Theorem_5_8.LocalSliceImmersion

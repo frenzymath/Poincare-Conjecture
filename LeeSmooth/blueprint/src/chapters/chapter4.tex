@@ -1,0 +1,187 @@
+% Chapter 4: Submersions, Immersions, and Embeddings
+% Lee, *Introduction to Smooth Manifolds* (2nd ed., GTM 218).
+% Generated from the section extraction; nodes carry only Lean that is
+% verified sorry-free. See ../../UPSTREAM_LEAN_AUDIT.md.
+
+
+\section{Maps of Constant Rank}
+
+\begin{exercise}
+\label{exer:4-4}
+\lean{Manifold.HasConstantRank}
+\leanok
+\dcref{ch4:4.4}
+Show that a composition of smooth submersions is a smooth submersion, and a composition of smooth immersions is a smooth immersion. Give a counterexample to show that a composition of maps of constant rank need not have constant rank.
+\end{exercise}
+
+
+\section{Local Diffeomorphisms}
+
+\begin{definition}
+\label{def:4-22-extra-1}
+\lean{Manifold.isSmoothLocalDiffeomorphism_iff_forall_isLocalDiffeomorphAt}
+\leanok
+If $M$ and $N$ are smooth manifolds with or without boundary, a map $F : M \rightarrow  N$ is called a local diffeomorphism if every point $p \in  M$ has a neighborhood $U$ such that $F\left( U\right)$ is open in $N$ and ${\left. F\right| }_{U} : U \rightarrow  F\left( U\right)$ is a diffeomorphism.
+\end{definition}
+
+\begin{theorem}[Inverse Function Theorem for Manifolds]
+\label{thm:4-5}
+\lean{exists_connected_open_neighborhoods_diffeomorph_of_mfderiv_isInvertible}
+\leanok
+\dcref{ch4:4.5}
+Suppose $M$ and $N$ are smooth manifolds, and $F : M \rightarrow  N$ is a smooth map. If $p \in  M$ is a point such that $d{F}_{p}$ is invertible, then there are connected neighborhoods ${U}_{0}$ of $p$ and ${V}_{0}$ of $F\left( p\right)$ such that ${\left. F\right| }_{{U}_{0}} : {U}_{0} \rightarrow  {V}_{0}$ is a diffeomorphism.
+\end{theorem}
+
+\begin{proof}
+\leanok
+The fact that $d{F}_{p}$ is bijective implies that $M$ and $N$ have the same dimension, say $n$ . Choose smooth charts $\left( {U,\varphi }\right)$ centered at $p$ and $\left( {V,\psi }\right)$ centered at $F\left( p\right)$ , with $F\left( U\right)  \subseteq  V$ . Then $\widehat{F} = \psi  \circ  F \circ  {\varphi }^{-1}$ is a smooth map from the open subset $\widehat{U} = \varphi \left( U\right)  \subseteq  {\mathbb{R}}^{n}$ into $\widehat{V} = \psi \left( V\right)  \subseteq  {\mathbb{R}}^{n}$ , with $\widehat{F}\left( p\right)  = 0$ . Because $\varphi$ and $\psi$ are dif-feomorphisms, the differential $d{\widehat{F}}_{0} = d{\psi }_{F\left( p\right) } \circ  d{F}_{p} \circ  d{\left( {\varphi }^{-1}\right) }_{0}$ is nonsingular. The ordinary inverse function theorem (Theorem C.34) shows that there are connected open subsets ${\widehat{U}}_{0} \subseteq  \widehat{U}$ and ${\widehat{V}}_{0} \subseteq  \widehat{V}$ containing 0 such that $\widehat{F}$ restricts to a diffeomorphism from ${\widehat{U}}_{0}$ to ${\widehat{V}}_{0}$ . Then ${U}_{0} = {\varphi }^{-1}\left( {\widehat{U}}_{0}\right)$ and ${V}_{0} = {\psi }^{-1}\left( {\widehat{V}}_{0}\right)$ are connected neighborhoods of $p$ and $F\left( p\right)$ , respectively, and it follows by composition that ${\left. F\right| }_{{U}_{0}}$ is a diffeomorphism from ${U}_{0}$ to ${V}_{0}$ .
+\end{proof}
+
+\begin{exercise}
+\label{exer:4-10}
+\lean{smooth_iff_comp_right_of_surjective_isLocalDiffeomorph}
+\leanok
+\dcref{ch4:4.10}
+Suppose $M, N, P$ are smooth manifolds with or without boundary, and $F : M \rightarrow  N$ is a local diffeomorphism. Prove the following:
+
+(a) If $G : P \rightarrow  M$ is continuous, then $G$ is smooth if and only if $F \circ  G$ is smooth.
+
+(b) If in addition $F$ is surjective and $G : N \rightarrow  P$ is any map, then $G$ is smooth if and only if $G \circ  F$ is smooth.
+\end{exercise}
+
+
+\section{Embeddings}
+
+\begin{definition}
+\label{def:4-24-extra-1}
+\lean{Manifold.IsSmoothEmbedding}
+\mathlibok
+One special kind of immersion is particularly important. If $M$ and $N$ are smooth manifolds with or without boundary, a smooth embedding of $M$ into $N$ is a smooth immersion $F : M \rightarrow  N$ that is also a topological embedding, i.e., a homeomorphism onto its image $F\left( M\right)  \subseteq  N$ in the subspace topology. A smooth embedding is a map that is both a topological embedding and a smooth immersion, not just a topological embedding that happens to be smooth.
+\end{definition}
+
+\begin{example}[The Figure-Eight Curve]
+\label{ex:4-19}
+\lean{figureEightCurve_closed_range_eq_restricted_range}
+\leanok
+\dcref{ch4:4.19}
+Consider the curve $\beta  : \left( {-\pi ,\pi }\right)  \rightarrow  {\mathbb{R}}^{2}$ defined by
+
+\[
+\beta \left( t\right)  = \left( {\sin {2t},\sin t}\right) .
+\]
+
+Its image is a set that looks like a figure-eight in the plane (Fig. 4.3), sometimes called a lemniscate. (It is the locus of points $\left( {x, y}\right)$ where ${x}^{2} = 4{y}^{2}\left( {1 - {y}^{2}}\right)$ , as you can check.) It is easy to see that $\beta$ is an injective smooth immersion because ${\beta }^{\prime }\left( t\right)$ never vanishes; but it is not a topological embedding, because its image is compact in the subspace topology, while its domain is not.
+\end{example}
+
+\begin{lemma}[Dirichlet’s Approximation Theorem]
+\label{lem:4-21}
+\lean{dirichlet_approximation_theorem}
+\leanok
+\dcref{ch4:4.21}
+Given $\alpha  \in  \mathbb{R}$ and any positive integer $N$ , there exist integers $n, m$ with $1 \leq  n \leq  N$ such that $\left| {{n\alpha } - m}\right|  < 1/N$ .
+\end{lemma}
+
+\begin{proof}
+\leanok
+For any real number $x$ , let $f\left( x\right)  = x - \lfloor x\rfloor$ , where $\lfloor x\rfloor$ is the greatest integer less than or equal to $x$ . Since the $N + 1$ numbers $\{ f\left( {i\alpha }\right)  : i = 0,\ldots , N\}$ all lie in the interval $\lbrack 0,1)$ , by the pigeonhole principle there must exist integers $i$ and $j$ with $0 \leq  i < j \leq  N$ such that both $f\left( {i\alpha }\right)$ and $f\left( {j\alpha }\right)$ lie in one of the $N$ subintervals $\lbrack 0,1/N),\lbrack 1/N,2/N),\ldots ,\lbrack \left( {N - 1}\right) /N,1)$ . This means that $\left| {f\left( {j\alpha }\right)  - f\left( {i\alpha }\right) }\right|  < \; 1/N$ , so we can take $n = j - i$ and $m = \lfloor {j\alpha }\rfloor  - \lfloor {i\alpha }\rfloor$ .
+\end{proof}
+
+\begin{exercise}
+\label{exer:4-24}
+\lean{origin_mem_closure_range_oscillatingCurveMap}
+\leanok
+\dcref{ch4:4.24}
+\begin{itemize}
+\item Exercise 4.24. Give an example of a smooth embedding that is neither an open map nor a closed map.
+\end{itemize}
+\end{exercise}
+
+
+\section{Submersions}
+
+\begin{definition}
+\label{def:4-25-extra-1}
+\lean{Function.RightInverse}
+\mathlibok
+One of the most important applications of the rank theorem is to vastly expand our understanding of the properties of submersions. If $\pi  : M \rightarrow  N$ is any continuous map, a section of $\pi$ is a continuous right inverse for $\pi$ , i.e., a continuous map $\sigma  : N \rightarrow  M$ such that $\pi  \circ  \sigma  = {\operatorname{Id}}_{N}$ :
+
+![102_708_1243_119_162_0.jpg](images/102_708_1243_119_162_0.jpg)
+
+A local section of $\pi$ is a continuous map $\sigma  : U \rightarrow  M$ defined on some open subset $U \subseteq  N$ and satisfying the analogous relation $\pi  \circ  \sigma  = {\operatorname{Id}}_{U}$ . Many of the important properties of smooth submersions follow from the fact that they admit an abundance of smooth local sections.
+\end{definition}
+
+
+\section{Smooth Covering Maps}
+
+\begin{definition}
+\label{def:4-26-extra-1}
+\lean{Manifold.refl_isLocalDiffeomorph_id}
+\leanok
+In this section, we introduce a class of local diffeomorphisms that play a significant role in smooth manifold theory. You are probably already familiar with the notion of a covering map between topological spaces: this is a surjective continuous map $\pi  : E \rightarrow  M$ between connected, locally path-connected spaces with the property that each point of $M$ has a neighborhood $U$ that is evenly covered, meaning that each component of ${\pi }^{-1}\left( U\right)$ is mapped homeomorphically onto $U$ by $\pi$ . The basic properties of covering maps are summarized in Appendix A (pp. 615-616).
+
+In the context of smooth manifolds, it is useful to introduce a slightly more restrictive type of covering map. If $E$ and $M$ are connected smooth manifolds with or without boundary, a map $\pi  : E \rightarrow  M$ is called a smooth covering map if $\pi$ is smooth and surjective, and each point in $M$ has a neighborhood $U$ such that each component of ${\pi }^{-1}\left( U\right)$ is mapped diffeomorphically onto $U$ by $\pi$ . In this context we also say that $U$ is evenly covered. The space $M$ is called the base of the covering, and $E$ is called a covering manifold of $M$ . If $E$ is simply connected, it is called the universal covering manifold of $M$ .
+
+To distinguish this new definition from the previous one, we often call an ordinary (not necessarily smooth) covering map a topological covering map. A smooth covering map is, in particular, a topological covering map. But as with other types of maps we have studied in this chapter, a smooth covering map is more than just a topological covering map that happens to be smooth: the definition requires in addition that the restriction of $\pi$ to each component of the preimage of an evenly covered set be a diffeomorphism, not just a smooth homeomorphism.
+\end{definition}
+
+\begin{exercise}
+\label{exer:4-39}
+\lean{topological_evenly_covered_component_isLocalDiffeomorphOn_and_bijOn}
+\leanok
+\dcref{ch4:4.39}
+Suppose $\pi  : E \rightarrow  M$ is a smooth covering map. Since $\pi$ is also a topological covering map, there is a potential ambiguity about what it means for a subset $U \subseteq  M$ to be evenly covered: does $\pi$ map the components of ${\pi }^{-1}\left( U\right)$ diffeo-morphically onto $U$ , or merely homeomorphically? Show that the two concepts are equivalent: if $U \subseteq  M$ is evenly covered in the topological sense, then $\pi$ maps each component of ${\pi }^{-1}\left( U\right)$ diffeomorphically onto $U$ .
+\end{exercise}
+
+\begin{proposition}
+\label{prop:4-46}
+\lean{isSmoothCoveringMap_of_proper_localDiffeomorph}
+\leanok
+\dcref{ch4:4.46}
+Suppose $E$ and $M$ are nonempty connected smooth manifolds with or without boundary. If $\pi  : E \rightarrow  M$ is a proper local diffeomorphism, then $\pi$ is a smooth covering map.
+\end{proposition}
+
+\begin{proof}
+\leanok
+Because $\pi$ is a local diffeomorphism, it is an open map, and because it is proper, it is a closed map (Theorem A.57). Thus $\pi \left( E\right)$ is both open and closed in $M$ . Since it is obviously nonempty, it is all of $M$ , so $\pi$ is surjective.
+
+![109_472_186_593_588_0.jpg](images/109_472_186_593_588_0.jpg)
+
+Fig. 4.6 A proper local diffeomorphism is a covering map
+
+Let $q \in  M$ be arbitrary. Since $\pi$ is a local diffeomorphism, each point of ${\pi }^{-1}\left( q\right)$ has a neighborhood on which $\pi$ is injective, so ${\pi }^{-1}\left( q\right)$ is a discrete subset of $E$ . Since $\pi$ is proper, ${\pi }^{-1}\left( q\right)$ is also compact, so it is finite. Write ${\pi }^{-1}\left( q\right)  = \left\{  {{p}_{1},\ldots ,{p}_{k}}\right\}$ . For each $i$ , there exists a neighborhood ${V}_{i}$ of ${p}_{i}$ on which $\pi$ is a diffeomorphism onto an open subset ${U}_{i} \subseteq  M$ . Shrinking each ${V}_{i}$ if necessary, we may assume also that ${V}_{i} \cap  {V}_{j} = \varnothing$ for $i \neq  j$ .
+
+Set $U = {U}_{1} \cap  \cdots  \cap  {U}_{k}$ (Fig. 4.6), which is a neighborhood of $q$ . Then $U$ satisfies
+
+\[
+U \subseteq  {U}_{i}\;\text{ for each }i\text{ . } \tag{4.8}
+\]
+
+Because $K = E \smallsetminus  \left( {{V}_{1} \cup  \cdots  \cup  {V}_{k}}\right)$ is closed in $E$ and $\pi$ is a closed map, $\pi \left( K\right)$ is closed in $M$ . Replacing $U$ by $U \sim  \pi \left( K\right)$ , we can assume that $U$ also satisfies
+
+\[
+{\pi }^{-1}\left( U\right)  \subseteq  {V}_{1} \cup  \cdots  \cup  {V}_{k} \tag{4.9}
+\]
+
+Finally, after replacing $U$ by the connected component of $U$ containing $q$ , we can assume that $U$ is connected and still satisfies (4.8) and (4.9). We will show that $U$ is evenly covered.
+
+Let ${\widetilde{V}}_{i} = {\pi }^{-1}\left( U\right)  \cap  {V}_{i}$ . By virtue of (4.9), ${\pi }^{-1}\left( U\right)  = {\widetilde{V}}_{1} \cup  \cdots  \cup  {\widetilde{V}}_{k}$ . Because $\pi  : {V}_{i} \rightarrow  {U}_{i}$ is a diffeomorphism,(4.8) implies that $\pi  : {\widetilde{V}}_{i} \rightarrow  U$ is still a diffeomorphism, and in particular ${\widetilde{V}}_{i}$ is connected. Because ${\widetilde{V}}_{1},\ldots ,{\widetilde{V}}_{k}$ are disjoint connected open subsets of ${\pi }^{-1}\left( U\right)$ , they are exactly the components of ${\pi }^{-1}\left( U\right)$ .
+\end{proof}
+
+
+\section{Problems}
+
+\begin{exercise}
+\label{prob:4-1}
+\lean{euclideanHalfSpace_inclusion_not_diffeomorph_on_connected_open_neighborhoods_at_zero}
+\leanok
+\uses{thm:4-5}
+4-1. Use the inclusion map ${\mathbb{H}}^{n} \hookrightarrow  {\mathbb{R}}^{n}$ to show that Theorem 4.5 does not extend to the case in which $M$ is a manifold with boundary. (Used on p. 80.)
+\end{exercise}
+
+\begin{exercise}
+\label{prob:4-2}
+\lean{contMDiffAt_map_mem_interior_of_nonsingular_mfderiv}
+\leanok
+4-2. Suppose $M$ is a smooth manifold (without boundary), $N$ is a smooth manifold with boundary, and $F : M \rightarrow  N$ is smooth. Show that if $p \in  M$ is a point such that $d{F}_{p}$ is nonsingular, then $F\left( p\right)  \in$ Int $N$ . (Used on pp. 80,87.)
+\end{exercise}
+
