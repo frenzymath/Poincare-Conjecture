@@ -528,7 +528,10 @@ theorem chartCurvature_smul_right (g : RiemannianMetric I M) (α : M) (y v w : E
   simp only [chartCurvature_def, christoffelCurvature, map_smul,
     ContinuousLinearMap.smul_apply, smul_sub, smul_add]
 
+-- mathlib v4.30.0's transparency-respecting defeq makes the `chartCurvature`/
+-- `christoffelCurvature` unfolding `simp`s here exceed the default heartbeat budget.
 set_option synthInstance.maxHeartbeats 1000000 in
+set_option maxHeartbeats 1000000 in
 /-- **Math.** The chart curvature of finite linear combinations expands
 multilinearly over all three slots.
 Blueprint: `lem:chart-curvature-coordinates`. -/

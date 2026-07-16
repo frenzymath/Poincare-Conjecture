@@ -808,7 +808,7 @@ theorem ofReal_sqrt_le_edist_smoothVectorFieldFlow_pair_of_bochner
   rcases eq_or_lt_of_le
     (show (0:ℝ) ≤ dist x y ^ 2 + (s - t) ^ 2 by positivity) with h0 | h0
   · rw [← h0, Real.sqrt_zero, ENNReal.ofReal_zero]
-    exact zero_le _
+    exact zero_le'
   · have hD2 : Real.sqrt (dist x y ^ 2 + (s - t) ^ 2) ^ 2
         = dist x y ^ 2 + (s - t) ^ 2 := Real.sq_sqrt h0.le
     have hDpos : 0 < Real.sqrt (dist x y ^ 2 + (s - t) ^ 2) :=

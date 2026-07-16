@@ -184,7 +184,7 @@ theorem frameCurvOp_apply (g : RiemannianMetric I M) (γ : ℝ → M)
   classical
   rw [frameCurvOp]
   simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply,
-    ContinuousLinearMap.smulRight_apply, innerSL_apply, smul_smul, ← Finset.sum_smul]
+    ContinuousLinearMap.smulRight_apply, innerSL_apply_apply, smul_smul, ← Finset.sum_smul]
 
 /-- **Math.** The bilinear form of the frame Jacobi operator, in coordinates. -/
 theorem inner_frameCurvOp_apply (g : RiemannianMetric I M) (γ : ℝ → M)
@@ -364,7 +364,7 @@ theorem exists_isRadialJacobi_of_geodesic {g : RiemannianMetric I M} {γ : ℝ �
 theorem sum_inner_basisFun_mul (x y : 𝔼) :
     ∑ i, ⟪(𝔟 i : 𝔼), x⟫ * ⟪(𝔟 i : 𝔼), y⟫ = ⟪x, y⟫ :=
   Eq.trans
-    (Finset.sum_congr rfl fun i _ => by rw [real_inner_comm x (𝔟 i : 𝔼)]; rfl)
+    (Finset.sum_congr rfl fun i _ => by rw [real_inner_comm x (𝔟 i : 𝔼)])
     ((EuclideanSpace.basisFun (Fin (Module.finrank ℝ E)) ℝ).sum_inner_mul_inner x y)
 
 /-- **Math.** Linearity of the curvature `(0,4)`-form in its **last** slot (with

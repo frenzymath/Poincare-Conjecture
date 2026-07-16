@@ -163,7 +163,6 @@ theorem hessianAt_nonpos_of_isLocalMax [FiniteDimensional ℝ E]
   -- the connection term of the Hessian vanishes at the critical point
   have hsecond : (nabla.cov X X).dir f q = 0 := by
     simp only [SmoothVectorField.dir, hcrit, ContinuousLinearMap.zero_apply]
-    rfl
   -- restrict to an integral curve of `X` through `q`
   obtain ⟨γ, hγ0, hγ⟩ := exists_isMIntegralCurveAt_smoothVectorField X q
   have hφev : ∀ᶠ t in 𝓝 (0 : ℝ), HasDerivAt (f ∘ γ) (X.dir f (γ t)) t :=

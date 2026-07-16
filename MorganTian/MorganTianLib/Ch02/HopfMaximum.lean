@@ -449,7 +449,6 @@ theorem hopf_eqOn_max_near (g : RiemannianMetric I M)
     rw [hVfd, hcomp]
     have : mfderiv I 𝓘(ℝ, ℝ) h' ((extChartAt I z).symm q) = 0 := hgrad
     rw [this, ContinuousLinearMap.zero_comp]
-    rfl
   -- ### the radial derivative contradiction
   have hbar_diff : DifferentiableAt ℝ (hopfBarrier κ x₀) q :=
     ((hopfBarrier_contDiff κ x₀).differentiable (by simp)).differentiableAt

@@ -138,18 +138,14 @@ The chart reading `f = φ_ζ ∘ exp_p` is a local homeomorphism at `v` (inverse
 `𝓝 (exp_p v)`, gives the claim.
 
 Blueprint: `lem:local-diffeomorphism-bounded-curvature`. -/
-theorem expMapGlobal_map_nhds_of_sectionalCurvatureAt_le
+theorem expMapGlobal_map_nhds_of_not_conjugate
     (g : RiemannianMetric I M) (hg : g.IsRiemannianDist) [CompleteSpace M]
-    (p : M) {K : ℝ} (hK : 0 ≤ K) {v : E} (hv0 : (v : TangentSpace I p) ≠ 0)
-    (hπ : Real.sqrt K * Real.sqrt (g.metricInner p (v : TangentSpace I p) v) < Real.pi)
-    (hsec : ∀ x : M, dist p x ≤ Real.sqrt (g.metricInner p (v : TangentSpace I p) v) →
-      ∀ w₁ w₂ : TangentSpace I x,
-        sectionalCurvatureAt g g.leviCivitaConnection x w₁ w₂ ≤ K) :
+    (p : M) {v : E}
+    (hnc : ¬ IsConjugatePointAt (I := I) g (globalGeodesic (I := I) g hg p v) 1) :
     map (fun w : E => expMapGlobal (I := I) g hg p w) (𝓝 v)
       = 𝓝 (expMapGlobal (I := I) g hg p v) := by
   classical
-  obtain ⟨ζ, D, hζ, hFD⟩ :=
-    expDifferential_isEquiv_of_sectionalCurvatureAt_le (I := I) g hg p hK hv0 hπ hsec
+  obtain ⟨ζ, D, hζ, hFD⟩ := expDifferential_isEquiv_of_not_conjugate (I := I) g hg p hnc
   set q : M := expMapGlobal (I := I) g hg p v with hqdef
   set f : E → E := fun w => extChartAt I ζ (expMapGlobal (I := I) g hg p w) with hfdef
   have hqsrc : q ∈ (extChartAt I ζ).source := by rw [extChartAt_source]; exact hζ
@@ -177,6 +173,41 @@ theorem expMapGlobal_map_nhds_of_sectionalCurvatureAt_le
     exact ((extChartAt I ζ).left_inv hw).symm
   -- assemble
   rw [Filter.map_congr hev, ← Filter.map_map, hmapf, hmapsymm]
+
+/-- **Math.** **`exp_p` maps neighbourhoods of `v` onto neighbourhoods of `exp_p(v)`**, under an
+upper sectional-curvature bound `K ≥ 0` on the closed ball of radius `|v|_g` about `p`, with
+`√K · |v|_g < π`. The curvature hypothesis enters only through
+`not_isConjugatePointAt_one_of_sectionalCurvatureAt_le`.
+
+Blueprint: `lem:local-diffeomorphism-bounded-curvature`. -/
+theorem expMapGlobal_map_nhds_of_sectionalCurvatureAt_le
+    (g : RiemannianMetric I M) (hg : g.IsRiemannianDist) [CompleteSpace M]
+    (p : M) {K : ℝ} (hK : 0 ≤ K) {v : E} (hv0 : (v : TangentSpace I p) ≠ 0)
+    (hπ : Real.sqrt K * Real.sqrt (g.metricInner p (v : TangentSpace I p) v) < Real.pi)
+    (hsec : ∀ x : M, dist p x ≤ Real.sqrt (g.metricInner p (v : TangentSpace I p) v) →
+      ∀ w₁ w₂ : TangentSpace I x,
+        sectionalCurvatureAt g g.leviCivitaConnection x w₁ w₂ ≤ K) :
+    map (fun w : E => expMapGlobal (I := I) g hg p w) (𝓝 v)
+      = 𝓝 (expMapGlobal (I := I) g hg p v) :=
+  expMapGlobal_map_nhds_of_not_conjugate (I := I) g hg p
+    (not_isConjugatePointAt_one_of_sectionalCurvatureAt_le (I := I) g hg p hK hv0 hπ hsec)
+
+/-- **Math.** **`exp_p` is a local homeomorphism at `v`**, whenever `γ_v` has no conjugate point
+of `p` at parameter `1`: it is injective on a neighbourhood of `v`, and carries neighbourhoods
+of `v` onto neighbourhoods of `exp_p(v)`. Together with `expDifferential_isEquiv_of_not_conjugate`
+(the differential is a linear isomorphism, so the chart-level inverse is smooth by the inverse
+function theorem) this is local *diffeomorphy* at `v`.
+
+Blueprint: `lem:local-diffeomorphism-bounded-curvature`. -/
+theorem expMapGlobal_isLocalHomeomorphAt_of_not_conjugate
+    (g : RiemannianMetric I M) (hg : g.IsRiemannianDist) [CompleteSpace M]
+    (p : M) {v : E}
+    (hnc : ¬ IsConjugatePointAt (I := I) g (globalGeodesic (I := I) g hg p v) 1) :
+    (∃ U ∈ 𝓝 v, Set.InjOn (expMapGlobal (I := I) g hg p) U) ∧
+      map (fun w : E => expMapGlobal (I := I) g hg p w) (𝓝 v)
+        = 𝓝 (expMapGlobal (I := I) g hg p v) :=
+  ⟨expMapGlobal_locallyInjective_of_not_conjugate (I := I) g hg p hnc,
+    expMapGlobal_map_nhds_of_not_conjugate (I := I) g hg p hnc⟩
 
 /-- **Math.** **`lem:local-diffeomorphism-bounded-curvature`.** Under an upper sectional-curvature
 bound `K ≥ 0` on the closed ball of radius `|v|_g` about `p`, and `√K · |v|_g < π` (Morgan–Tian's

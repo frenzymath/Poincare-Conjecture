@@ -542,6 +542,69 @@ theorem IsJacobiFieldAlongOn.sub
     rw [map_sub]
     abel
 
+/-- **Math.** **Superposition**: the sum of two Jacobi fields along `γ` is a Jacobi field.
+Chart-level addition (`IsJacobiFieldOn.add`), after refining the two chart windows to a common
+one and transferring the second certificate into the first chart — the proof of
+`IsJacobiFieldAlongOn.sub` verbatim, with the sign changed.
+
+Blueprint: `lem:second-order-linear-ode` (superposition). -/
+theorem IsJacobiFieldAlongOn.add
+    {g : RiemannianMetric I M} {γ : ℝ → M} {J₁ DJ₁ J₂ DJ₂ : ℝ → E}
+    {a b : ℝ} (hab : a < b)
+    (hgeo : IsGeodesicOn (I := I) g γ (Icc a b))
+    (hγc : ∀ t ∈ Icc a b, ContinuousAt γ t)
+    (h₁ : IsJacobiFieldAlongOn (I := I) g γ J₁ DJ₁ a b)
+    (h₂ : IsJacobiFieldAlongOn (I := I) g γ J₂ DJ₂ a b) :
+    IsJacobiFieldAlongOn (I := I) g γ (fun τ => J₁ τ + J₂ τ)
+      (fun τ => DJ₁ τ + DJ₂ τ) a b := by
+  intro t₀ ht₀
+  obtain ⟨α₁, a₁, b₁, hab₁, ht₁, hsub₁, hnbhd₁, hsrc₁, hJF₁⟩ := h₁ t₀ ht₀
+  obtain ⟨α₂, a₂, b₂, hab₂, ht₂, hsub₂, hnbhd₂, hsrc₂, hJF₂⟩ := h₂ t₀ ht₀
+  obtain ⟨a', b', hab', ht', hsubab, hnbhd', hsubI₁, hsubI₂⟩ :=
+    exists_common_refinement hab ht₀ hnbhd₁ hnbhd₂
+  have hgeo' : IsGeodesicOn (I := I) g γ (Icc a' b') :=
+    fun τ hτ => hgeo τ (hsubab hτ)
+  have hγc' : ∀ τ ∈ Icc a' b', ContinuousAt γ τ :=
+    fun τ hτ => hγc τ (hsubab hτ)
+  have hsrc₁' : ∀ τ ∈ Icc a' b', γ τ ∈ (chartAt H α₁).source :=
+    fun τ hτ => hsrc₁ τ (hsubI₁ hτ)
+  have hsrc₂' : ∀ τ ∈ Icc a' b', γ τ ∈ (chartAt H α₂).source :=
+    fun τ hτ => hsrc₂ τ (hsubI₂ hτ)
+  have hJF₂' := (hJF₂.mono (hsubI₂ (left_mem_Icc.2 hab'.le)).1
+    (hsubI₂ (right_mem_Icc.2 hab'.le)).2).transfer hgeo' hγc' hsrc₂' hsrc₁'
+  have hJF₁' := hJF₁.mono (hsubI₁ (left_mem_Icc.2 hab'.le)).1
+    (hsubI₁ (right_mem_Icc.2 hab'.le)).2
+  refine ⟨α₁, a', b', hab', ht', hsubab, hnbhd', hsrc₁', (hJF₁'.add hJF₂').congr ?_ ?_⟩
+  · intro τ _
+    show chartVectorRep (I := I) γ α₁ (fun σ => J₁ σ + J₂ σ) τ
+      = (chartVectorRep (I := I) γ α₁ J₁ + chartVectorRep (I := I) γ α₁ J₂) τ
+    simp only [chartVectorRep_apply, Pi.add_apply, map_add]
+  · intro τ _
+    show chartVectorRep (I := I) γ α₁ (fun σ => DJ₁ σ + DJ₂ σ) τ
+      = (chartVectorRep (I := I) γ α₁ DJ₁ + chartVectorRep (I := I) γ α₁ DJ₂) τ
+    simp only [chartVectorRep_apply, Pi.add_apply, map_add]
+
+/-- **Math.** **Superposition**: a scalar multiple of a Jacobi field is a Jacobi field. Only one
+chart window is involved, so unlike `add`/`sub` no common refinement and no chart transfer are
+needed.
+
+Blueprint: `lem:second-order-linear-ode` (superposition). -/
+theorem IsJacobiFieldAlongOn.smul
+    {g : RiemannianMetric I M} {γ : ℝ → M} {J DJ : ℝ → E} {a b : ℝ} (r : ℝ)
+    (h : IsJacobiFieldAlongOn (I := I) g γ J DJ a b) :
+    IsJacobiFieldAlongOn (I := I) g γ (fun τ => r • J τ) (fun τ => r • DJ τ) a b := by
+  intro t₀ ht₀
+  obtain ⟨α, a', b', hab', ht', hsub', hnbhd', hsrc', hJF'⟩ := h t₀ ht₀
+  refine ⟨α, a', b', hab', ht', hsub', hnbhd', hsrc', (hJF'.const_smul r).congr ?_ ?_⟩
+  · intro τ _
+    show chartVectorRep (I := I) γ α (fun σ => r • J σ) τ
+      = (r • chartVectorRep (I := I) γ α J) τ
+    simp only [chartVectorRep_apply, Pi.smul_apply, map_smul]
+  · intro τ _
+    show chartVectorRep (I := I) γ α (fun σ => r • DJ σ) τ
+      = (r • chartVectorRep (I := I) γ α DJ) τ
+    simp only [chartVectorRep_apply, Pi.smul_apply, map_smul]
+
 /-- **Math.** **Uniqueness of Jacobi fields with prescribed initial data**
 along a geodesic: two Jacobi fields with the same value and covariant
 derivative at the left endpoint agree on the whole interval (subtract and
