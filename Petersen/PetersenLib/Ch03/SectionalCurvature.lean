@@ -17,10 +17,8 @@ noncomputable section
 
 namespace PetersenLib
 
-open Riemannian
-
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [I.Boundaryless] [CompleteSpace E]

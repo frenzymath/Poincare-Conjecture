@@ -1,6 +1,6 @@
 import PetersenLib.Ch02.Connections
 import PetersenLib.Ch02.CovariantDerivative
-import OpenGALib.Riemannian.Connection.ChartFrameBridge
+import PetersenLib.Vendored.OpenGA.Connection.ChartFrameBridge
 
 /-!
 # Petersen Ch. 2, §2.4 — The Connection in Tensor Notation
@@ -57,7 +57,7 @@ open scoped Manifold Topology ContDiff Matrix
 
 namespace PetersenLib
 
-open Riemannian Riemannian.Tensor
+open PetersenLib.Tensor
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -479,6 +479,123 @@ theorem christoffel_symmetric_metric_property (g : RiemannianMetric I M) (p : M)
   · have s1 := partialDeriv_chartGramOnE_symm (I := I) g p j i k (extChartAt I p p)
     unfold christoffelSymbolsFirstKind
     linarith [s1]
+
+/-! ## §2.4: the Hessian in Christoffel-symbol coordinates -/
+
+/-- **Math.** The covariant derivative of the coordinate frame in a coordinate
+direction, in vector form: `∇_{∂_i}∂_j = Σ_k Γ^k_{ij} ∂_k` at `p`. The inner
+products against the frame are the first-kind symbols (`metricInner_cov_chartFrame`),
+and non-degeneracy of the metric reads off the second-kind coefficients. -/
+private theorem leviCivita_cov_chartFrame_eq_christoffel_sum
+    (g : RiemannianMetric I M) (p : M) (i j : Fin (Module.finrank ℝ E)) :
+    (g.leviCivita).cov p (chartBasisVecFiber (I := I) p i p)
+        (⇑(chartFrameExtension (I := I) p j))
+      = ∑ m, christoffelSymbolsSecondKind g p i j m •
+          chartBasisVecFiber (I := I) p m p := by
+  classical
+  have hb : p ∈ (trivializationAt E (TangentSpace I) p).baseSet :=
+    FiberBundle.mem_baseSet_trivializationAt' p
+  have hpe : (extChartAt I p).symm (extChartAt I p p) = p := extChartAt_to_inv p
+  have hgram : ∀ a b : Fin (Module.finrank ℝ E),
+      chartGramOnE (I := I) g p a b (extChartAt I p p)
+        = g.metricInner p (chartBasisVecFiber (I := I) p a p)
+            (chartBasisVecFiber (I := I) p b p) := by
+    intro a b
+    rw [chartGramOnE_def, hpe]; rfl
+  refine (g.metricInner_eq_iff_eq p _ _).mp fun Z => ?_
+  have hInnerFrame : ∀ m : Fin (Module.finrank ℝ E),
+      g.metricInner p ((g.leviCivita).cov p (chartBasisVecFiber (I := I) p i p)
+          (⇑(chartFrameExtension (I := I) p j)))
+        (chartBasisVecFiber (I := I) p m p)
+      = g.metricInner p
+          (∑ a, christoffelSymbolsSecondKind g p i j a •
+            chartBasisVecFiber (I := I) p a p)
+          (chartBasisVecFiber (I := I) p m p) := by
+    intro m
+    rw [metricInner_cov_chartFrame (I := I) g p i j m, metricInner_sum_smul_left]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    rw [hgram m a, christoffelSymbols_metric_formula, mul_comm]
+    congr 1
+    exact g.metricInner_comm p _ _
+  have hZ : Z = ∑ m, ((chartBasisFamily (I := I) p hb).repr Z m) •
+      chartBasisVecFiber (I := I) p m p := by
+    conv_lhs => rw [← (chartBasisFamily (I := I) p hb).sum_repr Z]
+    exact Finset.sum_congr rfl fun m _ => by rw [chartBasisFamily_apply]
+  rw [hZ, metricInner_sum_smul_right, metricInner_sum_smul_right]
+  exact Finset.sum_congr rfl fun m _ => by rw [hInnerFrame m]
+
+/-- **Math.** The covariant derivative of a **coordinate frame field in a
+coordinate direction**, expressed through the second-kind Christoffel symbols:
+`(∇_{∂_j} ∂_a)|_p = Σ_m Γ^m_{ja} ∂_m|_p`.  Here `Efr` is any smooth local frame
+agreeing with the coordinate frame `chartBasisVecFiber p b` near `p` (e.g.
+`chartFrameExtension`), and locality of the connection (Lem. 2.2.3) makes the
+value independent of the extension.  This is the reusable public form of the
+`∇_{∂_i}∂_j = Γ^k_{ij}∂_k` step used in `hessian_coordinate_formula` and the
+coordinate covariant-derivative components (Exercise 2.5.24). -/
+theorem leviCivita_covField_chartFrame_eq_christoffel_sum (g : RiemannianMetric I M)
+    (p : M) (j a : Fin (Module.finrank ℝ E))
+    (Efr : Fin (Module.finrank ℝ E) → Π x : M, TangentSpace I x)
+    (hEfr : ∀ b, IsSmoothVectorField (Efr b))
+    (hEfrev : ∀ b, (Efr b) =ᶠ[nhds p] fun q => chartBasisVecFiber (I := I) p b q) :
+    (g.leviCivita).covField (Efr j) (Efr a) p
+      = ∑ m, christoffelSymbolsSecondKind g p j a m •
+          chartBasisVecFiber (I := I) p m p := by
+  have h1 : (g.leviCivita).cov p (Efr j p) (Efr a)
+      = (g.leviCivita).cov p (chartBasisVecFiber (I := I) p j p)
+          (⇑(chartFrameExtension (I := I) p a)) := by
+    rw [(hEfrev j).self_of_nhds]
+    exact leviCivita_cov_chartFrame_congr g p _ a (hEfr a) (hEfrev a)
+  rw [AffineConnection.covField_apply, h1, leviCivita_cov_chartFrame_eq_christoffel_sum]
+
+/-- **Math.** **Hessian in Christoffel-symbol coordinates** (Petersen §2.4,
+prop:pet-ch2-hessian-coordinate-formula):
+`Hess f(∂_i, ∂_j) = ∂_i∂_j f − Γ^k_{ij} ∂_k f`. Here `∂_a = Efr a` is any smooth
+local frame agreeing with the coordinate frame `chartBasisVecFiber p a` near `p`
+(e.g. `chartFrameExtension`); `∂_i∂_j f` is the iterated frame directional
+derivative and `Γ^k_{ij}` the Christoffel symbols of the second kind. Proved
+through `Hess f(X,Y) = X(Yf) − (∇_XY)f` (Prop. 2.2.6,
+`hessian_via_covariantDerivative`) and `∇_{∂_i}∂_j = Γ^k_{ij}∂_k`
+(`leviCivita_cov_chartFrame_eq_christoffel_sum`), the second term expanded by
+linearity of `df`. -/
+theorem hessian_coordinate_formula (g : RiemannianMetric I M) {f : M → ℝ}
+    (hf : ContMDiff I 𝓘(ℝ) ∞ f) (hgradf : IsSmoothVectorField (gradient g f))
+    (p : M) (i j : Fin (Module.finrank ℝ E))
+    (Efr : Fin (Module.finrank ℝ E) → Π x : M, TangentSpace I x)
+    (hEfr : ∀ a, IsSmoothVectorField (Efr a))
+    (hEfrev : ∀ a, (Efr a) =ᶠ[nhds p] fun q => chartBasisVecFiber (I := I) p a q) :
+    hessianLieDerivative g f ![Efr i, Efr j] p
+      = directionalDerivative (Efr i) (directionalDerivative (Efr j) f) p
+        - ∑ k, christoffelSymbolsSecondKind g p i j k
+            * directionalDerivative (Efr k) f p := by
+  classical
+  -- Hess f(∂_i,∂_j) = (∇_{∂_i} df)(∂_j) = ∂_i(∂_j f) − (∇_{∂_i}∂_j) f.
+  rw [← hessian_via_covariantDerivative g.leviCivita hf (hEfr i) (hEfr j) hgradf p,
+    covariantDerivativeTensor_formula, Fin.sum_univ_one]
+  -- `∇_{∂_i}∂_j` at `p` in the frame.
+  have h1 : (g.leviCivita).cov p (Efr i p) (Efr j)
+      = (g.leviCivita).cov p (chartBasisVecFiber (I := I) p i p)
+          (⇑(chartFrameExtension (I := I) p j)) := by
+    rw [(hEfrev i).self_of_nhds]
+    exact leviCivita_cov_chartFrame_congr g p _ j (hEfr j) (hEfrev j)
+  have hcov : g.leviCivita.covField (Efr i) (Efr j) p
+      = ∑ m, christoffelSymbolsSecondKind g p i j m • chartBasisVecFiber (I := I) p m p := by
+    rw [AffineConnection.covField_apply, h1, leviCivita_cov_chartFrame_eq_christoffel_sum]
+  -- the differentiated-second term, expanded by linearity of `df`.
+  have hsnd : directionalDerivative (g.leviCivita.covField (Efr i) (Efr j)) f p
+      = ∑ k, christoffelSymbolsSecondKind g p i j k * directionalDerivative (Efr k) f p := by
+    rw [directionalDerivative_apply, hcov, map_sum]
+    refine Finset.sum_congr rfl fun m _ => ?_
+    rw [directionalDerivative_apply, (hEfrev m).self_of_nhds, map_smul]; rfl
+  -- assemble: the first term is the iterated directional derivative, the second is `hsnd`.
+  have hupd : differentialOperator f (Function.update
+        (![Efr j] : Fin 1 → Π x : M, TangentSpace I x) 0
+        (g.leviCivita.covField (Efr i) ((![Efr j] : Fin 1 → Π x : M, TangentSpace I x) 0))) p
+      = directionalDerivative (g.leviCivita.covField (Efr i) (Efr j)) f p := by
+    rw [differentialOperator_apply, Function.update_self, Matrix.cons_val_zero]
+  have hdiff : differentialOperator f (![Efr j] : Fin 1 → Π x : M, TangentSpace I x)
+      = directionalDerivative (Efr j) f := by
+    funext x; rw [differentialOperator_apply, Matrix.cons_val_zero]
+  rw [hdiff, hupd, hsnd]
 
 end ChristoffelSymbols
 

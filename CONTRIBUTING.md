@@ -37,10 +37,13 @@ Shared Riemannian geometry belongs in `DoCarmo/OpenGALib`; `MorganTian` and `Pet
 Build the project you changed before opening a pull request:
 
 ```bash
-cd DoCarmo       # or MorganTian / Petersen
+cd DoCarmo       # or MorganTian / Petersen / Lee / LeeSmooth / Hatcher / Evans
 lake exe cache get
 lake build
 ```
+
+CI (`.github/workflows/ci.yml`) runs `lake build` and a sorry/axiom regression
+check for every project listed above on each push and pull request.
 
 Changes to `DoCarmo/OpenGALib` should also be checked against both consumers:
 

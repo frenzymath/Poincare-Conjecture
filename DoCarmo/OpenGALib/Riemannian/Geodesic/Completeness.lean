@@ -208,30 +208,32 @@ section Extension
 variable {M : Type*} [MetricSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [I.Boundaryless] [CompleteSpace E]
 
-/-- **Math.** **A geodesic on a bounded-above interval extends forward**
-(do Carmo Ch. 7, proof of Theorem 2.8, c) ⟹ d): the prolongation step). Under
-metric completeness, a continuous geodesic on `(a, b)` with `b` finite extends,
-as a geodesic, to `(a, b + δ)` for some `δ > 0`.
+/-- **Math.** **A geodesic on a bounded-above interval extends forward, given the
+endpoint limit** (do Carmo Ch. 7, proof of Theorem 2.8, c) ⟹ d): the prolongation
+step, *completeness-free* form). A continuous geodesic on `(a, b)` with `b` finite
+that *converges* at `b` to a known point `p₀`
+(`Tendsto γ (𝓝[Ioo a b] b) (𝓝 p₀)`) extends, as a geodesic, to `(a, b + δ)` for
+some `δ > 0`.
 
-The endpoint limit `p₀` exists by the Cauchy step
-(`exists_tendsto_of_isGeodesicOn`); the Picard–Lindelöf flow at `p₀` solves
-the geodesic ODE for a uniform time `ε` from every initial condition in an
-`r`-ball of `(φ_{p₀}(p₀), 0)`; the affine reparametrisation
-`t ↦ γ(κ t + b(1-κ))` scales the (conserved, Gram-bounded) coordinate
-velocity into the ball; the flow geodesic through the reparametrised data at
-a time `t₁` close to `b` agrees with the reparametrised curve by intrinsic
-uniqueness and prolongs it past `b`; undoing the reparametrisation prolongs
-`γ`. -/
-theorem IsGeodesicOn.exists_forward_extension (g : RiemannianMetric I M)
-    (hg : g.IsRiemannianDist) [CompleteSpace M]
+This is the substance of the extension step with the metric-completeness input
+factored out: the endpoint limit `p₀` (which under `[CompleteSpace M]` comes from
+the Cauchy step `exists_tendsto_of_isGeodesicOn`) is taken as a hypothesis, so the
+lemma applies whenever the limit is already known — e.g. an *abstract* geodesic on
+`Icc a b`, whose endpoint value `p₀ = γ b` is given, without any completeness
+assumption. The Picard–Lindelöf flow at `p₀` solves the geodesic ODE for a uniform
+time `ε` from every initial condition in an `r`-ball of `(φ_{p₀}(p₀), 0)`; the
+affine reparametrisation `t ↦ γ(κ t + b(1-κ))` scales the (conserved, Gram-bounded)
+coordinate velocity into the ball; the flow geodesic through the reparametrised
+data at a time `t₁` close to `b` agrees with the reparametrised curve by intrinsic
+uniqueness and prolongs it past `b`; undoing the reparametrisation prolongs `γ`. -/
+theorem IsGeodesicOn.exists_forward_extension_of_tendsto (g : RiemannianMetric I M)
     {γ : ℝ → M} {a b : ℝ} (hab : a < b)
     (hgeo : IsGeodesicOn (I := I) g γ (Ioo a b))
-    (hcont : ContinuousOn γ (Ioo a b)) :
+    (hcont : ContinuousOn γ (Ioo a b))
+    (p₀ : M) (hp₀ : Tendsto γ (𝓝[Ioo a b] b) (𝓝 p₀)) :
     ∃ δ : ℝ, 0 < δ ∧ ∃ γ' : ℝ → M, ContinuousOn γ' (Ioo a (b + δ)) ∧
       IsGeodesicOn (I := I) g γ' (Ioo a (b + δ)) ∧ EqOn γ' γ (Ioo a b) := by
   classical
-  -- the endpoint limit
-  obtain ⟨p₀, hp₀⟩ := exists_tendsto_of_isGeodesicOn (I := I) g hg hab hgeo hcont
   set y₀ : E := extChartAt I p₀ p₀ with hy₀_def
   -- the Gram comparison at the limit point
   obtain ⟨c, V, hc, hV, hVsub, hGram⟩ :=
@@ -522,6 +524,25 @@ theorem IsGeodesicOn.exists_forward_extension (g : RiemannianMetric I M)
     simp only [hγnew_def, if_pos hlt]
     show γ (κ * (κ⁻¹ * t + -(κ⁻¹ * c₀)) + c₀) = γ t
     rw [hAAinv]
+
+/-- **Math.** **A geodesic on a bounded-above interval extends forward**
+(do Carmo Ch. 7, proof of Theorem 2.8, c) ⟹ d): the prolongation step). Under
+metric completeness, a continuous geodesic on `(a, b)` with `b` finite extends,
+as a geodesic, to `(a, b + δ)` for some `δ > 0`.
+
+The endpoint limit `p₀` exists by the Cauchy step
+(`exists_tendsto_of_isGeodesicOn`, where `[CompleteSpace M]` is the *sole* use of
+completeness); the rest of the argument is completeness-free and lives in
+`IsGeodesicOn.exists_forward_extension_of_tendsto`, to which this specialises. -/
+theorem IsGeodesicOn.exists_forward_extension (g : RiemannianMetric I M)
+    (hg : g.IsRiemannianDist) [CompleteSpace M]
+    {γ : ℝ → M} {a b : ℝ} (hab : a < b)
+    (hgeo : IsGeodesicOn (I := I) g γ (Ioo a b))
+    (hcont : ContinuousOn γ (Ioo a b)) :
+    ∃ δ : ℝ, 0 < δ ∧ ∃ γ' : ℝ → M, ContinuousOn γ' (Ioo a (b + δ)) ∧
+      IsGeodesicOn (I := I) g γ' (Ioo a (b + δ)) ∧ EqOn γ' γ (Ioo a b) := by
+  obtain ⟨p₀, hp₀⟩ := exists_tendsto_of_isGeodesicOn (I := I) g hg hab hgeo hcont
+  exact IsGeodesicOn.exists_forward_extension_of_tendsto (I := I) g hab hgeo hcont p₀ hp₀
 
 end Extension
 

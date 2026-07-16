@@ -5,12 +5,16 @@ import PetersenLib.Ch01.ArcLength
 import PetersenLib.Ch01.DoublyWarpedSmoothness
 import PetersenLib.Ch01.BiinvariantExistence
 import PetersenLib.Ch01.AdjointRepresentation
+import PetersenLib.Ch02.OneParameterSubgroup
+import PetersenLib.Ch02.AdjointDifferential
+import PetersenLib.Ch02.AdjointBracketMain
 import Mathlib.Analysis.Quaternion
 import Mathlib.Analysis.InnerProductSpace.Trace
 import Mathlib.Algebra.Lie.Killing
 import Mathlib.Algebra.Lie.Classical
 import Mathlib.LinearAlgebra.Matrix.SpecialLinearGroup
 import Mathlib.Geometry.Manifold.VectorField.LieBracket
+import Mathlib.Geometry.Manifold.GroupLieAlgebra
 
 /-!
 # Petersen Ch. 1, §1.6 — Exercises 1.6.22–1.6.29
@@ -1584,6 +1588,29 @@ algebra of `G`. -/
 def leftInvariantExtension (V : TangentSpace I (1 : G)) : Π x : G, TangentSpace I x :=
   fun x => (mfderiv I I (x * ·) 1 V : TangentSpace I x)
 
+/-- **Math.** Petersen's left-invariant extension of `V ∈ 𝔤 = T_eG`
+(Exercise 1.6.24) is exactly Mathlib's canonical left-invariant vector field
+`mulInvariantVectorField` on `GroupLieAlgebra I G = T_1 G`: both are the
+differential of left translation `L_x` at `1` applied to `V`, so they agree
+definitionally. This bridges Petersen's ad-hoc invariant fields to Mathlib's
+`GroupLieAlgebra` Lie-algebra structure. -/
+theorem leftInvariantExtension_eq_mulInvariantVectorField (V : GroupLieAlgebra I G) :
+    leftInvariantExtension I V = mulInvariantVectorField V := rfl
+
+/-- **Math.** Consequently the Exercise 1.6.24 Lie bracket
+`[U, X] = mlieBracket I (leftInvariantExtension I U) (leftInvariantExtension I X) 1`
+is Mathlib's canonical Lie-algebra bracket `⁅U, X⁆` on `GroupLieAlgebra I G`
+(`GroupLieAlgebra.bracket_def`). This identifies the abstract skew-symmetry
+target of Exercise 1.6.24 (3) with the Lie-algebra bracket of the group — the
+canonical staging ground for the `Ad`/`ad` correspondence of Petersen §2.1.4,
+proved in the model case `Rˣ` by `PetersenLib.gl_bracket_eq_commutator` and
+`PetersenLib.ad_eq_differential_of_Ad`. -/
+theorem mlieBracket_leftInvariantExtension_eq_groupBracket (U X : GroupLieAlgebra I G) :
+    VectorField.mlieBracket I (leftInvariantExtension I U) (leftInvariantExtension I X) 1
+      = ⁅U, X⁆ := by
+  rw [GroupLieAlgebra.bracket_def]
+  rfl
+
 /-- **Math.** Petersen Exercise 1.6.24 (2), first half: for a bi-invariant
 metric, conjugation `x ↦ hxh⁻¹` is a Riemannian isometry (it is the
 composition of the left translation by `h` and the right translation by
@@ -1680,15 +1707,18 @@ adjoint action `ad_U = [U, ·]` of the Lie algebra on itself is
 **skew-symmetric**: `g([U, X], Y) = −g(X, [U, Y])`, where `[·,·]` is the Lie
 bracket of the left-invariant extensions, evaluated at `e`.
 
-The analytic half — differentiating `t ↦ g(Ad_{φ t} X, Ad_{φ t} Y) = g(X, Y)` at
-`t = 0` to get a skew generator — is fully proved in
-`biinvariantMetric_adGenerator_skew` (via `curveIsometry_generator_skew`). The
-**only** remaining gap is the `Ad`/`ad` correspondence of Petersen §2.1.4: that a
-curve `φ` realising `U` has adjoint orbit `t ↦ Ad_{φ t}` with velocity
-`ad_U = [U, ·]` at `t = 0`. Mathlib has neither the Lie-group exponential map nor
-this correspondence for abstract Lie groups, so that existence — isolated below as
-`sorry` with the exact type it must have — is not yet formalizable. -/
-theorem exercise1_6_24_ad_skew [CompleteSpace E] (g : RiemannianMetric I G)
+The proof runs Petersen §2.1.4 without flows.  The analytic half —
+differentiating `t ↦ g(Ad_{φ t} X, Ad_{φ t} Y) = g(X, Y)` at `t = 0` to get a
+`g`-skew generator `A` — is `biinvariantMetric_adGenerator_skew`.  The one curve
+`φ` realising `U` is the one-parameter subgroup (`exists_oneParameterSubgroup`,
+velocity `U` by `oneParameterSubgroup_hasMFDerivAt_zero`); its adjoint orbit is
+differentiable because `Ad : G → 𝔤 →L 𝔤` is `C^∞` (`contMDiffAt_adMap`), giving
+the generator `A = D(Ad)_e(U)` (`hasDerivAt_adMap_comp`).  Finally each
+`A X = ⁅U, X⁆` — by uniqueness of the derivative against `hasDerivAt_adMap_apply`
+and the `Ad`/`ad` identity `mfderiv_adMap_apply_eq_groupBracket` (Lemma 2.1.7:
+`D(Ad)_e(U) = ad_U = ⁅U, ·⁆`, the single remaining §2.1.4 chart-level
+second-derivative gap). -/
+theorem exercise1_6_24_ad_skew [CompleteSpace E] [I.Boundaryless] (g : RiemannianMetric I G)
     (hg : IsBiinvariantMetric I g) (U X Y : TangentSpace I (1 : G)) :
     g.metricInner 1
         (VectorField.mlieBracket I (leftInvariantExtension I U)
@@ -1696,19 +1726,49 @@ theorem exercise1_6_24_ad_skew [CompleteSpace E] (g : RiemannianMetric I G)
       = - g.metricInner 1 X
           (VectorField.mlieBracket I (leftInvariantExtension I U)
             (leftInvariantExtension I Y) 1) := by
-  -- The single remaining mathematical gap (Petersen §2.1.4, `exp`/`Ad`–`ad`):
-  -- a curve `φ` through `e` whose adjoint orbit has velocity `ad_U = [U, ·]`.
-  obtain ⟨φ, A, hφ0, hderiv, hAX, hAY⟩ :
-      ∃ (φ : ℝ → G) (A : TangentSpace I (1 : G) →L[ℝ] TangentSpace I (1 : G)),
-        φ 0 = 1 ∧ HasDerivAt (fun t => adjointMap I (φ t)) A 0
-        ∧ A X = VectorField.mlieBracket I (leftInvariantExtension I U)
-            (leftInvariantExtension I X) 1
-        ∧ A Y = VectorField.mlieBracket I (leftInvariantExtension I U)
-            (leftInvariantExtension I Y) 1 :=
-    sorry
-  have hskew := biinvariantMetric_adGenerator_skew g hg A φ hφ0 hderiv X Y
-  rw [hAX, hAY] at hskew
-  linarith [hskew]
+  obtain ⟨φ, hφ0, hφc⟩ := exists_oneParameterSubgroup (I := I) (G := G) U
+  have hφmder := oneParameterSubgroup_hasMFDerivAt_zero hφ0 hφc
+  -- The infinitesimal generator `A = D(Ad)_e(U)` of the adjoint orbit, typed in the
+  -- model space `E →L[ℝ] E` (`TangentSpace I 1` carries no findable normed structure,
+  -- so all operator/evaluation calculus is done in `E`).
+  set AE : E →L[ℝ] E := mfderiv I 𝓘(ℝ, E →L[ℝ] E) (adMap (I := I) (G := G)) 1 U with hAEdef
+  have hderivE : HasDerivAt (fun t => adMap (I := I) (φ t)) AE 0 := by
+    rw [hAEdef]; exact hasDerivAt_adMap_comp hφ0 hφmder
+  -- `Ad_{φ t}(Z)` has derivative `AE Z` (evaluation of the operator derivative) and
+  -- also `D(h ↦ Ad_h Z)_e(U)`; uniqueness identifies them, and Lemma 2.1.7 gives `⁅U, Z⁆`.
+  have hApply : ∀ Z : E, AE Z
+      = VectorField.mlieBracket I (leftInvariantExtension I U)
+          (leftInvariantExtension I Z) 1 := by
+    intro Z
+    have h1 := hasDerivAt_adMap_apply Z hφ0 hφmder
+    have h2 : HasDerivAt (fun t => adMap (I := I) (φ t) Z) (AE Z) 0 := by
+      have hd := hderivE.clm_apply (hasDerivAt_const (0 : ℝ) Z)
+      simpa using hd
+    rw [h2.unique h1, mfderiv_adMap_apply_eq_groupBracket]
+    exact (mlieBracket_leftInvariantExtension_eq_groupBracket U Z).symm
+  -- The analytic half: differentiate the constant `t ↦ g(Ad_{φ t}X, Ad_{φ t}Y)` at
+  -- `t = 0`.  Worked over `E` (whose normed instances are available) via
+  -- `curveIsometry_generator_skew`, so the generator `AE` appears with the `E →L E`
+  -- evaluation matched by `hApply`.
+  have hρ0 : (fun t => adMap (I := I) (φ t)) 0 = ContinuousLinearMap.id ℝ E := by
+    simp only [hφ0, adMap_one]
+  have hiso : ∀ (t : ℝ) (x y : E),
+      (g.metricToDual 1) (adMap (I := I) (φ t) x) (adMap (I := I) (φ t) y)
+        = (g.metricToDual 1) x y := by
+    intro t x y
+    simp only [RiemannianMetric.metricToDual_apply, adMap_apply]
+    exact biinvariantMetric_conj_mfderiv_isometry g hg (φ t) x y
+  have hskew := curveIsometry_generator_skew (V := E) (g.metricToDual 1)
+    (fun t => adMap (I := I) (φ t)) AE hderivE hρ0 hiso X Y
+  rw [hApply X, hApply Y] at hskew
+  -- `g.metricToDual 1 = g.metricInner 1` definitionally (`metricToDual_apply`).
+  have hskew' : g.metricInner 1
+        (VectorField.mlieBracket I (leftInvariantExtension I U)
+          (leftInvariantExtension I X) 1) Y
+      + g.metricInner 1 X
+          (VectorField.mlieBracket I (leftInvariantExtension I U)
+            (leftInvariantExtension I Y) 1) = 0 := hskew
+  linarith [hskew']
 
 /-- **Math.** Petersen Exercise 1.6.24 — **bi-invariant metrics on compact
 Lie groups.** (1) A compact Lie group admits a bi-invariant metric (by
@@ -1721,7 +1781,7 @@ isometry; (3) hence `ad_U X = [U, X]` is skew-symmetric:
 part (3) is deferred (`exercise1_6_24_ad_skew`, needs the Lie-group `exp`/`Ad`
 correspondence of Petersen §2.1.4, not yet in Mathlib). -/
 theorem exercise1_6_24 [CompactSpace G] [T2Space G] [CompleteSpace E]
-    [FiniteDimensional ℝ E] :
+    [FiniteDimensional ℝ E] [I.Boundaryless] :
     (∃ g : RiemannianMetric I G, IsBiinvariantMetric I g)
     ∧ (∀ g : RiemannianMetric I G, IsBiinvariantMetric I g → ∀ h : G,
         IsRiemannianIsometry g g (fun x => h * x * h⁻¹))

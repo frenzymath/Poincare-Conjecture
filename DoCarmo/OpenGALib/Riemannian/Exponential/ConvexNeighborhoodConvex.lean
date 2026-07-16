@@ -74,7 +74,7 @@ theorem exists_minimizing_interior_ball_of_lower_bound
     (Hlb : ∃ βH ρH : ℝ, 0 < βH ∧ 0 < ρH ∧ ∀ (q₁ q₂ : M') (γ : ℝ → M') (w : E)
              (lo hi ℓ : ℝ), 0 ≤ ℓ →
              dist p q₁ ≤ βH → dist p q₂ ≤ βH → lo < 0 → 1 < hi → γ 0 = q₁ → γ 1 = q₂ →
-             IsGeodesicOn (I := I) g γ (Ioo lo hi) →
+             IsGeodesicOn (I := I) g γ (Ioo lo hi) → ContinuousOn γ (Ioo lo hi) →
              HasDerivAt (fun s : ℝ => extChartAt I p (γ s)) w 0 → ‖w‖ < ρH →
              (letI : Bundle.RiemannianBundle (fun x : M' ↦ TangentSpace I x) :=
                ⟨g.toRiemannianMetric⟩
@@ -119,7 +119,7 @@ theorem exists_minimizing_interior_ball_of_lower_bound
   -- the lower bound closes the gap: `edist q₁ q₂ = ofReal ℓ`
   have hlow : ENNReal.ofReal ℓ ≤ edist q₁ q₂ :=
     Hlb q₁ q₂ γ w lo hi ℓ hℓnn (le_trans hpq₁ hβ_βH) (le_trans hpq₂ hβ_βH)
-      hlo hhi hγ0 hγ1 hgeoIoo hd0 hwρ_H hlen
+      hlo hhi hγ0 hγ1 hgeoIoo hcontIoo hd0 hwρ_H hlen
   have hedist : edist q₁ q₂ = ENNReal.ofReal ℓ := le_antisymm hup hlow
   have hdist : dist q₁ q₂ = ℓ := by
     have h : ENNReal.ofReal (dist q₁ q₂) = ENNReal.ofReal ℓ := by rw [← edist_dist]; exact hedist
@@ -195,7 +195,7 @@ theorem exists_stronglyConvex_closedBall_of_lower_bound
     (Hlb : ∃ βH ρH : ℝ, 0 < βH ∧ 0 < ρH ∧ ∀ (q₁ q₂ : M') (γ : ℝ → M') (w : E)
              (lo hi ℓ : ℝ), 0 ≤ ℓ →
              dist p q₁ ≤ βH → dist p q₂ ≤ βH → lo < 0 → 1 < hi → γ 0 = q₁ → γ 1 = q₂ →
-             IsGeodesicOn (I := I) g γ (Ioo lo hi) →
+             IsGeodesicOn (I := I) g γ (Ioo lo hi) → ContinuousOn γ (Ioo lo hi) →
              HasDerivAt (fun s : ℝ => extChartAt I p (γ s)) w 0 → ‖w‖ < ρH →
              (letI : Bundle.RiemannianBundle (fun x : M' ↦ TangentSpace I x) :=
                ⟨g.toRiemannianMetric⟩

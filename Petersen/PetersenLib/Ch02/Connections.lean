@@ -36,8 +36,6 @@ noncomputable section
 
 namespace PetersenLib
 
-open Riemannian
-
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -251,7 +249,7 @@ theorem koszulExpression_eq_koszulRHS (g : RiemannianMetric I M)
     (hX : IsSmoothVectorField X) (hY : IsSmoothVectorField Y)
     (hZ : IsSmoothVectorField Z) (p : M) :
     koszulExpression g X Y Z p
-      = Riemannian.RiemannianMetric.koszulRHS g ⟨X, hX⟩ ⟨Y, hY⟩ ⟨Z, hZ⟩ p := by
+      = g.koszulRHS ⟨X, hX⟩ ⟨Y, hY⟩ ⟨Z, hZ⟩ p := by
   have hcomm : (fun q => g.metricInner q (Z q) (X q))
       = fun q => g.metricInner q (X q) (Z q) := by
     funext q; exact g.metricInner_comm ..
@@ -282,13 +280,7 @@ theorem koszulExpression_eq_koszulRHS (g : RiemannianMetric I M)
         (⟨X, hX⟩ : SmoothVectorField I M) ⟨Y, hY⟩ p) (Z p)
       = g.metricInner p (lieDerivativeVectorField I X Y p) (Z p) := rfl
   show koszulExpression g X Y Z p = _
-  rw [Riemannian.RiemannianMetric.koszulRHS]
-  -- The shared `koszulRHS` is stated with `Riemannian.RiemannianMetric.metricInner`,
-  -- while Petersen's `koszulExpression` uses `PetersenLib.RiemannianMetric.metricInner`;
-  -- both unfold to `g.inner`, so bridge the former to the latter before matching.
-  simp only [Riemannian.RiemannianMetric.metricInner_apply,
-    ← PetersenLib.RiemannianMetric.metricInner_apply]
-  rw [h₁, h₂, h₃, h₄, h₅, h₆, koszulExpression]
+  rw [RiemannianMetric.koszulRHS, h₁, h₂, h₃, h₄, h₅, h₆, koszulExpression]
   ring
 
 /-- **Math.** The Koszul expression is tensorial (`C^∞(M)`-linear on germs) in
@@ -303,14 +295,14 @@ theorem koszulExpression_tensorialAt_direction (g : RiemannianMetric I M)
   have hZp : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
       (fun q => (⟨q, Z q⟩ : TangentBundle I M)) p := (hZ p).mdifferentiableAt (by decide)
   have hXZd : MDifferentiableAt I 𝓘(ℝ) (fun q => g.metricInner q (X q) (Z q)) p :=
-    Riemannian.RiemannianMetric.metricInner_raw_mdifferentiableAt g hXp hZp
+    g.metricInner_raw_mdifferentiableAt hXp hZp
   constructor
   · -- 𝒟(M)-homogeneity in the direction
     intro f σ hf hσ
     have hσZd : MDifferentiableAt I 𝓘(ℝ) (fun q => g.metricInner q (σ q) (Z q)) p :=
-      Riemannian.RiemannianMetric.metricInner_raw_mdifferentiableAt g hσ hZp
+      g.metricInner_raw_mdifferentiableAt hσ hZp
     have hXσd : MDifferentiableAt I 𝓘(ℝ) (fun q => g.metricInner q (X q) (σ q)) p :=
-      Riemannian.RiemannianMetric.metricInner_raw_mdifferentiableAt g hXp hσ
+      g.metricInner_raw_mdifferentiableAt hXp hσ
     have e₁ : (fun q => g.metricInner q ((f • σ) q) (Z q))
         = f * fun q => g.metricInner q (σ q) (Z q) := by
       funext q; exact g.metricInner_smul_left ..
@@ -353,13 +345,13 @@ theorem koszulExpression_tensorialAt_direction (g : RiemannianMetric I M)
   · -- additivity in the direction
     intro σ σ' hσ hσ'
     have hσZd : MDifferentiableAt I 𝓘(ℝ) (fun q => g.metricInner q (σ q) (Z q)) p :=
-      Riemannian.RiemannianMetric.metricInner_raw_mdifferentiableAt g hσ hZp
+      g.metricInner_raw_mdifferentiableAt hσ hZp
     have hσ'Zd : MDifferentiableAt I 𝓘(ℝ) (fun q => g.metricInner q (σ' q) (Z q)) p :=
-      Riemannian.RiemannianMetric.metricInner_raw_mdifferentiableAt g hσ' hZp
+      g.metricInner_raw_mdifferentiableAt hσ' hZp
     have hXσd : MDifferentiableAt I 𝓘(ℝ) (fun q => g.metricInner q (X q) (σ q)) p :=
-      Riemannian.RiemannianMetric.metricInner_raw_mdifferentiableAt g hXp hσ
+      g.metricInner_raw_mdifferentiableAt hXp hσ
     have hXσ'd : MDifferentiableAt I 𝓘(ℝ) (fun q => g.metricInner q (X q) (σ' q)) p :=
-      Riemannian.RiemannianMetric.metricInner_raw_mdifferentiableAt g hXp hσ'
+      g.metricInner_raw_mdifferentiableAt hXp hσ'
     have e₁ : (fun q => g.metricInner q ((σ + σ') q) (Z q))
         = (fun q => g.metricInner q (σ q) (Z q))
           + fun q => g.metricInner q (σ' q) (Z q) := by
@@ -428,7 +420,7 @@ smooth extension of `v`, normalized to `0` on non-smooth `X`. -/
 noncomputable def RiemannianMetric.covAt (g : RiemannianMetric I M) (p : M)
     (v : TangentSpace I p) (X : Π x : M, TangentSpace I x) : TangentSpace I p :=
   if hX : IsSmoothVectorField X then
-    Riemannian.RiemannianMetric.koszulDualSection g ⟨X, hX⟩ (extendTangentVector p v) p
+    g.koszulDualSection ⟨X, hX⟩ (extendTangentVector p v) p
   else 0
 
 /-- **Math.** The defining property of the Levi-Civita covariant derivative:
@@ -442,10 +434,10 @@ theorem RiemannianMetric.covAt_dual (g : RiemannianMetric I M) (p : M)
   rw [RiemannianMetric.covAt, dif_pos hX]
   have hext : IsSmoothVectorField (extendTangentVector p v : Π x : M, TangentSpace I x) :=
     (extendTangentVector p v).smooth
-  calc 2 * g.metricInner p (Riemannian.RiemannianMetric.koszulDualSection g ⟨X, hX⟩ (extendTangentVector p v) p)
+  calc 2 * g.metricInner p (g.koszulDualSection ⟨X, hX⟩ (extendTangentVector p v) p)
         (Z p)
-      = Riemannian.RiemannianMetric.koszulRHS g ⟨X, hX⟩ (extendTangentVector p v) ⟨Z, hZ⟩ p := by
-        have h := Riemannian.RiemannianMetric.koszulDualSection_dual g (X := ⟨X, hX⟩)
+      = g.koszulRHS ⟨X, hX⟩ (extendTangentVector p v) ⟨Z, hZ⟩ p := by
+        have h := g.koszulDualSection_dual (X := ⟨X, hX⟩)
           (Y := extendTangentVector p v) (Z := ⟨Z, hZ⟩) p
         exact h
     _ = koszulExpression g X (extendTangentVector p v) Z p := by
@@ -532,7 +524,7 @@ theorem koszulExpression_symm_sum (g : RiemannianMetric I M)
   simp only [koszulExpression, hcomm₁, hcomm₂, hcomm₃, hswap₁, hswap₂, hswap₃]
   ring
 
-variable [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)]
+variable [NeZero (Module.finrank ℝ E)]
 
 /-- **Math.** The **Levi-Civita connection** of `(M, g)`: the Riemannian
 connection produced by Koszul's formula. Its `cov` is `RiemannianMetric.covAt`;
@@ -637,14 +629,14 @@ noncomputable def RiemannianMetric.leviCivita (g : RiemannianMetric I M) :
     calc 2 * g.metricInner p (g.covAt p v (fun q => X₁ q + X₂ q)) z
         = koszulExpression g (fun q => X₁ q + X₂ q) (extendTangentVector p v)
             (extendTangentVector p z) p := g.covAt_dual_vec p v hsum z
-      _ = Riemannian.RiemannianMetric.koszulRHS g ((⟨X₁, hX₁⟩ : SmoothVectorField I M) + ⟨X₂, hX₂⟩)
+      _ = g.koszulRHS ((⟨X₁, hX₁⟩ : SmoothVectorField I M) + ⟨X₂, hX₂⟩)
             (extendTangentVector p v) (extendTangentVector p z) p := by
           rw [hbridge₁, hSVF]
-      _ = Riemannian.RiemannianMetric.koszulRHS g ⟨X₁, hX₁⟩ (extendTangentVector p v)
+      _ = g.koszulRHS ⟨X₁, hX₁⟩ (extendTangentVector p v)
             (extendTangentVector p z) p
-          + Riemannian.RiemannianMetric.koszulRHS g ⟨X₂, hX₂⟩ (extendTangentVector p v)
+          + g.koszulRHS ⟨X₂, hX₂⟩ (extendTangentVector p v)
             (extendTangentVector p z) p :=
-          Riemannian.RiemannianMetric.koszulRHS_add_left g ..
+          g.koszulRHS_add_left ..
       _ = 2 * g.metricInner p (g.covAt p v X₁) z
           + 2 * g.metricInner p (g.covAt p v X₂) z := by
           rw [← hbridge₂, ← hbridge₃, g.covAt_dual_vec p v hX₁ z,
@@ -675,14 +667,14 @@ noncomputable def RiemannianMetric.leviCivita (g : RiemannianMetric I M) :
     calc 2 * g.metricInner p (g.covAt p v (fun q => f q • X q)) z
         = koszulExpression g (fun q => f q • X q) (extendTangentVector p v)
             (extendTangentVector p z) p := g.covAt_dual_vec p v hfX z
-      _ = Riemannian.RiemannianMetric.koszulRHS g (SmoothVectorField.smul f hf ⟨X, hX⟩)
+      _ = g.koszulRHS (SmoothVectorField.smul f hf ⟨X, hX⟩)
             (extendTangentVector p v) (extendTangentVector p z) p := by
           rw [hbridge₁, hSVF]
-      _ = f p * Riemannian.RiemannianMetric.koszulRHS g ⟨X, hX⟩ (extendTangentVector p v)
+      _ = f p * g.koszulRHS ⟨X, hX⟩ (extendTangentVector p v)
             (extendTangentVector p z) p
           + 2 * ((extendTangentVector p v).dir f p)
             * g.metricInner p (X p) (extendTangentVector p z p) :=
-          Riemannian.RiemannianMetric.koszulRHS_leibniz_left g hf ..
+          g.koszulRHS_leibniz_left hf ..
       _ = f p * (2 * g.metricInner p (g.covAt p v X) z)
           + 2 * dirTangent f v * g.metricInner p (X p) z := by
           rw [← hbridge₂, g.covAt_dual_vec p v hX z, hdirf, extendTangentVector_apply]
@@ -691,7 +683,7 @@ noncomputable def RiemannianMetric.leviCivita (g : RiemannianMetric I M) :
           ring
   smooth_cov {Y X} hY hX := by
     have heq : (fun p => g.covAt p (Y p) X)
-        = fun p => Riemannian.RiemannianMetric.koszulDualSection g ⟨X, hX⟩ ⟨Y, hY⟩ p := by
+        = fun p => g.koszulDualSection ⟨X, hX⟩ ⟨Y, hY⟩ p := by
       funext p
       refine eq_of_metricInner_eq g (fun z => ?_)
       refine mul_left_cancel₀ (two_ne_zero (α := ℝ)) ?_
@@ -703,9 +695,9 @@ noncomputable def RiemannianMetric.leviCivita (g : RiemannianMetric I M) :
         have h := g.covAt_dual p (Y p) hX (Y := Y) hY rfl
           (Z := (extendTangentVector p z : Π q, TangentSpace I q)) hZS
         rwa [extendTangentVector_apply] at h
-      have h₂ : 2 * g.metricInner p (Riemannian.RiemannianMetric.koszulDualSection g ⟨X, hX⟩ ⟨Y, hY⟩ p) z
+      have h₂ : 2 * g.metricInner p (g.koszulDualSection ⟨X, hX⟩ ⟨Y, hY⟩ p) z
           = koszulExpression g X Y (extendTangentVector p z) p := by
-        have h := Riemannian.RiemannianMetric.koszulDualSection_dual g (X := ⟨X, hX⟩) (Y := ⟨Y, hY⟩)
+        have h := g.koszulDualSection_dual (X := ⟨X, hX⟩) (Y := ⟨Y, hY⟩)
           (Z := extendTangentVector p z) p
         rw [koszulExpression_eq_koszulRHS g hX hY hZS p]
         rw [extendTangentVector_apply] at h
@@ -713,7 +705,7 @@ noncomputable def RiemannianMetric.leviCivita (g : RiemannianMetric I M) :
       rw [h₁, h₂]
     rw [heq]
     intro p
-    exact Riemannian.RiemannianMetric.koszulDualSection_contMDiffAt g ⟨X, hX⟩ ⟨Y, hY⟩ p
+    exact g.koszulDualSection_contMDiffAt ⟨X, hX⟩ ⟨Y, hY⟩ p
   junk p v {X} hX := by simp [RiemannianMetric.covAt, dif_neg hX]
   torsion_free {X Y} hX hY p := by
     refine eq_of_metricInner_eq g (fun z => ?_)

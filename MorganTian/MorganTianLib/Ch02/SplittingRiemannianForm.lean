@@ -58,7 +58,6 @@ theorem metricInner_gradientField_eq_zero_of_mfderiv_eq_zero
     g.metricInner x (gradientField g f hf x) v = 0 := by
   show g.metricInner x (gradientAt g f x) v = 0
   rw [metricInner_gradientAt, hv]
-  rfl
 
 /-- **Math.** **The Riemannian product form of the splitting, ambient
 layer** (blueprint `prop:parallel-gradient-splitting`, Step 3): on a manifold

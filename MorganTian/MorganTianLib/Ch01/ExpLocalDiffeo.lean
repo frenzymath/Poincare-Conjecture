@@ -334,22 +334,24 @@ theorem not_isConjugatePointAt_one_of_sectionalCurvatureAt_le
 
 /-! ### `d(exp_p)_v` is an isomorphism, and `exp_p` is locally injective -/
 
-/-- **Math.** **`lem:local-diffeomorphism-bounded-curvature`, analytic core:** under an upper
-sectional-curvature bound `K ≥ 0` on the closed ball of radius `|v|_g` about `p`, and
-`√K · |v|_g < π`, the differential `d(exp_p)_v` is a **continuous linear isomorphism**.
+/-- **Math.** **`lem:local-diffeomorphism-bounded-curvature`, analytic core**, in its sharp
+hypothesis form: whenever `γ_v` has **no conjugate point of `p` at parameter `1`**, the
+differential `d(exp_p)_v` is a **continuous linear isomorphism**.
 
-By `not_isConjugatePointAt_one_of_sectionalCurvatureAt_le` there is no conjugate point at
-parameter `1`, so `expDifferential_injective_iff_not_conjugate` makes `D` injective; and an
-injective endomorphism of a finite-dimensional space is bijective.
+`expDifferential_injective_iff_not_conjugate` (`lem:exponential-differential-jacobi`) makes `D`
+injective, and an injective endomorphism of a finite-dimensional space is bijective.
+
+No curvature hypothesis enters here: curvature is only ever used to *produce* the
+no-conjugate-point hypothesis, via the Sturm comparison for `v ≠ 0`
+(`not_isConjugatePointAt_one_of_sectionalCurvatureAt_le`) and via the degenerate Jacobi equation
+for `v = 0` (`not_isConjugatePointAt_one_zero_vec`). Keeping the two apart is what lets
+`ExpBallDiffeo.lean` cover the *whole* ball `B(0, π/√K)`, centre included.
 
 Blueprint: `lem:local-diffeomorphism-bounded-curvature`. -/
-theorem expDifferential_isEquiv_of_sectionalCurvatureAt_le
+theorem expDifferential_isEquiv_of_not_conjugate
     (g : RiemannianMetric I M) (hg : g.IsRiemannianDist) [CompleteSpace M]
-    (p : M) {K : ℝ} (hK : 0 ≤ K) {v : E} (hv0 : (v : TangentSpace I p) ≠ 0)
-    (hπ : Real.sqrt K * Real.sqrt (g.metricInner p (v : TangentSpace I p) v) < Real.pi)
-    (hsec : ∀ x : M, dist p x ≤ Real.sqrt (g.metricInner p (v : TangentSpace I p) v) →
-      ∀ w₁ w₂ : TangentSpace I x,
-        sectionalCurvatureAt g g.leviCivitaConnection x w₁ w₂ ≤ K) :
+    (p : M) {v : E}
+    (hnc : ¬ IsConjugatePointAt (I := I) g (globalGeodesic (I := I) g hg p v) 1) :
     ∃ (ζ : M) (D : E ≃L[ℝ] E),
       expMapGlobal (I := I) g hg p v ∈ (chartAt H ζ).source ∧
       HasStrictFDerivAt (fun w : E => extChartAt I ζ (expMapGlobal (I := I) g hg p w))
@@ -358,8 +360,6 @@ theorem expDifferential_isEquiv_of_sectionalCurvatureAt_le
   obtain ⟨α, ζ, D, _hpα, hζ, hFD, hjac⟩ :=
     hasStrictFDerivAt_chartReading_expMapGlobal (I := I) g hg p v
   -- no conjugate point ⟹ `D` is injective
-  have hnc := not_isConjugatePointAt_one_of_sectionalCurvatureAt_le
-    (I := I) g hg p hK hv0 hπ hsec
   have hinj : Function.Injective D :=
     (expDifferential_injective_iff_not_conjugate (I := I) g hg p v hζ hjac).2 hnc
   -- injective endomorphism of a finite-dimensional space ⟹ bijective ⟹ isomorphism
@@ -375,24 +375,43 @@ theorem expDifferential_isEquiv_of_sectionalCurvatureAt_le
   rw [hcoe]
   exact hFD
 
-/-- **Math.** **`exp_p` is injective near `v`.** With the hypotheses of
-`expDifferential_isEquiv_of_sectionalCurvatureAt_le`, the inverse function theorem applied to
-the chart reading of `exp_p` — strictly differentiable at `v` with invertible derivative — makes
-that chart reading injective on a neighbourhood of `v`; hence so is `exp_p` itself, since two
-points with the same `exp_p`-image *a fortiori* have the same chart reading.
+/-- **Math.** **`lem:local-diffeomorphism-bounded-curvature`, analytic core:** under an upper
+sectional-curvature bound `K ≥ 0` on the closed ball of radius `|v|_g` about `p`, and
+`√K · |v|_g < π`, the differential `d(exp_p)_v` is a **continuous linear isomorphism**.
+
+The curvature hypothesis enters only through
+`not_isConjugatePointAt_one_of_sectionalCurvatureAt_le`; the rest is
+`expDifferential_isEquiv_of_not_conjugate`.
 
 Blueprint: `lem:local-diffeomorphism-bounded-curvature`. -/
-theorem expMapGlobal_locallyInjective_of_sectionalCurvatureAt_le
+theorem expDifferential_isEquiv_of_sectionalCurvatureAt_le
     (g : RiemannianMetric I M) (hg : g.IsRiemannianDist) [CompleteSpace M]
     (p : M) {K : ℝ} (hK : 0 ≤ K) {v : E} (hv0 : (v : TangentSpace I p) ≠ 0)
     (hπ : Real.sqrt K * Real.sqrt (g.metricInner p (v : TangentSpace I p) v) < Real.pi)
     (hsec : ∀ x : M, dist p x ≤ Real.sqrt (g.metricInner p (v : TangentSpace I p) v) →
       ∀ w₁ w₂ : TangentSpace I x,
         sectionalCurvatureAt g g.leviCivitaConnection x w₁ w₂ ≤ K) :
+    ∃ (ζ : M) (D : E ≃L[ℝ] E),
+      expMapGlobal (I := I) g hg p v ∈ (chartAt H ζ).source ∧
+      HasStrictFDerivAt (fun w : E => extChartAt I ζ (expMapGlobal (I := I) g hg p w))
+        (D : E →L[ℝ] E) v :=
+  expDifferential_isEquiv_of_not_conjugate (I := I) g hg p
+    (not_isConjugatePointAt_one_of_sectionalCurvatureAt_le (I := I) g hg p hK hv0 hπ hsec)
+
+/-- **Math.** **`exp_p` is injective near `v`**, whenever `γ_v` has no conjugate point of `p` at
+parameter `1`. The inverse function theorem applied to the chart reading of `exp_p` — strictly
+differentiable at `v` with invertible derivative — makes that chart reading injective on a
+neighbourhood of `v`; hence so is `exp_p` itself, since two points with the same `exp_p`-image
+*a fortiori* have the same chart reading.
+
+Blueprint: `lem:local-diffeomorphism-bounded-curvature`. -/
+theorem expMapGlobal_locallyInjective_of_not_conjugate
+    (g : RiemannianMetric I M) (hg : g.IsRiemannianDist) [CompleteSpace M]
+    (p : M) {v : E}
+    (hnc : ¬ IsConjugatePointAt (I := I) g (globalGeodesic (I := I) g hg p v) 1) :
     ∃ U ∈ 𝓝 v, Set.InjOn (expMapGlobal (I := I) g hg p) U := by
   classical
-  obtain ⟨ζ, D, hζ, hFD⟩ :=
-    expDifferential_isEquiv_of_sectionalCurvatureAt_le (I := I) g hg p hK hv0 hπ hsec
+  obtain ⟨ζ, D, hζ, hFD⟩ := expDifferential_isEquiv_of_not_conjugate (I := I) g hg p hnc
   -- the inverse function theorem, applied to the chart reading `f` of `exp_p`
   set f : E → E := fun w => extChartAt I ζ (expMapGlobal (I := I) g hg p w) with hfdef
   set Φ : OpenPartialHomeomorph E E := hFD.toOpenPartialHomeomorph f with hΦdef
@@ -406,6 +425,21 @@ theorem expMapGlobal_locallyInjective_of_sectionalCurvatureAt_le
   -- and `exp_p w₁ = exp_p w₂` forces `f w₁ = f w₂`, so `exp_p` inherits the injectivity
   intro w₁ h₁ w₂ h₂ hw
   exact hinjf h₁ h₂ (by simp only [hfdef, hw])
+
+/-- **Math.** **`exp_p` is injective near `v`** under an upper sectional-curvature bound `K ≥ 0`
+on the closed ball of radius `|v|_g` about `p`, with `√K · |v|_g < π`.
+
+Blueprint: `lem:local-diffeomorphism-bounded-curvature`. -/
+theorem expMapGlobal_locallyInjective_of_sectionalCurvatureAt_le
+    (g : RiemannianMetric I M) (hg : g.IsRiemannianDist) [CompleteSpace M]
+    (p : M) {K : ℝ} (hK : 0 ≤ K) {v : E} (hv0 : (v : TangentSpace I p) ≠ 0)
+    (hπ : Real.sqrt K * Real.sqrt (g.metricInner p (v : TangentSpace I p) v) < Real.pi)
+    (hsec : ∀ x : M, dist p x ≤ Real.sqrt (g.metricInner p (v : TangentSpace I p) v) →
+      ∀ w₁ w₂ : TangentSpace I x,
+        sectionalCurvatureAt g g.leviCivitaConnection x w₁ w₂ ≤ K) :
+    ∃ U ∈ 𝓝 v, Set.InjOn (expMapGlobal (I := I) g hg p) U :=
+  expMapGlobal_locallyInjective_of_not_conjugate (I := I) g hg p
+    (not_isConjugatePointAt_one_of_sectionalCurvatureAt_le (I := I) g hg p hK hv0 hπ hsec)
 
 end MorganTianLib
 

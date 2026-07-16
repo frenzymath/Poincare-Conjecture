@@ -155,6 +155,31 @@ theorem complete_of_geodesicallyComplete_at (g : RiemannianMetric I M) [Connecte
       tendsto_geodesic_eval_of_tendsto_initialData (I := I) g p hγgeo hγc hγ0 hgeo hc h0
         hγv hv hvs hts
 
+/-- **Math.** do Carmo Ch. 7, Theorem 2.8, a) ⟹ b): if `exp_p` is defined on
+all of `T_pM` at a single point `p` (every `v ∈ T_pM` generates a continuous
+global geodesic), then the **closed and bounded subsets of `M` are compact**,
+i.e. `M` is a proper metric space. This is the clean single-point form of the
+`a) ⟹ b)` branch of Hopf–Rinow: closed balls around `p` are compact because
+they are covered by the continuous image `exp_p(\overline{B_r(0)})` of a
+Euclidean ball (do Carmo's argument, via growth induction and Bolzano–Weierstrass
+on the initial data). It is the `properSpace_of_forall_geodesic` assembly with
+the endpoint-continuity hypothesis discharged by
+`tendsto_geodesic_eval_of_tendsto_initialData`; the metric-completeness form is
+`complete_of_geodesicallyComplete_at`. This is exactly the properness invoked in
+the proof of the Hadamard theorem (`thm:dc-ch7-3-1`) for `T_pM` with the pulled
+back metric: "the geodesics of `T_pM` through the origin are straight lines, so
+the metric is complete". -/
+theorem properSpace_of_geodesicallyComplete_at (g : RiemannianMetric I M) [ConnectedSpace M]
+    (hg : g.IsRiemannianDist)
+    (p : M) (hp : ∀ v : TangentSpace I p, ∃ γ : ℝ → M,
+      γ 0 = p ∧ HasDerivAt (fun s ↦ extChartAt I p (γ s)) v 0 ∧ Continuous γ ∧
+        IsGeodesic g γ) :
+    ProperSpace M :=
+  properSpace_of_forall_geodesic (I := I) g hg p hp
+    fun _γ _γs _v _vs _ts _t₀ hγgeo hγc hγ0 hgeo hc h0 hγv hv hvs hts =>
+      tendsto_geodesic_eval_of_tendsto_initialData (I := I) g p hγgeo hγc hγ0 hgeo hc h0
+        hγv hv hvs hts
+
 /-- **Math.** do Carmo Ch. 7, Theorem 2.8, f): in a complete connected
 Riemannian manifold any two points `x, y` are joined by a **minimizing
 geodesic segment**: a geodesic `γ : [0, 1] → M` from `x` to `y`, parametrized

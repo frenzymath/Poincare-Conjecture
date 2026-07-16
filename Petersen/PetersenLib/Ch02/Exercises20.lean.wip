@@ -1,0 +1,205 @@
+import PetersenLib.Ch02.Exercises21
+import Mathlib.Analysis.InnerProductSpace.Dual
+
+/-!
+# Petersen Ch. 2, §2.5 — Exercise 2.5.20 (existence of normal coordinates)
+
+Petersen asks: at a point `p ∈ (M,g)` there are coordinates `x¹,…,xⁿ` with
+`∂ᵢ = eᵢ` and `(∇∂ᵢ)|_p = 0`, so that `g_{ij}|_p = δ_{ij}` and `∂_k g_{ij}|_p = 0`
+— *normal coordinates*.
+
+As in Exercises 2.5.21/2.5.22, the whole content lives in coordinates: a
+Riemannian metric read in a chart is a smooth field `B : E → (E →L[ℝ] E →L[ℝ] ℝ)`
+of symmetric bilinear forms, and a change of coordinates is a smooth map
+`φ : E → E`, under which the metric pulls back to
+`g̃_x(v,w) = B(φ x)(Dφ_x v, Dφ_x w)` (`coordPullbackMetric`).  Assuming the given
+coordinates are already orthonormal at the base point — `B 0 = ⟪·,·⟫`, the
+content of the normal *frame* Exercise 2.5.19 — we construct a *quadratic* change
+of coordinates `φ(x) = x − ½·q(x,x)` making the metric normal at `0`:
+
+* `coordPullbackMetric B φ 0 v w = ⟪v,w⟫` (so `g̃_{ij}(0) = δ_{ij}`), and
+* `∂_k g̃_{ij}(0) = 0` (all first partials of the pullback metric vanish at `0`).
+
+The map `φ` fixes `0` with `Dφ_0 = id` and second derivative `D²φ_0(v,w) =
+−q(v,w)`, where `q` is the *Riesz-dual* of the ambient first-kind Christoffel
+symbol: `⟪q(v,w), z⟫ = Γ(v,w,z)` with `Γ = metricChristoffelFirst B 0`.  By the
+transformation law `exercise2_5_21`,
+`Γ̃(v,w,z) = B(0)(D²φ_0(v,w), z) + Γ(v,w,z) = −⟪q(v,w),z⟫ + Γ(v,w,z) = 0`,
+using `B 0 = ⟪·,·⟫` and the symmetry of `Γ` in its first two arguments (so the
+non-symmetry of `q` is harmless).  The vanishing of all first-kind Christoffel
+symbols at `0` then forces all first partials of the metric to vanish there, via
+the Koszul relation `∂_z g̃(v,w) = Γ̃(z,v,w) + Γ̃(z,w,v)`.
+
+Reference: Petersen, *Riemannian Geometry* (3rd ed.), §2.5, Exercise 20.
+-/
+
+set_option linter.unusedSectionVars false
+
+open scoped RealInnerProductSpace ContDiff
+
+noncomputable section
+
+namespace PetersenLib
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+  [FiniteDimensional ℝ E]
+
+/-- **Math.** The Riesz-dual of a continuous trilinear form `T`: the continuous
+bilinear map `q` with `⟪q(v,w), z⟫ = T v w z`, obtained by post-composing `T`
+(read as a bilinear map into the dual `E →L[ℝ] ℝ`) with the inverse Riesz
+isomorphism. -/
+def clmRieszSolve (T : E →L[ℝ] E →L[ℝ] E →L[ℝ] ℝ) : E →L[ℝ] E →L[ℝ] E :=
+  (ContinuousLinearMap.compL ℝ E (E →L[ℝ] ℝ) E
+      ((InnerProductSpace.toDual ℝ E).symm.toContinuousLinearMap)).comp T
+
+@[simp] theorem clmRieszSolve_apply (T : E →L[ℝ] E →L[ℝ] E →L[ℝ] ℝ) (v w z : E) :
+    ⟪clmRieszSolve T v w, z⟫ = T v w z := by
+  simp only [clmRieszSolve, ContinuousLinearMap.comp_apply, ContinuousLinearMap.compL_apply]
+  exact InnerProductSpace.toDual_symm_apply
+
+/-- **Math.** The ambient first-kind Christoffel symbol `metricChristoffelFirst B 0`
+packaged as a genuine continuous trilinear form
+`Γ(v,w,z) = ½(D v w z + D w v z − D z v w)`, `D = fderiv ℝ B 0`. -/
+def clmChristoffelFirst (B : E → (E →L[ℝ] E →L[ℝ] ℝ)) : E →L[ℝ] E →L[ℝ] E →L[ℝ] ℝ :=
+  (1 / 2 : ℝ) • (fderiv ℝ B 0 + (fderiv ℝ B 0).flip
+    - (ContinuousLinearMap.flipₗᵢ ℝ E E ℝ).toContinuousLinearMap.comp (fderiv ℝ B 0).flip)
+
+@[simp] theorem clmChristoffelFirst_apply (B : E → (E →L[ℝ] E →L[ℝ] ℝ)) (v w z : E) :
+    clmChristoffelFirst B v w z = metricChristoffelFirst B 0 v w z := by
+  have hperm : ((ContinuousLinearMap.flipₗᵢ ℝ E E ℝ).toContinuousLinearMap
+      ((fderiv ℝ B 0).flip v)) w z = (fderiv ℝ B 0) z v w := rfl
+  simp only [clmChristoffelFirst, metricChristoffelFirst, ContinuousLinearMap.smul_apply,
+    ContinuousLinearMap.add_apply, ContinuousLinearMap.sub_apply, ContinuousLinearMap.flip_apply,
+    ContinuousLinearMap.comp_apply, smul_eq_mul, hperm]
+
+/-- **Math.** The first-kind Christoffel symbol is symmetric in its first two
+arguments, `Γ(v,w,z) = Γ(w,v,z)`, because a symmetric metric `B` has a derivative
+that is still symmetric in the two bilinear slots. -/
+theorem metricChristoffelFirst_symm {B : E → (E →L[ℝ] E →L[ℝ] ℝ)}
+    (hB : ContDiff ℝ ∞ B) (hBsymm : ∀ y v w, B y v w = B y w v) (v w z : E) :
+    metricChristoffelFirst B 0 v w z = metricChristoffelFirst B 0 w v z := by
+  have hdiff : DifferentiableAt ℝ B 0 := (hB.differentiable (by norm_cast)).differentiableAt
+  have e : ∀ a b : E, (fderiv ℝ B 0) z a b = fderiv ℝ (fun y => B y a b) 0 z := by
+    intro a b
+    let X : (E →L[ℝ] E →L[ℝ] ℝ) →L[ℝ] ℝ :=
+      (ContinuousLinearMap.apply ℝ ℝ b).comp (ContinuousLinearMap.apply ℝ (E →L[ℝ] ℝ) a)
+    have hcomp : (fun y => B y a b) = ⇑X ∘ B := by
+      funext y; simp [X, ContinuousLinearMap.apply_apply]
+    rw [hcomp, fderiv_comp 0 X.differentiableAt hdiff, X.fderiv]
+    simp [X, ContinuousLinearMap.apply_apply]
+  have hkey : (fderiv ℝ B 0) z v w = (fderiv ℝ B 0) z w v := by
+    rw [e v w, e w v, funext fun y => hBsymm y v w]
+  simp only [metricChristoffelFirst]
+  rw [hkey]; ring
+
+section Quadratic
+
+variable (q : E →L[ℝ] E →L[ℝ] E)
+
+/-- **Math.** The quadratic change of coordinates `φ(x) = x − ½·q(x,x)`. -/
+def quadCorrection : E → E := fun x => x - (1 / 2 : ℝ) • q x x
+
+/-- **Eng.** Derivative of the quadratic diagonal `y ↦ q(y,y)`. -/
+theorem hasFDerivAt_quadDiag (x : E) :
+    HasFDerivAt (fun y => q y y) (q x + q.flip x) x := by
+  have := (q.hasFDerivAt (x := x)).clm_apply (hasFDerivAt_id x)
+  simpa using this
+
+theorem contDiff_quadCorrection : ContDiff ℝ ∞ (quadCorrection q) :=
+  contDiff_id.sub ((q.contDiff.clm_apply contDiff_id).const_smul _)
+
+theorem quadCorrection_zero : quadCorrection q 0 = 0 := by
+  simp [quadCorrection]
+
+/-- **Eng.** Derivative of `φ` at `x`: `Dφ_x = id − ½(q x + q.flip x)`. -/
+theorem hasFDerivAt_quadCorrection (x : E) :
+    HasFDerivAt (quadCorrection q)
+      (ContinuousLinearMap.id ℝ E - (1 / 2 : ℝ) • (q x + q.flip x)) x :=
+  (hasFDerivAt_id x).sub ((hasFDerivAt_quadDiag q x).const_smul (1 / 2 : ℝ))
+
+theorem fderiv_quadCorrection (x : E) :
+    fderiv ℝ (quadCorrection q) x
+      = ContinuousLinearMap.id ℝ E - (1 / 2 : ℝ) • (q x + q.flip x) :=
+  (hasFDerivAt_quadCorrection q x).fderiv
+
+/-- **Math.** `Dφ_0 = id`. -/
+theorem fderiv_quadCorrection_zero :
+    fderiv ℝ (quadCorrection q) 0 = ContinuousLinearMap.id ℝ E := by
+  rw [fderiv_quadCorrection]; simp
+
+/-- **Math.** `D²φ_0(v,w) = −½(q(v,w) + q(w,v))`. -/
+theorem fderiv2_quadCorrection_zero (v w : E) :
+    fderiv ℝ (fderiv ℝ (quadCorrection q)) 0 v w = -(1 / 2 : ℝ) • (q v w + q w v) := by
+  have hfun : fderiv ℝ (quadCorrection q)
+      = fun x => ContinuousLinearMap.id ℝ E - (1 / 2 : ℝ) • ((q + q.flip) x) := by
+    funext x
+    rw [fderiv_quadCorrection]
+    simp [ContinuousLinearMap.add_apply]
+  have hHF : HasFDerivAt
+      (fun x : E => ContinuousLinearMap.id ℝ E - (1 / 2 : ℝ) • ((q + q.flip) x))
+      (-((1 / 2 : ℝ) • (q + q.flip))) 0 := by
+    have h1 : HasFDerivAt (fun x : E => (1 / 2 : ℝ) • ((q + q.flip) x))
+        ((1 / 2 : ℝ) • (q + q.flip)) 0 :=
+      ((q + q.flip).hasFDerivAt).const_smul (1 / 2 : ℝ)
+    simpa using (hasFDerivAt_const (ContinuousLinearMap.id ℝ E) 0).sub h1
+  rw [hfun, hHF.fderiv]
+  simp only [ContinuousLinearMap.neg_apply, ContinuousLinearMap.smul_apply,
+    ContinuousLinearMap.add_apply, ContinuousLinearMap.flip_apply, smul_add, neg_smul]
+  abel
+
+end Quadratic
+
+/-- **Math.** Exercise 2.5.20 (existence of normal coordinates).  Given a smooth
+symmetric coordinate metric `B` that is already orthonormal at the base point
+(`B 0 = ⟪·,·⟫`, the content of the normal-frame Exercise 2.5.19), the quadratic
+change of coordinates `φ(x) = x − ½·q(x,x)` — with `q` the Riesz-dual of the
+ambient first-kind Christoffel symbol — makes the pullback metric *normal at `0`*:
+it fixes `0`, has `Dφ_0 = id`, gives `g̃_{ij}(0) = δ_{ij}`
+(`coordPullbackMetric B φ 0 v w = ⟪v,w⟫`), and makes all first partials of the
+metric vanish there (`∂_k g̃_{ij}(0) = 0`). -/
+theorem exercise2_5_20 (B : E → (E →L[ℝ] E →L[ℝ] ℝ)) (hB : ContDiff ℝ ∞ B)
+    (hBsymm : ∀ y v w, B y v w = B y w v) (hB0 : ∀ v w, B 0 v w = ⟪v, w⟫) :
+    ∃ φ : E → E, ContDiff ℝ ∞ φ ∧ φ 0 = 0 ∧ fderiv ℝ φ 0 = ContinuousLinearMap.id ℝ E ∧
+      (∀ v w, coordPullbackMetric B φ 0 v w = ⟪v, w⟫) ∧
+      (∀ v w z, fderiv ℝ (fun y => coordPullbackMetric B φ y v w) 0 z = 0) := by
+  set q := clmRieszSolve (clmChristoffelFirst B) with hq_def
+  have hq : ∀ v w z, ⟪q v w, z⟫ = metricChristoffelFirst B 0 v w z := by
+    intro v w z
+    rw [hq_def, clmRieszSolve_apply, clmChristoffelFirst_apply]
+  -- The first-kind Christoffel symbols of the pullback metric vanish at `0`.
+  have hChr : ∀ a b c, pullbackChristoffelFirst B (quadCorrection q) 0 a b c = 0 := by
+    intro a b c
+    rw [exercise2_5_21 hB (contDiff_quadCorrection q) hBsymm,
+      quadCorrection_zero q, fderiv2_quadCorrection_zero q, fderiv_quadCorrection_zero q]
+    simp only [ContinuousLinearMap.id_apply, map_smul, map_add,
+      ContinuousLinearMap.smul_apply, ContinuousLinearMap.add_apply, smul_eq_mul, hB0]
+    rw [hq a b c, hq b a c, metricChristoffelFirst_symm hB hBsymm b a c]
+    ring
+  refine ⟨quadCorrection q, contDiff_quadCorrection q, quadCorrection_zero q,
+    fderiv_quadCorrection_zero q, ?_, ?_⟩
+  · -- `g̃_{ij}(0) = δ_{ij}`
+    intro v w
+    rw [coordPullbackMetric, quadCorrection_zero q, fderiv_quadCorrection_zero q]
+    simp [hB0]
+  · -- `∂_k g̃_{ij}(0) = 0`, from the vanishing Christoffel symbols
+    intro v w z
+    -- the pullback metric is symmetric in its two bilinear slots
+    have hAsymm : ∀ a b c : E,
+        fderiv ℝ (fun y => coordPullbackMetric B (quadCorrection q) y b c) 0 a
+          = fderiv ℝ (fun y => coordPullbackMetric B (quadCorrection q) y c b) 0 a := by
+      intro a b c
+      have hfun : (fun y => coordPullbackMetric B (quadCorrection q) y b c)
+          = fun y => coordPullbackMetric B (quadCorrection q) y c b := by
+        funext y; rw [coordPullbackMetric, coordPullbackMetric]; exact hBsymm _ _ _
+      rw [hfun]
+    -- Koszul: `∂_z g̃(v,w) = Γ̃(z,v,w) + Γ̃(z,w,v)`
+    have key : fderiv ℝ (fun y => coordPullbackMetric B (quadCorrection q) y v w) 0 z
+        = pullbackChristoffelFirst B (quadCorrection q) 0 z v w
+          + pullbackChristoffelFirst B (quadCorrection q) 0 z w v := by
+      rw [pullbackChristoffelFirst, pullbackChristoffelFirst, hAsymm z w v]
+      ring
+    rw [key, hChr z v w, hChr z w v, add_zero]
+
+end PetersenLib
+
+end

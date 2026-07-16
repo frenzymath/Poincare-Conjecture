@@ -15,8 +15,9 @@ Notice that our convention is that a \textbf{manifold} without further qualifica
 \begin{proposition}
 \label{prop:topological-manifolds-locally-path-connected-compact}
 \dcref{chA:A.1}
-\uses{\cite{LeeTM}}
-\uses{\cite{LeeTM}}
+\uses{\cite{LeeTM}
+}
+}
 Every topological manifold with or without boundary is locally path-connected and locally compact.
 \end{proposition}
 
@@ -102,8 +103,7 @@ is to be interpreted as $(\alpha \cdot \beta) \cdot \gamma$.)
 \begin{proposition}[Induced Homomorphisms]
 \label{prop:induced-homomorphisms}
 \dcref{chA:A.6}
-\uses{UNRESOLVED:chB:7.24}
-\uses{UNRESOLVED:chB:7.26}
+\uses{UNRESOLVED:chB:7.24,UNRESOLVED:chB:7.26}
 Suppose $M$ and $N$ are topological spaces and $p \in M$. If $F: M \to N$ is a continuous
 map, then the map $F_*: \pi_1(M, p) \to \pi_1(N, F(p))$ defined by $F_*([\alpha]) = [F \circ \alpha]$
 is a group homomorphism called the \emph{homomorphism induced by} $F$. If $F$ is a homeomorphism, then $F_*$ is an isomorphism.
@@ -200,6 +200,25 @@ satisfying
 [LeeSM, Prop. 2.25] If $M$ is a smooth manifold with or without boundary, $A \subseteq M$ is a closed subset, and $U \subseteq M$ is an open subset containing $A$, then there exists a smooth bump function for $A$ supported in $U$.
 \end{proposition}
 
+\begin{lemma}[Extension of a Tangent Vector to a Global Vector Field]
+\label{lem:vector-field-extension-point}
+\lean{LeeLib.AppendixA.exists_contMDiffVectorField_eq}
+\leanok
+\uses{prop:existence-partitions-unity}
+Let $M$ be a smooth manifold, let $p \in M$, and let $v \in T_pM$. Then there is a smooth vector field $Z \in \mathfrak{X}(M)$ with $Z_p = v$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+For each $x \in M$ let $t_x \subseteq T_xM$ be the singleton $\{v\}$ if $x = p$, and all of $T_xM$ otherwise. Each $t_x$ is convex, being either a one-point set or a vector space. We claim every point of $M$ has a neighbourhood carrying a smooth local vector field whose value at each $x$ lies in $t_x$.
+
+Near $p$: choose a local trivialization $\Phi$ of $TM$ over a neighbourhood $U$ of $p$, and let $c$ be the fibre coordinate of $v$, so that $\Phi(v) = (p, c)$. The local field $x \mapsto \Phi^{-1}(x, c)$ is smooth on $U$, being constant in the trivialization, and its value at $p$ is $v$; so its value lies in $t_x$ for every $x \in U$, the constraint being vacuous away from $p$.
+
+Near any $q \neq p$: the zero section is smooth on the neighbourhood $M \setminus \{p\}$ of $q$, and its value lies in $t_x = T_xM$ for every $x$ there.
+
+Now let $\{\psi_\alpha\}$ be a smooth partition of unity subordinate to the cover by these neighbourhoods (Proposition \ref{prop:existence-partitions-unity}), let $Z_\alpha$ be the local field carried by the $\alpha$-th neighbourhood, and set $Z = \sum_\alpha \psi_\alpha Z_\alpha$, a smooth global vector field. At each $x \in M$, $Z_x$ is a convex combination of elements of $t_x$, hence lies in $t_x$ by convexity. In particular $Z_p \in t_p = \{v\}$, that is, $Z_p = v$.
+\end{proof}
+
 \section{Tangent Vectors}
 
 Let $M$ be a smooth manifold with or without boundary. There are various equivalent ways of defining tangent vectors on $M$. The following definition is the most
@@ -263,9 +282,63 @@ The theory of submanifolds is founded on the inverse function theorem and its co
 \begin{theorem}[Inverse Function Theorem for Manifolds]
 \label{thm:inverse-function-theorem-manifolds}
 \dcref{chA:A.14}
-\uses{\cite{LeeSM}}
+\lean{LeeLib.AppendixA.exists_isConnected_diffeomorph_of_mfderiv_isInvertible}
+\leanok
+\uses{lem:local-diffeomorphism-from-invertible-differential}
 Suppose $M$ and $N$ are smooth manifolds and $F: M \to N$ is a smooth map. If the linear map $dF_p$ is invertible at some point $p \in M$, then there exist connected neighborhoods $U_0$ of $p$ and $V_0$ of $F(p)$ such that $F|_{U_0}: U_0 \to V_0$ is a diffeomorphism.
 \end{theorem}
+
+\begin{proof}
+\leanok
+\uses{lem:local-diffeomorphism-from-invertible-differential}
+By Lemma \ref{lem:local-diffeomorphism-from-invertible-differential} there are open sets $U \ni p$ and $V \ni F(p)$ such that $F|_U : U \to V$ is a diffeomorphism. Let $U_0$ be the connected component of $p$ in $U$. A smooth manifold is locally connected, being locally homeomorphic to a normed space, in which the balls are convex and hence connected; therefore $U_0$ is open, and by construction it is connected and contains $p$. Put $V_0 = F(U_0)$. Then $V_0$ is open, being the image of an open subset of $U$ under the diffeomorphism $F|_U$, it is connected as the continuous image of a connected set, and it contains $F(p)$. Finally $F|_{U_0} : U_0 \to V_0$ is a diffeomorphism, being the restriction of the diffeomorphism $F|_U$ to an open subset of its domain and to the image of that subset.
+\end{proof}
+
+The proof of the manifold statement rests on the corresponding statement for the coordinate representation, together with the fact that invertibility of a bounded operator is an open condition.
+
+\begin{lemma}[The Invertible Operators Are Open]
+\label{lem:invertible-operators-open}
+\lean{LeeLib.AppendixA.isOpen_setOf_isInvertible}
+\leanok
+Let $E$ be a Banach space and $F$ a normed space. The set of invertible bounded linear maps $E \to F$ is open in the space of all bounded linear maps $E \to F$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+If $A_0$ is invertible, then $A \mapsto A_0^{-1} A$ is a continuous map into the bounded operators on $E$ carrying $A_0$ to the identity, and $A$ is invertible exactly when $A_0^{-1}A$ is. The units of the Banach algebra of bounded operators on $E$ form an open set, since $\mathrm{id} - T$ is invertible whenever $\|T\| < 1$, with inverse given by the convergent Neumann series $\sum_k T^k$. The claim follows by taking the preimage of that open set.
+\end{proof}
+
+\begin{lemma}[Smooth Local Inverse on an Open Set]
+\label{lem:smooth-local-inverse-on-open}
+\lean{LeeLib.AppendixA.contDiffOn_symm_of_restricted}
+\leanok
+\uses{lem:invertible-operators-open}
+Let $E$ be a Banach space, $F$ a normed space, and $g : E \to F$ a map that is $C^k$ ($k \geq 1$) on an open set $s$ on which $dg_x$ is invertible at every $x \in s$. Let $R$ be the local homeomorphism supplied by the inverse function theorem for $g$, and restrict its domain to $s$. Then $R^{-1}$ is $C^k$ on the whole of the resulting open image $R(s)$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:invertible-operators-open}
+The set $R(s)$ is open. Let $y \in R(s)$ and put $x = R^{-1}(y) \in s$. Then $g$ is $C^k$ at $x$ and $dg_x$ is invertible, so the inverse function theorem applies at $x$ and shows that $R^{-1}$ is $C^k$ at $g(x) = y$. As $y$ was an arbitrary point of the open set $R(s)$, and a map that is $C^k$ at each point of an open set is $C^k$ on that set, $R^{-1}$ is $C^k$ on $R(s)$. Note that the hypothesis that $dg$ is invertible on all of $s$, rather than at one point only, is what makes this argument available at every $y$; by Lemma \ref{lem:invertible-operators-open} it can always be arranged by shrinking $s$.
+\end{proof}
+
+\begin{lemma}[Invertible Differential Gives a Local Diffeomorphism]
+\label{lem:local-diffeomorphism-from-invertible-differential}
+\lean{LeeLib.AppendixA.isLocalDiffeomorphAt_of_contMDiff_mfderiv_isInvertible}
+\leanok
+\uses{lem:smooth-local-inverse-on-open,lem:invertible-operators-open}
+Let $M$ and $N$ be smooth manifolds, let $F : M \to N$ be smooth, and let $p$ be an interior point of $M$ at which $dF_p$ is invertible. Then $F$ is a local diffeomorphism at $p$: there are open sets $U \ni p$ and $V \ni F(p)$ such that $F|_U : U \to V$ is a diffeomorphism.
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:smooth-local-inverse-on-open,lem:invertible-operators-open}
+Let $\varphi$ and $\psi$ be the charts of $M$ and $N$ around $p$ and $F(p)$, and let $g = \psi \circ F \circ \varphi^{-1}$ be the coordinate representation of $F$, defined and smooth on the open set $\Omega$ of chart points whose image under $F$ lies in the domain of $\psi$. Because $p$ is an interior point, the chart image of a neighborhood of $p$ is a neighborhood of $a = \varphi(p)$ in the model space, so $dg_a$ is the ordinary differential of $g$ at $a$ and it is invertible, being $dF_p$ read in the charts.
+
+Since $g$ is $C^\infty$ on $\Omega$, its differential $x \mapsto dg_x$ is continuous there, and by Lemma \ref{lem:invertible-operators-open} the set of $x \in \Omega$ at which $dg_x$ is invertible is open. Shrinking, choose an open $s \ni a$ contained in $\Omega$ on which $dg_x$ is invertible for every $x \in s$. The inverse function theorem gives a local homeomorphism $R$ with $R = g$ near $a$; restrict it to $s$. Its inverse is $C^\infty$ on the open set $R(s)$ by Lemma \ref{lem:smooth-local-inverse-on-open}, so $R$ restricted to $s$ is a diffeomorphism of $s$ onto the open set $R(s)$.
+
+Conjugating back, $U = \varphi^{-1}(s)$ and $V = \psi^{-1}(R(s))$ are open, contain $p$ and $F(p)$ respectively, and $F|_U = \psi^{-1} \circ R \circ \varphi$ is a composite of diffeomorphisms, hence a diffeomorphism onto $V$.
+\end{proof}
 
 The most useful consequence of the inverse function theorem is the following. A smooth map $F: M \to N$ is said to have \textbf{constant rank} if the linear map $dF_p$ has the same rank at every point $p \in M$.
 
@@ -301,6 +374,74 @@ Every smooth immersion is locally an embedding: if $F: M \to N$ is a smooth imme
 \uses{\cite{LeeSM}}
 Suppose $M$ and $N$ are smooth manifolds and $\pi: M \to N$ is a smooth map. Then $\pi$ is a smooth submersion if and only if every point of $M$ is in the image of a smooth \textbf{local section} of $\pi$ (a map $\sigma: U \to M$ defined on some open subset $U \subseteq N$, with $\pi \circ \sigma = \text{Id}_U$).
 \end{theorem}
+
+The direction actually used below is that a submersion \emph{has} local sections. It is formalized in the germ form that its consumers need: a map $\sigma$ defined and smooth near $\pi(p)$, with $\sigma(\pi(p)) = p$ and $\pi \circ \sigma = \mathrm{Id}$ on a neighbourhood of $\pi(p)$. The route below replaces Lee's appeal to the rank theorem (Theorem \ref{thm:rank-theorem}) by the inverse function theorem, which is cheaper and gives the same statement.
+
+\begin{lemma}[A surjection splits its domain]
+\label{lem:surjection-splits}
+\lean{LeeLib.AppendixA.prodKerProjEquiv}
+\leanok
+Let $A : E \to E'$ be a surjective linear map of finite-dimensional real vector spaces and let $P : E \to \ker A$ be a linear projection onto $\ker A$. Then $v \mapsto (Av, Pv)$ is a linear isomorphism $E \cong E' \times \ker A$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+Injectivity: if $Av = 0$ and $Pv = 0$, then $v \in \ker A$, and $P$ restricts to the identity on $\ker A$, so $v = Pv = 0$. Surjectivity: given $(u,k) \in E' \times \ker A$, pick $w$ with $Aw = u$ and set $v = w - Pw + k$. Since $Pw$ and $k$ lie in $\ker A$, $Av = Aw = u$; and $P$ is the identity on $\ker A$, so $Pv = Pw - Pw + k = k$. A projection onto $\ker A$ exists because every subspace of a finite-dimensional space is complemented, and it is continuous because every linear map out of a finite-dimensional space is.
+\end{proof}
+
+\begin{proposition}[Local sections, Euclidean form]
+\label{prop:local-section-euclidean}
+\lean{LeeLib.AppendixA.exists_localSection_of_surjective_fderiv}
+\leanok
+\uses{lem:surjection-splits}
+Let $E, E'$ be finite-dimensional real vector spaces, let $f : E \to E'$ be $C^\infty$ at $a$, and suppose $df_a$ is surjective. Then there is a map $\sigma : E' \to E$, $C^\infty$ at $f(a)$, with $\sigma(f(a)) = a$ and $f(\sigma(y)) = y$ for every $y$ near $f(a)$.
+\end{proposition}
+
+\begin{proof}
+\leanok
+\uses{lem:surjection-splits}
+Let $P : E \to \ker df_a$ be a continuous linear projection and set $G(x) = (f(x), P(x))$, a map $E \to E' \times \ker df_a$ which is $C^\infty$ at $a$. Its differential at $a$ is $v \mapsto (df_a v, Pv)$, which is a linear isomorphism by Lemma \ref{lem:surjection-splits}. By the inverse function theorem $G$ has a local inverse $G^{-1}$ defined near $G(a)$, which is $C^\infty$ at $G(a)$ and satisfies $G^{-1}(G(a)) = a$ and $G(G^{-1}(z)) = z$ for $z$ near $G(a)$.
+
+Set $\sigma(y) = G^{-1}(y, P(a))$. Then $\sigma$ is $C^\infty$ at $f(a)$, being $G^{-1}$ composed with the affine map $y \mapsto (y, P(a))$, which sends $f(a)$ to $G(a)$. Also $\sigma(f(a)) = G^{-1}(G(a)) = a$. Finally, $y \mapsto (y, P(a))$ is continuous and sends $f(a)$ to $G(a)$, so for $y$ near $f(a)$ we have $G(G^{-1}(y, P(a))) = (y, P(a))$; taking first components gives $f(\sigma(y)) = y$.
+\end{proof}
+
+The same map $G$ carries more information than the local section extracted from it: because its first component is literally $f$, it is a chart in which the level sets of $f$ become affine slices. That is the local model for the regular level set theorem (Corollary \ref{cor:regular-level-set}), and it is recorded separately here.
+
+\begin{proposition}[Slice chart of a submersion, Euclidean form]
+\label{prop:slice-chart-euclidean}
+\lean{LeeLib.AppendixA.sliceChart}
+\leanok
+\uses{lem:surjection-splits}
+Let $E, E'$ be finite-dimensional real vector spaces, let $f : E \to E'$ be $C^\infty$ at $a$, and suppose $df_a$ is surjective. Set $G(x) = (f(x), P(x))$, where $P : E \to \ker df_a$ is a continuous linear projection. Then $G$ restricts to a homeomorphism of an open neighborhood $U$ of $a$ onto an open subset $G(U) \subseteq E' \times \ker df_a$; moreover $G$ is $C^\infty$ at $a$ and $G^{-1}$ is $C^\infty$ at $G(a)$, and the first component of $G$ is $f$. Consequently, for every $c \in E'$,
+\[
+G(U \cap f^{-1}(c)) = G(U) \cap \left(\{c\} \times \ker df_a\right);
+\]
+that is, in the coordinates $G$ the level set $f^{-1}(c)$ is the affine slice $\{c\} \times \ker df_a$, whose second factor is a linear subspace of dimension $\dim E - \dim E'$.
+\end{proposition}
+
+\begin{proof}
+\leanok
+\uses{lem:surjection-splits}
+By Lemma \ref{lem:surjection-splits}, $dG_a = (df_a, P)$ is a linear isomorphism $E \cong E' \times \ker df_a$, and $G$ is $C^\infty$ at $a$ because both components are. The inverse function theorem therefore supplies an open neighborhood $U$ of $a$ on which $G$ is a homeomorphism onto the open set $G(U)$, with $G$ smooth at $a$ and $G^{-1}$ smooth at $G(a)$.
+
+The first component of $G$ is $f$ by construction, so for $x \in U$ we have $f(x) = c$ if and only if the first component of $G(x)$ is $c$, i.e.\ if and only if $G(x) \in \{c\} \times \ker df_a$. Thus $U \cap f^{-1}(c) = U \cap G^{-1}(\{c\} \times \ker df_a)$, and applying the bijection $G|_U$ gives $G(U \cap f^{-1}(c)) = G(U) \cap (\{c\} \times \ker df_a)$. Finally $\dim \ker df_a = \dim E - \dim E'$ by the rank–nullity theorem, $df_a$ being surjective.
+\end{proof}
+
+\begin{proposition}[Local sections of a submersion]
+\label{prop:local-section-manifold}
+\lean{LeeLib.AppendixA.exists_localSection}
+\leanok
+\uses{prop:local-section-euclidean,thm:inverse-function-theorem-manifolds}
+Let $\pi : M \to N$ be a smooth map of smooth manifolds, with $M$ modelled on a boundaryless model. If $d\pi_p$ is surjective, then there is $\sigma : N \to M$, smooth at $\pi(p)$, with $\sigma(\pi(p)) = p$ and $\pi(\sigma(y)) = y$ for every $y$ near $\pi(p)$.
+\end{proposition}
+
+\begin{proof}
+\leanok
+\uses{prop:local-section-euclidean}
+Write $\varphi$ for the chart of $M$ at $p$, $\psi$ for the chart of $N$ at $\pi(p)$, $a = \varphi(p)$, and $F = \psi \circ \pi \circ \varphi^{-1}$ for the chart representation. Then $F$ is $C^\infty$ at $a$, and $d\pi_p$ *is* $dF_a$ read through the charts, so $dF_a$ is surjective. Proposition \ref{prop:local-section-euclidean} gives a local section $\sigma_E$ of $F$ through $a$; set $\sigma = \varphi^{-1} \circ \sigma_E \circ \psi$.
+
+Then $\sigma(\pi(p)) = \varphi^{-1}(\sigma_E(F(a))) = \varphi^{-1}(a) = p$, and $\sigma$ is smooth at $\pi(p)$ as a composite of $\psi$, $\sigma_E$ and $\varphi^{-1}$ — the last being smooth on the chart target, which is a neighbourhood of $a$ because the model is boundaryless. For $y$ near $\pi(p)$, $F(\sigma_E(\psi(y))) = \psi(y)$, which unwinds to $\psi(\pi(\sigma(y))) = \psi(y)$; since $\pi(\sigma(y))$ and $y$ both lie in the chart domain for $y$ near $\pi(p)$, and $\psi$ is injective there, $\pi(\sigma(y)) = y$.
+\end{proof}
 
 \begin{proposition}[Properties of Submersions]
 \label{prop:properties-of-submersions}
@@ -338,7 +479,7 @@ An embedded submanifold with or without boundary is said to be \emph{properly em
 \begin{proposition}
 \label{prop:properly-embedded-closed}
 \dcref{chA:A.21}
-\uses{prop:characterizations-of-metric-connections}
+\uses{prop:proper-continuous-maps-closed}
 If $\tilde{M}$ is a smooth manifold with or without boundary, then an embedded submanifold $M \subseteq \tilde{M}$ is properly embedded if and only if it is a closed subset of $\tilde{M}$.
 \end{proposition}
 
@@ -347,8 +488,7 @@ A properly embedded codimension-$0$ submanifold with boundary in $\tilde{M}$ is 
 \begin{proposition}[Slice Coordinates]
 \label{prop:slice-coordinates}
 \dcref{chA:A.22}
-\uses{prop:tangential-connection-compatible-metric}
-\uses{UNRESOLVED:ch5:5.51}
+\uses{thm:rank-theorem}
 Let $\tilde{M}$ be a smooth $m$-manifold without boundary and let $M \subseteq \tilde{M}$ be an embedded $n$-dimensional submanifold with or without boundary. Then for each $p \in M$ there exist a neighborhood $\tilde{U}$ of $p$ in $\tilde{M}$ and smooth coordinates $(x^1, \ldots, x^m)$ for $\tilde{M}$ on $\tilde{U}$ such that $M \cap \tilde{U}$ is a set of one of the following forms:
 \[
 M \cap \tilde{U} = \begin{cases}
@@ -390,8 +530,125 @@ In fact, a map does not have to be a submersion, or even to have constant rank, 
 \begin{corollary}[Regular Level Set Theorem]
 \label{cor:regular-level-set}
 \dcref{chA:A.26}
+\uses{prop:slice-chart-euclidean}
 Let $\bar{M}$ and $N$ be smooth manifolds, and let $\Phi: \bar{M} \to N$ be a smooth map. Every regular level set of $\Phi$ is a properly embedded submanifold of $M$ whose codimension is equal to $\dim N$.
 \end{corollary}
+
+The local model is Proposition \ref{prop:slice-chart-euclidean}: at each regular point, the slice chart of $\Phi$ read in charts of $\bar{M}$ and $N$ exhibits the level set as an affine slice of dimension $\dim \bar{M} - \dim N$. What remains is the global step: assembling these charts into a smooth atlas on $\Phi^{-1}(c)$, with smooth transition maps on the overlaps, and identifying its topology with the subspace topology, which is what makes the embedding proper. That step is carried out below in the codimension-one case $N = \mathbb{R}$; the general case remains open.
+
+Every application of this corollary in the present development takes $N = \mathbb{R}$, so the codimension-one case suffices throughout and nothing below depends on the general statement.
+
+\subsection*{The regular level set theorem in codimension one}
+
+Throughout this subsection $M$ is a smooth manifold of dimension $n+1$ without boundary, $f \in C^\infty(M)$, and $c \in \mathbb{R}$ is a regular value of $f$, so that $df_x \neq 0$ for every $x \in f^{-1}(c)$.
+
+The construction rests on a normal form: near a regular point, a chart can be corrected so that $f$ becomes an \emph{affine} coordinate function, whereupon the level set becomes an affine hyperplane slice. The correction is built by perturbing the identity, which avoids choosing any splitting of the model space.
+
+\begin{lemma}[Straightening a scalar function into an affine coordinate]
+\label{lem:straighten-scalar-affine}
+\lean{LeeLib.Ch02.exists_openPartialHomeomorph_comp_symm_eq_affine}
+\leanok
+Let $E$ be a Banach space, let $s \subseteq E$ be open, let $f : E \to \mathbb{R}$ be smooth on $s$, and let $u_0 \in s$ satisfy $df_{u_0} = \ell \neq 0$. Then there is a diffeomorphism $G$ between open subsets of $E$ with $u_0 \in \operatorname{dom} G \subseteq s$ and $G(u_0) = u_0$, such that
+\[
+  f(G^{-1}(v)) = f(u_0) + \ell(v - u_0)
+\]
+for every $v$ in the image of $G$. In particular $G$ carries $f^{-1}(f(u_0))$ onto the affine hyperplane slice $\{v : \ell(v - u_0) = 0\}$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+Since $\ell \neq 0$, choose $e \in E$ with $\ell(e) = 1$, and set
+\[
+  G(u) = u + \bigl(f(u) - f(u_0) - \ell(u - u_0)\bigr)\, e .
+\]
+The coefficient $u \mapsto f(u) - f(u_0) - \ell(u - u_0)$ is smooth on $s$ and its derivative at $u_0$ is $df_{u_0} - \ell = 0$; hence $dG_{u_0} = \operatorname{id}_E$. By the inverse function theorem $G$ is a diffeomorphism of a neighbourhood of $u_0$ onto a neighbourhood of $G(u_0) = u_0$. Restricting the domain further to the open set where $dG$ is invertible makes $G^{-1}$ smooth on the whole image.
+
+For the displayed identity, apply $\ell$ to the defining equation of $G$: for any $u$,
+\[
+  \ell(G(u) - u_0) = \ell(u - u_0) + \bigl(f(u) - f(u_0) - \ell(u - u_0)\bigr)\ell(e) = f(u) - f(u_0),
+\]
+using $\ell(e) = 1$. Putting $u = G^{-1}(v)$ gives $\ell(v - u_0) = f(G^{-1}(v)) - f(u_0)$, as required.
+\end{proof}
+
+\begin{lemma}[The adapted chart at a regular point]
+\label{lem:adapted-chart-scalar-affine}
+\lean{LeeLib.Ch02.exists_extChartAt_openPartialHomeomorph_comp_symm_eq_affine}
+\leanok
+\uses{lem:straighten-scalar-affine}
+Let $M$ be a smooth manifold without boundary, $f \in C^\infty(M)$, and $y \in M$ with $df_y \neq 0$. Let $\kappa$ be a chart of $M$ at $y$. Then there is a diffeomorphism $G$ between open subsets of the model space, with $\kappa(y) \in \operatorname{dom} G \subseteq \operatorname{im} \kappa$ and $G(\kappa(y)) = \kappa(y)$, such that
+\[
+  f\bigl(\kappa^{-1}(G^{-1}(v))\bigr) = f(y) + df_y(v - \kappa(y))
+\]
+for every $v$ in the image of $G$. Thus in the corrected chart $G \circ \kappa$ the function $f$ is affine, and the level set $f^{-1}(f(y))$ is the affine hyperplane slice $\{v : df_y(v - \kappa(y)) = 0\}$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:straighten-scalar-affine}
+The coordinate representative $f \circ \kappa^{-1}$ is smooth on the open set $\operatorname{im} \kappa$, and because $M$ has no boundary its derivative at $\kappa(y)$ is exactly $df_y$. Apply Lemma \ref{lem:straighten-scalar-affine} with $s = \operatorname{im}\kappa$, $u_0 = \kappa(y)$ and $\ell = df_y \neq 0$, and rewrite $f(\kappa^{-1}(G^{-1}(v)))$ using $\kappa^{-1} \circ \kappa = \operatorname{id}$ on the chart domain.
+\end{proof}
+
+\begin{definition}[The slice chart of a level set]
+\label{def:level-slice-chart}
+\lean{LeeLib.Ch02.levelSliceChart}
+\leanok
+\uses{lem:adapted-chart-scalar-affine}
+With $M$, $f$, $c$ as above and $y \in f^{-1}(c)$, let $G$ be an adapted chart at $y$ as in Lemma \ref{lem:adapted-chart-scalar-affine}. Since $df_y \neq 0$, the kernel $\ker df_y$ is a hyperplane in the $(n+1)$-dimensional model space, so it has dimension $n$; fix a linear isomorphism $\iota : \mathbb{R}^n \to \ker df_y$ and let $\pi$ be the projection onto $\ker df_y$ along any vector $e$ with $df_y(e) = 1$, read in the coordinates $\iota$. The \emph{slice chart of $f^{-1}(c)$ at $y$} is the map
+\[
+  x \longmapsto \pi\bigl(G(\kappa(x)) - \kappa(y)\bigr),
+\]
+defined for $x \in f^{-1}(c)$ in the domain of $G \circ \kappa$, with inverse $z \mapsto \kappa^{-1}(G^{-1}(\kappa(y) + \iota(z)))$.
+\end{definition}
+
+\begin{proposition}[A regular level set of a real-valued function is a smooth hypersurface]
+\label{prop:regular-level-set-hypersurface-codim-one}
+\lean{LeeLib.Ch02.isManifold_levelSet}
+\leanok
+\uses{def:level-slice-chart,lem:adapted-chart-scalar-affine}
+Let $M$ be a smooth $(n+1)$-manifold without boundary, $f \in C^\infty(M)$, and let $c$ be a regular value of $f$. Then the slice charts of Definition \ref{def:level-slice-chart} form a smooth atlas on $f^{-1}(c)$, making it a smooth $n$-manifold.
+\end{proposition}
+
+\begin{proof}
+\leanok
+\uses{def:level-slice-chart,lem:adapted-chart-scalar-affine}
+Each point of $f^{-1}(c)$ is regular, so a slice chart is defined at every point, and by Lemma \ref{lem:adapted-chart-scalar-affine} its inverse does land in $f^{-1}(c)$: for $v = \kappa(y) + \iota(z)$ one has $f(\kappa^{-1}(G^{-1}(v))) = f(y) + df_y(\iota(z)) = c$, since $\iota(z) \in \ker df_y$. That the two maps of Definition \ref{def:level-slice-chart} are mutually inverse is the identity $\iota\pi w = w$ for $w \in \ker df_y$, applied to $w = G(\kappa(x)) - \kappa(y)$, which lies in $\ker df_y$ exactly because $f(x) = f(y)$ and $f$ is affine in the corrected chart.
+
+For compatibility, let $y, y'$ be two points of $f^{-1}(c)$ with slice charts built from $G, \kappa$ and $G', \kappa'$. On the overlap the transition map is
+\[
+  z \longmapsto \pi'\Bigl( G'\bigl(\kappa'(\kappa^{-1}(G^{-1}(\kappa(y) + \iota(z))))\bigr) - \kappa'(y') \Bigr),
+\]
+a composite of the affine map $z \mapsto \kappa(y) + \iota(z)$, the smooth map $G^{-1}$, the coordinate change $\kappa' \circ \kappa^{-1}$ of $M$, the smooth map $G'$, and the affine map $u \mapsto \pi'(u - \kappa'(y'))$. Each factor is smooth on its domain, so the transition map is smooth; hence the atlas is smooth.
+\end{proof}
+
+\begin{proposition}[The inclusion of a regular level set is a smooth immersion]
+\label{prop:regular-level-set-inclusion-smooth}
+\lean{LeeLib.Ch02.contMDiff_levelSet_val}
+\leanok
+\uses{prop:regular-level-set-hypersurface-codim-one}
+In the situation of Proposition \ref{prop:regular-level-set-hypersurface-codim-one}, the inclusion $\iota_c : f^{-1}(c) \hookrightarrow M$ is smooth, and its differential is injective at every point. Since $\iota_c$ is a topological embedding, $f^{-1}(c)$ is an embedded smooth hypersurface in $M$.
+\end{proposition}
+
+\begin{proof}
+\leanok
+\uses{prop:regular-level-set-hypersurface-codim-one,def:level-slice-chart}
+Read in the slice chart at $x_0$ and the chart $\kappa$ of $M$, the inclusion is $z \mapsto G^{-1}(\kappa(x_0) + \iota(z))$, a composite of an affine map with a smooth map; hence it is smooth. Its differential at the centre is $d(G^{-1})_{\kappa(x_0)} \circ \iota$. Here $\iota$ is injective, being a linear isomorphism onto $\ker df_{x_0}$; and $d(G^{-1})_{\kappa(x_0)}$ is injective because $dG_{\kappa(x_0)} \circ d(G^{-1})_{\kappa(x_0)} = \operatorname{id}$, which follows by differentiating $G \circ G^{-1} = \operatorname{id}$ near $\kappa(x_0)$. A composite of injective maps is injective. Finally $\iota_c$ is a topological embedding because it is the inclusion of a subspace.
+\end{proof}
+
+\begin{proposition}[The tangent space of a regular level set is the kernel of the differential]
+\label{prop:regular-level-set-tangent-kernel}
+\lean{LeeLib.Ch02.range_mfderiv_levelSet_val}
+\leanok
+\uses{prop:regular-level-set-inclusion-smooth,prop:regular-level-set-hypersurface-codim-one}
+In the situation of Proposition \ref{prop:regular-level-set-hypersurface-codim-one}, for every $x_0 \in f^{-1}(c)$ the image of $d(\iota_c)_{x_0}$ is exactly $\ker df_{x_0}$; that is, $T_{x_0} f^{-1}(c) = \ker df_{x_0}$ under the usual identification.
+\end{proposition}
+
+\begin{proof}
+\leanok
+\uses{prop:regular-level-set-inclusion-smooth}
+For the inclusion $\subseteq$: the composite $f \circ \iota_c$ is the constant $c$ on $f^{-1}(c)$, so by the chain rule $df_{x_0} \circ d(\iota_c)_{x_0} = 0$, that is, every vector in the image of $d(\iota_c)_{x_0}$ lies in $\ker df_{x_0}$.
+
+For equality, compare dimensions. By Proposition \ref{prop:regular-level-set-inclusion-smooth} the map $d(\iota_c)_{x_0}$ is injective on the $n$-dimensional space $T_{x_0} f^{-1}(c)$, so its image has dimension $n$. On the other side, $df_{x_0}$ is a nonzero linear functional on the $(n+1)$-dimensional space $T_{x_0}M$, so its kernel has dimension $n$. A subspace of dimension $n$ contained in a subspace of dimension $n$ equals it.
+\end{proof}
 
 Suppose $\bar{M}$ is a smooth manifold and $M \subseteq \bar{M}$ is an embedded codimension-$k$ submanifold. A smooth map $\Phi: \bar{M} \to \mathbb{R}^k$ is called a \emph{defining function for $M$} if $M$ is a regular level set of $\Phi$. More generally, if $\Phi: U \to \mathbb{R}^k$ is a smooth map defined on an open subset $U \subseteq \bar{M}$ such that $M \cap U$ is a regular level set of $\Phi$, then $\Phi$ is called a \emph{local defining function for $M$}. The following is a partial converse to the submersion level set theorem.
 
@@ -489,9 +746,50 @@ The next lemma gives a criterion for smoothness that is usually easy to verify i
 
 \begin{lemma}[Local Frame Criterion for Smoothness]
 \label{lem:local-frame-criterion-for-smoothness}
+\lean{IsLocalFrameOn.contMDiffOn_iff_coeff}
+\leanok
 \dcref{chA:A.33}
 Let $\pi: E \to M$ be a smooth vector bundle, and let $\tau: M \to E$ be a rough section. If $(\sigma_i)$ is a smooth local frame for $E$ over an open subset $U \subseteq M$, then $\tau$ is smooth on $U$ if and only if its component functions with respect to $(\sigma_i)$ are smooth.
 \end{lemma}
+
+\begin{proof}
+\leanok
+Write $\tau = \sum_i \tau^i \sigma_i$ on $U$, where $\tau^i : U \to \mathbb{R}$ are the component
+functions.
+
+Suppose first that each $\tau^i$ is smooth. Each $\sigma_i$ is a smooth section and each $\tau^i$
+is a smooth function, so each product $\tau^i \sigma_i$ is a smooth section, and $\tau$, being the
+finite sum $\sum_i \tau^i \sigma_i$, is smooth on $U$.
+
+Conversely, suppose $\tau$ is smooth on $U$, and fix $p \in U$. Choose a smooth local
+trivialization $\Phi : \pi^{-1}(W) \to W \times \mathbb{R}^k$ with $p \in W$, and for $x \in W$ let
+$\Phi_x : E_x \to \mathbb{R}^k$ denote the induced linear isomorphism on the fibre. Reading a
+section through $\Phi$ identifies the smooth sections of $E$ over $W$ with the smooth
+$\mathbb{R}^k$-valued functions on $W$; in particular $x \mapsto \Phi_x(\tau(x))$ and each
+$x \mapsto \Phi_x(\sigma_j(x))$ are smooth on $W$.
+
+For $x \in U \cap W$ define $A(x) : \mathbb{R}^k \to \mathbb{R}^k$ by
+\[
+  A(x)c = \sum_j c^j \, \Phi_x(\sigma_j(x)).
+\]
+Each $A(x)$ is linear, and $x \mapsto A(x)$ is smooth as a map into the space of linear maps,
+because it is a finite sum of the smooth maps $x \mapsto \Phi_x(\sigma_j(x))$ composed with the
+fixed linear map sending a vector $v$ to the rank-one map $c \mapsto c^j v$.
+
+Applying $\Phi_x$ to $\tau(x) = \sum_j \tau^j(x)\sigma_j(x)$ and using linearity gives
+\[
+  A(x)\bigl(\tau^1(x), \ldots, \tau^k(x)\bigr) = \Phi_x(\tau(x)), \qquad x \in U \cap W .
+\]
+At each $x \in U \cap W$ the map $A(x)$ is bijective: it is the composition of the coefficient
+isomorphism $\mathbb{R}^k \to E_x$ determined by the basis $(\sigma_j(x))$ of $E_x$ with the
+isomorphism $\Phi_x$. Since inversion is smooth on the set of invertible linear maps, and
+$A(p)$ is invertible, $x \mapsto A(x)^{-1}$ is smooth near $p$. Hence
+\[
+  \bigl(\tau^1(x), \ldots, \tau^k(x)\bigr) = A(x)^{-1}\bigl(\Phi_x(\tau(x))\bigr)
+\]
+is smooth near $p$, being a composition of smooth maps. As $p \in U$ was arbitrary, each $\tau^i$
+is smooth on $U$.
+\end{proof}
 
 If $E \to M$ is a smooth vector bundle, then the set of smooth sections of $E$, denoted by $\Gamma(E)$, is a vector space (usually infinite-dimensional) under pointwise addition and multiplication by constants. Its zero element is the \textit{zero section} $\zeta$ defined by $\zeta(p) = 0 \in E_p$ for all $p \in M$. For every section $\sigma$ of $E$, the \textit{support of $\sigma$} is the closure of the set $\{p \in M: \sigma(p) \neq 0\}$.
 
@@ -499,9 +797,51 @@ Given a smooth vector bundle $\pi_E: E \to M$, a \textit{smooth subbundle of $E$
 
 \begin{lemma}[Local Frame Criterion for Subbundles]
 \label{lem:local-frame-criterion-for-subbundles}
+\lean{LeeLib.AppendixA.subContMDiffVectorBundle}
+\leanok
+\uses{lem:vector-bundle-chart-lemma,def:riemannian-metric,prop:existence-orthonormal-frames}
 \dcref{chA:A.34}
-Let $\pi: E \to M$ be a smooth vector bundle, and suppose that for each $p \in M$ we are given a $k$-dimensional linear subspace $D_p \subseteq E_p$. Suppose further that each $p \in M$ has a neighborhood $U$ on which there are smooth local sections $\sigma_1, \ldots, \sigma_k: U \to E$ such that $\sigma_1(q), \ldots, \sigma_k(q)$ form a basis for $D_q$ at each $q \in U$. Then $D = \bigcup_{p \in M} D_p \subseteq E$ is a smooth subbundle of $E$.
+Let $\pi: E \to M$ be a smooth vector bundle endowed with a smooth fibre metric $\langle\cdot,\cdot\rangle$, and suppose that for each $p \in M$ we are given a $k$-dimensional linear subspace $D_p \subseteq E_p$. Suppose further that each $p \in M$ has a neighborhood $U$ on which there are smooth local sections $\sigma_1, \ldots, \sigma_k: U \to E$ such that $\sigma_1(q), \ldots, \sigma_k(q)$ form a basis for $D_q$ at each $q \in U$. Then $D = \bigcup_{p \in M} D_p \subseteq E$ is a smooth subbundle of $E$: it carries a smooth rank-$k$ vector bundle structure over $M$ whose fibre at $p$ is $D_p$ with the linear structure inherited from $E_p$.
 \end{lemma}
+
+\begin{remark}
+\label{rem:subbundle-criterion-metric}
+\uses{lem:local-frame-criterion-for-subbundles}
+Lee states the preceding lemma for a bare smooth vector bundle, with no fibre metric. The metric enters our proof only to normalize the given local $D$-frames, which is what makes the transition functions visibly smooth (they become Gram matrices); it is not needed for the truth of the statement. The hypothesis is harmless where the lemma is applied: Proposition \ref{prop:normal-bundle} applies it inside the ambient tangent bundle $F^*T\tilde M$ of Lemma \ref{lem:ambient-tangent-bundle-riemannian}, which carries the ambient metric $\tilde g$ by construction. Removing the hypothesis in general would require the statement that every smooth vector bundle over a smooth manifold admits a fibre metric --- the bundle analogue of Proposition \ref{prop:existence-riemannian-metric}, which we have only for tangent bundles.
+\end{remark}
+
+\begin{proof}
+\leanok
+\uses{lem:vector-bundle-chart-lemma,prop:existence-orthonormal-frames}
+Call a $k$-tuple $s = (s_1, \ldots, s_k)$ of smooth sections of $E$ over an open set $U$ a \emph{local $D$-frame} if $(s_1(q), \ldots, s_k(q))$ is a basis of $D_q$ for every $q \in U$, and an \emph{orthonormal} local $D$-frame if that basis is moreover orthonormal for the fibre metric.
+
+\textit{Normalization.} Every local $D$-frame may be replaced by an orthonormal one on the same open set. Indeed, apply the fibrewise Gram--Schmidt algorithm of Proposition \ref{prop:existence-orthonormal-frames} to $(\sigma_1, \ldots, \sigma_k)$ inside the fibres of $E$: the resulting sections $(s_1, \ldots, s_k)$ are smooth on $U$, are orthonormal at every $q \in U$, and satisfy $\mathrm{span}(s_1(q), \ldots, s_k(q)) = \mathrm{span}(\sigma_1(q), \ldots, \sigma_k(q)) = D_q$. So by hypothesis every point of $M$ has a neighbourhood carrying an orthonormal local $D$-frame.
+
+\textit{Fibre coordinates.} Let $s$ be an orthonormal local $D$-frame over $U$. For every $x \in M$ --- not only for $x \in U$ --- define
+\[
+  c_s(x) : D_x \to \mathbb{R}^k, \quad c_s(x)v = \bigl(\langle s_1(x), v\rangle, \ldots, \langle s_k(x), v\rangle\bigr),
+  \qquad
+  m_s(x) : \mathbb{R}^k \to D_x, \quad m_s(x)a = \sum_{i=1}^k a^i s_i(x).
+\]
+Each $c_s(x)$ is linear, for every $x$, because the fibre metric is linear in its second argument. For $x \in U$ the family $(s_i(x))_i$ is an orthonormal basis of $D_x$, so the coefficient of $s_i(x)$ in the expansion of $v \in D_x$ is $\langle s_i(x), v \rangle$; hence $c_s(x)$ is the coordinate isomorphism of that basis, $m_s(x)$ is its inverse, and $c_s(x)$ is a linear isometry of $D_x$ onto $\mathbb{R}^k$ with its standard inner product.
+
+\textit{Charts.} For each orthonormal local $D$-frame $s$ over an open $U$ put
+\[
+  \Phi_s : \pi|_D^{-1}(U) \to U \times \mathbb{R}^k, \qquad \Phi_s(v) = (\pi(v), c_s(\pi(v))v).
+\]
+By the previous paragraph $\Phi_s$ is a bijection with inverse $(x,a) \mapsto m_s(x)a$, its restriction to each $D_x$ is a linear isomorphism onto $\{x\} \times \mathbb{R}^k$, and it covers the identity of $U$. By normalization the domains of these maps cover $M$.
+
+\textit{Transition functions.} Let $s$ over $U$ and $t$ over $W$ be two orthonormal local $D$-frames and let $x \in U \cap W$. Using linearity of $c_t(x)$,
+\[
+  \bigl(c_t(x) \circ m_s(x)\bigr)(a)
+   = c_t(x)\Bigl(\sum_i a^i s_i(x)\Bigr)
+   = \Bigl(\sum_i a^i \langle t_j(x), s_i(x)\rangle\Bigr)_{j=1}^k
+   = G(x)\,a,
+\]
+where $G(x)$ is the Gram matrix $\bigl(\langle t_j(x), s_i(x)\rangle\bigr)_{j,i}$. Thus $\Phi_t \circ \Phi_s^{-1}(x,a) = (x, G(x)a)$, which is of the required form (A.6); $G(x)$ is invertible on $U \cap W$, its inverse being the transition function of the pair taken in the other order. Each entry $x \mapsto \langle t_j(x), s_i(x)\rangle$ is smooth on $U \cap W$, being the pairing of two smooth sections of $E$ under a smooth fibre metric. Since $\mathrm{End}(\mathbb{R}^k)$ is finite dimensional and the entries of $G$ are its coordinates, $x \mapsto G(x)$ is smooth on $U \cap W$.
+
+\textit{Conclusion.} The open cover of $M$ by the domains of the $\Phi_s$, the maps $\Phi_s$ themselves, and the Gram matrices as transition functions are exactly the data (i)--(iii) of the Vector Bundle Chart Lemma \ref{lem:vector-bundle-chart-lemma}, applied to the family of vector spaces $(D_p)_{p \in M}$, each of dimension $k$. It therefore endows $D$ with a smooth rank-$k$ vector bundle structure over $M$ for which the $\Phi_s$ are smooth local trivializations. Its fibre over $p$ is $D_p$ with the linear structure inherited from $E_p$, and its projection is the restriction of $\pi$; that is, $D$ is a smooth subbundle of $E$. Finally, the fibre topology that the construction puts on $D_p$ is the one $D_p$ already carries as a subspace of $E_p$, because $c_s(p)$ is a linear isometry onto $\mathbb{R}^k$ and hence a homeomorphism.
+\end{proof}
 
 Suppose $\tilde{M}$ is a smooth manifold with or without boundary, and $M \subseteq \tilde{M}$ is an immersed or embedded submanifold with or without boundary. If $E \to \tilde{M}$ is any smooth rank-$k$ vector bundle over $M$, we obtain a smooth vector bundle $\pi|_M : E|_M \to M$ of rank $k$ over $M$, called the \emph{restriction of $E$ to $M$}, whose total space is $E|_M = \pi^{-1}(M)$, whose fiber at each $p \in M$ is exactly the fiber of $E$, and whose local trivializations are the restrictions of the local trivializations of $E$. (See [LeeSM, Example 10.8].)
 
@@ -579,8 +919,7 @@ A straightforward computation shows that $[X, Y]$ is a derivation of $C^\infty(M
 \begin{proposition}[Naturality of Lie Brackets]
 \label{prop:naturality-of-lie-brackets}
 \dcref{chA:A.39}
-\uses{UNRESOLVED:ch8:30}
-\uses{UNRESOLVED:ch8:31}
+\uses{UNRESOLVED:ch8:30,UNRESOLVED:ch8:31}
 Let $F : M \to N$ be a smooth map between manifolds with or without boundary, and let $X_1, X_2 \in \mathfrak{X}(M)$ and $Y_1, Y_2 \in \mathfrak{X}(N)$ be vector fields such that $X_i$ is $F$-related to $Y_i$ for $i = 1, 2$. Then $[X_1, X_2]$ is $F$-related to $[Y_1, Y_2]$. In particular, if $F$ is a diffeomorphism, then $F_*[X_1, X_2] = [F_* X_1, F_* X_2]$.
 \end{proposition}
 

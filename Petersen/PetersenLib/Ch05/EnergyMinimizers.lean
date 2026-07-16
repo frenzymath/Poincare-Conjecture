@@ -50,8 +50,6 @@ open scoped Manifold Topology ContDiff Interval
 
 namespace PetersenLib
 
-open Riemannian
-
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
   [Module.Finite ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -864,7 +862,6 @@ theorem stationary_curveAcceleration_eq_zero (g : RiemannianMetric I M)
     by_contra hne
     exact absurd hΦτ0 (ne_of_gt (g.metricInner_self_pos (γ τ) v₀ hne))
   rw [htransfer τ hτS, ← hv₀_def, hv₀, map_zero]
-  rfl
 
 /-- **Math.** Converse transfer: if the acceleration `c̈(t)` vanishes, then the
 Γ-corrected second derivative of **any** chart reading vanishes — invert the

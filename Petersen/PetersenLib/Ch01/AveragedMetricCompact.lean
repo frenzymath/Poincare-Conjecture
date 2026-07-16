@@ -1,5 +1,6 @@
 import PetersenLib.Ch01.AveragedMetric
 import PetersenLib.Ch01.BiinvariantAveraging
+import PetersenLib.Foundations.ManifoldParametricIntegral
 import Mathlib.MeasureTheory.Measure.Haar.Basic
 import Mathlib.MeasureTheory.Group.Integral
 
@@ -35,11 +36,19 @@ The invariance step — `Γ` acts by isometries — is fully proved
 `δ`-translate of the average into the reindexing `γ ↦ γδ`, which is absorbed by right
 invariance of the Haar measure (`integral_mul_right_eq_self`), exactly as in the finite case.
 
-**The single remaining gap** is the `contMDiff` field of the averaged metric: smoothness in
-the base point `p` of the section `p ↦ ∫_Γ (γ^*g₀)_p dμ` needs a `C^∞` parametric-integral
-theorem for sections of a vector bundle, which Mathlib does not provide
-(`Mathlib/Analysis/Calculus/ParametricIntegral.lean` gives only first derivatives).  It is
-isolated as a documented `sorry` in `avgMetricCompact` and nowhere else.
+**The `contMDiff` field** of the averaged metric — smoothness in the base point `p` of the
+section `p ↦ ∫_Γ (γ^*g₀)_p dμ` — is now fully discharged (run 0116, `sorry`-free).  Its
+**geometric core** is the joint (in `(γ,p)`) `C^∞`-smoothness of the coordinate action
+(`pullbackForm_joint_contMDiffAt` (Step A), `coordAction`/`coordAction_contMDiffOn` (Step B)).
+The **analytic assembly** is *scalar-componentwise*: the natural `E →L[ℝ] E →L[ℝ] ℝ`
+(CLM-valued) parametric integral cannot be used directly because the two-level operator space has
+no synthesising `ContinuousENorm` instance, so `Integrable (fun γ => coordAction …)` is unstatable
+(the "2-level-CLM diamond").  Instead, `contMDiffAt_hom_bundle` + `contMDiffOn_bilin_of_apply`
+(finite-dimensional reduction) reduce smoothness of `p ↦ inCoordinates_{p₀}(inner p)` to that of
+the finitely many SCALAR entries `p ↦ ∫_Γ (coordAction g₀ p₀ γ p) v w dμ` (`coordAction_pairing`,
+`inCoordinatesBilin_pairing`), each a genuine `ℝ`-valued Haar average whose `C^∞`-dependence on
+`p` is the project-local **manifold parametric-integral engine** `contMDiffOn_integral_scalar`
+(`PetersenLib.Foundations.ManifoldParametricIntegral`).
 
 Reference: Petersen, *Riemannian Geometry* (3rd ed.), Exercise 1.6.26.
 -/
@@ -150,12 +159,205 @@ theorem pullbackAction_continuous (g₀ : RiemannianMetric I M)
   simp only [htrivR, Bundle.Trivial.linearMapAt_trivialization, LinearMap.id_coe, id_eq,
     ← htT, hΨval, hsymmU, hsymmV, pullbackForm_apply, RiemannianMetric.metricInner_apply]
 
+/-! ## Sub-lemma (b): joint `C^∞` smoothness of the coordinate action
+
+The geometric core needed for the `contMDiff` field of `avgMetricCompact` (Ex 1.6.26): the
+**joint** (in `(γ, p)`) `C^∞` smoothness of the pullback section, transported into the fixed
+trivialisation at a reference point `p₀`.  These are the joint (parameter `Γ × M`) generalisations
+of `pullbackForm_contMDiffAt`, and are exactly the `hdiff`/joint-continuity inputs the parametric
+integral engine requires (see the `contMDiff` gap note below). -/
+
+/-- **Step A.** The joint pullback section `(γ, p) ↦ ⟨p, (γ^*g₀)_p⟩` of the bundle of bilinear
+forms is `C^∞` on `Γ × M`.  Joint generalisation of `pullbackForm_contMDiffAt`: differentiate the
+jointly smooth action `(γ, y) ↦ γ • y` in the `y`-slot at the moving base point via
+`ContMDiffAt.mfderiv` (reference map `g = snd`, so the source reference is the current base point,
+matching `contMDiffAt_hom_bundle`), then pair against the smooth metric `g₀` read in coordinates. -/
+theorem pullbackForm_joint_contMDiffAt (g₀ : RiemannianMetric I M)
+    (hΦ : ContMDiff (J.prod I) I ∞ (fun q : Γ × M => q.1 • q.2))
+    (q₀ : Γ × M) :
+    ContMDiffAt (J.prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+      (fun q : Γ × M => (⟨q.2, pullbackForm g₀ (fun y : M => q.1 • y) q.2⟩ :
+        Bundle.TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
+          (fun x ↦ TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ))) q₀ := by
+  rw [contMDiffAt_hom_bundle]
+  refine ⟨contMDiffAt_snd, ?_⟩
+  set sT := trivializationAt E (TangentSpace I) q₀.2 with hsT
+  set tT := trivializationAt E (TangentSpace I) (q₀.1 • q₀.2) with htT
+  have hx₀ : q₀.2 ∈ sT.baseSet := mem_baseSet_trivializationAt E (TangentSpace I) q₀.2
+  have hfx₀ : q₀.1 • q₀.2 ∈ tT.baseSet :=
+    mem_baseSet_trivializationAt E (TangentSpace I) (q₀.1 • q₀.2)
+  -- the uncurried action `((γ,p), y) ↦ γ • y` is jointly smooth
+  have huncurry : ContMDiffAt ((J.prod I).prod I) I ∞
+      (Function.uncurry (fun q : Γ × M => fun y : M => q.1 • y)) (q₀, q₀.2) := by
+    have heq : (Function.uncurry (fun q : Γ × M => fun y : M => q.1 • y))
+        = (fun q : Γ × M => q.1 • q.2) ∘ (fun p : (Γ × M) × M => (p.1.1, p.2)) := by
+      funext p; rfl
+    rw [heq]
+    exact hΦ.contMDiffAt.comp (q₀, q₀.2) (contMDiffAt_fst.fst.prodMk contMDiffAt_snd)
+  have hmn : (∞ : WithTop ℕ∞) + 1 ≤ ∞ := by simp
+  set D : (Γ × M) → (E →L[ℝ] E) :=
+    inTangentCoordinates I I (fun q : Γ × M => q.2) (fun q : Γ × M => q.1 • q.2)
+      (fun q : Γ × M => mfderiv I I (fun y : M => q.1 • y) q.2) q₀ with hD
+  have hDsmooth : ContMDiffAt (J.prod I) 𝓘(ℝ, E →L[ℝ] E) ∞ D q₀ :=
+    ContMDiffAt.mfderiv (fun q : Γ × M => fun y : M => q.1 • y) (fun q : Γ × M => q.2)
+      huncurry contMDiffAt_snd hmn
+  set G : M → (E →L[ℝ] E →L[ℝ] ℝ) := fun y =>
+    ContinuousLinearMap.inCoordinates E (TangentSpace I) (E →L[ℝ] ℝ)
+      (fun y => TangentSpace I y →L[ℝ] ℝ) (q₀.1 • q₀.2) y (q₀.1 • q₀.2) y (g₀.inner y) with hG
+  have hGsmooth : ContMDiffAt I 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ) ∞ G (q₀.1 • q₀.2) :=
+    ((contMDiffAt_hom_bundle _).mp g₀.contMDiff.contMDiffAt).2
+  have hΨ : ContMDiffAt (J.prod I) 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ) ∞
+      (fun q : Γ × M => ((D q).precomp ℝ).comp ((G (q.1 • q.2)).comp (D q))) q₀ := by
+    have h1 : ContMDiffAt (J.prod I) 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ) ∞
+        (fun q : Γ × M => (G (q.1 • q.2)).comp (D q)) q₀ :=
+      (hGsmooth.comp q₀ hΦ.contMDiffAt).clm_comp hDsmooth
+    exact (ContMDiffAt.clm_precomp (F₃ := ℝ) hDsmooth).clm_comp h1
+  refine hΨ.congr_of_eventuallyEq ?_
+  have hUs : {q : Γ × M | q.2 ∈ sT.baseSet} ∈ 𝓝 q₀ :=
+    continuous_snd.continuousAt (sT.open_baseSet.mem_nhds hx₀)
+  have hUt : {q : Γ × M | q.1 • q.2 ∈ tT.baseSet} ∈ 𝓝 q₀ :=
+    hΦ.continuous.continuousAt (tT.open_baseSet.mem_nhds hfx₀)
+  filter_upwards [hUs, hUt] with q hx hfx
+  refine ContinuousLinearMap.ext fun a => ContinuousLinearMap.ext fun b => ?_
+  have hRHS : (((ContinuousLinearMap.precomp ℝ (D q)).comp ((G (q.1 • q.2)).comp (D q))) a) b
+      = G (q.1 • q.2) (D q a) (D q b) := rfl
+  have hkey : ∀ u : E, tT.symm (q.1 • q.2) (D q u)
+      = mfderiv I I (fun y : M => q.1 • y) q.2 (sT.symm q.2 u) := by
+    intro u
+    have hDu : D q u = tT.continuousLinearEquivAt ℝ (q.1 • q.2) hfx
+        (mfderiv I I (fun y : M => q.1 • y) q.2 ((sT.continuousLinearEquivAt ℝ q.2 hx).symm u)) := by
+      rw [hD]
+      simp only [inTangentCoordinates]
+      rw [ContinuousLinearMap.inCoordinates_eq hx hfx]
+      rfl
+    have hcoeT : (tT.symm (q.1 • q.2) : E → TangentSpace I (q.1 • q.2))
+        = ⇑(tT.continuousLinearEquivAt ℝ (q.1 • q.2) hfx).symm := by
+      rw [Trivialization.symm_continuousLinearEquivAt_eq tT hfx]; rfl
+    have hcoeS : (sT.symm q.2 : E → TangentSpace I q.2)
+        = ⇑(sT.continuousLinearEquivAt ℝ q.2 hx).symm := by
+      rw [Trivialization.symm_continuousLinearEquivAt_eq sT hx]; rfl
+    rw [hDu, hcoeT, ContinuousLinearEquiv.symm_apply_apply, hcoeS]
+  rw [hRHS, hG]
+  have htrivM' : trivializationAt ℝ (Bundle.Trivial M ℝ) (q₀.1 • q₀.2)
+      = Bundle.Trivial.trivialization M ℝ := Bundle.Trivial.eq_trivialization M ℝ _
+  have htrivM : trivializationAt ℝ (Bundle.Trivial M ℝ) q₀.2
+      = Bundle.Trivial.trivialization M ℝ := Bundle.Trivial.eq_trivialization M ℝ _
+  rw [inCoordinates_apply_eq₂ (E₃ := Bundle.Trivial M ℝ) hfx hfx (by simp)]
+  rw [inCoordinates_apply_eq₂ (E₃ := Bundle.Trivial M ℝ) hx hx (by simp)]
+  simp only [htrivM', htrivM, Bundle.Trivial.linearMapAt_trivialization, LinearMap.id_coe, id_eq,
+    pullbackForm_apply, RiemannianMetric.metricInner_apply, ← htT, ← hsT, hkey]
+
+/-- The **coordinate action**: the fixed-reference (`p₀`) coordinate representation of the
+pullback form `(γ^*g₀)_p`, valued in the fixed model space `E →L[ℝ] E →L[ℝ] ℝ`.  Naming this map
+pins its type, so scalar averages `∫_Γ (coordAction g₀ p₀ γ p) v w dμ` are unambiguous. -/
+def coordAction (g₀ : RiemannianMetric I M) (p₀ : M) (γ : Γ) (p : M) : E →L[ℝ] E →L[ℝ] ℝ :=
+  ContinuousLinearMap.inCoordinates E (TangentSpace I) (E →L[ℝ] ℝ)
+    (fun b => TangentSpace I b →L[ℝ] ℝ) p₀ p p₀ p (pullbackForm g₀ (fun q : M => γ • q) p)
+
+/-- **Step B.** Fixed-reference coordinate action.  For a fixed base point `p₀`, the coordinate
+representation `(γ, p) ↦ inCoordinates_{p₀}((γ^*g₀)_p)` (`coordAction`) of the joint pullback
+section in the trivialisation at `p₀` is jointly `C^∞` on `univ × (baseSet at p₀)`.  Obtained from
+Step A via the general `Trivialization.contMDiffOn_iff` (`(e ·).2 = inCoordinates` by
+`hom_trivializationAt_apply`) — no manual coordinate change. -/
+theorem coordAction_contMDiffOn (g₀ : RiemannianMetric I M)
+    (hΦ : ContMDiff (J.prod I) I ∞ (fun q : Γ × M => q.1 • q.2)) (p₀ : M) :
+    ContMDiffOn (J.prod I) 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ) ∞
+      (fun q : Γ × M => coordAction g₀ p₀ q.1 q.2)
+      (Set.univ ×ˢ (trivializationAt (E →L[ℝ] E →L[ℝ] ℝ)
+        (fun x ↦ TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) p₀).baseSet) := by
+  have hΦsec : ContMDiff (J.prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+      (fun q : Γ × M => (⟨q.2, pullbackForm g₀ (fun y : M => q.1 • y) q.2⟩ :
+        Bundle.TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
+          (fun x ↦ TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ))) :=
+    fun q => pullbackForm_joint_contMDiffAt g₀ hΦ q
+  have hmaps : Set.MapsTo
+      (fun q : Γ × M => (⟨q.2, pullbackForm g₀ (fun y : M => q.1 • y) q.2⟩ :
+        Bundle.TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
+          (fun x ↦ TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)))
+      (Set.univ ×ˢ (trivializationAt (E →L[ℝ] E →L[ℝ] ℝ)
+        (fun x ↦ TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) p₀).baseSet)
+      (trivializationAt (E →L[ℝ] E →L[ℝ] ℝ)
+        (fun x ↦ TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) p₀).source := by
+    intro q hq
+    rw [Trivialization.mem_source]
+    exact hq.2
+  have key := (((trivializationAt (E →L[ℝ] E →L[ℝ] ℝ)
+      (fun x ↦ TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) p₀).contMDiffOn_iff
+      hmaps).mp hΦsec.contMDiffOn).2
+  exact key
+
+/-- The fixed-reference coordinate action `γ ↦ coordAction g₀ p₀ γ p` is **continuous** in the
+group variable (restriction of Step B to the fibre `γ ↦ (γ, p)`). -/
+theorem coordAction_continuous (g₀ : RiemannianMetric I M)
+    (hΦ : ContMDiff (J.prod I) I ∞ (fun q : Γ × M => q.1 • q.2)) (p₀ p : M)
+    (hp : p ∈ (trivializationAt (E →L[ℝ] E →L[ℝ] ℝ)
+        (fun x ↦ TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) p₀).baseSet) :
+    Continuous (fun γ : Γ => coordAction g₀ p₀ γ p) := by
+  have hB := coordAction_contMDiffOn g₀ hΦ p₀
+  have hι : ContMDiff J (J.prod I) ∞ (fun γ : Γ => (γ, p)) := contMDiff_id.prodMk contMDiff_const
+  have hmaps : Set.MapsTo (fun γ : Γ => (γ, p)) Set.univ
+      (Set.univ ×ˢ (trivializationAt (E →L[ℝ] E →L[ℝ] ℝ)
+        (fun x ↦ TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) p₀).baseSet) :=
+    fun γ _ => ⟨Set.mem_univ _, hp⟩
+  have hcomp := hB.comp hι.contMDiffOn hmaps
+  rw [contMDiffOn_univ] at hcomp
+  exact hcomp.continuous
+
+/-- **Joint smoothness of a scalar coordinate entry.**  Post-composing the jointly `C^∞`
+coordinate action (`coordAction_contMDiffOn`) with the fixed evaluation `L ↦ L v w` — two
+`ContMDiffOn.clm_apply`s against constant sections — the scalar entry
+`(γ, p) ↦ coordAction g₀ p₀ γ p v w` is jointly `C^∞` on `univ ×ˢ (baseSet at p₀)`.  This
+`ℝ`-valued joint section is the common source of both the `hdiff` (fix `γ`) and `hcont` (joint
+continuity of the `p`-derivative) hypotheses that the *scalar* `contDiffOn_parametricIntegral`
+requires in the `contMDiff` assembly. -/
+theorem coordAction_apply_contMDiffOn (g₀ : RiemannianMetric I M)
+    (hΦ : ContMDiff (J.prod I) I ∞ (fun q : Γ × M => q.1 • q.2)) (p₀ : M) (v w : E) :
+    ContMDiffOn (J.prod I) 𝓘(ℝ, ℝ) ∞
+      (fun q : Γ × M => coordAction g₀ p₀ q.1 q.2 v w)
+      (Set.univ ×ˢ (trivializationAt (E →L[ℝ] E →L[ℝ] ℝ)
+        (fun x ↦ TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) p₀).baseSet) :=
+  ((coordAction_contMDiffOn g₀ hΦ p₀).clm_apply contMDiffOn_const).clm_apply contMDiffOn_const
+
+/-- **Scalar coordinate action, paired against fixed model vectors `v w`.**  The pointwise identity
+`coordAction g₀ p₀ γ p v w = (γ^*g₀)_p (σ v) (σ w)` with `σ = (trivAt p₀).symm p` the fixed
+coordinate map.  This is the key that turns the `E →L[ℝ] E →L[ℝ] ℝ`-valued Bochner average (blocked
+by the 2-level-CLM `ContinuousENorm` diamond, see the `contMDiff` gap note) into finitely many
+*scalar* averages `∫_Γ (γ^*g₀)_p (σ v) (σ w) dμ`, the entry point to the scalar-componentwise
+assembly. -/
+theorem coordAction_pairing (g₀ : RiemannianMetric I M) (p₀ p : M)
+    (hpE : p ∈ (trivializationAt E (TangentSpace I) p₀).baseSet) (γ : Γ) (v w : E) :
+    coordAction g₀ p₀ γ p v w
+      = pullbackForm g₀ (fun q : M => γ • q) p
+          ((trivializationAt E (TangentSpace I) p₀).symm p v)
+          ((trivializationAt E (TangentSpace I) p₀).symm p w) := by
+  rw [coordAction, inCoordinates_apply_eq₂ (E₃ := Bundle.Trivial M ℝ) hpE hpE (by simp)]
+  have htrivM : trivializationAt ℝ (Bundle.Trivial M ℝ) p₀ = Bundle.Trivial.trivialization M ℝ :=
+    Bundle.Trivial.eq_trivialization M ℝ _
+  simp only [htrivM, Bundle.Trivial.linearMapAt_trivialization, LinearMap.id_coe, id_eq]
+
+/-- **Generic fixed-reference `inCoordinates` pairing.**  For any fibre bilinear form `B` on
+`T_pM`, its coordinate representation in the trivialisation at `p₀`, paired against model vectors
+`v w`, is `B (σ v) (σ w)` with `σ = (trivAt p₀).symm p`.  The form-agnostic core shared by
+`coordAction_pairing` (for `B = (γ^*g₀)_p`) and the averaged-section identity below (for
+`B = ∫_Γ (γ^*g₀)_p dμ`); it lets a *scalar* coordinate entry commute with the Bochner average. -/
+theorem inCoordinatesBilin_pairing (p₀ p : M)
+    (hpE : p ∈ (trivializationAt E (TangentSpace I) p₀).baseSet)
+    (B : TangentSpace I p →L[ℝ] TangentSpace I p →L[ℝ] ℝ) (v w : E) :
+    ContinuousLinearMap.inCoordinates E (TangentSpace I) (E →L[ℝ] ℝ)
+        (fun b => TangentSpace I b →L[ℝ] ℝ) p₀ p p₀ p B v w
+      = B ((trivializationAt E (TangentSpace I) p₀).symm p v)
+          ((trivializationAt E (TangentSpace I) p₀).symm p w) := by
+  rw [inCoordinates_apply_eq₂ (E₃ := Bundle.Trivial M ℝ) hpE hpE (by simp)]
+  have htrivM : trivializationAt ℝ (Bundle.Trivial M ℝ) p₀ = Bundle.Trivial.trivialization M ℝ :=
+    Bundle.Trivial.eq_trivialization M ℝ _
+  simp only [htrivM, Bundle.Trivial.linearMapAt_trivialization, LinearMap.id_coe, id_eq]
+
 /-! ## The averaged metric over a compact group action -/
 
 section Compact
 
 variable [FiniteDimensional ℝ E] [CompactSpace Γ] [MeasurableSpace Γ] [BorelSpace Γ]
-  [MeasurableMul Γ]
+  [MeasurableMul Γ] [SecondCountableTopology Γ] [I.Boundaryless] [J.Boundaryless]
 
 /-- Each scalar slice `γ ↦ (γ^*g₀)_p(x,y)` is integrable: continuous on the compact `Γ`
 against a finite measure. -/
@@ -173,9 +375,13 @@ variable (μ : Measure Γ) [IsProbabilityMeasure μ]
 `g(u,v) = ∫_Γ g₀(Dγ(u), Dγ(v)) dμ(γ)` on `M`.  Symmetric and positive-definite fibrewise
 (`avgFormFamily`), with `Γ`-invariance proved separately (`avgMetricCompact_preservesMetric`).
 
-The `contMDiff` field is the sole remaining gap: smoothness in `p` of the parametric integral
-of the bundle-section `p ↦ ∫_Γ (γ^*g₀)_p dμ` needs a `C^∞` parametric-integral theorem for
-sections of a vector bundle that Mathlib lacks (first derivatives only). -/
+The `contMDiff` field — smoothness in `p` of the section `p ↦ ∫_Γ (γ^*g₀)_p dμ` — is fully
+discharged (run 0116): after `contMDiffAt_hom_bundle` and the finite-dimensional scalar reduction
+`contMDiffOn_bilin_of_apply`, each coordinate entry is the SCALAR Haar average
+`p ↦ ∫_Γ (coordAction g₀ p₀ γ p) v w dμ`, whose smoothness in `p` is the project-local manifold
+parametric-integral engine `contMDiffOn_integral_scalar`.  Working entirely with `ℝ`-valued
+integrals sidesteps the two-level operator `ContinuousENorm` gap (a `E →L[ℝ] E →L[ℝ] ℝ`-valued
+Bochner integral is unstatable). -/
 def avgMetricCompact (g₀ : RiemannianMetric I M)
     (hΦ : ContMDiff (J.prod I) I ∞ (fun q : Γ × M => q.1 • q.2)) :
     RiemannianMetric I M where
@@ -201,14 +407,34 @@ def avgMetricCompact (g₀ : RiemannianMetric I M)
       (fun γ x hx => pullbackForm_pos g₀ (fun q : M => γ • q) p
         (mfderiv_smul_injective (contMDiff_smul_of_jointly hΦ) γ p) x hx) u hu
   contMDiff := by
-    -- GAP (the sole remaining obstruction to Exercise 1.6.26): smoothness in the base
-    -- point `p` of the section `p ↦ ∫_Γ (γ^*g₀)_p dμ`.  In a chart this is a parametric
-    -- integral `x ↦ ∫_Γ Φ(γ, x) dμ` of a jointly (in `x`) `C^∞`, continuous-in-`γ`
-    -- integrand over the compact `Γ`; concluding it is `C^∞` needs a `C^∞`
-    -- parametric-integral theorem for bundle-valued sections, which Mathlib does not
-    -- provide (`Mathlib/Analysis/Calculus/ParametricIntegral.lean` has first derivatives
-    -- only).  Everything else in this construction is proved sorry-free.
-    sorry
+    -- === RESOLVED (run 0116 s0006): the scalar-componentwise assembly is now complete. ===
+    -- Descend to the base chart at `p₀`, reduce the fibre form to its scalar coordinate entries
+    -- (`contMDiffOn_bilin_of_apply`, `E` finite-dimensional), and recognise each entry as the
+    -- SCALAR Haar average of the coordinate action, whose smoothness in `p` is supplied by the
+    -- manifold parametric-integral engine `contMDiffOn_integral_scalar`
+    -- (`PetersenLib.Foundations.ManifoldParametricIntegral`).  Only `ℝ`-valued integrals ever
+    -- appear, so the two-level operator `ContinuousENorm` diamond is never touched.
+    intro p₀
+    rw [contMDiffAt_hom_bundle]
+    refine ⟨contMDiffAt_id, ?_⟩
+    set U := (trivializationAt E (TangentSpace I) p₀).baseSet ∩
+      (trivializationAt (E →L[ℝ] E →L[ℝ] ℝ)
+        (fun x => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) p₀).baseSet with hU
+    have hUopen : IsOpen U :=
+      (Trivialization.open_baseSet _).inter (Trivialization.open_baseSet _)
+    have hp₀U : p₀ ∈ U :=
+      ⟨mem_baseSet_trivializationAt _ _ _, mem_baseSet_trivializationAt _ _ _⟩
+    refine ContMDiffOn.contMDiffAt ?_ (hUopen.mem_nhds hp₀U)
+    refine contMDiffOn_bilin_of_apply hUopen (fun v w => ?_)
+    refine (contMDiffOn_integral_scalar (J := J) (I := I) (μ := μ)
+      (f := fun γ p => coordAction g₀ p₀ γ p v w) hUopen ?_).congr (fun p hp => ?_)
+    · exact (coordAction_apply_contMDiffOn g₀ hΦ p₀ v w).mono
+        (fun q hq => ⟨hq.1, hq.2.2⟩)
+    · rw [inCoordinatesBilin_pairing p₀ p hp.1 _ v w]
+      show CompactAveraging.avgFormFamily (V := E) μ _ _ _ _ = _
+      rw [CompactAveraging.avgFormFamily_apply]
+      exact integral_congr_ae (Filter.Eventually.of_forall fun γ =>
+        (coordAction_pairing g₀ p₀ p hp.1 γ v w).symm)
 
 @[simp]
 theorem avgMetricCompact_apply (g₀ : RiemannianMetric I M)
@@ -220,6 +446,26 @@ theorem avgMetricCompact_apply (g₀ : RiemannianMetric I M)
   show CompactAveraging.avgFormFamily (V := E) μ _ _ u v = _
   rw [CompactAveraging.avgFormFamily_apply]
   exact integral_congr_ae (Filter.Eventually.of_forall fun γ => pullbackForm_apply _ _ _ _ _)
+
+/-- **Entry point to the scalar-componentwise assembly of `avgMetricCompact.contMDiff`.**  The
+`(v, w)`-scalar entry of the fixed-`p₀` coordinate representation of the averaged fibre form
+`inner p = ∫_Γ (γ^*g₀)_p dμ` equals the *scalar* Bochner average of the coordinate action:
+`inCoordinates_{p₀}(inner p) v w = ∫_Γ coordAction g₀ p₀ γ p v w dμ`.  This is precisely the
+identity that dodges the 2-level-CLM `ContinuousENorm` diamond — the `E →L[ℝ] E →L[ℝ] ℝ`-valued
+average need never be integrated; only these finitely many scalar integrals do, each a genuine
+`ℝ`-valued parametric integral whose smoothness in `p` `contDiffOn_parametricIntegral` supplies. -/
+theorem avgMetricCompact_inCoordinates_pairing (g₀ : RiemannianMetric I M)
+    (hΦ : ContMDiff (J.prod I) I ∞ (fun q : Γ × M => q.1 • q.2)) (p₀ p : M)
+    (hpE : p ∈ (trivializationAt E (TangentSpace I) p₀).baseSet) (v w : E) :
+    ContinuousLinearMap.inCoordinates E (TangentSpace I) (E →L[ℝ] ℝ)
+        (fun b => TangentSpace I b →L[ℝ] ℝ) p₀ p p₀ p
+        ((avgMetricCompact μ g₀ hΦ).inner p) v w
+      = ∫ γ : Γ, coordAction g₀ p₀ γ p v w ∂μ := by
+  rw [inCoordinatesBilin_pairing p₀ p hpE _ v w]
+  show CompactAveraging.avgFormFamily (V := E) μ _ _ _ _ = _
+  rw [CompactAveraging.avgFormFamily_apply]
+  exact integral_congr_ae (Filter.Eventually.of_forall fun γ =>
+    (coordAction_pairing g₀ p₀ p hpE γ v w).symm)
 
 /-! ## `Γ` acts by isometries for the averaged metric -/
 
@@ -282,12 +528,13 @@ on a manifold `M`, then `M` carries a Riemannian metric for which `Γ` acts by i
 
 Take any metric `g₀` (`exists_riemannianMetric`, via a partition of unity) and average its
 pullbacks against the normalised Haar (probability) measure `μ` of `Γ`, made right invariant
-by pushing forward along inversion.  Symmetry, positivity, and invariance of the average are
-proved (`avgMetricCompact_isRiemannianIsometry`); the smoothness of the averaged section in
-the base point is the sole gap (a `C^∞` parametric-integral theorem for bundle sections, which
-Mathlib lacks), isolated as the `contMDiff` field of `avgMetricCompact`. -/
+by pushing forward along inversion.  Symmetry, positivity, invariance
+(`avgMetricCompact_isRiemannianIsometry`), and smoothness of the averaged section
+(the `contMDiff` field of `avgMetricCompact`, via `contMDiffOn_integral_scalar`) are all proved,
+so the exercise is complete.  The boundaryless / second-countable hypotheses on the group hold
+for every compact Lie group (Petersen's setting). -/
 theorem exercise1_6_26 [FiniteDimensional ℝ E] [T2Space M] [SigmaCompactSpace M]
-    [CompactSpace Γ] [T2Space Γ]
+    [CompactSpace Γ] [T2Space Γ] [SecondCountableTopology Γ] [I.Boundaryless] [J.Boundaryless]
     (hΦ : ContMDiff (J.prod I) I ∞ (fun q : Γ × M => q.1 • q.2)) :
     ∃ g : RiemannianMetric I M, ∀ γ : Γ,
       IsRiemannianIsometry g g (fun p : M => γ • p) := by

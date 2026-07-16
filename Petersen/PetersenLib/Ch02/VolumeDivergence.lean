@@ -54,8 +54,6 @@ noncomputable section
 
 namespace PetersenLib
 
-open Riemannian
-
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -65,7 +63,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 omit [IsManifold I ∞ M] in
 /-- Evaluating a slot-updated tuple of vector fields at a point is the
 slot-update of the evaluated tuple. -/
-private theorem eval_update {k : ℕ} (Y : Fin k → Π x : M, TangentSpace I x)
+theorem eval_update {k : ℕ} (Y : Fin k → Π x : M, TangentSpace I x)
     (i : Fin k) (V : Π x : M, TangentSpace I x) (x : M) :
     (fun j => Function.update Y i V j x)
       = Function.update (fun j => Y j x) i (V x) := by
@@ -214,7 +212,7 @@ theorem metricInner_orthonormal_expansion {y : M}
 /-- **Math.** The determinant formula for a top-degree alternating form: on a
 combination `wᵢ = Σⱼ dᵢⱼ bⱼ` of a basis, `f(w₁, …, w_n) = det d · f(b)` — the
 `1`-dimensionality of top alternating forms, through `Basis.det`. -/
-private theorem alternatingMap_apply_sum_smul {V : Type*} [AddCommGroup V]
+theorem alternatingMap_apply_sum_smul {V : Type*} [AddCommGroup V]
     [Module ℝ V] {N : ℕ} (f : V [⋀^Fin N]→ₗ[ℝ] ℝ) (b : Basis (Fin N) ℝ V)
     (d : Fin N → Fin N → ℝ) :
     f (fun i => ∑ j, d i j • b j) = (Matrix.of d).det * f b := by
@@ -414,7 +412,7 @@ end DerivativeCalculus
 /-- **Math.** The Cramer identity: replacing the `i`-th row of `A` by a fixed
 row `r` and pairing against the `l`-th column of `A`,
 `Σᵢ Aᵢₗ · det(A with row i ← r) = det A · rₗ` — Cramer's rule transposed. -/
-private theorem sum_mul_det_updateRow {N : ℕ} (A : Matrix (Fin N) (Fin N) ℝ)
+theorem sum_mul_det_updateRow {N : ℕ} (A : Matrix (Fin N) (Fin N) ℝ)
     (r : Fin N → ℝ) (l : Fin N) :
     ∑ i, A i l * (A.updateRow i r).det = A.det * r l := by
   have hdet : ∀ i, (A.updateRow i r).det = Matrix.cramer Aᵀ r i := by
@@ -432,7 +430,7 @@ private theorem sum_mul_det_updateRow {N : ℕ} (A : Matrix (Fin N) (Fin N) ℝ)
 derivative of `q ↦ det (c q)` is the sum over rows `k` of the determinant of
 `c x` with the `k`-th row replaced by its derivative,
 `D_X det(c) = Σₖ det(c x with row k ← D_X (row k))`. -/
-private theorem directionalDerivative_det_coeff {N : ℕ}
+theorem directionalDerivative_det_coeff {N : ℕ}
     (c : Fin N → Fin N → M → ℝ) {x : M}
     (hc : ∀ i j, MDifferentiableAt I 𝓘(ℝ) (c i j) x)
     (X : Π q : M, TangentSpace I q) :
@@ -1154,8 +1152,12 @@ end VolumeParallel
 The remark `rem:pet-ch2-lie-derivative-volume-exact` (`L_X vol = d(i_X vol)`)
 requires, beyond the interior product below, the identification of
 `exteriorDerivative_lieFormula` on an `(n−1)`-tuple of frame fields with the
-Lie derivative of the volume form; this combinatorial identity is **not**
-formalized here (see the module docstring). -/
+Lie derivative of the volume form.  This is the **pointwise algebraic** Cartan
+magic formula for a top-degree form — it needs **no** Stokes' theorem, manifold
+integration, or de Rham machinery (those enter only the *downstream*
+`adjoint_L2_identity`, Prop. 2.2.8).  The faithful interior product, the
+reusable alternation input, and the precise route to closing the remark are in
+`PetersenLib.Ch02.VolumeCartan`. -/
 
 variable (I) in
 /-- **Math.** The **interior product** `i_X T` of a `(0,k+1)`-tensor with a

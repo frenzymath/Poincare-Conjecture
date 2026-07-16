@@ -46,8 +46,6 @@ noncomputable section
 
 namespace PetersenLib
 
-open Riemannian
-
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -452,7 +450,7 @@ theorem radialCurvatureEquation {g : RiemannianMetric I M}
         (fun q => (1 / 2 : ℝ)
           * g.metricInner q (gradient g f q) (gradient g f q)) := by
       simpa [smul_eq_mul] using
-        (contMDiff_const (c := (1 / 2 : ℝ))).smul
+        (contMDiff_const (I := I) (I' := 𝓘(ℝ, ℝ)) (c := (1 / 2 : ℝ))).smul
           (contMDiff_metricInner_gradient_self hgradf)
     -- `Hess(½|∇f|²)(X,Y) = g(∇_X(S(∇f)), Y)`
     have hthird : hessianLieDerivative g
@@ -488,7 +486,7 @@ theorem radialCurvatureEquation {g : RiemannianMetric I M}
         (fun q => (1 / 2 : ℝ)
           * g.metricInner q (gradient g f q) (gradient g f q)) := by
       simpa [smul_eq_mul] using
-        (contMDiff_const (c := (1 / 2 : ℝ))).smul
+        (contMDiff_const (I := I) (I' := 𝓘(ℝ, ℝ)) (c := (1 / 2 : ℝ))).smul
           (contMDiff_metricInner_gradient_self hgradf)
     have hthird : hessianLieDerivative g
           (fun q => (1 / 2 : ℝ)
@@ -772,7 +770,7 @@ theorem distanceFunction_curvatureEquations {g : RiemannianMetric I M}
       (fun q => (1 / 2 : ℝ)
         * g.metricInner q (gradient g r q) (gradient g r q)) := by
     simpa [smul_eq_mul] using
-      (contMDiff_const (c := (1 / 2 : ℝ))).smul
+      (contMDiff_const (I := I) (I' := 𝓘(ℝ, ℝ)) (c := (1 / 2 : ℝ))).smul
         (contMDiff_metricInner_gradient_self hgradr)
   have hthird : hessianLieDerivative g
         (fun q => (1 / 2 : ℝ)

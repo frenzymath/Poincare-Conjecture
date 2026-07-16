@@ -434,7 +434,10 @@ theorem DCLieBracket_leibniz (f g : M → ℝ)
   have hrhs : (SmoothVectorField.smul g hg Y).toFun = g • Y.toFun := rfl
   rw [hlhs, hrhs, VectorField.mlieBracket_smul_left hfd hX,
     VectorField.mlieBracket_smul_right hgd hY]
-  rw [show ((g • Y.toFun) p) = g p • Y.toFun p from rfl, map_smul, map_smul]
+  rw [show ((g • Y.toFun) p) = g p • Y.toFun p from rfl]
+  simp only [map_smul, mvfderiv, ContinuousLinearMap.comp_apply,
+    ContinuousLinearMap.coe_comp', Function.comp_apply,
+    ContinuousLinearMap.coe_coe]
   module
 
 /-- The Lie bracket of two smooth vector fields is itself differentiable as a

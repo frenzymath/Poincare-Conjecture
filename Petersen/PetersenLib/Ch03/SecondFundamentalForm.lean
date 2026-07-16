@@ -44,8 +44,6 @@ noncomputable section
 
 namespace PetersenLib
 
-open Riemannian
-
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -231,7 +229,6 @@ theorem normal_hessian_relation {g : RiemannianMetric I M}
     intro v hv
     rw [g.metricInner_smul_left, metricInner_gradient, hv]
     simp
-    exact Or.inr rfl
   · -- (2): `Π = c · Hess f` on tangent vectors
     intro X Y hX hY hYtan
     rw [secondFundamentalForm_apply,

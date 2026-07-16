@@ -9,7 +9,7 @@ set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"; cd "$HERE"
 command -v hgraph >/dev/null || { echo "error: hgraph not on PATH"; exit 1; }
 
-PROJECTS=(DoCarmo Petersen MorganTian Lee Hatcher Evans)
+PROJECTS=(DoCarmo Petersen MorganTian Lee LeeSmooth Hatcher Evans)
 
 rm -rf docs; mkdir -p docs
 

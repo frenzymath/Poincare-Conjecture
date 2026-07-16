@@ -50,6 +50,78 @@ $$(3) \quad u(x,t) = g(x-tb) \quad (x \in \R^n, t \geq 0).$$
 
 So, \textit{if} (2) has a sufficiently regular solution $u$, it must certainly be given by (3). And conversely, it is easy to check directly that if $g$ is $C^1$, then $u$ defined by (3) is indeed a solution of (2).
 
+\begin{definition}[Explicit solution of the transport equation]
+\label{def:transport-explicit-solution}
+\dcref{ch2:2.1.1-def-1}
+\group{Transport Equation}
+\lean{EvansLib.transportSolution}
+\leanok
+Given $b \in \R^n$ and $g : \R^n \to \R$, the \textit{explicit solution} of the
+transport equation with initial data $g$ is the function on space--time
+$$u(x,t) := g(x - tb) \qquad (x \in \R^n,\ t \in \R).$$
+\end{definition}
+
+\begin{theorem}[Solution of the transport initial-value problem]
+\label{thm:transport-ivp-solution}
+\dcref{ch2:2.1.1-thm-1}
+\group{Transport Equation}
+\uses{def:transport-explicit-solution}
+\lean{EvansLib.transportSolution_isClassicalSolution}
+\leanok
+If $g \in C^1(\R^n)$, then $u(x,t) = g(x - tb)$ is a $C^1$ solution of the
+transport equation $u_t + b \cdot Du = 0$ throughout $\R^n \times \R$ (in
+particular on $\R^n \times (0,\infty)$), thereby solving the initial-value
+problem (2).
+\end{theorem}
+\begin{proof}
+\leanok
+Write $u = g \circ L$, where $L : \R^{n+1} \to \R^n$, $L(x,t) := x - tb$, is a
+linear map. Evaluated at a space--time point, the transport operator
+$u_t + b \cdot Du$ is exactly the directional derivative of $u$ along the
+\textit{characteristic direction} $(b,1) \in \R^{n+1}$, because
+$Du(x,t) \cdot (b,1) = b^1 u_{x_1} + \cdots + b^n u_{x_n} + u_t$. By the chain
+rule this directional derivative equals $Dg\bigl(L(x,t)\bigr) \cdot L(b,1)$.
+But $L$ maps the characteristic direction to $L(b,1) = b - 1 \cdot b = 0$, so the
+directional derivative vanishes and $u$ solves the equation. Finally $u$ is
+$C^1$ because $L$ is linear, hence smooth, and $g \in C^1$.
+\end{proof}
+
+\begin{theorem}[Initial condition for the transport solution]
+\label{thm:transport-initial-condition}
+\dcref{ch2:2.1.1-thm-2}
+\group{Transport Equation}
+\uses{def:transport-explicit-solution}
+\lean{EvansLib.transportSolution_init}
+\leanok
+The explicit solution attains the prescribed initial data: $u(x,0) = g(x)$ for
+every $x \in \R^n$.
+\end{theorem}
+\begin{proof}
+\leanok
+Directly from the formula, $u(x,0) = g(x - 0 \cdot b) = g(x)$.
+\end{proof}
+
+\begin{theorem}[Uniqueness for the transport initial-value problem]
+\label{thm:transport-ivp-uniqueness}
+\dcref{ch2:2.1.1-thm-3}
+\group{Transport Equation}
+\uses{def:transport-explicit-solution}
+\lean{EvansLib.transportSolution_unique}
+\leanok
+If $v$ is a differentiable solution of the transport equation
+$v_t + b \cdot Dv = 0$ on $\R^n \times \R$ with initial data $v = g$ on
+$\R^n \times \{t = 0\}$, then $v(x,t) = g(x - tb)$; that is, $(3)$ is the only
+solution.
+\end{theorem}
+\begin{proof}
+\leanok
+Fix a point $(x,t)$ and set $z(s) := v\bigl((x,t) + s(b,1)\bigr)$. Then
+$\dot z(s) = Dv \cdot (b,1) = v_t + b \cdot Dv = 0$ by the equation, so $z$ is
+constant. The characteristic line through $(x,t)$ meets the initial plane
+$\{t = 0\}$ at $s = -t$, at the point $(x - tb, 0)$; hence
+$v(x,t) = z(0) = z(-t) = v(x - tb, 0) = g(x - tb)$.
+\end{proof}
+
 \begin{remark}[Weak solutions of the transport equation]
 \label{rem:transport-equation-weak-solution-discontinuous-data}
 \dcref{ch2:2.1.1-rem-1}
@@ -76,6 +148,65 @@ $$(5) \quad u(x,t) = g(x - tb) + \int_0^t f(x + (s-t)b, s)\,ds \quad (x \in \R^n
 
 solves the initial-value problem (4).
 
+\begin{definition}[Explicit solution of the nonhomogeneous transport equation]
+\label{def:transport-nonhom-solution}
+\dcref{ch2:2.1.2-def-1}
+\group{Transport Equation}
+\uses{def:transport-explicit-solution}
+\lean{EvansLib.transportSolutionNonhom}
+\leanok
+Given $b \in \R^n$, $g : \R^n \to \R$ and $f : \R^n \times \R \to \R$, the
+\textit{explicit solution} of the nonhomogeneous transport problem (4) is
+$$u(x,t) := g(x - tb) + \int_0^t f\bigl(x + (s - t)b,\ s\bigr)\,ds
+  \qquad (x \in \R^n,\ t \in \R).$$
+The integrand $f\bigl(x + (s - t)b, s\bigr)$ is the value of $f$ at the point of
+the characteristic line through $(x,t)$ at time $s$.
+\end{definition}
+
+\begin{theorem}[The nonhomogeneous solution attains the initial data]
+\label{thm:transport-nonhom-initial-condition}
+\dcref{ch2:2.1.2-thm-1}
+\group{Transport Equation}
+\uses{def:transport-nonhom-solution}
+\lean{EvansLib.transportSolutionNonhom_init}
+\leanok
+The nonhomogeneous solution satisfies $u(x,0) = g(x)$ for every $x \in \R^n$.
+\end{theorem}
+\begin{proof}
+\leanok
+At $t = 0$ the integral $\int_0^0 = 0$ and the homogeneous part is $g(x - 0
+\cdot b) = g(x)$.
+\end{proof}
+
+\begin{theorem}[The nonhomogeneous transport equation holds along characteristics]
+\label{thm:transport-nonhom-solves}
+\dcref{ch2:2.1.2-thm-2}
+\group{Transport Equation}
+\uses{def:transport-nonhom-solution}
+\lean{EvansLib.transportSolutionNonhom_char_deriv}
+\leanok
+If $f$ is continuous, then at every space--time point $(x,t)$ the directional
+derivative of $u$ along the characteristic direction $(b,1)$ equals $f(x,t)$:
+$$\left.\frac{d}{dr}\right|_{r=0} u\bigl((x,t) + r(b,1)\bigr) = f(x,t).$$
+For a differentiable $u$ this directional derivative is $Du(x,t) \cdot (b,1) =
+u_t + b \cdot Du$, so $u$ solves the transport equation $u_t + b \cdot Du = f$
+along characteristics. (Continuity of $f$ alone does not guarantee the individual
+partials of $u$ exist, so the directional form is the honest statement.)
+\end{theorem}
+\begin{proof}
+\leanok
+Fix $(x,t)$ and set $z(r) := u\bigl((x,t) + r(b,1)\bigr)$. The homogeneous part
+$g\bigl(L((x,t) + r(b,1))\bigr)$ is constant in $r$ because $L$ (of the previous
+subsection) annihilates the characteristic direction $(b,1)$. In the integral
+part, reparametrizing along the characteristic makes the integrand
+$f\bigl((x,t) + (s - t)(b,1)\bigr)$ independent of $r$, so
+$$z(r) = g(x - tb) + \int_0^{\,t + r} f\bigl((x,t) + (s - t)(b,1)\bigr)\,ds.$$
+By the fundamental theorem of calculus $\dot z(0)$ equals the integrand at
+$s = t$, namely $f\bigl((x,t)\bigr)$. When $u$ is differentiable this directional
+derivative is $\dot z(0) = Du(x,t) \cdot (b,1) = u_t + b \cdot Du$, so the
+transport equation holds along characteristics.
+\end{proof}
+
 We will later employ this formula to solve the one-dimensional wave equation, in \cref{sec:wave-dalembert-formula}.
 
 \begin{remark}[Method of characteristics]
@@ -99,7 +230,13 @@ In both (1) and (2), $x \in U$ and the unknown is $u : \bar{U} \to \R$, $u = u(x
 \label{def:harmonic-function}
 \dcref{ch2:2.2-def-1}
 \group{Fundamental Solutions}
-A $C^2$ function $u$ satisfying (1) is called a \textit{harmonic function}.
+\lean{InnerProductSpace.HarmonicOnNhd}
+\mathlibok
+A $C^2$ function $u$ satisfying (1) is called a \textit{harmonic function}. In
+mathlib this is \lstinline{InnerProductSpace.HarmonicOnNhd u U}: at each point of
+$U$ the function is twice continuously differentiable and its Laplacian
+$\Delta u = \sum_i u_{x_i x_i}$ (the intrinsic \lstinline{InnerProductSpace.laplacian})
+vanishes on a neighborhood.
 \end{definition}
 
 \textbf{Physical interpretation.} Laplace's equation comes up in a wide variety of physical contexts. In a typical interpretation $u$ denotes the density of some quantity (e.g. a chemical concentration) in equilibrium. Then if $V$ is any smooth subregion within $U$, the net flux of $u$ through $\partial V$ is zero:
@@ -168,12 +305,40 @@ These considerations motivate the following
 \dcref{ch2:2.2.1-def-1}
 \group{Fundamental Solutions}
 \uses{def:harmonic-function}
+\lean{EvansLib.laplaceFund}
+\leanok
 The function
 $$(6) \quad \Phi(x) := \begin{cases} -\frac{1}{2\pi} \log|x| & (n = 2) \\ \frac{1}{n(n-2)\alpha(n)} |x|^{2-n} & (n \geq 3), \end{cases}$$
 defined for $x \in \R^n$, $x \neq 0$, is the \textit{fundamental solution} of Laplace's equation.
 \end{definition}
 
 The reason for the particular choices of the constants in (6) will be apparent in a moment. (Recall from \S A.2 that $\alpha(n)$ denotes the volume of the unit ball in $\R^n$.)
+
+\begin{lemma}[The fundamental solution is harmonic away from the origin]
+\label{lem:laplace-fundamental-solution-harmonic}
+\dcref{ch2:2.2.1-lem-1}
+\group{Fundamental Solutions}
+\uses{def:fundamental-solution-laplace,def:harmonic-function}
+\lean{EvansLib.laplaceFund_harmonic,EvansLib.laplaceFund_harmonicOnNhd}
+\leanok
+For every $x \neq 0$ the fundamental solution is harmonic: $\Delta\Phi(x) = \sum_{i=1}^n \Phi_{x_i x_i}(x) = 0$.
+The coordinate statement is \lstinline{EvansLib.laplaceFund_harmonic}; the
+mathlib-native restatement \lstinline{EvansLib.laplaceFund_harmonicOnNhd} packages it as
+\lstinline{InnerProductSpace.HarmonicOnNhd (laplaceFund n) \{x | x \neq 0\}}, using the
+bridge \lstinline{EvansLib.laplacian_eq_sum_partialDeriv_iterate_two} between the intrinsic
+Laplacian $\Delta$ and the coordinate sum $\sum_j \partial_j^2$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+Write $\Phi(x) = g(|x|^2)$ with $g(\rho) = -\tfrac{1}{4\pi}\log\rho$ when $n = 2$ and $g(\rho) = \tfrac{1}{n(n-2)\alpha(n)}\,\rho^{(2-n)/2}$ when $n \ge 3$; in both cases the identity $|x|^{2-n} = (|x|^2)^{(2-n)/2}$ (respectively $\log|x| = \tfrac12\log|x|^2$) makes this an equality for $x \neq 0$. Since $\rho = |x|^2 = \sum_i x_i^2$ is a smooth polynomial with $\partial_{x_i}\rho = 2x_i$ and $\partial_{x_i x_i}\rho = 2$, the chain rule gives, for $x \neq 0$,
+$$\Phi_{x_i x_i}(x) = 4x_i^2\, g''(|x|^2) + 2\, g'(|x|^2),$$
+and summing over $i$ with $\sum_i x_i^2 = |x|^2$ yields
+$$\Delta\Phi(x) = 4|x|^2\, g''(|x|^2) + 2n\, g'(|x|^2).$$
+For $n \ge 3$, $g'(\rho) = c\,\tfrac{2-n}{2}\rho^{(2-n)/2 - 1}$ and $g''(\rho) = c\,\tfrac{2-n}{2}\left(\tfrac{2-n}{2}-1\right)\rho^{(2-n)/2 - 2}$ (with $c$ the constant), so, using $\rho\,\rho^{(2-n)/2-2} = \rho^{(2-n)/2-1}$,
+$$\Delta\Phi(x) = c\,\tfrac{2-n}{2}\,|x|^{(2-n)/2-1}\left(4\left(\tfrac{2-n}{2}-1\right) + 2n\right) = 0,$$
+because $4\left(\tfrac{2-n}{2}-1\right) + 2n = 2(2-n) - 4 + 2n = 0$. For $n = 2$, $g'(\rho) = -\tfrac{1}{4\pi}\rho^{-1}$ and $g''(\rho) = \tfrac{1}{4\pi}\rho^{-2}$, whence $4|x|^2\,g''(|x|^2) + 4\,g'(|x|^2) = \tfrac{1}{\pi}\,|x|^2(|x|^2)^{-2} - \tfrac{1}{\pi}(|x|^2)^{-1} = \tfrac{1}{\pi}(|x|^2)^{-1} - \tfrac{1}{\pi}(|x|^2)^{-1} = 0$.
+\end{proof}
 
 We will sometimes slightly abuse notation and write $\Phi(x) = \Phi(|x|)$ to emphasize that the fundamental solution is radial. Observe also that we have the estimates
 $$(7) \quad |D\Phi(x)| \leq \frac{C}{|x|^{n-1}}, \quad |D^2\Phi(x)| \leq \frac{C}{|x|^n} \quad (x \neq 0)$$
@@ -319,6 +484,114 @@ for each ball $B(x,r) \subset U$, then $u$ is harmonic.
 If $\Delta u \not\equiv 0$, there exists some ball $B(x,r) \subset U$ such that, say, $\Delta u > 0$ within $B(x,r)$. But then for $\phi$ as above,
 $$0 = \phi'(r) = \frac{r}{n} \int_{B(x,r)} \Delta u(y) \, dy > 0,$$
 a contradiction.
+\end{proof}
+
+\subsubsection{Consequences of the mean-value property}
+\label{sec:laplace-mean-value-consequences}
+
+Every deduction in Evans §2.2.3 rests only on the \emph{solid-ball} mean-value
+identity $u(x) = \fint_{B(x,r)} u\,dy$, not on harmonicity directly. We isolate that
+identity as a hypothesis, so the maximum principle, uniqueness and Harnack estimate
+can be stated and proved from it; \cref{thm:mean-value-formulas-laplace} supplies the
+hypothesis for harmonic functions.
+
+\begin{definition}[Ball mean-value property]
+\label{def:ball-mean-value-property}
+\group{Harmonic Functions}
+\lean{EvansLib.HasBallMeanValueProperty}
+\leanok
+A function $u : \R^n \to \R$ has the \emph{ball mean-value property} on an open set
+$U \subset \R^n$ if
+$$u(x) = \fint_{B(x,r)} u \, dy$$
+for every ball with $\overline{B(x,r)} \subset U$ and $r > 0$. By
+\cref{thm:mean-value-formulas-laplace}, every $C^2$ harmonic function on $U$ has this
+property.
+\end{definition}
+
+\begin{theorem}[Strong maximum principle, mean-value form]
+\label{thm:strong-maximum-principle-mvp}
+\group{Maximum Principles}
+\uses{def:ball-mean-value-property}
+\lean{EvansLib.eqOn_of_isPreconnected_of_isMaxOn, EvansLib.exists_frontier_isMaxOn}
+\leanok
+Let $u$ have the ball mean-value property on an open set $U \subset \R^n$ with
+$n \ge 1$.
+
+(i) If $U$ is bounded and nonempty and $u \in C(\overline{U})$, then the maximum of $u$
+over $\overline{U}$ is attained at a point of $\partial U$.
+
+(ii) If $U$ is connected, $u \in C(U)$, and $u$ attains its maximum over $U$ at some
+point $x_0 \in U$, then $u$ is constant on $U$.
+\end{theorem}
+
+\begin{proof}
+\leanok
+First, a local fact: if $\overline{B(x,r)} \subset U$ and $u(y) \le u(x)$ for all
+$y \in B(x,r)$, then $u \equiv u(x)$ on $B(x,r)$. Indeed the mean-value property gives
+$\fint_{B(x,r)}(u(x) - u)\,dy = 0$, and $u(x) - u$ is nonnegative and continuous on the
+open ball; a nonnegative continuous function with vanishing average over a set of
+positive measure vanishes on it.
+
+(ii) Set $M := \max_U u = u(x_0)$. The set $S := \{y \in U : u(y) = M\}$ is nonempty and
+relatively closed by continuity. It is open: if $u(y) = M$, pick $r > 0$ with
+$\overline{B(y,r)} \subset U$; since $u \le M = u(y)$ on $B(y,r)$, the local fact gives
+$u \equiv M$ on $B(y,r)$, so $B(y,r) \subset S$. A nonempty relatively clopen subset of
+the connected set $U$ equals $U$, so $u \equiv M$.
+
+(i) As $\overline{U}$ is compact and $u$ continuous, $u$ attains its maximum $M$ at some
+$z \in \overline{U}$. Let $A := \{y \in \overline{U} : u(y) = M\}$; it is nonempty,
+closed and bounded. If $A$ met $\partial U$ nowhere, then $A \subset U$, and by the local
+fact $A$ would be open in $\R^n$ (each of its points has a ball on which $u \equiv M$).
+A nonempty bounded clopen subset of the connected space $\R^n$ is impossible, so $A$
+meets $\partial U$; a maximiser lies on the boundary.
+\end{proof}
+
+\begin{theorem}[Uniqueness for the Dirichlet problem, mean-value form]
+\label{thm:uniqueness-dirichlet-mvp}
+\group{Maximum Principles}
+\uses{def:ball-mean-value-property, thm:strong-maximum-principle-mvp}
+\lean{EvansLib.eqOn_closure_of_eqOn_frontier}
+\leanok
+Let $U \subset \R^n$ ($n \ge 1$) be bounded and open. If $u$ and $v$ both have the ball
+mean-value property on $U$, are continuous on $\overline{U}$, and agree on
+$\partial U$, then $u = v$ throughout $\overline{U}$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:strong-maximum-principle-mvp}
+\leanok
+The difference $w := u - v$ again has the ball mean-value property, since averages are
+linear, and $w \in C(\overline{U})$ with $w = 0$ on $\partial U$. Applying the maximum
+principle \cref{thm:strong-maximum-principle-mvp}(i) to $w$ shows $w \le 0$ on
+$\overline{U}$, and applying it to $-w$ shows $w \ge 0$; hence $w \equiv 0$, i.e.
+$u = v$. Applied to two solutions of $-\Delta u = f$ in $U$, $u = g$ on $\partial U$
+(both harmonic, hence both enjoying the mean-value property, with equal boundary data),
+this is the uniqueness statement \cref{thm:uniqueness-poisson-dirichlet}.
+\end{proof}
+
+\begin{theorem}[Harnack's inequality, local form]
+\label{thm:harnack-local-mvp}
+\group{Harmonic Functions}
+\uses{def:ball-mean-value-property}
+\lean{EvansLib.harnack_local}
+\leanok
+Let $n \ge 1$ and let $u \in C(U)$ with $u \ge 0$ have the ball mean-value property on an
+open set $U \subset \R^n$. If $r > 0$, $|x - y| \le r$ and $\overline{B(x,2r)} \subset U$,
+then
+$$u(y) \le 2^n\, u(x).$$
+\end{theorem}
+
+\begin{proof}
+\leanok
+Since $|x - y| \le r$, we have $B(y,r) \subset B(x,2r)$. As $u \ge 0$, the mean-value
+property gives
+$$u(x) = \fint_{B(x,2r)} u \, dz
+  \ge \frac{1}{|B(x,2r)|}\int_{B(y,r)} u \, dz
+  = \frac{|B(y,r)|}{|B(x,2r)|}\,\fint_{B(y,r)} u \, dz
+  = 2^{-n}\, u(y),$$
+using $|B(x,2r)| = 2^n |B(y,r)|$. Iterating this comparison along a chain of overlapping
+balls covering a connected set $V \Subset U$ yields the global Harnack inequality
+\cref{thm:harnacks-inequality}.
 \end{proof}
 
 \subsection{Properties of Harmonic Functions}
@@ -704,8 +977,13 @@ Although this region is unbounded, and so the calculations in the previous secti
 \label{def:reflection-half-space}
 \dcref{ch2:2.2.4-def-2}
 \group{Green's Functions}
+\lean{EvansLib.reflectHalfSpace}
+\leanok
 If $x = (x_1, \ldots, x_{n-1}, x_n) \in \R^n_+$, its reflection \textit{in the plane} $\partial \R^n_+$ is the point
 $$\bar{x} = (x_1, \ldots, x_{n-1}, -x_n).$$
+In Lean this is \lstinline{EvansLib.reflectHalfSpace e x} $= x - 2\langle x,e\rangle e$, the
+reflection in the hyperplane $e^\perp$ with unit normal $e$; Evans' plane $\{x_n = 0\}$
+is the case $e = e_n$.
 \end{definition}
 
 We will solve problem (26) for the half-space by setting
@@ -724,9 +1002,15 @@ as required.
 \label{def:greens-function-half-space}
 \dcref{ch2:2.2.4-def-3}
 \group{Green's Functions}
-\uses{def:greens-function,def:reflection-half-space}
+\uses{def:greens-function,def:fundamental-solution-laplace,def:reflection-half-space}
+\lean{EvansLib.greensHalfSpace}
+\leanok
 Green's function for the half-space $\R^n_+$ is
 $$G(x, y) := \Phi(y - x) - \Phi(y - \bar{x}) \quad (x, y \in \R^n_+, x \neq y).$$
+In Lean this is \lstinline{EvansLib.greensHalfSpace e x y}; the boundary condition
+$G = 0$ on $\partial\R^n_+$ is \lstinline{EvansLib.greensHalfSpace_boundary}, whose core
+is the reflection norm identity \lstinline{EvansLib.norm_sub_reflectHalfSpace}
+($\|y - \bar x\| = \|y - x\|$ when $\langle y,e\rangle = 0$).
 \end{definition}
 
 Then
@@ -805,6 +1089,8 @@ To construct Green's function for the unit ball $B(0,1)$ we will again employ a 
 \label{def:dual-point-unit-sphere}
 \dcref{ch2:2.2.4-def-4}
 \group{Green's Functions}
+\lean{EvansLib.dualPoint}
+\leanok
 If $x \in \R^n - \{0\}$, the point
 $$\bar{x} := \frac{x}{|x|^2}$$
 is called the point \textit{dual} to $x$ with respect to $\partial B(0,1)$. The mapping $x \mapsto \bar{x}$ is \textit{inversion through the unit sphere} $\partial B(0,1)$.
@@ -829,9 +1115,18 @@ as required.
 \label{def:greens-function-ball}
 \dcref{ch2:2.2.4-def-5}
 \group{Green's Functions}
-\uses{def:greens-function}
+\uses{def:greens-function,def:fundamental-solution-laplace,def:dual-point-unit-sphere}
+\lean{EvansLib.greensBall}
+\leanok
 Green's function for the unit ball is
 $$(41) \quad G(x, y) := \Phi(y - x) - \Phi(|x|(y - \bar{x})) \quad (x, y \in B(0, 1), x \neq y).$$
+In Lean this is \lstinline{EvansLib.greensBall x y}. The defining boundary
+condition (Evans eq. (40)) is formalized as \lstinline{EvansLib.greensBall_boundary}:
+for $x \neq 0$ and $|y| = 1$, $G(x,y) = 0$. Its analytic core is the
+sphere-inversion identity (Evans eq. (39))
+$\|x\|^2\,\|y - \bar x\|^2 = \|x - y\|^2$, formalized as
+\lstinline{EvansLib.normSq_smul_sub_dualPoint}, together with the radiality of $\Phi$
+(\lstinline{EvansLib.laplaceFund_eq_of_norm_eq}).
 \end{definition}
 
 The same formula is valid for $n = 2$ as well.
@@ -1032,6 +1327,8 @@ This computation motivates the following
 \label{def:fundamental-solution-heat-equation}
 \dcref{ch2:2.3.1-def-1}
 \group{Heat Equation}
+\lean{EvansLib.heatKernel}
+\leanok
 The function
 $$\Phi(x,t) := \begin{cases} \frac{1}{(4\pi t)^{n/2}} e^{-|x|^2/4t} & (x \in \R^n, t > 0) \\ 0 & (x \in \R^n, t < 0) \end{cases}$$
 is called the fundamental solution of the heat equation.
@@ -1043,12 +1340,15 @@ Notice that $\Phi$ is singular at the point $(0,0)$. We will sometimes write $\P
 \label{lem:integral-fundamental-solution-heat}
 \dcref{ch2:2.3.1-lem-1}
 \group{Heat Equation}
+\lean{EvansLib.heatKernelSpatial_integral}
+\leanok
 \uses{def:fundamental-solution-heat-equation}
 For each time $t > 0$,
 $$\int_{\R^n} \Phi(x,t) \, dx = 1.$$
 \end{lemma}
 
 \begin{proof}
+\leanok
 We calculate
 $$\int_{\R^n} \Phi(x,t) \, dx = \frac{1}{(4\pi t)^{n/2}} \int_{\R^n} e^{-|x|^2/4t} dx$$
 $$= \frac{1}{\pi^{n/2}} \int_{\R^n} e^{-|z|^2} dz$$
@@ -1056,6 +1356,32 @@ $$= \frac{1}{\pi^{n/2}} \prod_{i=1}^{n} \int_{-\infty}^{\infty} e^{-z_i^2} dz_i 
 \end{proof}
 
 A different derivation of the fundamental solution of the heat equation appears in \S 4.3.2.
+
+\begin{lemma}[The fundamental solution solves the heat equation]
+\label{lem:heat-kernel-solves-heat-equation}
+\group{Heat Equation}
+\lean{EvansLib.heatKernelSpatial_solves_heat}
+\leanok
+\uses{def:fundamental-solution-heat-equation}
+For each fixed time $t > 0$ the fundamental solution solves the heat equation away
+from its singularity at $(0,0)$: for all $x \in \R^n$,
+$$\Phi_t(x,t) - \Delta_x \Phi(x,t) = 0.$$
+\end{lemma}
+
+\begin{proof}
+\leanok
+Fix $t>0$. On the open half-space $\{t>0\}$ we may write $\Phi = e^{H}$ with
+$$H(x,t) = -\tfrac{n}{2}\log(4\pi t) - \frac{|x|^2}{4t},$$
+so that $\Phi$ is smooth there. Differentiating in $t$,
+$$\Phi_t = \Phi \, H_t = \Phi\left(-\frac{n}{2t} + \frac{|x|^2}{4t^2}\right).$$
+For the spatial derivatives, computing along the $j$-th coordinate axis gives
+$$\Phi_{x_j} = \Phi\left(-\frac{x_j}{2t}\right), \qquad
+  \Phi_{x_j x_j} = \Phi\left(\frac{x_j^2}{4t^2} - \frac{1}{2t}\right).$$
+Summing over $j = 1, \ldots, n$ and using $\sum_{j=1}^n x_j^2 = |x|^2$,
+$$\Delta_x \Phi = \sum_{j=1}^n \Phi_{x_j x_j}
+  = \Phi\left(\frac{|x|^2}{4t^2} - \frac{n}{2t}\right) = \Phi_t.$$
+Hence $\Phi_t - \Delta_x \Phi = 0$.
+\end{proof}
 
 \subsubsection{Initial-value problem}
 \label{sec:heat-initial-value-problem}
@@ -1072,12 +1398,20 @@ should also be a solution.
 \label{thm:heat-equation-initial-value-solution}
 \dcref{ch2:2.3-thm-1}
 \group{Heat Equation}
-\uses{def:fundamental-solution-heat-equation,lem:integral-fundamental-solution-heat}
+\uses{def:fundamental-solution-heat-equation,lem:integral-fundamental-solution-heat,lem:heat-convolution-smooth,lem:heat-convolution-solves-heat,lem:heat-convolution-attains-initial-data}
 Assume $g \in C(\R^n) \cap L^\infty(\R^n)$, and define $u$ by (9). Then
 (i) $u \in C^\infty(\R^n \times (0,\infty))$,
 (ii) $u_t(x,t) - \Delta u(x,t) = 0$ $(x \in \R^n, t > 0)$,
 and
 (iii) $\lim_{\substack{(x,t) \to (x^0,0) \\ x \in \R^n, t > 0}} u(x,t) = g(x^0)$ for each point $x^0 \in \R^n$.
+
+All three parts are formalized in Lean for \emph{compactly supported} continuous
+data $g$: part (i) is \cref{lem:heat-convolution-smooth}, part (ii) is
+\cref{lem:heat-convolution-solves-heat}, and part (iii) is
+\cref{lem:heat-convolution-attains-initial-data}; they are bundled as
+\texttt{EvansLib.heatSolution\_isSolutionOfIVP}. The general bounded case
+$g\in C\cap L^\infty$ (with no compact support) requires dominating the parametric
+integral by an explicit polynomial-times-Gaussian bound and is not yet formalized.
 \end{theorem}
 
 \begin{proof}
@@ -1109,6 +1443,77 @@ $$= \frac{C}{t^{n/2}} \int_{\delta}^{\infty} e^{-\frac{r^2}{16t}} r^{n-1} dr \to
 Hence if $|x - x^0| < \frac{\delta}{2}$ and $t > 0$ is small enough, $|u(x,t) - g(x^0)| < 2\varepsilon$.
 \end{proof}
 
+\begin{definition}[Heat convolution solution]
+\label{def:heat-convolution-solution}
+\group{Heat Equation}
+\uses{def:fundamental-solution-heat-equation}
+\lean{EvansLib.heatSolution}
+\leanok
+Given initial data $g : \R^n \to \R$, the \textit{heat convolution solution} is the
+function on space--time
+$$u(x,t) := \int_{\R^n} \Phi(x-y,t)\,g(y)\,dy \qquad (x \in \R^n,\ t > 0),$$
+i.e.\ the convolution (9) of $g$ with the fundamental solution.
+\end{definition}
+
+\begin{lemma}[The heat convolution is smooth]
+\label{lem:heat-convolution-smooth}
+\group{Heat Equation}
+\uses{def:heat-convolution-solution,def:fundamental-solution-heat-equation}
+\lean{EvansLib.heatSolution_contDiffOn}
+\leanok
+Assume $g \in C(\R^n)$ has compact support. Then the heat convolution solution $u$ of
+\cref{def:heat-convolution-solution} is $C^\infty$ on $\R^n \times (0,\infty)$. This is
+part (i) of \cref{thm:heat-equation-initial-value-solution}, specialized to compactly
+supported data.
+\end{lemma}
+\begin{proof}
+\leanok
+The space--time kernel $(x,t)\mapsto\Phi(x,t)$ is jointly $C^\infty$ on
+$\R^n\times(0,\infty)$ (the only singularity is at $t=0$): the factor $(4\pi t)^{-n/2}$
+is a smooth power of the positive quantity $4\pi t$, and $\exp(-|x|^2/4t)$ is a composite
+of smooth maps on $\{t>0\}$. The obstruction to differentiating $u$ under the integral
+directly is that $\Phi(\cdot,t)$ is smooth but not compactly supported, while $g$ is
+compactly supported but only continuous, so the standard convolution-smoothness theorems
+(which need the \emph{smooth} factor to be compactly supported) do not apply as stated.
+We remove it with a cutoff. Since $g$ has compact support $K$, near any target point
+$(x^0,t^0)$ choose a smooth bump $\chi$ that is $\equiv 1$ on a ball large enough to
+contain every difference $x-y$ with $x$ near $x^0$ and $y\in K$. The truncated kernel
+$z\mapsto\chi(z)\,\Phi(z,t)$ is jointly $C^\infty$ in $(t,x)$ \emph{and} compactly
+supported in $z$ uniformly in $t$, so the parametric convolution-smoothness theorem gives
+that $(t,x)\mapsto (g \ast \chi\,\Phi(\cdot,t))(x)$ is $C^\infty$. On a neighborhood of
+$(x^0,t^0)$ this truncated convolution \emph{equals} $u$ — because there $\chi\equiv 1$
+over the whole support of the integrand — so $u$ is $C^\infty$ near $(x^0,t^0)$; as the
+target point was arbitrary, $u\in C^\infty(\R^n\times(0,\infty))$.
+\end{proof}
+
+\begin{lemma}[The heat convolution solves the heat equation]
+\label{lem:heat-convolution-solves-heat}
+\group{Heat Equation}
+\uses{def:heat-convolution-solution,lem:heat-kernel-solves-heat-equation}
+\lean{EvansLib.heatSolution_solves_heat}
+\leanok
+Assume $g \in C(\R^n)$ has compact support. Then for every $t > 0$ and every
+$x \in \R^n$ the heat convolution solution $u$ of \cref{def:heat-convolution-solution}
+satisfies the heat equation $u_t(x,t) = \Delta u(x,t)$, written as
+$$\partial_t u(x,t) = \sum_{j=1}^{n} \partial_{x_j}^2 u(x,t).$$
+This is part (ii) of \cref{thm:heat-equation-initial-value-solution}, specialized to
+compactly supported data: the derivatives pass under the integral because the
+integrand is supported on a fixed compact set, and the integrand identity
+$\Phi_t - \Delta_x\Phi = 0$ is \cref{lem:heat-kernel-solves-heat-equation}.
+\end{lemma}
+\begin{proof}
+\leanok
+Differentiate under the integral sign. Since $g$ has compact support $K$, for
+$(x,t)$ in a compact neighborhood the integrand $\Phi(x-y,s)g(y)$ and its
+$s$-derivatives (in time, or along a spatial line) are continuous on the compact set
+(neighborhood)$\times K$, hence bounded by a constant, which dominates the
+parametric-integral differentiation theorem. Applying this once in the time variable
+and twice along each spatial axis gives $u_t(x,t) = \int_{\R^n}\Phi_t(x-y,t)g(y)\,dy$
+and $\partial_{x_j}^2 u(x,t) = \int_{\R^n}\partial_{x_j}^2\Phi(x-y,t)g(y)\,dy$. Summing
+and using $\Phi_t = \Delta_x\Phi$ (\cref{lem:heat-kernel-solves-heat-equation})
+pointwise inside the integral yields $u_t - \Delta u = 0$.
+\end{proof}
+
 \begin{remark}[Dirac measure notation; infinite propagation speed]
 \label{rem:heat-equation-infinite-propagation-speed}
 \dcref{ch2:2.3.1-rem-1}
@@ -1124,6 +1529,51 @@ is in fact positive for \textit{all} points $x \in \R^n$ and times $t > 0$.
 
 for disturbances. If the initial temperature is nonnegative and is positive somewhere, the temperature at any later time (no matter how small) is everywhere positive. (We will learn in \S2.4.3 that the wave equation in contrast supports finite propagation speed for disturbances.) $\square$
 \end{remark}
+
+\begin{lemma}[Infinite propagation speed]
+\label{lem:heat-infinite-propagation-speed}
+\group{Heat Equation}
+\uses{def:heat-convolution-solution}
+\lean{EvansLib.heatSolution_pos}
+\leanok
+Assume $g \in C(\R^n)$ has compact support, is nonnegative ($g \ge 0$), and is
+positive at some point. Then the heat convolution solution is strictly positive
+everywhere: $u(x,t) > 0$ for every $x \in \R^n$ and every $t > 0$. This is the
+strict-positivity assertion of
+\cref{rem:heat-equation-infinite-propagation-speed}(ii).
+\end{lemma}
+\begin{proof}
+\leanok
+The kernel $\Phi(x-y,t) > 0$ for all $y$ (a Gaussian, $t>0$), and $g \ge 0$ is
+continuous and positive at some point, hence positive on a nonempty open set. The
+integrand $y \mapsto \Phi(x-y,t)g(y)$ is therefore continuous, nonnegative, and
+positive on a set of positive measure, so its integral is strictly positive.
+\end{proof}
+
+\begin{lemma}[The heat convolution attains its initial data]
+\label{lem:heat-convolution-attains-initial-data}
+\group{Heat Equation}
+\uses{def:heat-convolution-solution,lem:integral-fundamental-solution-heat}
+\lean{EvansLib.heatSolution_tendsto_initial}
+\leanok
+Assume $g \in C(\R^n)$ has compact support. Then for every $x^0 \in \R^n$ the heat
+convolution solution $u$ of \cref{def:heat-convolution-solution} attains the initial datum,
+$$\lim_{\substack{(x,t) \to (x^0,0) \\ t > 0}} u(x,t) = g(x^0),$$
+the limit being taken jointly as $x \to x^0$ and $t \to 0^+$. This is part (iii) of
+\cref{thm:heat-equation-initial-value-solution}, specialized to compactly supported data.
+\end{lemma}
+\begin{proof}
+\leanok
+Write $u(x,t) - g(x) = \int_{\R^n}\Phi(z,t)\,(g(x-z)-g(x))\,dz$, using the normalization
+$\int_{\R^n}\Phi(\cdot,t)\,dz = 1$ (\cref{lem:integral-fundamental-solution-heat}). Split the
+integral at the radius $\delta$ furnished by the uniform continuity of $g$: the near part
+$\{\|z\|<\delta\}$ is bounded by the modulus of continuity, and the far part
+$\{\|z\|\ge\delta\}$ by $2\|g\|_{L^\infty}$ times the outer Gaussian mass
+$\int_{\|z\|\ge\delta}\Phi(\cdot,t)\,dz$. The latter tends to $0$ as $t \to 0^+$: the rescaling
+$\Phi(z,t) = c^{\,n}\Phi(cz,1)$ with $c = t^{-1/2}$ turns it into the tail of the fixed unit
+Gaussian $\Phi(\cdot,1)$ beyond the radius $\delta c \to \infty$, which vanishes because
+$\Phi(\cdot,1)$ is integrable. Adding the continuity term $g(x)-g(x^0)$ yields the joint limit.
+\end{proof}
 
 \subsubsection{Nonhomogeneous problem}
 \label{sec:heat-nonhomogeneous-problem}
@@ -1225,6 +1675,8 @@ First we recall some useful notation from \S A.2. Assume $U \subset \R^n$ is ope
 \label{def:parabolic-cylinder-heat-ball}
 \dcref{ch2:2.3.2-def-1}
 \group{Heat Equation}
+\lean{EvansLib.parabolicCylinder}
+\leanok
 We define the \textit{parabolic cylinder}
 $$U_T := U \times (0,T].$$
 \end{definition}
@@ -1238,6 +1690,8 @@ $$U_T := U \times (0,T].$$
 \dcref{ch2:2.3.2-def-2}
 \group{Heat Equation}
 \uses{def:parabolic-cylinder-heat-ball}
+\lean{EvansLib.parabolicBoundary}
+\leanok
 The \textit{parabolic boundary} of $U_T$ is
 $$\Gamma_T := \bar{U}_T - U_T.$$
 \end{definition}
@@ -1251,6 +1705,8 @@ We want next to derive a kind of analogue to the mean-value property for harmoni
 \dcref{ch2:2.3.2-def-3}
 \group{Heat Equation}
 \uses{def:fundamental-solution-heat-equation}
+\lean{EvansLib.heatBall}
+\leanok
 For fixed $x \in \R^n$, $t \in \R$, $r > 0$, we define
 $$E(x,t;r) := \left\{(y,s) \in \R^{n+1} \;\middle|\; s \leq t, \ \Phi(x-y,t-s) \geq \frac{1}{r^n}\right\}.$$
 \end{definition}
@@ -1768,30 +2224,113 @@ This is \textit{d'Alembert's formula}.
 
 We have derived formula (8) assuming $u$ is a (sufficiently smooth) solution of (3). We need to check that this really is a solution.
 
+\begin{definition}[d'Alembert's formula]
+\label{def:dalembert-formula}
+\group{Wave Equation}
+\lean{EvansLib.dAlembert}
+\leanok
+Given $g, h : \R \to \R$, \textit{d'Alembert's solution} of the one-dimensional
+wave initial-value problem (3) is the function on space--time
+$$u(x,t) := \tfrac12\bigl[g(x+t) + g(x-t)\bigr]
+  + \tfrac12 \int_{x-t}^{x+t} h(y)\,dy \qquad (x, t \in \R).$$
+\end{definition}
+
+\begin{lemma}[Second-order chain rule along a linear form]
+\label{lem:second-order-chain-rule-linear-form}
+\group{Wave Equation}
+\lean{EvansLib.iteratedFDeriv_two_comp_clm}
+\leanok
+Let $E$ be a normed real vector space, $\varphi \in C^2(\R)$, and
+$L : E \to \R$ a continuous linear form. Then for all $p, v, w \in E$,
+$$D^2(\varphi \circ L)(p)(v,w) = \varphi''(Lp)\,(Lv)(Lw).$$
+\end{lemma}
+\begin{proof}
+\leanok
+By the chain rule $D(\varphi \circ L)(q) = \varphi'(Lq)\,L$, since $L$ is linear
+and so equal to its own derivative; contracting against $w$ gives the scalar
+function $q \mapsto D(\varphi \circ L)(q)(w) = \varphi'(Lq)\,(Lw)$. Differentiating
+this again in the direction $v$, and using once more that $DL = L$, yields
+$D^2(\varphi \circ L)(p)(v,w) = \varphi''(Lp)\,(Lv)(Lw)$.
+\end{proof}
+
 \begin{theorem}[Solution of wave equation, $n = 1$]
 \label{thm:wave-equation-dalembert-solution}
 \dcref{ch2:2.4-thm-1}
 \group{Wave Equation}
-Assume $g \in C^2(\R)$, $h \in C^1(\R)$, and define $u$ by d'Alembert's formula (8). Then
-
-(i) $u \in C^2(\R \times [0,\infty))$,
-
-(ii) $u_{tt} - u_{xx} = 0$ in $\R \times (0,\infty)$,
-
-and
-
-(iii) $\lim\limits_{(x,t) \to (x^0,0), t>0} u(x,t) = g(x^0)$, \quad $\lim\limits_{(x,t) \to (x^0,0), t>0} u_t(x,t) = h(x^0)$
-
-for each point $x^0 \in \R$.
+\uses{def:dalembert-formula,lem:second-order-chain-rule-linear-form}
+\lean{EvansLib.dAlembert_isClassicalSolution}
+\leanok
+Assume $g \in C^2(\R)$ and $h \in C^1(\R)$, and let $u$ be d'Alembert's solution.
+Then $u \in C^2(\R \times \R)$ and
+$$u_{tt} - u_{xx} = 0 \qquad \text{throughout } \R \times \R$$
+(in particular on $\R \times (0,\infty)$).
 \end{theorem}
+\begin{proof}
+\leanok
+Set $H(y) := \int_0^y h$; by the fundamental theorem of calculus $H \in C^2(\R)$
+with $H' = h$, and $\int_{x-t}^{x+t} h = H(x+t) - H(x-t)$. Writing $L_+(x,t) := x+t$
+and $L_-(x,t) := x-t$ for the two characteristic linear forms, d'Alembert's
+solution is the linear combination
+$$u = \tfrac12\,(g\circ L_+) + \tfrac12\,(g\circ L_-)
+      + \tfrac12\,(H\circ L_+) - \tfrac12\,(H\circ L_-).$$
+Each summand is $g$ or $H \in C^2$ composed with a linear form, hence $C^2$, so
+$u \in C^2(\R\times\R)$. The wave operator $\square := \partial_{tt} - \partial_{xx}$
+is linear, so it suffices to show it annihilates each summand $\varphi \circ L$
+with $\varphi \in \{g, H\}$ and $L \in \{L_+, L_-\}$. Let $e_t, e_x$ denote the
+time and space unit vectors. By the second-order chain rule
+(\cref{lem:second-order-chain-rule-linear-form}),
+$$(\varphi\circ L)_{tt} = D^2(\varphi\circ L)(e_t,e_t) = \varphi''(L\,\cdot)\,(L e_t)^2,
+  \qquad (\varphi\circ L)_{xx} = \varphi''(L\,\cdot)\,(L e_x)^2.$$
+Now $L_+ e_t = L_+ e_x = 1$, while $L_- e_t = -1$ and $L_- e_x = 1$; in both cases
+$(L e_t)^2 = (L e_x)^2 = 1$, whence $(\varphi\circ L)_{tt} = (\varphi\circ L)_{xx}$.
+Summing, $u_{tt} - u_{xx} = 0$.
+\end{proof}
 
-The proof is a straightforward calculation.
+\begin{theorem}[Initial conditions for d'Alembert's solution]
+\label{thm:dalembert-initial-conditions}
+\group{Wave Equation}
+\uses{def:dalembert-formula}
+\lean{EvansLib.dAlembert_init,EvansLib.dAlembert_init_time}
+\leanok
+With $g \in C^2(\R)$ and $h \in C^1(\R)$, d'Alembert's solution attains the initial
+data: for every $x \in \R$,
+$$u(x,0) = g(x), \qquad u_t(x,0) = h(x).$$
+\end{theorem}
+\begin{proof}
+\leanok
+At $t = 0$ the two $g$-terms coincide and the integral $\int_x^x h$ vanishes, so
+$u(x,0) = \tfrac12\,(g(x) + g(x)) = g(x)$. For the velocity, differentiating
+d'Alembert's formula in $t$ and using $H' = h$ gives
+$$u_t(x,t) = \tfrac12\,[g'(x+t) - g'(x-t)] + \tfrac12\,[h(x+t) + h(x-t)];$$
+at $t = 0$ the two $g'$-terms cancel and the two $h$-terms sum to $h(x)$, so
+$u_t(x,0) = h(x)$.
+\end{proof}
+
+\begin{theorem}[General solution of the 1D wave equation]
+\label{thm:wave-1d-general-solution}
+\group{Wave Equation}
+\uses{lem:second-order-chain-rule-linear-form}
+\lean{EvansLib.waveGeneralSol_isClassicalSolution}
+\leanok
+For any $F, G \in C^2(\R)$, the function
+$$u(x,t) := F(x+t) + G(x-t)$$
+is a $C^2$ solution of $u_{tt} - u_{xx} = 0$ throughout $\R \times \R$.
+\end{theorem}
+\begin{proof}
+\leanok
+Write $u = (F \circ L_+) + (G \circ L_-)$ with the characteristic linear forms
+$L_+(x,t) = x+t$, $L_-(x,t) = x-t$. Each summand is $C^2$, so $u \in C^2$. By the
+second-order chain rule (\cref{lem:second-order-chain-rule-linear-form}) and
+$(L_+ e_t)^2 = (L_+ e_x)^2 = 1 = (L_- e_t)^2 = (L_- e_x)^2$, each summand
+satisfies $(\varphi \circ L)_{tt} = (\varphi \circ L)_{xx}$; summing gives
+$u_{tt} - u_{xx} = 0$.
+\end{proof}
 
 \begin{remark}[General solution of the 1D wave equation]
 \label{rem:wave-equation-general-solution-1d}
 \dcref{ch2:2.4.1-rem-1}
 \group{Wave Equation}
-\uses{thm:wave-equation-dalembert-solution}
+\uses{thm:wave-equation-dalembert-solution,thm:wave-1d-general-solution}
 (i) In view of (8), our solution $u$ has the form
 $$u(x,t) = F(x+t) + G(x-t)$$
 for appropriate functions $F$ and $G$. Conversely any function of this form solves $u_{tt} - u_{xx} = 0$. Hence the general solution of the one-dimensional wave equation is a sum of the general solution of $u_t - u_x = 0$ and the general solution of $u_t + u_x = 0$. This is a consequence of the factorization (4).

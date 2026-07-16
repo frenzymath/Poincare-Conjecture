@@ -19,6 +19,8 @@ Using the notation explained in Appendix A, we can write out symbolically a typi
 \label{def:kth-order-pde}
 \dcref{ch1:1.1-def-1}
 \group{PDE Basics}
+\lean{EvansLib.IsPDESolutionOn}
+\leanok
 An expression of the form
 \begin{equation}
 F(D^k u(x), D^{k-1} u(x), \ldots, Du(x), u(x), x) = 0 \qquad (x \in U)
@@ -38,6 +40,8 @@ We solve the PDE if we find all $u$ verifying (1), possibly only among those fun
 \dcref{ch1:1.1-def-2}
 \group{PDE Basics}
 \uses{def:kth-order-pde}
+\lean{EvansLib.IsLinearPDE,EvansLib.IsHomogeneousLinearPDE,EvansLib.IsSemilinearPDE,EvansLib.IsQuasilinearPDE,EvansLib.IsFullyNonlinearPDE}
+\leanok
 (i) The partial differential equation (1) is called \textit{linear} if it has the form
 $$\sum_{|\alpha| \leq k} a_\alpha(x) D^\alpha u = f(x)$$
 for given functions $a_\alpha$ ($|\alpha| \leq k$), $f$. This linear PDE is \textit{homogeneous} if $f \equiv 0$.
@@ -58,6 +62,8 @@ A \textit{system} of partial differential equations is, informally speaking, a c
 \dcref{ch1:1.1-def-3}
 \group{PDE Basics}
 \uses{def:kth-order-pde}
+\lean{EvansLib.IsPDESystemSolutionOn}
+\leanok
 An expression of the form
 \begin{equation}
 \mathbf{F}(D^k \mathbf{u}(x), D^{k-1}\mathbf{u}(x), \ldots, D\mathbf{u}(x), \mathbf{u}(x), x) = 0 \qquad (x \in U)
@@ -73,6 +79,27 @@ is the unknown.
 Here we are supposing that the system comprises the same number $m$ of scalar equations as unknowns $(u^1, \ldots, u^m)$. This is the most common circumstance, although other systems may have fewer or more equations than unknowns.
 
 Systems are classified in the obvious way as being linear, semilinear, etc.
+
+\begin{definition}[Classification of Systems]
+\label{def:system-linear-semilinear-quasilinear-fully-nonlinear}
+\dcref{ch1:1.1-def-2-systems}
+\group{PDE Basics}
+\uses{def:kth-order-system-pde,def:linear-semilinear-quasilinear-fully-nonlinear}
+\lean{EvansLib.IsLinearPDESystem,EvansLib.IsHomogeneousLinearPDESystem,EvansLib.IsSemilinearPDESystem,EvansLib.IsQuasilinearPDESystem,EvansLib.IsFullyNonlinearPDESystem}
+\leanok
+A system $\mathbf{F}(D^k\mathbf{u}, \ldots, \mathbf{u}, x) = 0$ valued in $\R^m$ is classified exactly as in the scalar case, with the coefficients now $\R^m$-valued: it is \emph{linear} if $\mathbf{F} = \sum_{|\alpha|\le k} A_\alpha(x) D^\alpha\mathbf{u} - \mathbf{f}(x)$ (matrix coefficients $A_\alpha$), \emph{semilinear} if the top-order coefficients depend only on $x$, \emph{quasilinear} if the top-order coefficients may also depend on the lower-order derivatives, and \emph{fully nonlinear} otherwise. The inclusions homogeneous-linear $\subseteq$ linear $\subseteq$ semilinear $\subseteq$ quasilinear $\subseteq \neg$ fully-nonlinear hold.
+\end{definition}
+
+\begin{definition}[Non-Square and Overdetermined Linear Systems]
+\label{def:non-square-linear-system}
+\group{PDE Basics}
+\uses{def:kth-order-system-pde,def:system-linear-semilinear-quasilinear-fully-nonlinear}
+\lean{EvansLib.IsLinearPDESystemGen,EvansLib.IsHomogeneousLinearPDESystemGen}
+\leanok
+As noted above, a system may have more or fewer equations than unknowns. In general a $k$th-order system with unknown $\mathbf{u} : U \to \R^{m}$ whose equations are valued in $\R^{m'}$ (possibly $m' \neq m$) is \emph{linear} if
+$$\mathbf{F}(D^k\mathbf{u}, \ldots, \mathbf{u}, x) = \sum_{|\alpha|\le k} A_\alpha(x) D^\alpha\mathbf{u} - \mathbf{f}(x)$$
+for rectangular coefficient maps $A_\alpha(x) : \R^{m} \to \R^{m'}$ and source $\mathbf{f} : U \to \R^{m'}$, and \emph{homogeneous} if $\mathbf{f} \equiv 0$. The square case $m' = m$ recovers \cref{def:system-linear-semilinear-quasilinear-fully-nonlinear}; the \emph{overdetermined} case $m' > m$ arises for Maxwell's equations.
+\end{definition}
 
 \begin{remark}[``PDE'' as Singular and Plural]
 \label{rem:pde-abbreviation}
@@ -100,7 +127,9 @@ Throughout $x \in U$, where $U$ is an open subset of $\R^n$, and $t \geq 0$. Als
 \label{ex:laplaces-equation}
 \dcref{ch1:1.2.1.a.1}
 \group{Examples of PDE}
-\uses{def:kth-order-pde}
+\uses{def:kth-order-pde,def:linear-semilinear-quasilinear-fully-nonlinear}
+\lean{EvansLib.laplaceSymbol}
+\leanok
 $$\Delta u = \sum_{i=1}^n u_{x_i x_i} = 0.$$
 \end{example}
 
@@ -108,7 +137,9 @@ $$\Delta u = \sum_{i=1}^n u_{x_i x_i} = 0.$$
 \label{ex:helmholtz-eigenvalue-equation}
 \dcref{ch1:1.2.1.a.2}
 \group{Examples of PDE}
-\uses{def:kth-order-pde}
+\uses{def:kth-order-pde,def:linear-semilinear-quasilinear-fully-nonlinear}
+\lean{EvansLib.helmholtzSymbol}
+\leanok
 $$-\Delta u = \lambda u.$$
 \end{example}
 
@@ -116,7 +147,9 @@ $$-\Delta u = \lambda u.$$
 \label{ex:linear-transport-equation}
 \dcref{ch1:1.2.1.a.3}
 \group{Examples of PDE}
-\uses{def:kth-order-pde}
+\uses{def:kth-order-pde,def:linear-semilinear-quasilinear-fully-nonlinear}
+\lean{EvansLib.transportSymbol}
+\leanok
 $$u_t + \sum_{i=1}^n b^i u_{x_i} = 0.$$
 \end{example}
 
@@ -124,7 +157,9 @@ $$u_t + \sum_{i=1}^n b^i u_{x_i} = 0.$$
 \label{ex:liouvilles-equation}
 \dcref{ch1:1.2.1.a.4}
 \group{Examples of PDE}
-\uses{def:kth-order-pde}
+\uses{def:kth-order-pde,def:linear-semilinear-quasilinear-fully-nonlinear}
+\lean{EvansLib.liouvilleSymbol}
+\leanok
 $$u_t - \sum_{i=1}^n (b^i u)_{x_i} = 0.$$
 \end{example}
 
@@ -132,7 +167,9 @@ $$u_t - \sum_{i=1}^n (b^i u)_{x_i} = 0.$$
 \label{ex:heat-diffusion-equation}
 \dcref{ch1:1.2.1.a.5}
 \group{Examples of PDE}
-\uses{def:kth-order-pde}
+\uses{def:kth-order-pde,def:linear-semilinear-quasilinear-fully-nonlinear}
+\lean{EvansLib.heatSymbol}
+\leanok
 $$u_t - \Delta u = 0.$$
 \end{example}
 
@@ -140,15 +177,20 @@ $$u_t - \Delta u = 0.$$
 \label{ex:schrodingers-equation}
 \dcref{ch1:1.2.1.a.6}
 \group{Examples of PDE}
-\uses{def:kth-order-pde}
+\uses{def:kth-order-pde,def:system-linear-semilinear-quasilinear-fully-nonlinear}
+\lean{EvansLib.schrodingerSystemSymbol}
+\leanok
 $$iu_t + \Delta u = 0.$$
+Complex-valued; writing $u = u^1 + i u^2$ splits it into the real linear $2\times 2$ system $\Delta u^1 - u^2_t = 0$, $\Delta u^2 + u^1_t = 0$ (i.e. $\Delta\mathbf{u} + i\,\mathbf{u}_t = 0$, with $i$ acting as the rotation $(a,b)\mapsto(-b,a)$), which is a second-order homogeneous linear system.
 \end{example}
 
 \begin{example}[Kolmogorov's Equation]
 \label{ex:kolmogorovs-equation}
 \dcref{ch1:1.2.1.a.7}
 \group{Examples of PDE}
-\uses{def:kth-order-pde}
+\uses{def:kth-order-pde,def:linear-semilinear-quasilinear-fully-nonlinear}
+\lean{EvansLib.kolmogorovSymbol}
+\leanok
 $$u_t - \sum_{i,j=1}^n a^{ij} u_{x_i x_j} + \sum_{i=1}^n b^i u_{x_i} = 0.$$
 \end{example}
 
@@ -156,7 +198,9 @@ $$u_t - \sum_{i,j=1}^n a^{ij} u_{x_i x_j} + \sum_{i=1}^n b^i u_{x_i} = 0.$$
 \label{ex:fokker-planck-equation}
 \dcref{ch1:1.2.1.a.8}
 \group{Examples of PDE}
-\uses{def:kth-order-pde}
+\uses{def:kth-order-pde,def:linear-semilinear-quasilinear-fully-nonlinear}
+\lean{EvansLib.fokkerPlanckSymbol}
+\leanok
 $$u_t - \sum_{i,j=1}^n (a^{ij} u)_{x_i x_j} - \sum_{i=1}^n (b^i u)_{x_i} = 0.$$
 \end{example}
 
@@ -164,7 +208,9 @@ $$u_t - \sum_{i,j=1}^n (a^{ij} u)_{x_i x_j} - \sum_{i=1}^n (b^i u)_{x_i} = 0.$$
 \label{ex:wave-equation-example}
 \dcref{ch1:1.2.1.a.9}
 \group{Examples of PDE}
-\uses{def:kth-order-pde}
+\uses{def:kth-order-pde,def:linear-semilinear-quasilinear-fully-nonlinear}
+\lean{EvansLib.waveSymbol}
+\leanok
 $$u_{tt} - \Delta u = 0.$$
 \end{example}
 
@@ -172,7 +218,9 @@ $$u_{tt} - \Delta u = 0.$$
 \label{ex:telegraph-equation}
 \dcref{ch1:1.2.1.a.10}
 \group{Examples of PDE}
-\uses{def:kth-order-pde}
+\uses{def:kth-order-pde,def:linear-semilinear-quasilinear-fully-nonlinear}
+\lean{EvansLib.telegraphSymbol}
+\leanok
 $$u_{tt} + d u_t - u_{xx} = 0.$$
 \end{example}
 
@@ -180,7 +228,9 @@ $$u_{tt} + d u_t - u_{xx} = 0.$$
 \label{ex:general-wave-equation}
 \dcref{ch1:1.2.1.a.11}
 \group{Examples of PDE}
-\uses{def:kth-order-pde}
+\uses{def:kth-order-pde,def:linear-semilinear-quasilinear-fully-nonlinear}
+\lean{EvansLib.generalWaveSymbol}
+\leanok
 $$u_{tt} - \sum_{i,j=1}^n a^{ij} u_{x_i x_j} + \sum_{i=1}^n b^i u_{x_i} = 0.$$
 \end{example}
 
@@ -188,7 +238,9 @@ $$u_{tt} - \sum_{i,j=1}^n a^{ij} u_{x_i x_j} + \sum_{i=1}^n b^i u_{x_i} = 0.$$
 \label{ex:airys-equation}
 \dcref{ch1:1.2.1.a.12}
 \group{Examples of PDE}
-\uses{def:kth-order-pde}
+\uses{def:kth-order-pde,def:linear-semilinear-quasilinear-fully-nonlinear}
+\lean{EvansLib.airySymbol}
+\leanok
 $$u_t + u_{xxx} = 0.$$
 \end{example}
 
@@ -196,7 +248,9 @@ $$u_t + u_{xxx} = 0.$$
 \label{ex:beam-equation}
 \dcref{ch1:1.2.1.a.13}
 \group{Examples of PDE}
-\uses{def:kth-order-pde}
+\uses{def:kth-order-pde,def:linear-semilinear-quasilinear-fully-nonlinear}
+\lean{EvansLib.beamSymbol}
+\leanok
 $$u_t + u_{xxxx} = 0.$$
 \end{example}
 
@@ -207,7 +261,9 @@ $$u_t + u_{xxxx} = 0.$$
 \label{ex:eikonal-equation}
 \dcref{ch1:1.2.1.b.1}
 \group{Examples of PDE}
-\uses{def:kth-order-pde}
+\uses{def:kth-order-pde,def:linear-semilinear-quasilinear-fully-nonlinear}
+\lean{EvansLib.eikonalSymbol}
+\leanok
 $$|Du| = 1.$$
 \end{example}
 
@@ -215,7 +271,9 @@ $$|Du| = 1.$$
 \label{ex:nonlinear-poisson-equation}
 \dcref{ch1:1.2.1.b.2}
 \group{Examples of PDE}
-\uses{def:kth-order-pde}
+\uses{def:kth-order-pde,def:linear-semilinear-quasilinear-fully-nonlinear}
+\lean{EvansLib.nonlinearPoissonSymbol}
+\leanok
 $$-\Delta u = f(u).$$
 \end{example}
 
@@ -223,23 +281,35 @@ $$-\Delta u = f(u).$$
 \label{ex:p-laplacian-equation}
 \dcref{ch1:1.2.1.b.3}
 \group{Examples of PDE}
-\uses{def:kth-order-pde}
+\uses{def:kth-order-pde,def:linear-semilinear-quasilinear-fully-nonlinear}
+\lean{EvansLib.pLaplacianSymbol}
+\leanok
 $$\Div(|Du|^{p-2}Du) = 0.$$
+For a classical solution the divergence expands (chain rule) to
+$$|Du|^{p-2}\Delta u + (p-2)|Du|^{p-4} D^2u(Du,Du) = 0,$$
+which is quasilinear of order $2$ (the coefficients of $D^2u$ depend on $Du$), and reduces to Laplace's equation at $p = 2$.
 \end{example}
 
 \begin{example}[Minimal Surface Equation]
 \label{ex:minimal-surface-equation}
 \dcref{ch1:1.2.1.b.4}
 \group{Examples of PDE}
-\uses{def:kth-order-pde}
+\uses{def:kth-order-pde,def:linear-semilinear-quasilinear-fully-nonlinear}
+\lean{EvansLib.minimalSurfaceSymbol}
+\leanok
 $$\Div\left(\frac{Du}{(1+|Du|^2)^{1/2}}\right) = 0.$$
+For a classical solution the divergence expands to
+$$(1+|Du|^2)^{-1/2}\Delta u - (1+|Du|^2)^{-3/2} D^2u(Du,Du) = 0,$$
+which is quasilinear of order $2$.
 \end{example}
 
 \begin{example}[Monge--Amp\`ere Equation]
 \label{ex:monge-ampere-equation}
 \dcref{ch1:1.2.1.b.5}
 \group{Examples of PDE}
-\uses{def:kth-order-pde}
+\uses{def:kth-order-pde,def:linear-semilinear-quasilinear-fully-nonlinear}
+\lean{EvansLib.mongeAmpereSymbol}
+\leanok
 $$\det(D^2u) = f.$$
 \end{example}
 
@@ -247,23 +317,31 @@ $$\det(D^2u) = f.$$
 \label{ex:hamilton-jacobi-equation}
 \dcref{ch1:1.2.1.b.6}
 \group{Examples of PDE}
-\uses{def:kth-order-pde}
+\uses{def:kth-order-pde,def:linear-semilinear-quasilinear-fully-nonlinear}
+\lean{EvansLib.hamiltonJacobiSymbol}
+\leanok
 $$u_t + H(Du, x) = 0.$$
+First order. For a nonlinear Hamiltonian $H$ the equation is fully nonlinear: for the archetypal quadratic Hamiltonian $H(p,x) = |p|^2$ (so $u_t + |Du|^2 = 0$) the symbol is quadratic, not affine, in the top-order slot $Du$ (formalized as \lean{EvansLib.hamiltonJacobiQuadraticSymbol_isFullyNonlinearPDE}).
 \end{example}
 
 \begin{example}[Scalar Conservation Law]
 \label{ex:scalar-conservation-law}
 \dcref{ch1:1.2.1.b.7}
 \group{Examples of PDE}
-\uses{def:kth-order-pde}
+\uses{def:kth-order-pde,def:linear-semilinear-quasilinear-fully-nonlinear}
+\lean{EvansLib.conservationLawSymbol}
+\leanok
 $$u_t + \Div\mathbf{F}(u) = 0.$$
+For a classical solution the chain rule gives $u_t + \sum_i (F^i)'(u) u_{x_i} = 0$, quasilinear of order $1$ (the top-order coefficients $(F^i)'(u)$ depend on $u$).
 \end{example}
 
 \begin{example}[Inviscid Burgers' Equation]
 \label{ex:inviscid-burgers-equation}
 \dcref{ch1:1.2.1.b.8}
 \group{Examples of PDE}
-\uses{def:kth-order-pde,ex:scalar-conservation-law}
+\uses{def:kth-order-pde,def:linear-semilinear-quasilinear-fully-nonlinear,ex:scalar-conservation-law}
+\lean{EvansLib.burgersSymbol}
+\leanok
 $$u_t + uu_x = 0.$$
 \end{example}
 
@@ -271,7 +349,9 @@ $$u_t + uu_x = 0.$$
 \label{ex:scalar-reaction-diffusion-equation}
 \dcref{ch1:1.2.1.b.9}
 \group{Examples of PDE}
-\uses{def:kth-order-pde}
+\uses{def:kth-order-pde,def:linear-semilinear-quasilinear-fully-nonlinear}
+\lean{EvansLib.reactionDiffusionSymbol}
+\leanok
 $$u_t - \Delta u = f(u).$$
 \end{example}
 
@@ -279,24 +359,32 @@ $$u_t - \Delta u = f(u).$$
 \label{ex:porous-medium-equation}
 \dcref{ch1:1.2.1.b.10}
 \group{Examples of PDE}
-\uses{def:kth-order-pde}
+\uses{def:kth-order-pde,def:linear-semilinear-quasilinear-fully-nonlinear}
+\lean{EvansLib.nonlinearDiffusionSymbol}
+\leanok
 $$u_t - \Delta(u^\gamma) = 0.$$
+For a classical solution the chain rule gives $u_t - \gamma u^{\gamma-1}\Delta u - \gamma(\gamma-1)u^{\gamma-2}|Du|^2 = 0$, quasilinear of order $2$; formalized in the general nonlinear-diffusion form $u_t - \varphi'(u)\Delta u - \varphi''(u)|Du|^2 = 0$ with $\varphi(u) = u^\gamma$.
 \end{example}
 
 \begin{example}[Nonlinear Wave Equations]
 \label{ex:nonlinear-wave-equations}
 \dcref{ch1:1.2.1.b.11}
 \group{Examples of PDE}
-\uses{def:kth-order-pde}
+\uses{def:kth-order-pde,def:linear-semilinear-quasilinear-fully-nonlinear}
+\lean{EvansLib.nonlinearWaveSymbol,EvansLib.nonlinearWaveDivSymbol}
+\leanok
 $$u_{tt} - \Delta u = f(u),$$
 $$u_{tt} - \Div\,\mathbf{a}(Du) = 0.$$
+The first (reaction) form is semilinear of order $2$; the second (divergence) form expands to $u_{tt} - \sum_{i,j}(\partial a_j/\partial p_i)(Du)\,u_{x_ix_j} = 0$, quasilinear of order $2$.
 \end{example}
 
 \begin{example}[Korteweg--de Vries (KdV) Equation]
 \label{ex:kdv-equation}
 \dcref{ch1:1.2.1.b.12}
 \group{Examples of PDE}
-\uses{def:kth-order-pde}
+\uses{def:kth-order-pde,def:linear-semilinear-quasilinear-fully-nonlinear}
+\lean{EvansLib.kdvSymbol}
+\leanok
 $$u_t + uu_x + u_{xxx} = 0.$$
 \end{example}
 
@@ -310,28 +398,37 @@ $$u_t + uu_x + u_{xxx} = 0.$$
 \label{ex:linear-elasticity-equilibrium}
 \dcref{ch1:1.2.2.a.1}
 \group{Examples of PDE}
-\uses{def:kth-order-system-pde}
+\uses{def:kth-order-system-pde,def:system-linear-semilinear-quasilinear-fully-nonlinear}
+\lean{EvansLib.linearElasticityEquilibriumSymbol}
+\leanok
 $$\mu\Delta\mathbf{u} + (\lambda + \mu)D(\Div \mathbf{u}) = 0.$$
+A second-order linear system for the displacement $\mathbf{u} : \R^n \to \R^n$.
 \end{example}
 
 \begin{example}[Evolution Equations of Linear Elasticity]
 \label{ex:linear-elasticity-evolution}
 \dcref{ch1:1.2.2.a.2}
 \group{Examples of PDE}
-\uses{def:kth-order-system-pde,ex:linear-elasticity-equilibrium}
+\uses{def:kth-order-system-pde,def:system-linear-semilinear-quasilinear-fully-nonlinear,ex:linear-elasticity-equilibrium}
+\lean{EvansLib.linearElasticityEvolutionSymbol}
+\leanok
 $$\mathbf{u}_t - \mu\Delta\mathbf{u} - (\lambda + \mu)D(\Div \mathbf{u}) = 0.$$
+A second-order linear system: the time derivative $\mathbf{u}_t$ plus the (negated) elastic operator, both linear.
 \end{example}
 
 \begin{example}[Maxwell's Equations]
 \label{ex:maxwells-equations}
 \dcref{ch1:1.2.2.a.3}
 \group{Examples of PDE}
-\uses{def:kth-order-system-pde}
+\uses{def:kth-order-system-pde,def:non-square-linear-system}
+\lean{EvansLib.maxwellSymbol,EvansLib.maxwellSymbol_isLinearPDESystemGen}
+\leanok
 $$\begin{cases}
 \mathbf{E}_t = \curl \mathbf{B} \\
 \mathbf{B}_t = -\curl \mathbf{E} \\
 \Div \mathbf{B} = \Div \mathbf{E} = 0.
 \end{cases}$$
+For the electromagnetic field $\mathbf{u} = (\mathbf{E}, \mathbf{B}) : \R^4 \to \R^6$ (with $\mathbf{E} = (u^0,u^1,u^2)$, $\mathbf{B} = (u^3,u^4,u^5)$) this is a first-order homogeneous linear system. It is \emph{overdetermined}: the two curl equations contribute $3+3$ scalar equations and the two divergence constraints $1+1$ more, so there are $8$ equations for the $6$ unknowns; its symbol is valued in $\R^8$.
 \end{example}
 
 \subsubsection{Nonlinear Systems}
@@ -341,38 +438,50 @@ $$\begin{cases}
 \label{ex:system-conservation-laws}
 \dcref{ch1:1.2.2.b.1}
 \group{Examples of PDE}
-\uses{def:kth-order-system-pde,ex:scalar-conservation-law}
+\uses{def:kth-order-system-pde,def:system-linear-semilinear-quasilinear-fully-nonlinear,ex:scalar-conservation-law}
+\lean{EvansLib.conservationLawSystemSymbol}
+\leanok
 $$\mathbf{u}_t + \Div \mathbf{F}(\mathbf{u}) = 0.$$
+For a classical solution the chain rule gives $\mathbf{u}_t + \sum_i (D\mathbf{F}^i)(\mathbf{u})\,\mathbf{u}_{x_i} = 0$, quasilinear of order $1$ (the top-order coefficient matrices $D\mathbf{F}^i(\mathbf{u})$ depend on $\mathbf{u}$).
 \end{example}
 
 \begin{example}[Reaction-Diffusion System]
 \label{ex:reaction-diffusion-system}
 \dcref{ch1:1.2.2.b.2}
 \group{Examples of PDE}
-\uses{def:kth-order-system-pde,ex:scalar-reaction-diffusion-equation}
+\uses{def:kth-order-system-pde,def:system-linear-semilinear-quasilinear-fully-nonlinear,ex:scalar-reaction-diffusion-equation}
+\lean{EvansLib.reactionDiffusionSystemSymbol}
+\leanok
 $$\mathbf{u}_t - \Delta\mathbf{u} = \mathbf{f}(\mathbf{u}).$$
+A second-order semilinear system: the heat operator $\mathbf{u}_t - \Delta\mathbf{u}$ is linear and the reaction $\mathbf{f}(\mathbf{u})$ is lower order.
 \end{example}
 
 \begin{example}[Euler's Equations for Incompressible, Inviscid Flow]
 \label{ex:euler-equations-incompressible-inviscid}
 \dcref{ch1:1.2.2.b.3}
 \group{Examples of PDE}
-\uses{def:kth-order-system-pde}
+\uses{def:kth-order-system-pde,def:system-linear-semilinear-quasilinear-fully-nonlinear}
+\lean{EvansLib.eulerSymbol,EvansLib.eulerSymbol_isQuasilinearPDESystem}
+\leanok
 $$\begin{cases}
 \mathbf{u}_t + \mathbf{u} \cdot D\mathbf{u} = -D p \\
 \Div \mathbf{u} = 0.
 \end{cases}$$
+The velocity--pressure pair $(\mathbf{u}, p) : \R^{n+1} \to \R^{n+1}$ solves an $(n+1) \times (n+1)$ first-order system: the $n$ momentum equations $u^i_t + \sum_j u^j u^i_{x_j} + p_{x_i} = 0$ and incompressibility $\Div \mathbf{u} = \sum_j u^j_{x_j} = 0$. It is quasilinear of order $1$: the convective term carries the top-order derivative $u^i_{x_j}$ with coefficient $u^j$ depending on the lower-order jet $\mathbf{u}$.
 \end{example}
 
 \begin{example}[Navier--Stokes Equations for Incompressible, Viscous Flow]
 \label{ex:navier-stokes-equations-incompressible-viscous}
 \dcref{ch1:1.2.2.b.4}
 \group{Examples of PDE}
-\uses{def:kth-order-system-pde,ex:euler-equations-incompressible-inviscid}
+\uses{def:kth-order-system-pde,def:system-linear-semilinear-quasilinear-fully-nonlinear,ex:euler-equations-incompressible-inviscid}
+\lean{EvansLib.nsSymbol,EvansLib.nsSymbol_isSemilinearPDESystem}
+\leanok
 $$\begin{cases}
 \mathbf{u}_t + \mathbf{u} \cdot D\mathbf{u} - \Delta\mathbf{u} = -D p \\
 \Div \mathbf{u} = 0.
 \end{cases}$$
+Adding the viscous term $-\Delta\mathbf{u}$ to Euler's equations raises the order to $2$. The top-order operator $-\Delta\mathbf{u}$ is linear with constant coefficients, while the convective nonlinearity $\mathbf{u}\cdot D\mathbf{u}$ is of lower (first) order, so the system is \emph{semilinear} of order $2$; its lower-order part is exactly Euler's operator.
 \end{example}
 
 See Zwillinger \cite{Zwillinger1984} for a much more extensive listing of interesting PDE.
@@ -391,6 +500,8 @@ The informal notion of a well-posed problem captures many of the desirable featu
 \label{def:well-posed-problem}
 \dcref{ch1:1.3.1-def-1}
 \group{Well-Posedness}
+\lean{EvansLib.PDEProblem.IsWellPosed}
+\leanok
 We say that a given problem for a partial differential equation is \textit{well-posed} if
 
 (a) the problem in fact has a solution;
@@ -411,6 +522,8 @@ Now clearly it would be desirable to ``solve'' PDE in such a way that (a)--(c) h
 \dcref{ch1:1.3.1-def-2}
 \group{Well-Posedness}
 \uses{def:kth-order-pde}
+\lean{EvansLib.IsClassicalSolutionOn}
+\leanok
 Should we ask, for example, that a ``solution'' $u$ must be real analytic or at least infinitely differentiable? This might be desirable, but perhaps we are asking too much. Maybe it would be wiser to require a solution of a PDE of order $k$ to be at least $k$ times continuously differentiable. Then at least all the derivatives which appear in the statement of the PDE will exist and be continuous, although maybe certain higher derivatives will not exist. Let us informally call a solution with this much smoothness a \textit{classical} solution of the PDE: this is certainly the most obvious notion of solution.
 \end{definition}
 
@@ -505,24 +618,176 @@ Classify each of the partial differential equations in \cref{sec:pde-examples} a
 The next exercises provide some practice with the multiindex notation introduced in Appendix A.
 
 %ORIGINAL-NUMBER: 2
-\begin{exercise}
-Prove the \textit{Multinomial Theorem}
+\begin{proposition}[Multinomial Theorem]
+\label{ex:multinomial-theorem}
+\group{Multiindex Calculus}
+\lean{EvansLib.multinomial_theorem}
+\leanok
+For $x = (x_1, \ldots, x_n)$ and $k \in \N$, the \textit{Multinomial Theorem} states
 $$\left(x_1 + \ldots + x_n\right)^k = \sum_{|\alpha|=k} \binom{|\alpha|}{\alpha} x^\alpha,$$
 where $\binom{|\alpha|}{\alpha} := \frac{|\alpha|!}{\alpha!}$, $\alpha! = \alpha_1!\alpha_2! \cdots \alpha_n!$, and $x^\alpha = x_1^{\alpha_1} \cdots x_n^{\alpha_n}$. The sum is taken over all multiindices $\alpha = (\alpha_1, \ldots, \alpha_n)$ with $|\alpha| = k$.
-\end{exercise}
+\end{proposition}
+\begin{proof}
+\leanok
+Expand the $k$-fold product $(x_1 + \cdots + x_n)^k = \prod_{r=1}^{k}\bigl(\sum_{i=1}^n x_i\bigr)$ by the distributive law: it equals $\sum_{f} \prod_{r=1}^{k} x_{f(r)}$, summed over all functions $f : \{1,\ldots,k\} \to \{1,\ldots,n\}$. For such an $f$ put $\alpha_i := \#\{r : f(r) = i\}$; then $\alpha = (\alpha_1,\ldots,\alpha_n)$ is a multiindex with $|\alpha| = \sum_i \alpha_i = k$ and $\prod_{r} x_{f(r)} = x^\alpha$. Conversely, the number of functions $f$ giving rise to a fixed multiindex $\alpha$ is the number of ways to split the $k$ positions into ordered groups of sizes $\alpha_1, \ldots, \alpha_n$, namely $\frac{k!}{\alpha_1!\cdots\alpha_n!} = \binom{|\alpha|}{\alpha}$. Grouping the sum over $f$ by its associated $\alpha$ therefore gives $\sum_{|\alpha|=k} \binom{|\alpha|}{\alpha} x^\alpha$.
+\end{proof}
+
+\begin{definition}[Partial Derivative]
+\label{def:partial-derivative}
+\group{Multiindex Calculus}
+\lean{EvansLib.partialDeriv}
+\leanok
+For $f : \R^n \to \R$ and an index $i \in \{1, \ldots, n\}$, the \textit{$i$th
+partial derivative} is the directional derivative of $f$ along the $i$th standard
+basis vector $e_i$:
+$$\partial_{x_i} f (x) = Df(x)(e_i).$$
+\end{definition}
+
+\begin{definition}[Multiindex Partial Derivative]
+\label{def:multiindex-partial-derivative}
+\group{Multiindex Calculus}
+\uses{def:partial-derivative}
+\lean{EvansLib.multiPartial}
+\leanok
+For a multiindex $\alpha = (\alpha_1, \ldots, \alpha_n) \in \N^n$ and a function
+$f : \R^n \to \R$, the \textit{multiindex partial derivative} is
+$$D^\alpha f = \frac{\partial^{|\alpha|} f}{\partial x_1^{\alpha_1} \cdots \partial x_n^{\alpha_n}}
+  = \partial_{x_1}^{\alpha_1} \cdots \partial_{x_n}^{\alpha_n} f,$$
+each coordinate partial $\partial_{x_i}$ being applied $\alpha_i$ times, and
+$|\alpha| = \alpha_1 + \cdots + \alpha_n$.
+\end{definition}
+
+\begin{proposition}[Equality of Mixed Partial Derivatives]
+\label{prop:clairaut-partial-commute}
+\group{Multiindex Calculus}
+\uses{def:partial-derivative,def:multiindex-partial-derivative}
+\lean{EvansLib.partialDeriv_comm}
+\leanok
+For smooth $f : \R^n \to \R$ and indices $i, j$,
+$$\partial_{x_i}\partial_{x_j} f = \partial_{x_j}\partial_{x_i} f.$$
+Consequently $D^\alpha f$ does not depend on the order in which the coordinate
+partials are applied.
+\end{proposition}
+\begin{proof}
+\leanok
+Since $\partial_{x_j} f = Df(\cdot)(e_j)$, differentiating again gives, for the
+$C^2$ function $f$,
+$$\partial_{x_i}\partial_{x_j} f(x) = D\big(Df(\cdot)(e_j)\big)(x)(e_i)
+   = D^2 f(x)(e_i, e_j),$$
+where $D^2 f(x)$ is the second Fréchet derivative, a bilinear form. By the
+Clairaut--Schwarz theorem $D^2 f(x)$ is symmetric, so
+$D^2 f(x)(e_i, e_j) = D^2 f(x)(e_j, e_i) = \partial_{x_j}\partial_{x_i} f(x)$.
+Any two orderings of the coordinate partials in $D^\alpha f$ differ by a sequence
+of adjacent transpositions, each of which is an instance of this equality; hence
+$D^\alpha f$ is well defined.
+\end{proof}
+
+\begin{proposition}[Iterated Leibniz Rule Along One Axis]
+\label{prop:iterated-leibniz-one-axis}
+\group{Multiindex Calculus}
+\uses{def:partial-derivative}
+\lean{EvansLib.partialDeriv_iterate_mul}
+\leanok
+For smooth $u, v : \R^n \to \R$, an axis $i$ and $m \in \N$,
+$$\partial_{x_i}^m(uv) = \sum_{j=0}^m \binom{m}{j}\,
+  (\partial_{x_i}^j u)\,(\partial_{x_i}^{m-j} v).$$
+\end{proposition}
+\begin{proof}
+\leanok
+Fix $x$ and set $\gamma(t) = x + t e_i$. The one-variable restrictions
+$\tilde u(t) = u(\gamma(t))$ and $\tilde v(t) = v(\gamma(t))$ are smooth, and by
+the chain rule $\tilde u^{(k)}(t) = (\partial_{x_i}^k u)(\gamma(t))$ for every $k$
+(and likewise for $v$ and for the product $uv$, since restriction to the line
+commutes with multiplication). The one-variable Leibniz rule
+$(\tilde u\,\tilde v)^{(m)} = \sum_{j=0}^m \binom{m}{j}\tilde u^{(j)}\tilde v^{(m-j)}$,
+evaluated at $t = 0$, is exactly the claimed identity at $x$.
+\end{proof}
 
 %ORIGINAL-NUMBER: 3
-\begin{exercise}
-Prove \textit{Leibniz' formula}
-$$D^\alpha(uv) = \sum_{\beta \leq \alpha} \binom{\alpha}{\beta} D^\beta u D^{\alpha-\beta} v,$$
-where $u,v : \R^n \to \R$ are smooth, $\binom{\alpha}{\beta} := \frac{\alpha!}{\beta!(\alpha-\beta)!}$, and $\beta \leq \alpha$ means $\beta_i \leq \alpha_i$ $(i = 1, \ldots, n)$.
-\end{exercise}
+\begin{proposition}[Leibniz' Formula]
+\label{prop:leibniz-formula}
+\group{Multiindex Calculus}
+\uses{def:multiindex-partial-derivative,prop:clairaut-partial-commute,prop:iterated-leibniz-one-axis}
+\lean{EvansLib.multiPartial_mul}
+\leanok
+For smooth $u,v : \R^n \to \R$,
+$$D^\alpha(uv) = \sum_{\beta \leq \alpha} \binom{\alpha}{\beta} D^\beta u \, D^{\alpha-\beta} v,$$
+where $\binom{\alpha}{\beta} := \frac{\alpha!}{\beta!(\alpha-\beta)!} = \prod_{i=1}^n \binom{\alpha_i}{\beta_i}$, and $\beta \leq \alpha$ means $\beta_i \leq \alpha_i$ $(i = 1, \ldots, n)$.
+\end{proposition}
+\begin{proof}
+\leanok
+Induct on $|\alpha|$. If $|\alpha| = 0$ both sides equal $uv$. Otherwise pick $i$
+with $\alpha_i \geq 1$ and write $D^\alpha = \partial_{x_i} D^{\alpha - e_i}$,
+which is legitimate by \cref{prop:clairaut-partial-commute}. By the inductive
+hypothesis,
+$$D^{\alpha - e_i}(uv) = \sum_{\gamma \leq \alpha - e_i}
+   \binom{\alpha - e_i}{\gamma} (D^\gamma u)(D^{\alpha - e_i - \gamma} v).$$
+Applying $\partial_{x_i}$ and the first-order product rule
+$\partial_{x_i}(gh) = (\partial_{x_i}g)h + g(\partial_{x_i}h)$ to each summand,
+then using $\partial_{x_i} D^\gamma = D^{\gamma + e_i}$, the coefficient of
+$(D^\beta u)(D^{\alpha - \beta} v)$ becomes
+$\binom{\alpha - e_i}{\beta - e_i} + \binom{\alpha - e_i}{\beta}$. As
+$\binom{\alpha}{\beta} = \prod_k \binom{\alpha_k}{\beta_k}$ and only the $i$th
+factor differs, Pascal's rule
+$\binom{\alpha_i}{\beta_i} = \binom{\alpha_i - 1}{\beta_i - 1} + \binom{\alpha_i - 1}{\beta_i}$
+gives $\binom{\alpha}{\beta}$, completing the induction.
+\end{proof}
 
 %ORIGINAL-NUMBER: 4
-\begin{exercise}
-Assume that $f : \R^n \to \R$ is smooth. Prove
-$$f(x) = \sum_{|\alpha| \leq k} \frac{1}{\alpha!} D^\alpha f(0) x^\alpha + O(|x|^{k+1}) \quad \text{as } x \to 0$$
-for each $k = 1, 2, \ldots$ This is \textit{Taylor's formula} in multiindex notation.
+\begin{proposition}[Directional Derivatives via the Multinomial Theorem]
+\label{prop:directional-derivative-multinomial}
+\group{Multiindex Calculus}
+\uses{def:multiindex-partial-derivative,prop:clairaut-partial-commute,ex:multinomial-theorem}
+\lean{EvansLib.iteratedDeriv_scaled_line_multinomial}
+\leanok
+Let $f : \R^n \to \R$ be smooth and fix $x \in \R^n$. The one-variable function
+$g(t) = f(tx)$ satisfies, for every $j \in \N$,
+$$g^{(j)}(0) = \sum_{|\alpha|=j} \binom{j}{\alpha} D^\alpha f(0)\, x^\alpha,$$
+where $\binom{j}{\alpha} = j!/\alpha!$ is the multinomial coefficient and
+$x^\alpha = x_1^{\alpha_1}\cdots x_n^{\alpha_n}$.
+\end{proposition}
+\begin{proof}
+\leanok
+Write $D_x h(y) := Dh(y)(x) = \sum_{i=1}^n x_i\,\partial_{x_i} h(y)$ for the
+directional derivative of $h$ along $x$. Applying the chain rule to the line
+$t \mapsto tx$ shows that the $j$-th ordinary derivative of $g$ is the $j$-fold
+directional derivative evaluated along the line, $g^{(j)}(t) = (D_x^{\,j} f)(tx)$;
+in particular $g^{(j)}(0) = (D_x^{\,j}f)(0)$. Since the coordinate partials commute
+(\cref{prop:clairaut-partial-commute}), the operator power
+$D_x^{\,j} = \bigl(\sum_i x_i\partial_{x_i}\bigr)^j$ expands by the Multinomial
+Theorem as $D_x^{\,j} = \sum_{|\alpha|=j}\binom{j}{\alpha} x^\alpha D^\alpha$;
+evaluating at $0$ gives the claim. The operator expansion is proved by induction
+on $j$: differentiating $\sum_{|\alpha|=j}\binom{j}{\alpha}x^\alpha D^\alpha f$ once
+more along $x$ sends each $\alpha$ to $\alpha + e_i$ with weight $x_i$, and the
+Pascal relation $\sum_{i\,:\,\beta_i\geq 1}\binom{j}{\beta-e_i} = \binom{j+1}{\beta}$
+recombines the coefficients.
+\end{proof}
 
-(Hint: Fix $x \in \R^n$ and consider the function of one variable $g(t) := f(tx)$.)
-\end{exercise}
+\begin{proposition}[Taylor's Formula in Multiindex Notation]
+\label{prop:taylor-multiindex}
+\group{Multiindex Calculus}
+\uses{def:multiindex-partial-derivative,prop:directional-derivative-multinomial}
+\lean{EvansLib.taylor_multiindex}
+\leanok
+Assume that $f : \R^n \to \R$ is smooth. Then for each $k = 1, 2, \ldots$,
+$$f(x) = \sum_{|\alpha| \leq k} \frac{1}{\alpha!} D^\alpha f(0) x^\alpha + O(|x|^{k+1}) \quad \text{as } x \to 0.$$
+This is \textit{Taylor's formula} in multiindex notation.
+\end{proposition}
+\begin{proof}
+\leanok
+Fix $x$ and set $g(t) = f(tx)$, so that $g(1) = f(x)$ and $g$ is smooth. By the
+one-variable Taylor theorem with Lagrange remainder there is $\xi \in (0,1)$ with
+$$g(1) = \sum_{j=0}^{k}\frac{g^{(j)}(0)}{j!} + \frac{g^{(k+1)}(\xi)}{(k+1)!}.$$
+By \cref{prop:directional-derivative-multinomial} and
+$\binom{j}{\alpha}/j! = 1/\alpha!$ (for $|\alpha| = j$),
+$$\frac{g^{(j)}(0)}{j!} = \sum_{|\alpha|=j}\frac{1}{\alpha!}D^\alpha f(0)\, x^\alpha,$$
+so summing over $j \leq k$ produces the multiindex Taylor polynomial. For the
+remainder, \cref{prop:directional-derivative-multinomial} at the base point
+$\xi x$ gives
+$g^{(k+1)}(\xi) = \sum_{|\alpha|=k+1}\binom{k+1}{\alpha} D^\alpha f(\xi x)\, x^\alpha$.
+Each $D^\alpha f$ is continuous, hence bounded by some constant $M$ on the closed
+unit ball; for $|x| \leq 1$ and $\xi \in (0,1)$ the point $\xi x$ lies in that
+ball, while $|x^\alpha| \leq |x|^{k+1}$ whenever $|\alpha| = k+1$. Hence
+$|g^{(k+1)}(\xi)| \leq \bigl(\sum_{|\alpha|=k+1}\binom{k+1}{\alpha} M\bigr)|x|^{k+1}$,
+and the remainder is $O(|x|^{k+1})$ as $x \to 0$.
+\end{proof}
