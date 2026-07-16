@@ -1,6 +1,6 @@
 import PetersenLib.Ch05.DistanceEDistBridge
 import PetersenLib.Ch05.GaussLemma
-import OpenGALib.Riemannian.Exponential.NormalBallEDist
+import PetersenLib.Vendored.OpenGA.Exponential.NormalBallEDist
 
 /-!
 # Petersen Ch. 5, §5.5.2 — short geodesics are segments (the distance lower bound)
@@ -50,7 +50,7 @@ open scoped Manifold Topology ContDiff ENNReal
 
 namespace PetersenLib
 
-open Riemannian Riemannian.Geodesic
+open PetersenLib.Geodesic
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
   [Module.Finite ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -85,10 +85,6 @@ theorem expMap_riemannianDistance_ge (g : RiemannianMetric I M) (p : M) :
       = g.metricInner p v v := by
     rw [chartMetricInner_extChartAt_eq_metricInner (I := I) g p (mem_chart_source H p) v v,
       trivializationAt_symm_self]
-    -- the shared lemma yields `Riemannian.RiemannianMetric.metricInner`; Petersen's
-    -- `metricInner` is the same projection `g.inner`.
-    simp only [Riemannian.RiemannianMetric.metricInner_apply,
-      PetersenLib.RiemannianMetric.metricInner_apply]
   -- lower bound on the mathlib edistance: every `C¹` competitor is at least as
   -- long as the radial geodesic, so their infimum `riemannianEDist` is too
   have hge : ENNReal.ofReal (Real.sqrt (g.metricInner p v v))

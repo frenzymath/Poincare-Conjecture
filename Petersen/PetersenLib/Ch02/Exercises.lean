@@ -46,8 +46,6 @@ noncomputable section
 
 namespace PetersenLib
 
-open Riemannian
-
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -255,6 +253,30 @@ theorem exercise2_5_17 {g : RiemannianMetric I M} (D : RiemannianConnection I g)
       = g.metricInner p (D.cov p v X) (X p) := g.metricInner_comm ..
   rw [h0, hsym] at hcompat
   linarith
+
+/-! ## Exercise 2.5.18 — Lie and covariant derivatives agree where a tensor vanishes -/
+
+/-- **Math.** **Exercise 2.5.18** (Petersen §2.5): if a `(0, k)`-tensor field
+`T` vanishes at `p` (`T Z p = 0` for every tuple `Z` — the faithful statement
+that the multilinear map `T_p` is zero), then its Lie derivative and covariant
+derivative agree there, `L_X T|_p = ∇_X T|_p`, for any vector field `X` and any
+affine connection `∇`.  Both derivatives differ from `D_X(T(Y))` only by
+correction terms of the form `T(…, Wᵢ, …)` — the bracket `[X, Yᵢ]` for `L_X`
+and `∇_X Yᵢ` for `∇` (whose difference is `∇_{Yᵢ}X` by torsion) — and every such
+term is annihilated by `T` at `p`.  In particular, at a critical point of a
+function the metric-correction term of the Hessian drops out, which is the
+metric-independence of the second derivative there. -/
+theorem exercise2_5_18 (D : AffineConnection I M)
+    (X : Π x : M, TangentSpace I x) {k : ℕ} (T : TensorOperator I M k)
+    (Y : Fin k → Π x : M, TangentSpace I x) {p : M}
+    (hT0 : ∀ Z : Fin k → Π x : M, TangentSpace I x, T Z p = 0) :
+    lieDerivativeTensor I X T Y p = covariantDerivativeTensor D X T Y p := by
+  rw [lieDerivativeTensor_formula, covariantDerivativeTensor_formula]
+  have h1 : ∑ i, T (Function.update Y i (lieDerivativeVectorField I X (Y i))) p = 0 :=
+    Finset.sum_eq_zero fun i _ => hT0 _
+  have h2 : ∑ i, T (Function.update Y i (D.covField X (Y i))) p = 0 :=
+    Finset.sum_eq_zero fun i _ => hT0 _
+  rw [h1, h2]
 
 /-! ## Exercise 2.5.1 — uniqueness of the Euclidean connection -/
 

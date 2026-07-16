@@ -47,8 +47,6 @@ noncomputable section
 
 namespace PetersenLib
 
-open Riemannian
-
 /-! ## The curvature eigenvalues of a product of spheres -/
 
 section Algebraic
@@ -146,7 +144,7 @@ theorem productSphereCurvature (e : OrthonormalBasis (ι₁ ⊕ ι₂) ℝ V)
         ((if p = r then (1 : ℝ) else 0) * (if q = s then (1 : ℝ) else 0)
           - (if p = s then (1 : ℝ) else 0) * (if q = r then (1 : ℝ) else 0))) ∧
     (∀ v w : V, ⟪v, v⟫ = 1 → ⟪w, w⟫ = 1 → ⟪v, w⟫ = 0 →
-      sectionalCurvature B v w ∈ Set.Icc 0 (max a b)) := by
+      algSectionalCurvature B v w ∈ Set.Icc 0 (max a b)) := by
   have hdiag := productSphereDiagonalization e a b hfac1 hfac2 hmix
   refine ⟨hdiag, fun v w hv hw hvw => ?_⟩
   refine secBoundsFromDiagonalCurvatureOperator hB e hdiag ?_ ?_ hv hw hvw
@@ -186,7 +184,7 @@ theorem productSphereRicciEinstein [FiniteDimensional ℝ V] [Nonempty ι₁] [N
     (∀ i : ι₁, ricciForm hB (e (.inl i)) (e (.inl i)) = ((Fintype.card ι₁ : ℝ) - 1) * a) ∧
     (∀ j : ι₂, ricciForm hB (e (.inr j)) (e (.inr j)) = ((Fintype.card ι₂ : ℝ) - 1) * b) ∧
     (∀ p q : ι₁ ⊕ ι₂, p ≠ q → ricciForm hB (e p) (e q) = 0) ∧
-    (scalarCurvature hB =
+    (algScalarCurvature hB =
       (Fintype.card ι₁ : ℝ) * ((Fintype.card ι₁ : ℝ) - 1) * a
         + (Fintype.card ι₂ : ℝ) * ((Fintype.card ι₂ : ℝ) - 1) * b) ∧
     ((∃ lam0 : ℝ, ∀ p : ι₁ ⊕ ι₂, ricciForm hB (e p) (e p) = lam0) ↔
@@ -240,10 +238,10 @@ theorem productSphereRicciEinstein [FiniteDimensional ℝ V] [Nonempty ι₁] [N
     rw [hdiag]
     simp [hpr', hqr', Ne.symm hpq']
   -- Scalar curvature: sum of the Ricci diagonal.
-  have hscal : scalarCurvature hB =
+  have hscal : algScalarCurvature hB =
       (Fintype.card ι₁ : ℝ) * ((Fintype.card ι₁ : ℝ) - 1) * a
         + (Fintype.card ι₂ : ℝ) * ((Fintype.card ι₂ : ℝ) - 1) * b := by
-    rw [scalarCurvature_eq_sum_ricci hB e, Fintype.sum_sum_type]
+    rw [algScalarCurvature_eq_sum_ricci hB e, Fintype.sum_sum_type]
     simp only [hL, hR, Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
     ring
   refine ⟨hL, hR, hoff, hscal, ?_⟩

@@ -55,8 +55,6 @@ noncomputable section
 
 namespace PetersenLib
 
-open Riemannian
-
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -354,5 +352,78 @@ theorem distanceFunction_points (n : ℕ) (y : EuclideanSpace ℝ (Fin n)) :
     field_simp
 
 end DistanceToPoint
+
+/-! ## §3.2.2 — Example 3.2.7: the distance to a (flat) submanifold -/
+
+section DistanceToSubmanifold
+
+open Submodule
+
+/-- **Math.** **Example 3.2.7** (Petersen §3.2.2,
+`ex:pet-ch3-distance-to-submanifold`), the flat / totally-geodesic case.
+For a linear subspace `H ⊆ ℝⁿ` — the model of a flat, totally geodesic
+submanifold through the origin — the distance to `H`,
+`r(x) = ‖x − proj_H x‖ = ‖proj_{H^⊥} x‖`, is a **distance function** on the
+complement `ℝⁿ ∖ H`: it is smooth there (the norm of a continuous-linear image,
+away from its zero set) and solves the eikonal equation `|∇r| ≡ 1`, with
+`∇r = proj_{H^⊥}x / ‖proj_{H^⊥}x‖` the outward unit normal to `H`. The residual
+`proj_{H^⊥}x = x − proj_H x` is realized by `Hᗮ.starProjection` (Mathlib's
+`Submodule.starProjection`, `K.subtypeL ∘L orthogonalProjection K`); it vanishes
+exactly on `H` (`Hᗮᗮ = H`), which is why the eikonal set is `Hᶜ`.
+
+**Eng.** The book states this for an arbitrary submanifold `H ⊂ ℝⁿ` via its
+signed distance in normal coordinates `x = tN + y`; that general form
+additionally needs the tubular-neighbourhood / unique-nearest-point theorem to
+produce the coordinates. Taking `H` a linear subspace collapses the nearest
+point to the linear orthogonal projection, valid on **all** of `ℝⁿ ∖ H`, so the
+distance function is available globally there without any tubular-neighbourhood
+input. The self-adjoint-idempotent identity `⟨proj v, w⟩ = ⟨proj v, proj w⟩`
+(from `proj v ∈ Hᗮ` and `w − proj w ∈ H`) is what turns `∇r` into a unit vector. -/
+theorem distanceFunction_submanifold (n : ℕ)
+    (H : Submodule ℝ (EuclideanSpace ℝ (Fin n))) :
+    IsDistanceFunction (euclideanMetric n) (Hᶜ : Set (EuclideanSpace ℝ (Fin n)))
+      (fun x => ‖Hᗮ.starProjection x‖) := by
+  set P : EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n) :=
+    Hᗮ.starProjection with hP
+  -- `P x = proj_{Hᗮ} x` always lands in `Hᗮ`.
+  have hPmem : ∀ a, P a ∈ Hᗮ := fun a => Hᗮ.starProjection_apply_mem a
+  -- Off `H`, `proj_{Hᗮ} x ≠ 0` (else `x = x − proj_{Hᗮ} x ∈ Hᗮᗮ = H`).
+  have hne : ∀ x : EuclideanSpace ℝ (Fin n), x ∉ H → P x ≠ 0 := by
+    intro x hx hPx0
+    apply hx
+    have hmem := Hᗮ.sub_starProjection_mem_orthogonal x
+    rw [Submodule.orthogonal_orthogonal, ← hP, hPx0, sub_zero] at hmem
+    exact hmem
+  -- Self-adjoint + idempotent: `⟨P a, w⟩ = ⟨P a, P w⟩`, since `w − P w ∈ H ⟂ P a`.
+  have hsa : ∀ (a w : EuclideanSpace ℝ (Fin n)),
+      inner ℝ (P a) w = inner ℝ (P a) (P w) := by
+    intro a w
+    have hmem : w - P w ∈ H := by
+      have := Hᗮ.sub_starProjection_mem_orthogonal w
+      rwa [Submodule.orthogonal_orthogonal, ← hP] at this
+    have h0 : inner ℝ (P a) (w - P w) = 0 := inner_left_of_mem_orthogonal hmem (hPmem a)
+    rw [inner_sub_right, sub_eq_zero] at h0
+    exact h0
+  refine ⟨?_, ?_⟩
+  · -- Smoothness of `x ↦ ‖P x‖` on `Hᶜ` (norm smooth away from `0`, `P` smooth).
+    have hcd : ContDiffOn ℝ ∞ (fun x => ‖P x‖) (Hᶜ : Set _) := by
+      intro x hx
+      exact ((contDiffAt_norm ℝ (hne x hx)).comp x P.contDiff.contDiffAt).contDiffWithinAt
+    exact hcd.contMDiffOn
+  · -- Eikonal: `∇r = P x / ‖P x‖` is a unit vector.
+    intro x hx
+    have hPx : P x ≠ 0 := hne x hx
+    have hnP : ‖P x‖ ≠ 0 := norm_ne_zero_iff.mpr hPx
+    have hFD : HasFDerivAt (fun z => ‖P z‖) ((‖P x‖⁻¹ • innerSL ℝ (P x)).comp P) x :=
+      (hasFDerivAt_norm_ne_zero hPx).comp x P.hasFDerivAt
+    have hgrad : gradient (euclideanMetric n) (fun z => ‖P z‖) x = ‖P x‖⁻¹ • P x := by
+      refine (gradient_unique (euclideanMetric n) _ x _ (fun w => ?_)).symm
+      rw [euclideanMetric_apply, real_inner_smul_left, mfderiv_eq_fderiv, hFD.fderiv, hsa x w]
+      rfl
+    rw [hgrad, euclideanMetric_apply, real_inner_smul_left, real_inner_smul_right,
+      real_inner_self_eq_norm_sq]
+    field_simp
+
+end DistanceToSubmanifold
 
 end PetersenLib

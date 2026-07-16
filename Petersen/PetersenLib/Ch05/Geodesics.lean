@@ -1,7 +1,7 @@
-import OpenGALib.Riemannian.Geodesic.MaximalInterval
-import OpenGALib.Riemannian.Geodesic.Homogeneity
-import OpenGALib.Riemannian.Geodesic.InitialVelocity
-import OpenGALib.Riemannian.Geodesic.CovariantDerivative
+import PetersenLib.Vendored.OpenGA.Geodesic.MaximalInterval
+import PetersenLib.Vendored.OpenGA.Geodesic.Homogeneity
+import PetersenLib.Vendored.OpenGA.Geodesic.InitialVelocity
+import PetersenLib.Vendored.OpenGA.Geodesic.CovariantDerivative
 
 /-!
 # Petersen Ch. 5, §5.2 — Geodesics (GTM 171, 3rd ed.)
@@ -48,8 +48,6 @@ open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff
 
 namespace PetersenLib
-
-open Riemannian Riemannian.Geodesic
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
   [Module.Finite ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]

@@ -44,7 +44,7 @@ open scoped Manifold Topology ContDiff Matrix
 
 namespace PetersenLib
 
-open Riemannian Riemannian.Tensor
+open PetersenLib.Tensor
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]

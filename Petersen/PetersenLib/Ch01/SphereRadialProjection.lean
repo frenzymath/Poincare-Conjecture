@@ -193,7 +193,6 @@ theorem mfderiv_unitSphereProj_self {x : E} (hx : x ≠ 0) :
     mfderiv 𝓘(ℝ, E) (𝓡 n) unitSphereProj x x = 0 := by
   apply mfderiv_coe_sphere_injective
   rw [mfderiv_coe_unitSphereProj_apply hx x, fderiv_inv_norm_smul_self hx, map_zero]
-  rfl
 
 /-- **Math.** The radial projection is a submersion away from the origin:
 the scaled inclusion `p ↦ ‖x‖ • p` is a smooth right inverse through `x`,

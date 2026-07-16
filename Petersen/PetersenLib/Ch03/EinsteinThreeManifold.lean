@@ -34,8 +34,6 @@ noncomputable section
 
 namespace PetersenLib
 
-open Riemannian
-
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -284,5 +282,28 @@ theorem einstein_iff_hasConstantCurvature_of_finrank_three
       push_cast
       ring
     rwa [hck] at h1
+
+/-- **Math.** **Einstein metrics that are not of constant curvature** (Petersen
+§3.1.4, `rem:pet-ch3-einstein-not-constant-curvature-examples`): the
+*dimensional obstruction* that governs the search for such metrics.  By
+`prop:pet-ch3-ricci-sectional-relation` an Einstein metric of dimension `3` is
+forced to have constant curvature (`k/2` for Einstein constant `k`); hence a
+genuinely non-constant-curvature Einstein metric can only occur in dimension
+`≥ 4`.  This is precisely the content Petersen cites when he says "the search
+for such metrics must start in dimension `≥ 4`".
+
+The three illustrative example families Petersen lists — the product metric
+`S^n(1) × S^n(1)` (Einstein constant `n-1`), the Fubini–Study metric on `ℂP^n`
+(Einstein constant `2n+2`), and the generalized Schwarzschild doubly-warped
+product on `ℝ² × S^{n-2}` (Einstein constant `0`) — realise this in dimension
+`≥ 4`; those metric constructions are illustrative and are *not* formalised here
+(they require product/`ℂP^n`/warped-product curvature infrastructure beyond the
+chapter's main line).  What is formalised is the rigorous logical claim of the
+remark: the dimension-`3` obstruction.  It is the forward direction of
+`einstein_iff_hasConstantCurvature_of_finrank_three`. -/
+theorem einstein_examples {g : RiemannianMetric I M} (D : RiemannianConnection I g)
+    {k : ℝ} (hdim : Module.finrank ℝ E = 3) (hE : IsEinstein D k) :
+    HasConstantCurvature D (k / 2) :=
+  hasConstantCurvature_of_isEinstein_of_finrank_three D hdim hE
 
 end PetersenLib

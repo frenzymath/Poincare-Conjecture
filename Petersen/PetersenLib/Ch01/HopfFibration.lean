@@ -497,7 +497,6 @@ theorem exists_hopfHorizontal_mfderiv_coe (p : sphere (0 : WithLp 2 (ℂ × ℂ)
   have ht₀ker : mfderiv (𝓡 3) (𝓡 2) hopfMap p t₀ = 0 := by
     apply mfderiv_coe_sphere_radius_injective (1 / 2) (hopfMap p)
     rw [map_zero, mfderiv_coe_hopfMap_apply p t₀, ht₀, hopfDeriv_hopfVertical]
-    rfl
   -- hence `Dι(u) ⊥ i(z, w)` …
   have h := hu t₀ ht₀ker
   rw [sphereMetricUnit_apply, ht₀] at h

@@ -1,6 +1,6 @@
 import PetersenLib.Ch05.ShortGeodesics
-import OpenGALib.Riemannian.Exponential.RayODE
-import OpenGALib.Riemannian.Geodesic.ChartFlow
+import PetersenLib.Vendored.OpenGA.Exponential.RayODE
+import PetersenLib.Vendored.OpenGA.Geodesic.ChartFlow
 
 /-!
 # Petersen Ch. 5, §5.5.2 — `C^∞` regularity of the radial geodesic, and the distance
@@ -44,7 +44,7 @@ open scoped Manifold Topology ContDiff ENNReal
 
 namespace PetersenLib
 
-open Riemannian Riemannian.Geodesic Riemannian.Exponential
+open PetersenLib.Geodesic PetersenLib.Exponential
 
 /-- **Math.** **ODE regularity bootstrap.**  Let `Φ : F → F` be `C^∞` on an open
 set `Ω`, and let `z : ℝ → F` be a solution of the autonomous ODE `z'(t) = Φ(z t)`
@@ -206,10 +206,6 @@ theorem exists_curveLength_expMap_ray (g : RiemannianMetric I M) (p : M) :
   have hchart : chartMetricInner (I := I) g p (extChartAt I p p) v v = g.metricInner p v v := by
     rw [chartMetricInner_extChartAt_eq_metricInner (I := I) g p (mem_chart_source H p) v v,
       trivializationAt_symm_self]
-    -- the shared lemma yields `Riemannian.RiemannianMetric.metricInner`; Petersen's
-    -- `metricInner` is the same projection `g.inner`.
-    simp only [Riemannian.RiemannianMetric.metricInner_apply,
-      PetersenLib.RiemannianMetric.metricInner_apply]
   rw [hcl, hchart]
 
 /-- **Math.** **The radial geodesic realizes the distance from above.**  There is

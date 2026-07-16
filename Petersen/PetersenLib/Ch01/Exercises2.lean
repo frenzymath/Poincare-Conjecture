@@ -479,7 +479,6 @@ theorem hopfQuotientMap_eq_hopfMap_unitSphereProj {x : WithLp 2 (ℂ × ℂ)}
   show hopfMapAmbient (‖x‖⁻¹ • x)
     = hopfMapAmbient (unitSphereProj x : WithLp 2 (ℂ × ℂ))
   rw [coe_unitSphereProj hx]
-  rfl
 
 /-- **Eng.** The factorization holds on a neighborhood of any `x ≠ 0`. -/
 theorem hopfQuotientMap_eventuallyEq {x : WithLp 2 (ℂ × ℂ)} (hx : x ≠ 0) :
@@ -790,7 +789,7 @@ theorem exercise1_6_15 :
       intro x u v
       simp only [hgC, ContinuousLinearMap.add_apply, ContinuousLinearMap.coe_smul',
         Pi.smul_apply, ContinuousLinearMap.smulRight_apply, innerFormReal_apply,
-        innerSL_apply, ContinuousLinearMap.smul_apply, smul_eq_mul]
+        innerSL_apply_apply, ContinuousLinearMap.smul_apply, smul_eq_mul]
     refine ⟨gC, ?_, ?_, ?_⟩
     · -- smoothness on the punctured space
       intro x hx

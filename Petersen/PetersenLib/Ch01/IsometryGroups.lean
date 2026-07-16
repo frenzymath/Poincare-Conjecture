@@ -427,7 +427,6 @@ theorem mfderiv_coe_sphere_restrict_of_linearIsometryEquiv {r : ℝ} [Fact (0 < 
         (mfderiv (𝓡 n) (𝓡 n) f x)
       = OL.comp (mfderiv (𝓡 n) 𝓘(ℝ, V) ((↑) : sphere (0 : V) r → V) x) := by
     rw [← h1, heq, h2, hOm]
-    rfl
   have := congrArg (fun T : TangentSpace (𝓡 n) x →L[ℝ] V => T u) hcomp
   simpa [hOL] using this
 
@@ -1042,7 +1041,6 @@ theorem mfderiv_hyperboloidInclusion_restrict {n : ℕ} {R : ℝ} [Fact (0 < R)]
       = LL.comp (mfderiv 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) 𝓘(ℝ, EuclideanSpace ℝ (Fin n) × ℝ)
           (hyperboloidInclusion n R) p) := by
     rw [← h1, heq, h2, hLm]
-    rfl
   have := congrArg
     (fun T : TangentSpace 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) p →L[ℝ]
       (EuclideanSpace ℝ (Fin n) × ℝ) => T u) hcomp

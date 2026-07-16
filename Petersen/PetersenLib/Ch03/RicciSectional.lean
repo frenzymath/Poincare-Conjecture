@@ -26,8 +26,6 @@ noncomputable section
 
 namespace PetersenLib
 
-open Riemannian
-
 /-! ## Algebraic preliminaries -/
 
 section AlgebraicCurvature

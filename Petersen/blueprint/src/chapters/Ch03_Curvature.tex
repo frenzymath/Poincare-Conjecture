@@ -508,7 +508,14 @@ pseudo-Riemannian setting; only formulas involving contractions need modificatio
 \begin{remark}[Einstein metrics that are not of constant curvature]
   \label{rem:pet-ch3-einstein-not-constant-curvature-examples}
   \lean{PetersenLib.einstein_examples}
-  \uses{def:pet-ch3-einstein-manifold}
+  \leanok
+  % Lean: the rigorous logical claim of the remark — the dimensional obstruction.
+  % By prop:pet-ch3-ricci-sectional-relation an Einstein 3-manifold has constant
+  % curvature, so non-constant-curvature Einstein metrics require dimension ≥ 4.
+  % The three illustrative example families (S^n×S^n, Fubini–Study CP^n,
+  % generalized Schwarzschild) are not formalised (they need product/CP^n/
+  % warped-product curvature infrastructure beyond the chapter's main line).
+  \uses{def:pet-ch3-einstein-manifold,prop:pet-ch3-ricci-sectional-relation}
   Three basic types of Einstein metrics without constant curvature: the product
   metric $S^n(1)\times S^n(1)$ with Einstein constant $n-1$; the Fubini--Study
   metric on $\mathbb{CP}^n$ with Einstein constant $2n+2$; and the generalized
@@ -516,6 +523,12 @@ pseudo-Riemannian setting; only formulas involving contractions need modificatio
   $\mathbb R^2\times S^{n-2}$ ($n\ge4$), a doubly warped product with Einstein
   constant $0$. By \cref{prop:pet-ch3-ricci-sectional-relation} the search for
   such metrics must start in dimension $\ge4$.
+  (Only this dimensional obstruction is formalised, as the theorem that a
+  dimension-$3$ Einstein metric has constant curvature so that non-constant
+  Einstein metrics require dimension $\ge4$; the three example metrics
+  themselves are illustrative and are not formalised, as they require
+  product / $\mathbb{CP}^n$ / warped-product curvature machinery beyond this
+  chapter's main line.)
   \source{petersen:page-0104}
 \end{remark}
 
@@ -1010,6 +1023,15 @@ pseudo-Riemannian setting; only formulas involving contractions need modificatio
 \begin{example}[Example 3.2.7]
   \label{ex:pet-ch3-distance-to-submanifold}
   \lean{PetersenLib.distanceFunction_submanifold}
+  \leanok
+  % Lean: the flat / totally-geodesic case is formalized in full
+  % (Ch03/DistanceFunctions.lean, distanceFunction_submanifold): for a linear
+  % subspace H ⊆ ℝⁿ, r(x)=‖proj_{H⊥}x‖=‖x−proj_H x‖ is a distance function on
+  % ℝⁿ∖H — smooth there and |∇r|≡1, with ∇r=proj_{H⊥}x/‖proj_{H⊥}x‖ the unit
+  % normal (self-adjoint-idempotence of the orthogonal projection makes it a
+  % unit vector).  The general curved-submanifold case r(x)=|xH| additionally
+  % needs the tubular-neighbourhood / unique-nearest-point theorem to produce
+  % the normal coordinates x=tN+y, which is not formalized.
   \uses{def:pet-ch3-distance-function}
   For a submanifold $H\subset\mathbb R^n$, $r(x)=|xH|=\inf\{|x-y|\mid y\in H\}$ is
   a distance function on some open $O$. When $H$ is an orientable hypersurface
@@ -1062,6 +1084,7 @@ pseudo-Riemannian setting; only formulas involving contractions need modificatio
 \begin{example}[Example 3.2.9]
   \label{ex:pet-ch3-zero-shape-operator-hyperplane}
   \lean{PetersenLib.zeroShapeOperator_iff_hyperplane}
+  \leanok
   \uses{def:pet-ch3-distance-function-notation}
   Let $H\subset\mathbb R^n$ be an orientable hypersurface with unit normal $N$
   and shape operator $S(v)=\nabla_vN$. If $S=0$ on $H$, $N$ is constant on $H$
@@ -1092,6 +1115,7 @@ pseudo-Riemannian setting; only formulas involving contractions need modificatio
 \begin{remark}[intrinsic versus extrinsic geometry]
   \label{rem:pet-ch3-intrinsic-extrinsic}
   \lean{PetersenLib.intrinsicExtrinsicGeometry}
+  \leanok
   \uses{ex:pet-ch3-zero-shape-operator-hyperplane}
   Intrinsic geometry of $(M,g)$ is everything computable without reference to an
   ambient isometric immersion; extrinsic geometry studies how an isometric
@@ -1425,6 +1449,19 @@ reference for foundational material).
 \begin{remark}[Exercise 3.4.1]
   \label{rem:pet-ch3-ex-1}
   \lean{PetersenLib.exercise3_4_1}
+  \leanok
+  % Lean: self-contained coordinate proof (Ch03/EuclideanImmersionCurvature.lean),
+  % decoupled from the manifold machinery.  The induced metric g_{ij}=⟨∂_iu,∂_ju⟩,
+  % its inverse, the Christoffel symbols Γ_{k,ij}=⟨∂²_{ij}u,∂_ku⟩ (= the usual
+  % ½(∂g+∂g−∂g)), and the induced connection ∇^M are built as plain fderiv/matrix
+  % analysis; the second fundamental form II_{ij}=∂²_{ij}u−∇^M_{∂_i}∂_j is the
+  % normal part.  `gaussEquation` proves the Gauss / Theorema Egregium identity
+  % R_{ijkl}=⟨II_{jk},II_{il}⟩−⟨II_{ik},II_{jl}⟩ — the third derivatives cancel by
+  % Clairaut symmetry, and the projection is used only *through* the pairing
+  % ⟨II,∂_lu⟩=0, so the inverse Gram matrix is never differentiated.  The node
+  % itself (`exercise3_4_1`) is the resulting **jet invariance**: two smooth
+  % parametrizations with equal first and second partials at a point induce the
+  % same mixed curvature R^l_{ijk}=∑_p g^{lp}R_{ijkp} there.
   \uses{def:pet-ch3-curvature-tensor}
   Let $M$ be an $n$-dimensional submanifold of $\mathbb R^{n+m}$ with the induced
   metric, given locally by a parametrization $u^s(x^1,\dots,x^n)$,
@@ -1461,6 +1498,7 @@ reference for foundational material).
 \begin{remark}[Exercise 3.4.4]
   \label{rem:pet-ch3-ex-4}
   \lean{PetersenLib.exercise3_4_4}
+  \leanok
   \uses{thm:pet-ch3-tangential-curvature-equation,thm:pet-ch3-normal-curvature-equation}
   For a distance function $r=f:M\to\mathbb R$, show the tangential and mixed
   curvature equations can be written as
@@ -1543,15 +1581,30 @@ reference for foundational material).
 \begin{remark}[Exercise 3.4.11]
   \label{rem:pet-ch3-ex-11}
   \lean{PetersenLib.exercise3_4_11}
+  \leanok
+  % Lean: the tangential/normal splitting of the ambient tangent bundle is
+  % encoded, exactly as in exercise3_4_14, by the smooth field of orthogonal
+  % projections P onto the normal bundle; ∇^M = shapeTangent = (∇·)^⊤ is the
+  % induced connection, T = normalCov = (∇·)^⊥ the (vector-valued) second
+  % fundamental form, ∇^⊥ = normalCov the normal connection.  Since ∇_v W splits
+  % *definitionally* into (∇_v W)^⊤ + (∇_v W)^⊥, expanding each second covariant
+  % derivative gives the four (⊤/⊥)×(⊤/⊥) blocks that assemble into R^M, the
+  % shape terms, and the ∇^⊥T terms; the only non-formal inputs are additivity
+  % of ∇ over a field split, torsion-freeness, and integrability P([X,Y])=0 of
+  % the tangent distribution (automatic on a genuine submanifold).  The
+  % statement is proved as a pure operator identity for any smooth X,Y,Z with
+  % P([X,Y]_p)=0; no idempotence/self-adjointness of P is needed for it.
   \uses{thm:pet-ch3-tangential-curvature-equation}
   For $X,Y,Z$ tangent to $M$ (a submanifold with second fundamental form $T$ and
   normal connection $\nabla^\perp$), show
   \[
-    R^M(X,Y)Z=R^M(X,Y)Z+T_XT_YZ-T_YT_XZ+(\nabla^\perp_XT)_YZ-(\nabla^\perp_YT)_XZ,
+    \bar R(X,Y)Z=R^M(X,Y)Z+T_XT_YZ-T_YT_XZ+(\nabla^\perp_XT)_YZ-(\nabla^\perp_YT)_XZ,
   \]
-  where $(\nabla^\perp_XT)_YZ=\nabla^\perp_X(T_YZ)-T_{\nabla^M_XY}Z-T_Y\nabla^M_XZ$;
+  where $\bar R$ is the curvature of the ambient manifold and
+  $(\nabla^\perp_XT)_YZ=\nabla^\perp_X(T_YZ)-T_{\nabla^M_XY}Z-T_Y\nabla^M_XZ$;
   the tangential parts recover the Gauss equations, the normal parts the
-  Peterson--Codazzi--Mainardi equations.
+  Peterson--Codazzi--Mainardi equations. (The source prints $R^M$ on both sides;
+  the left-hand curvature is the ambient one $\bar R$, not the induced $R^M$.)
   \source{petersen:page-0122}
 \end{remark}
 
@@ -1568,6 +1621,8 @@ reference for foundational material).
 \begin{remark}[Exercise 3.4.13]
   \label{rem:pet-ch3-ex-13}
   \lean{PetersenLib.exercise3_4_13}
+  \leanok
+  % Lean: part (2) — the property forces constant curvature (n>2); part (1) needs space-form models (not yet formalized).
   \uses{def:pet-ch3-second-fundamental-form,def:pet-ch3-constant-curvature,rem:pet-ch3-ex-10}
   A hypersurface is \emph{totally geodesic} if its second fundamental form
   vanishes. (1) Show that the space forms $S^n_k$ have the property that any
@@ -1581,12 +1636,31 @@ reference for foundational material).
 \begin{remark}[Exercise 3.4.14]
   \label{rem:pet-ch3-ex-14}
   \lean{PetersenLib.exercise3_4_14}
+  \leanok
+  % Lean: the general-codimension normal bundle is encoded abstractly by its
+  % orthogonal projection P (idempotent, g-self-adjoint, smooth) onto the normal
+  % bundle over an open U; normal fields are the sections fixed by P. From P we
+  % build the normal connection ∇^⊥ = P∘∇, the tangential shape form T_vV = ∇_vV
+  % − P(∇_vV), and the normal curvature R^⊥. exercise3_4_14 proves (1) the two
+  % skew-symmetries (in X,Y and in V,W) and (2) the Ricci equations, for any
+  % smooth orthogonal splitting (no integrability of the tangent distribution
+  % needed). Tensoriality of R^⊥ (also part (1)) is exhibited by the Ricci
+  % equations, which write R^⊥ = R^M − (shape-form difference), a difference of
+  % genuine (0,4)-tensors; the substantive content — the skew-symmetries — is
+  % formalised, full C^∞-linearity is not re-derived.
   \uses{def:pet-ch3-second-fundamental-form}
   For tangent fields $X,Y$ and normal fields $V,W$ of a submanifold, define the
   normal curvature $R^\perp(X,Y,V,W)$. (1) Show $R^\perp$ is tensorial and
   skew-symmetric in $X,Y$ and in $V,W$. (2) Show
   $R^M(X,Y,V,W)=R^\perp(X,Y,V,W)+g_M(T_XV,T_YW)-g_M(T_YV,T_XW)$ (the
   \emph{Ricci equations}).
+  (The Lean formalisation encodes the tangent/normal splitting abstractly by the
+  orthogonal projection onto the normal bundle over an open set, and proves the
+  two skew-symmetries of part~(1) together with the Ricci equations of part~(2)
+  for any such smooth orthogonal splitting; the tensoriality of $R^\perp$ is
+  exhibited by the Ricci equations — which write $R^\perp$ as a difference of the
+  ambient $(0,4)$-curvature and a shape-form tensor — rather than re-derived as a
+  separate $C^\infty$-linearity statement.)
   \source{petersen:page-0123}
 \end{remark}
 
@@ -1619,6 +1693,12 @@ reference for foundational material).
 \begin{remark}[Exercise 3.4.17]
   \label{rem:pet-ch3-ex-17}
   \lean{PetersenLib.exercise3_4_17}
+  \leanok
+  % Lean: parts (1),(2),(3) — the complexification's structural facts (isotropy
+  % characterisation, isotropic-frame orthogonality with the √2-normalisation
+  % g(v_i,v_i)=1/2 that Petersen calls "orthonormal", and reality of the complex
+  % sectional curvature R_ℂ(v,w,w̄,v̄)). Parts (4),(5) (Berger quarter-pinching /
+  % curvature-operator positivity) are not yet formalised.
   \uses{def:pet-ch3-sectional-curvature}
   Let $T_{\mathbb C}M=TM\otimes\mathbb C$; for $v=v_1+iv_2\in T_{\mathbb C}M$
   ($v_1,v_2\in TM$), $\bar v=v_1-iv_2$, and any tensorial object on $TM$
@@ -1646,6 +1726,8 @@ reference for foundational material).
 \begin{remark}[Exercise 3.4.18]
   \label{rem:pet-ch3-ex-18}
   \lean{PetersenLib.exercise3_4_18}
+  \leanok
+  % Lean: parts (1),(3),(4) and the sec/scal halves of (2); the curvature-operator R halves of (2) omitted (follows from sec scaling).
   \uses{def:pet-ch3-sectional-curvature,def:pet-ch3-scalar-curvature,def:pet-ch3-curvature-operator,def:pet-ch3-ricci-curvature}
   Scaling $(M,g)$ to $(M,\lambda^2g)$: (1) show the connection and $(1,3)$-curvature
   tensor are unchanged; (2) $\sec,\operatorname{scal},\mathfrak R$ are all
@@ -1668,6 +1750,19 @@ reference for foundational material).
 \begin{remark}[Exercise 3.4.20 — Integrability for PDEs]
   \label{rem:pet-ch3-ex-20}
   \lean{PetersenLib.exercise3_4_20}
+  \leanok
+  % Lean: part (1) only — the NECESSITY of the integrability conditions
+  % (Ch03/PDEIntegrability.lean, exercise3_4_20).  Encoding P^i_k(x,u) as
+  % P : E → F → (E →L F), the system reads fderiv u = fun y ↦ P y (u y); the
+  % total x-derivative of the RHS is the chain-rule combination ∂₁P+(∂₂P)P, and
+  % its symmetry in the two directions is exactly the integrability condition
+  % ∂P^i_k/∂x^j+(∂P^i_k/∂u^l)P^l_j = ∂P^i_j/∂x^k+(∂P^i_j/∂u^l)P^l_k.  Proof:
+  % because u solves the PDE, this object is the mixed second derivative D²u,
+  % symmetric by Clairaut (second_derivative_symmetric_of_eventually) — no
+  % smoothness of P is needed, a C² solution suffices.  The converse
+  % sufficiency (part 2 = Frobenius theorem) and the flat-⟹-Cartesian-coords
+  % consequences (parts 3–4) need integral-manifold / PDE-existence machinery
+  % absent from Mathlib and PetersenLib, and are not formalized.
   \uses{prop:pet-ch3-curvature-coordinate-formula}
   For $P^i_k(x,u)$, $x=(x^1,\dots,x^n)$, $u=(u^1,\dots,u^m)$, consider
   $\partial u^i/\partial x^k=P^i_k(x,u(x))$, $u(x_0)=u_0$. (1) Show
@@ -1767,6 +1862,8 @@ reference for foundational material).
 \begin{remark}[Exercise 3.4.26]
   \label{rem:pet-ch3-ex-26}
   \lean{PetersenLib.exercise3_4_26}
+  \leanok
+  % Lean: first identity only (div-adjoint of the Schouten tensor = -1/(n-1) d(scal)); the Weyl-divergence identity needs (0,4)-tensor divergence infra (not yet formalized).
   \uses{rem:pet-ch3-ex-24,notation:pet-ch3-divergence-adjoint}
   Show $\nabla^*P=-\dfrac1{n-1}d\operatorname{scal}$ and
   $\nabla^*W(Z,X,Y)=\dfrac{n-3}2\big((\nabla_XP)(Y,Z)-(\nabla_YP)(X,Z)\big)$.
@@ -1789,16 +1886,25 @@ reference for foundational material).
 \begin{remark}[Exercise 3.4.28 — Cartan formalism]
   \label{rem:pet-ch3-ex-28}
   \lean{PetersenLib.exercise3_4_28}
+  \leanok
+  % Lean: parts (1)-(2) formalized for a smooth orthonormal frame -- skew-symmetry
+  % $\omega^i_j=-\omega^j_i$ (connectionForm_skew), the first structure equation
+  % $d\omega^i=\omega^j\wedge\omega^i_j$ (firstStructureEquation), and the second
+  % $d\omega^j_i=\omega^k_i\wedge\omega^j_k+\Omega^j_i$ (secondStructureEquation),
+  % using the intrinsic $d\theta(X,Y)=X\theta(Y)-Y\theta(X)-\theta([X,Y])$ and a
+  % frame Parseval identity (sum_metricInner_frame). The converse (that (1)
+  % determines the connection forms) and the surface case (3), whose
+  % $\Omega^1_2=\sec\cdot d\mathrm{vol}$ needs a Riemannian area form, are not formalized.
   \uses{def:pet-ch3-curvature-tensor}
   For a frame $E_1,\dots,E_n$, write the connection as $\nabla E_i=\omega^j_iE_j$
   (connection $1$-forms $\omega^j_i$), i.e.\ $\nabla_vE_i=\omega^j_i(v)E_j$; for
   an orthonormal frame with dual coframe $\omega^i$: (1) show $\omega^i_j=-\omega^j_i$
-  and $d\omega^i=\omega^i_j\wedge\omega^j_i$, and that these two equations
+  and $d\omega^i=\omega^j\wedge\omega^i_j$, and that these two equations
   conversely determine the connection forms from the orthonormal frame. (2)
   Viewing $\omega^j_i$ as an $\mathfrak{so}(n)$-valued $1$-form, define the
-  curvature forms $\Omega^i_j$ ($\mathfrak{so}(n)$-valued $2$-forms) by
-  $R(X,Y)E_i=\Omega^i_j(X,Y)E_j$; show
-  $d\omega^j_i=\omega^k_i\wedge\omega^j_k+\Omega^i_j$. (3) For surfaces, with
+  curvature forms $\Omega^j_i$ ($\mathfrak{so}(n)$-valued $2$-forms) by
+  $R(X,Y)E_i=\Omega^j_i(X,Y)E_j$; show
+  $d\omega^j_i=\omega^k_i\wedge\omega^j_k+\Omega^j_i$. (3) For surfaces, with
   orthonormal frame $E_1,E_2$ and coframe $\omega^1,\omega^2$, show
   $d\omega^1=\omega^2\wedge\omega^1_2$, $d\omega^2=-\omega^1\wedge\omega^1_2$,
   $d\omega^1_2=\Omega^1_2=\sec\cdot d\mathrm{vol}$.
@@ -1831,6 +1937,7 @@ reference for foundational material).
 \begin{remark}[Exercise 3.4.30]
   \label{rem:pet-ch3-ex-30}
   \lean{PetersenLib.exercise3_4_30}
+  \leanok
   \uses{rem:pet-ch3-ex-29,def:pet-ch3-curvature-operator}
   Using \cref{rem:pet-ch3-ex-29}, show the norm of the curvature operator on
   $\Lambda^2T_pM$ is bounded, $|\mathfrak R|_p\le c(n)|\sec|_p$, for a constant

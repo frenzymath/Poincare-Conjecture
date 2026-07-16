@@ -1,5 +1,5 @@
-import OpenGALib.Riemannian.Manifold.DoCarmoCh4Sectional
-import OpenGALib.Riemannian.Manifold.DoCarmoCh4Ricci
+import PetersenLib.Vendored.OpenGA.Manifold.DoCarmoCh4Sectional
+import PetersenLib.Vendored.OpenGA.Manifold.DoCarmoCh4Ricci
 
 /-!
 # Petersen Ch. 4, §4.1 — Computational Simplifications
@@ -38,8 +38,6 @@ open scoped RealInnerProductSpace
 noncomputable section
 
 namespace PetersenLib
-
-open Riemannian
 
 variable {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
 
@@ -281,13 +279,13 @@ theorem secBoundsFromDiagonalCurvatureOperator {B : V → V → V → V → ℝ}
     {lo hi : ℝ} (hlo : ∀ i j, i ≠ j → lo ≤ lam i j)
     (hhi : ∀ i j, i ≠ j → lam i j ≤ hi)
     {v w : V} (hv : ⟪v, v⟫ = 1) (hw : ⟪w, w⟫ = 1) (hvw : ⟪v, w⟫ = 0) :
-    sectionalCurvature B v w ∈ Set.Icc lo hi := by
+    algSectionalCurvature B v w ∈ Set.Icc lo hi := by
   have hwedge : wedgeSq v w = 1 := by
     unfold wedgeSq
     rw [hv, hw, hvw]
     ring
   have hnum := secNumerator_bounds_of_diagonal hB e hdiag hlo hhi hv hw hvw
-  unfold sectionalCurvature
+  unfold algSectionalCurvature
   rw [hwedge, div_one]
   exact hnum
 

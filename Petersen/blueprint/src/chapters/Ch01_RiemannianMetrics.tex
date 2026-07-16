@@ -332,11 +332,11 @@ recoverable from the text.
   \leanok
   \uses{def:pet-ch1-volume-form-local}
   On an oriented manifold one integrates $n$-forms, so on an oriented Riemannian
-  manifold one integrates a function $f$ by integrating $f\cdot\mathrm{vol}$. Every
-  manifold has an open dense $O\subset M$ on which $TO\cong O\times\mathbb{R}^n$ is
-  trivial, hence orientable, carrying an orthonormal frame; integrating over $O$
-  therefore lets one integrate functions on any Riemannian manifold, orientable or
-  not.
+  manifold one integrates a function $f$ against the measure $\mu$ induced by the
+  volume form $\mathrm{vol}_g$, as $\int_M f\,\mathrm{d}\mu$. Every manifold has an
+  open dense $O\subset M$ on which $TO\cong O\times\mathbb{R}^n$ is trivial, hence
+  orientable, carrying an orthonormal frame; integrating over $O$ therefore lets
+  one integrate functions on any Riemannian manifold, orientable or not.
   \source{petersen:page-0027}
 \end{remark}
 
@@ -510,6 +510,9 @@ recoverable from the text.
   isometries, there is a unique Riemannian metric on $G/H$ making $G\to G/H$ a
   Riemannian submersion; if the metric on $G$ is also left-invariant, $G$ acts by
   isometries on $G/H$, making $G/H$ homogeneous.
+  (The Lean formalization proves the existence and uniqueness of the submersion
+  metric under a general isometric-action hypothesis; the concluding homogeneity
+  clause is not formalized separately.)
   \source{petersen:page-0029}
 \end{remark}
 
@@ -568,11 +571,13 @@ recoverable from the text.
   \lean{PetersenLib.flatTorus}
   \leanok
   \uses{rem:pet-ch1-covering-metric}
-  Fixing a basis $v_1,v_2$ of $\mathbb{R}^2$, $\mathbb{Z}^2$ acts by isometric translations
-  $(n,m)\mapsto(x\mapsto x+nv_1+mv_2)$; the quotient is a torus $T^2$ with a flat
-  metric depending on $|v_1|,|v_2|,\angle(v_1,v_2)$, so distinct choices need not
-  be isometric. $T^2$ is itself an abelian Lie group and these metrics are
-  bi-invariant.
+  For the square lattice $\mathbb{Z}^2\subset\mathbb{R}^2$ the quotient is the flat torus
+  $T^2=S^1\times S^1$, carrying the product of the round circle metrics; it is flat
+  and, being a product of the abelian Lie group $S^1$ with itself, its metric is
+  bi-invariant. More generally, fixing any basis $v_1,v_2$ of $\mathbb{R}^2$,
+  $\mathbb{Z}^2$ acts by isometric translations $(n,m)\mapsto(x\mapsto x+nv_1+mv_2)$
+  and the quotient is a torus with a flat metric depending on
+  $|v_1|,|v_2|,\angle(v_1,v_2)$, so distinct choices need not be isometric.
   \source{petersen:page-0031}
 \end{example}
 
@@ -795,7 +800,7 @@ recoverable from the text.
   giving
   \[
     dt^2+\rho^2(t)ds_{n-1}^2
-    =\Big(\frac1{t^2}-\frac{\rho^2(t)}{t^4}\Big)\Big(\sum s^idx^i\Big)^2
+    =\Big(\frac1{t^2}-\frac{\rho^2(t)}{t^4}\Big)\Big(\sum x^idx^i\Big)^2
     +\frac{\rho^2(t)}{t^2}\sum(dx^i)^2.
   \]
   \source{petersen:page-0037,petersen:page-0038}
@@ -1539,6 +1544,10 @@ recoverable from the text.
   yes: the cylinder metric $dr^2+g_{S^n}$, i.e.\ $g_x(u,v)=\langle u_r,v_r\rangle
   +|x|^{-2}\langle u_T,v_T\rangle$ in the radial/tangential decomposition, whose
   horizontal vectors at $x$ are the Euclidean-horizontal ones scaled by $|x|$.
+  (The Lean formalization proves part~(2) for every $\mathbb{F}$, $n$ and target
+  metric via the scale-invariance obstruction, and parts~(1),(3) for the
+  representative case $\mathbb{F}=\mathbb{C}$, $n=1$ — the Hopf submersion
+  $S^3\to\mathbb{CP}^1=S^2(1/2)$.)
   \source{petersen:page-0053}
 \end{remark}
 
@@ -1552,6 +1561,9 @@ recoverable from the text.
   reparametrizes to unit speed; (3) show arc length extends to absolutely
   continuous curves, and that absolute continuity is well defined for curves in
   manifolds.
+  (The Lean formalization covers parts~(1),(2); part~(3) is not formalized, as
+  Mathlib has no theory of absolutely continuous curves in manifolds to state it
+  against.)
   \source{petersen:page-0053,petersen:page-0054}
 \end{remark}
 
@@ -1721,12 +1733,18 @@ recoverable from the text.
   over $S^2$ with Euler number $\pm k$ (away from the zero section this bundle
   is $(0,\infty)\times S^3/\mathbb{Z}_k$, realized as a submersion of $S^3\times\mathbb{R}^2$;
   $k=2$ gives $TS^2$, $k=1$ gives $\mathbb{RP}^2-\{\mathrm{pt}\}$).
+  (The Lean formalization establishes the analytic content — that the metric is a
+  Riemannian submersion staying positive and closing smoothly at the origin under
+  the stated derivative conditions; the topological identification of the bundle,
+  its Euler number $\pm k$, and the $TS^2$/$\mathbb{RP}^2-\{\mathrm{pt}\}$ cases
+  have no counterpart in Mathlib and are recorded here in prose only.)
   \source{petersen:page-0056,petersen:page-0057}
 \end{remark}
 
 \begin{remark}[Exercise 1.6.24 — bi-invariant metrics on compact Lie groups]
   \label{rem:pet-ch1-ex-24}
   \lean{PetersenLib.exercise1_6_24}
+  \leanok
   \uses{def:pet-ch1-left-invariant-metric,def:pet-ch1-volume-form-local}
   Let $G$ be a compact Lie group. (1) Show $G$ admits a bi-invariant metric, by
   averaging a left-invariant metric $g_l$ over right translations against the
@@ -1755,10 +1773,15 @@ recoverable from the text.
 \begin{remark}[Exercise 1.6.26 — averaging to a $G$-invariant metric]
   \label{rem:pet-ch1-ex-26}
   \lean{PetersenLib.exercise1_6_26}
+  \leanok
   \uses{def:pet-ch1-riemannian-manifold}
-  For a compact group $G$ acting on a manifold $M$, show $M$ admits a Riemannian
-  metric for which $G$ acts by isometries. Hint: first show any manifold admits
-  a Riemannian metric (via a partition of unity), then average it over $G$.
+  For a compact Lie group $G$ acting smoothly on a manifold $M$, show $M$ admits a
+  Riemannian metric for which $G$ acts by isometries. Hint: first show any manifold admits
+  a Riemannian metric (via a partition of unity), then average it against the normalised
+  Haar measure of $G$. Smoothness of the averaged section in the base point follows from
+  differentiation under the integral sign: on each chart the coordinate entries are scalar
+  parametric integrals over the compact $G$, whose all-order $x$-derivatives are jointly
+  continuous, hence $C^\infty$.
   \source{petersen:page-0058}
 \end{remark}
 
