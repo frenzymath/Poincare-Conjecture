@@ -13,15 +13,80 @@ The central unifying theme in current Riemannian geometry research is the notion
 
 To get a sense of the kinds of questions Riemannian geometers address and where these questions came from, let us look back at the very roots of our subject. The treatment of geometry as a mathematical subject began with Euclidean plane geometry, which you probably studied in secondary school. Its elements are points, lines, distances, angles, and areas; and its most fundamental relationship is \textbf{congruence}---two plane figures are congruent if one can be transformed into the other by a \textbf{\textit{rigid motion of the plane}}, which is a bijective transformation from the plane to itself that preserves distances. Here are a couple of typical theorems.
 
+\begin{definition}[rigid motion, congruence]
+\label{def:rigid-motion}
+\lean{AffineIsometryEquiv}
+\mathlibok
+A \emph{rigid motion} of a Euclidean space $E$ is a bijection $f\colon E\to E$ with
+$\norm{f(x)-f(y)} = \norm{x-y}$ for all $x,y\in E$. Two families of points $(v_i)_{i\in I}$ and
+$(w_i)_{i\in I}$ of $E$ are \emph{congruent} if there is a rigid motion $f$ of $E$ with $f(v_i)=w_i$
+for every $i$; two subsets of $E$ are congruent if some rigid motion carries the first onto the
+second. By the Mazur--Ulam theorem a distance-preserving bijection of $E$ is automatically affine, so
+the rigid motions of $E$ are exactly its affine isometric automorphisms.
+\end{definition}
+
+\begin{lemma}[isometry extension]
+\label{lem:isometry-extension}
+\uses{def:rigid-motion}
+\lean{LeeLib.Ch01.exists_affineIsometryEquiv_of_dist_eq}
+\leanok
+Let $E$ be a finite-dimensional Euclidean space and let $(v_i)_{i\in I}$ and $(w_i)_{i\in I}$ be
+nonempty families of points of $E$ satisfying $\norm{v_i-v_j} = \norm{w_i-w_j}$ for all $i,j\in I$.
+Then $(v_i)$ and $(w_i)$ are congruent.
+\end{lemma}
+\begin{proof}
+\uses{def:rigid-motion}
+Fix $i_0\in I$ and put $v_i' = v_i - v_{i_0}$ and $w_i' = w_i - w_{i_0}$. Polarization gives
+\[
+2\inner{v_i'}{v_j'} = \norm{v_i'}^2 + \norm{v_j'}^2 - \norm{v_i'-v_j'}^2
+ = \norm{v_i-v_{i_0}}^2 + \norm{v_j-v_{i_0}}^2 - \norm{v_i-v_j}^2,
+\]
+and the same identity for $w$. The hypothesis makes the two right-hand sides equal, so
+$\inner{v_i'}{v_j'} = \inner{w_i'}{w_j'}$ for all $i,j$.
+
+Let $c$ be a finitely supported family of reals. Expanding the square and using the previous line,
+\[
+\Bigl\lVert \sum_i c_i v_i' \Bigr\rVert^2 = \sum_{i,j} c_i c_j \inner{v_i'}{v_j'}
+ = \sum_{i,j} c_i c_j \inner{w_i'}{w_j'} = \Bigl\lVert \sum_i c_i w_i' \Bigr\rVert^2 .
+\]
+Hence the linear maps $c\mapsto \sum_i c_i v_i'$ and $c\mapsto \sum_i c_i w_i'$ have the same kernel,
+so $\sum_i c_i v_i' \mapsto \sum_i c_i w_i'$ is a well-defined linear map $L$ on the subspace
+$S = \operatorname{span}\{v_i' : i\in I\}$, and the displayed equality of norms says exactly that $L$
+is a linear isometry of $S$ into $E$.
+
+Because $E$ is finite-dimensional, $S^\perp$ and $(LS)^\perp$ have the same dimension, so $L$ extends
+to a linear isometry $g$ of $E$ into itself; being an injective endomorphism of a finite-dimensional
+space, $g$ is bijective. Then $f(x) = g(x - v_{i_0}) + w_{i_0}$ is a composite of a translation, a
+linear isometry and a translation, hence a rigid motion of $E$, and
+$f(v_i) = g(v_i') + w_{i_0} = w_i' + w_{i_0} = w_i$ for every $i$.
+\end{proof}
+
 \begin{theorem}[Side-Side-Side]
 \label{thm:side-side-side}
 \dcref{ch1:1.1}
+\uses{def:rigid-motion}
+\lean{LeeLib.Ch01.side_side_side_iff}
+\leanok
 Two Euclidean triangles are congruent if and only if the lengths of their corresponding sides are equal.
 \end{theorem}
+\begin{proof}
+\uses{lem:isometry-extension,def:rigid-motion}
+Let the triangles have vertices $a,b,c$ and $a',b',c'$. If a rigid motion $f$ satisfies $f(a)=a'$,
+$f(b)=b'$ and $f(c)=c'$, then, $f$ being distance-preserving, $\norm{a'-b'} = \norm{a-b}$ and likewise
+for the other two sides; so corresponding sides have equal lengths.
+
+Conversely, assume $\norm{a-b}=\norm{a'-b'}$, $\norm{b-c}=\norm{b'-c'}$ and $\norm{c-a}=\norm{c'-a'}$.
+Distances are symmetric and vanish on the diagonal, so these three equalities give
+$\norm{v_i-v_j} = \norm{w_i-w_j}$ for all $i,j$, where $(v_0,v_1,v_2)=(a,b,c)$ and
+$(w_0,w_1,w_2)=(a',b',c')$. The isometry extension lemma applied to these two families produces a
+rigid motion carrying each vertex of the first triangle to the corresponding vertex of the second.
+\end{proof}
 
 \begin{theorem}[Angle-Sum Theorem]
 \label{thm:angle-sum-theorem}
 \dcref{ch1:1.2}
+\lean{EuclideanGeometry.angle_add_angle_add_angle_eq_pi}
+\mathlibok
 The sum of the interior angles of a Euclidean triangle is $\pi$.
 \end{theorem}
 
@@ -36,14 +101,56 @@ After proving the basic facts about points and lines and the figures constructed
 \begin{theorem}[Circle Classification Theorem]
 \label{thm:circle-classification}
 \dcref{ch1:1.3}
+\uses{def:rigid-motion}
+\lean{LeeLib.Ch01.euclidean_circle_congruent_iff_radius_eq}
+\leanok
 Two circles in the Euclidean plane are congruent if and only if they have the same radius.
 \end{theorem}
+\begin{proof}
+\uses{def:rigid-motion}
+Let $C_i$ be the circle of centre $c_i$ and radius $R_i\ge 0$. A rigid motion preserves distances and
+is onto, so it preserves the diameter of a set. The diameter of a circle of radius $R$ is $2R$: two
+antipodal points of $C_i$ are at distance $2R$, and no two of its points are farther apart, since any
+$x,y\in C_i$ satisfy $\norm{x-y} \le \norm{x-c_i} + \norm{c_i-y} = 2R$. Hence if a rigid motion
+carries $C_1$ onto $C_2$ then $2R_1 = \operatorname{diam} C_1 = \operatorname{diam} C_2 = 2R_2$, so
+$R_1 = R_2$.
+
+Conversely, suppose $R_1 = R_2$. The translation $x\mapsto x + (c_2-c_1)$ is a rigid motion, and it
+carries $C_1$ onto $C_2$ because $\norm{(x + (c_2-c_1)) - c_2} = \norm{x-c_1}$.
+\end{proof}
 
 \begin{theorem}[Circumference Theorem]
 \label{thm:circumference-theorem}
 \dcref{ch1:1.4}
+\lean{LeeLib.Ch01.circumference_circle}
+\leanok
 The circumference of a Euclidean circle of radius $R$ is $2\pi R$.
 \end{theorem}
+\begin{proof}
+The circle of centre $c$ and radius $R\ge 0$ is traced by $\gamma(t) = c + R e^{it}$ for
+$t\in[0,2\pi]$, and its circumference is the length of $\gamma$, that is, the supremum of the
+inscribed polygonal perimeters $\sum_{k<n} \norm{\gamma(t_{k+1}) - \gamma(t_k)}$ over finite
+increasing subdivisions $t_0\le\dots\le t_n$ of $[0,2\pi]$. Since
+$e^{ix} - e^{iy} = e^{iy}(e^{i(x-y)}-1)$ and $\norm{e^{i\theta}-1} = 2\lvert\sin(\theta/2)\rvert$, the
+chords of $\gamma$ are given by
+\[
+\norm{\gamma(x)-\gamma(y)} = 2R\,\Bigl\lvert \sin\tfrac{x-y}{2} \Bigr\rvert .
+\]
+
+For the upper bound, $\lvert\sin\theta\rvert \le \lvert\theta\rvert$ shows $\gamma$ is $R$-Lipschitz,
+so every subdivision sum is at most $R\sum_{k<n}(t_{k+1}-t_k) = 2\pi R$; hence the length is at most
+$2\pi R$.
+
+For the lower bound, take the regular subdivision $t_k = 2\pi k/n$. Its sum is the perimeter of the
+inscribed regular $n$-gon,
+\[
+\sum_{k<n} 2R\,\sin\tfrac{\pi}{n} = 2\pi R\cdot\frac{\sin(\pi/n)}{\pi/n},
+\]
+which tends to $2\pi R$ as $n\to\infty$ because $\sin\theta/\theta \to 1$ as $\theta\to 0$. So the
+length is at least $2\pi R$.
+
+The two bounds agree, so the circumference is exactly $2\pi R$.
+\end{proof}
 
 If we want to continue our study of plane geometry beyond figures constructed from lines and circles, sooner or later we have to come to terms with other curves in the plane. An arbitrary curve cannot be completely described by one or two numbers such as length or radius; instead, the basic invariant is \textit{curvature}, which is defined using calculus and is a function of position on the curve.
 
@@ -62,12 +169,14 @@ Here are two typical theorems about plane curves.
 \begin{theorem}[Plane Curve Classification Theorem]
 \label{thm:plane-curve-classification}
 \dcref{ch1:1.5}
+\notready
 Suppose $\gamma$ and $\tilde{\gamma}: [a,b] \to \mathbb{R}^2$ are smooth, unit-speed plane curves with unit normal vector fields $N$ and $\tilde{N}$, and $\kappa_N(t), \kappa_{\tilde{N}}(t)$ represent the signed curvatures at $\gamma(t)$ and $\tilde{\gamma}(t)$, respectively. Then $\gamma$ and $\tilde{\gamma}$ are congruent by a direction-preserving congruence if and only if $\kappa_N(t) = \kappa_{\tilde{N}}(t)$ for all $t \in [a,b]$.
 \end{theorem}
 
 \begin{theorem}[Total Curvature Theorem]
 \label{thm:total-curvature}
 \dcref{ch1:1.6}
+\notready
 If $\gamma: [a,b] \to \mathbb{R}^2$ is a unit-speed simple closed curve such that $\gamma'(a) = \gamma'(b)$, and $N$ is the inward-pointing normal, then
 \[
 \int_a^b \kappa_N(t) \, dt = 2\pi.
@@ -117,12 +226,14 @@ Surface theory is a highly developed branch of geometry. Of all its results, two
 \begin{theorem}[Uniformization Theorem]
 \label{thm:uniformization-theorem}
 \dcref{ch1:1.7}
+\notready
 Every connected 2-manifold is diffeomorphic to a quotient of one of the constant-curvature model surfaces described above by a discrete group of isometries without fixed points. Thus every connected 2-manifold has a complete Riemannian metric with constant Gaussian curvature.
 \end{theorem}
 
 \begin{theorem}[Gauss--Bonnet Theorem]
 \label{thm:gauss-bonnet-theorem-preview}
 \dcref{ch1:1.8}
+\notready
 Suppose $S$ is a compact Riemannian 2-manifold. Then
 \[
 \int_S K \, dA = 2\pi \chi(S),
@@ -164,6 +275,7 @@ As we will see in Chapter 3, we again have three classes of constant (sectional)
 \begin{theorem}[Characterization of Constant-Curvature Metrics]
 \label{thm:characterization-constant-curvature}
 \dcref{ch1:1.9}
+\notready
 The complete, connected, $n$-dimensional Riemannian manifolds of constant sectional curvature are, up to isometry, exactly the Riemannian quotients of the form $\widetilde{M}/\Gamma$, where $\widetilde{M}$ is a Euclidean space, sphere, or hyperbolic space with constant sectional curvature, and $\Gamma$ is a discrete group of isometries of $\widetilde{M}$ that acts freely on $\widetilde{M}$.
 \end{theorem}
 
@@ -172,12 +284,14 @@ On the other hand, there are a number of powerful local-to-global theorems, whic
 \begin{theorem}[Cartan--Hadamard]
 \label{thm:cartan-hadamard-preview}
 \dcref{ch1:1.10}
+\notready
 Suppose $M$ is a complete, connected Riemannian $n$-manifold with all sectional curvatures less than or equal to zero. Then the universal covering space of $M$ is diffeomorphic to $\mathbb{R}^n$.
 \end{theorem}
 
 \begin{theorem}[Myers]
 \label{thm:myers}
 \dcref{ch1:1.11}
+\notready
 Suppose $M$ is a complete, connected Riemannian manifold with all sectional curvatures bounded below by a positive constant. Then $M$ is compact and has a finite fundamental group.
 \end{theorem}
 

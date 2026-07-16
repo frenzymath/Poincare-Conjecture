@@ -164,6 +164,81 @@ In other words, just set the last upper and lower indices equal and sum. Even mo
 Show that the trace on any pair of indices (one upper and one lower) is a well-defined linear map from $T^{(k+1,l+1)}(V)$ to $T^{(k,l)}(V)$.
 \end{exercise}
 
+\section{The Cauchy--Binet Formula}
+
+The determinant is multiplicative on square matrices, $\det(MN) = \det M \det N$. For a product $MN^{T}$ of a $k \times n$ matrix with the transpose of another, the corresponding statement expands $\det(MN^{T})$ as a sum of products of $k \times k$ minors. It is recorded here in the form used to construct the inner product on alternating tensors, and in a generalization in which one of the two determinants is replaced by an arbitrary alternating map.
+
+Throughout, $R$ is a commutative ring, $\iota$ and $\iota'$ are finite index sets with $\iota$ of cardinality $k$, and for a matrix $A$ with rows indexed by $\iota$ and columns by $\iota'$ and a map $s \colon \iota \to \iota'$ we write $A[\,\cdot\,, s]$ for the square matrix $(A_{i\,s(j)})_{i,j \in \iota}$ obtained by selecting the columns named by $s$, with repetition allowed.
+
+\begin{lemma}
+\label{lem:sum-sign-prod-det}
+\lean{Matrix.sum_sum_sign_mul_sign_mul_prod}
+\leanok
+Let $C$ be a square matrix over $R$ indexed by $\iota$. Then
+\[
+\sum_{\sigma \in S_\iota} \sum_{\tau \in S_\iota} \operatorname{sgn}(\sigma)\operatorname{sgn}(\tau) \prod_{i \in \iota} C_{\sigma(i)\,\tau(i)} = k!\,\det C .
+\]
+\end{lemma}
+\begin{proof}
+\leanok
+Fix $\sigma \in S_\iota$ and substitute $\tau = \rho\sigma$, which is a bijection of $S_\iota$ onto itself as $\rho$ ranges over $S_\iota$. Reindexing the product by $j = \sigma(i)$ gives $\prod_{i} C_{\sigma(i)\,\rho(\sigma(i))} = \prod_{j} C_{j\,\rho(j)}$, while $\operatorname{sgn}(\sigma)\operatorname{sgn}(\rho\sigma) = \operatorname{sgn}(\sigma)^2\operatorname{sgn}(\rho) = \operatorname{sgn}(\rho)$. Hence the inner sum equals
+\[
+\sum_{\rho \in S_\iota} \operatorname{sgn}(\rho) \prod_{j \in \iota} C_{j\,\rho(j)},
+\]
+which is the Leibniz expansion of $\det C^{T} = \det C$. The inner sum is therefore $\det C$ for every $\sigma$, and $S_\iota$ has $k!$ elements.
+\end{proof}
+
+\begin{proposition}
+\label{lem:cauchy-binet}
+\lean{Matrix.sum_det_submatrix_mul_det_submatrix}
+\leanok
+\uses{lem:sum-sign-prod-det}
+\textbf{(Cauchy--Binet formula.)} Let $M$ and $N$ be matrices over $R$ with rows indexed by $\iota$ and columns by $\iota'$. Then
+\[
+\sum_{s \colon \iota \to \iota'} \det\big(M[\,\cdot\,, s]\big)\,\det\big(N[\,\cdot\,, s]\big) = k!\,\det\big(MN^{T}\big),
+\]
+the sum running over all maps $s$, not only the injective or increasing ones.
+\end{proposition}
+\begin{proof}
+\leanok
+\uses{lem:sum-sign-prod-det}
+Expanding both determinants by the Leibniz formula and multiplying,
+\[
+\det\big(M[\,\cdot\,, s]\big)\det\big(N[\,\cdot\,, s]\big) = \sum_{\sigma, \tau \in S_\iota} \operatorname{sgn}(\sigma)\operatorname{sgn}(\tau) \prod_{i \in \iota} M_{\sigma(i)\,s(i)} N_{\tau(i)\,s(i)} .
+\]
+Summing over $s$ and exchanging the sums, the inner sum over $s$ of a product over $i$ becomes a product over $i$ of sums over $\iota'$:
+\[
+\sum_{s \colon \iota \to \iota'} \prod_{i \in \iota} M_{\sigma(i)\,s(i)} N_{\tau(i)\,s(i)} = \prod_{i \in \iota} \sum_{m \in \iota'} M_{\sigma(i)\,m} N_{\tau(i)\,m} = \prod_{i \in \iota} (MN^{T})_{\sigma(i)\,\tau(i)} .
+\]
+The result is now Lemma~\ref{lem:sum-sign-prod-det} applied to $C = MN^{T}$.
+\end{proof}
+
+The classical statement of Cauchy--Binet sums over the $k$-element subsets $S \subseteq \iota'$ rather than over all maps. The two agree: a map $s$ that repeats a value selects a matrix with two equal columns, so it contributes $0$; and each injective $s$ with image $S$ is one of the $k!$ reindexings of the increasing enumeration of $S$, each contributing the same value because the two sign changes cancel.
+
+The following generalization replaces the second determinant by an arbitrary alternating map. It is strictly stronger, since a determinant is an alternating function of the columns.
+
+\begin{lemma}
+\label{lem:alternating-cauchy-binet}
+\lean{AlternatingMap.sum_det_submatrix_smul_apply}
+\leanok
+Let $V$ and $N$ be $R$-modules, let $\theta \colon V^{\iota} \to N$ be alternating and $R$-multilinear, let $e \colon \iota' \to V$ be a family of vectors, and let $A$ be a matrix over $R$ with rows indexed by $\iota$ and columns by $\iota'$. Then
+\[
+\sum_{s \colon \iota \to \iota'} \det\big(A[\,\cdot\,, s]\big) \cdot \theta\big(e_{s(1)}, \ldots, e_{s(k)}\big) = k! \cdot \theta\Big(\sum_{m \in \iota'} A_{1m} e_m, \ldots, \sum_{m \in \iota'} A_{km} e_m\Big).
+\]
+\end{lemma}
+\begin{proof}
+\leanok
+Expand the right-hand side by multilinearity: it equals
+\[
+k! \sum_{u \colon \iota \to \iota'} \Big(\prod_{i \in \iota} A_{i\,u(i)}\Big)\,\theta\big(e_{u(1)}, \ldots, e_{u(k)}\big).
+\]
+For the left-hand side, expand $\det(A[\,\cdot\,, s])$ by the Leibniz formula and exchange the two sums, so that it becomes
+\[
+\sum_{\sigma \in S_\iota} \sum_{s \colon \iota \to \iota'} \operatorname{sgn}(\sigma)\Big(\prod_{i \in \iota} A_{\sigma(i)\,s(i)}\Big)\,\theta\big(e_{s(1)}, \ldots, e_{s(k)}\big).
+\]
+Fix $\sigma$ and substitute $s = u \circ \sigma$, a bijection of the set of maps $\iota \to \iota'$ onto itself. Reindexing the product by $j = \sigma(i)$ gives $\prod_{i} A_{\sigma(i)\,u(\sigma(i))} = \prod_{j} A_{j\,u(j)}$, and since $\theta$ is alternating, $\theta(e_{u(\sigma(1))}, \ldots, e_{u(\sigma(k))}) = \operatorname{sgn}(\sigma)\,\theta(e_{u(1)}, \ldots, e_{u(k)})$. The two signs multiply to $\operatorname{sgn}(\sigma)^2 = 1$, so the inner sum equals $\sum_{u} \big(\prod_{j} A_{j\,u(j)}\big)\theta(e_{u(1)}, \ldots, e_{u(k)})$ for every $\sigma$, and $S_\iota$ has $k!$ elements.
+\end{proof}
+
 \section{Symmetric Tensors}
 
 There are two classes of tensors that play particularly important roles in differential geometry: the symmetric and alternating tensors. Here we discuss the symmetric ones; we will take up alternating tensors later in this appendix when we discuss differential forms.
