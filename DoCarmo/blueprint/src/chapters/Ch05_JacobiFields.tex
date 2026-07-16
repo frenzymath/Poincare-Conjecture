@@ -76,6 +76,10 @@ The equation above is called the \emph{Jacobi equation}.
 \begin{definition}[Jacobi field]
   \label{def:dc-ch5-2-1}
   \dcref{ch5:2.1}
+  \lean{Riemannian.Jacobi.exists_jacobiField, Riemannian.Jacobi.jacobiField_eqOn}
+  \leanok
+  \uses{lem:dc-ch5-2-1-parallel-frame, lem:dc-ch5-2-1-ode, lem:dc-ch5-2-1-frame-reduction,
+    lem:dc-ch5-2-1-frame-existence, lem:dc-ch5-2-1-real-curvature}
   Let $\gamma:[0,a]\to M$ be a geodesic in $M$. A vector field $J$ along $\gamma$ is
   said to be a \emph{Jacobi field} if it satisfies the Jacobi equation (1), for all
   $t\in[0,a]$.
@@ -102,19 +106,197 @@ The equation above is called the \emph{Jacobi equation}.
   $\gamma$.
 \end{definition}
 
+The ingredients of the argument above are formalized in coordinate form:
+the parallel orthonormal frame $e_1(t),\dots,e_n(t)$
+(\cref{lem:dc-ch5-2-1-parallel-frame}); the existence/uniqueness of the
+second-order linear system it reduces the Jacobi equation to
+(\cref{lem:dc-ch5-2-1-ode}); the intrinsic reduction $J=\sum_i f_i e_i \Rightarrow
+\frac{D^2J}{dt^2}=\sum_i f_i''e_i$ and the pairing with $e_j$
+(\cref{lem:dc-ch5-2-1-frame-reduction,lem:dc-ch5-2-1-frame-existence}); and finally the
+identification of the abstract coefficient with the genuine curvature contraction
+$a_{ij}=\langle R(\gamma',e_i)\gamma',e_j\rangle$ read in the chart
+(\cref{lem:dc-ch5-2-1-real-curvature}), which closes \cref{def:dc-ch5-2-1}.
+
+\begin{lemma}[parallel orthonormal frame along a geodesic, coordinate form]
+  \label{lem:dc-ch5-2-1-parallel-frame}
+  \dcref{ch5:2.1}
+  \lean{Riemannian.Jacobi.exists_parallelOrthoFrame_self,
+    Riemannian.Jacobi.exists_parallelOrthoFrame,
+    Riemannian.Jacobi.exists_chartOrthonormalBasis_self,
+    Riemannian.Jacobi.chartMetricInner_const_of_parallelSol}
+  \leanok
+  \uses{def:dc-ch2-2-5, lem:dc-ch2-3-1-coord}
+  Read in a coordinate chart at $\alpha$ along the coordinate curve $u$ of a geodesic
+  $\gamma$ (with $\alpha=\gamma(0)$): the chart inner product $\langle\cdot,\cdot\rangle$ at
+  the initial point is a positive-definite symmetric form on the model space, so it admits an
+  orthonormal frame $e_1(0),\dots,e_n(0)$; parallel transport then produces coordinate vector
+  fields $e_1(t),\dots,e_n(t)$ along $u$ that are parallel ($\frac{De_i}{dt}=0$) and remain
+  orthonormal, $\langle e_i(t),e_j(t)\rangle=\delta_{ij}$, for every $t\in[0,a]$.
+  Orthonormality is preserved because parallel transport is an isometry: parallel fields
+  have constant inner product (the integrated form of \cref{lem:dc-ch2-3-1-coord}). These are
+  do Carmo's ``parallel, orthonormal fields $e_1(t),\dots,e_n(t)$ along $\gamma$.''
+\end{lemma}
+
+\begin{lemma}[Jacobi system in a parallel frame: existence and uniqueness]
+  \label{lem:dc-ch5-2-1-ode}
+  \dcref{ch5:2.1}
+  \lean{Riemannian.Jacobi.exists_isJacobiPairOn,
+    Riemannian.Jacobi.IsJacobiPairOn.eqOn,
+    Riemannian.Jacobi.IsJacobiPairOn.add,
+    Riemannian.Jacobi.IsJacobiPairOn.smul}
+  \leanok
+  In a parallel orthonormal frame $e_1(t),\dots,e_n(t)$ along $\gamma$, writing
+  $J(t)=\sum_i f_i(t)e_i(t)$ and $a_{ij}=\langle R(\gamma',e_i)\gamma',e_j\rangle$, the Jacobi
+  equation (1) becomes the second-order linear system $f_j''(t)+\sum_i a_{ij}(t)f_i(t)=0$,
+  i.e. $f''+A(t)f=0$ with $A(t)=(a_{ij}(t))$ the curvature contraction. For a continuous
+  coefficient $A$ and any initial data $(f(0),f'(0))$ this system has a solution on $[0,a]$
+  (do Carmo's ``there exists a $C^\infty$ solution''), determined uniquely by its initial
+  conditions, and its solutions form a linear space closed under sum and scalar multiple (the
+  $2n$ linearly independent Jacobi fields).
+\end{lemma}
+
+\begin{lemma}[Jacobi reduction in a parallel orthonormal frame]
+  \label{lem:dc-ch5-2-1-frame-reduction}
+  \dcref{ch5:2.1}
+  \lean{Riemannian.Jacobi.covariantDerivCoord_frameCombination,
+    Riemannian.Jacobi.covariantDerivCoord2_frameCombination,
+    Riemannian.Jacobi.chartMetricInner_covariantDerivCoord2_frame,
+    Riemannian.Jacobi.chartMetricInner_map_frameCombination_left,
+    Riemannian.Jacobi.frameJacobiComponent,
+    Riemannian.Jacobi.frameExpansion,
+    Riemannian.Jacobi.covariantDerivCoord2_add_map_frameCombination_expand}
+  \leanok
+  \uses{lem:dc-ch5-2-1-parallel-frame, prop:dc-ch2-2-2}
+  Write $J(t)=\sum_i f_i(t)e_i(t)$ in a parallel orthonormal frame
+  $e_1(t),\dots,e_n(t)$ along $\gamma$ (\cref{lem:dc-ch5-2-1-parallel-frame}). Because
+  the frame is parallel, $\frac{De_i}{dt}=0$, the covariant derivative differentiates
+  only the scalar components (the Leibniz rule of \cref{prop:dc-ch2-2-2}):
+  $$
+  \frac{D}{dt}\sum_i f_i e_i=\sum_i f_i'\,e_i,\qquad
+  \frac{D^2}{dt^2}\sum_i f_i e_i=\sum_i f_i''\,e_i.
+  $$
+  Pairing with $e_j$ and using orthonormality $\langle e_i,e_j\rangle=\delta_{ij}$
+  extracts the $j$-th component, $\langle\frac{D^2J}{dt^2},e_j\rangle=f_j''$, while
+  linearity of the curvature term in $J$ gives
+  $\langle R(\gamma',J)\gamma',e_j\rangle=\sum_i f_i a_{ij}$ with
+  $a_{ij}=\langle R(\gamma',e_i)\gamma',e_j\rangle$. Therefore pairing the Jacobi
+  equation~(1) with $e_j$ is exactly do Carmo's scalar second-order system
+  $f_j''+\sum_i a_{ij}f_i=0$; this is the reduction that turns \cref{def:dc-ch5-2-1}
+  into the linear ODE of \cref{lem:dc-ch5-2-1-ode}.
+
+  Conversely, the frame being orthonormal of full rank $n=\dim M$ is a basis, so every
+  vector expands as $w=\sum_j\langle w,e_j\rangle e_j$, and the left-hand side of the
+  Jacobi equation expands in the frame as
+  $\frac{D^2J}{dt^2}+R(\gamma',J)\gamma'=\sum_j\big(f_j''+\sum_i a_{ij}f_i\big)e_j$.
+  Thus~(1) holds if and only if the scalar system does: equation~(1) is \emph{equivalent}
+  to the system, as do Carmo asserts.
+\end{lemma}
+
+\begin{lemma}[existence and uniqueness of a Jacobi field by its initial data, frame form]
+  \label{lem:dc-ch5-2-1-frame-existence}
+  \dcref{ch5:2.1}
+  \lean{Riemannian.Jacobi.jacobiCoefOp,
+    Riemannian.Jacobi.exists_jacobiField_frame,
+    Riemannian.Jacobi.jacobiField_frame_eqOn}
+  \leanok
+  \uses{lem:dc-ch5-2-1-parallel-frame, lem:dc-ch5-2-1-ode, lem:dc-ch5-2-1-frame-reduction}
+  Fix a parallel orthonormal frame $e_1(t),\dots,e_n(t)$ along $\gamma$
+  (\cref{lem:dc-ch5-2-1-parallel-frame}), and let the curvature contraction
+  $w\mapsto R(\gamma',w)\gamma'$ be read in the frame as the continuous coefficient field
+  $a_{ij}(t)=\langle R(\gamma',e_i)\gamma',e_j\rangle$. Then, for every initial pair
+  $\big(J(0),\tfrac{DJ}{dt}(0)\big)=(J_0,w_0)$, there exists a Jacobi field
+  $J(t)=\sum_i f_i(t)e_i(t)$ along $\gamma$ with $J(0)=J_0$, initial velocity $w_0$, and
+  $\frac{D^2J}{dt^2}+R(\gamma',J)\gamma'=0$; moreover any two Jacobi fields sharing this
+  initial data coincide. This is do Carmo's assertion that ``given the initial conditions
+  $J(0)$, $\frac{DJ}{dt}(0)$, there exists a $C^\infty$ solution defined on $[0,a]$,'' unique
+  by its initial conditions. It reduces \cref{def:dc-ch5-2-1} to the identification of the
+  contraction $w\mapsto R(\gamma',w)\gamma'$ with the intrinsic curvature operator read in the
+  chart (the chart-curvature bridge), the last analytic input needed to close the definition
+  itself.
+\end{lemma}
+\begin{proof}
+  \leanok
+  \uses{lem:dc-ch5-2-1-parallel-frame, lem:dc-ch5-2-1-ode, lem:dc-ch5-2-1-frame-reduction}
+  Package the coefficients $a_{ij}(t)$ as a continuous operator field $A(t)$ acting on the
+  coefficient vector $(f_i)$ by $(A(t)f)_j=\sum_i a_{ij}(t)f_i$. By \cref{lem:dc-ch5-2-1-ode}
+  the second-order linear system $f''+A(t)f=0$ has a solution with initial data
+  $f_i(0)=\langle J_0,e_i(0)\rangle$, $f_i'(0)=\langle w_0,e_i(0)\rangle$, unique given that
+  data. Put $J=\sum_i f_i e_i$. Pairing the Jacobi operator with the frame
+  (\cref{lem:dc-ch5-2-1-frame-reduction}) expands
+  $\frac{D^2J}{dt^2}+R(\gamma',J)\gamma'=\sum_j\big(f_j''+\sum_i a_{ij}f_i\big)e_j=0$, so $J$
+  is a Jacobi field; the orthonormal expansion gives
+  $J(0)=\sum_i\langle J_0,e_i(0)\rangle e_i(0)=J_0$, and the frame being parallel gives the
+  initial velocity $w_0$. Uniqueness of $J$ is uniqueness of the scalar solution read back
+  through the frame. $\square$
+\end{proof}
+
+\begin{lemma}[the Jacobi coefficient is the curvature contraction read in the chart]
+  \label{lem:dc-ch5-2-1-real-curvature}
+  \dcref{ch5:2.1}
+  \lean{Riemannian.Jacobi.chartCurvatureCoef,
+    Riemannian.Jacobi.chartCurvatureCoef_contDiffOn,
+    Riemannian.Jacobi.chartCurvatureOp,
+    Riemannian.Jacobi.continuousOn_chartCurvatureOp,
+    Riemannian.Jacobi.exists_jacobiField,
+    Riemannian.Jacobi.jacobiField_eqOn}
+  \leanok
+  \uses{lem:dc-ch5-2-1-frame-existence, rem:dc-ch4-2-6}
+  Read in the fixed chart at $\alpha=\gamma(0)$, the curvature contraction
+  $w\mapsto R(\gamma',w)\gamma'$ along the coordinate curve $u$ (with velocity
+  $\dot u=\gamma'$) is the operator field
+  $$
+  \big(R(t)\,w\big)^l=\sum_{i,j,k}R^l{}_{ijk}\big(u(t)\big)\,\dot u^i(t)\,w^j\,\dot u^k(t),
+  \qquad
+  R^l{}_{ijk}=\partial_j\Gamma^l_{ik}-\partial_i\Gamma^l_{jk}
+    +\sum_s\big(\Gamma^s_{ik}\Gamma^l_{js}-\Gamma^s_{jk}\Gamma^l_{is}\big),
+  $$
+  where $R^l{}_{ijk}$ is the coordinate curvature coefficient of the fixed chart
+  (\cref{rem:dc-ch4-2-6}), matching $R(\partial_i,\partial_j)\partial_k=\sum_l
+  R^l{}_{ijk}\,\partial_l$. Because the Christoffel symbols are $C^\infty$, each
+  $R^l{}_{ijk}$ is $C^\infty$ on the chart interior; hence along a $C^1$ geodesic curve
+  $u$ whose image stays in the chart interior the operator field $t\mapsto R(t)$ is
+  continuous. Feeding this genuine curvature contraction (in place of the abstract
+  coefficient field) to \cref{lem:dc-ch5-2-1-frame-existence} yields, for every initial
+  pair $(J_0,w_0)$, a Jacobi field $J=\sum_i f_i e_i$ with $J(a)=J_0$,
+  $\tfrac{DJ}{dt}(a)=w_0$ and $\tfrac{D^2J}{dt^2}+R(\gamma',J)\gamma'=0$ on $(a,b)$,
+  unique given its initial data. This is do Carmo's identification of the Jacobi
+  coefficient $a_{ij}=\langle R(\gamma',e_i)\gamma',e_j\rangle$ with the intrinsic
+  curvature operator read in the chart, closing \cref{def:dc-ch5-2-1}.
+\end{lemma}
+
 \begin{remark}[Remark 2.2]
   \label{rem:dc-ch5-2-2}
   \dcref{ch5:2.2}
+  \lean{Riemannian.Jacobi.isJacobiFieldAlongOn_velocity,
+    Riemannian.Jacobi.isJacobiFieldAlongOn_smul_velocity}
+  \leanok
+  \uses{def:dc-ch5-2-1}
   It is worth noting that $\gamma'(t)$ and $t\gamma'(t)$ are Jacobi fields along
   $\gamma$. The first field has derivative zero and vanishes nowhere; the second is
   zero if and only if $t=0$. Due to these facts, we shall consider Jacobi fields
   along $\gamma$ that are normal to $\gamma'$.
+
+  Formalized (manifold form) with $\gamma'(t)=\mathrm{mfderiv}\,\gamma\,t\,1$ the own-foot
+  velocity field, whose chart reading is the chart velocity $\dot u$. The pair
+  $(\gamma', D\gamma'/dt)=(\dot u, 0)$ is a Jacobi pair because $\nabla\dot u=0$ (the
+  fixed-chart geodesic ODE) and $\mathcal R(\dot u,\dot u)\dot u=0$ (curvature
+  antisymmetry in the first pair, \lstinline{chartCurvature_self_fst}); the pair
+  $(t\gamma', D(t\gamma')/dt)=(t\dot u, \dot u)$ likewise, since
+  $\nabla(t\dot u)=\dot u+t\nabla\dot u=\dot u$ and
+  $\mathcal R(t\dot u,\dot u)\dot u = t\,\mathcal R(\dot u,\dot u)\dot u=0$. The second
+  field vanishes only at $t=0$; this is what forces $\gamma'(0)\notin\ker\Theta$ in
+  \cref{rem:dc-ch5-3-2}.
 \end{remark}
 
 \begin{example}[Jacobi fields on manifolds of constant curvature]
   \label{ex:dc-ch5-2-3}
   \dcref{ch5:2.3}
-  \uses{lem:dc-ch4-3-4}
+  \lean{Riemannian.Jacobi.isJacobiFieldOn_of_constantCurvature,
+    Riemannian.Jacobi.isJacobiFieldOn_constCurvatureSol_pos,
+    Riemannian.Jacobi.isJacobiFieldOn_constCurvatureSol_zero,
+    Riemannian.Jacobi.isJacobiFieldOn_constCurvatureSol_neg}
+  \leanok
+  \uses{lem:dc-ch4-3-4, lem:dc-ch5-2-3-const-form, lem:dc-ch5-2-3-jacobi-op}
   Let $M$ be a Riemannian manifold of constant sectional curvature $K$, and let
   $\gamma:[0,\ell]\to M$ be a normalized geodesic on $M$. Let $J$ be a Jacobi field
   along $\gamma$, normal to $\gamma'$. We claim that from $|\gamma'|=1$ and from
@@ -152,11 +334,61 @@ The equation above is called the \emph{Jacobi equation}.
   $J(t)=\frac{\partial f}{\partial s}(t,0)$. Notice that $J(0)=0$. We are going to
   show that this is essentially the only way of constructing Jacobi fields along
   $\gamma(t)$ with $J(0)=0$.
+
+  \emph{Formalization.} The curvature reduction $R(\gamma',J)\gamma'=KJ$ (equation~(2)) is the
+  content of \cref{lem:dc-ch5-2-3-const-form,lem:dc-ch5-2-3-jacobi-op}
+  (\lstinline{chartCurvatureOp\_isConstantCurvature}). The claim that the three closed forms
+  \emph{solve} (2) with $J(0)=0$, $J'(0)=w(0)$ is
+  \lstinline{isJacobiFieldOn\_of\_constantCurvature}: for a parallel unit field $w$ normal to a
+  unit-speed velocity (read in the fixed chart) and any scalar $h$ with $h''+Kh=0$, the pair
+  $(h\,w,\,h'\,w)$ is a chart Jacobi field (\lstinline{IsJacobiFieldOn}) --- since $w$ is
+  parallel, $D^2(hw)/dt^2=h''\,w$, and $R(\gamma',hw)\gamma'=hK\,w$ by the reduction, so (2)
+  collapses to $(h''+Kh)\,w=0$. The three scalars $\sin(t\sqrt K)/\sqrt K$, $t$,
+  $\sinh(t\sqrt{-K})/\sqrt{-K}$ solve $h''+Kh=0$ with $h(0)=0$, $h'(0)=1$
+  (\lstinline{isJacobiFieldOn\_constCurvatureSol\_pos/zero/neg}), so $J(0)=0$ and $J'(0)=w(0)$.
 \end{example}
+
+\begin{lemma}[constant curvature: the pointwise $(0,4)$ form, coordinate form]
+  \label{lem:dc-ch5-2-3-const-form}
+  \dcref{ch5:2.3}
+  \lean{Riemannian.Jacobi.curvatureFormAt_isConstantCurvature}
+  \leanok
+  \uses{lem:dc-ch4-3-4}
+  Read at a point $q$, the field-level constant-curvature hypothesis
+  $\langle R(X,Y)Z,W\rangle=K_0(\langle X,Z\rangle\langle Y,W\rangle-\langle Y,Z\rangle\langle X,W\rangle)$
+  (\cref{lem:dc-ch4-3-4}, \lstinline{IsConstantCurvature}) gives the pointwise curvature $(0,4)$
+  form $\langle R(x,y)z,t\rangle_g=K_0(\langle x,z\rangle\langle y,t\rangle-\langle y,z\rangle\langle x,t\rangle)$
+  for all $x,y,z,t\in T_qM$.  Formalized by evaluating the hypothesis on smooth extensions of the
+  four tangent vectors (\lstinline{curvatureOperatorAt_eq}).
+\end{lemma}
+
+\begin{lemma}[constant curvature: $R(\gamma',J)\gamma'=K J$, coordinate form]
+  \label{lem:dc-ch5-2-3-jacobi-op}
+  \dcref{ch5:2.3}
+  \lean{Riemannian.Jacobi.chartCurvatureOp_isConstantCurvature}
+  \leanok
+  \uses{lem:dc-ch5-2-3-const-form, cor:dc-ch5-2-9}
+  On a manifold of constant sectional curvature $K_0$, do Carmo's identity $R(\gamma',J)\gamma'=K_0J$
+  for $J$ normal to a unit-speed geodesic.  Read in the fixed chart at $p$: for $w$ with
+  $\langle w,\dot u\rangle=0$ and $\langle\dot u,\dot u\rangle=1$, the Jacobi-equation curvature
+  operator satisfies $\mathcal R_{\mathrm{chart}}(\dot u,w)\dot u=K_0\,w$
+  (\lstinline{chartCurvatureOp\_isConstantCurvature}).  Consequently the Jacobi equation reduces to
+  the scalar system $D^2J/dt^2+K_0J=0$ (do Carmo's equation~(2)).  Proof: the operator is
+  $\mathcal R_{\mathrm{chart}}(\dot u,w)\dot u=\text{chartCurvature}(\dot u)\,w\,\dot u\,\dot u$;
+  pairing with an arbitrary $z$ through the manifold$\leftrightarrow$chart frame bridge
+  (\lstinline{curvatureFormAt\_chartFrame}, as in \cref{cor:dc-ch5-2-9}) and substituting the
+  constant-curvature form (\cref{lem:dc-ch5-2-3-const-form}), orthonormality collapses the model
+  form to $K_0\langle w,z\rangle$; positive-definiteness of the chart Gram form
+  (\lstinline{chartMetricInner\_pos}) then gives the operator identity.
+\end{lemma}
 
 \begin{proposition}[Proposition 2.4]
   \label{prop:dc-ch5-2-4}
   \dcref{ch5:2.4}
+  \lean{Riemannian.Jacobi.expDifferential_eq_jacobiField,
+    Riemannian.Jacobi.IsJacobiFieldAlongOn.eqOn_of_initial}
+  \leanok
+  \uses{def:dc-ch5-2-1}
   Let $\gamma:[0,a]\to M$ be a geodesic and let $J$ be a Jacobi field along
   $\gamma$ with $J(0)=0$. Put $\frac{DJ}{dt}(0)=w$ and $\gamma'(0)=v$. Using the
   natural identification $T_{av}(T_{\gamma(0)}M)\simeq T_{\gamma(0)}M$, construct a
@@ -166,6 +398,8 @@ The equation above is called the \emph{Jacobi equation}.
   $\bar J(t)=\frac{\partial f}{\partial s}(t,0)$. Then $\bar J=J$ on $[0,a]$.
 \end{proposition}
 \begin{proof}
+  \leanok
+  \uses{def:dc-ch5-2-1}
   For $s=0$,
   
   $$
@@ -187,12 +421,25 @@ The equation above is called the \emph{Jacobi equation}.
 \begin{corollary}[Corollary 2.5]
   \label{cor:dc-ch5-2-5}
   \dcref{ch5:2.5}
+  \lean{Riemannian.Jacobi.expDifferential_eq_jacobiField}
+  \leanok
+  \uses{prop:dc-ch5-2-4, def:dc-ch5-2-1}
   Let $\gamma:[0,a]\to M$ be a geodesic and put $p=\gamma(0)$. Then a Jacobi field
   $J$ along $\gamma$ with $J(0)=0$ is given by
-  
+
   $$
   J(t)=(d\exp_p)_{t\gamma'(0)}(tJ'(0)),\quad t\in[0,a].
   $$
+
+  Formalized on a complete Riemannian manifold in the endpoint form: for $v,Z\in T_pM$,
+  reading $\exp_p$ in a chart $\zeta$ around $\exp_p v$, the differential $(d\exp_p)_v$ is
+  defined and sends $Z$ to the chart reading of $Y_Z(1)$, where $Y_Z$ is \emph{the} Jacobi
+  field along the geodesic $t\mapsto\exp_p(tv)$ with $Y_Z(0)=0$, $\frac{DY_Z}{dt}(0)=Z$
+  (existence and uniqueness from \cref{def:dc-ch5-2-1}). Substituting $v=t\gamma'(0)$,
+  $Z=J'(0)$ and rescaling the geodesic to unit parameter recovers do Carmo's
+  $J(t)=(d\exp_p)_{t\gamma'(0)}(tJ'(0))$. The identification uses the variational transport
+  of the geodesic flow (the differential of $\exp_p$ along the ray is the Jacobi variational
+  field), which is do Carmo's \cref{prop:dc-ch5-2-4}.
 \end{corollary}
 
 \begin{remark}[Remark 2.6]
@@ -207,9 +454,72 @@ The equation above is called the \emph{Jacobi equation}.
   $\frac{D^2 J}{dt^2}=J''$, etc.
 \end{remark}
 
+\begin{lemma}[Taylor expansion of $|J|^2$ in a parallel frame (analytic core)]
+  \label{lem:dc-ch5-2-7-taylor-ode}
+  \dcref{ch5:2.7}
+  \lean{Riemannian.Jacobi.norm_sq_jacobi_isLittleO,
+    Riemannian.Jacobi.norm_sq_jacobi_isLittleO_local}
+  \leanok
+  \uses{def:dc-ch5-2-1}
+  Read in a parallel orthonormal frame $e_1,\dots,e_n$ along $\gamma$, write $J=\sum_i f_i e_i$,
+  so that $g(t)=|J(t)|^2=\langle f(t),f(t)\rangle$ is the ordinary squared Euclidean norm of the
+  coefficient vector, and the Jacobi equation is the plain second-order linear ODE $f''=-A(t)f$
+  with $A(t)=\big(\langle R(\gamma',e_i)\gamma',e_j\rangle\big)_{ij}$ the frame curvature (a
+  $C^\infty$ coefficient). If $f(0)=0$, then with $w=f'(0)$
+  $$
+  g(t)=\langle w,w\rangle\,t^2-\tfrac13\langle w,A(0)w\rangle\,t^4+o(t^4),\qquad t\to 0.
+  $$
+  This is the analytic content of \cref{prop:dc-ch5-2-7}: the four Taylor coefficients
+  $g(0)=g'(0)=g'''(0)=0$, $g''(0)=2\langle w,w\rangle$, $g''''(0)=-8\langle w,A(0)w\rangle$ are
+  computed by the explicit derivative chain, and the remainder is Taylor's theorem with Peano
+  (little-$o$) remainder. \emph{The parallel frame is what makes do Carmo's identity (4)
+  automatic}: since the frame is parallel, covariant differentiation only hits the scalar
+  coefficients, so $\frac{D}{dt}(R(\gamma',J)\gamma')(0)$ reduces to $R(\gamma',J')\gamma'(0)$ with
+  no covariant derivative of the curvature tensor, precisely because the terms carrying a factor
+  of $f(0)=0$ drop out. Substituting the frame identification
+  $\langle w,A(0)w\rangle=\langle R(\gamma',w)\gamma',w\rangle=\langle R(v,w)v,w\rangle$ gives
+  do Carmo's equation~(3). The coefficient is stated as $\langle w,w\rangle t^2$; with $|w|=1$
+  (\cref{prop:dc-ch5-2-7}) this is $t^2$. Two Lean forms are provided: the global one
+  (\lstinline{norm_sq_jacobi_isLittleO}, hypotheses on all of $\mathbb R$) and a \emph{local} one
+  (\lstinline{norm_sq_jacobi_isLittleO_local}), where the ODE data $f,v,A$ is only
+  $C^\infty$ and solves $f'=v$, $v'=-Af$ on an open interval $s\ni 0$. The little-$o$ lives at
+  $\mathcal N(0)$, so the local form suffices for the manifold instantiation: the geodesic
+  $t\mapsto\exp_p(tv)$ and its parallel orthonormal frame are $C^\infty$ only on the open time
+  window where $\gamma$ stays in a chart around $p$.
+\end{lemma}
+
+\begin{lemma}[$C^\infty$ smoothness of the parallel frame and the Jacobi coefficient]
+  \label{lem:dc-ch5-2-7-frame-smooth}
+  \dcref{ch5:2.7}
+  \lean{Riemannian.Jacobi.exists_contDiffOn_parallelOrthoFrame,
+    Riemannian.Jacobi.contDiffOn_infty_jacobiCoefOp}
+  \leanok
+  \uses{lem:dc-ch5-2-1-parallel-frame, lem:dc-ch5-2-1-real-curvature}
+  The regularity input for the manifold Taylor expansion (\cref{prop:dc-ch5-2-7}): along a curve
+  $u$ that is $C^\infty$ on an open time interval and stays in the chart interior, the parallel
+  orthonormal frame $e_1(t),\dots,e_n(t)$ can be chosen \emph{$C^\infty$} on the interior of a
+  closed subinterval, and the Jacobi coefficient operator
+  $A(t)=\big(a_{ij}(t)\big)=\big(\langle R(\gamma',e_i)\gamma',e_j\rangle\big)$ is then $C^\infty$
+  in $t$.  The parallel-transport ODE $\dot e_i=-\Gamma(\dot u,e_i)(u)=B(t)e_i$ has a $C^\infty$
+  operator coefficient once $u$ is $C^\infty$, so the linear-ODE $C^\infty$ bootstrap upgrades the
+  frame from the $C^1$ regularity of \cref{lem:dc-ch5-2-1-parallel-frame} to $C^\infty$; the
+  coefficient $a_{ij}(t)=\langle R(\dot u,e_i)\dot u,e_j\rangle$ is a chart Gram pairing of the
+  $C^\infty$ frame, velocity, and curvature contraction (\cref{lem:dc-ch5-2-1-real-curvature}).
+  An orthonormal frame at an arbitrary interior chart point lets the frame start off the pole, so
+  that $t=0$ is an interior time and the two-sided expansion applies.
+\end{lemma}
+
 \begin{proposition}[Proposition 2.7]
   \label{prop:dc-ch5-2-7}
   \dcref{ch5:2.7}
+  \lean{Riemannian.Jacobi.norm_sq_jacobi_frame_isLittleO}
+  \leanok
+  \uses{lem:dc-ch5-2-7-taylor-ode, lem:dc-ch5-2-7-frame-smooth, def:dc-ch5-2-1}
+  % Formalized (frame/coordinate form, norm_sq_jacobi_frame_isLittleO): read the Jacobi field in
+  % a C^∞ parallel orthonormal frame J = Σ f_i e_i, so |J(t)|^2_g = ‖f(t)‖^2 (orthonormality) and
+  % the coefficients f solve the frame Jacobi system f'' = -A(t)f with A = jacobiCoefOp the genuine
+  % frame curvature (C^∞ by lem:dc-ch5-2-7-frame-smooth). Transferring to EuclideanSpace feeds the
+  % analytic core lem:dc-ch5-2-7-taylor-ode; ⟨V(0),A(0)V(0)⟩ = ⟨R(v,w)v,w⟩ via sum_jacobiCoef_quadratic.
   Let $p\in M$ and $\gamma:[0,a]\to M$ be a geodesic with $\gamma(0)=p$,
   $\gamma'(0)=v$. Let $w\in T_v(T_p M)$ with $|w|=1$ and let $J$ be a Jacobi field
   along $\gamma$ given by
@@ -227,6 +537,15 @@ The equation above is called the \emph{Jacobi equation}.
   where $\lim_{t\to 0}\frac{R(t)}{t^4}=0$.
 \end{proposition}
 \begin{proof}
+  \leanok
+  \uses{lem:dc-ch5-2-7-taylor-ode, lem:dc-ch5-2-7-frame-smooth}
+  The Lean proof takes the frame route (\cref{lem:dc-ch5-2-7-taylor-ode}), where do Carmo's
+  identity~(4) below is automatic: in a parallel orthonormal frame the covariant derivative hits
+  only the scalar coefficients, and every term carrying a factor of $J(0)=0$ drops out, so no
+  covariant derivative of the curvature tensor is needed.  The manifold reading
+  $|J(t)|^2_g=\|f(t)\|^2$ and the coefficient identification
+  $\langle J',R(\gamma',J')\gamma'\rangle(0)=\langle R(v,w)v,w\rangle$ are supplied by
+  \cref{lem:dc-ch5-2-7-frame-smooth}.  do Carmo's original derivation follows.
   Since $J(0)=0$ and $J'(0)=w$, the first three coefficients are
   
   $$
@@ -270,24 +589,78 @@ The equation above is called the \emph{Jacobi equation}.
 \begin{corollary}[Corollary 2.9]
   \label{cor:dc-ch5-2-9}
   \dcref{ch5:2.9}
+  \lean{Riemannian.Jacobi.chartMetricInner_chartCurvatureOp_eq_sectionalCurvature,
+    Riemannian.Jacobi.chartMetricInner_chartCurvatureOp_eq_curvatureFormAt}
+  \leanok
+  \uses{def:dc-ch4-3-2, prop:dc-ch5-2-7}
   If $\gamma:[0,\ell]\to M$ is parametrized by arc length (i.e. $|v|=1$) and
   $\langle w,v\rangle=0$, the expression $\langle R(v,w)v,w\rangle$ is the sectional
   curvature at $p$ with respect to the plane $\sigma$ generated by $v$ and $w$.
   Therefore, in this situation,
-  
+
   $$
   |J(t)|^2=t^2-\tfrac{1}{3}K(p,\sigma)t^4+R(t).\qquad(5)
   $$
+
+  Formalized (coordinate form, \lstinline{chartMetricInner_chartCurvatureOp_eq_sectionalCurvature}):
+  the Jacobi coefficient $\langle R(v,w)v,w\rangle$ carried by \cref{prop:dc-ch5-2-7} is read in
+  the fixed chart at $p$ as
+  $\langle\mathcal R_{\mathrm{chart}}(\dot u,w)\dot u,w\rangle_G$ with $\dot u$ the chart velocity
+  ($=\gamma'$).  The chart curvature operator is the manifold curvature $(0,4)$-form of the frame
+  realizations $F v,F w\in T_qM$ ($q$ the manifold point, $\varphi(q)=u(t_0)$), via the
+  operator$\leftrightarrow$vector reindexing (\lstinline{chartCurvatureOp_eq_chartCurvature}), the
+  manifold$\leftrightarrow$chart bridge (\lstinline{curvatureFormAt_chartFrame}) and antisymmetry
+  in the first pair (\lstinline{chartMetricInner_chartCurvatureOp_eq_curvatureFormAt}):
+  $\langle R(v,w)v,w\rangle = \mathrm{curvatureForm}_q(Fv,Fw,Fv,Fw)$.  Dividing by the wedge
+  denominator $\langle Fv,Fv\rangle\langle Fw,Fw\rangle-\langle Fv,Fw\rangle^2$, which the
+  orthonormality hypotheses $|v|=|w|=1$, $\langle v,w\rangle=0$ (in chart Gram form, transferred to
+  the intrinsic inner product of the realizations by \lstinline{metricInner_chartFrameRealize})
+  force to $1$, gives exactly the sectional curvature
+  $K(p,\sigma)=\mathrm{sectionalCurvature}(Fv,Fw)$ of \cref{def:dc-ch4-3-2}.  Feeding this into
+  \cref{lem:dc-ch5-2-10-sqrt} produces do Carmo's $|J(t)|=t-\tfrac16 K(p,\sigma)t^3+o(t^3)$
+  (\cref{cor:dc-ch5-2-10}).
 \end{corollary}
+
+\begin{lemma}[square root of the $|J|^2$ expansion (analytic core)]
+  \label{lem:dc-ch5-2-10-sqrt}
+  \dcref{ch5:2.10}
+  \lean{Riemannian.Jacobi.sqrt_isLittleO_of_sq_isLittleO}
+  \leanok
+  \uses{cor:dc-ch5-2-9}
+  Let $g\ge 0$ (playing the role of $|J(t)|^2$) have the fourth-order expansion
+  $g(t)=t^2-c\,t^4+o(t^4)$ as $t\to 0$ (do Carmo's (5), with $c=\tfrac13 K(p,\sigma)$ after the
+  sectional-curvature identification of \cref{cor:dc-ch5-2-9}). Then its square root has the
+  third-order expansion
+  $$
+  \sqrt{g(t)}=t-\tfrac{c}{2}\,t^3+o(t^3),\qquad t\to 0^+.
+  $$
+  With $c=\tfrac13 K$ this is do Carmo's $|J(t)|=t-\tfrac16 K(p,\sigma)t^3+\tilde R(t)$ (his (6)),
+  since $|J(t)|=\sqrt{|J(t)|^2}$. The odd-power expansion is one-sided ($t\ge 0$): $\sqrt{t^2}=|t|$
+  agrees with $t$ only for $t\ge 0$, which is do Carmo's range $t\in[0,\ell]$. Proof: writing
+  $p(t)=t-\tfrac{c}{2}t^3$, the numerator $g-p^2=(g-(t^2-ct^4))-\tfrac{c^2}{4}t^6=o(t^4)$, and
+  $\sqrt g-p=(g-p^2)/(\sqrt g+p)$ with denominator $\ge t/2>0$ near $0^+$, so the quotient is
+  $o(t^3)$.
+\end{lemma}
 
 \begin{corollary}[Corollary 2.10]
   \label{cor:dc-ch5-2-10}
   \dcref{ch5:2.10}
+  \lean{Riemannian.Jacobi.norm_jacobi_frame_isLittleO}
+  \leanok
+  \uses{prop:dc-ch5-2-7, lem:dc-ch5-2-10-sqrt, cor:dc-ch5-2-9}
   With the same conditions as in the previous corollary,
-  
+
   $$
   |J(t)|=t-\tfrac{1}{6}K(p,\sigma)t^3+\tilde R(t),\quad\lim_{t\to 0}\frac{\tilde R(t)}{t^3}=0.\qquad(6)
   $$
+
+  Formalized (frame/coordinate form, \lstinline{norm_jacobi_frame_isLittleO}) with the
+  normalization $|w|_g=1$: taking the square root of \cref{prop:dc-ch5-2-7} via the analytic
+  $\sqrt{}$ step \cref{lem:dc-ch5-2-10-sqrt} gives the one-sided ($t\to 0^+$) expansion
+  $|J(t)|_g = t - \tfrac16\langle R(v,w)v,w\rangle t^3 + o(t^3)$; the coefficient
+  $\langle R(v,w)v,w\rangle$ is the sectional curvature $K(p,\sigma)$ by \cref{cor:dc-ch5-2-9}
+  when $|v|=1$, $\langle v,w\rangle=0$.  The global nonnegativity the $\sqrt{}$ step needs is
+  arranged by clamping $|J|^2_g$ (nonnegative on the chart) with $\max(\cdot,0)$.
 \end{corollary}
 
 \begin{remark}[Remark 2.11]
@@ -327,19 +700,31 @@ and Jacobi fields.
 \begin{definition}[conjugate point, multiplicity]
   \label{def:dc-ch5-3-1}
   \dcref{ch5:3.1}
+  \lean{Riemannian.Jacobi.IsConjugatePointAt}
+  \leanok
+  \uses{def:dc-ch5-2-1}
   Let $\gamma:[0,a]\to M$ be a geodesic. The point $\gamma(t_0)$ is said to be
   \emph{conjugate} to $\gamma(0)$ along $\gamma$, $t_0\in(0,a]$, if there exists a Jacobi
   field $J$ along $\gamma$, not identically zero, with $J(0)=0=J(t_0)$. The maximum
   number of such linearly independent fields is called the \emph{multiplicity} of the
   conjugate point $\gamma(t_0)$.
-  
-  Observe that if $\gamma(t_0)$ is conjugate to $\gamma(0)$, then $\gamma(0)$ is
-  conjugate to $\gamma(t_0)$.
+
+  The predicate \lstinline{IsConjugatePointAt} formalizes the conjugacy relation exactly:
+  there is a manifold Jacobi field $(J,DJ)$ along $\gamma|_{[0,t_0]}$ with $J(0)=J(t_0)=0$
+  that is not identically zero. The multiplicity is realized as the dimension of
+  $\ker(d\exp_p)_{t_0\gamma'(0)}$ in \cref{prop:dc-ch5-3-5}. The symmetry observation
+  (if $\gamma(t_0)$ is conjugate to $\gamma(0)$ then $\gamma(0)$ is conjugate to
+  $\gamma(t_0)$) is immediate from the symmetric roles of the two endpoints in the
+  vanishing conditions.
 \end{definition}
 
 \begin{remark}[Remark 3.2]
   \label{rem:dc-ch5-3-2}
   \dcref{ch5:3.2}
+  \lean{Riemannian.Jacobi.conjugateMultiplicity,
+    Riemannian.Jacobi.conjugateMultiplicity_le_finrank,
+    Riemannian.Jacobi.conjugateMultiplicity_le_finrank_sub_one}
+  \leanok
   \uses{rem:dc-ch5-2-2}
   If $\dim M=n$, there exist exactly $n$ linearly independent Jacobi fields along
   the geodesic $\gamma:[0,a]\to M$ which are zero at $\gamma(0)$. This follows from
@@ -348,12 +733,27 @@ and Jacobi fields.
   independent. In addition, the Jacobi field $J(t)=t\gamma'(t)$ never vanishes for
   $t\neq 0$ (see \cref{rem:dc-ch5-2-2}). From this we deduce that the multiplicity of a
   conjugate point never exceeds $n-1$.
+
+  Formalized (coordinate/endpoint form) via the initial-velocity parametrization of
+  \cref{prop:dc-ch5-3-9}: Jacobi fields with $J(0)=0$ correspond bijectively to their
+  initial velocity $J'(0)\in E$, so their space is $n$-dimensional, and the
+  multiplicity $\dim\ker\Theta$ (\lstinline{conjugateMultiplicity}) is at most $n$
+  (\lstinline{conjugateMultiplicity_le_finrank}). The sharp bound
+  ``$\le n-1$'' (\lstinline{conjugateMultiplicity_le_finrank_sub_one}) uses that
+  $t\mapsto t\gamma'(t)$ is a Jacobi field with $J(0)=0$ and initial velocity
+  $\gamma'(0)$, whose value at the endpoint is $\Theta(\gamma'(0))=L\gamma'(L)\neq0$
+  for a non-constant geodesic ($\gamma'(L)\neq0$; \cref{rem:dc-ch5-2-2}), so
+  $\gamma'(0)\notin\ker\Theta$, hence $\ker\Theta\subsetneq E$ and
+  $\dim\ker\Theta\le n-1$.
 \end{remark}
 
 \begin{example}[Example 3.3]
   \label{ex:dc-ch5-3-3}
   \dcref{ch5:3.3}
-  \uses{ex:dc-ch5-2-3}
+  \lean{Riemannian.Jacobi.isConjugatePointAt_constCurvature_pos,
+    Riemannian.Jacobi.conjugateMultiplicity_constCurvature_pos_eq}
+  \leanok
+  \uses{ex:dc-ch5-2-3, def:dc-ch5-3-1, rem:dc-ch5-3-2, prop:dc-ch5-3-5}
   Let $S^n=\{x\in\mathbb{R}^{n+1};|x|=1\}$. Assuming the fact (to be proved in the
   next chapter) that the sectional curvatures of $S^n$ are all equal to one, the
   Jacobi field on $S^n$ given in \cref{ex:dc-ch5-2-3}, namely $J(t)=(\sin t)w(t)$, satisfies
@@ -361,6 +761,35 @@ and Jacobi fields.
   point $\gamma(\pi)$ to $\gamma(0)$ is conjugate to $\gamma(0)$. There exist $n-1$
   such fields that are linearly independent, that is, the multiplicity of
   $\gamma(\pi)$ as a conjugate point of $\gamma(0)$ is $n-1$.
+
+  This is formalized as the intrinsic statement of which $S^n$ (the $K_0=1$ case) is
+  an instance: on any manifold $M^n$ of constant sectional curvature $K_0>0$, along a
+  unit-speed geodesic $\gamma\colon[0,\pi/\sqrt{K_0}]\to M$, the point
+  $\gamma(\pi/\sqrt{K_0})$ is conjugate to $\gamma(0)$, with multiplicity $n-1$. The
+  normal Jacobi fields with $J(0)=0$ are the explicit fields
+  $J(t)=\frac{\sin(t\sqrt{K_0})}{\sqrt{K_0}}\,w(t)$ of \cref{ex:dc-ch5-2-3}, where $w$
+  is the parallel transport along $\gamma$ of a vector $w_0\perp\gamma'(0)$. Because
+  parallel transport is an isometry and $\gamma'$ is itself parallel,
+  $\langle w(t),\gamma'(t)\rangle=\langle w_0,\gamma'(0)\rangle=0$ throughout, so $J$ is
+  a Jacobi field with $J(0)=0$, $J'(0)=w_0$, and $J(\pi/\sqrt{K_0})=0$ since
+  $\sin\pi=0$. By uniqueness of Jacobi fields with given initial data, every
+  $w_0\perp\gamma'(0)$ lies in the kernel of the endpoint map
+  $\Theta\colon J'(0)\mapsto J(\pi/\sqrt{K_0})$ (\cref{prop:dc-ch5-3-5}); hence
+  $\gamma'(0)^\perp\subseteq\ker\Theta$ and $n-1=\dim\gamma'(0)^\perp\le\dim\ker\Theta$,
+  while the reverse inequality is the sharp bound $\dim\ker\Theta\le n-1$ of
+  \cref{rem:dc-ch5-3-2}, giving equality. The concrete $S^n$ statement is the $K_0=1$
+  instance, using additionally the Ch.~6 fact that $S^n$ has constant sectional
+  curvature $1$.
+
+  The manifold-level parallel field $w(t)$ — parallel transport of a single vector
+  along a geodesic that may leave any single chart, the situation of the antipodal arc
+  from $p$ to $-p$ on $S^n$ — is built in \lstinline{ParallelFieldAlong.lean}
+  (\lstinline{exists_parallelFieldAlongOn}), by a supremum walk gluing single-chart
+  parallel fields through the chart-change covariance of the parallel-transport ODE;
+  parallel transport is an isometry (\lstinline{IsParallelFieldAlongOn.metricInner_const}),
+  and the manifold constant-curvature Jacobi field
+  $\frac{\sin(t\sqrt{K_0})}{\sqrt{K_0}}w$ is
+  \lstinline{isJacobiFieldAlongOn_constCurvatureSol_pos}.
 \end{example}
 
 \begin{definition}[conjugate locus]
@@ -380,12 +809,38 @@ and Jacobi fields.
 \begin{proposition}[Proposition 3.5]
   \label{prop:dc-ch5-3-5}
   \dcref{ch5:3.5}
-  \uses{cor:dc-ch5-2-5}
+  \lean{Riemannian.Jacobi.expDifferential_injective_iff_not_conjugate,
+    Riemannian.Jacobi.injective_jacobiEndpointOfVel_iff_not_conjugate,
+    Riemannian.Jacobi.conjugateMultiplicity,
+    Riemannian.Jacobi.isConjugatePointAt_iff_conjugateMultiplicity_pos,
+    Riemannian.Jacobi.conjugateMultiplicity_eq_finrank_ker_expDifferential}
+  \leanok
+  \uses{cor:dc-ch5-2-5, def:dc-ch5-3-1}
   Let $\gamma:[0,a]\to M$ be a geodesic and put $\gamma(0)=p$. The point
   $q=\gamma(t_0)$, $t_0\in(0,a]$, is conjugate to $p$ along $\gamma$ if and only if
   $v_0=t_0\gamma'(0)$ is a critical point of $\exp_p$. In addition, the multiplicity
   of $q$ as a conjugate point of $p$ is equal to the dimension of the kernel of the
   linear map $(d\exp_p)_{v_0}$.
+
+  The first assertion is formalized (axiom-clean) in the endpoint form $t_0=1$: on a
+  complete manifold $(d\exp_p)_v$ is injective if and only if $\exp_p(v)=\gamma_v(1)$ is
+  \emph{not} conjugate to $p$ along $\gamma_v$ (\cref{def:dc-ch5-3-1}). Equivalently,
+  $v$ is a critical point of $\exp_p$ (its differential fails to be injective) exactly when
+  the endpoint is conjugate. Both directions use \cref{cor:dc-ch5-2-5}: a nonzero
+  $Z\in\ker(d\exp_p)_v$ yields the nonzero Jacobi field $Y_Z$ with $Y_Z(0)=Y_Z(1)=0$, and
+  conversely. The equivalence is also available in endpoint-general form
+  (\lstinline{injective_jacobiEndpointOfVel_iff_not_conjugate}): the endpoint map
+  $\Theta:J'(0)\mapsto J(a)$ on Jacobi fields with $J(0)=0$ is injective iff
+  $\gamma(a)$ is not conjugate to $\gamma(0)$. The multiplicity is \emph{defined}
+  (\lstinline{conjugateMultiplicity}) as $\dim\ker\Theta$, the dimension of the
+  space of Jacobi fields vanishing at both endpoints, and $\gamma(a)$ is conjugate
+  iff this multiplicity is positive
+  (\lstinline{isConjugatePointAt_iff_conjugateMultiplicity_pos}). The second
+  assertion is also formalized (endpoint form,
+  \lstinline{conjugateMultiplicity_eq_finrank_ker_expDifferential}): writing the
+  differential $D=(d\exp_p)_v$ in a chart, $DZ$ is the chart reading of $J_{(0,Z)}(1)$,
+  so $DZ=0$ iff $\Theta Z=0$ (the tangent chart reading is injective). Hence
+  $\ker D=\ker\Theta$ and the multiplicity $\dim\ker\Theta$ equals $\dim\ker(d\exp_p)_{v}$.
 \end{proposition}
 \begin{proof}
   The point $q=\gamma(t_0)$ is a conjugate point of $p$ along $\gamma$ if
@@ -412,13 +867,30 @@ and Jacobi fields.
 \begin{proposition}[Proposition 3.6]
   \label{prop:dc-ch5-3-6}
   \dcref{ch5:3.6}
+  \lean{Riemannian.Jacobi.chartMetricInner_jacobi_velocity_affine}
+  \leanok
+  \uses{def:dc-ch5-2-1}
   Let $J$ be a Jacobi field along the geodesic $\gamma:[0,a]\to M$. Then
-  
+
   $$
   \langle J(t),\gamma'(t)\rangle=\langle J'(0),\gamma'(0)\rangle t+\langle J(0),\gamma'(0)\rangle,\quad t\in[0,a].
   $$
+
+  Formalized in coordinate form: reading $\gamma$ in a chart $\alpha$ whose source contains
+  $\gamma([a,b])$, with chart curve $u=\varphi_\alpha\circ\gamma$ and chart velocity
+  $\dot u=\frac{d}{dt}u$ (the chart reading of $\gamma'$), the chart Gram pairing
+  $\langle J,\dot u\rangle_G$ is an affine function of $t$:
+  $\langle J(t),\dot u(t)\rangle=\langle DJ(a),\dot u(a)\rangle(t-a)+\langle J(a),\dot u(a)\rangle$.
+  Since the chart Gram pairing equals the intrinsic $\langle\cdot,\cdot\rangle_g$ and $\dot u$ is
+  the chart reading of $\gamma'$, this is do Carmo's identity. The proof follows do Carmo:
+  $\langle J,\dot u\rangle'=\langle DJ,\dot u\rangle$ (metric compatibility, $\nabla J=DJ$, and the
+  velocity is parallel $\nabla\dot u=0$ in the fixed chart — the fixed-chart geodesic ODE), and
+  $\langle DJ,\dot u\rangle'=-\langle R(J,\dot u)\dot u,\dot u\rangle=0$ (curvature antisymmetry in
+  the last pair), so $\langle DJ,\dot u\rangle$ is constant and $\langle J,\dot u\rangle$ is affine.
 \end{proposition}
 \begin{proof}
+  \leanok
+  \uses{def:dc-ch5-2-1}
   Omitting the $t$ for notation, we have from the Jacobi equation,
   
   $$
@@ -440,28 +912,67 @@ and Jacobi fields.
 \begin{corollary}[Corollary 3.7]
   \label{cor:dc-ch5-3-7}
   \dcref{ch5:3.7}
+  \lean{Riemannian.Jacobi.chartMetricInner_jacobi_velocity_const_of_eq}
+  \leanok
+  \uses{prop:dc-ch5-3-6}
   If $\langle J,\gamma'\rangle(t_1)=\langle J,\gamma'\rangle(t_2)$, $t_1,t_2\in[0,a]$,
   $t_1\neq t_2$, then $\langle J,\gamma'\rangle$ does not depend on $t$; in
   particular, if $J(0)=J(a)=0$, then $\langle J,\gamma'\rangle(t)\equiv 0$.
+
+  Coordinate form (from the affine law of \cref{prop:dc-ch5-3-6}): if the chart Gram pairing
+  $\langle J,\dot u\rangle$ agrees at two distinct times, its slope $\langle DJ(a),\dot u(a)\rangle$
+  vanishes, so the pairing is constant. The ``in particular'' clause is immediate: $J(a)=0$ forces
+  $\langle J(a),\dot u(a)\rangle=0$, hence the constant value is $0$.
 \end{corollary}
 
 \begin{corollary}[Corollary 3.8]
   \label{cor:dc-ch5-3-8}
   \dcref{ch5:3.8}
+  \lean{Riemannian.Jacobi.chartMetricInner_jacobi_velocity_eq_zero_iff,
+    Riemannian.Jacobi.velocityFunctional,
+    Riemannian.Jacobi.finrank_velocityPerp_eq}
+  \leanok
+  \uses{prop:dc-ch5-3-6, rem:dc-ch5-3-2}
   Suppose that $J(0)=0$. Then $\langle J'(0),\gamma'(0)\rangle=0$ if and only if
   $\langle J,\gamma'\rangle(t)\equiv 0$; in particular, the space of Jacobi fields
   $J$ with $J(0)=0$ and $\langle J,\gamma'\rangle(t)\equiv 0$ has dimension equal to
   $n-1$.
+
+  The equivalence is formalized (coordinate form, from \cref{prop:dc-ch5-3-6}): with $J(a)=0$
+  the affine law reads $\langle J(t),\dot u(t)\rangle=\langle DJ(a),\dot u(a)\rangle(t-a)$, which
+  vanishes identically iff its slope $\langle DJ(a),\dot u(a)\rangle=\langle J'(0),\gamma'(0)\rangle$
+  does. The ``dimension $=n-1$'' clause is formalized as
+  \lstinline{finrank_velocityPerp_eq}: under the initial-velocity parametrization
+  ($w=J'(0)$) the space $\mathcal J^\perp$ of such $J$ is the kernel of the tangential
+  functional $w\mapsto\langle w,\gamma'(0)\rangle_g$ (\lstinline{velocityFunctional}),
+  which is a nonzero element of the dual for $\gamma'(0)\neq0$, hence a hyperplane of
+  dimension $n-1$.
 \end{corollary}
 
 \begin{proposition}[Proposition 3.9]
   \label{prop:dc-ch5-3-9}
   \dcref{ch5:3.9}
+  \lean{Riemannian.Jacobi.exists_unique_jacobi_of_endpoints}
+  \leanok
+  \uses{cor:dc-ch5-2-5, def:dc-ch5-3-1}
   Let $\gamma:[0,a]\to M$ be a geodesic. Let $V_1\in T_{\gamma(0)}M$ and
   $V_2\in T_{\gamma(a)}M$. If $\gamma(a)$ is not conjugate to $\gamma(0)$ there
   exists a unique Jacobi field $J$ along $\gamma$, with $J(0)=V_1$ and $J(a)=V_2$.
+
+  Formalized in the endpoint form (base $0$, terminal $a$). Jacobi fields along
+  $\gamma$ are parametrized by their initial data $(J(0),J'(0))\in E\times E$
+  (existence and uniqueness from \cref{cor:dc-ch5-2-5} make this a bijection), so
+  evaluation at a fixed time is a linear map $\mathrm{evalJacobiAt}:E\times E\to E$,
+  and $\Theta=\mathrm{jacobiEndpointOfVel}:J'(0)\mapsto J(a)$ is its restriction to
+  the fields with $J(0)=0$. By \cref{prop:dc-ch5-3-5} (endpoint form) $\Theta$ is
+  injective iff $\gamma(a)$ is not conjugate to $\gamma(0)$; as $\dim M<\infty$,
+  injectivity upgrades to surjectivity, and solving $\Theta w=V_2-\mathrm{evalJacobiAt}(V_1,0)$
+  produces the field with $J(0)=V_1$, $J(a)=V_2$. Uniqueness: a competitor differs by
+  a Jacobi field with $J(0)=J(a)=0$, i.e.\ an element of $\ker\Theta=0$.
 \end{proposition}
 \begin{proof}
+  \leanok
+  \uses{cor:dc-ch5-2-5, def:dc-ch5-3-1}
   Let $\mathcal{J}$ be the space of Jacobi fields $J$ with $J(0)=0$. Define
   a mapping $\Theta:\mathcal{J}\to T_{\gamma(a)}M$ by $\Theta(J)=J(a)$,
   $J\in\mathcal{J}$. Since $\gamma(a)$ is not conjugate to $\gamma(0)$, $\Theta$ is
@@ -480,10 +991,35 @@ and Jacobi fields.
 \begin{corollary}[Corollary 3.10]
   \label{cor:dc-ch5-3-10}
   \dcref{ch5:3.10}
+  \lean{Riemannian.Jacobi.jacobiConjugateBasis,
+    Riemannian.Jacobi.jacobiConjugateEquiv,
+    Riemannian.Jacobi.jacobiEndpointOfVel_map_velocityPerp_eq,
+    Riemannian.Jacobi.metricInner_jacobiJ_velocity_eq_zero}
+  \leanok
+  \uses{cor:dc-ch5-3-8, prop:dc-ch5-3-5, prop:dc-ch5-3-6, def:dc-ch5-3-1}
   Let $\gamma:[0,a]\to M$ be a geodesic in $M$, $\dim M=n$, and let
   $\mathcal{J}^\perp$ be the space of Jacobi fields with $J(0)=0$,
   $J'(0)\perp\gamma'(0)$. Let $\{J_1,\dots,J_{n-1}\}$ be a basis of
   $\mathcal{J}^\perp$. If $\gamma(t)$, $t\in(0,a]$, is not conjugate to $\gamma(0)$,
   then $\{J_1(t),\dots,J_{n-1}(t)\}$ is a basis for the orthogonal complement
   $\{\gamma'(t)\}^\perp\subset T_{\gamma(t)}M$ of $\gamma'(t)$.
+
+  Formalized in the endpoint form ($t=a$), for a geodesic whose image lies in one chart
+  source.  Under the initial-velocity parametrization ($w=J'(0)$) the space $\mathcal J^\perp$
+  is $W=\ker(\text{velocityFunctional}\,g\,\gamma(0)\,\gamma'(0))$ and the target
+  $\gamma'(a)^\perp$ is $WL=\ker(\text{velocityFunctional}\,g\,\gamma(a)\,\gamma'(a))$
+  (\cref{cor:dc-ch5-3-8}, dimension $n-1$ each).  The heart is the new
+  \emph{intrinsic moving-base pairing} \lstinline{metricInner_jacobiJ_velocity_eq_zero}: the
+  fixed-chart affine law (\cref{prop:dc-ch5-3-6}, \cref{cor:dc-ch5-3-8}) upgrades to
+  $\langle J(t),\gamma'(t)\rangle_g=0$ at the moving foot $\gamma(t)$ by localizing the manifold
+  Jacobi field to a chart (\lstinline{isJacobiFieldOn_of_mem_source}) and transferring through the
+  chart$\leftrightarrow$intrinsic bridges (\lstinline{metricInner_eq_chartMetricInner_rep},
+  \lstinline{chartVectorRep_velocity}); hence the endpoint map $\Theta:J'(0)\mapsto J(a)$
+  (\cref{prop:dc-ch5-3-9}) maps $W$ into $WL$ (\lstinline{jacobiEndpointOfVel_mem_velocityPerp}).
+  Since $\gamma(a)$ is not conjugate to $\gamma(0)$, $\Theta$ is injective (\cref{prop:dc-ch5-3-5})
+  and both hyperplanes have dimension $n-1$, so $\Theta$ restricts to a linear isomorphism
+  $W\xrightarrow{\sim}WL$ (\lstinline{jacobiConjugateEquiv}, from the image
+  $\Theta(W)=WL$ of \lstinline{jacobiEndpointOfVel_map_velocityPerp_eq}); consequently a basis of
+  $\mathcal J^\perp$ maps to a basis of $\gamma'(a)^\perp$ whose vectors are the endpoint values
+  $J_i(a)$ (\lstinline{jacobiConjugateBasis}).
 \end{corollary}

@@ -138,7 +138,6 @@ theorem euclideanConnection_isSymmetric :
   intro X Y p
   rw [euclideanConnection_cov_apply, euclideanConnection_cov_apply,
     DCLieBracket_eq_fderiv]
-  rfl
 
 omit [CompleteSpace F] in
 /-- **Math.** The flat connection is **compatible with the Euclidean metric**:

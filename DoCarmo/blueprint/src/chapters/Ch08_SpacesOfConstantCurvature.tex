@@ -65,10 +65,177 @@ $\tilde{\gamma}:[0,t]\to\tilde{M}$ given by $\tilde{\gamma}(0)=\tilde{p}$,
 $\tilde{\gamma}'(0)=i(\gamma'(0))$. Denote by $R$ and $\tilde{R}$ the curvatures of
 $M$ and $\tilde{M}$, respectively.
 
+\begin{lemma}[frame-coefficient Jacobi transfer: the analytic heart of Cartan's theorem]
+  \label{lem:dc-ch8-2-1-jacobi-transfer}
+  \lean{Riemannian.Jacobi.jacobiFrameTransfer}
+  \leanok
+  \uses{def:dc-ch5-2-1}
+  Let $\gamma:[0,\ell]\to M$ and $\tilde\gamma:[0,\ell]\to\tilde M$ be geodesics, read
+  in fixed charts as the coordinate curves $u$ and $\tilde u$. Let $e_1(t),\dots,e_n(t)$
+  be a parallel orthonormal frame along $\gamma$ and $\tilde e_1(t),\dots,\tilde e_n(t)$
+  a parallel orthonormal frame along $\tilde\gamma$ ($n=\dim M$), with $e_n=u'=\gamma'$,
+  $\tilde e_n=\tilde u'=\tilde\gamma'$, and let $y_1,\dots,y_n:\mathbb R\to\mathbb R$ be
+  scalar coefficient functions. Suppose that $J=\sum_i y_i e_i$ satisfies the Jacobi
+  equation $\tfrac{D^2 J}{dt^2}+R(u',J)u'=0$ along $\gamma$, and that at the parameter
+  $t$ the two frames have matching curvature coefficients,
+  $$
+  \langle R(e_n,e_i)e_n,e_j\rangle=\langle\tilde R(\tilde e_n,\tilde e_i)\tilde e_n,\tilde e_j\rangle,
+  \qquad i,j=1,\dots,n.
+  $$
+  Then the field $\tilde J=\sum_i y_i\tilde e_i$ obtained by carrying over the \emph{same}
+  scalar coefficients satisfies the Jacobi equation
+  $\tfrac{D^2\tilde J}{dt^2}+\tilde R(\tilde u',\tilde J)\tilde u'=0$ along $\tilde\gamma$;
+  i.e. $\tilde J$ is a Jacobi field along $\tilde\gamma$.
+\end{lemma}
+\begin{proof}
+  \leanok
+  Because $e$ is parallel and orthonormal, pairing the Jacobi equation for
+  $J=\sum_i y_i e_i$ with $e_j$ reduces it to do Carmo's second-order scalar system
+  $y_j''+\sum_i a_{ij}\,y_i=0$, $a_{ij}=\langle R(e_n,e_i)e_n,e_j\rangle$ (the frame
+  reduction: $\tfrac{D^2}{dt^2}\sum_i y_i e_i=\sum_i y_i''e_i$ since $De_i/dt=0$, and
+  $R(u',\cdot)u'$ is linear). By the matching hypothesis $a_{ij}=\tilde a_{ij}$ with
+  $\tilde a_{ij}=\langle\tilde R(\tilde e_n,\tilde e_i)\tilde e_n,\tilde e_j\rangle$, so
+  the \emph{same} coefficients $y_i$ solve the analogous system
+  $y_j''+\sum_i\tilde a_{ij}\,y_i=0$ on the $\tilde M$ side. Reassembling in the parallel
+  orthonormal frame $\tilde e$ (the converse of the frame reduction: the basis expansion
+  of $\tfrac{D^2\tilde J}{dt^2}+\tilde R(\tilde u',\tilde J)\tilde u'$ has these scalar
+  expressions as its coefficients) gives $\tfrac{D^2\tilde J}{dt^2}+\tilde R(\tilde u',\tilde J)\tilde u'=0$.
+\end{proof}
+
+\begin{lemma}[the frame transfer in constant curvature: the matching hypothesis is automatic]
+  \label{lem:dc-ch8-2-1-jacobi-transfer-const}
+  \lean{Riemannian.Jacobi.jacobiFrameTransfer_isConstantCurvature}
+  \leanok
+  \uses{lem:dc-ch8-2-1-jacobi-transfer}
+  Suppose $M$ and $\tilde M$ both have constant sectional curvature $K_0$ (the same value),
+  and let $e_1,\dots,e_n$ resp.\ $\tilde e_1,\dots,\tilde e_n$ be parallel orthonormal frames
+  along geodesics $\gamma$ resp.\ $\tilde\gamma$, with the velocities $u'=e_{n_0}$,
+  $\tilde u'=\tilde e_{n_0}$ among the frame vectors. Then the curvature-matching hypothesis
+  of \cref{lem:dc-ch8-2-1-jacobi-transfer},
+  $$
+  \langle R(e_i,u')u',e_j\rangle=\langle\tilde R(\tilde e_i,\tilde u')\tilde u',\tilde e_j\rangle,
+  $$
+  holds \emph{automatically}: by Lemma 3.4 of Chap. 4 (the pointwise constant-curvature model
+  form $\langle R(x,y)z,t\rangle=K_0(\langle x,z\rangle\langle y,t\rangle-\langle y,z\rangle\langle x,t\rangle)$)
+  and orthonormality, both sides equal the manifold-independent Kronecker matrix
+  $K_0(\delta_{ij}-\delta_{i n_0}\delta_{n_0 j})$. Hence a Jacobi field $J=\sum_i y_i e_i$ along
+  $\gamma$ carries over, with the \emph{same} scalar coefficients, to a Jacobi field
+  $\tilde J=\sum_i y_i\tilde e_i$ along $\tilde\gamma$ --- with \emph{no} parallel-transport
+  conjugation $\phi_t$ required. This is exactly the mechanism used by \cref{cor:dc-ch8-2-2},
+  \cref{cor:dc-ch8-2-3} and \cref{thm:dc-ch8-4-1}, which only ever compare two spaces of the
+  same constant curvature.
+\end{lemma}
+\begin{proof}
+  \leanok
+  Pairing the Jacobi operator $a\mapsto R(a,u')u'$ with $e_j$ and reading it in the fixed chart
+  gives, via the chart $\leftrightarrow$ manifold curvature bridge and the constant-curvature
+  model form of Lemma 3.4 of Chap. 4, the chart identity
+  $\langle R(a,u')u',b\rangle=K_0(\langle u',u'\rangle\langle a,b\rangle-\langle a,u'\rangle\langle u',b\rangle)$
+  (\lstinline{chartMetricInner\_chartCurvatureEndo\_isConstantCurvature}). Substituting
+  $a=e_i$, $b=e_j$, $u'=e_{n_0}$ and using orthonormality
+  ($\langle e_i,e_j\rangle=\delta_{ij}$, $\langle e_i,e_{n_0}\rangle=\delta_{i n_0}$,
+  $\langle e_{n_0},e_{n_0}\rangle=1$) collapses each entry to
+  $K_0(\delta_{ij}-\delta_{i n_0}\delta_{n_0 j})$, which contains no manifold data
+  (\lstinline{chartCurvatureEndo\_frameCoef\_isConstantCurvature}). The two frame-coefficient
+  matrices therefore coincide, discharging the hypothesis of
+  \cref{lem:dc-ch8-2-1-jacobi-transfer}, whose conclusion is the claimed carry-over.
+\end{proof}
+
+\begin{lemma}[velocity-seeded parallel orthonormal frame]
+  \label{lem:dc-ch8-2-1-velocity-frame}
+  \lean{Riemannian.Jacobi.exists_velocitySeededParallelOrthoFrame}
+  \leanok
+  \uses{def:dc-ch5-2-1}
+  Let $\gamma:[a,b]\to M$ be a geodesic, read in a fixed chart as the coordinate curve
+  $u$, whose initial velocity $u'(a)=\gamma'(a)$ is a unit vector. Then there is a parallel
+  orthonormal frame $e_1(t),\dots,e_n(t)$ along $\gamma$ (parallel: $De_i/dt=0$; orthonormal:
+  $\langle e_i(t),e_j(t)\rangle=\delta_{ij}$ for all $t$) whose distinguished member is the
+  velocity, $e_{n_0}(t)=\gamma'(t)$ for all $t\in[a,b]$. This is do Carmo's
+  ``$e_1,\dots,e_{n-1},e_n=\gamma'$''.
+\end{lemma}
+\begin{proof}
+  \leanok
+  The unit initial velocity $\gamma'(a)$ extends to an orthonormal basis $\{e_i^0\}$ of
+  $T_p(M)$ with $e_{n_0}^0=\gamma'(a)$ (Householder reflection of a generic orthonormal basis:
+  a reflection preserves the inner product and can be chosen to send a basis vector to
+  $\gamma'(a)$). Parallel transport of $\{e_i^0\}$ along $\gamma$ gives a parallel orthonormal
+  frame $\{e_i(t)\}$ (parallel transport is a linear isometry). Both $e_{n_0}$ and the
+  velocity $\gamma'$ are parallel fields along $\gamma$ --- the velocity because $\gamma$ is a
+  geodesic ($D\gamma'/dt=0$) --- agreeing at $t=a$; by uniqueness of parallel transport
+  $e_{n_0}(t)=\gamma'(t)$ for all $t$.
+\end{proof}
+
+\begin{lemma}[the constant-curvature normal Jacobi field, any sign of $K_0$]
+  \label{lem:dc-ch8-2-1-jacobi-const-solution}
+  \lean{Riemannian.Jacobi.isJacobiFieldAlongOn_of_constantCurvature}
+  \leanok
+  \uses{def:dc-ch5-2-1}
+  Let $M$ have constant sectional curvature $K_0$ (any sign), let $\gamma$ be a
+  unit-speed geodesic, let $w$ be a \emph{parallel} field along $\gamma$ \emph{normal}
+  to $\gamma'$, and let $h$ be any scalar solution of $h''+K_0 h=0$ (given by its
+  derivative data $h'=Dh$, $Dh'=-K_0 h$). Then $J(t)=h(t)\,w(t)$ is a Jacobi field
+  along $\gamma$, with covariant derivative $DJ(t)=Dh(t)\,w(t)$. A single statement thus
+  covers the three curvature signs at once (do Carmo's
+  $h=\sin(t\sqrt{K_0})/\sqrt{K_0}$, $h=t$, $h=\sinh(t\sqrt{-K_0})/\sqrt{-K_0}$).
+\end{lemma}
+\begin{proof}
+  \leanok
+  Since $w$ is parallel, $\tfrac{D}{dt}(h w)=h'\,w$ and
+  $\tfrac{D}{dt}(Dh\,w)=Dh'\,w=-K_0 h\,w$; and by the constant-curvature model form
+  $R(\gamma',w)\gamma'=K_0 w$ (do Carmo Ch.~4, Lemma 3.4, using $|\gamma'|^2=1$ and
+  $\langle w,\gamma'\rangle=0$) together with homogeneity in the middle slot,
+  $R(\gamma',h w)\gamma'=h K_0\,w$. Hence
+  $\tfrac{D^2}{dt^2}(h w)+R(\gamma',h w)\gamma'=-K_0 h\,w+K_0 h\,w=0$: the pair
+  $(h w, Dh\,w)$ solves the Jacobi system. This generalizes the special case
+  $K_0>0$, $h=\sin(t\sqrt{K_0})/\sqrt{K_0}$ used in
+  \cref{ex:dc-ch5-3-3} to an arbitrary scalar solution.
+\end{proof}
+
+\begin{lemma}[the norm of a constant-curvature Jacobi field is manifold-independent]
+  \label{lem:dc-ch8-2-1-jacobi-norm-transfer}
+  \lean{Riemannian.Jacobi.metricInner_jacobiField_eq_of_constantCurvature,
+    Riemannian.Jacobi.metricInner_jacobiField_transfer_of_constantCurvature}
+  \leanok
+  \uses{lem:dc-ch8-2-1-jacobi-const-solution,cor:dc-ch5-2-5,def:dc-ch5-2-1}
+  Along a unit-speed geodesic $\gamma:[0,\ell]\to M$ on a manifold of constant sectional
+  curvature $K_0$, let $J$ be the Jacobi field with $J(0)=0$ and covariant derivative
+  $DJ$, and let $h$ solve $h''+K_0 h=0$, $h(0)=0$, $h'(0)=1$. Writing $Z=DJ(0)$ and
+  $a=\langle Z,\gamma'(0)\rangle$,
+  $$
+  |J(t)|^2 = t^2 a^2 + h(t)^2\big(|Z|^2-a^2\big).
+  $$
+  The right-hand side involves \emph{no} manifold data beyond $K_0$ (through $h$), the
+  time $t$, and the two scalar invariants $a=\langle Z,\gamma'(0)\rangle$ and $|Z|^2$.
+  Consequently, if $\tilde M$ also has constant curvature $K_0$, $\tilde\gamma$ is a
+  unit-speed geodesic, $\tilde J$ is a Jacobi field with $\tilde J(0)=0$, and the initial
+  invariants match ($\langle\tilde{DJ}(0),\tilde\gamma'(0)\rangle=a$,
+  $|\tilde{DJ}(0)|^2=|Z|^2$), then $|\tilde J(t)|=|J(t)|$ for every $t\in[0,\ell]$. Since a
+  linear isometry $i$ with $i(\gamma'(0))=\tilde\gamma'(0)$ carries $Z$ to $\tilde{DJ}(0)$
+  and preserves both invariants, this is precisely the norm-preserving (hence isometry)
+  step of \cref{thm:dc-ch8-2-1} in the same-curvature case, and requires \emph{no}
+  parallel-transport conjugation $\phi_t$.
+\end{lemma}
+\begin{proof}
+  \leanok
+  Decompose $Z=a\,\gamma'(0)+Z_\perp$ with $Z_\perp\perp\gamma'(0)$, so
+  $|Z_\perp|^2=|Z|^2-a^2$. The tangential Jacobi field $a\,t\,\gamma'(t)$ (do Carmo
+  Remark 2.2's $t\gamma'$) and the normal Jacobi field $h(t)\,w(t)$, with $w$ the parallel
+  transport of $Z_\perp$ (\cref{lem:dc-ch8-2-1-jacobi-const-solution}), both vanish at
+  $t=0$ and have covariant derivatives $a\,\gamma'(0)$ resp. $Z_\perp$ there; their sum has
+  initial data $(0,Z)$, so by uniqueness of Jacobi fields with prescribed initial data it
+  equals $J$. Parallel transport is an isometry preserving orthogonality, so
+  $\langle\gamma'(t),w(t)\rangle=\langle\gamma'(0),Z_\perp\rangle=0$, $|\gamma'(t)|^2=1$
+  (unit speed) and $|w(t)|^2=|Z_\perp|^2=|Z|^2-a^2$; expanding the squared norm of the
+  orthogonal combination $|a\,t\,\gamma'(t)+h(t)\,w(t)|^2$ gives
+  $t^2a^2+h(t)^2(|Z|^2-a^2)$. As this depends only on $K_0,t,a,|Z|^2$, equating it on the
+  two sides yields $|\tilde J(t)|=|J(t)|$; by \cref{cor:dc-ch5-2-5} these are the values of
+  $(d\exp_p)$ resp. $(d\exp_{\tilde p})$, so $df$ is norm-preserving.
+\end{proof}
+
 \begin{theorem}[E. Cartan]
   \label{thm:dc-ch8-2-1}
   \dcref{ch8:2.1}
-  \uses{cor:dc-ch5-2-5}
+  \uses{cor:dc-ch5-2-5,lem:dc-ch8-2-1-jacobi-transfer}
   \notready
   With the notation above, if for all $q\in V$ and all $x,y,u,v\in T_q(M)$ we have
   
@@ -123,7 +290,8 @@ $M$ and $\tilde{M}$, respectively.
 \begin{corollary}[Corollary 2.2]
   \label{cor:dc-ch8-2-2}
   \dcref{ch8:2.2}
-  \uses{thm:dc-ch8-2-1}
+  \uses{thm:dc-ch8-2-1,lem:dc-ch8-2-1-jacobi-transfer-const,lem:dc-ch8-2-1-velocity-frame,
+    lem:dc-ch8-2-1-jacobi-norm-transfer,lem:dc-ch8-2-1-jacobi-const-solution}
   Let $M$ and $\tilde{M}$ be spaces with the same constant curvature and the same
   dimension $n$. Let $p\in M$ and $\tilde{p}\in\tilde{M}$. Choose arbitrary
   orthonormal bases $\{e_j\}$ of $T_p(M)$ and $\{\tilde{e}_j\}$ of $T_{\tilde{p}}(\tilde{M})$,
@@ -140,6 +308,8 @@ $M$ and $\tilde{M}$, respectively.
 \begin{corollary}[Corollary 2.3]
   \label{cor:dc-ch8-2-3}
   \dcref{ch8:2.3}
+  \uses{thm:dc-ch8-2-1,lem:dc-ch8-2-1-jacobi-transfer-const,lem:dc-ch8-2-1-velocity-frame,
+    lem:dc-ch8-2-1-jacobi-norm-transfer,lem:dc-ch8-2-1-jacobi-const-solution}
   Let $M$ be a space of constant curvature and let $p$ and $q$ be any two points of
   $M$. Let $\{e_j\}$ and $\{f_j\}$ be arbitrary orthonormal bases of $T_p(M)$ and
   $T_q(M)$, respectively. Then there exist neighborhoods $U$ of $p$ and $V$ of $q$,
@@ -613,31 +783,54 @@ that the sectional curvature of $H^n$ is a constant equal to $-1$.
 \begin{proposition}[geodesics of $H^n$]
   \label{prop:dc-ch8-3-1}
   \dcref{ch8:3.1}
-  \uses{ex:dc-ch3-3-10,lem:dc-ch8-3-vertical-geodesic,lem:dc-ch8-3-semicircle-geodesic}
+  \lean{Riemannian.Hyperbolic.hyperbolic_geodesic_classification}
+  \leanok
+  \uses{ex:dc-ch3-3-10,lem:dc-ch8-3-geodesic-equation,lem:dc-ch8-3-vertical-geodesic,
+    lem:dc-ch8-3-semicircle-geodesic}
   The straight lines perpendicular to the hyperplane $x_n=0$, and the circles of
   $H^n$ whose planes are perpendicular to the hyperplane $x_n=0$ and whose centers
   are in this hyperplane, are the geodesics of $H^n$.
 \end{proposition}
 \begin{proof}
-  An isometry of $\mathbb{R}^n$ which involves solely the variables
-  $x_1,\dots,x_{n-1}$ does not change the metric $g_{ij}$, and is therefore an
-  isometry of $H^n$. Therefore it suffices to consider lines and circles in the
-  $x_1 x_n$-plane. The theorem follows now from \cref{ex:dc-ch3-3-10}. $\square$
+  \leanok
+  That each stated curve is a geodesic is the forward direction, already established:
+  the vertical lines by \cref{lem:dc-ch8-3-vertical-geodesic} and the semicircles
+  perpendicular to $\{x_n=0\}$ with centre on it by
+  \cref{lem:dc-ch8-3-semicircle-geodesic}, both through the geodesic equation
+  \cref{lem:dc-ch8-3-geodesic-equation}. It remains to prove the converse inclusion:
+  that these are \emph{all} the geodesics.
 
-  A direct route, independent of \cref{ex:dc-ch3-3-10}, verifies each family
-  against the geodesic equation \cref{lem:dc-ch8-3-geodesic-equation}: the vertical
-  lines are discharged by \cref{lem:dc-ch8-3-vertical-geodesic} and the semicircles
-  perpendicular to $\{x_n=0\}$ by \cref{lem:dc-ch8-3-semicircle-geodesic}. The
-  converse inclusion — that these are \emph{all} the geodesics — follows from the
-  existence/uniqueness theorem for geodesics, since through every point and
-  direction there passes one curve of the stated type.
-  
-  It follows from the existence and uniqueness theorem for geodesics that all the
-  geodesics of $H^n$ are of the type described in Proposition 3.1, and are contained
-  in planes perpendicular to the hyperplane $x_n=0$. Since such planes are clearly
-  isometric to the hyperbolic plane, the completeness of $H^n$ is a consequence of
-  the completeness of the hyperbolic plane (cf. Exercise 10, Chap. 7). Another model
-  of hyperbolic space is given in Exercise 3 of this chapter.
+  Let $\gamma$ be a geodesic of $H^n$, and read it through the inclusion chart of the
+  open half-space, so that $\gamma$ is an ambient curve with $\gamma(0)=p$ and chart
+  velocity $\gamma'(0)=v\in\mathbb R^n$. Decompose $v=v_h+v_n\,e_n$, where
+  $e_n=\partial/\partial x_n$, $v_n=\langle v,e_n\rangle$, and $v_h$ is the horizontal
+  part (so $\langle v_h,e_n\rangle=0$). Through $(p,v)$ passes exactly one member of
+  the stated family:
+  \begin{itemize}
+    \item if $v_h=0$, the reparametrised vertical line
+      $s\mapsto c+p_n\,e^{Bs}\,e_n$, with $c=p-p_n e_n$ (so $c_n=0$), $p_n=\langle
+      p,e_n\rangle>0$ and $B=v_n/p_n$;
+    \item if $v_h\neq0$, the semicircle
+      $s\mapsto m+r\tanh(\sigma s+s_0)\,\hat u+r\,\operatorname{sech}(\sigma s+s_0)\,e_n$
+      in the plane $\{e_n,\hat u\}$, with $\hat u=v_h/|v_h|$, and centre, radius,
+      speed and phase determined by $(p,v)$: writing $s_0=\operatorname{arsinh}(-v_n/|v_h|)$,
+      $r=p_n\cosh s_0$, $\sigma=|v_h|\cosh s_0/p_n$ and
+      $m=(p-p_n e_n)+\bigl(p_n v_n/|v_h|\bigr)\hat u$, so that $m_n=0$, $\hat u_n=0$,
+      $|\hat u|=1$, $r>0$.
+  \end{itemize}
+  A direct computation (using $\sinh s_0=-v_n/|v_h|$ and
+  $\cosh^2-\sinh^2=1$) shows that in either case this family member is a geodesic
+  passing through $p$ with chart velocity $v$ at $s=0$. By the uniqueness of geodesics
+  through a given point with a given velocity (do Carmo Ch.~3, Theorem 2.2, intrinsic
+  form), $\gamma$ coincides with it, so $\gamma$ traces a vertical line or such a
+  semicircle. This is the required converse.
+
+  Since every geodesic is thus contained in a plane perpendicular to $x_n=0$, and such
+  planes are isometric to the hyperbolic plane, the completeness of $H^n$ follows from
+  that of the hyperbolic plane (cf. Exercise 10, Chap.~7). Another model of hyperbolic
+  space is given in Exercise 3 of this chapter. The book's alternative route reduces to
+  the $x_1x_n$-plane through \cref{ex:dc-ch3-3-10} via an isometry of $\mathbb R^n$ in
+  the variables $x_1,\dots,x_{n-1}$.
 \end{proof}
 
 \section{Space forms}

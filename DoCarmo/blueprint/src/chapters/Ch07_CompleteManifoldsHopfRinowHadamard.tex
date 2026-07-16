@@ -48,9 +48,18 @@ however, we would like a weaker condition.
 \begin{definition}[extendible]
   \label{def:dc-ch7-2-1}
   \dcref{ch7:2.1}
+  \lean{Riemannian.IsExtendible}
+  \leanok
   A Riemannian manifold $M$ is \emph{extendible} if there exists a Riemannian manifold
   $M'$ such that $M$ is isometric to a proper open subset of $M'$. In the opposite
   case, $M$ is \emph{non-extendible}.
+
+  In Lean this is encoded on the same model space: there is a connected manifold $M'$, a
+  metric $g'$ on $M'$, and a smooth injective local diffeomorphism $\varphi:M\to M'$ with
+  $\operatorname{range}\varphi\ne M'$ that preserves the metric ($|d\varphi\,v|=|v|$). A
+  local diffeomorphism is an open map, so $\operatorname{range}\varphi$ is an open subset,
+  and injectivity makes $\varphi$ a diffeomorphism onto it — i.e. an isometry onto a proper
+  open subset. Non-extendibility is the negation.
   
   It happens that the class of non-extendible Riemannian manifolds is too large. A
   convenient subfamily is given by the next definition.
@@ -68,12 +77,45 @@ however, we would like a weaker condition.
   $t\in\mathbb{R}$.
 \end{definition}
 
+\begin{lemma}[a local isometry maps geodesics to geodesics]
+  \label{lem:dc-ch7-2-3-geodesic-push}
+  \dcref{ch7:2.3}
+  \uses{def:dc-ch1-2-2, lem:dc-ch7-3-4-rays-are-geodesics}
+  \lean{Riemannian.RiemannianMetric.eq_of_metricInner_eq,
+    Riemannian.Geodesic.solvesGeodesicODEAt_comp_of,
+    Riemannian.Geodesic.isGeodesic_comp_of_isLocalDiffeomorph}
+  \leanok
+  Let $f:M\to M'$ be a smooth local diffeomorphism that preserves the metric
+  ($|df\,v|=|v|$ for all $v$; equivalently $f^*g'=g$). Then $f$ carries geodesics of $g$ to
+  geodesics of $g'$: for every continuous $g$-geodesic $\gamma$, the image $f\circ\gamma$ is a
+  $g'$-geodesic. This is the geodesic tool behind do Carmo's proof of Proposition 2.3 (``the
+  geodesic $\gamma(t)=\tilde\gamma(1-t)$ of $M'$ is a geodesic in $M$''); it is the \emph{push}
+  companion of the pullback geodesic transfer of \cref{lem:dc-ch7-3-4-rays-are-geodesics}.
+\end{lemma}
+\begin{proof}
+  \leanok
+  \uses{lem:dc-ch7-3-4-rays-are-geodesics}
+  Metric preservation identifies $g$ with the pulled-back metric $f^*g'$ — a Riemannian
+  metric is determined by its inner product at every point (extensionality,
+  \texttt{eq\_of\_metricInner\_eq}) — so each $g$-geodesic solves the $f^*g'$-geodesic ODE.
+  Under a local diffeomorphism the Christoffel contraction transforms by the differential
+  $df$ alone (the transformation law of \cref{lem:dc-ch7-3-4-rays-are-geodesics}), so applying
+  $df$ to the vanishing geodesic operator $u''+\Gamma^{f^*g'}(u',u')$ shows the reading of
+  $f\circ\gamma$ satisfies $W''+\Gamma^{g'}(W',W')=df(0)=0$ at every time; no injectivity of
+  $df$ is needed for this direction. $\square$
+\end{proof}
+
 \begin{proposition}[Proposition 2.3]
   \label{prop:dc-ch7-2-3}
   \dcref{ch7:2.3}
+  \uses{def:dc-ch7-2-1, def:dc-ch7-2-2, lem:dc-ch7-2-3-geodesic-push, thm:dc-ch3-3-7}
+  \lean{Riemannian.not_isExtendible_of_isGeodesicallyComplete}
+  \leanok
   If $M$ is complete then $M$ is non-extendible.
 \end{proposition}
 \begin{proof}
+  \leanok
+  \uses{def:dc-ch7-2-1, def:dc-ch7-2-2, lem:dc-ch7-2-3-geodesic-push, thm:dc-ch3-3-7}
   Suppose $M\subset M'$ is isometric to a proper open subset of a
   Riemannian manifold $M'$. Since $M'$ is connected, the boundary $\partial M$ of
   $M$ in $M'$ is non-empty. Let $p\in\partial M$ and let $U'\subset M'$ be a normal
@@ -235,7 +277,8 @@ however, we would like a weaker condition.
   \label{thm:dc-ch7-2-8}
   \dcref{ch7:2.8}
   \uses{def:dc-ch7-2-2, def:dc-ch7-2-4, prop:dc-ch7-2-5}
-  \lean{Riemannian.Geodesic.hopfRinow}
+  \lean{Riemannian.Geodesic.hopfRinow, Riemannian.Geodesic.complete_of_geodesicallyComplete_at, Riemannian.Geodesic.properSpace_of_geodesicallyComplete_at, Riemannian.Geodesic.exists_minimizing_geodesic}
+  \leanok
   Let $M$ be a Riemannian manifold and let $p\in M$. The following assertions are
   equivalent:
   
@@ -256,7 +299,8 @@ however, we would like a weaker condition.
      $\ell(\gamma)=d(p,q)$.
 \end{theorem}
 \begin{proof}
-  \uses{cor:dc-ch3-3-9, thm:dc-ch3-3-7, lem:dc-ch7-2-8-b-to-c, lem:dc-ch7-2-8-b-iff-e, lem:dc-ch7-2-8-lipschitz, lem:dc-ch7-2-8-c-to-d}
+  \leanok
+  \uses{cor:dc-ch3-3-9, thm:dc-ch3-3-7, lem:dc-ch7-2-8-b-to-c, lem:dc-ch7-2-8-a-to-b, lem:dc-ch7-2-8-b-iff-e, lem:dc-ch7-2-8-lipschitz, lem:dc-ch7-2-8-c-to-d}
   **a) $\Rightarrow$ f).** Let $d(p,q)=r$, and let $B_\delta(p)$ be a normal ball at
   $p$, with $S_\delta(p)=S$ the boundary of $B_\delta(p)$. Let $x_0$ be a point
   where the continuous function $d(q,x)$, $x\in S$, attains a minimum. Then
@@ -670,6 +714,35 @@ however, we would like a weaker condition.
   geodesic. $\square$
 \end{proof}
 
+\begin{lemma}[a $\Rightarrow$ b: geodesic completeness at a point makes closed balls compact]
+  \label{lem:dc-ch7-2-8-a-to-b}
+  \dcref{ch7:2.8}
+  \uses{def:dc-ch7-2-2, def:dc-ch7-2-4, lem:dc-ch7-2-8-step}
+  \lean{Riemannian.Geodesic.properSpace_of_geodesicallyComplete_at}
+  \leanok
+  Let $M$ be a connected Riemannian manifold whose distance is the Riemannian distance of
+  $g$, and let $p\in M$ be a point at which $M$ is geodesically complete: every $v\in T_pM$
+  generates a geodesic $\gamma:\mathbb R\to M$, defined for all time, with $\gamma(0)=p$ and
+  $\gamma'(0)=v$. Then the closed and bounded subsets of $M$ are compact, i.e. $M$ is a
+  \emph{proper} metric space. This is do Carmo's a) $\Rightarrow$ b) branch of the
+  Hopf--Rinow theorem read at a single base point; together with
+  \cref{lem:dc-ch7-2-8-b-to-c} it gives the metric-completeness form
+  (\cref{thm:dc-ch7-2-8}, a) $\Rightarrow$ c)). It is the properness invoked in the proof of
+  the Hadamard theorem for $T_pM$ equipped with the pulled-back metric.
+\end{lemma}
+\begin{proof}
+  \leanok
+  \uses{def:dc-ch7-2-4, lem:dc-ch7-2-8-step}
+  Let $A\subset M$ be closed and bounded; then $A\subset\overline B_R(p)$ for some
+  $R<\infty$. By the a) $\Rightarrow$ f) growth argument (one step of which is
+  \cref{lem:dc-ch7-2-8-step}) every point of the closed ball $\overline B_R(p)$ is joined to
+  $p$ by a minimizing geodesic, hence is $\exp_p(w)$ for some $w\in T_pM$ with $|w|_p\le R$;
+  so $\overline B_R(p)\subset\exp_p\big(\overline{B_R(0)}\big)$. Being the continuous image
+  of the compact Euclidean ball $\overline{B_R(0)}\subset T_pM$, the set
+  $\exp_p\big(\overline{B_R(0)}\big)$ is compact. Hence $A$ is a closed subset of a compact
+  set, and is therefore compact. $\square$
+\end{proof}
+
 \begin{lemma}[length of a curve read in one chart]
   \label{lem:dc-ch7-2-8-chart-length}
   \dcref{ch7:2.8}
@@ -963,12 +1036,56 @@ however, we would like a weaker condition.
   (\cref{lem:dc-ch7-2-8-c-to-d}), $M$ is geodesically complete. $\square$
 \end{proof}
 
+\begin{lemma}[a metric-preserving inclusion is $1$-Lipschitz for the Riemannian distances]
+  \label{lem:dc-ch7-2-10-lipschitz}
+  \dcref{ch7:2.10}
+  \uses{def:dc-ch7-2-4, def:dc-ch1-2-2}
+  \lean{Riemannian.DCPreservesMetric.enorm_mfderiv_eq,
+    Riemannian.DCPreservesMetric.pathELength_comp_eq,
+    Riemannian.DCPreservesMetric.riemannianEDist_le}
+  \leanok
+  Let $\iota:N\to M$ be a smooth map which \emph{preserves the metric} — a local isometry
+  for the induced metric $g_N=\iota^*g_M$ (\cref{def:dc-ch1-2-2}), i.e.
+  $\langle d\iota_p u,d\iota_p v\rangle_M=\langle u,v\rangle_N$ for all $p\in N$ and all
+  $u,v\in T_pN$. Then $\iota$ does not increase the Riemannian distance:
+  $d_M(\iota a,\iota b)\le d_N(a,b)$ for all $a,b\in N$.
+\end{lemma}
+\begin{proof}
+  \leanok
+  \uses{def:dc-ch7-2-4}
+  Metric preservation gives $|d\iota_p(v)|=|v|$ on every tangent space, hence equal
+  arclength integrands, so $\ell(\iota\circ c)=\ell(c)$ for every $C^1$ curve $c$. For any
+  $C^1$ curve $c$ in $N$ from $a$ to $b$, the image $\iota\circ c$ is a $C^1$ curve in $M$
+  from $\iota a$ to $\iota b$, whence $d_M(\iota a,\iota b)\le\ell(\iota\circ c)=\ell(c)$.
+  Taking the infimum over all such $c$ (\cref{def:dc-ch7-2-4}) yields
+  $d_M(\iota a,\iota b)\le d_N(a,b)$. (The reverse inequality can fail: a minimizing
+  curve of $M$ between $\iota a$ and $\iota b$ need not lie in the submanifold.) $\square$
+\end{proof}
+
 \begin{corollary}[closed submanifold complete]
   \label{cor:dc-ch7-2-10}
   \dcref{ch7:2.10}
+  \uses{lem:dc-ch7-2-10-lipschitz, prop:dc-ch7-2-6, thm:dc-ch7-2-8}
+  \lean{Riemannian.completeSpace_of_isClosedEmbedding_dcPreservesMetric}
+  \leanok
   A closed submanifold of a complete Riemannian manifold is complete in the induced
   metric; in particular, the closed submanifolds of Euclidean space are complete.
 \end{corollary}
+\begin{proof}
+  \leanok
+  \uses{lem:dc-ch7-2-10-lipschitz, prop:dc-ch7-2-6}
+  Formalize the closed submanifold with its induced metric as a smooth \emph{closed
+  embedding} $\iota:N\to M$ — a homeomorphism onto its closed range — which \emph{preserves}
+  the induced metric $g_N=\iota^*g_M$, and let $M$ be complete. By
+  \cref{lem:dc-ch7-2-10-lipschitz} $\iota$ is $1$-Lipschitz for the Riemannian distances.
+  Let $(x_n)$ be a Cauchy sequence in $N$. Then $(\iota x_n)$ is Cauchy in the complete
+  space $M$, so it converges to some $y\in M$. Since $\iota$ has closed range, $y=\iota x$
+  for some $x\in N$; since $\iota$ is a homeomorphism onto its range, $\iota x_n\to\iota x$
+  forces $x_n\to x$ in the manifold topology of $N$, which coincides with its metric
+  topology (\cref{prop:dc-ch7-2-6}). Hence every Cauchy sequence of $N$ converges, i.e.
+  $N$ is complete. Taking $M=\mathbb R^n$ shows that closed subsets of Euclidean space are
+  complete. $\square$
+\end{proof}
 
 \section{The Theorem of Hadamard}
 
@@ -978,25 +1095,86 @@ following global fact.
 \begin{theorem}[Hadamard]
   \label{thm:dc-ch7-3-1}
   \dcref{ch7:3.1}
+  \lean{Riemannian.Jacobi.hadamardDiffeomorphOfNonpos_complete, Riemannian.Jacobi.hadamardDiffeomorphOfNonpos_complete_coe}
+  \uses{lem:dc-ch7-3-2, lem:dc-ch7-3-3, lem:dc-ch7-3-1-covering-diffeo, lem:dc-ch7-3-1-assembly, lem:dc-ch7-3-4-pullback-metric, lem:dc-ch7-3-4-pole-diffeo, lem:dc-ch7-3-expmap-global, lem:dc-ch7-3-expmap-smooth, thm:dc-ch7-2-8}
+  \leanok
   Let $M$ be a complete Riemannian manifold, simply connected, with sectional
   curvature $K(p,\sigma)\le 0$ for all $p\in M$ and for all $\sigma\subset T_p(M)$.
   Then $M$ is diffeomorphic to $\mathbb{R}^n$, $n=\dim M$; more precisely,
   $\exp_p:T_pM\to M$ is a diffeomorphism.
-  
+
   Before starting the proof we need a few lemmas. The following lemma shows that the
   exponential map of a manifold with non-positive curvature is a local
   diffeomorphism.
+
+  The theorem is fully assembled (\lstinline{hadamardDiffeomorphOfNonpos_complete} produces a
+  \lstinline{Diffeomorph}~$T_pM\simeq M$, and \lstinline{hadamardDiffeomorphOfNonpos_complete_coe}
+  guards that this diffeomorphism \emph{is} $\exp_p$) from the two halves: the differential of
+  $\exp_p$ is a linear isomorphism under $K\le 0$ (\cref{lem:dc-ch7-3-2}), and the
+  poles/covering upgrade of a smooth local diffeomorphism to a diffeomorphism
+  (\cref{lem:dc-ch7-3-4-pole-diffeo}), together with the global $C^\infty$ smoothness of
+  $\exp_p$ (\cref{lem:dc-ch7-3-expmap-smooth}), which was the last remaining input and is now
+  proved. The proof is that of do Carmo: \cref{lem:dc-ch7-3-2} makes $\exp_p$ a local
+  diffeomorphism, and since $M$ is complete the pulled-back metric $\exp_p^{*}g$ makes
+  $\exp_p$ a metric-expanding local diffeomorphism out of a (geodesically) complete manifold,
+  hence a covering map (\cref{lem:dc-ch7-3-3}); as $M$ is simply connected this covering is a
+  diffeomorphism.
 \end{theorem}
+
+\begin{lemma}[the Jacobi energy is convex, and $J$ has no interior zero, when $K\le 0$]
+  \label{lem:dc-ch7-3-2-no-conjugate}
+  \dcref{ch7:3.2}
+  \lean{Riemannian.Jacobi.jacobiCoefOp_quadratic_nonpos,
+    Riemannian.Jacobi.frameJacobi_ne_zero_of_nonpos}
+  \leanok
+  \uses{def:dc-ch5-2-1, lem:dc-ch5-2-1-real-curvature}
+  Let $J=\sum_i f_i e_i$ be a Jacobi field in a parallel orthonormal frame along the
+  geodesic $\gamma$, with $J(0)=0$ and nonzero initial velocity $J'(0)\ne 0$. Under
+  nonpositive sectional curvature, read in the chart as $\langle R(\gamma',w)\gamma',w\rangle\le 0$
+  for every $w$, the energy $q=\langle J,J\rangle$ satisfies
+  $$
+  \langle J,J\rangle''=2|J'|^2-2\langle R(\gamma',J)\gamma',J\rangle\ge 0,
+  $$
+  because the curvature term $\langle R(\gamma',J)\gamma',J\rangle=\sum_{ij}a_{ij}f_if_j\le 0$
+  is the (negative semidefinite) quadratic form of the Jacobi coefficient
+  $a_{ij}=\langle R(\gamma',e_i)\gamma',e_j\rangle$. Since $q(0)=0$ and $q'(0)=0$, convexity
+  gives $q'\ge 0$, so $q$ is nondecreasing; nontriviality ($J'(0)\ne 0$) then forces
+  $q(t)>0$ for every $t>0$, i.e. $J(t)\ne 0$. Hence no point $\gamma(t)$, $t>0$, is
+  conjugate to $\gamma(0)$.
+\end{lemma}
 
 \begin{lemma}[no conjugate points when $K\le 0$]
   \label{lem:dc-ch7-3-2}
   \dcref{ch7:3.2}
+  \lean{Riemannian.Jacobi.not_isConjugatePointAt_one_of_nonpos,
+    Riemannian.Jacobi.expDifferential_isEquiv_of_nonpos,
+    Riemannian.Jacobi.expMapGlobal_locallyInjective_of_nonpos,
+    Riemannian.Jacobi.isLocalDiffeomorph_expMapGlobal_hadamard_of_nonpos_complete}
+  \leanok
+  \uses{def:dc-ch5-2-1, def:dc-ch5-3-1, def:dc-ch5-3-4, lem:dc-ch7-3-2-no-conjugate, lem:dc-ch7-3-expmap-smooth}
   Let $M$ be a complete Riemannian manifold with $K(p,\sigma)\le 0$ for all $p\in M$
   and for all $\sigma\subset T_pM$. Then for all $p\in M$ the conjugate locus
   $C(p)=\varnothing$; in particular the exponential map $\exp_p:T_pM\to M$ is a local
   diffeomorphism.
+
+  \emph{Formalization note.} The nonpositive-curvature hypothesis is carried in the operator
+  (equivalently chart) form $\langle R(a,c)c,a\rangle_g\ge 0$, i.e.
+  $\langle R(\gamma',J)\gamma',J\rangle\le 0$ — the same convention as
+  \cref{lem:dc-ch7-3-2-no-conjugate}, and by skew-adjointness of the curvature operator this is
+  do Carmo's $K\le 0$. The three ingredients are all axiom-clean: $C(p)=\varnothing$
+  (\lstinline{not_isConjugatePointAt_one_of_nonpos}, via the intrinsic energy argument below run
+  along the whole geodesic, patched across charts); $d(\exp_p)_v$ a linear isomorphism at every
+  $v$ (\lstinline{expDifferential_isEquiv_of_nonpos}); and $\exp_p$ injective near every $v$
+  (\lstinline{expMapGlobal_locallyInjective_of_nonpos}, inverse function theorem on the chart
+  reading). With the global $C^\infty$ smoothness of $\exp_p$ now proved
+  (\cref{lem:dc-ch7-3-expmap-smooth}), the full $C^\infty$ local-diffeomorphism packaging
+  \lstinline{isLocalDiffeomorph_expMapGlobal_hadamard_of_nonpos_complete} is unconditional: at
+  each $v$ the chart-reading strict-derivative isomorphism, through the manifold inverse function
+  theorem and composed with the chart inverse, gives $\exp_p$ as a $C^\infty$ local
+  diffeomorphism, which \cref{thm:dc-ch7-3-1} feeds into the covering-space assembly.
 \end{lemma}
 \begin{proof}
+  \uses{lem:dc-ch7-3-2-no-conjugate, prop:dc-ch5-3-5}
   Let $J$ be a non-trivial (that is, not identically zero) Jacobi field
   along a geodesic $\gamma:[0,\infty)\to M$, where $\gamma(0)=p$ and $J(0)=0$. Then
   from the hypothesis on the curvature and from the Jacobi equation
@@ -1024,22 +1202,291 @@ following global fact.
   below, which is of independent interest.
 \end{proof}
 
+\begin{lemma}[length expansion under a metric-expanding map]
+  \label{lem:dc-ch7-3-3-length-expansion}
+  \dcref{ch7:3.3}
+  \uses{def:dc-ch7-2-4, def:dc-ch1-2-9}
+  \lean{Riemannian.DCExpandsMetric, Riemannian.DCExpandsMetric.pathELength_le, Riemannian.DCExpandsMetric.riemannianEDist_le_pathELength_comp}
+  \leanok
+  Let $f:M\to N$ be a differentiable map between Riemannian manifolds which
+  \emph{expands the metric}: $|df_p(v)|\ge|v|$ for every $p\in M$ and every
+  $v\in T_pM$. Then for every piecewise differentiable curve
+  $\bar c:[a,b]\to M$,
+  $$
+  \ell(f\circ\bar c)\ \ge\ \ell(\bar c)\ \ge\ d\big(\bar c(a),\bar c(b)\big).
+  $$
+  In particular $d\big(\bar c(a),\bar c(b)\big)\le\ell(f\circ\bar c)$: the
+  source distance between the endpoints of a curve is bounded by the length of
+  its image. This is the displayed estimate in the proof of
+  \cref{lem:dc-ch7-3-3} that keeps the lifted points inside a bounded set.
+\end{lemma}
+\begin{proof}
+  \leanok
+  \uses{def:dc-ch7-2-4}
+  By the chain rule the velocity of $f\circ\bar c$ is
+  $(f\circ\bar c)'(t)=df_{\bar c(t)}\big(\bar c'(t)\big)$, so the expansion
+  hypothesis gives
+  $|(f\circ\bar c)'(t)|=\big|df_{\bar c(t)}(\bar c'(t))\big|\ge|\bar c'(t)|$ at
+  every $t$. Integrating this pointwise inequality over $[a,b]$ (both lengths
+  are the tangent integral $\int_a^b|\,\cdot\,'|$, and the integral is
+  monotone) gives
+  $\ell(f\circ\bar c)=\int_a^b|(f\circ\bar c)'|\ge\int_a^b|\bar c'|=\ell(\bar c)$.
+  Finally $\bar c$ is itself a piecewise differentiable curve joining
+  $\bar c(a)$ to $\bar c(b)$, so its length is at least the infimum
+  $d\big(\bar c(a),\bar c(b)\big)$ over all such curves, by
+  \cref{def:dc-ch7-2-4}. $\square$
+\end{proof}
+
+\begin{lemma}[lifts of finite-length curves are relatively compact]
+  \label{lem:dc-ch7-3-3-relatively-compact-lift}
+  \dcref{ch7:3.3}
+  \uses{lem:dc-ch7-3-3-length-expansion, thm:dc-ch7-2-8, def:dc-ch7-2-4}
+  \lean{Riemannian.DCExpandsMetric.dist_le_pathELength_comp,
+    Riemannian.DCExpandsMetric.lift_mem_closedBall,
+    Riemannian.DCExpandsMetric.lift_image_subset_isCompact}
+  \leanok
+  Let $f:M\to N$ expand the metric ($|df_p(v)|\ge|v|$ for all $p,v$), and let $M$
+  be a complete Riemannian manifold. Then for every piecewise differentiable
+  curve $\bar c:[a,b]\to M$ whose image $f\circ\bar c$ has finite length, and for
+  every $t\in[a,b]$,
+  $$
+  d\big(\bar c(a),\bar c(t)\big)\ \le\ \ell(f\circ\bar c),
+  $$
+  so $\bar c(t)$ lies in the closed metric ball $\bar B\big(\bar c(a),\ell(f\circ\bar c)\big)$.
+  Consequently the whole image $\bar c([a,b])$ is contained in a single
+  \emph{compact} subset $K\subset M$.
+\end{lemma}
+\begin{proof}
+  \leanok
+  \uses{lem:dc-ch7-3-3-length-expansion, thm:dc-ch7-2-8}
+  Fix $t\in[a,b]$. The restriction $\bar c|_{[a,t]}$ is a piecewise
+  differentiable curve, so by the length-expansion estimate
+  (\cref{lem:dc-ch7-3-3-length-expansion}) applied on $[a,t]$ and monotonicity of
+  length in the right endpoint,
+  $$
+  d\big(\bar c(a),\bar c(t)\big)\ \le\ \ell\big(f\circ\bar c|_{[a,t]}\big)\ \le\ \ell(f\circ\bar c)=:R,
+  $$
+  and $R<\infty$ by hypothesis. Hence $\bar c(t)\in\bar B(\bar c(a),R)$ for every
+  $t$, i.e. $\bar c([a,b])\subseteq\bar B(\bar c(a),R)$. Since $M$ is complete, by
+  the Hopf–Rinow theorem (\cref{thm:dc-ch7-2-8}, c) $\Rightarrow$ b)) every closed
+  bounded subset of $M$ is compact; in particular $K:=\bar B(\bar c(a),R)$ is
+  compact. $\square$
+\end{proof}
+
+\begin{lemma}[local liftability of a curve through a local homeomorphism]
+  \label{lem:dc-ch7-3-3-local-lift}
+  \dcref{ch7:3.3}
+  \lean{Riemannian.IsLocalHomeomorph.exists_rightward_lift,
+    Riemannian.IsLocalHomeomorph.exists_extend_lift}
+  \leanok
+  Let $f:M\to N$ be a local homeomorphism and $c:[0,1]\to N$ a continuous curve.
+  \begin{enumerate}
+    \item For every $s$ and every point $q\in M$ over $c(s)$ (that is,
+      $f(q)=c(s)$) the curve $c$ lifts through $q$ on a nondegenerate interval to
+      the right: there is a continuous $\bar c:[s,s+\varepsilon]\to M$ with
+      $\bar c(s)=q$ and $f\circ\bar c=c$.
+    \item Consequently, if $c$ lifts to a continuous $\bar c:[a,t]\to M$ with
+      $f\circ\bar c=c$, then the lift extends to $[a,t+\delta]$ for some
+      $\delta>0$: the set of parameters over which $c$ lifts starting from a fixed
+      initial point is open to the right.
+  \end{enumerate}
+\end{lemma}
+\begin{proof}
+  \leanok
+  For (1), choose an open partial homeomorphism $\varphi$ of $f$ with $q$ in its
+  source and $f=\varphi$ there. Then $c(s)=f(q)=\varphi(q)$ lies in the open set
+  $\varphi(\text{source})$, so $c^{-1}(\varphi(\text{source}))$ is an open
+  neighbourhood of $s$ and contains some $[s,s+\varepsilon]$; on it
+  $\bar c:=\varphi^{-1}\circ c$ is continuous, satisfies $\bar c(s)=q$ (as
+  $\varphi^{-1}(\varphi(q))=q$) and $f\circ\bar c=c$ (as
+  $\varphi(\varphi^{-1}(y))=y$ on $\varphi$'s target).
+  For (2), apply (1) at the endpoint value $q:=\bar c(t)$ to obtain a rightward
+  lift $\bar c_1$ on $[t,t+\delta]$ with $\bar c_1(t)=\bar c(t)$; the two lifts
+  agree at $t$, so their piecewise gluing is a continuous lift on
+  $[a,t+\delta]$. $\square$
+\end{proof}
+
+\begin{lemma}[path lifting for a metric-expanding local diffeomorphism]
+  \label{lem:dc-ch7-3-3-path-lifting}
+  \dcref{ch7:3.3}
+  \uses{thm:dc-ch7-2-8, def:dc-ch7-2-4, lem:dc-ch7-3-3-length-expansion, lem:dc-ch7-3-3-relatively-compact-lift, lem:dc-ch7-3-3-local-lift}
+  \lean{Riemannian.DCExpandsMetric.exists_pathLift, Riemannian.IsLocalDiffeomorph.contMDiffOn_lift, Riemannian.DCExpandsMetric.dist_lift_le}
+  \leanok
+  Let $M$ be a complete Riemannian manifold and let $f:M\to N$ be a local
+  diffeomorphism which expands the metric ($|df_p(v)|\ge|v|$ for all $p\in M$ and
+  all $v\in T_pM$). Then $f$ has the \emph{path-lifting property}: for every
+  $C^1$ curve $c:[0,1]\to N$ of finite length and every $q\in M$ with $f(q)=c(0)$,
+  there exists a continuous curve $\bar c:[0,1]\to M$ with $\bar c(0)=q$ and
+  $f\circ\bar c=c$.
+
+  Moreover any continuous lift of a $C^1$ curve through a local diffeomorphism is
+  itself $C^1$ (locally it equals $(f|_V)^{-1}\circ c$ for a local inverse), and
+  the endpoints $\bar c(t)$ of a partial lift satisfy
+  $d\big(\bar c(0),\bar c(t)\big)\le\ell(c)$ (the estimate that traps the lift in a
+  compact ball).
+\end{lemma}
+\begin{proof}
+  \leanok
+  \uses{thm:dc-ch7-2-8, lem:dc-ch7-3-3-length-expansion, lem:dc-ch7-3-3-relatively-compact-lift, lem:dc-ch7-3-3-local-lift}
+  Let $A\subseteq[0,1]$ be the set of parameters $t$ such that $c|_{[0,t]}$ admits
+  a continuous lift starting at $q$. Then $0\in A$ (the constant curve at $q$
+  lifts $c|_{\{0\}}$), and $A$ is downward closed, since restricting a lift on
+  $[0,t]$ to $[0,t']$ with $t'\le t$ lifts $c|_{[0,t']}$. Put $T=\sup A$; then
+  $T\in[0,1]$, and every $t$ with $0\le t<T$ lies in $A$.
+
+  \emph{$A$ is closed, i.e. $T\in A$.} We may assume $T>0$ (otherwise $T=0\in A$).
+  For $0\le t<T$ choose a lift $\bar c_t$ of $c|_{[0,t]}$ from $q$; being a
+  continuous lift of a $C^1$ curve through the local diffeomorphism $f$, it is
+  $C^1$, so by the length estimate (\cref{lem:dc-ch7-3-3-relatively-compact-lift},
+  which combines \cref{lem:dc-ch7-3-3-length-expansion} with the properness of the
+  complete manifold $M$, \cref{thm:dc-ch7-2-8} c)$\Rightarrow$b)) its endpoint
+  $\bar c_t(t)$ lies in the fixed compact ball $K=\overline B\big(q,\ell(c)\big)$.
+  Hence as $t\to T^-$ the endpoints $\bar c_t(t)$ have an accumulation point
+  $r\in K$. Since $f$ is continuous and $f\big(\bar c_t(t)\big)=c(t)\to c(T)$, we
+  get $f(r)=c(T)$. Let $V$ be a neighbourhood of $r$ on which $f$ restricts to a
+  homeomorphism; then $c(T)=f(r)\in f(V)$, so by continuity $c(t)\in f(V)$ for all
+  $t$ in a left neighbourhood $(T-\eta,T]$ of $T$, and $\bar c_{t_*}(t_*)\in V$ for
+  some $t_*\in(T-\eta,T)$. On $(T-\eta,T]$ the map $g=(f|_V)^{-1}\circ c$ is a
+  continuous lift of $c$ with $g(t_*)=\bar c_{t_*}(t_*)$ (both project to $c(t_*)$
+  and $f|_V$ is injective). Gluing $\bar c_{t_*}$ on $[0,t_*]$ to $g$ on $[t_*,T]$
+  yields a continuous lift of $c|_{[0,T]}$ from $q$, so $T\in A$.
+
+  \emph{$A$ is open to the right.} If $t\in A$ and $t<1$, the openness ingredient
+  (\cref{lem:dc-ch7-3-3-local-lift}) extends the lift of $c|_{[0,t]}$ to
+  $[0,t+\delta]$ for some $\delta>0$, so $\min(t+\delta,1)\in A$.
+
+  Since $T\in A$, if $T<1$ the previous paragraph would place a parameter
+  $>T$ in $A$, contradicting $T=\sup A$. Hence $T=1\in A$, and $c$ lifts on all of
+  $[0,1]$. $\square$
+\end{proof}
+
+\begin{lemma}[uniqueness of continuous lifts]
+  \label{lem:dc-ch7-3-3-lift-unique}
+  \dcref{ch7:3.3}
+  \uses{lem:dc-ch7-3-3-path-lifting}
+  \lean{Riemannian.IsLocalHomeomorph.eqOn_lift, Riemannian.IsLocalDiffeomorph.eqOn_pathLift, Riemannian.DCExpandsMetric.existsUnique_pathLift_eqOn}
+  \leanok
+  Let $f:M\to N$ be a local diffeomorphism out of a Riemannian manifold $M$ (in
+  particular a Hausdorff space). If $\bar c_1,\bar c_2:S\to M$ are two continuous
+  lifts of the same curve $c$ (i.e.\ $f\circ\bar c_i=c$) over a connected parameter
+  set $S$, and $\bar c_1(t_0)=\bar c_2(t_0)$ for some $t_0\in S$, then
+  $\bar c_1=\bar c_2$ on all of $S$. In particular the continuous lift of a $C^1$
+  curve $c:[0,1]\to N$ through a chosen point $q$ over $c(0)$, produced by
+  \cref{lem:dc-ch7-3-3-path-lifting}, is \emph{unique}.
+\end{lemma}
+\begin{proof}
+  \leanok
+  \uses{lem:dc-ch7-3-3-path-lifting}
+  A local diffeomorphism is a local homeomorphism, hence \emph{locally injective}:
+  each point of $M$ has an open neighbourhood on which $f$ is injective. Since $M$
+  is a metric space it is Hausdorff, so $f$ is a \emph{separated map} (any two
+  distinct points of $M$ have disjoint neighbourhoods, a fortiori two distinct
+  points of the same fibre). For a separated, locally injective map the
+  \emph{equal locus} $\{t\in S:\bar c_1(t)=\bar c_2(t)\}$ of two continuous lifts is
+  both closed (separatedness) and open (local injectivity), hence clopen; as it is
+  nonempty ($t_0$ lies in it) and $S$ is connected, it is all of $S$. Applying this
+  to $S=[0,1]$ (connected) and the two lifts starting at $q$ gives uniqueness of the
+  lift of \cref{lem:dc-ch7-3-3-path-lifting}. $\square$
+\end{proof}
+
+\begin{lemma}[finite length of a chart-contained $C^1$ curve]
+  \label{lem:dc-ch7-3-3-chart-length-finite}
+  \dcref{ch7:3.3}
+  \uses{def:dc-ch1-2-9}
+  \lean{Riemannian.Geodesic.pathELength_ne_top_of_mapsTo_chartSource}
+  \leanok
+  If $\gamma:[a,b]\to N$ is a $C^1$ curve whose image lies in the source of a single
+  chart of $N$, then its length $\ell(\gamma)$ is finite. Reading the length through
+  the chart presents it as $\mathrm{ofReal}\big(\int_a^b\sqrt{\langle\gamma',\gamma'\rangle}\big)$,
+  a real number. This supplies the finite-length hypothesis of
+  \cref{lem:dc-ch7-3-3-path-lifting} for the straight chart-segments used to build
+  evenly covered neighbourhoods.
+\end{lemma}
+\begin{proof}
+  \leanok
+  \uses{def:dc-ch1-2-9}
+  The chart reading of the length (do Carmo's $\ell(\gamma)=\int|\gamma'|$, computed
+  in chart coordinates) equals $\mathrm{ofReal}$ of a Riemann integral of the
+  continuous integrand $\sqrt{\langle\gamma',\gamma'\rangle}$ over the compact
+  $[a,b]$; an $\mathrm{ofReal}$ of a real number is never $+\infty$. $\square$
+\end{proof}
+
+\begin{lemma}[closed image; surjectivity onto a connected target]
+  \label{lem:dc-ch7-3-3-closed-image}
+  \dcref{ch7:3.3}
+  \uses{lem:dc-ch7-3-3-path-lifting, lem:dc-ch7-3-3-chart-length-finite}
+  \lean{Riemannian.DCExpandsMetric.isClosed_range, Riemannian.DCExpandsMetric.surjective}
+  \leanok
+  Let $M$ be a complete Riemannian manifold and $f:M\to N$ a local diffeomorphism
+  which expands the metric. Then the image $f(M)$ is \emph{closed} in $N$; if $N$ is
+  connected and $M$ nonempty, $f$ is \emph{surjective}. This handles the points of
+  $N$ outside the image in the covering-map conclusion: at such a point the fibre is
+  empty, and an evenly covered neighbourhood is one disjoint from the image — which
+  exists precisely because the image is closed.
+\end{lemma}
+\begin{proof}
+  \leanok
+  \uses{lem:dc-ch7-3-3-path-lifting, lem:dc-ch7-3-3-chart-length-finite}
+  The image is open, since $f$ is a local diffeomorphism (an open map). For
+  closedness, let $y$ be a limit point of $f(M)$. Work in a chart at $y$ and pick a
+  ball $B$ around $y$ (in chart coordinates) inside the chart target; some image
+  point $f(x_1)$ lies in $B$. The straight chart-segment from $f(x_1)$ to $y$ is a
+  $C^1$ curve confined to one chart, hence of finite length
+  (\cref{lem:dc-ch7-3-3-chart-length-finite}), so it lifts through $x_1$
+  (\cref{lem:dc-ch7-3-3-path-lifting}); the lift's endpoint maps to $y$, so
+  $y\in f(M)$. Thus $f(M)$ is clopen; a nonempty clopen subset of a connected $N$ is
+  all of $N$. $\square$
+\end{proof}
+
 \begin{lemma}[expansion $\Rightarrow$ covering map]
   \label{lem:dc-ch7-3-3}
   \dcref{ch7:3.3}
+  \uses{thm:dc-ch7-2-8, lem:dc-ch7-3-3-length-expansion, lem:dc-ch7-3-3-relatively-compact-lift, lem:dc-ch7-3-3-local-lift, lem:dc-ch7-3-3-path-lifting, lem:dc-ch7-3-3-lift-unique, lem:dc-ch7-3-3-chart-length-finite, lem:dc-ch7-3-3-closed-image}
+  \lean{Riemannian.DCExpandsMetric.isCoveringMap, Riemannian.DCExpandsMetric.exists_trivialization_at, Riemannian.IsLocalHomeomorph.discreteTopology_fiber}
+  \leanok
   Let $M$ be a complete Riemannian manifold and let $f:M\to N$ be a local
   diffeomorphism onto a Riemannian manifold $N$ which has the following property:
   for all $p\in M$ and for all $v\in T_pM$, we have $|df_p(v)|\ge|v|$. Then $f$ is a
   covering map.
 \end{lemma}
 \begin{proof}
+  \leanok
   By a general property of covering spaces (cf. M. do Carmo, [dC 2],
   p. 383), it suffices to show that $f$ has the path lifting property for curves in
   $N$: given a differentiable curve $c:[0,1]\to N$ and a point $q\in M$ with
   $f(q)=c(0)$, there exists a curve $\bar c:[0,1]\to M$ with $\bar c(0)=q$ and
-  $f\circ\bar c=c$.
-  
-  Since $f$ is a local diffeomorphism at $q$, there exists $\varepsilon>0$ such that
+  $f\circ\bar c=c$. This path-lifting property is established in
+  \cref{lem:dc-ch7-3-3-path-lifting}, and its lift is \emph{unique}
+  (\cref{lem:dc-ch7-3-3-lift-unique}). We convert path lifting into the covering-map
+  structure (evenly covered neighbourhoods) directly, by the following concrete
+  construction.
+
+  Fix a point $y_0\in N$ and a chart $\psi$ at $y_0$; let $V$ be a $\psi$-ball around
+  $y_0$. Each point $y\in V$ is joined to $y_0$ by the $C^1$ segment
+  $t\mapsto\psi^{-1}\big((1-t)\psi(y_0)+t\,\psi(y)\big)$ (staying in one chart, hence
+  of finite length by \cref{lem:dc-ch7-3-3-chart-length-finite}). For each $e$ in the
+  fibre $f^{-1}(y_0)$, lifting this family of segments through $e$ produces — by joint
+  continuity of lifts of a continuous family of paths through a separated local
+  homeomorphism (mathlib \texttt{IsLocalHomeomorph.continuous\_lift}, fed by
+  \cref{lem:dc-ch7-3-3-path-lifting}) — a \emph{continuous section}
+  $\varphi_e:V\to M$ with $f\circ\varphi_e=\mathrm{id}_V$ and $\varphi_e(y_0)=e$. A
+  continuous section of a local homeomorphism is an open embedding, so each sheet
+  $\varphi_e(V)$ is open; uniqueness of lifts (\cref{lem:dc-ch7-3-3-lift-unique})
+  makes the sheets pairwise disjoint. Given any $m\in f^{-1}(V)$, lifting the reverse
+  segment $y=f(m)\rightsquigarrow y_0$ from $m$ lands on a fibre point $e$, and by
+  uniqueness the reversed lift is $\varphi_e$ along the forward segment, so
+  $\varphi_e(y)=m$: the sheets \emph{exhaust} $f^{-1}(V)=\bigsqcup_e\varphi_e(V)$,
+  which is exactly an evenly covered neighbourhood (packaged as a
+  \texttt{Trivialization} over the discrete fibre $f^{-1}(y_0)$ — discrete because $f$
+  is locally injective). The fibre being discrete, this feeds mathlib's
+  \texttt{IsCoveringMap.mk'}; the points of $N$ \emph{outside} the image are handled
+  by its closed-range branch, since the image is closed
+  (\cref{lem:dc-ch7-3-3-closed-image}) so each such point has a neighbourhood with
+  empty preimage. This completes the covering-map conclusion.
+
+  For completeness we recall do Carmo's original clopen argument for path lifting,
+  formalised in \cref{lem:dc-ch7-3-3-path-lifting}. Since $f$ is a local
+  diffeomorphism at $q$, there exists $\varepsilon>0$ such that
   it is possible to define $\bar c:[0,\varepsilon]\to M$ with $\bar c(0)=q$ and
   $f\circ\bar c=c$; that is, $c$ can be lifted to a small interval starting from $q$.
   Because $f$ is a local diffeomorphism over all of $M$, the set of values
@@ -1071,18 +1518,285 @@ following global fact.
   hence $\bar c$ is defined at $t_0$ and $t_0\in A$. $\square$
 \end{proof}
 
+\begin{lemma}[a covering map onto a simply connected base is a homeomorphism]
+  \label{lem:dc-ch7-3-1-covering-simplyconnected}
+  \dcref{ch7:3.1}
+  \lean{IsCoveringMap.bijective_of_simplyConnected, IsCoveringMap.homeomorphOfSimplyConnected}
+  \leanok
+  Let $f:E\to X$ be a covering map whose total space $E$ is connected and nonempty,
+  and whose base $X$ is simply connected and locally path connected. Then $f$ is a
+  homeomorphism; in particular it is bijective.
+\end{lemma}
+\begin{proof}
+  \leanok
+  Because $X$ is simply connected and locally path connected, the identity map of
+  $X$ lifts through the covering map $f$ to a continuous global section $s:X\to E$,
+  that is $f\circ s=\mathrm{id}_X$, uniquely determined by its value $s(x_0)=e_0$ at
+  one chosen base point $x_0=f(e_0)$. The relation $f\circ s=\mathrm{id}_X$ exhibits
+  $s$ as a right inverse of $f$, so $f$ is surjective. For injectivity, consider the
+  two continuous self-maps $s\circ f$ and $\mathrm{id}_E$ of $E$: both are lifts of
+  $f$ through $f$ (indeed $f\circ(s\circ f)=f=f\circ\mathrm{id}_E$), and they agree at
+  $e_0$ (since $s(f(e_0))=s(x_0)=e_0$). A covering map is a separated, locally
+  injective map, so any two continuous lifts of a fixed map over the connected space
+  $E$ that agree at one point agree everywhere; hence $s\circ f=\mathrm{id}_E$ and $f$
+  is injective. Finally a continuous open bijection is a homeomorphism, and a covering
+  map is open. $\square$
+\end{proof}
+
+\begin{lemma}[metric-expanding local diffeomorphism onto a simply connected manifold]
+  \label{lem:dc-ch7-3-1-covering-diffeo}
+  \dcref{ch7:3.1}
+  \uses{lem:dc-ch7-3-3, lem:dc-ch7-3-1-covering-simplyconnected}
+  \lean{Riemannian.DCExpandsMetric.diffeomorphOfSimplyConnected}
+  \leanok
+  Let $f:M\to N$ be a smooth local diffeomorphism between Riemannian manifolds which
+  expands the metric ($|df_p(v)|\ge|v|$ for all $p\in M$ and all $v\in T_pM$), let $M$
+  be complete, and let $N$ be simply connected. Then $f$ is a diffeomorphism.
+\end{lemma}
+\begin{proof}
+  \leanok
+  \uses{lem:dc-ch7-3-3, lem:dc-ch7-3-1-covering-simplyconnected}
+  By \cref{lem:dc-ch7-3-3}, $f$ is a covering map. Its total space $M$ is connected
+  and its base $N$ is simply connected, so by
+  \cref{lem:dc-ch7-3-1-covering-simplyconnected} the covering map $f$ is bijective.
+  A bijective local diffeomorphism is a diffeomorphism, hence $f$ is a
+  diffeomorphism. $\square$
+\end{proof}
+
+\begin{lemma}[the global exponential map of a complete manifold]
+  \label{lem:dc-ch7-3-expmap-global}
+  \dcref{ch7:2.2}
+  \uses{def:dc-ch7-2-2, thm:dc-ch7-2-8}
+  \lean{Riemannian.Geodesic.globalGeodesic, Riemannian.Geodesic.globalGeodesic_eq, Riemannian.Geodesic.globalGeodesic_smul, Riemannian.Exponential.expMapGlobal, Riemannian.Exponential.expMapGlobal_eq_of_isGeodesic, Riemannian.Exponential.expMapGlobal_smul, Riemannian.Exponential.expMapGlobal_surjective}
+  \leanok
+  Let $M$ be a complete Riemannian manifold and $p\in M$. For every $v\in T_pM$ there is a
+  geodesic $\gamma_v:\mathbb{R}\to M$, defined on all of $\mathbb{R}$, with $\gamma_v(0)=p$
+  and $\gamma_v'(0)=v$, and it is the unique such geodesic. The exponential map
+  $\exp_p:T_pM\to M$, $\exp_p(v)=\gamma_v(1)$, is therefore defined on all of $T_pM$, and it
+  is traced radially: $\exp_p(cv)=\gamma_v(c)$ for all $c\in\mathbb{R}$, so the curves
+  $c\mapsto\exp_p(cv)$ are precisely the geodesics of $M$ issuing from $p$. If moreover $M$
+  is connected, then $\exp_p$ is surjective.
+\end{lemma}
+\begin{proof}
+  \leanok
+  \uses{def:dc-ch7-2-2, thm:dc-ch7-2-8}
+  Existence of a geodesic defined on all of $\mathbb{R}$ with prescribed initial data
+  $(p,v)$ is the $(c)\Rightarrow(d)$ direction of \cref{thm:dc-ch7-2-8}. Two geodesics
+  defined on all of $\mathbb{R}$ that agree in position and velocity at one time agree
+  everywhere, by uniqueness of solutions of the geodesic equation on the connected parameter
+  line $\mathbb{R}$; this makes $\gamma_v$, hence $\exp_p$, well defined independently of the
+  chart in which the initial velocity is read. For radial homogeneity, the affine
+  reparametrisation $s\mapsto\gamma_v(cs)$ is again a geodesic based at $p$ with initial
+  velocity $cv$, so by uniqueness $\gamma_{cv}(s)=\gamma_v(cs)$; evaluating at $s=1$ gives
+  $\exp_p(cv)=\gamma_v(c)$. Finally, when $M$ is connected, the length-minimizing-geodesic
+  conclusion of \cref{thm:dc-ch7-2-8} joins every $q\in M$ to $p$ by a geodesic defined on
+  all of $\mathbb{R}$; reading its initial velocity $v$ gives $q=\gamma_v(1)=\exp_p(v)$, so
+  $\exp_p$ is surjective. $\square$
+\end{proof}
+
+\begin{lemma}[the exponential map of a complete manifold is $C^\infty$]
+  \label{lem:dc-ch7-3-expmap-smooth}
+  \dcref{ch7:3.1}
+  \uses{lem:dc-ch7-3-expmap-global}
+  \lean{Riemannian.Exponential.contMDiff_expMapGlobal,
+    Riemannian.Jacobi.exists_geodesic_flow_step_contDiff,
+    Riemannian.Jacobi.exists_geodesic_flow_step_contDiff_manifold_ball,
+    Riemannian.Jacobi.exists_geodesic_flowstep_partition_contDiff,
+    Riemannian.Jacobi.exists_geodesic_contDiff_chain_nbhd,
+    Riemannian.Jacobi.contDiffAt_stateTransition}
+  \leanok
+  Let $M$ be a complete Riemannian manifold and $p\in M$. Then the exponential map
+  $\exp_p:T_pM\to M$ is $C^\infty$. This is the smooth dependence of the geodesic flow on its
+  initial conditions, specialised to the exponential map.
+\end{lemma}
+\begin{proof}
+  \leanok
+  \uses{lem:dc-ch7-3-expmap-global}
+  Fix $v\in T_pM$ and let $\gamma=\gamma_v$ be the geodesic issuing from $p$ with velocity
+  $v$. The compact arc $\gamma([0,1])$ is covered by finitely many charts; choose a partition
+  $0=t_0\le t_1\le\cdots\le t_N=1$ so that each piece $[t_i,t_{i+1}]$ lies in a single chart
+  $\beta_i$, with $\gamma(t_i),\gamma(t_{i+1})$ both in that chart. On each piece the geodesic
+  flow of the coordinate spray is $C^\infty$ in its initial condition even away from the zero
+  section: bump-extending the chart spray to a globally $C^\infty$ field and confining the
+  flow to a small ball where the two agree, the flow inherits the smoothness of that field's
+  Picard integral operator. The time-$t_{i+1}$ endpoint map of that flow is thus $C^\infty$ at
+  the chart state of $\gamma$ at $t_i$, and it carries the state of \emph{any} nearby geodesic
+  to that geodesic's state at $t_{i+1}$. The chart junction $(x,w)\mapsto(\tau(x),(D\tau)(x)w)$
+  between overlapping charts is $C^\infty$ (the chart transition $\tau$ is $C^\infty$, so its
+  value and the fibre-application of its derivative are). Composing the $N$ flow steps and
+  $N-1$ junctions gives a map $F_0$, $C^\infty$ at $\gamma$'s initial chart state, whose value
+  on a neighbourhood is the chart-$\beta_N$ state at time $1$ of the geodesic passing through
+  the given initial state.
+
+  Feed the family $w\mapsto\gamma_w$ of geodesics issuing from $p$ with velocity $w$. Since
+  $\gamma_w$ is, by construction, the geodesic whose chart-$p$ velocity at time $0$ is $w$, its
+  initial chart-$\beta_0$ state is $\iota(w)=(\varphi_{\beta_0}(p),\;C\,w)$, where
+  $C$ is the fixed tangent coordinate change from the chart at $p$ to the chart at $\beta_0$;
+  thus $\iota$ is affine, hence $C^\infty$, and no differentiation of $\exp_p$ near $0$ is
+  needed. On a neighbourhood of $v$ one therefore has
+  $\varphi_{\beta_N}(\exp_p(w))=\big(F_0(\iota(w))\big)_1$, a composition of $C^\infty$ maps,
+  so the chart reading of $\exp_p$ is $C^\infty$ near $v$; reading back through the terminal
+  chart (whose source contains $\exp_p(w)$ for $w$ near $v$) shows $\exp_p$ is $C^\infty$ at
+  $v$. As $v$ was arbitrary, $\exp_p$ is $C^\infty$. $\square$
+\end{proof}
+
+\begin{lemma}[Hadamard assembly from geodesic completeness at a point]
+  \label{lem:dc-ch7-3-1-assembly}
+  \dcref{ch7:3.1}
+  \uses{lem:dc-ch7-3-1-covering-diffeo, lem:dc-ch7-2-8-a-to-b, lem:dc-ch7-3-3}
+  \lean{Riemannian.DCExpandsMetric.diffeomorphOfSimplyConnectedOfGeodesicCompleteAt}
+  \leanok
+  Let $f:M\to N$ be a smooth local diffeomorphism between Riemannian manifolds which
+  \emph{expands the metric} ($|df_p(v)|\ge|v|$ for all $p\in M$ and all $v\in T_pM$), let
+  $N$ be simply connected, and suppose $M$ is connected and \emph{geodesically complete at
+  some point $o$}: every $v\in T_oM$ generates a geodesic $\gamma:\mathbb R\to M$, defined
+  for all time, with $\gamma(0)=o$ and $\gamma'(0)=v$. Then $f$ is a diffeomorphism.
+
+  This is \cref{lem:dc-ch7-3-1-covering-diffeo} with the completeness hypothesis stated as
+  do Carmo states it in the Hadamard proof: instead of assuming $M$ proper, one \emph{derives}
+  properness from geodesic completeness at $o$ (\cref{lem:dc-ch7-2-8-a-to-b}). It is the form
+  applied to $f=\exp_p:T_pM\to M$, where $o$ is the origin of $T_pM$ and the hypothesis is
+  precisely that the rays through the origin are geodesics of the pulled-back metric.
+\end{lemma}
+\begin{proof}
+  \leanok
+  \uses{lem:dc-ch7-3-1-covering-diffeo, lem:dc-ch7-2-8-a-to-b}
+  By \cref{lem:dc-ch7-2-8-a-to-b}, geodesic completeness of $M$ at $o$ makes the closed and
+  bounded subsets of $M$ compact, so $M$ is a proper — hence complete — metric space. Now
+  \cref{lem:dc-ch7-3-1-covering-diffeo} applies verbatim: the metric-expanding smooth local
+  diffeomorphism $f$ out of the complete manifold $M$ onto the simply connected manifold $N$
+  is a covering map (\cref{lem:dc-ch7-3-3}), and a covering map onto a simply connected base
+  is a diffeomorphism. $\square$
+\end{proof}
+
 \subsection{Proof of the Hadamard theorem}
 Since $M$ is complete, $\exp_p:T_pM\to M$ is defined for all $p\in M$ and is
 surjective. By \cref{lem:dc-ch7-3-2}, $\exp_p$ is a local diffeomorphism. This allows us to
 introduce a Riemannian metric on $T_pM$ in such a way that $\exp_p$ is a local
 isometry. Such a metric is complete, because the geodesics of $T_pM$ passing
-through the origin are straight lines (cf. \cref{thm:dc-ch7-2-8}, (a) $\Rightarrow$ (d)).
-From \cref{lem:dc-ch7-3-3}, $\exp_p$ is a covering map. Since $M$ is simply connected,
-$\exp_p$ is a diffeomorphism. $\square$
+through the origin are straight lines (cf. \cref{thm:dc-ch7-2-8}, (a) $\Rightarrow$ (d)):
+this is the geodesic-completeness-at-the-origin hypothesis of \cref{lem:dc-ch7-3-1-assembly}.
+Thus $\exp_p$ is a metric-expanding (indeed metric-preserving) local diffeomorphism
+out of the manifold $T_pM$ — geodesically complete at the origin — onto the simply connected
+manifold $M$, so by \cref{lem:dc-ch7-3-1-assembly} (which derives the properness of $T_pM$
+from that completeness via \cref{lem:dc-ch7-2-8-a-to-b} and then packages the covering-map
+conclusion of \cref{lem:dc-ch7-3-3} with the simply-connectedness of $M$) it is a
+diffeomorphism. The two ingredients still required are that $\exp_p$ is a local
+diffeomorphism (\cref{lem:dc-ch7-3-2}, from the absence of conjugate points when $K\le 0$)
+and that the rays of $T_pM$ are geodesics of the pulled-back metric; the entire
+topological and smooth remainder is \cref{lem:dc-ch7-3-1-assembly}.
+$\square$
+
+\begin{lemma}[the tangent space with the pulled-back metric]
+  \label{lem:dc-ch7-3-4-pullback-metric}
+  \dcref{ch7:3.4}
+  \uses{def:dc-ch7-2-4, def:dc-ch1-2-2, lem:dc-ch7-3-3-length-expansion}
+  \lean{Riemannian.HadamardModel, Riemannian.HadamardModel.flatMetric, Riemannian.HadamardModel.pullbackMetric, Riemannian.HadamardModel.dcExpandsMetric_pullbackMetric}
+  \leanok
+  Let $M$ be a Riemannian manifold, $p\in M$, and $f:T_pM\to M$ a smooth local
+  diffeomorphism (for instance $f=\exp_p$ at a pole). Regard the tangent space $T_pM$ as
+  a smooth manifold in its own right, modelled on $\mathbb R^n=T_pM$ via the single global
+  identity chart. Then $T_pM$ carries the \emph{pulled-back Riemannian metric} $f^*g$,
+  $\langle u,v\rangle^{f^*g}_x=\langle df_x(u),df_x(v)\rangle_{f(x)}$, for which $f$ is a
+  local isometry, hence a metric-expander: $|df_x(v)|=|v|$ for all $x,v$.
+\end{lemma}
+\begin{proof}
+  \leanok
+  \uses{lem:dc-ch7-3-3-length-expansion}
+  The pulled-back form is a Riemannian metric on $T_pM$ because $f$ is a smooth
+  immersion (its differential is injective, being a linear isomorphism at each point):
+  symmetry and positivity are inherited from $g$ through the injective differential, and
+  the metric depends smoothly on the base point since $f$ is smooth. By construction
+  $\langle u,v\rangle^{f^*g}_x=\langle df_x u,df_x v\rangle_{f(x)}$, so $f$ preserves the
+  metric and in particular $|df_x(v)|\ge|v|$ for all $v$
+  (\cref{lem:dc-ch7-3-3-length-expansion}). $\square$
+\end{proof}
+
+\begin{lemma}[pole $\Rightarrow$ diffeomorphism]
+  \label{lem:dc-ch7-3-4-pole-diffeo}
+  \dcref{ch7:3.4}
+  \uses{lem:dc-ch7-3-1-assembly, lem:dc-ch7-3-4-pullback-metric, lem:dc-ch7-3-expmap-global}
+  \lean{Riemannian.HadamardModel.diffeomorphOfPole, Riemannian.HadamardModel.diffeomorphOfPole_coe, Riemannian.HadamardModel.expDiffeomorphOfPole}
+  \leanok
+  Let $M$ be a complete, simply connected Riemannian manifold, $p\in M$, and $f:T_pM\to M$
+  a smooth local diffeomorphism which is metric-expanding for its own pulled-back metric
+  $f^*g$. If the radial lines $s\mapsto sv$ of $T_pM$ are geodesics of $f^*g$, then $f$ is a
+  diffeomorphism $T_pM\to M$. For $f=\exp_p$ this is do Carmo's poles statement modulo its
+  two analytic inputs: that $\exp_p$ is a local diffeomorphism is the pole hypothesis, and
+  that the radial lines are $f^*g$-geodesics is the local-isometry observation.
+\end{lemma}
+\begin{proof}
+  \leanok
+  \uses{lem:dc-ch7-3-1-assembly, lem:dc-ch7-3-4-pullback-metric}
+  Equip $T_pM$ with the pulled-back metric $f^*g$
+  (\cref{lem:dc-ch7-3-4-pullback-metric}), for which $f$ is a metric-expanding smooth local
+  diffeomorphism onto the simply connected manifold $M$. The radial lines through the origin
+  are geodesics of $f^*g$ by hypothesis, defined for all time, so $T_pM$ is geodesically
+  complete at the origin. \Cref{lem:dc-ch7-3-1-assembly} then derives the properness of
+  $T_pM$ from that completeness and makes $f$ a diffeomorphism. $\square$
+\end{proof}
+
+\begin{lemma}[the poles theorem reduces to the rays being pullback-geodesics]
+  \label{lem:dc-ch7-3-4-ray-reduction}
+  \dcref{ch7:3.4}
+  \uses{lem:dc-ch7-3-4-pole-diffeo, lem:dc-ch7-3-4-pullback-metric}
+  \lean{Riemannian.HadamardModel.diffeomorphOfPole_of_rayGeodesic,
+    Riemannian.HadamardModel.diffeomorphOfPole_of_rayGeodesic_coe,
+    Riemannian.HadamardModel.hrays_of_rayGeodesic,
+    Riemannian.HadamardModel.isGeodesic_rayCurve_of_christoffel,
+    Riemannian.HadamardModel.rayCurve}
+  \leanok
+  Let $M$ be a complete, simply connected Riemannian manifold, $p\in M$, and
+  $f:T_pM\to M$ a smooth local diffeomorphism which is metric-expanding for its own
+  pulled-back metric $f^*g$. If for every $v\in T_pM$ the radial line
+  $\gamma_v(s)=s\,v$ is a geodesic of $f^*g$, then $f$ is a diffeomorphism
+  $T_pM\to M$. This isolates the single geometric input of
+  \cref{lem:dc-ch7-3-4-pole-diffeo}: the radial lines being $f^*g$-geodesics.
+\end{lemma}
+\begin{proof}
+  \leanok
+  \uses{lem:dc-ch7-3-4-pole-diffeo}
+  Regard $T_pM$ as the single-chart manifold on which the extended chart is the
+  identity of the model space; then the chart reading of $\gamma_v$ is $s\mapsto s\,v$,
+  whose second-order term vanishes, so the intrinsic geodesic equation of $f^*g$ along
+  $\gamma_v$ reduces to the pointwise Christoffel identity
+  $\Gamma^{f^*g}_{sv}(v,v)=0$. The remaining three requirements of the ray hypothesis
+  of \cref{lem:dc-ch7-3-4-pole-diffeo} — that $\gamma_v$ starts at the origin, has
+  chart-velocity $v$ at $0$, and is continuous — are immediate for the straight line
+  $\gamma_v$. Hence the pole diffeomorphism of \cref{lem:dc-ch7-3-4-pole-diffeo}
+  applies as soon as the radial lines are $f^*g$-geodesics. $\square$
+\end{proof}
+
+\begin{lemma}[$\exp_p$ is a local isometry, so the radial lines are $\exp_p^*g$-geodesics]
+  \label{lem:dc-ch7-3-4-rays-are-geodesics}
+  \dcref{ch7:3.4}
+  \uses{lem:dc-ch7-3-4-pullback-metric, def:dc-ch7-2-2, def:dc-ch1-2-2, lem:dc-ch7-3-expmap-global}
+  \lean{Riemannian.HadamardModel.expMap_rays_are_geodesics}
+  \leanok
+  For $f=\exp_p$ and the pulled-back metric $\exp_p^*g$ on $T_pM$, every radial line
+  $\gamma_v(s)=s\,v$ is a geodesic of $\exp_p^*g$.
+\end{lemma}
+\begin{proof}
+  \uses{lem:dc-ch7-3-4-pullback-metric, lem:dc-ch7-3-expmap-global}
+  \leanok
+  By construction $\exp_p:(T_pM,\exp_p^*g)\to(M,g)$ is a \emph{local isometry}: its
+  differential preserves the inner product (\cref{lem:dc-ch7-3-4-pullback-metric}).
+  The image $\exp_p(\gamma_v(s))=\exp_p(s\,v)$ is, by definition of the exponential map,
+  the geodesic of $M$ through $p$ with initial velocity $v$, defined for all $s$ since
+  $M$ is complete. A local isometry \emph{reflects} geodesics: because $d(\exp_p)$
+  is a linear isomorphism at every point that intertwines the Levi-Civita connections
+  of $\exp_p^*g$ and $g$ (the connection is natural under isometry), a curve $\gamma$
+  is a geodesic of $\exp_p^*g$ if and only if $\exp_p\circ\gamma$ is a geodesic of $g$.
+  Applying this to $\gamma=\gamma_v$, whose image is the $g$-geodesic $s\mapsto\exp_p(s\,v)$,
+  shows $\gamma_v$ is a geodesic of $\exp_p^*g$. $\square$
+\end{proof}
 
 \begin{remark}[poles]
   \label{rem:dc-ch7-3-4}
   \dcref{ch7:3.4}
+  \uses{lem:dc-ch7-3-4-pole-diffeo, lem:dc-ch7-3-4-ray-reduction, lem:dc-ch7-3-4-rays-are-geodesics, lem:dc-ch7-3-expmap-global}
+  \lean{Riemannian.HadamardModel.expDiffeomorphOfPole_of_pole}
+  \leanok
   The above proof gives a little more than what is stated. Call a point $p$ of a
   complete Riemannian manifold $M$ a \emph{pole} if it has the property that it has no
   conjugate points. Any point of a complete manifold $M$ with non-positive
@@ -1090,5 +1804,15 @@ $\exp_p$ is a diffeomorphism. $\square$
   manifolds which have positive sectional curvature (see Exercise 13). What we have
   just proved is the following general fact. *If a complete simply connected
   Riemannian manifold $M$ has a pole, then $M$ is diffeomorphic to $\mathbb{R}^n$,
-  $n=\dim M$.*
+  $n=\dim M$.* The reduction of this statement to its two analytic inputs is
+  \cref{lem:dc-ch7-3-4-pole-diffeo}: it remains only to supply, for $f=\exp_p$, that
+  $\exp_p$ is a smooth local diffeomorphism (the pole hypothesis) and that the radial lines
+  of $T_pM$ are geodesics of the pulled-back metric $\exp_p^*g$ (that $\exp_p$ is a local
+  isometry reflects geodesics from $M$ to $T_pM$); the entire topological and smooth
+  remainder is discharged. Formally, \cref{lem:dc-ch7-3-4-ray-reduction} discharges the
+  three regularity inputs of the ray hypothesis and reduces the poles theorem to the
+  single geometric fact of \cref{lem:dc-ch7-3-4-rays-are-geodesics} — that the radial
+  lines are $\exp_p^*g$-geodesics — whose Lean residual is the naturality of the
+  Levi-Civita connection under a local isometry (a curve is an $\exp_p^*g$-geodesic iff
+  its $\exp_p$-image is a $g$-geodesic).
 \end{remark}

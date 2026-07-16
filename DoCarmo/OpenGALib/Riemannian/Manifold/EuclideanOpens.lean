@@ -590,7 +590,6 @@ theorem opensEuclideanConnection_isSymmetric :
   intro X Y q
   rw [opensEuclideanConnection_cov_apply, opensEuclideanConnection_cov_apply,
     DCLieBracket_opens_eq_fderiv]
-  rfl
 
 /-- **Math.** The flat connection on `↥s` is **compatible with the restricted
 Euclidean metric**: `X⟪Y, Z⟫ = ⟪dŶ(X), Z⟫ + ⟪Y, dẐ(X)⟫`, the product rule for
