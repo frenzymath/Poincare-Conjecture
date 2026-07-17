@@ -39,7 +39,7 @@ Henri Poincaré posed the problem in 1904 while laying the foundations of three-
 | [Morgan–Tian](https://frenzymath.github.io/Poincare-Conjecture/MorganTian/dashboard.html) | Ricci flow and the Poincaré conjecture |
 | [do Carmo](https://frenzymath.github.io/Poincare-Conjecture/DoCarmo/dashboard.html) | Shared Riemannian geometry foundation |
 | [Petersen](https://frenzymath.github.io/Poincare-Conjecture/Petersen/dashboard.html) | Riemannian geometry |
-| [Lee](https://frenzymath.github.io/Poincare-Conjecture/Lee/dashboard.html) | Complementary Riemannian geometry |
+| [Lee — Riemannian Manifolds](https://frenzymath.github.io/Poincare-Conjecture/LeeRiemannian/dashboard.html) | Complementary Riemannian geometry |
 | [Lee — Smooth Manifolds](https://frenzymath.github.io/Poincare-Conjecture/LeeSmooth/dashboard.html) | Prerequisite smooth-manifolds volume (GTM 218); imported and audited, substantially incomplete |
 | [Hatcher](https://frenzymath.github.io/Poincare-Conjecture/Hatcher/dashboard.html) | Algebraic topology |
 | [Evans](https://frenzymath.github.io/Poincare-Conjecture/Evans/dashboard.html) | Partial differential equations |

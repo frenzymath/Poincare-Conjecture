@@ -9,7 +9,7 @@ set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"; cd "$HERE"
 command -v hgraph >/dev/null || { echo "error: hgraph not on PATH"; exit 1; }
 
-PROJECTS=(DoCarmo Petersen MorganTian Lee LeeSmooth Hatcher Evans)
+PROJECTS=(DoCarmo Petersen MorganTian LeeRiemannian LeeSmooth Hatcher Evans)
 
 rm -rf docs; mkdir -p docs
 
@@ -40,6 +40,19 @@ for p in "${PROJECTS[@]}"; do
 <p>This dashboard now lives at <a href="../#/$p">../#/$p</a>.</p>
 EOF
 done
+
+# 4. Renamed projects: keep the pre-rename routes alive too. `Lee` became
+#    `LeeRiemannian` when LeeSmooth (the same author's GTM 218) was added.
+mkdir -p docs/Lee
+cat > docs/Lee/dashboard.html <<'EOF'
+<!doctype html>
+<meta charset="utf-8">
+<title>Moved — Lee</title>
+<meta http-equiv="refresh" content="0; url=../#/LeeRiemannian">
+<link rel="canonical" href="../#/LeeRiemannian">
+<p>This project was renamed to <em>LeeRiemannian</em>; its dashboard now lives at
+<a href="../#/LeeRiemannian">../#/LeeRiemannian</a>.</p>
+EOF
 
 touch docs/.nojekyll   # tell Pages not to run Jekyll on the static output
 echo "built docs/ ($(du -sh docs | cut -f1))"

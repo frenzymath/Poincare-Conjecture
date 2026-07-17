@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [DoCarmo, MorganTian, Petersen, Lee, Hatcher, Evans, LeeSmooth]
+        project: [DoCarmo, MorganTian, Petersen, LeeRiemannian, Hatcher, Evans, LeeSmooth]
     steps:
       - uses: actions/checkout@v4
 
@@ -60,7 +60,7 @@ jobs:
       # one is added.
       - name: Count sorries against tracked baseline
         run: |
-          declare -A EXPECTED=( [DoCarmo]=0 [MorganTian]=0 [Petersen]=3 [Lee]=0 [Hatcher]=0 [Evans]=0 [LeeSmooth]=280 )
+          declare -A EXPECTED=( [DoCarmo]=0 [MorganTian]=0 [Petersen]=3 [LeeRiemannian]=0 [Hatcher]=0 [Evans]=0 [LeeSmooth]=280 )
           fail=0
           for p in "${!EXPECTED[@]}"; do
             actual=$(grep -rnE "^[[:space:]]*sorry[[:space:]]*$|by sorry|:= sorry" \
@@ -78,7 +78,7 @@ jobs:
       - name: Count axioms (expect zero)
         run: |
           fail=0
-          for p in DoCarmo MorganTian Petersen Lee Hatcher Evans LeeSmooth; do
+          for p in DoCarmo MorganTian Petersen LeeRiemannian Hatcher Evans LeeSmooth; do
             actual=$(grep -rnE "^axiom[[:space:]]+[a-zA-Z_][a-zA-Z0-9_']*[[:space:]]*$" \
               --include="*.lean" "$p" 2>/dev/null | wc -l | tr -d ' ')
             if [ "$actual" -ne 0 ]; then
