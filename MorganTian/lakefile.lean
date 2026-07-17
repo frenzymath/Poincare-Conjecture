@@ -1,7 +1,7 @@
 import Lake
 open Lake DSL
 
-package MorganTianLib where
+package PoincareLib where
   leanOptions := #[
     ⟨`pp.unicode.fun, true⟩,
     ⟨`autoImplicit, false⟩,
@@ -22,6 +22,6 @@ require mathlib from git
 require OpenGALib from "../DoCarmo"
 
 @[default_target]
-lean_lib MorganTianLib where
-  roots := #[`MorganTianLib]
-  globs := #[.andSubmodules `MorganTianLib]
+lean_lib PoincareLib where
+  roots := #[`PoincareLib]
+  globs := #[.andSubmodules `PoincareLib]
