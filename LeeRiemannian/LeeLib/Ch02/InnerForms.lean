@@ -275,6 +275,47 @@ omit [FiniteDimensional ℝ V] [DecidableEq ι'] in
 @[simp] theorem innerFormsₗ_apply (e : OrthonormalBasis ι' ℝ V) (w θ : V [⋀^ι]→L[ℝ] ℝ) :
     innerFormsₗ e w θ = innerForms e w θ := rfl
 
+/-! ### Wedges of the dual coframe pick out coefficients -/
+
+omit [DecidableEq ι'] in
+/-- Evaluating a wedge of dual-coframe covectors on a tuple of basis vectors is symmetric in
+the two index maps: both sides are the determinant of the same `δ`-matrix, up to transpose. -/
+theorem wedgeCovectors_flatL_swap (e : OrthonormalBasis ι' ℝ V) (t r : ι → ι') :
+    wedgeCovectors (fun i => flatL (e (t i))) (fun j => e (r j))
+      = wedgeCovectors (fun i => flatL (e (r i))) (fun j => e (t j)) := by
+  rw [wedgeCovectors_apply, wedgeCovectors_apply, ← Matrix.det_transpose]
+  congr 1
+  ext i j
+  simp only [Matrix.transpose_apply, Matrix.of_apply, flatL_apply]
+  exact real_inner_comm _ _
+
+omit [DecidableEq ι'] in
+/-- **The wedges of the dual coframe pick out coefficients**: `⟨e^{t(1)} ∧ ⋯ ∧ e^{t(k)}, ξ⟩ =
+ξ(e_{t(1)}, …, e_{t(k)})`.  This is the master identity of `CauchyBinet` with the selection
+matrix `A_{i m} = δ_{t(i) m}`, for which `∑_m A_{i m} • e_m = e_{t(i)}`. -/
+theorem innerForms_wedgeCovectors_flatL_left (e : OrthonormalBasis ι' ℝ V) (t : ι → ι')
+    (ξ : V [⋀^ι]→L[ℝ] ℝ) :
+    innerForms e (wedgeCovectors (fun i => flatL (e (t i)))) ξ = ξ (fun i => e (t i)) := by
+  have hmaster := AlternatingMap.sum_det_submatrix_smul_apply
+    ξ.toAlternatingMap (e : ι' → V)
+    (Matrix.of fun (i : ι) (m : ι') => ⟪e (t i), e m⟫_ℝ)
+  simp only [smul_eq_mul, ContinuousAlternatingMap.coe_toAlternatingMap] at hmaster
+  have hcollapse : ∀ i : ι,
+      (∑ m, (Matrix.of fun (i : ι) (m : ι') => ⟪e (t i), e m⟫_ℝ) i m • e m) = e (t i) :=
+    fun i => sum_inner_smul_orthonormalBasis e (e (t i))
+  simp only [hcollapse] at hmaster
+  have hsub : ∀ s : ι → ι',
+      ((Matrix.of fun (i : ι) (m : ι') => ⟪e (t i), e m⟫_ℝ).submatrix id s).det
+        = wedgeCovectors (fun i => flatL (e (t i))) (fun j => e (s j)) := by
+    intro s
+    rw [wedgeCovectors_apply]
+    rfl
+  rw [Finset.sum_congr rfl fun s _ => congrArg (· * _) (hsub s), nsmul_eq_mul] at hmaster
+  rw [innerForms, hmaster]
+  have hfac : ((Fintype.card ι).factorial : ℝ) ≠ 0 :=
+    Nat.cast_ne_zero.2 (Nat.factorial_ne_zero _)
+  field_simp
+
 /-! ### Uniqueness and frame independence (Lee, Problem 2-16) -/
 
 omit [DecidableEq ι'] in

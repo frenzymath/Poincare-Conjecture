@@ -8,7 +8,7 @@ connected Riemannian manifold `(M, g)`.  The full equivalence
 (`thm:pet-ch5-hopf-rinow`) needs the geodesically-complete `⟹` metrically-complete
 direction, which runs through the corner-turning equality case of the first
 variation (do Carmo Ch. 3, Cor. 3.9); that direction is still open in the
-vendored geodesic engine (`PetersenLib.Vendored.OpenGA.Geodesic.HopfRinow`,
+vendored geodesic engine (`PetersenLib.Riemannian.Geodesic.HopfRinow`,
 `complete_of_isGeodesicallyComplete`) and is not used here.
 
 This file lands the **metric-space-only** consequence that does *not* depend on

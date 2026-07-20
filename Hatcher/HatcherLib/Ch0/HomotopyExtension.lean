@@ -1,4 +1,6 @@
 import Mathlib.Topology.Homotopy.Basic
+import Mathlib.Topology.Constructions.SumProd
+import HatcherLib.Ch0.HomotopyTheory
 
 /-!
 # Chapter 0 — The homotopy extension property
@@ -20,6 +22,29 @@ namespace HatcherLib
 open scoped unitInterval
 
 universe u v
+
+/-! ## Topological preliminary: maps out of `(A ⊕ B) × C` -/
+
+/-- A map out of `(A ⊕ B) × C` is continuous as soon as its restrictions to the
+two summands are: transport along the homeomorphism
+`(A ⊕ B) × C ≃ₜ (A × C) ⊕ (B × C)`. Used to check continuity of maps defined on
+products of quotients of sum types (mapping cylinders, attaching spaces). -/
+theorem continuous_sumProd {A B C Z : Type*} [TopologicalSpace A] [TopologicalSpace B]
+    [TopologicalSpace C] [TopologicalSpace Z] {g : (A ⊕ B) × C → Z}
+    (hl : Continuous fun p : A × C => g (Sum.inl p.1, p.2))
+    (hr : Continuous fun p : B × C => g (Sum.inr p.1, p.2)) :
+    Continuous g := by
+  rw [← Homeomorph.comp_continuous_iff'
+    (Homeomorph.sumProdDistrib (X := A) (Y := B) (Z := C)).symm]
+  refine continuous_sum_dom.mpr ⟨?_, ?_⟩
+  · have h : ((g ∘ ⇑(Homeomorph.sumProdDistrib (X := A) (Y := B) (Z := C)).symm) ∘ Sum.inl) =
+        fun p : A × C => g (Sum.inl p.1, p.2) := by
+      funext p; simp [Homeomorph.sumProdDistrib]
+    rw [h]; exact hl
+  · have h : ((g ∘ ⇑(Homeomorph.sumProdDistrib (X := A) (Y := B) (Z := C)).symm) ∘ Sum.inr) =
+        fun p : B × C => g (Sum.inr p.1, p.2) := by
+      funext p; simp [Homeomorph.sumProdDistrib]
+    rw [h]; exact hr
 
 variable {X : Type u} [TopologicalSpace X]
 
@@ -121,6 +146,37 @@ theorem continuousOn_hepGlue {A : Set X} (hA : IsClosed A) {Y : Type v}
   rw [hunion]
   exact contA.union_of_isClosed contB hMA hM0
 
+/-- Level-`t₀` generalisation of `continuousOn_hepGlue`: when `A` is closed and the
+prescriptions agree on `A × {t₀}`, the glued map `hepGlue f h` is continuous on
+`X × {t₀} ∪ A × I`. (The `hepBase` version is the case `t₀ = 0`.) -/
+theorem continuousOn_hepGlue_at {A : Set X} (hA : IsClosed A) {Y : Type v}
+    [TopologicalSpace Y] (f : C(X, Y)) (h : C(↥A × I, Y)) (t₀ : I)
+    (hagree : ∀ a : ↥A, h (a, t₀) = f (a : X)) :
+    ContinuousOn (hepGlue f h) {p : X × I | p.1 ∈ A ∨ p.2 = t₀} := by
+  have hMA : IsClosed {p : X × I | p.1 ∈ A} := hA.preimage continuous_fst
+  have hM0 : IsClosed {p : X × I | p.2 = t₀} :=
+    isClosed_singleton.preimage continuous_snd
+  have contA : ContinuousOn (hepGlue f h) {p : X × I | p.1 ∈ A} := by
+    rw [continuousOn_iff_continuous_restrict]
+    have hc : Continuous
+        (fun q : {p : X × I | p.1 ∈ A} => h (⟨q.1.1, q.2⟩, q.1.2)) :=
+      map_continuous h |>.comp <|
+        ((continuous_fst.comp continuous_subtype_val).subtype_mk fun q => q.2).prodMk
+          (continuous_snd.comp continuous_subtype_val)
+    exact hc.congr fun q => (hepGlue_of_mem f h q.2).symm
+  have contB : ContinuousOn (hepGlue f h) {p : X × I | p.2 = t₀} := by
+    refine ContinuousOn.congr (f := fun p => f p.1)
+      ((map_continuous f).comp continuous_fst).continuousOn ?_
+    intro p hp
+    simp only [Set.mem_setOf_eq] at hp
+    by_cases hpa : p.1 ∈ A
+    · rw [hepGlue_of_mem f h hpa, hp]; exact hagree ⟨p.1, hpa⟩
+    · rw [hepGlue_of_not_mem f h hpa]
+  have hunion : {p : X × I | p.1 ∈ A ∨ p.2 = t₀}
+      = {p : X × I | p.1 ∈ A} ∪ {p : X × I | p.2 = t₀} := rfl
+  rw [hunion]
+  exact contA.union_of_isClosed contB hMA hM0
+
 /-- **Forward direction of the HEP characterisation.** If `(X, A)` has the homotopy
 extension property, then `X × {0} ∪ A × I` is a retract of `X × I`. Apply the HEP to
 the target `↥(hepBase A)` itself, with `f = (·, 0)` and `h` the inclusion of
@@ -199,5 +255,129 @@ theorem isClosed_of_isRetract [T2Space X] {A : Set X}
 theorem hasHEP_iff_isRetract {A : Set X} (hA : IsClosed A) :
     HasHEP.{u, u} A ↔ IsRetract (hepBase A) :=
   ⟨HasHEP.isRetract, hasHEP_of_isRetract hA⟩
+
+/-!
+## The retract of the cylinder onto `X × {0} ∪ A × I` is a deformation retract
+
+Hatcher observes (as an exercise, via Corollary 0.20) that when `(X, A)` has the
+homotopy extension property, `X × I` *deformation* retracts onto
+`X × {0} ∪ A × I`. There is a direct classical formula: any retraction
+`r = (r₁, r₂)` of `X × I` onto `X × {0} ∪ A × I` is homotopic to the identity rel
+`X × {0} ∪ A × I` via
+
+`H_u(x, s) = ( r₁(x, u·s), (1-u)·s + u·r₂(x, s) )`.
+
+At `u = 0` this is `(r₁(x, 0), s) = (x, s)`; at `u = 1` it is `r(x, s)`; and both
+prescriptions on `X × {0} ∪ A × I` are fixed throughout, since `r` fixes
+`(x, 0)` and `(a, s)`. This fact is the engine of Hatcher's Proposition 0.18
+(homotopic attaching maps): the induced deformation retraction of an adjunction
+cylinder onto its bottom-plus-attached part descends to adjunction spaces.
+-/
+
+/-- The convex combination `(1-u)·s + u·t` stays in the unit interval. -/
+theorem convexCombo_mem (u s t : I) :
+    (1 - (u : ℝ)) * (s : ℝ) + (u : ℝ) * (t : ℝ) ∈ unitInterval := by
+  have hu0 := unitInterval.nonneg u
+  have hu1 := unitInterval.le_one u
+  have hs0 := unitInterval.nonneg s
+  have hs1 := unitInterval.le_one s
+  have ht0 := unitInterval.nonneg t
+  have ht1 := unitInterval.le_one t
+  constructor
+  · positivity
+  · nlinarith
+
+/-- **A retraction of the cylinder onto `X × {0} ∪ A × I` is automatically a
+deformation retraction.** Writing `r = (r₁, r₂)`, the deformation is
+`H_u(x, s) = (r₁(x, u·s), (1-u)·s + u·r₂(x, s))`: the identity at `u = 0`
+(as `r` fixes `X × {0}`), the retraction `r` at `u = 1`, and constant in `u` on
+`X × {0} ∪ A × I`. -/
+noncomputable def hepBaseDeformationRetract {A : Set X} (r : C(X × I, X × I))
+    (hmem : ∀ p, r p ∈ hepBase A) (hfix : ∀ p ∈ hepBase A, r p = p) :
+    DeformationRetract (hepBase A) where
+  retraction := r
+  mapsInto := hmem
+  fixes := hfix
+  homotopy :=
+    { toContinuousMap :=
+        { toFun := fun p =>
+            ((r (p.2.1, ⟨(p.1 : ℝ) * (p.2.2 : ℝ),
+                unitInterval.mul_mem p.1.2 p.2.2.2⟩)).1,
+              ⟨(1 - (p.1 : ℝ)) * (p.2.2 : ℝ) + (p.1 : ℝ) * ((r p.2).2 : ℝ),
+                convexCombo_mem p.1 p.2.2 (r p.2).2⟩)
+          continuous_toFun := by
+            refine Continuous.prodMk ?_ ?_
+            · exact continuous_fst.comp <| (map_continuous r).comp <|
+                (continuous_fst.comp continuous_snd).prodMk <|
+                  Continuous.subtype_mk (by fun_prop) _
+            · exact Continuous.subtype_mk (by fun_prop) _ }
+      map_zero_left := by
+        intro p
+        obtain ⟨x, s⟩ := p
+        have hz : (x, (⟨((0 : I) : ℝ) * (s : ℝ), unitInterval.mul_mem (0 : I).2 s.2⟩ : I))
+            = ((x, 0) : X × I) := by
+          refine Prod.ext rfl (Subtype.ext ?_)
+          show (0 : ℝ) * (s : ℝ) = (0 : ℝ)
+          ring
+        refine Prod.ext ?_ (Subtype.ext ?_)
+        · show (r (x, ⟨((0 : I) : ℝ) * (s : ℝ), unitInterval.mul_mem (0 : I).2 s.2⟩)).1 = x
+          rw [hz, hfix (x, 0) (mem_hepBase_right rfl)]
+        · show (1 - (0 : ℝ)) * (s : ℝ) + (0 : ℝ) * ((r (x, s)).2 : ℝ) = (s : ℝ)
+          ring
+      map_one_left := by
+        intro p
+        obtain ⟨x, s⟩ := p
+        have ho : (x, (⟨((1 : I) : ℝ) * (s : ℝ), unitInterval.mul_mem (1 : I).2 s.2⟩ : I))
+            = ((x, s) : X × I) := by
+          refine Prod.ext rfl (Subtype.ext ?_)
+          show (1 : ℝ) * (s : ℝ) = (s : ℝ)
+          ring
+        refine Prod.ext ?_ (Subtype.ext ?_)
+        · show (r (x, ⟨((1 : I) : ℝ) * (s : ℝ), unitInterval.mul_mem (1 : I).2 s.2⟩)).1
+            = (r (x, s)).1
+          rw [ho]
+        · show (1 - (1 : ℝ)) * (s : ℝ) + (1 : ℝ) * ((r (x, s)).2 : ℝ) = ((r (x, s)).2 : ℝ)
+          ring
+      prop' := by
+        intro u p hp
+        obtain ⟨x, s⟩ := p
+        rcases hp with hpA | hp0
+        · -- `p = (a, s)` with `a ∈ A`: `r` fixes both `(a, u·s)` and `(a, s)`.
+          have h1 : r (x, ⟨(u : ℝ) * (s : ℝ), unitInterval.mul_mem u.2 s.2⟩)
+              = (x, ⟨(u : ℝ) * (s : ℝ), unitInterval.mul_mem u.2 s.2⟩) :=
+            hfix _ (mem_hepBase_left hpA)
+          have h2 : r (x, s) = (x, s) := hfix (x, s) (mem_hepBase_left hpA)
+          refine Prod.ext ?_ (Subtype.ext ?_)
+          · show (r (x, ⟨(u : ℝ) * (s : ℝ), unitInterval.mul_mem u.2 s.2⟩)).1 = x
+            rw [h1]
+          · show (1 - (u : ℝ)) * (s : ℝ) + (u : ℝ) * ((r (x, s)).2 : ℝ) = (s : ℝ)
+            rw [h2]
+            ring
+        · -- `p = (x, 0)`: `u·0 = 0` and `r` fixes `(x, 0)`.
+          have hs0 : s = 0 := hp0
+          subst hs0
+          have h2 : r (x, (0 : I)) = (x, 0) := hfix (x, 0) (mem_hepBase_right rfl)
+          have hz : (x, (⟨(u : ℝ) * ((0 : I) : ℝ),
+                unitInterval.mul_mem u.2 (0 : I).2⟩ : I)) = ((x, 0) : X × I) := by
+            refine Prod.ext rfl (Subtype.ext ?_)
+            show (u : ℝ) * (0 : ℝ) = (0 : ℝ)
+            ring
+          refine Prod.ext ?_ (Subtype.ext ?_)
+          · show (r (x, ⟨(u : ℝ) * ((0 : I) : ℝ), unitInterval.mul_mem u.2 (0 : I).2⟩)).1 = x
+            rw [hz, h2]
+          · show (1 - (u : ℝ)) * ((0 : I) : ℝ) + (u : ℝ) * ((r (x, (0 : I))).2 : ℝ)
+              = ((0 : I) : ℝ)
+            rw [h2]
+            show (1 - (u : ℝ)) * (0 : ℝ) + (u : ℝ) * (0 : ℝ) = (0 : ℝ)
+            ring }
+
+/-- **If `(X, A)` has the homotopy extension property, then `X × I` deformation
+retracts onto `X × {0} ∪ A × I`** (Hatcher's exercise following Corollary 0.20,
+by the direct formula of `hepBaseDeformationRetract` applied to the retraction
+produced by the HEP). -/
+theorem HasHEP.hepBase_deformationRetract {A : Set X} (hHEP : HasHEP.{u, u} A) :
+    Nonempty (DeformationRetract (hepBase A)) := by
+  obtain ⟨r, hmem, hfix⟩ := hHEP.isRetract
+  exact ⟨hepBaseDeformationRetract r hmem hfix⟩
 
 end HatcherLib

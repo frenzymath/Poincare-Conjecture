@@ -12,7 +12,7 @@ and **globally** smooth vector fields `Vᵢ` (`exists_decomposition_of_eq_zero`)
 
 The proof reads the coordinates of `Z` in the trivialization at `p` (via the
 chart-basis frame `Tensor.chartBasisVecFiber` of
-`Vendored/OpenGA/TensorBundle/SmoothOrthoFrame/ChartBasis.lean`), which are
+`Riemannian/TensorBundle/SmoothOrthoFrame/ChartBasis.lean`), which are
 raw scalars `f₀ i` smooth only on the trivialization's base set and vanishing
 at `p`. These are globalized in two independent ways:
 

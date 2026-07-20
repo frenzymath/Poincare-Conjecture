@@ -28,8 +28,8 @@ and the model space is finite dimensional.  Note that no boundarylessness is
 needed, matching Lee's remark that the statement and proof work verbatim for
 manifolds with boundary.
 
-Provenance: this construction is vendored from the shared OpenGALib development
-(`OpenGALib/Riemannian/Manifold/DoCarmoCh1.lean`, do Carmo Ch. 1 Prop. 2.10),
+Provenance: this construction is vendored from the shared DoCarmoLib development
+(`DoCarmoLib/Riemannian/Manifold/DoCarmoCh1.lean`, do Carmo Ch. 1 Prop. 2.10),
 where it was first developed; PetersenLib vendored the same block for Petersen
 Exercise 1.6.26 (`PetersenLib/Ch01/ArcLength.lean`).  The three books share the
 statement because all three alias mathlib's `Bundle.ContMDiffRiemannianMetric`.

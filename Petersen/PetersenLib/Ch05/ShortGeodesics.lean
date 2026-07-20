@@ -1,6 +1,6 @@
 import PetersenLib.Ch05.DistanceEDistBridge
 import PetersenLib.Ch05.GaussLemma
-import PetersenLib.Vendored.OpenGA.Exponential.NormalBallEDist
+import PetersenLib.Riemannian.Exponential.NormalBallEDist
 
 /-!
 # Petersen Ch. 5, §5.5.2 — short geodesics are segments (the distance lower bound)

@@ -104,6 +104,24 @@ omit [FiniteDimensional ℝ E] [FiniteDimensional ℝ E'] in
 theorem IsLocalIsometry.isLocalDiffeomorph (h : IsLocalIsometry g g' φ) :
     IsLocalDiffeomorph I I' ∞ φ := h.1
 
+open Bundle Manifold MeasureTheory in
+omit [FiniteDimensional ℝ E] [FiniteDimensional ℝ E'] in
+/-- **Lee, Problem 2-31**: *a local isometry does not increase Riemannian distance*.
+If `φ : (M,g) → (M̃,g̃)` is a local isometry then `d_{g̃}(φ x, φ y) ≤ d_g(x, y)` for
+all `x, y`.
+
+This is `IsMetricPreserving.riemannianEDist_le` fed the underlying metric-preserving
+map: a local isometry is in particular a local diffeomorphism, hence smooth
+(`IsLocalDiffeomorph.contMDiff`), so every admissible curve from `x` to `y` maps to a
+curve of equal length from `φ x` to `φ y`.  Equality can fail — `M̃` may contain
+shorter curves outside the image of `φ`, as for the length-decreasing wraps of the
+Riemannian covering `ℝ → S¹`. -/
+theorem IsLocalIsometry.riemannianEDist_le (h : IsLocalIsometry g g' φ) (x y : M) :
+    letI : RiemannianBundle (TangentSpace I : M → Type _) := ⟨g.toRiemannianMetric⟩
+    letI : RiemannianBundle (TangentSpace I' : M' → Type _) := ⟨g'.toRiemannianMetric⟩
+    riemannianEDist I' (φ x) (φ y) ≤ riemannianEDist I x y :=
+  h.isMetricPreserving.riemannianEDist_le h.isLocalDiffeomorph.contMDiff x y
+
 /-- **A metric-preserving smooth map between manifolds of equal dimension is a local
 diffeomorphism** — the substance of Lee's Exercise 2.7.
 

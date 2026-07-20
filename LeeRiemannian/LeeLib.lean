@@ -2,6 +2,7 @@
 
 -- Chapter 1: What Is Curvature?
 import LeeLib.Ch01.RigidMotion
+import LeeLib.Ch01.DistancePreservingLinear
 import LeeLib.Ch01.EuclideanTriangles
 import LeeLib.Ch01.CircleClassification
 import LeeLib.Ch01.Circumference
@@ -11,8 +12,10 @@ import LeeLib.Ch02.InnerProducts
 import LeeLib.Ch02.RiemannianMetric
 import LeeLib.Ch02.MetricExistence
 import LeeLib.Ch02.OrthonormalFrame
+import LeeLib.Ch02.OrthonormalCoframe
 import LeeLib.Ch02.VolumeForm
 import LeeLib.Ch02.Density
+import LeeLib.Ch02.DensityOrthonormalFrame
 import LeeLib.Ch02.PullbackBundle
 import LeeLib.Ch02.PullbackMetric
 import LeeLib.Ch02.ProductMetric
@@ -42,11 +45,14 @@ import LeeLib.Ch02.PseudoHypersurface
 import LeeLib.Ch02.EmbeddingCriterion
 import LeeLib.Ch02.PseudoLevelSet
 import LeeLib.Ch02.HorizontalLift
+import LeeLib.Ch02.HorizontalNonLift
 import LeeLib.Ch02.GradientCharacterization
 import LeeLib.Ch02.HorizontalSplitting
 import LeeLib.Ch02.RiemannianCovering
 import LeeLib.Ch02.RiemannianSubmersion
 import LeeLib.Ch02.SubmersionMetric
+import LeeLib.Ch02.SurfaceOfRevolution
+import LeeLib.Ch02.GraphMetric
 import LeeLib.Ch02.LevelSetStraightening
 import LeeLib.Ch02.LorentzForm
 import LeeLib.Ch02.FormProduct
@@ -61,6 +67,37 @@ import LeeLib.Ch02.RegularLevelSet
 import LeeLib.Ch02.RegularSetHypersurface
 import LeeLib.Ch02.InnerForms
 import LeeLib.Ch02.InnerFormsBundle
+import LeeLib.Ch02.FiberMetricForms
+import LeeLib.Ch02.WedgeProduct
+import LeeLib.Ch02.HodgeStar
+import LeeLib.Ch02.EuclideanHodge
+import LeeLib.Ch02.BasisWedgeHodge
+import LeeLib.Ch02.SmoothCoframeWedge
+import LeeLib.Ch02.SmoothHodgeStar
+import LeeLib.Ch02.FlatTorus
+import LeeLib.Ch02.RiemannianSubmersionExamples
+import LeeLib.Ch02.ArcLengthReparametrization
+
+-- Chapter 4: Connections
+import LeeLib.Ch04.Connection
+import LeeLib.Ch04.Locality
+import LeeLib.Ch04.DifferenceTensor
+import LeeLib.Ch04.ConnectionCoefficients
+import LeeLib.Ch04.ConnectionFromCoefficients
+import LeeLib.Ch04.TransformationLaw
+import LeeLib.Ch04.Torsion
+import LeeLib.Ch04.CovariantHessian
+import LeeLib.Ch04.LinearODE
+import LeeLib.Ch04.ChartConnection
+import LeeLib.Ch04.ParallelTransport
+import LeeLib.Ch04.ParallelTransportDetermines
+import LeeLib.Ch04.DifferenceTensorTorsion
+import LeeLib.Ch04.Geodesic
+import LeeLib.Ch04.GeodesicSpray
+import LeeLib.Ch04.GeodesicEquationReadback
+import LeeLib.Ch04.DifferenceTensorGeodesics
+import LeeLib.Ch04.ParallelReparametrization
+import LeeLib.Ch04.PullbackConnection
 
 -- Appendix A: Review of Smooth Manifolds
 import LeeLib.AppendixA.AlternatingSmooth
@@ -75,3 +112,4 @@ import LeeLib.AppendixA.VectorFieldExtension
 
 -- Appendix B: Review of Tensors
 import LeeLib.AppendixB.CauchyBinet
+import LeeLib.AppendixB.Laplace

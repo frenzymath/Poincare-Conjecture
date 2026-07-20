@@ -27,8 +27,8 @@ metric), which Exercise 1.6.26 quotes as the first half of the averaging
 argument.
 
 Curve/velocity/arc-length definitions and `PreservesMetric.arcLength` are
-vendored from the shared OpenGALib development
-(`OpenGALib/Riemannian/Manifold/DoCarmoCh1.lean`: `DCVelocity`,
+vendored from the shared DoCarmoLib development
+(`DoCarmoLib/Riemannian/Manifold/DoCarmoCh1.lean`: `DCVelocity`,
 `DCIsVectorFieldAlong`, `DCArcLength`, `DCVelocity_comp`,
 `DCPreservesMetric.dcArcLength`, `convex_symm_posDef`,
 `exists_riemannianMetric`), renamed into the `PetersenLib` namespace.
@@ -269,8 +269,8 @@ theorem dist_le_arcLength {F : Type*} [NormedAddCommGroup F]
 /-! ## Existence of Riemannian metrics (do Carmo Prop. 1.2.10; quoted by
 Exercise 1.6.26)
 
-Vendored from the shared OpenGALib development
-(`OpenGALib/Riemannian/Manifold/DoCarmoCh1.lean`). -/
+Vendored from the shared DoCarmoLib development
+(`DoCarmoLib/Riemannian/Manifold/DoCarmoCh1.lean`). -/
 
 section Existence
 

@@ -1,5 +1,5 @@
-import PetersenLib.Vendored.OpenGA.Manifold.DoCarmoCh4Sectional
-import PetersenLib.Vendored.OpenGA.Manifold.DoCarmoCh4Ricci
+import PetersenLib.Riemannian.Manifold.DoCarmoCh4Sectional
+import PetersenLib.Riemannian.Manifold.DoCarmoCh4Ricci
 
 /-!
 # Petersen Ch. 4, §4.1 — Computational Simplifications

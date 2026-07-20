@@ -1,5 +1,5 @@
 import PetersenLib.Ch02.CovariantDerivative
-import PetersenLib.Vendored.OpenGA.TensorBundle.SmoothOrthoFrame.ChartBasis
+import PetersenLib.Riemannian.TensorBundle.SmoothOrthoFrame.ChartBasis
 
 /-!
 # Petersen Ch. 2 — Local frame decomposition of a vector field

@@ -365,7 +365,18 @@ continuous majorant of the `C²` data on the compact half-width slab), applies
 the integrand identity `∂ₛ½⟨∂ₜc,∂ₜc⟩ = ∂ₜ⟨∂ₛc,∂ₜc⟩ − ⟨∂ₛc,∂ₜ²c⟩`, and the
 fundamental theorem of calculus in `t`.  At the window ends the `t`-velocity
 is the one-sided (within-`[t₁,t₂]`) derivative of the `t`-slice, so the
-formula glues across adjacent windows and produces Petersen's break terms. -/
+formula glues across adjacent windows and produces Petersen's break terms.
+
+The **third conjunct is the same derivative, before the integration by parts**:
+$$\frac{d}{ds}\Big|_0 \tfrac12\int_{t_1}^{t_2}\langle\partial_tc,\partial_tc\rangle\,dt
+  = \int_{t_1}^{t_2}\langle D_s\partial_tc,\partial_tc\rangle\,dt .$$
+It is what differentiating under the integral actually produces; the by-parts form
+above is obtained from it by the FTC.  It is exported because Ch. 6's *second*
+variation (Thm. 6.1.4) needs to differentiate the first variation once more in `s`,
+and this pre-by-parts form is the one that survives that: it is a pure integral with
+**no boundary terms**, whereas the by-parts form carries boundary pairings whose
+`s`-dependence sits inside a moving foot chart.  Doing the by-parts once, at the end,
+is strictly cheaper than doing it at every `s` and then differentiating it. -/
 theorem hasDerivAt_windowEnergy_chart (g : RiemannianMetric I M) (α : M)
     {c : ℝ × ℝ → E} {δ t₁ t₂ : ℝ} (hδ : 0 < δ) (h12 : t₁ < t₂)
     (hc : ContDiffOn ℝ ∞ c (Ioo (-δ) δ ×ˢ Icc t₁ t₂))
@@ -387,7 +398,14 @@ theorem hasDerivAt_windowEnergy_chart (g : RiemannianMetric I M) (α : M)
         - ∫ t in t₁..t₂, chartMetricInner (I := I) g α (c (0, t))
             (deriv (fun s' => c (s', t)) 0)
             (mixedPartialCoord (I := I) g α c (0, t) ((0, 1) : ℝ × ℝ)
-              ((0, 1) : ℝ × ℝ))) 0 := by
+              ((0, 1) : ℝ × ℝ))) 0 ∧
+    HasDerivAt (fun s : ℝ => ∫ t in t₁..t₂,
+        (1 / 2) * chartMetricInner (I := I) g α (c (s, t))
+          (derivWithin (fun t' => c (s, t')) (Icc t₁ t₂) t)
+          (derivWithin (fun t' => c (s, t')) (Icc t₁ t₂) t))
+      (∫ t in t₁..t₂, chartMetricInner (I := I) g α (c (0, t))
+        (mixedPartialCoord (I := I) g α c (0, t) ((1, 0) : ℝ × ℝ) ((0, 1) : ℝ × ℝ))
+        (fderiv ℝ c (0, t) ((0, 1) : ℝ × ℝ))) 0 := by
   classical
   set S : Set (ℝ × ℝ) := Ioo (-δ) δ ×ˢ Icc t₁ t₂ with hS_def
   have hSuniq : UniqueDiffOn ℝ S := isOpen_Ioo.uniqueDiffOn.prod (uniqueDiffOn_Icc h12)
@@ -696,7 +714,7 @@ theorem hasDerivAt_windowEnergy_chart (g : RiemannianMetric I M) (α : M)
     simp only [hR_def, hMPtt_def]
     rw [hMP_int h0mem ht ((0, 1) : ℝ × ℝ) ((0, 1) : ℝ × ℝ),
       hderiv_s h0mem (Ioo_subset_Icc_self ht)]
-  refine ⟨?_, ?_⟩
+  refine ⟨?_, ?_, ?_⟩
   · refine hR_int.congr_ae ?_
     rw [Filter.EventuallyEq, ae_restrict_iff' measurableSet_uIoc]
     filter_upwards [compl_mem_ae_iff.mpr hnull] with t htbad htI
@@ -705,6 +723,8 @@ theorem hasDerivAt_windowEnergy_chart (g : RiemannianMetric I M) (α : M)
     rw [hMP_int h0mem ht ((0, 1) : ℝ × ℝ) ((0, 1) : ℝ × ℝ),
       hderiv_s h0mem (Ioo_subset_Icc_self ht)]
   · rw [hval, hb2, hb1, hRid] at hmain
+    exact hmain
+  · -- the pre-by-parts form: exactly what differentiating under the integral gave
     exact hmain
 
 /-! ## The windowed first variation, intrinsically -/
@@ -754,7 +774,7 @@ theorem hasDerivAt_windowEnergy (g : RiemannianMetric I M) (α : M)
   have hcd : ContDiffOn ℝ ∞ c S := contDiffOn_extChartAt_comp₂ hf hsrc
   have hmemc : ∀ p ∈ S, c p ∈ (extChartAt I α).target := fun p hp =>
     (extChartAt I α).map_source (hsrc p hp)
-  obtain ⟨hIchart, hwin⟩ := hasDerivAt_windowEnergy_chart (I := I) g α hδ h12 hcd hmemc
+  obtain ⟨hIchart, hwin, -⟩ := hasDerivAt_windowEnergy_chart (I := I) g α hδ h12 hcd hmemc
   -- slab bookkeeping (as in the chart-level window theorem)
   have hint_nhds : ∀ {s t : ℝ}, s ∈ Ioo (-δ) δ → t ∈ Ioo t₁ t₂ → S ∈ 𝓝 (s, t) := by
     intro s t hs ht
@@ -1373,11 +1393,7 @@ theorem hasDerivAt_pieceEnergy (g : RiemannianMetric I M)
     refine ContMDiffOn.intervalIntegrable_curveSpeedSq (I := I) g (hτlt k).le
       (hslice.mono ?_)
     exact Icc_subset_Icc (hτmem k hk.le).1 (hτmem (k + 1) hk).2
-  simp only [energyFunctional_def]
-  rw [← Finset.mul_sum]
-  congr 1
-  have h := intervalIntegral.sum_integral_adjacent_intervals (a := τp)
-    (μ := MeasureTheory.volume) (n := N) hint
+  have h := energyFunctional_sum_range (I := I) g (f s) hint
   rw [hτp0, hτpN] at h
   exact h.symm
 
@@ -1499,11 +1515,7 @@ theorem firstVariationOfEnergy (g : RiemannianMetric I M) {γ : ℝ → M} {a b 
     have h := (hsm k hk).comp ((contDiff_prodMk_right s).contMDiff.contMDiffOn
       (s := Icc (u k) (u (k + 1)))) (fun t ht => ⟨hs, ht⟩)
     exact h
-  simp only [energyFunctional_def]
-  rw [← Finset.mul_sum]
-  congr 1
-  have h := intervalIntegral.sum_integral_adjacent_intervals (a := u)
-    (μ := MeasureTheory.volume) (n := n) hint
+  have h := energyFunctional_sum_range (I := I) g (V.curve s) hint
   rw [hu0, hun] at h
   exact h.symm
 

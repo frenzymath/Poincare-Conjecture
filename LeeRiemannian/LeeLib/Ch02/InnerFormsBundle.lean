@@ -168,12 +168,18 @@ abbrev evalDom : Option ι → Type _
   | some _ => F
 
 /-- The slot types are normed spaces.  The instance has to be given by hand: instance search will
-not case-split on the `Option ι` index to reduce `evalDom`. -/
-instance instNormedAddCommGroupEvalDom : ∀ i : Option ι, NormedAddCommGroup (evalDom F ι i)
+not case-split on the `Option ι` index to reduce `evalDom`.
+
+`noncomputable` because these are data-carrying instances built by a dependent match on the
+`Option ι` index: the Lean compiler's `LCNF.ExplicitBoxing` pass panics when generating executable
+code for such a family (an upstream codegen bug), and the instances are only ever used to elaborate
+the smoothness proofs below, never executed. -/
+noncomputable instance instNormedAddCommGroupEvalDom :
+    ∀ i : Option ι, NormedAddCommGroup (evalDom F ι i)
   | none => inferInstanceAs (NormedAddCommGroup (F [⋀^ι]→L[ℝ] ℝ))
   | some _ => inferInstanceAs (NormedAddCommGroup F)
 
-instance instNormedSpaceEvalDom : ∀ i : Option ι, NormedSpace ℝ (evalDom F ι i)
+noncomputable instance instNormedSpaceEvalDom : ∀ i : Option ι, NormedSpace ℝ (evalDom F ι i)
   | none => inferInstanceAs (NormedSpace ℝ (F [⋀^ι]→L[ℝ] ℝ))
   | some _ => inferInstanceAs (NormedSpace ℝ F)
 

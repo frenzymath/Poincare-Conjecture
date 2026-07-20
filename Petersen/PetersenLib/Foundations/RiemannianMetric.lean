@@ -29,8 +29,8 @@ duality $(T_xM)^* \to T_xM$), their smoothness, and bridge instances on
 Reference: Petersen §1.1; do Carmo §1.2; Lee, *Smooth Manifolds*, Ch. 13.
 Mathlib upstream: `Mathlib.Geometry.Manifold.VectorBundle.Riemannian`.
 
-Vendored from the shared OpenGALib metric core
-(`OpenGALib/Riemannian/Metric/RiemannianMetric.lean`, identical in the
+Vendored from the shared DoCarmoLib metric core
+(`DoCarmoLib/Riemannian/Metric/RiemannianMetric.lean`, identical in the
 openga and DoCarmo projects), with the `Riemannian` namespace renamed to
 `PetersenLib` so blueprint `\lean{PetersenLib.*}` anchors resolve.
 -/

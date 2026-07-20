@@ -19,8 +19,8 @@ between vectors and 1-forms.
 vector space, a positive-definite bilinear form gives a vector-space
 isomorphism with the dual space.
 
-Vendored verbatim from the shared OpenGALib core
-(`OpenGALib/Algebraic/BilinearForm/Riesz.lean`, identical in the openga
+Vendored verbatim from the shared DoCarmoLib core
+(`DoCarmoLib/Algebraic/BilinearForm/Riesz.lean`, identical in the openga
 and DoCarmo projects).
 -/
 

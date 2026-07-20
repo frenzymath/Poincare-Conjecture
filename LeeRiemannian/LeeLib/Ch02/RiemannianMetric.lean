@@ -9,7 +9,7 @@ varying choice of inner product on each tangent space.
 That is exactly mathlib's `Bundle.ContMDiffRiemannianMetric I ∞ E (TangentSpace I)`,
 whose fields are Lee's axioms verbatim (`symm`, `pos`, `contMDiff`), so
 `RiemannianMetric` below is a type alias rather than a new structure.  This is
-also the abstraction the sibling OpenGALib (do Carmo) and PetersenLib (Petersen)
+also the abstraction the sibling DoCarmoLib (do Carmo) and PetersenLib (Petersen)
 projects converged on independently, so the three books share a substrate
 without any project depending on another.
 

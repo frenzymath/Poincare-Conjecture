@@ -1,7 +1,9 @@
 import Lake
 open Lake DSL
 
-package OpenGALib where
+package DoCarmoLib where
+  lintDriver := "batteries/runLinter"
+  testDriver := "DoCarmoLibTest"
   leanOptions := #[
     ⟨`pp.unicode.fun, true⟩,
     ⟨`autoImplicit, false⟩,
@@ -18,7 +20,15 @@ require mathlib from git
   "https://github.com/leanprover-community/mathlib4.git"
     @ "c5ea00351c28e24afc9f0f84379aa41082b1188f"
 
+-- Workspace-shared, book-agnostic infrastructure (mathlib gaps + linters).
+-- Riemannian material deliberately does NOT live there: this project owns its
+-- own, in the form do Carmo's exposition needs.
+require Shared from ".." / "shared"
+
 @[default_target]
-lean_lib OpenGALib where
-  roots := #[`OpenGALib]
-  globs := #[.andSubmodules `OpenGALib]
+lean_lib DoCarmoLib where
+  roots := #[`DoCarmoLib]
+  globs := #[.andSubmodules `DoCarmoLib]
+
+lean_lib DoCarmoLibTest where
+  globs := #[.submodules `DoCarmoLibTest]

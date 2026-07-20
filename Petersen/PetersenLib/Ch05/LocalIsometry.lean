@@ -27,10 +27,13 @@ distance) half of Proposition 5.6.1.
   `localIsometry_distancePreserving`.
 
 Parts (1)–(2) of Prop. 5.6.1 (a local isometry maps geodesics to geodesics and
-is natural with respect to `exp`) require the naturality of the Levi-Civita
-connection under isometries (the transformation law of the Christoffel-corrected
-acceleration `curveAcceleration`), which is not developed at this layer and is
-left for a later session; the metric part below does not depend on it.
+is natural with respect to `exp`) are proved in
+`PetersenLib.Ch05.LocalIsometryGeodesics`, which imports this file:
+`localIsometry_mapsGeodesicsToGeodesics` and `localIsometry_expNaturality`.  They
+need no connection theory — `IsGeodesic` is the moving-foot coordinate equation,
+so the Christoffel transformation law under a local isometry is proved exactly as
+in `PetersenLib.Ch05.ChartTransition`, from the §5.1 mixed-partials axioms.  The
+metric part below is independent of them.
 -/
 
 set_option linter.unusedSectionVars false

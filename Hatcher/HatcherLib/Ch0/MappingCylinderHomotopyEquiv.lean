@@ -1,5 +1,6 @@
 import HatcherLib.Ch0.MappingCylinder
 import HatcherLib.Ch0.HomotopyExtensionRel
+import HatcherLib.Ch0.MappingCylinderHEP
 
 /-!
 # Chapter 0 — Homotopy equivalences and the mapping cylinder (Hatcher Cor. 0.21)
@@ -9,7 +10,8 @@ deformation retract of the mapping cylinder `M_f`*. Its proof factors `f = r ∘
 through the mapping cylinder, where `i : X → M_f` is the inclusion of the domain and
 `r : M_f → Y` is the canonical (homotopy-equivalence) retraction, and observes that
 `f` is a homotopy equivalence iff `i` is, then applies Corollary 0.20
-(`hep_inclusion_deformation_retract`) to the pair `(M_f, X)`.
+(`hep_inclusion_deformation_retract`) to the pair `(M_f, X)`, whose homotopy
+extension property is `hasHEPMap_mcylInclX`.
 
 This file proves:
 
@@ -18,13 +20,11 @@ This file proves:
   equivalence iff the inclusion `i : X → M_f` is (unconditional, no HEP needed);
 * `isHmtpyEquiv_of_mcylDeformationRetract` — the *if* half of Cor. 0.21 (a
   deformation retract of `M_f` onto `X` makes `f` a homotopy equivalence);
-* `homotopy_equiv_iff_mcylDeformationRetract` — the full biconditional of Cor. 0.21,
-  taking the homotopy extension property of `(M_f, X)` as an explicit hypothesis.
-
-The one input still to be supplied to make Cor. 0.21 unconditional is
-`HasHEPMap (mcylInclX f)` — the HEP of `(M_f, X)`, which Hatcher gets from the
-mapping-cylinder neighborhood `X × [0, 1/2]` (blueprint
-`ex:mapping-cylinder-neighborhood-hep`). See the note at the end of the file.
+* `isHmtpyEquiv_iff_isMcylDeformationRetract` — **Hatcher's Corollary 0.21**:
+  `f` is a homotopy equivalence iff `X` is a deformation retract of `M_f`;
+* `homotopyEquiv_iff_common_deformationRetract` — the closing remark of Cor. 0.21:
+  two spaces are homotopy equivalent iff both are deformation retracts of a common
+  space (namely the mapping cylinder).
 -/
 
 namespace HatcherLib
@@ -35,38 +35,6 @@ open ContinuousMap
 universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
-
-/-- A map `φ` is a **homotopy equivalence** when it has a two-sided homotopy inverse
-(Hatcher's "`f` is a homotopy equivalence"). This is the unbundled form of
-`ContinuousMap.HomotopyEquiv`. -/
-def IsHmtpyEquiv {A B : Type u} [TopologicalSpace A] [TopologicalSpace B] (φ : C(A, B)) : Prop :=
-  ∃ ψ : C(B, A), (ψ.comp φ).Homotopic (ContinuousMap.id A) ∧
-    (φ.comp ψ).Homotopic (ContinuousMap.id B)
-
-namespace IsHmtpyEquiv
-
-variable {A B C : Type u} [TopologicalSpace A] [TopologicalSpace B] [TopologicalSpace C]
-
-/-- The composite of two homotopy equivalences is a homotopy equivalence. -/
-theorem comp {φ : C(A, B)} {χ : C(B, C)} (hφ : IsHmtpyEquiv φ) (hχ : IsHmtpyEquiv χ) :
-    IsHmtpyEquiv (χ.comp φ) := by
-  obtain ⟨ψ, hψ1, hψ2⟩ := hφ
-  obtain ⟨ω, hω1, hω2⟩ := hχ
-  let E : ContinuousMap.HomotopyEquiv A C :=
-    ({ toFun := φ, invFun := ψ, left_inv := hψ1, right_inv := hψ2 } :
-        ContinuousMap.HomotopyEquiv A B).trans
-      { toFun := χ, invFun := ω, left_inv := hω1, right_inv := hω2 }
-  exact ⟨ψ.comp ω, E.left_inv, E.right_inv⟩
-
-/-- A map homotopic to a homotopy equivalence is a homotopy equivalence. -/
-theorem of_homotopic {φ φ' : C(A, B)} (h : φ.Homotopic φ') (hφ : IsHmtpyEquiv φ) :
-    IsHmtpyEquiv φ' := by
-  obtain ⟨ψ, hψ1, hψ2⟩ := hφ
-  refine ⟨ψ, ?_, ?_⟩
-  · exact (ContinuousMap.Homotopic.comp (ContinuousMap.Homotopic.refl ψ) h.symm).trans hψ1
-  · exact (ContinuousMap.Homotopic.comp h.symm (ContinuousMap.Homotopic.refl ψ)).trans hψ2
-
-end IsHmtpyEquiv
 
 /-- The canonical retraction `r : M_f → Y` is a homotopy equivalence. -/
 theorem mcylProj_isHmtpyEquiv (f : C(X, Y)) : IsHmtpyEquiv (mcylProj f) :=
@@ -106,9 +74,7 @@ theorem isHmtpyEquiv_mcylInclX_iff (f : C(X, Y)) :
 a retraction `ρ : M_f → X` with `ρ ∘ i = 𝟙_X` and `i ∘ ρ ≃ 𝟙_{M_f}` rel the copy
 of `X` inside `M_f`. -/
 def IsMcylDeformationRetract (f : C(X, Y)) : Prop :=
-  ∃ ρ : C(MappingCylinder f, X), ρ.comp (mcylInclX f) = ContinuousMap.id X ∧
-    Nonempty (((mcylInclX f).comp ρ).HomotopyRel (ContinuousMap.id (MappingCylinder f))
-      (Set.range (mcylInclX f)))
+  IsDeformationRetractIncl (mcylInclX f)
 
 /-- **The "if" half of Hatcher's Corollary 0.21.** If `X` is a deformation retract of
 `M_f`, then `f` is a homotopy equivalence. The deformation retraction makes the
@@ -135,15 +101,55 @@ theorem mcylDeformationRetract_of_isHmtpyEquiv (f : C(X, Y))
   obtain ⟨ρ, hρA, hrel⟩ := hep_inclusion_deformation_retract (mcylInclX f) hHEP g hgi hig
   exact ⟨ρ, ContinuousMap.ext hρA, hrel⟩
 
-/-- **Hatcher's Corollary 0.21** (conditional on the HEP of `(M_f, X)`). A map
-`f : X → Y` is a homotopy equivalence iff `X` is a deformation retract of the mapping
-cylinder `M_f`. The homotopy extension property of `(M_f, X)` — Hatcher's mapping
-cylinder neighborhood `X × [0, 1/2]`, blueprint `ex:mapping-cylinder-neighborhood-hep`
-— enters only in the forward direction. -/
+/-- **Hatcher's Corollary 0.21** (conditional form). A map `f : X → Y` is a homotopy
+equivalence iff `X` is a deformation retract of the mapping cylinder `M_f`, given the
+homotopy extension property of `(M_f, X)` (which enters only in the forward
+direction). -/
 theorem homotopy_equiv_iff_mcylDeformationRetract (f : C(X, Y))
     (hHEP : HasHEPMap (mcylInclX f)) :
     IsHmtpyEquiv f ↔ IsMcylDeformationRetract f :=
   ⟨mcylDeformationRetract_of_isHmtpyEquiv f hHEP,
     isHmtpyEquiv_of_mcylDeformationRetract f⟩
+
+/-- **Hatcher's Corollary 0.21.** A map `f : X → Y` is a homotopy equivalence iff
+`X` is a deformation retract of the mapping cylinder `M_f`. The homotopy extension
+property of `(M_f, X)` — Hatcher's mapping-cylinder neighborhood `X × [0, 1/2]` —
+is supplied by `hasHEPMap_mcylInclX`. -/
+theorem isHmtpyEquiv_iff_isMcylDeformationRetract (f : C(X, Y)) :
+    IsHmtpyEquiv f ↔ IsMcylDeformationRetract f :=
+  homotopy_equiv_iff_mcylDeformationRetract f (hasHEPMap_mcylInclX f)
+
+/-- `Y` is a deformation retract of the mapping cylinder `M_f` (map form): the
+sliding deformation retraction `mcylDeformationRetract`, packaged as
+`IsDeformationRetractIncl`. -/
+theorem isDeformationRetractIncl_mcylInclY (f : C(X, Y)) :
+    IsDeformationRetractIncl (mcylInclY f) :=
+  ⟨mcylProj f, mcylProj_comp_inclY f, ⟨(mcylDeformationRetract f).symm⟩⟩
+
+/-- **The closing remark of Hatcher's Corollary 0.21.** Two spaces `X` and `Y` are
+homotopy equivalent iff there is a third space containing both as deformation
+retracts. Forward: the mapping cylinder of a homotopy equivalence deformation
+retracts onto its domain (Cor. 0.21) and onto its codomain (the sliding
+retraction). Backward: each deformation-retract inclusion is a homotopy
+equivalence; compose one with the homotopy inverse of the other. -/
+theorem homotopyEquiv_iff_common_deformationRetract
+    (X Y : Type u) [TopologicalSpace X] [TopologicalSpace Y] :
+    Nonempty (ContinuousMap.HomotopyEquiv X Y) ↔
+      ∃ (Z : Type u) (_ : TopologicalSpace Z) (iX : C(X, Z)) (iY : C(Y, Z)),
+        IsDeformationRetractIncl iX ∧ IsDeformationRetractIncl iY := by
+  constructor
+  · rintro ⟨e⟩
+    have hf : IsHmtpyEquiv e.toFun := ⟨e.invFun, e.left_inv, e.right_inv⟩
+    exact ⟨MappingCylinder e.toFun, inferInstance,
+      mcylInclX e.toFun, mcylInclY e.toFun,
+      (isHmtpyEquiv_iff_isMcylDeformationRetract e.toFun).mp hf,
+      isDeformationRetractIncl_mcylInclY e.toFun⟩
+  · rintro ⟨Z, _, iX, iY, hX, hY⟩
+    obtain ⟨ρX, hρX1, hρX2⟩ := hX.isHmtpyEquiv
+    obtain ⟨ρY, hρY1, hρY2⟩ := hY.isHmtpyEquiv
+    exact ⟨ContinuousMap.HomotopyEquiv.trans
+      { toFun := iX, invFun := ρX, left_inv := hρX1, right_inv := hρX2 }
+      ({ toFun := iY, invFun := ρY, left_inv := hρY1, right_inv := hρY2 } :
+          ContinuousMap.HomotopyEquiv Y Z).symm⟩
 
 end HatcherLib

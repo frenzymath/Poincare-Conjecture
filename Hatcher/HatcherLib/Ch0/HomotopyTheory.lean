@@ -59,6 +59,54 @@ equivalently its identity map is nullhomotopic. This is mathlib's
 `ContractibleSpace`. -/
 abbrev IsContractible (X : Type u) [TopologicalSpace X] : Prop := ContractibleSpace X
 
+/-- A map `φ` is a **homotopy equivalence** when it has a two-sided homotopy inverse
+(Hatcher's "`f` is a homotopy equivalence"). This is the unbundled form of
+`ContinuousMap.HomotopyEquiv`. -/
+def IsHmtpyEquiv {A B : Type u} [TopologicalSpace A] [TopologicalSpace B] (φ : C(A, B)) : Prop :=
+  ∃ ψ : C(B, A), (ψ.comp φ).Homotopic (ContinuousMap.id A) ∧
+    (φ.comp ψ).Homotopic (ContinuousMap.id B)
+
+namespace IsHmtpyEquiv
+
+variable {A B C : Type u} [TopologicalSpace A] [TopologicalSpace B] [TopologicalSpace C]
+
+/-- The composite of two homotopy equivalences is a homotopy equivalence. -/
+theorem comp {φ : C(A, B)} {χ : C(B, C)} (hφ : IsHmtpyEquiv φ) (hχ : IsHmtpyEquiv χ) :
+    IsHmtpyEquiv (χ.comp φ) := by
+  obtain ⟨ψ, hψ1, hψ2⟩ := hφ
+  obtain ⟨ω, hω1, hω2⟩ := hχ
+  let E : ContinuousMap.HomotopyEquiv A C :=
+    ({ toFun := φ, invFun := ψ, left_inv := hψ1, right_inv := hψ2 } :
+        ContinuousMap.HomotopyEquiv A B).trans
+      { toFun := χ, invFun := ω, left_inv := hω1, right_inv := hω2 }
+  exact ⟨ψ.comp ω, E.left_inv, E.right_inv⟩
+
+/-- A map homotopic to a homotopy equivalence is a homotopy equivalence. -/
+theorem of_homotopic {φ φ' : C(A, B)} (h : φ.Homotopic φ') (hφ : IsHmtpyEquiv φ) :
+    IsHmtpyEquiv φ' := by
+  obtain ⟨ψ, hψ1, hψ2⟩ := hφ
+  refine ⟨ψ, ?_, ?_⟩
+  · exact (ContinuousMap.Homotopic.comp (ContinuousMap.Homotopic.refl ψ) h.symm).trans hψ1
+  · exact (ContinuousMap.Homotopic.comp h.symm (ContinuousMap.Homotopic.refl ψ)).trans hψ2
+
+end IsHmtpyEquiv
+
+/-- A map `i : A → Z` exhibits `A` as a **deformation retract** of `Z` (map form,
+Hatcher's "a third space containing both as deformation retracts"): a retraction
+`ρ : Z → A` with `ρ ∘ i = 𝟙_A` and `i ∘ ρ ≃ 𝟙_Z` rel the image of `A`. -/
+def IsDeformationRetractIncl {A Z : Type u} [TopologicalSpace A] [TopologicalSpace Z]
+    (i : C(A, Z)) : Prop :=
+  ∃ ρ : C(Z, A), ρ.comp i = ContinuousMap.id A ∧
+    Nonempty ((i.comp ρ).HomotopyRel (ContinuousMap.id Z) (Set.range i))
+
+/-- A deformation-retract inclusion is a homotopy equivalence (`r i = 𝟙` on the
+nose, `i r ≃ 𝟙` via the deformation homotopy). -/
+theorem IsDeformationRetractIncl.isHmtpyEquiv {A Z : Type u} [TopologicalSpace A]
+    [TopologicalSpace Z] {i : C(A, Z)} (hi : IsDeformationRetractIncl i) :
+    IsHmtpyEquiv i := by
+  obtain ⟨ρ, hρ, ⟨H⟩⟩ := hi
+  exact ⟨ρ, hρ ▸ ContinuousMap.Homotopic.refl _, ⟨H.toHomotopy⟩⟩
+
 /-- A **retraction** of `X` onto its image is a self-map `r : X → X` with
 `r ∘ r = r`; the equation says exactly that `r` is the identity on its image
 (Hatcher, Def. of a retraction). -/

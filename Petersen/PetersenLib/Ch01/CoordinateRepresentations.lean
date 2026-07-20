@@ -13,8 +13,8 @@ and the frame representation `g = g_ij σ^i σ^j` relative to a pointwise
 basis of the tangent space (`frameRepresentation`).
 
 The chart-basis tangent sections (`chartBasisVecFiber`, `chartBasisVec`,
-`chartBasisFamily`) are adapted from the shared OpenGALib infrastructure
-(`OpenGALib/Riemannian/TensorBundle/SmoothOrthoFrame/ChartBasis.lean`,
+`chartBasisFamily`) are adapted from the shared DoCarmoLib infrastructure
+(`DoCarmoLib/Riemannian/TensorBundle/SmoothOrthoFrame/ChartBasis.lean`,
 identical in the openga and DoCarmo projects).
 
 Reference: Petersen, *Riemannian Geometry* (3rd ed.), §1.4.

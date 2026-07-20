@@ -1,4 +1,4 @@
-import PetersenLib.Vendored.OpenGA.Geodesic.CovariantDerivative
+import PetersenLib.Riemannian.Geodesic.CovariantDerivative
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 
 /-!

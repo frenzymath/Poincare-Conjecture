@@ -1,6 +1,6 @@
 import PetersenLib.Ch05.ShortGeodesics
-import PetersenLib.Vendored.OpenGA.Exponential.RayODE
-import PetersenLib.Vendored.OpenGA.Geodesic.ChartFlow
+import PetersenLib.Riemannian.Exponential.RayODE
+import PetersenLib.Riemannian.Geodesic.ChartFlow
 
 /-!
 # Petersen Ch. 5, §5.5.2 — `C^∞` regularity of the radial geodesic, and the distance

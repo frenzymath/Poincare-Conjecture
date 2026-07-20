@@ -1,7 +1,7 @@
 import PetersenLib.Ch05.MetricStructure
 import PetersenLib.Ch01.ArcLength
 import PetersenLib.Ch03.DistanceFunctions
-import PetersenLib.Vendored.OpenGA.Geodesic.HopfRinow.MetricBridge
+import PetersenLib.Riemannian.Geodesic.HopfRinow.MetricBridge
 
 /-!
 # Petersen Ch. 5, §5.3 — distance functions and segments (Lemma 5.3.2)

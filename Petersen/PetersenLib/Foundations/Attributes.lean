@@ -5,7 +5,7 @@ import Mathlib.Tactic.Common
 
 Pure attribute registration, intentionally without imports of lemmas
 that consume the attributes. Vendored (minimal subset) from the shared
-OpenGALib core (`OpenGALib/Util/Attributes.lean`, identical in the
+DoCarmoLib core (`DoCarmoLib/Util/Attributes.lean`, identical in the
 openga and DoCarmo projects).
 -/
 

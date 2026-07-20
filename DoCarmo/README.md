@@ -35,6 +35,20 @@ lake build
 
 Requires Mathlib at the SHA pinned in `lake-manifest.json`.
 
+## Quality checks
+
+Run the same build, test, declaration-lint, and text-style checks used by CI:
+
+```bash
+lake build
+lake test
+lake lint
+lake exe lint-style DoCarmoLib
+```
+
+`DoCarmoLibTest/Axioms.lean` guards the axiom sets of the Hopf–Rinow facade theorems. Each
+test fails if its theorem acquires an axiom beyond `propext`, `Classical.choice`, and `Quot.sound`.
+
 ## Status
 
 Pre-`v0.1.0`, experimental. PRE-PAPER `sorry`'d statements and narrow structural

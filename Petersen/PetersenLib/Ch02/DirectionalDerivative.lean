@@ -39,7 +39,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 /-- **Eng.** A vector field (a dependent function `Π x, TangentSpace I x`) is
 *smooth* when the associated section of the tangent bundle is `C^∞`. This is the
 unbundled counterpart of the bundled `SmoothVectorField` structure of the
-vendored OpenGA infrastructure. -/
+this project’s own Riemannian infrastructure. -/
 def IsSmoothVectorField (X : Π x : M, TangentSpace I x) : Prop :=
   ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (fun x => (⟨x, X x⟩ : TangentBundle I M))
 

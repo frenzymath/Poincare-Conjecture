@@ -25,7 +25,7 @@ which is `pullbackForm_posDef_iff_immersion` below:
 the resulting section of the bilinear-form bundle.
 
 Provenance: the smoothness argument `pullbackForm_contMDiff` is vendored from
-the shared OpenGALib development (`OpenGALib/Riemannian/Manifold/DoCarmoCh1.lean`,
+the shared DoCarmoLib development (`DoCarmoLib/Riemannian/Manifold/DoCarmoCh1.lean`,
 do Carmo Ch. 1 Ex. 2.5), for the reasons recorded in `LeeLib.Ch02.MetricExistence`.
 The equivalence `pullbackForm_posDef_iff_immersion` — Lee's actual Lemma 2.11,
 which is an "if and only if" where do Carmo's exercise asks only for one

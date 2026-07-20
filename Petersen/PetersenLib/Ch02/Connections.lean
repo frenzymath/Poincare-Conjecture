@@ -21,7 +21,7 @@ Riemannian connection, given implicitly by Koszul's formula.
   normalization `cov p v X = 0` for non-smooth `X` (the classical object is
   only defined on `𝔛(M)`; normalizing the junk values makes uniqueness
   literal).
-* Existence rides on the vendored OpenGA Koszul machinery
+* Existence rides on this project’s own Koszul machinery
   (`RiemannianMetric.koszulDualSection` and its smoothness); the pointwise
   well-definedness in the direction slot is Mathlib's tensoriality criterion
   `TensorialAt.pointwise` applied to the Koszul expression in its middle slot.
@@ -242,7 +242,7 @@ section LeviCivita
 
 variable [I.Boundaryless] [CompleteSpace E]
 
-/-- The Koszul expression agrees with the vendored OpenGA Koszul functional on
+/-- The Koszul expression agrees with the this project’s own Koszul functional on
 smooth vector fields. -/
 theorem koszulExpression_eq_koszulRHS (g : RiemannianMetric I M)
     {X Y Z : Π x : M, TangentSpace I x}
@@ -392,7 +392,7 @@ theorem koszulExpression_tensorialAt_direction (g : RiemannianMetric I M)
 variable [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M]
 
 /-- A global smooth vector field through a prescribed tangent vector
-(bump-function extension, from the vendored OpenGA infrastructure). -/
+(bump-function extension, from the this project’s own Riemannian infrastructure). -/
 def extendTangentVector (p : M) (v : TangentSpace I p) : SmoothVectorField I M :=
   (exists_smoothVectorField_eq p v).choose
 

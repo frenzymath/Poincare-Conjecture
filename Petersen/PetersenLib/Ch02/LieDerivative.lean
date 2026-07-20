@@ -1,5 +1,5 @@
 import PetersenLib.Ch02.DirectionalDerivative
-import PetersenLib.Vendored.OpenGA.Manifold.DoCarmoCh2
+import PetersenLib.Riemannian.Manifold.DoCarmoCh2
 import Mathlib.Geometry.Manifold.VectorField.LieBracket
 
 /-!

@@ -33,7 +33,7 @@ definite forms, convex for the same reason).
 
 ## Provenance
 
-The construction is the one vendored throughout this workspace (`OpenGALib`,
+The construction is the one vendored throughout this workspace (`DoCarmoLib`,
 `PetersenLib.Vendored.OpenGA.Manifold.DoCarmoCh2.exists_smoothVectorField_eq`).
 Cross-project `lake` dependencies are banned in this workspace, so each project
 vendors its own copy; this is Lee's.

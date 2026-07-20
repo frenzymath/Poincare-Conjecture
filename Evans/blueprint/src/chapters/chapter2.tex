@@ -486,6 +486,64 @@ $$0 = \phi'(r) = \frac{r}{n} \int_{B(x,r)} \Delta u(y) \, dy > 0,$$
 a contradiction.
 \end{proof}
 
+\begin{theorem}[Converse to mean-value property, ball form]
+\label{thm:converse-mean-value-property-mvp}
+\group{Harmonic Functions}
+\uses{def:ball-mean-value-property, def:harmonic-function}
+\lean{EvansLib.HasBallMeanValueProperty.laplacian_eq_zero,
+  EvansLib.HasBallMeanValueProperty.harmonicOnNhd}
+\leanok
+Let $U \subset \R^n$ be open and let $u \in C(U)$ have the ball mean-value property
+on $U$. Then $u$ is harmonic in $U$. No a-priori $C^2$ regularity is needed: the
+mean-value property already forces $u \in C^\infty(U)$
+(\cref{thm:harmonic-functions-smooth}). Together with
+\cref{thm:mean-value-formulas-laplace}, harmonicity of a continuous function is thus
+\emph{equivalent} to the ball mean-value property. This is the solid-ball form of
+\cref{thm:converse-mean-value-property-laplace}.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:harmonic-functions-smooth}
+\leanok
+If $n = 0$ the assertion is trivial, so assume $n \ge 1$. By
+\cref{thm:harmonic-functions-smooth}, $u \in C^\infty(U)$. Fix $x \in U$; we must
+show $\Delta u(x) = 0$. Write $L := Du(x)$ and $B := D^2u(x)$, and abbreviate
+$\kappa := \int_{B(0,1)} w_1^2 \, dw$.
+
+Since $U$ is open and $Du$ is $C^1$ near $x$, choose $\rho > 0$ so small that
+$\overline{B}(x,\rho) \subset U$ and $Du$ is Lipschitz with some constant $K$ on
+$\overline{B}(x,\rho)$. For $0 < r < \rho$ consider the averaged second-order Taylor
+remainder
+$$\Phi(r) := \frac{1}{r^2} \int_{B(0,1)}
+  \Big[ u(x+rw) - u(x) - r\,L(w) - \tfrac{r^2}{2} B(w,w) \Big] dw.$$
+
+\emph{Exact value.} All four terms are continuous on $\overline{B}(0,1)$, so the
+integral splits. Substituting $y = x + rw$ and using the mean-value property on
+$B(x,r)$ gives $\int_{B(0,1)} u(x+rw)\,dw = |B(0,1)|\,u(x)$, cancelling the second
+term; the linear term vanishes by the reflection symmetry $w \mapsto -w$ of the ball.
+Hence
+$$\Phi(r) = -\tfrac{1}{2} \int_{B(0,1)} B(w,w)\, dw =: -\tfrac{T}{2},
+  \qquad \text{independent of } r.$$
+
+\emph{Limit.} For each fixed $w$, Taylor's theorem at $x$ gives
+$u(x+rw) - u(x) - r L(w) - \tfrac{r^2}{2} B(w,w) = o(r^2)$ as $r \downarrow 0$, so
+the integrand of $\Phi(r)$ tends to $0$ pointwise. Moreover for $|z| \le \rho$ the
+mean value inequality, applied to $y \mapsto u(y) - L(y - x)$ on
+$\overline{B}(x,|z|)$ where $|Du(y) - L| \le K|y-x| \le K|z|$, yields
+$$|u(x+z) - u(x) - L(z)| \le K |z|^2 ;$$
+with $z = rw$, $|w| < 1$, the integrand of $\Phi(r)$ is bounded by
+$K + \tfrac{1}{2}\|B\|$, uniformly in $w \in B(0,1)$ and $0 < r < \rho$. By
+dominated convergence, $\Phi(r) \to 0$ as $r \downarrow 0$. Since $\Phi$ is the
+constant $-T/2$, this forces $T = 0$.
+
+\emph{Trace identity.} Expanding $B(w,w) = \sum_{i,j} w_i w_j\, B(e_i,e_j)$ and
+integrating over $B(0,1)$: the off-diagonal moments vanish (reflect the $i$-th
+coordinate) and the diagonal moments all equal $\kappa$ (swap coordinates), so
+$$0 = T = \kappa \sum_{i=1}^n B(e_i,e_i) = \kappa\, \Delta u(x).$$
+Finally $\kappa > 0$, because the integrand $w_1^2$ is nonnegative and vanishes only
+on a hyperplane, which is Lebesgue-null. Hence $\Delta u(x) = 0$.
+\end{proof}
+
 \subsubsection{Consequences of the mean-value property}
 \label{sec:laplace-mean-value-consequences}
 
@@ -591,7 +649,85 @@ $$u(x) = \fint_{B(x,2r)} u \, dz
   = 2^{-n}\, u(y),$$
 using $|B(x,2r)| = 2^n |B(y,r)|$. Iterating this comparison along a chain of overlapping
 balls covering a connected set $V \Subset U$ yields the global Harnack inequality
-\cref{thm:harnacks-inequality}.
+\cref{thm:harnack-global-mvp}.
+\end{proof}
+
+\begin{theorem}[Harnack's inequality, mean-value form]
+\label{thm:harnack-global-mvp}
+\group{Harmonic Functions}
+\uses{def:ball-mean-value-property, thm:harnack-local-mvp}
+\lean{EvansLib.exists_harnack_const}
+\leanok
+Let $n \ge 1$, let $U \subset \R^n$ be open, and let $V$ be a connected bounded set with
+$\overline{V} \subset U$. There exists a constant $C > 0$, depending only on $V$ (and not
+on $u$), such that
+$$u(x) \le C\, u(y) \qquad \text{for all } x, y \in V$$
+for every nonnegative $u \in C(U)$ having the ball mean-value property on $U$.
+Equivalently, $\sup_V u \le C \inf_V u$. Together with the mean-value formula
+\cref{thm:mean-value-formulas-laplace} this is Evans's Harnack inequality
+\cref{thm:harnacks-inequality} for nonnegative harmonic functions.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:harnack-local-mvp}
+\leanok
+Since $\overline{V}$ is compact and contained in the open set $U$, there is $\delta > 0$
+with the closed $\delta$-thickening of $\overline{V}$ contained in $U$; set
+$r := \delta/2$, so that $\overline{B(z, 2r)} \subset U$ for every $z \in \overline{V}$.
+Cover the compact set $\overline{V}$ by finitely many balls $B(z_i, r/2)$,
+$i = 1, \dots, N$, with centres $z_i \in \overline{V}$.
+
+Form the \emph{intersection graph} $G$ on the centres: $z_i \sim z_j$ ($i \neq j$) when
+$B(z_i, r/2) \cap B(z_j, r/2) \cap V \neq \emptyset$. If $a, b \in V$ lie in the balls of
+two adjacent (or equal) centres, then $|a - b| < r$, so the local Harnack bound
+\cref{thm:harnack-local-mvp} gives $u(a) \le 2^n u(b)$; iterating along a walk
+$z_{i_0} \sim z_{i_1} \sim \cdots \sim z_{i_\ell}$ in $G$, inserting the witness points of
+consecutive overlaps (which lie in $V$), yields
+$u(a) \le (2^n)^{\ell+1} u(b)$ whenever $a, b \in V$ are covered by the endpoint balls.
+
+Connectivity of $V$ makes the chains exist: fix a centre $z_0$ whose ball meets $V$, and
+let $S \subset V$ be the set of points covered by some centre reachable from $z_0$ in
+$G$. $S$ is open in $V$ (a point covered by a reachable ball has a whole neighbourhood
+covered by the same ball), and closed in $V$: if $p \in V$ is a limit of points of $S$,
+pick a covering ball $B(z', r/2) \ni p$ and a point $q \in S$ with
+$|p - q| < r/2 - |p - z'|$; then $q$ witnesses the adjacency (or equality) of its
+reachable centre with $z'$, so $p \in S$. Since $S \neq \emptyset$ and $V$ is connected,
+$S = V$.
+
+Finally, every walk can be shortcut to a path, whose length is $< N$. Hence for any
+$x, y \in V$: covering $x$ by $B(z_{i}, r/2)$ and reaching the centre covering $y$ by a
+path of length $\ell < N$,
+$$u(x) \le (2^n)^{\ell + 1} u(y) \le (2^n)^N u(y),$$
+so $C := 2^{nN}$ works, and $C$ depends only on $V$ (through $r$ and the chosen cover),
+not on $u$.
+\end{proof}
+
+\begin{theorem}[Liouville's theorem, mean-value form]
+\label{thm:liouville-mvp}
+\group{Harmonic Functions}
+\uses{def:ball-mean-value-property, thm:harnack-local-mvp}
+\lean{EvansLib.liouville_of_bddBelow, EvansLib.liouville_of_isBounded}
+\leanok
+Let $n \ge 1$ and let $u \in C(\R^n)$ have the ball mean-value property on all of
+$\R^n$. If $u$ is bounded below, then $u$ is constant (everywhere equal to
+$\inf_{\R^n} u$); in particular every bounded such $u$ is constant. Together with the
+mean-value formula \cref{thm:mean-value-formulas-laplace} this is Liouville's theorem
+\cref{thm:liouville-theorem-harmonic} — with the classical strengthening that a
+one-sided bound suffices.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:harnack-local-mvp}
+\leanok
+Set $m := \inf_{\R^n} u$ and $v := u - m \ge 0$; then $v$ is continuous with the ball
+mean-value property. Since the domain is all of $\R^n$, the local Harnack estimate
+\cref{thm:harnack-local-mvp} applies at \emph{every} scale: for $x \neq y$, taking
+$r := |x - y|$ gives
+$$v(x) \le 2^n\, v(y) \qquad \text{for all } x, y \in \R^n.$$
+Hence $m + 2^{-n} v(x) \le m + v(y) = u(y)$ for every $y$; taking the infimum over $y$
+yields $m + 2^{-n} v(x) \le m$, so $v(x) \le 0$, and with $v \ge 0$ this forces
+$u(x) = m$ for every $x$. (Evans derives Liouville from the derivative estimates,
+\cref{thm:harmonic-function-derivative-estimates}; the Harnack shortcut avoids them.)
 \end{proof}
 
 \subsection{Properties of Harmonic Functions}
@@ -664,14 +800,20 @@ Now we prove that if $u \in C^2$ is harmonic, then necessarily $u \in C^\infty$.
 \label{thm:harmonic-functions-smooth}
 \dcref{ch2:2.2-thm-6}
 \group{Harmonic Functions}
-\uses{thm:mean-value-formulas-laplace}
+\uses{def:ball-mean-value-property, thm:mean-value-formulas-laplace}
+\lean{EvansLib.HasBallMeanValueProperty.contDiffOn}
+\leanok
 If $u \in C(U)$ satisfies the mean-value property (16) for each ball $B(x,r) \subset U$, then
 $$u \in C^\infty(U).$$
+(In the formalization the hypothesis is the solid-ball form of the mean-value
+property, \cref{def:ball-mean-value-property}; Evans's (16) contains both the
+sphere and the solid-ball form, which are equivalent for continuous functions.)
 \end{theorem}
 
 Note carefully that $u$ may not be smooth, or even continuous, up to $\partial U$.
 
 \begin{proof}
+\leanok
 Let $\eta$ be a standard mollifier, as described in \S C.4, and recall that $\eta$ is a radial function. Set $u^\epsilon := \eta_\epsilon * u$ in $U_\epsilon = \{x \in U \mid \dist(x, \partial U) > \epsilon\}$. As shown in \S C.4, $u^\epsilon \in C^\infty(U_\epsilon)$.
 
 We will prove $u$ is smooth by demonstrating that in fact $u \equiv u^\epsilon$ on $U_\epsilon$. Indeed if $x \in U_\epsilon$, then
@@ -682,6 +824,22 @@ $$= \frac{1}{\epsilon^n} u(x) \int_0^\epsilon \eta\left(\frac{r}{\epsilon}\right
 $$= u(x) \int_{B(0,\epsilon)} \eta_\epsilon \, dy = u(x).$$
 
 Thus $u^\epsilon \equiv u$ in $U_\epsilon$, and so $u \in C^\infty(U_\epsilon)$ for each $\epsilon > 0$.
+
+\emph{Formalization notes.} The mollifier is taken to be the explicit radial bump
+$\psi(y) = g(\epsilon^2 - |y|^2)$ with $g(s) = e^{-1/s}$ for $s > 0$, $g(s) = 0$ for
+$s \le 0$, smooth by composition and supported in $\overline{B(0,\epsilon)}$; the
+truncation of $u$ to a compact neighbourhood makes the convolution globally defined and
+smooth. The polar-coordinates computation above is replaced by a
+\emph{layer-cake identity}: for any $C^1$ radial profile $f$ with $f(\epsilon) = 0$,
+writing $f(|y-x|) = -\int \mathbf{1}_{\{|y-x| < t \le \epsilon\}}\, f'(t)\, dt$ and
+exchanging the order of integration (Fubini on $B(x,\epsilon) \times (0,\epsilon]$)
+gives
+$$\int_{B(x,\epsilon)} f(|y-x|)\, u(y)\, dy
+  = -\int_0^\epsilon f'(t) \Big( \int_{B(x,t)} u \, dy \Big) dt;$$
+the solid-ball mean-value property turns each inner integral into
+$|B(x,t)|\,u(x)$, so the weight integrates against $u$ as if $u$ were the constant
+$u(x)$, i.e.\ $\psi * u = (\int \psi)\, u(x)$ near $x$. This avoids the sphere-measure
+disintegration entirely.
 \end{proof}
 
 \subsubsection{Local estimates for derivatives}
@@ -733,7 +891,7 @@ Next we see that there are no nontrivial bounded harmonic functions on all of $\
 \label{thm:liouville-theorem-harmonic}
 \dcref{ch2:2.2-thm-8}
 \group{Harmonic Functions}
-\uses{thm:harmonic-function-derivative-estimates}
+\uses{thm:harmonic-function-derivative-estimates, thm:liouville-mvp}
 Suppose $u : \R^n \to \R$ is harmonic and bounded. Then $u$ is constant.
 \end{theorem}
 
@@ -828,7 +986,7 @@ Recall from \S A.2 that we write $V \Subset U$ to mean $V \subset \bar{V} \subse
 \label{thm:harnacks-inequality}
 \dcref{ch2:2.2-thm-11}
 \group{Harmonic Functions}
-\uses{thm:mean-value-formulas-laplace}
+\uses{thm:mean-value-formulas-laplace, thm:harnack-global-mvp}
 For each connected open set $V \Subset U$, there exists a positive constant $C$, depending only on $V$, such that
 $$\sup_V u \le C \inf_V u$$
 for all nonnegative harmonic functions $u$ in $U$.
@@ -1834,29 +1992,141 @@ where $g \geq 0$, then $u$ is positive \textit{everywhere} within $U_T$ if $g$ i
 
 An important application of the maximum principle is the following uniqueness assertion.
 
+\begin{theorem}[Weak maximum principle for the heat equation]
+\label{thm:weak-maximum-principle-heat}
+\group{Maximum Principles}
+\uses{def:parabolic-cylinder-heat-ball, def:parabolic-boundary-heat-ball}
+\lean{EvansLib.exists_parabolicBoundary_isMaxOn}
+\leanok
+Let $U \subset \R^n$ be open, bounded and nonempty, and $T > 0$. Suppose
+$u \in C(\bar{U}_T)$ is $C^2$ and solves the heat equation $u_t = \Delta u$ at every
+point of $U \times (0,T)$. Then $u$ attains its maximum over $\bar{U}_T$ on the
+parabolic boundary:
+$$\max_{\bar{U}_T} u = \max_{\Gamma_T} u.$$
+This is assertion (i) of \cref{thm:strong-maximum-principle-heat-equation} (which
+Evans deduces from the heat-ball mean-value property); the weak form here has an
+elementary self-contained proof and suffices for uniqueness.
+\end{theorem}
+
+\begin{proof}
+\leanok
+Fix $\varepsilon > 0$, an interior horizon $0 < T' < T$, and set
+$v := u - \varepsilon t$. The compactness of $\bar{U}_{T'}$ produces a maximum point
+$q$ of $v$ over $\bar{U}_{T'}$. If $q$ were interior (i.e.\ $q \in U_{T'}$), then at
+$q$: each spatial section $s \mapsto v(q + s e_i)$ has an interior local maximum, so
+the second-derivative test gives $v_{x_i x_i}(q) \le 0$, hence $\Delta v(q) \le 0$;
+and the time section has a maximum from the left, so the one-sided test gives
+$v_t(q) \ge 0$. But the heat equation yields
+$$0 \le v_t(q) = u_t(q) - \varepsilon = \Delta u(q) - \varepsilon
+   = \Delta v(q) - \varepsilon \le -\varepsilon < 0,$$
+a contradiction. Hence the maximum of $v$ over $\bar{U}_{T'}$ lies on
+$\Gamma_{T'} \subset \Gamma_T$, so for $p \in \bar{U}_{T'}$,
+$u(p) \le \max_{\Gamma_T} u + \varepsilon T$; letting $\varepsilon \downarrow 0$
+gives $u \le \max_{\Gamma_T} u$ on $\bar{U}_{T'}$.
+
+Finally every $p \in \bar{U}_T$ with time coordinate $< T$ lies in $\bar{U}_{T'}$ for
+suitable $T' < T$, and a point $p$ at the top time $T$ is the limit of its downward
+time-translates $p + s e_0 \in \bar{U}_T$ ($s < 0$ small), which have interior times;
+continuity of $u$ up to the closure transfers the bound. The maximum over the compact
+nonempty boundary $\Gamma_T$ is attained, which yields the boundary maximiser.
+\end{proof}
+
 \begin{theorem}[Uniqueness on bounded domains]
 \label{thm:uniqueness-heat-bounded-domain}
 \dcref{ch2:2.3-thm-5}
 \group{Maximum Principles}
-\uses{thm:strong-maximum-principle-heat-equation}
+\uses{thm:strong-maximum-principle-heat-equation, thm:weak-maximum-principle-heat}
+\lean{EvansLib.eqOn_closure_of_eqOn_parabolicBoundary}
+\leanok
 Let $g \in C(\Gamma_T)$, $f \in C(U_T)$. Then there exists at most one solution $u \in C_1^2(U_T) \cap C(\bar{U}_T)$ of the initial/boundary-value problem
 $$(22) \quad \begin{cases}
 u_t - \Delta u = f & \text{in } U_T \\
 u = g & \text{on } \Gamma_T.
 \end{cases}$$
+(The formalization phrases this as: two solutions agreeing on $\Gamma_T$ agree on
+$\bar{U}_T$, with the equation imposed at interior times $U \times (0,T)$ and
+continuity on $\bar{U}_T$. Note the regularity assumed there is \emph{joint}
+$C^2$ smoothness in $(t,x)$ at interior times — a smaller solution class than
+Evans's $C_1^2(U_T)$, which asks only for continuity of $u, D_x u, D_x^2 u, u_t$;
+on the other hand nothing is required at the top time slice, where Evans's class
+does impose one-sided regularity.)
 \end{theorem}
 
 \begin{proof}
-If $u$ and $\bar{u}$ are two solutions of (22), apply \cref{thm:strong-maximum-principle-heat-equation} to $w := \pm(u - \bar{u})$.
+\uses{thm:weak-maximum-principle-heat}
+\leanok
+If $u$ and $\bar{u}$ are two solutions of (22), apply \cref{thm:strong-maximum-principle-heat-equation} to $w := \pm(u - \bar{u})$. (In the formalization the \emph{weak} maximum principle \cref{thm:weak-maximum-principle-heat} is applied instead: $w$ solves the homogeneous heat equation — the source $f$ cancels — and vanishes on $\Gamma_T$, so $w \le 0$ and $-w \le 0$ on $\bar{U}_T$.)
 \end{proof}
 
 We next extend our uniqueness assertion to the \textit{Cauchy problem}, that is, the initial value problem for $U = \R^n$. As we are no longer on a bounded region, we must introduce some control on the behavior of solutions for large $|x|$.
+
+The proof of the Cauchy-problem maximum principle rests on comparing a solution $u$ with a
+\emph{backward-Gaussian comparison function} $v = u - \mu K$, whose only analytic input is
+that $v$ again solves the heat equation. We record that input first; it is fully
+formalized, and it is the piece the weak maximum principle on ball cylinders consumes.
+
+\begin{definition}[Backward-Gaussian comparison kernel]
+\label{def:comparison-kernel}
+\group{Heat Equation}
+\lean{EvansLib.compKernelSpaceTime}
+\leanok
+\uses{def:fundamental-solution-heat-equation}
+Fix $y \in \R^n$ and $\tau \in \R$ (in the maximum-principle argument below, $\tau = T +
+\varepsilon$). The \emph{backward-Gaussian comparison kernel} centred at $y$ with singular
+time $\tau$ is
+$$K(x,t) := (\tau - t)^{-n/2}\, e^{\,|x-y|^2 / (4(\tau - t))} \qquad (t < \tau).$$
+It is the sign-reversed analogue of the fundamental solution $\Phi$ (the Gaussian exponent
+carries $+|x-y|^2$ instead of $-|x|^2$, and the $4\pi$ normalisation is dropped, being
+immaterial to the comparison), and is smooth on the half-space $\{t < \tau\}$.
+\end{definition}
+
+\begin{lemma}[The comparison kernel solves the heat equation]
+\label{lem:comparison-kernel-solves-heat}
+\group{Heat Equation}
+\lean{EvansLib.compKernelSpaceTime_solvesHeat}
+\leanok
+\uses{def:comparison-kernel}
+Below the singular time ($t < \tau$) the comparison kernel solves the heat equation:
+$$K_t(x,t) - \Delta_x K(x,t) = 0.$$
+\end{lemma}
+
+\begin{proof}
+\leanok
+Write $s := \tau - t > 0$ for the reversed time, so that $K(x,t) = s^{-n/2}
+e^{|x-y|^2/(4s)}$. Differentiating the spatial Gaussian profile gives, exactly as for
+$\Phi$ but with the opposite sign in the exponent,
+$$\Delta_x K = K\left(\frac{|x-y|^2}{4s^2} + \frac{n}{2s}\right), \qquad
+  \partial_s K = -K\left(\frac{|x-y|^2}{4s^2} + \frac{n}{2s}\right),$$
+so that $\partial_s K = -\Delta_x K$. Since $s = \tau - t$, the chain rule gives $K_t =
+-\partial_s K = \Delta_x K$; that is, $K_t - \Delta_x K = 0$.
+\end{proof}
+
+\begin{lemma}[The comparison function solves the heat equation]
+\label{lem:comparison-function-solves-heat}
+\group{Heat Equation}
+\lean{EvansLib.sub_const_mul_compKernel_solvesHeat}
+\leanok
+\uses{lem:comparison-kernel-solves-heat}
+Let $u$ solve the heat equation and be $C^2$ at a space--time point below the singular
+time, and let $\mu \in \R$. Then the comparison function $v := u - \mu K$ also solves the
+heat equation there:
+$$v_t - \Delta v = 0.$$
+\end{lemma}
+
+\begin{proof}
+\leanok
+The heat operator $\partial_t - \Delta$ is linear, and by
+\cref{lem:comparison-kernel-solves-heat} it annihilates $K$, while by hypothesis it
+annihilates $u$; hence it annihilates $v = u - \mu K$.
+\end{proof}
 
 \begin{theorem}[Maximum principle for the Cauchy problem]
 \label{thm:maximum-principle-heat-cauchy-problem}
 \dcref{ch2:2.3-thm-6}
 \group{Maximum Principles}
-\uses{thm:strong-maximum-principle-heat-equation}
+\uses{thm:maximum-principle-heat-cauchy-problem-smalltime}
+\lean{EvansLib.heat_cauchy_maxPrinciple}
+\leanok
 Suppose $u \in C_1^2(\R^n \times (0,T]) \cap C(\R^n \times [0,T])$ solves
 $$(23) \quad \begin{cases}
 u_t - \Delta u = 0 & \text{in } \R^n \times (0,T) \\
@@ -1876,7 +2146,8 @@ $$(26) \quad 4a(T + \varepsilon) < 1$$
 for some $\varepsilon > 0$. Fix $y \in \R^n$, $\mu > 0$, and define
 $$v(x,t) := u(x,t) - \frac{\mu}{(T + \varepsilon - t)^{n/2}} e^{\frac{|x-y|^2}{4(T + \varepsilon - t)}} \quad (x \in \R^n, t > 0).$$
 
-A direct calculation (cf. \cref{sec:heat-fundamental-solution-derivation}) shows
+A direct calculation (\cref{lem:comparison-function-solves-heat}, with $\tau = T +
+\varepsilon$) shows
 $$v_t - \Delta v = 0 \quad \text{in } \R^n \times (0,T].$$
 
 Fix $r > 0$ and set $U := B^0(y,r)$, $U_T := B^0(y,r) \times (0,T]$. Then according to \cref{thm:strong-maximum-principle-heat-equation},
@@ -1899,11 +2170,49 @@ for all $y \in \R^n$, $0 \leq t \leq T$, provided (25) is valid. Let $\mu \to 0$
 3. In the general case that (25) fails, we repeatedly apply the result above on the time intervals $[0, T_1]$, $[T_1, 2T_1]$, etc., for $T_1 = \frac{1}{8a}$.
 \end{proof}
 
+This theorem is formalized as \lean{EvansLib.heat_cauchy_maxPrinciple}. The formalization
+splits exactly as Evans does: the analytic heart (step 1, the case $4aT<1$) is
+\cref{thm:maximum-principle-heat-cauchy-problem-smalltime}, and the time-splitting reduction
+of the general case (step 3) is carried out on top of it via a time-translation lemma
+(partial derivatives commute with translation of the argument), inducting over slabs of
+length $T_1 = 1/(8a)$. Two faithful formalization choices, consistent with
+\cref{thm:weak-maximum-principle-heat}: the equation is imposed only at interior times and
+the solution is taken jointly $C^2$ there (a strengthening of Evans's $C^2_1$); and the
+conclusion is stated as ``$u \le M$ on $\R^n\times[0,T]$ whenever $u(\cdot,0) \le M$'',
+which for $M = \sup_{\R^n} g$ gives $\sup u \le \sup g$ — the reverse inequality being
+immediate since $u(\cdot,0) = g$. Only the \emph{weak} maximum principle is used, not the
+strong one Evans cites, so the \uses points to the small-time node rather than
+\cref{thm:strong-maximum-principle-heat-equation}.
+
+\begin{theorem}[Maximum principle for the Cauchy problem, small-time case]
+\label{thm:maximum-principle-heat-cauchy-problem-smalltime}
+\group{Maximum Principles}
+\uses{lem:comparison-function-solves-heat,thm:weak-maximum-principle-heat}
+\lean{EvansLib.heat_cauchy_maxPrinciple_smallTime}
+\leanok
+Suppose $u \in C(\R^n \times [0,T])$ is $C^2$ on $\R^n \times (0,T)$ and solves the heat
+equation $u_t - \Delta u = 0$ there, its initial values satisfy $u(x,0) \le M$ for all $x$,
+and it obeys the growth estimate $u(x,t) \le A e^{a|x|^2}$ on $\R^n \times [0,T]$ with
+$A,a > 0$. If moreover $4aT < 1$, then
+$$u \le M \quad \text{on } \R^n \times [0,T].$$
+Taking $M = \sup_{\R^n} u(\cdot,0)$ recovers $\sup_{\R^n \times [0,T]} u = \sup_{\R^n} g$
+of \cref{thm:maximum-principle-heat-cauchy-problem} in the case $4aT < 1$. This is Evans's
+step 1: choose $\varepsilon > 0$ with $4a(T+\varepsilon) < 1$, compare $u$ with $\mu K$
+(the backward Gaussian $K$, \cref{lem:comparison-function-solves-heat}), apply the weak
+maximum principle \cref{thm:weak-maximum-principle-heat} on a ball cylinder $B(y,r) \times
+(0,T]$, bound the comparison function on the parabolic boundary (bottom by $M$; lateral
+sphere by the growth estimate and a kernel lower bound, letting $r \to \infty$), and let
+$\mu \to 0$. Only the \emph{weak} maximum principle is used, not the strong one Evans
+cites.
+\end{theorem}
+
 \begin{theorem}[Uniqueness for Cauchy problem]
 \label{thm:uniqueness-heat-cauchy-problem}
 \dcref{ch2:2.3-thm-7}
 \group{Maximum Principles}
 \uses{thm:maximum-principle-heat-cauchy-problem}
+\lean{EvansLib.heat_cauchy_uniqueness}
+\leanok
 Let $g \in C(\R^n)$, $f \in C(\R^n \times [0,T])$. Then there exists at most one solution $u \in C^2_1(\R^n \times (0,T]) \cap C(\R^n \times [0,T])$ of the initial-value problem
 $$(30) \quad \begin{cases} u_t - \Delta u = f & \text{in } \R^n \times (0,T) \\ u = g & \text{on } \R^n \times \{t = 0\} \end{cases}$$
 satisfying the growth estimate
@@ -1914,6 +2223,29 @@ for constants $A, a > 0$.
 \begin{proof}
 If $u$ and $\tilde{u}$ both satisfy (30), (31), we apply \cref{thm:maximum-principle-heat-cauchy-problem} to $w := \pm(u - \tilde{u})$.
 \end{proof}
+
+This theorem is formalized as \lean{EvansLib.heat_cauchy_uniqueness} (with the same
+jointly-$C^2$ convention as \cref{thm:maximum-principle-heat-cauchy-problem}): the
+difference $w = u - \tilde u$ solves the homogeneous heat equation, so applying the general
+maximum principle to $\pm w$ (growth constant $2A$, initial bound $0$) forces $w = 0$. The
+$4aT<1$ case is also isolated as
+\cref{thm:uniqueness-heat-cauchy-problem-smalltime}.
+
+\begin{theorem}[Uniqueness for Cauchy problem, small-time case]
+\label{thm:uniqueness-heat-cauchy-problem-smalltime}
+\group{Maximum Principles}
+\uses{thm:maximum-principle-heat-cauchy-problem-smalltime}
+\lean{EvansLib.heat_cauchy_uniqueness_smallTime}
+\leanok
+Let $u, v \in C(\R^n \times [0,T])$ be $C^2$ on $\R^n \times (0,T)$ with $u = v$ on
+$\R^n \times \{t=0\}$, whose difference $u - v$ solves the homogeneous heat equation on
+$\R^n \times (0,T)$ (as it does whenever $u,v$ solve $w_t - \Delta w = f$ for a common
+source $f$), and each satisfying $|u|,|v| \le A e^{a|x|^2}$ on $\R^n \times [0,T]$ with
+$A,a > 0$. If $4aT < 1$, then $u = v$ on $\R^n \times [0,T]$. Proof: apply
+\cref{thm:maximum-principle-heat-cauchy-problem-smalltime} to $\pm(u-v)$ (growth constant
+$2A$, initial bound $0$). This is the $4aT<1$ case of
+\cref{thm:uniqueness-heat-cauchy-problem}.
+\end{theorem}
 
 \begin{remark}[Nonuniqueness without a growth bound]
 \label{rem:heat-equation-nonphysical-solutions}
@@ -2499,7 +2831,7 @@ Let $\phi : \R \to \R$ be $C^{k+1}$. Then for $k = 1,2,\ldots$:
 
 (i) $\left(\frac{d^2}{dr^2}\right)\left(\frac{1}{r}\frac{d}{dr}\right)^{k-1}\left(r^{2k-1}\phi(r)\right) = \left(\frac{1}{r}\frac{d}{dr}\right)^k\left(r^{2k}\frac{d\phi}{dr}(r)\right),$
 
-(ii) $\left(\frac{1}{r}\frac{d}{dr}\right)^k\left(r^{2k-1}\phi(r)\right) = \sum_{j=0}^{k-1}\beta_j^k r^{j+1} \frac{d^j\phi}{dr^j}(r),$
+(ii) $\left(\frac{1}{r}\frac{d}{dr}\right)^{k-1}\left(r^{2k-1}\phi(r)\right) = \sum_{j=0}^{k-1}\beta_j^k r^{j+1} \frac{d^j\phi}{dr^j}(r),$
 
 where the constants $\beta_j^k$ $(j = 0, \ldots, k-1)$ are independent of $\phi$.
 
@@ -2862,14 +3194,32 @@ A generalization of this proof to more complicated geometry appears later, in \S
 In the following exercises, all given functions are assumed smooth, unless otherwise stated.
 
 %ORIGINAL-NUMBER: 1
-\begin{exercise}
+\begin{theorem}[Problem 1: first-order equation with constant reaction term]
+\label{ex:transport-reaction-equation}
+\group{Transport Equation}
+\uses{thm:transport-ivp-solution,thm:transport-initial-condition}
+\lean{EvansLib.transportReactionSolution_char_deriv, EvansLib.transportReactionSolution_init}
+\leanok
 Write down an explicit formula for a function $u$ solving the initial-value problem
 $$\begin{cases}
 u_t + b \cdot Du + cu = 0 & \text{in } \R^n \times (0,\infty) \\
 u = g & \text{on } \R^n \times \{t = 0\}.
 \end{cases}$$
-Here $c \in \R$ and $b \in \R^n$ are constants.
-\end{exercise}
+Here $c \in \R$ and $b \in \R^n$ are constants. The explicit solution is
+$$u(x,t) = e^{-ct}\,g(x - tb),$$
+the §2.1 transport solution damped by the integrating factor $e^{-ct}$ that absorbs
+the reaction term $cu$.
+\end{theorem}
+\begin{proof}
+\leanok
+As in §2.1 phrase $u_t + b\cdot Du$ as the derivative of $u$ along the
+characteristic direction $(b,1)$. The transport part $g(x-tb)$ is constant along
+$(b,1)$ (\cref{thm:transport-ivp-solution}), so the only contribution to the
+characteristic derivative comes from $e^{-ct}$, whose time-derivative supplies
+$-c\,u$. Hence $u_t + b\cdot Du = -c u$, i.e.\ $u_t + b\cdot Du + cu = 0$. On
+$\{t=0\}$ the factor $e^{-ct}=1$ and the transport part gives $g$
+(\cref{thm:transport-initial-condition}), so $u(\cdot,0)=g$.
+\end{proof}
 
 %ORIGINAL-NUMBER: 2
 \begin{exercise}

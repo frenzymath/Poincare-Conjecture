@@ -1,7 +1,7 @@
 import PetersenLib.Ch05.MetricTopology
 import PetersenLib.Ch05.DistanceSegments
-import PetersenLib.Vendored.OpenGA.Geodesic.HopfRinow.CurveReadback
-import PetersenLib.Vendored.OpenGA.Metric.RiemannianDistance
+import PetersenLib.Riemannian.Geodesic.HopfRinow.CurveReadback
+import PetersenLib.Riemannian.Metric.RiemannianDistance
 
 /-!
 # Petersen Ch. 5 — the length bridge `pathELength = ofReal · curveLength`
@@ -11,7 +11,7 @@ Reusable infrastructure connecting Petersen's native metric layer (§5.3:
 speed `√(g_{γt}(ċ, ċ))` of piecewise-`C^∞` curves) with the mathlib Riemannian
 distance `Manifold.riemannianEDist` (the `ℝ≥0∞`-valued infimum of
 `Manifold.pathELength` over `C¹` paths).  The vendored do Carmo Hopf–Rinow /
-exponential-map cone in `PetersenLib/Vendored/OpenGA/` speaks entirely in
+exponential-map cone in `PetersenLib/Riemannian/` speaks entirely in
 `riemannianEDist`; this file supplies the one-directional comparison that lets
 those results certify Petersen segments and lower distance bounds.
 

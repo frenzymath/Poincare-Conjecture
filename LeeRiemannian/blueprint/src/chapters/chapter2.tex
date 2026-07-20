@@ -849,6 +849,9 @@ g = X^*\tilde{g} = \sum_{i=1}^m (dX^i)^2 = \sum_{i=1}^m \left(\sum_{j=1}^n \frac
 \begin{example}[Metrics in Graph Coordinates]
 \label{ex:metrics-in-graph-coordinates}
 \dcref{ch2:2.19}
+\lean{LeeLib.Ch02.graphMap, LeeLib.Ch02.graphMetric}
+\leanok
+\uses{def:induced-metric,ex:euclidean-metric}
 
 If $U \subseteq \mathbb{R}^n$ is an open set and $f : U \to \mathbb{R}$ is a smooth function, then the \textbf{graph of $f$} is the subset $\Gamma(f) = \{(x, f(x)) : x \in U\} \subseteq \mathbb{R}^{n+1}$, which is an embedded submanifold of dimension $n$. It has a global parametrization $X : U \to \mathbb{R}^{n+1}$ called a \textbf{graph parametrization}, given by $X(u) = (u, f(u))$; the corresponding coordinates $(u^1,\ldots,u^n)$ on $M$ are called \textbf{graph coordinates}. In graph coordinates, the induced metric of $\Gamma(f)$ is
 \[
@@ -871,6 +874,9 @@ we see that the round metric on $S^2$ can be written locally as
 \begin{example}[Surfaces of Revolution]
 \label{ex:surfaces-of-revolution}
 \dcref{ch2:2.20}
+\lean{LeeLib.Ch02.surfaceOfRevolutionMap, LeeLib.Ch02.surfaceOfRevolutionMetric, LeeLib.Ch02.surfaceOfRevolutionMetric_unitSpeed, LeeLib.Ch02.surfaceOfRevolutionMetric_sphere, LeeLib.Ch02.surfaceOfRevolutionMetric_cylinder, LeeLib.Ch02.surfaceOfRevolutionMetric_torus}
+\leanok
+\uses{def:induced-metric,ex:euclidean-metric}
 
 Let $H$ be the half-plane $\{(r,z) : r > 0\}$, and suppose $C \subseteq H$ is an embedded 1-dimensional submanifold. The \textbf{surface of revolution} determined by $C$ is the subset $S_C \subseteq \mathbb{R}^3$ given by
 \[
@@ -980,9 +986,13 @@ Let $(M_1,g_1)$ and $(M_2,g_2)$ be Riemannian manifolds. The \emph{product metri
 
 \begin{exercise}[Induced Metric on $T^n$]
 \label{exer:product-metric-torus}
+\lean{LeeLib.Ch02.circleMetric, LeeLib.Ch02.torusMetric, LeeLib.Ch02.torusEmbedding_preservesMetric}
+\leanok
 \dcref{ch2:2.23}
-\uses{ex:n-torus-riemannian-submanifold,def:product-metric}
+\uses{def:product-metric,def:induced-metric}
 Show that the induced metric on $T^n$ described in Exercise 2.21 is equal to the product metric obtained from the usual induced metric on $S^1 \subseteq \mathbb{R}^2$.
+
+The formalization treats the case $n = 2$, where $T^2 = S^1 \times S^1$ needs no quotient-manifold construction: \lean{LeeLib.Ch02.circleMetric} is the round metric on $S^1 \subseteq \mathbb{C} = \mathbb{R}^2$ (the pullback of the Euclidean metric along the inclusion), \lean{LeeLib.Ch02.torusMetric} is the product metric $\mathtt{prodMetric}$ of two copies of it, and \lean{LeeLib.Ch02.torusEmbedding_preservesMetric} shows that the metric induced by the $L^2$-embedding $S^1 \times S^1 \hookrightarrow \mathbb{R}^4$ equals exactly that product metric --- so the induced flat metric on $T^2$ is the product of the induced circle metrics.
 \end{exercise}
 
 Here is an important generalization of product metrics. Suppose $(M_1, g_1)$ and $(M_2, g_2)$ are two Riemannian manifolds, and $f : M_1 \to \mathbb{R}^+$ is a strictly positive smooth function. The \emph{warped product} $M_1 \times_f M_2$ is the product manifold $M_1 \times M_2$ endowed with the Riemannian metric $g = g_1 \oplus f^2 g_2$, defined by
@@ -1311,7 +1321,10 @@ The fact that every horizontal vector at a point of $\tilde{M}$ can be extended 
 
 \begin{exercise}
 \label{exer:horizontal-vector-field-not-lift}
+\lean{LeeLib.Ch02.horizontalNonLiftField_mem_horizontalSpace, LeeLib.Ch02.not_isHorizontalLift_horizontalNonLiftField}
+\leanok
 \dcref{ch2:2.26}
+\uses{def:horizontal-space,def:horizontal-lift-tangent,ex:riemannian-submersions}
 Let $\pi: \mathbb{R}^2 \to \mathbb{R}$ be the projection map $\pi(x,y) = x$, and let $\tilde{W}$ be the smooth vector field $y\partial_x$ on $\mathbb{R}^2$. Show that $\tilde{W}$ is horizontal, but there is no vector field on $\mathbb{R}$ whose horizontal lift is equal to $\tilde{W}$.
 \end{exercise}
 
@@ -1321,12 +1334,16 @@ Suppose $(\tilde{M},\tilde{g})$ and $(M,g)$ are Riemannian manifolds, and $\pi: 
 
 \begin{example}[Riemannian Submersions]
 \label{ex:riemannian-submersions}
+\lean{LeeLib.Ch02.isRiemannianSubmersion_euclidean_fst, LeeLib.Ch02.isRiemannianSubmersion_prodMetric_fst, LeeLib.Ch02.isRiemannianSubmersion_prodMetric_snd, LeeLib.Ch02.isRiemannianSubmersion_warpedProductMetric_fst}
+\leanok
 \dcref{ch2:2.27}
+\uses{def:riemannian-submersion,def:product-metric,def:warped-product}
 \begin{enumerate}
 \item[(a)] The projection $\pi: \mathbb{R}^{n+k} \to \mathbb{R}^n$ onto the first $n$ coordinates is a Riemannian submersion if $\mathbb{R}^{n+k}$ and $\mathbb{R}^n$ are both endowed with their Euclidean metrics.
 \item[(b)] If $M$ and $N$ are Riemannian manifolds and $M \times N$ is endowed with the product metric, then both projections $\pi_M: M \times N \to M$ and $\pi_N: M \times N \to N$ are Riemannian submersions.
 \item[(c)] If $M \times_f N$ is a warped product manifold, then the projection $\pi_M : M \times_f N \to M$ is a Riemannian submersion, but $\pi_N$ typically is not.
 \end{enumerate}
+For (a), $\mathbb{R}^{n+k}$ is presented as $\mathbb{R}^n \times \mathbb{R}^k$ with the product of Euclidean metrics --- whose value is the dot product $\sum v^i w^i + \sum v^j w^j$ on $\mathbb{R}^{n+k}$ --- since mathlib's plain product $E \times F$ carries a sup-norm rather than an inner product; so (a) is (b) specialized to Euclidean factors. In (c) only the Riemannian-submersion assertion for $\pi_M$ is formalized; that $\pi_N$ is typically not one is a negative statement left as prose. The horizontal spaces are computed as the factor subspaces (\lean{LeeLib.Ch02.mem_horizontalSpace_prodMetric_fst_iff}).
 \end{example}
 
 Given a Riemannian manifold $(\tilde{M}, \tilde{g})$ and a surjective submersion $\pi: \tilde{M} \to M$, it is almost never the case that there is a metric on $M$ that makes $\pi$ into a Riemannian submersion. It is not hard to see why: for this to be the case, whenever $p, q \in M$ are two points in the same fiber $\pi^{-1}(y)$, the linear maps $(d\pi_p|_{H_p})^{-1}: T_y M \to H_p$ both have to pull $\tilde{g}$ back to the same inner product on $T_y M$.
@@ -2146,7 +2163,10 @@ In particular, in an orthonormal frame this is the ordinary trace of the matrix 
 
 \begin{exercise}
 \label{exer:inverse-metric-ambiguity}
+\lean{LeeLib.Ch02.RiemannianMetric.innerDual_dualCoframe}
+\leanok
 \dcref{ch2:2.38}
+\uses{def:dual-coframe,def:frame-matrix,def:sharp-map}
 If $g$ is a Riemannian metric on $M$ and $(E_i)$ is a local frame on $M$, there is a potential ambiguity about what the expression $(g^{ij})$ represents: we have defined it to mean the inverse matrix of $(g_{ij})$, but one could also interpret it as the components of the contravariant 2-tensor field $g^{\#\#}$ obtained by raising both of the indices of $g$. Show that these two interpretations lead to the same result.
 \end{exercise}
 
@@ -2172,7 +2192,10 @@ In other words, the inner product on covectors is represented by the inverse mat
 
 \begin{exercise}
 \label{exer:orthonormal-frames-and-coframes}
+\lean{LeeLib.Ch02.RiemannianMetric.tfae_orthonormal_frame_coframe}
+\leanok
 \dcref{ch2:2.39}
+\uses{exer:inverse-metric-ambiguity,def:dual-coframe,def:sharp-map,def:frame-matrix}
 Let $(M, g)$ be a Riemannian manifold with or without boundary, let $(E_i)$ be a local frame for $M$, and let $(e^i)$ be its dual coframe. Show that the following are equivalent:
 \begin{enumerate}
 \item[(a)] $(E_i)$ is orthonormal.
@@ -2963,7 +2986,7 @@ oriented.
 
 \begin{lemma}[Top Forms are Determined by One Basis]
 \label{lem:top-form-eq-of-basis}
-\lean{LeeLib.Ch02.eq_of_apply_basis}
+\lean{LeeLib.Ch02.eq_of_apply_basis, ContinuousAlternatingMap.ext_of_apply_basis_eq}
 \leanok
 Let $V$ be an $n$-dimensional real vector space and let $b$ be a basis of $V$. If two alternating
 $n$-forms on $V$ agree on $b$, they are equal.
@@ -3719,11 +3742,14 @@ density on $T_x M$ taking the value $1$ on an orthonormal basis, Proposition
 \end{proof}
 
 \begin{exercise}\label{exer:riemannian-density-formula}\dcref{ch2:2.45}
-\uses{prop:riemannian-density}
+\lean{LeeLib.Ch02.densityL_eq_abs_wedgeCovectors}
+\leanok
+\uses{prop:riemannian-density,def:density-vector-space}
 Prove this proposition by showing that $\mu$ can be defined in terms of any local orthonormal frame by
 \[
 \mu = |\varepsilon^1 \wedge \cdots \wedge \varepsilon^n|.
 \]
+The formalization is the pointwise (fibrewise) identity $\mu_x = |\varepsilon^1 \wedge \cdots \wedge \varepsilon^n|$ on each tangent space $T_xM$, from which Lee's statement is the specialization $V := T_xM$; both sides equal $|\det[\langle E_i, v_j\rangle]|$.
 \end{exercise}
 
 Let $(M,g)$ be a Riemannian manifold (with or without boundary). If $M$ is oriented and $dV_g$ is its Riemannian volume form, then its Riemannian density is easily seen to be equal to $|dV_g|$. On the other hand, the Riemannian density is defined whether $M$ is oriented or not. It is customary to denote the Riemannian density by the same notation $dV_g$ that we use for the Riemannian volume form, and to specify when necessary whether the notation refers to a density or a form. In either case, we can define the integral of a compactly supported smooth function $f: M \to \mathbb{R}$ as $\int_M f\, dV_g$. This is to be interpreted as the integral of a density when $M$ is nonorientable; when $M$ is orientable, it can be interpreted either as the integral of a density
@@ -3908,9 +3934,28 @@ For this reason, if $\gamma: I \to M$ is any smooth curve (not necessarily a cur
 
 If $\gamma : [a, b] \to M$ is a unit-speed admissible curve, then its arc-length function has the simple form $s(t) = t - a$. If, in addition, its parameter interval is of the form $[0, b]$ for some $b > 0$, then the arc-length function is $s(t) = t$. For this reason, a unit-speed admissible curve whose parameter interval is of the form $[0, b]$ is said to be \textbf{parametrized by arc length}.
 
+\begin{proposition}[Unit-Speed Reparametrization of a Regular Curve]
+\label{prop:regular-curve-unit-speed-reparam}
+\lean{LeeLib.Ch02.regularCurve_arclengthReparametrization}
+\leanok
+\dcref{ch2:2.49}
+\uses{def:length-of-curve}
+Let $(M, g)$ be a Riemannian manifold, let $J \subseteq \mathbb{R}$ be open, and let $\gamma : J \to M$ be smooth and regular on a compact subinterval $[a,b] \subseteq J$ (that is, $|\gamma'(t)|_g \neq 0$ for every $t \in [a,b]$). Write $s(t) = \int_a^t |\gamma'(u)|_g \, du$ for the arc-length function and $L = s(b)$. Then there is a smooth increasing map $\psi : [0,L] \to [a,b]$, inverse to $s$ on $[a,b]$, such that the reparametrization $\tilde{\gamma} = \gamma \circ \psi$ runs from $\gamma(a)$ to $\gamma(b)$, has unit speed $|\tilde{\gamma}'(\sigma)|_g = 1$ for every $\sigma \in [0,L]$, and is parametrized by arc length: $\int_0^\sigma |\tilde{\gamma}'(u)|_g \, du = \sigma$ for all $\sigma \in [0,L]$.
+\end{proposition}
+\begin{proof}
+\leanok
+\uses{def:length-of-curve}
+On an open neighbourhood of $[a,b]$ inside $J$ the curve is regular, and there the squared speed $t \mapsto |\gamma'(t)|_g^2 = g_{\gamma(t)}(\gamma'(t), \gamma'(t))$ is smooth --- it is the metric pairing of the smooth velocity field $\gamma'$ with itself --- and strictly positive, so $s'(t) = |\gamma'(t)|_g > 0$ there. Hence $s$ is a strictly increasing $C^\infty$ function on that neighbourhood, mapping it diffeomorphically onto an open interval; by the inverse function theorem its inverse $\psi = s^{-1}$ is $C^\infty$, with derivative $\psi'(\sigma) = 1/\bigl(|\gamma'|_g \circ \psi\bigr)(\sigma)$, and this identity bootstraps $\psi$ to every finite order of smoothness. The chain rule gives, for the reparametrization $\tilde{\gamma} = \gamma \circ \psi$,
+\[
+|\tilde{\gamma}'(\sigma)|_g = |\psi'(\sigma)| \, |\gamma'(\psi(\sigma))|_g = \frac{|\gamma'(\psi(\sigma))|_g}{|\gamma'(\psi(\sigma))|_g} = 1,
+\]
+so $\int_0^\sigma |\tilde{\gamma}'(u)|_g \, du = \int_0^\sigma 1 \, du = \sigma$. Since $\psi(0) = a$ and $\psi(L) = b$, the endpoints are $\tilde{\gamma}(0) = \gamma(a)$ and $\tilde{\gamma}(L) = \gamma(b)$.
+\end{proof}
+
 \begin{proposition}
 \label{prop:reparametrization-by-arc-length}
 \dcref{ch2:2.49}
+\uses{prop:regular-curve-unit-speed-reparam}
 Suppose $(M, g)$ is a Riemannian manifold with or without boundary.
 \begin{enumerate}
 \item[(a)] Every regular curve in $M$ has a unit-speed forward reparametrization.
@@ -6725,6 +6770,8 @@ Show that every Riemannian $1$-manifold is flat. (Used on pp. 13, 193.)
 \end{exercise}
 
 \begin{exercise}\label{prob:distance-preserving-map-linear-isometry}\dcref{ch2:2-2}
+\lean{LeeLib.Ch01.exists_linearIsometryEquiv_of_dist_eq}
+\leanok
 Suppose $V$ and $W$ are finite-dimensional real inner product spaces of the same dimension, and $F: V \to W$ is any map (not assumed to be linear or even continuous) that preserves the origin and all distances: $F(0) = 0$ and $|F(x) - F(y)| = |x - y|$ for all $x, y \in V$. Prove that $F$ is a linear isometry. [Hint: First show that $F$ preserves inner products, and then show that it is linear.] (Used on p. 187.)
 \end{exercise}
 
@@ -7064,9 +7111,139 @@ $\langle \cdot, \cdot \rangle_e$ does not depend on the orthonormal basis $e$ of
 If $e$ and $f$ are orthonormal bases of $V$, then by Lemma~\ref{lem:inner-k-covectors-wedge}, applied once to each, both $\langle \cdot, \cdot\rangle_e$ and $\langle \cdot, \cdot\rangle_f$ satisfy the identity of Proposition~\ref{prop:inner-k-covectors-unique}, which determines the form uniquely. Hence they are equal.
 \end{proof}
 
+The pointwise theory transfers to the tangent spaces of a Riemannian manifold: each $(T_pM, g_p)$ is a finite-dimensional inner product space, so the sequence above applies to it verbatim. It remains to organize the pointwise values into a \emph{fibre metric} --- an inner product on each fibre of $\Lambda^k T^*M$ whose pairing of smooth $k$-form fields is a smooth function --- and to verify Lee's characterization (2.26).
+
+\begin{definition}[The Fibre Metric on $\Lambda^k T^*M$, Pointwise]
+\label{def:fiber-metric-forms-pointwise}
+\lean{LeeLib.Ch02.RiemannianMetric.innerFormsAt}
+\leanok
+\uses{def:riemannian-metric,def:inner-k-covectors,prop:inner-k-covectors-frame-independent}
+Let $(M,g)$ be a Riemannian manifold, $k \in \mathbb{N}$, and $p \in M$. The \emph{fibre metric} $\langle \cdot, \cdot \rangle_g$ on $\Lambda^k(T_p^*M)$ is the bilinear form $\langle \cdot, \cdot \rangle_e$ of Definition \ref{def:inner-k-covectors} for the inner product space $(T_pM, g_p)$, computed with respect to an orthonormal basis $e$ of $(T_pM, g_p)$. By Proposition \ref{prop:inner-k-covectors-frame-independent} the form does not depend on the choice of $e$, so it is well defined.
+\end{definition}
+
+\begin{lemma}[The Fibre Metric is an Inner Product]
+\label{lem:fiber-metric-forms-inner-product}
+\lean{LeeLib.Ch02.RiemannianMetric.innerFormsAt_comm, LeeLib.Ch02.RiemannianMetric.innerFormsAt_add_left, LeeLib.Ch02.RiemannianMetric.innerFormsAt_smul_left, LeeLib.Ch02.RiemannianMetric.innerFormsAt_self_nonneg, LeeLib.Ch02.RiemannianMetric.innerFormsAt_self_pos}
+\leanok
+\uses{def:fiber-metric-forms-pointwise,lem:inner-k-covectors-posdef}
+Let $(M,g)$ be a Riemannian manifold and $p \in M$. Then $\langle \cdot, \cdot \rangle_g$ is an inner product on $\Lambda^k(T_p^*M)$: it is bilinear, symmetric, and $\langle \omega, \omega \rangle_g > 0$ for every $\omega \neq 0$.
+\end{lemma}
+\begin{proof}
+\leanok
+\uses{lem:inner-k-covectors-posdef}
+By Definition \ref{def:fiber-metric-forms-pointwise}, $\langle \cdot, \cdot \rangle_g$ is the form $\langle \cdot, \cdot \rangle_e$ for an orthonormal basis $e$ of $(T_pM, g_p)$, and that form is an inner product by Lemma \ref{lem:inner-k-covectors-posdef}.
+\end{proof}
+
+\begin{lemma}[The Fibre Metric Satisfies (2.26)]
+\label{lem:fiber-metric-forms-wedge}
+\lean{LeeLib.Ch02.RiemannianMetric.innerFormsAt_wedgeCovectors}
+\leanok
+\uses{def:fiber-metric-forms-pointwise,lem:inner-k-covectors-wedge,def:sharp-map,def:wedge-covectors}
+Let $(M,g)$ be a Riemannian manifold and $p \in M$. For all covectors $\omega^1, \ldots, \omega^k, \eta^1, \ldots, \eta^k \in T_p^*M$,
+\[
+\langle \omega^1 \wedge \cdots \wedge \omega^k, \eta^1 \wedge \cdots \wedge \eta^k \rangle_g = \det\big(\langle \omega^i, \eta^j \rangle_g\big),
+\]
+where the inner product of two covectors is $\langle a, b \rangle_g = \langle a^\sharp, b^\sharp \rangle_g$, with $\sharp$ the musical isomorphism of Definition \ref{def:sharp-map} at $p$.
+\end{lemma}
+\begin{proof}
+\leanok
+\uses{lem:inner-k-covectors-wedge}
+This is Lemma \ref{lem:inner-k-covectors-wedge} for the inner product space $(T_pM, g_p)$: the covector inner product (2.26a) of that lemma is defined through the Riesz representative for $g_p$, which is exactly the vector $a^\sharp$ of Definition \ref{def:sharp-map}.
+\end{proof}
+
+\begin{lemma}[Fibrewise Uniqueness]
+\label{lem:fiber-metric-forms-unique-pointwise}
+\lean{LeeLib.Ch02.RiemannianMetric.eq_innerFormsAt_of_wedgeCovectors}
+\leanok
+\uses{def:fiber-metric-forms-pointwise,prop:inner-k-covectors-unique}
+Let $(M,g)$ be a Riemannian manifold and $p \in M$. Any bilinear form $B$ on $\Lambda^k(T_p^*M)$ satisfying
+\[
+B(\omega^1 \wedge \cdots \wedge \omega^k, \eta^1 \wedge \cdots \wedge \eta^k) = \det\big(\langle \omega^i, \eta^j \rangle_g\big)
+\]
+for all covectors $\omega^i, \eta^j \in T_p^*M$ is equal to $\langle \cdot, \cdot \rangle_g$.
+\end{lemma}
+\begin{proof}
+\leanok
+\uses{prop:inner-k-covectors-unique}
+This is the uniqueness of Proposition \ref{prop:inner-k-covectors-unique}, applied to the inner product space $(T_pM, g_p)$.
+\end{proof}
+
+\begin{lemma}[The Fibre Metric Against a Local Orthonormal Frame]
+\label{lem:fiber-metric-forms-frame}
+\lean{LeeLib.Ch02.RiemannianMetric.innerFormsAt_eq_sum_frame}
+\leanok
+\uses{def:fiber-metric-forms-pointwise,def:inner-k-covectors,prop:inner-k-covectors-frame-independent,prop:existence-orthonormal-frames}
+Let $(M,g)$ be a Riemannian $n$-manifold, let $(Y_1, \ldots, Y_n)$ be a smooth local orthonormal frame on an open set $u \subseteq M$, and let $x \in u$. Then for all $\omega, \eta \in \Lambda^k(T_x^*M)$,
+\[
+\langle \omega, \eta \rangle_g = \frac{1}{k!} \sum_{s \colon \{1,\ldots,k\} \to \{1,\ldots,n\}} \omega\big(Y_{s(1)}|_x, \ldots, Y_{s(k)}|_x\big)\, \eta\big(Y_{s(1)}|_x, \ldots, Y_{s(k)}|_x\big).
+\]
+\end{lemma}
+\begin{proof}
+\leanok
+\uses{prop:inner-k-covectors-frame-independent}
+The values $(Y_1|_x, \ldots, Y_n|_x)$ of an orthonormal frame form an orthonormal basis of $(T_xM, g_x)$. By Definition \ref{def:fiber-metric-forms-pointwise} together with the frame independence of Proposition \ref{prop:inner-k-covectors-frame-independent}, the fibre metric equals the form $\langle \cdot, \cdot \rangle_{Y|_x}$ computed from that basis, and the displayed sum is its defining formula (Definition \ref{def:inner-k-covectors}).
+\end{proof}
+
+The smoothness half of the problem rests on one analytic fact, which is stated separately because it concerns no metric at all: evaluating a smooth field of alternating $k$-tensors on $k$ smooth vector fields produces a smooth function.
+
+\begin{lemma}[A Smooth $k$-Form Field Applied to Smooth Vector Fields]
+\label{lem:form-field-applied-to-vector-fields-smooth}
+\lean{LeeLib.Ch02.contMDiffAt_apply_section}
+\leanok
+Let $M$ be a smooth manifold, let $\omega$ be a section of $\Lambda^k T^*M$ smooth at $x_0 \in M$, and let $X_1, \ldots, X_k$ be vector fields on $M$ smooth at $x_0$. Then the function
+\[
+x \longmapsto \omega_x\big(X_1|_x, \ldots, X_k|_x\big)
+\]
+is smooth at $x_0$.
+\end{lemma}
+\begin{proof}
+\leanok
+Choose a local trivialization of $TM$ over a neighbourhood $U$ of $x_0$, with fibrewise isomorphisms $\Phi_x : T_xM \to F$ onto the model fibre. It induces a trivialization of $\Lambda^k T^*M$ over $U$, carrying $\omega_x$ to the alternating $k$-tensor $\hat\omega_x = \omega_x(\Phi_x^{-1} \cdot, \ldots, \Phi_x^{-1} \cdot)$ on $F$, and on $U$
+\[
+\omega_x\big(X_1|_x, \ldots, X_k|_x\big) = \hat\omega_x\big(\Phi_x X_1|_x, \ldots, \Phi_x X_k|_x\big):
+\]
+the fibrewise isomorphism and its inverse cancel in each slot. Read in these trivializations, the maps $x \mapsto \hat\omega_x$ and $x \mapsto \Phi_x X_i|_x$ are smooth at $x_0$ with values in the fixed spaces of alternating $k$-tensors on $F$ and in $F$, because $\omega$ and the $X_i$ are smooth sections at $x_0$. Finally, the joint evaluation $(\xi, v_1, \ldots, v_k) \mapsto \xi(v_1, \ldots, v_k)$ is multilinear in all $k+1$ slots at once and bounded, hence smooth. The displayed function is the composite of these, so it is smooth at $x_0$.
+\end{proof}
+
+\begin{lemma}[The Fibre Metric Pairs Smooth Fields Smoothly]
+\label{lem:fiber-metric-forms-smooth}
+\lean{LeeLib.Ch02.RiemannianMetric.contMDiffAt_innerFormsAt, LeeLib.Ch02.RiemannianMetric.contMDiff_innerFormsAt}
+\leanok
+\uses{def:fiber-metric-forms-pointwise,lem:fiber-metric-forms-frame,prop:existence-orthonormal-frames,lem:form-field-applied-to-vector-fields-smooth}
+Let $(M,g)$ be a Riemannian manifold and let $\omega, \eta$ be smooth sections of $\Lambda^k T^*M$. Then the function $x \mapsto \langle \omega_x, \eta_x \rangle_g$ is smooth on $M$.
+\end{lemma}
+\begin{proof}
+\leanok
+\uses{lem:fiber-metric-forms-frame,prop:existence-orthonormal-frames,lem:form-field-applied-to-vector-fields-smooth}
+Smoothness is local, so fix $x_0 \in M$. By Proposition \ref{prop:existence-orthonormal-frames} there are an open set $u \ni x_0$ and a smooth orthonormal frame $(Y_1, \ldots, Y_n)$ on $u$. By Lemma \ref{lem:fiber-metric-forms-frame}, on $u$
+\[
+\langle \omega_x, \eta_x \rangle_g = \frac{1}{k!} \sum_{s} \omega_x\big(Y_{s(1)}|_x, \ldots, Y_{s(k)}|_x\big)\, \eta_x\big(Y_{s(1)}|_x, \ldots, Y_{s(k)}|_x\big),
+\]
+a finite sum. Each factor of each summand is smooth at $x_0$ by Lemma \ref{lem:form-field-applied-to-vector-fields-smooth}, applied to the smooth section $\omega$ (respectively $\eta$) and the smooth vector fields $Y_{s(1)}, \ldots, Y_{s(k)}$. Products, finite sums and constant multiples of functions smooth at $x_0$ are smooth at $x_0$, so the right-hand side --- hence the pairing --- is smooth at $x_0$.
+\end{proof}
+
+\begin{proposition}[The Fibre Metric on $\Lambda^k T^*M$]
+\label{prop:fiber-metric-forms}
+\lean{LeeLib.Ch02.RiemannianMetric.riemannian_fiberMetric_forms, LeeLib.Ch02.RiemannianMetric.innerFormsAt_self_pos, LeeLib.Ch02.RiemannianMetric.innerFormsAt_comm, LeeLib.Ch02.RiemannianMetric.contMDiff_innerFormsAt}
+\leanok
+\uses{def:fiber-metric-forms-pointwise,lem:fiber-metric-forms-inner-product,lem:fiber-metric-forms-wedge,lem:fiber-metric-forms-unique-pointwise,lem:fiber-metric-forms-smooth,def:wedge-covectors}
+Let $(M,g)$ be a Riemannian manifold and $k \in \mathbb{N}$. There is a unique choice, for each $p \in M$, of a bilinear form $B_p$ on $\Lambda^k(T_p^*M)$ satisfying
+\[
+B_p(\omega^1 \wedge \cdots \wedge \omega^k, \eta^1 \wedge \cdots \wedge \eta^k) = \det\big(\langle \omega^i, \eta^j \rangle_g\big)
+\]
+for all covectors $\omega^i, \eta^j \in T_p^*M$, namely $B_p = \langle \cdot, \cdot \rangle_g$. This family is a fibre metric on $\Lambda^k T^*M$: each $B_p$ is an inner product, and the pairing $x \mapsto B_x(\omega_x, \eta_x)$ of smooth $k$-form fields is smooth.
+\end{proposition}
+\begin{proof}
+\leanok
+\uses{lem:fiber-metric-forms-wedge,lem:fiber-metric-forms-unique-pointwise,lem:fiber-metric-forms-inner-product,lem:fiber-metric-forms-smooth}
+The family $\langle \cdot, \cdot \rangle_g$ of Definition \ref{def:fiber-metric-forms-pointwise} satisfies the displayed identity at every point by Lemma \ref{lem:fiber-metric-forms-wedge}; it is an inner product on each fibre by Lemma \ref{lem:fiber-metric-forms-inner-product}, and it pairs smooth fields smoothly by Lemma \ref{lem:fiber-metric-forms-smooth}. Uniqueness is fibrewise: at each $p$, any family satisfying the identity agrees with $\langle \cdot, \cdot \rangle_g$ by Lemma \ref{lem:fiber-metric-forms-unique-pointwise}. Note that uniqueness therefore holds among all families of bilinear forms satisfying the identity, with no smoothness assumed.
+\end{proof}
+
 \begin{exercise}
 \label{prob:fiber-metric-exterior-powers}
-\uses{prop:inner-k-covectors-unique,prop:inner-k-covectors-frame-independent,lem:inner-k-covectors-posdef}
+\lean{LeeLib.Ch02.RiemannianMetric.riemannian_fiberMetric_forms, LeeLib.Ch02.RiemannianMetric.innerFormsAt_self_pos, LeeLib.Ch02.RiemannianMetric.innerFormsAt_comm, LeeLib.Ch02.RiemannianMetric.contMDiff_innerFormsAt}
+\leanok
+\uses{prop:fiber-metric-forms,prop:inner-k-covectors-unique,prop:inner-k-covectors-frame-independent,lem:inner-k-covectors-posdef}
 \dcref{ch2:2-16}
 Let $(M, g)$ be a Riemannian $n$-manifold. Show that for each $k = 1, \ldots, n$, there is a unique fiber metric $\langle \cdot, \cdot \rangle_g$ on the bundle $\Lambda^k T^* M$ that satisfies
 \[
@@ -7096,7 +7273,283 @@ Because we regard the bundle $\Lambda^k T^* M$ of $k$-forms as a subbundle of th
 \]
 \end{exercise}
 
+The Hodge star of Problem 2-18 below is characterized by an equation between wedge products of arbitrary $k$-forms, not merely of wedges of covectors, so the binary wedge product $\Lambda^k(V^*) \times \Lambda^l(V^*) \to \Lambda^{k+l}(V^*)$ is needed as an operation in its own right. As with the inner product on $k$-covectors, the formula sums over all permutations with a factorial correction rather than over shuffles.
+
+\begin{definition}[The Wedge Product of Alternating Tensors]
+\label{def:wedge-alternating-forms}
+\lean{LeeLib.Ch02.wedgeSum, LeeLib.Ch02.wedge}
+\leanok
+Let $V$ be a real topological vector space and let $\omega \in \Lambda^k(V^*)$, $\xi \in \Lambda^l(V^*)$ be continuous alternating tensors. Their \emph{wedge product} $\omega \wedge \xi \in \Lambda^{k+l}(V^*)$ is
+\[
+(\omega \wedge \xi)(v_1, \ldots, v_{k+l}) = \frac{1}{k!\,l!} \sum_{\sigma \in S_{k+l}} \operatorname{sgn}(\sigma)\, \omega\big(v_{\sigma(1)}, \ldots, v_{\sigma(k)}\big)\, \xi\big(v_{\sigma(k+1)}, \ldots, v_{\sigma(k+l)}\big).
+\]
+The sum runs over all permutations; each term with $\sigma$ replaced by $\sigma \circ (\pi \oplus \rho)$, for permutations $\pi$ of the first $k$ and $\rho$ of the last $l$ slots, contributes the same value, because the sign of $\sigma$ and the signs picked up by the alternating factors cancel --- whence the normalization, and the agreement with the shuffle-sum form of the determinant convention (p.~401 of Lee). The right-hand side is alternating and multilinear in $(v_1, \ldots, v_{k+l})$, being (a multiple of) the alternatization of the multilinear map $v \mapsto \omega(v_1, \ldots, v_k)\,\xi(v_{k+1}, \ldots, v_{k+l})$, and it is continuous, being a finite sum of products of values of $\omega$ and $\xi$; no norm on $V$ enters.
+\end{definition}
+
+\begin{lemma}[Bilinearity of the Wedge Product]
+\label{lem:wedge-bilinear}
+\lean{LeeLib.Ch02.wedge_add_left, LeeLib.Ch02.wedge_smul_left, LeeLib.Ch02.wedge_add_right, LeeLib.Ch02.wedge_smul_right}
+\leanok
+\uses{def:wedge-alternating-forms}
+The wedge product of Definition \ref{def:wedge-alternating-forms} is bilinear: for $\omega, \omega_1, \omega_2 \in \Lambda^k(V^*)$, $\xi, \xi_1, \xi_2 \in \Lambda^l(V^*)$ and $c \in \mathbb{R}$,
+\[
+(\omega_1 + \omega_2) \wedge \xi = \omega_1 \wedge \xi + \omega_2 \wedge \xi, \quad (c\,\omega) \wedge \xi = c\,(\omega \wedge \xi),
+\]
+and similarly in the second argument.
+\end{lemma}
+\begin{proof}
+\leanok
+Each value $(\omega \wedge \xi)(v)$ is a finite sum of terms, each linear in the value $\omega(\cdots)$ and in the value $\xi(\cdots)$; distributing the sum gives each identity.
+\end{proof}
+
+\begin{lemma}[Commutativity of the Wedge over a Disjoint Union]
+\label{lem:wedge-comm-sum}
+\lean{LeeLib.Ch02.wedgeSum_comm}
+\leanok
+\uses{def:wedge-alternating-forms}
+Index the wedge product of Definition \ref{def:wedge-alternating-forms} over a disjoint union rather than over $\{1, \ldots, k+l\}$: for finite index sets $\iota_a, \iota_b$, the form $\omega \wedge \xi$ has arguments indexed by $\iota_a \sqcup \iota_b$. Then the wedge is commutative with no sign: $\omega \wedge \xi$ equals $\xi \wedge \omega$ after re-indexing the arguments along the swap $\iota_b \sqcup \iota_a \to \iota_a \sqcup \iota_b$ of the two summands. The classical sign $(-1)^{kl}$ of graded commutativity is the sign of the block-swap permutation of $\{1, \ldots, k+l\}$, and appears only when both orders are forced into a common linear order.
+\end{lemma}
+\begin{proof}
+\leanok
+Evaluate both sides at a tuple $v$ and re-index the permutation sum of Definition \ref{def:wedge-alternating-forms} by conjugation with the swap of the two summands, a bijection between the permutations of $\iota_a \sqcup \iota_b$ and those of $\iota_b \sqcup \iota_a$. Conjugation preserves the sign of a permutation, the normalizations $\frac{1}{k!\,l!}$ agree, and corresponding terms match factor by factor.
+\end{proof}
+
+\begin{lemma}[The Wedge of Wedges of Covectors]
+\label{lem:wedge-covectors-concat}
+\lean{LeeLib.Ch02.wedge_wedgeCovectors, LeeLib.Ch02.wedgeSum_wedgeCovectors}
+\leanok
+\uses{def:wedge-alternating-forms,def:wedge-covectors,lem:laplace-expansion-block}
+For covectors $f_1, \ldots, f_k, g_1, \ldots, g_l \in V^*$,
+\[
+(f_1 \wedge \cdots \wedge f_k) \wedge (g_1 \wedge \cdots \wedge g_l) = f_1 \wedge \cdots \wedge f_k \wedge g_1 \wedge \cdots \wedge g_l,
+\]
+where the left-hand side is the wedge of Definition \ref{def:wedge-alternating-forms} applied to two wedges of covectors (Definition \ref{def:wedge-covectors}), and the right-hand side is the wedge of the concatenated family. In particular the normalization of Definition \ref{def:wedge-alternating-forms} is the one demanded by the determinant convention.
+\end{lemma}
+\begin{proof}
+\leanok
+\uses{lem:laplace-expansion-block}
+Evaluate both sides at $(v_1, \ldots, v_{k+l})$. By Definition \ref{def:wedge-covectors}, the value of the right-hand side is $\det M$, where $M$ is the $(k+l) \times (k+l)$ matrix of values of the concatenated family on the $v_j$; and the values of the two factors on the left-hand side at the tuples selected by $\sigma$ are the determinants of the corresponding submatrices of $M$, with rows the first $k$ (respectively last $l$) rows of $M$ and columns selected by $\sigma$. So the left-hand side is
+\[
+\frac{1}{k!\,l!} \sum_{\sigma \in S_{k+l}} \operatorname{sgn}(\sigma)\, \det\big(M[a, \sigma|_a]\big)\, \det\big(M[b, \sigma|_b]\big),
+\]
+which equals $\det M$ by Proposition \ref{lem:laplace-expansion-block}.
+\end{proof}
+
+Like the fiber metric of Problem 2-16, the Hodge star is built pointwise on an inner product space first, in the index-type-generic setting of the preceding nodes: the roles of $k$ and $n-k$ are played by finite index sets $\iota_a$ and $\iota_b$, an orthonormal basis $(e_m)$ of $V$ is indexed by $\iota'$, and the constraint $k + (n-k) = n$ is carried by a bijection $\varepsilon \colon \iota_a \sqcup \iota_b \to \iota'$, so that no natural-number subtraction and no reordering of indices ever appears. Throughout, $E^t = e^{t(1)} \wedge \cdots \wedge e^{t(l)}$ denotes the wedge (Definition \ref{def:wedge-covectors}) of the dual coframe covectors selected by an index map $t \colon \iota_b \to \iota'$, and
+\[
+B(\eta, \xi) \;=\; (\eta \wedge \xi)\big(e_{\varepsilon(\cdot)}\big)
+\]
+is the value of the wedge of $\eta \in \Lambda^{\iota_a}(V^*)$ and $\xi \in \Lambda^{\iota_b}(V^*)$ (Definition \ref{def:wedge-alternating-forms}, over the index $\iota_a \sqcup \iota_b$) on the reference basis tuple $e \circ \varepsilon$ --- the single scalar that determines a top-degree form (Lemma \ref{lem:top-form-eq-of-basis}).
+
+\begin{lemma}[The Defining Identity of the Hodge Star]
+\label{lem:hodge-scalar-identity}
+\lean{LeeLib.Ch02.wedgeRef, LeeLib.Ch02.sum_wedgeCovectors_flatL_mul, LeeLib.Ch02.sum_wedgeRef_mul_wedgeRef}
+\leanok
+\uses{def:wedge-alternating-forms,def:wedge-covectors,def:inner-k-covectors,lem:inner-k-covectors-wedge,lem:perm-block-collapse,lem:perm-extension-count}
+For all $\omega, \eta \in \Lambda^{\iota_a}(V^*)$,
+\[
+\sum_{t \colon \iota_b \to \iota'} B(\eta, E^t)\, B(\omega, E^t) \;=\; l!\, \langle \omega, \eta \rangle_e,
+\]
+where $\langle \cdot, \cdot \rangle_e$ is the inner product of Definition \ref{def:inner-k-covectors} and the sum runs over all index maps $t$.
+\end{lemma}
+\begin{proof}
+\leanok
+Write $k = \#\iota_a$, $l = \#\iota_b$, and abbreviate $\theta_\tau = \theta\big(e_{\varepsilon\tau(\cdot)}|_{\iota_a}\big)$ for the value of $\theta \in \Lambda^{\iota_a}(V^*)$ on the $\iota_a$-part of the reference tuple permuted by $\tau \in S_{\iota_a \sqcup \iota_b}$.
+
+\emph{Step 1 (expand).} By Definition \ref{def:wedge-alternating-forms} over the index $\iota_a \sqcup \iota_b$,
+\[
+B(\theta, E^t) = \frac{1}{k!\,l!} \sum_{\tau \in S_{\iota_a \sqcup \iota_b}} \operatorname{sgn}(\tau)\; \theta_\tau \; E^t\big(e_{\varepsilon\tau(\cdot)}|_{\iota_b}\big).
+\]
+Multiplying the two expansions and bringing the $t$-sum inside, the left-hand side of the claim equals
+\[
+\frac{1}{(k!\,l!)^2} \sum_{\sigma} \sum_{\tau} \operatorname{sgn}(\tau)\operatorname{sgn}(\sigma)\; \eta_\tau\, \omega_\sigma \sum_{t} E^t\big(e_{\varepsilon\tau(\cdot)}|_{\iota_b}\big)\, E^t\big(e_{\varepsilon\sigma(\cdot)}|_{\iota_b}\big).
+\]
+
+\emph{Step 2 (the $t$-sum collapses).} For any $r, r' \colon \iota_b \to \iota'$,
+\[
+\sum_{t \colon \iota_b \to \iota'} E^t(e \circ r)\, E^t(e \circ r') = l!\, \det\big(\mathbf{1}[r(i) = r'(j)]\big)_{i,j}:
+\]
+indeed $E^t(e \circ r) = E^r(e \circ t)$ --- both are the determinant of the matrix $\big(\langle e_{t(i)}, e_{r(j)}\rangle\big)$, up to transpose --- so the left side is $l!\,\langle E^r, E^{r'}\rangle_e$ by the very formula of Definition \ref{def:inner-k-covectors}, and equation (2.26) (Lemma \ref{lem:inner-k-covectors-wedge}) evaluates this inner product as $\det\big(\langle e_{r(i)}, e_{r'(j)}\rangle\big)$, a determinant of inner products of orthonormal basis vectors.
+
+\emph{Step 3 (the inner permutation sum collapses).} Fix $\sigma$ and substitute $\tau = \sigma\chi$. Since $\varepsilon$ and $\sigma$ are injective, $\mathbf{1}[\varepsilon\sigma\chi(i) = \varepsilon\sigma(j)] = \mathbf{1}[\chi(i) = j]$ (indices in $\iota_b$), so the determinant from Step 2 becomes the block determinant $D(\chi)$ of Lemma \ref{lem:perm-block-collapse}, and $\operatorname{sgn}(\sigma\chi) = \operatorname{sgn}(\sigma)\operatorname{sgn}(\chi)$. By that lemma, applied with $F(p) = \eta\big(e_{\varepsilon\sigma p(\cdot)}\big)$,
+\[
+\sum_{\chi} \operatorname{sgn}(\chi)\, \eta_{\sigma\chi}\, D(\chi) = l! \sum_{\pi \in S_{\iota_a}} \operatorname{sgn}(\pi)\, \eta\big(e_{\varepsilon\sigma\pi(\cdot)}|_{\iota_a}\big) = l!\,k!\; \eta_\sigma,
+\]
+the last step because $\eta$ is alternating: $\eta\big(e_{\varepsilon\sigma\pi(\cdot)}\big) = \operatorname{sgn}(\pi)\,\eta_\sigma$, and $\operatorname{sgn}(\pi)^2 = 1$ leaves $k!$ equal terms.
+
+\emph{Step 4 (the outer permutation sum degenerates).} The two copies of $\operatorname{sgn}(\sigma)$ cancel, leaving
+\[
+\frac{l!\; l!\; k!}{(k!\,l!)^2} \sum_{\sigma \in S_{\iota_a \sqcup \iota_b}} \omega_\sigma\, \eta_\sigma.
+\]
+The summand is a function of $\sigma|_{\iota_a}$ alone, vanishing when its argument is non-injective (a repeated basis vector kills the alternating $\omega$), so Lemma \ref{lem:perm-extension-count} converts the sum into $l! \sum_{j} \omega\big(e_{\varepsilon j(\cdot)}\big)\eta\big(e_{\varepsilon j(\cdot)}\big)$ over \emph{all} maps $j \colon \iota_a \to \iota_a \sqcup \iota_b$; re-indexing through the bijection $\varepsilon$ and comparing with Definition \ref{def:inner-k-covectors} gives $l!\; k!\, \langle \omega, \eta\rangle_e$. The factorials combine to $\frac{l!\,l!\,k!\, \cdot\, l!\,k!}{(k!\,l!)^2} = l!$.
+\end{proof}
+
+\begin{proposition}[The Pointwise Hodge Star]
+\label{prop:hodge-star-pointwise}
+\lean{LeeLib.Ch02.hodgeStarSum, LeeLib.Ch02.hodgeStarSum_add, LeeLib.Ch02.hodgeStarSum_smul, LeeLib.Ch02.wedgeSum_hodgeStarSum, LeeLib.Ch02.eq_hodgeStarSum_of_forall_wedgeSum_eq, LeeLib.Ch02.eq_hodgeStarSum_iff_forall_wedgeSum_eq, LeeLib.Ch02.hodgeStarSum_congr}
+\leanok
+\uses{lem:hodge-scalar-identity,lem:top-form-eq-of-basis,lem:wedge-bilinear,lem:wedge-comm-sum,def:inner-k-covectors,lem:inner-k-covectors-posdef,prop:inner-k-covectors-frame-independent}
+Let $V$ be a finite-dimensional real inner product space with orthonormal basis $(e_m)_{m \in \iota'}$, and let $\varepsilon \colon \iota_a \sqcup \iota_b \to \iota'$ be a bijection. Define, for $\eta \in \Lambda^{\iota_a}(V^*)$,
+\[
+{*}\eta \;=\; \frac{1}{l!} \sum_{t \colon \iota_b \to \iota'} B(\eta, E^t)\; E^t \;\in\; \Lambda^{\iota_b}(V^*),
+\]
+and write $E^\varepsilon = e^{\varepsilon(\cdot)} \wedge \cdots$ for the wedge of the full dual coframe in the reference order --- the volume form of the pair $(e, \varepsilon)$. Then:
+\begin{enumerate}
+\item $\eta \mapsto {*}\eta$ is linear;
+\item $\omega \wedge {*}\eta = \langle \omega, \eta \rangle_e\; E^\varepsilon$ for all $\omega \in \Lambda^{\iota_a}(V^*)$;
+\item ${*}\eta$ is the \emph{unique} element of $\Lambda^{\iota_b}(V^*)$ satisfying (2), and conversely any $\delta$ satisfying (2) in place of ${*}\eta$ equals ${*}\eta$;
+\item two pairs $(e, \varepsilon)$ and $(f, \zeta)$ of orthonormal bases with block structures whose volume forms coincide, $E^\varepsilon = F^{\zeta}$, define the same star operator.
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+\leanok
+(1) $B(\cdot, E^t)$ is linear in its first argument, since the wedge is bilinear (Lemma \ref{lem:wedge-bilinear}).
+
+(2) Both sides are alternating forms over the index $\iota_a \sqcup \iota_b$, whose cardinality is that of $\iota'$, i.e.\ $\dim V$ --- top degree. By Lemma \ref{lem:top-form-eq-of-basis} it suffices to compare the two sides on the single reference tuple $e \circ \varepsilon$. The volume form takes the value $E^\varepsilon(e \circ \varepsilon) = \det\big(\langle e_{\varepsilon(x)}, e_{\varepsilon(y)}\rangle\big) = \det\big(\mathbf{1}[x = y]\big) = 1$ since $\varepsilon$ is injective. By bilinearity of the wedge, the left side takes the value
+\[
+\big(\omega \wedge {*}\eta\big)(e \circ \varepsilon) = \frac{1}{l!} \sum_t B(\eta, E^t)\, B(\omega, E^t),
+\]
+which is $\langle \omega, \eta\rangle_e$ by Lemma \ref{lem:hodge-scalar-identity}.
+
+(3) Let $\delta$ satisfy (2) and set $\delta' = \delta - {*}\eta$; then $\omega \wedge \delta' = 0$ for every $\omega \in \Lambda^{\iota_a}(V^*)$. By the sign-free commutativity of the wedge over a disjoint union (Lemma \ref{lem:wedge-comm-sum}), $\delta' \wedge E^u$ is the re-indexing of $E^u \wedge \delta' = 0$ along the swap $\iota_b \sqcup \iota_a \to \iota_a \sqcup \iota_b$, so all the reference values $B'(\delta', E^u)$, computed in the mirrored block structure $\varepsilon' = \varepsilon \circ \mathrm{swap} \colon \iota_b \sqcup \iota_a \to \iota'$, vanish. Lemma \ref{lem:hodge-scalar-identity}, applied in the mirrored block structure with $\omega = \eta = \delta'$, gives
+\[
+k!\, \langle \delta', \delta' \rangle_e = \sum_{u \colon \iota_a \to \iota'} B'(\delta', E^u)^2 = 0,
+\]
+so $\delta' = 0$ by positive definiteness (Lemma \ref{lem:inner-k-covectors-posdef}).
+
+(4) The star of $(e, \varepsilon)$ satisfies characterization (2) also for the data $(f, \zeta)$: the inner products agree by frame independence (Proposition \ref{prop:inner-k-covectors-frame-independent}), and the volume forms agree by hypothesis. Uniqueness (3) for $(f, \zeta)$ concludes.
+\end{proof}
+
+\begin{proposition}[The Hodge Star in Degree Zero]
+\label{prop:hodge-star-degree-zero}
+\lean{LeeLib.Ch02.wedgeSum_isEmpty_left, LeeLib.Ch02.innerForms_isEmpty, LeeLib.Ch02.hodgeStarSum_isEmpty}
+\leanok
+\uses{prop:hodge-star-pointwise,def:wedge-alternating-forms,def:inner-k-covectors}
+Take $\iota_a = \varnothing$, so that $\Lambda^{\iota_a}(V^*) = \Lambda^0(V^*)$ consists of the constants: a $0$-covector $\eta$ is determined by its single value $\eta(\varnothing)$. Then:
+\begin{enumerate}
+\item wedging with a $0$-covector is scalar multiplication: $\omega \wedge \xi = \omega(\varnothing)\,\xi$, up to re-indexing along $\iota_b \cong \varnothing \sqcup \iota_b$;
+\item the degree-zero inner product is ordinary multiplication, $\langle \omega, \eta \rangle_e = \omega(\varnothing)\,\eta(\varnothing)$ --- so Lee's parenthetical instruction in Problem 2-18(a) is automatic;
+\item (\emph{Problem 2-18(b), pointwise}) ${*}\eta = \eta(\varnothing)\; e^{\varepsilon(\cdot)} \wedge \cdots$, i.e.\ ${*}f = f\, dV$.
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+\leanok
+(1) In the permutation sum of Definition \ref{def:wedge-alternating-forms} every permutation of $\varnothing \sqcup \iota_b$ is conjugate, along $\iota_b \cong \varnothing \sqcup \iota_b$, to a permutation $\rho$ of $\iota_b$ with the same sign; the $\omega$-factor is the constant $\omega(\varnothing)$, the $\xi$-factor is $\operatorname{sgn}(\rho)$ times the value of $\xi$ on the unpermuted tuple by alternation, the two signs cancel, and the $0!\,l!$ normalization cancels the $l!$ equal terms.
+
+(2) In Definition \ref{def:inner-k-covectors}, the sum over the maps $\varnothing \to \iota'$ has exactly one term, on the empty tuple, and $0! = 1$.
+
+(3) By uniqueness (Proposition \ref{prop:hodge-star-pointwise}(3)) it suffices to check the characterization for $\delta = \eta(\varnothing)\, e^{\varepsilon(\cdot)} \wedge \cdots$: by (1), $\omega \wedge \delta = \omega(\varnothing)\,\eta(\varnothing)\; E^\varepsilon$ --- the re-indexing carries the volume form over $\iota_b$ to the one over $\varnothing \sqcup \iota_b$ --- and by (2) the coefficient is $\langle \omega, \eta \rangle_e$.
+\end{proof}
+
+\begin{lemma}[The Reproducing Property of the Star]
+\label{lem:hodge-star-reproducing}
+\lean{LeeLib.Ch02.hodgeStarSum_apply_basis}
+\leanok
+\uses{prop:hodge-star-pointwise,lem:k-covector-wedge-expansion}
+The star's values on tuples of basis vectors are the reference values of the wedge:
+\[
+({*}\eta)\big(e_{t(1)}, \ldots, e_{t(l)}\big) = B(\eta, E^t) \qquad \text{for every } t \colon \iota_b \to \iota'.
+\]
+\end{lemma}
+\begin{proof}
+\leanok
+Evaluate the defining expansion ${*}\eta = \frac{1}{l!}\sum_{t'} B(\eta, E^{t'})\, E^{t'}$ on the tuple $e \circ t$. By the symmetry of the $\delta$-determinant, $E^{t'}(e \circ t) = E^{t}(e \circ t')$, so by linearity of $B(\eta, \cdot)$ the value is $\frac{1}{l!} B\big(\eta, \sum_{t'} E^t(e \circ t')\, E^{t'}\big)$; the inner sum is $l!\, E^t$ by the expansion of Lemma \ref{lem:k-covector-wedge-expansion} applied to $E^t$.
+\end{proof}
+
+\begin{proposition}[The Hodge Star is a Fibrewise Isometry]
+\label{prop:hodge-star-isometry}
+\lean{LeeLib.Ch02.innerForms_hodgeStarSum}
+\leanok
+\uses{prop:hodge-star-pointwise,lem:hodge-scalar-identity,lem:wedge-comm-sum,def:inner-k-covectors,lem:k-covector-wedge-expansion}
+$\langle {*}\omega, {*}\eta \rangle_e = \langle \omega, \eta \rangle_e$ for all $\omega, \eta \in \Lambda^{\iota_a}(V^*)$.
+\end{proposition}
+\begin{proof}
+\leanok
+Write $\varepsilon' = \varepsilon \circ \mathrm{swap} \colon \iota_b \sqcup \iota_a \to \iota'$ for the mirrored block structure and $B'$ for its reference values. For any $\theta$ and any $u \colon \iota_a \to \iota'$, the sign-free commutativity (Lemma \ref{lem:wedge-comm-sum}) converts $B'({*}\theta, E^u)$ into the value of $E^u \wedge {*}\theta$ on the reference tuple $e \circ \varepsilon$, which the characterization (Proposition \ref{prop:hodge-star-pointwise}(2)) evaluates as $\langle E^u, \theta \rangle_e \cdot 1 = \theta(e \circ u)$, the last step being the coefficient-extraction property of the coframe wedges. The identity of Lemma \ref{lem:hodge-scalar-identity} in the mirrored structure, applied to the pair $({*}\omega, {*}\eta)$, therefore reads
+\[
+k!\, \langle {*}\omega, {*}\eta \rangle_e = \sum_{u \colon \iota_a \to \iota'} \eta(e \circ u)\, \omega(e \circ u) = k!\, \langle \omega, \eta \rangle_e ,
+\]
+the second equality by Definition \ref{def:inner-k-covectors}. Cancel $k!$.
+\end{proof}
+
+\begin{proposition}[The Involution Property, Sign-Free]
+\label{prop:hodge-star-involution}
+\lean{LeeLib.Ch02.hodgeStarSum_hodgeStarSum}
+\leanok
+\uses{prop:hodge-star-pointwise,lem:hodge-star-reproducing,lem:wedge-comm-sum,lem:k-covector-wedge-expansion,lem:top-form-eq-of-basis}
+Let ${*}'$ denote the Hodge star of the mirrored block structure $\varepsilon' = \varepsilon \circ \mathrm{swap} \colon \iota_b \sqcup \iota_a \to \iota'$. Then
+\[
+{*}'({*}\eta) = \eta \qquad \text{for every } \eta \in \Lambda^{\iota_a}(V^*).
+\]
+The classical identity ${*}{*} = (-1)^{k(n-k)}$ of Problem 2-18(c) is this statement read through a common linear order: the sign is the sign of the block-swap permutation of $\{1, \ldots, n\}$, and is absent over the disjoint-union index, exactly as in the sign-free commutativity of the wedge (Lemma \ref{lem:wedge-comm-sum}). The transport to the classical signed form --- a sign lemma for the block-swap permutation together with the comparison of the mirrored and concatenated block structures --- is \emph{not} part of this node.
+\end{proposition}
+\begin{proof}
+\leanok
+By uniqueness (Proposition \ref{prop:hodge-star-pointwise}(3), in the mirrored structure, with $\eta$ in the role of the candidate star of ${*}\eta$) it suffices to show
+\[
+\xi \wedge \eta = \langle \xi, {*}\eta \rangle_e\; E^{\varepsilon'} \qquad \text{for every } \xi \in \Lambda^{\iota_b}(V^*).
+\]
+For $\xi = E^t$ a coframe wedge: both sides are top-degree over $\iota_b \sqcup \iota_a$, so by Lemma \ref{lem:top-form-eq-of-basis} they agree once they agree on the reference tuple $e \circ \varepsilon'$, where $E^{\varepsilon'}$ takes the value $1$; the left side takes the value $B(\eta, E^t)$ by the sign-free commutativity (Lemma \ref{lem:wedge-comm-sum}), and $\langle E^t, {*}\eta \rangle_e = ({*}\eta)(e \circ t) = B(\eta, E^t)$ by coefficient extraction and the reproducing property (Lemma \ref{lem:hodge-star-reproducing}). The general $\xi$ follows by expanding $l!\,\xi = \sum_t \xi(e \circ t)\, E^t$ (Lemma \ref{lem:k-covector-wedge-expansion}) and using bilinearity of the wedge and of the inner product.
+\end{proof}
+
+\begin{proposition}[The Hodge Star in the Classical Grading]
+\label{prop:hodge-star-graded}
+\lean{LeeLib.Ch02.hodgeStar, LeeLib.Ch02.hodgeStar_add, LeeLib.Ch02.hodgeStar_smul, LeeLib.Ch02.wedge_hodgeStar, LeeLib.Ch02.eq_hodgeStar_of_forall_wedge_eq, LeeLib.Ch02.eq_hodgeStar_iff_forall_wedge_eq, LeeLib.Ch02.innerForms_hodgeStar}
+\leanok
+\uses{prop:hodge-star-pointwise,prop:hodge-star-isometry,def:wedge-alternating-forms}
+Specialize the pointwise star to the classical grading: for an orthonormal basis $(e_m)$ of $V$ indexed by $\{1, \ldots, n\}$ and a splitting $k + l = n$ (carried as a hypothesis, so that $n - k$ never appears), take $\iota_a = \{1,\ldots,k\}$, $\iota_b = \{1,\ldots,l\}$ and the block structure that concatenates: $\varepsilon(i) = i$ on the first block and $\varepsilon(j) = k + j$ on the second. This defines a linear map ${*} \colon \Lambda^k(V^*) \to \Lambda^{n-k}(V^*)$ with
+\[
+\omega \wedge {*}\eta = \langle \omega, \eta \rangle_e\;\big(e^1 \wedge \cdots \wedge e^n\big) \qquad \text{for all } \omega \in \Lambda^k(V^*),
+\]
+now an equality of $(k+l)$-forms with the wedge of Lee's determinant convention; ${*}\eta$ is the unique $(n-k)$-covector with this property, and $\langle {*}\omega, {*}\eta \rangle_e = \langle \omega, \eta \rangle_e$.
+\end{proposition}
+\begin{proof}
+\leanok
+The wedge in degree $k + l$ is by definition the wedge over $\iota_a \sqcup \iota_b$ re-indexed along the concatenation bijection $\{1,\ldots,k\} \sqcup \{1,\ldots,l\} \to \{1,\ldots,k+l\}$, and re-indexing is injective and commutes with scalar multiples; under it the reference volume form of the block structure becomes $e^1 \wedge \cdots \wedge e^n$. So the characterization, uniqueness and the isometry property transfer verbatim from Propositions \ref{prop:hodge-star-pointwise} and \ref{prop:hodge-star-isometry}.
+\end{proof}
+
+\begin{lemma}[Iterating the Cyclic Rotation]
+\label{lem:finrotate-pow-val}
+\lean{LeeLib.Ch02.finRotate_pow_val}
+\leanok
+Let $\rho \colon \{0, \ldots, n-1\} \to \{0, \ldots, n-1\}$ be the cyclic rotation $i \mapsto i + 1 \pmod n$. Then its $m$-th power sends $i$ to $i + m \pmod n$.
+\end{lemma}
+\begin{proof}
+\leanok
+Induction on $m$: the base case is the identity, and $\rho^{m+1}(i) = \rho(\rho^m(i)) = (i + m) + 1 \equiv i + (m+1) \pmod n$.
+\end{proof}
+
+\begin{lemma}[The Block Swap is a Cyclic Rotation]
+\label{lem:blockswap-eq-rotate}
+\lean{LeeLib.Ch02.blockswap_eq_rotate}
+\leanok
+\uses{lem:finrotate-pow-val}
+With $n = k + l$, identify $\{1,\ldots,n\}$ with $\{1,\ldots,l\} \sqcup \{1,\ldots,k\}$ by concatenation. The permutation obtained by swapping the two blocks before concatenating --- i.e.\ sending the concatenation ordering $(l\text{-block},\, k\text{-block})$ to the ordering $(k\text{-block},\, l\text{-block})$ --- is, transported to $\{1,\ldots,n\}$, the cyclic rotation by $k$.
+\end{lemma}
+\begin{proof}
+\leanok
+On the first ($l$-)block the swap sends position $j$ to $k + j$, and on the second ($k$-)block it sends position $i$ to $i$, read as $(l + i) - l$; both are the effect of adding $k$ modulo $n = k + l$, which is the rotation by $k$ of Lemma \ref{lem:finrotate-pow-val}.
+\end{proof}
+
+\begin{proposition}[The Classical Hodge Involution]
+\label{prop:hodge-star-classical-involution}
+\lean{LeeLib.Ch02.hodgeStar_hodgeStar}
+\leanok
+\uses{prop:hodge-star-graded,prop:hodge-star-involution,lem:wedge-covectors-sign,lem:hodge-star-congr-smul,lem:blockswap-eq-rotate}
+Let $V$ be an $n$-dimensional oriented inner product space and $\omega$ a $k$-covector. Then applying the Hodge star twice gives
+\[
+{*}{*}\omega = (-1)^{k(n-k)}\,\omega.
+\]
+\end{proposition}
+\begin{proof}
+\leanok
+The sign-free involution (Proposition \ref{prop:hodge-star-involution}) gives ${*}_{\varepsilon'}({*}_{\varepsilon}\omega) = \omega$, where $\varepsilon$ is the concatenation block structure and $\varepsilon'$ is the mirrored one. The classical second star ${*}_{\varepsilon_2}$ uses the concatenation block structure of $\Lambda^{n-k}$; it differs from ${*}_{\varepsilon'}$ by the sign of the permutation carrying $\varepsilon_2$ to $\varepsilon'$, which by Lemma \ref{lem:blockswap-eq-rotate} is the rotation by $k$. That rotation is the $k$-th power of the elementary cyclic rotation, whose sign is $(-1)^{n-1}$, so its sign is $(-1)^{k(n-1)} = (-1)^{k(n-k)}$ (the difference $k(n-1) - k(n-k) = k(k-1)$ is even). By Lemma \ref{lem:wedge-covectors-sign} the two reference volume forms differ by this sign, and by Lemma \ref{lem:hodge-star-congr-smul} the two stars therefore differ by it: ${*}_{\varepsilon_2} = (-1)^{k(n-k)}\,{*}_{\varepsilon'}$. Composing with the sign-free involution and using $\big((-1)^{k(n-k)}\big)^2 = 1$ gives ${*}{*}\omega = (-1)^{k(n-k)}\omega$.
+\end{proof}
+
 \begin{exercise}\label{prob:hodge-star-operator}\dcref{ch2:2-18}
+\lean{LeeLib.Ch02.RiemannianMetric.riemannian_hodgeStar, LeeLib.Ch02.RiemannianMetric.contMDiff_hodgeStarAt, LeeLib.Ch02.RiemannianMetric.hodgeStarAt_add, LeeLib.Ch02.RiemannianMetric.hodgeStarAt_smul}
+\leanok
+\uses{prop:hodge-star-pointwise,prop:hodge-star-graded,prop:hodge-star-degree-zero,prop:hodge-star-involution,prop:hodge-star-classical-involution,prob:fiber-metric-exterior-powers}
 Let $(M,g)$ be an oriented Riemannian $n$-manifold.
 
 (a) For each $k = 0, \ldots, n$, show that there is a unique smooth bundle homomorphism $*: \Lambda^k T^* M \to \Lambda^{n-k}T^*M$, called the \textbf{Hodge star operator}, satisfying
@@ -7115,6 +7568,9 @@ in terms of an orthonormal coframe $(e^i)$, where the indices $j_1,\ldots,j_{n-k
 \end{exercise}
 
 \begin{exercise}\label{prob:hodge-star-euclidean}\dcref{ch2:2-19}
+\lean{LeeLib.Ch02.hodgeStar_basisFun_single, LeeLib.Ch02.hodgeStar_basisFun_pair}
+\leanok
+\uses{prop:hodge-star-euclidean-single,prop:hodge-star-euclidean-pair}
 Regard $\mathbb{R}^n$ as a Riemannian manifold with the Euclidean metric and the standard orientation, and let $*$ denote the Hodge star operator defined in Problem~2-18.
 
 (a) Calculate $* dx^i$ for $i = 1, \ldots, n$.
@@ -7122,7 +7578,158 @@ Regard $\mathbb{R}^n$ as a Riemannian manifold with the Euclidean metric and the
 (b) Calculate $*(dx^i \wedge dx^j)$ in the case $n = 4$.
 \end{exercise}
 
+\begin{lemma}[A Wedge with a Repeated Covector Vanishes]
+\label{lem:wedge-covectors-repeat-zero}
+\lean{LeeLib.Ch02.wedgeCovectors_eq_zero_of_repeat}
+\leanok
+\uses{def:wedge-covectors}
+Let $(f_i)_{i \in I}$ be a finite family of covectors on a vector space $V$. If two of the covectors coincide --- $f_p = f_q$ with $p \neq q$ --- then their wedge vanishes: $f_{i_1} \wedge \cdots \wedge f_{i_n} = 0$.
+\end{lemma}
+\begin{proof}
+\leanok
+The wedge evaluated on any tuple $(v_j)$ is the determinant of $\big[f_i(v_j)\big]_{i,j}$. As $f_p = f_q$, rows $p$ and $q$ of this matrix are equal, so the determinant is $0$ for every $(v_j)$, whence the wedge is the zero form.
+\end{proof}
+
+\begin{proposition}[The Hodge Star of a Coordinate Covector]
+\label{prop:hodge-star-euclidean-single}
+\lean{LeeLib.Ch02.hodgeStar_flatL_single, LeeLib.Ch02.hodgeStar_basisFun_single}
+\leanok
+\dcref{ch2:2-19}
+\uses{prop:hodge-star-graded,prop:hodge-star-pointwise,lem:wedge-covectors-sign,lem:wedge-covectors-repeat-zero,def:inner-k-covectors,def:wedge-covectors}
+Let $V$ be an oriented $n$-dimensional inner product space with an oriented orthonormal basis $(E_0, \ldots, E_{n-1})$ and dual coframe $(e^0, \ldots, e^{n-1})$. Then, for each $i$,
+\[
+{*}\, e^i \;=\; (-1)^{i}\; e^{i_1} \wedge \cdots \wedge e^{i_{n-1}},
+\]
+where $(i_1, \ldots, i_{n-1})$ enumerates $\{0, \ldots, n-1\} \setminus \{i\}$ in increasing order (the sign is written for the $0$-based indexing of the tuple; in Lee's $1$-based convention it reads $(-1)^{i-1}$). In particular, taking $V = \mathbb{R}^n$ with the Euclidean metric, the standard basis and the standard orientation, this is Lee's formula for $* dx^i$.
+\end{proposition}
+\begin{proof}
+\leanok
+\uses{prop:hodge-star-graded,prop:hodge-star-pointwise,lem:wedge-covectors-sign,lem:wedge-covectors-repeat-zero,def:inner-k-covectors,def:wedge-covectors}
+By the uniqueness clause of the Hodge star (Proposition \ref{prop:hodge-star-pointwise}) it suffices to verify the characterizing identity $\omega \wedge \big((-1)^i\, e^{\hat\imath}\big) = \langle \omega, e^i\rangle\, dV$ for every $1$-form $\omega$, where $e^{\hat\imath} = e^{i_1} \wedge \cdots \wedge e^{i_{n-1}}$ and $dV = e^0 \wedge \cdots \wedge e^{n-1}$. Both sides are linear in $\omega$, and the coframe covectors span the $1$-forms (the case $k=1$ of the expansion $k!\,\omega = \sum_u \omega(E_{u}) \, e^{u}$), so it suffices to check $\omega = e^j$ for each $j$.
+
+For $\omega = e^j$ the right-hand coefficient $\langle e^j, e^i\rangle$ is the Kronecker delta $\delta^j_i$ by orthonormality and (2.26). On the left, $e^j \wedge e^{\hat\imath}$ is the wedge of the concatenated family $(e^j, e^{i_1}, \ldots, e^{i_{n-1}})$. If $j = i$ this family is $(e^i, e^{i_1}, \ldots, e^{i_{n-1}})$, a reordering of $(e^0, \ldots, e^{n-1})$ by the cyclic permutation carrying $i$ to the front; its sign is $(-1)^{i}$ (Lemma \ref{lem:wedge-covectors-sign} with $\pi = \mathrm{cycleRange}(i)$), so $e^i \wedge e^{\hat\imath} = (-1)^i\, dV$ and the two factors of $(-1)^i$ cancel to give $dV = \delta^i_i\, dV$. If $j \neq i$ then $e^j$ already occurs among the $e^{i_r}$, so the concatenated family repeats a covector and its wedge vanishes (Lemma \ref{lem:wedge-covectors-repeat-zero}), matching $\delta^j_i\, dV = 0$.
+\end{proof}
+
+\begin{lemma}[The Sign Law for Wedges of Covectors]
+\label{lem:wedge-covectors-sign}
+\lean{LeeLib.Ch02.wedgeCovectors_comp_perm}
+\leanok
+\uses{def:wedge-covectors}
+Let $(f_i)_{i \in I}$ be a finite family of covectors on a vector space $V$ and let $\pi$ be a permutation of the index set $I$. Then re-indexing the family by $\pi$ multiplies its wedge by the sign of $\pi$:
+\[
+f_{\pi(i_1)} \wedge \cdots \wedge f_{\pi(i_n)} = (\operatorname{sgn} \pi)\; f_{i_1} \wedge \cdots \wedge f_{i_n}.
+\]
+\end{lemma}
+\begin{proof}
+\leanok
+By definition the wedge $f_{i_1} \wedge \cdots \wedge f_{i_n}$, evaluated on a tuple $(v_j)$, is the determinant of the matrix $\big[f_i(v_j)\big]_{i,j}$. Re-indexing the family by $\pi$ permutes the rows of this matrix by $\pi$, and a determinant is multiplied by $\operatorname{sgn} \pi$ under a permutation of its rows.
+\end{proof}
+
+\begin{lemma}[Frame Independence up to a Scalar]
+\label{lem:hodge-star-congr-smul}
+\lean{LeeLib.Ch02.hodgeStarSum_congr_smul}
+\leanok
+\uses{prop:hodge-star-pointwise,def:inner-k-covectors}
+Let $(e, \varepsilon)$ and $(f, \zeta)$ be two orthonormal bases with block structures on $V$, and suppose their reference volume forms are proportional by a scalar $s$, i.e.\ $e^{\varepsilon(1)} \wedge \cdots \wedge e^{\varepsilon(n)} = s\,\big(f^{\zeta(1)} \wedge \cdots \wedge f^{\zeta(n)}\big)$. Then the associated Hodge stars satisfy ${*}_{(e,\varepsilon)}\,\eta = s\,\big({*}_{(f,\zeta)}\,\eta\big)$ for every $\eta$.
+\end{lemma}
+\begin{proof}
+\leanok
+The star ${*}_{(e,\varepsilon)}\eta$ is characterized by $\omega \wedge {*}_{(e,\varepsilon)}\eta = \langle \omega, \eta\rangle\;(e^{\varepsilon} \wedge \cdots)$ for all $\omega$. By hypothesis the right-hand volume form is $s\,(f^{\zeta} \wedge \cdots)$, and since the inner product on covectors is frame-independent and linear, $\langle \omega, \eta\rangle\, s = \langle \omega, s\eta\rangle$. Thus $\omega \wedge {*}_{(e,\varepsilon)}\eta = \langle \omega, s\eta\rangle\;(f^{\zeta} \wedge \cdots)$ for all $\omega$, so by the uniqueness clause of Proposition \ref{prop:hodge-star-pointwise} (applied in the block structure $(f,\zeta)$) we get ${*}_{(e,\varepsilon)}\eta = {*}_{(f,\zeta)}(s\eta) = s\,\big({*}_{(f,\zeta)}\eta\big)$.
+\end{proof}
+
+\begin{proposition}[The Hodge Star of an Ordered Basis Wedge]
+\label{prop:hodge-star-basis-wedge}
+\lean{LeeLib.Ch02.hodgeStar_wedgeCovectors_perm}
+\leanok
+\uses{prop:hodge-star-pointwise,prop:hodge-star-graded,lem:wedge-covectors-sign,lem:wedge-covectors-repeat-zero,def:wedge-covectors,def:inner-k-covectors}
+Let $V$ be an oriented $n$-dimensional inner product space with an oriented orthonormal basis $(E_0,\ldots,E_{n-1})$ and dual coframe $(e^0,\ldots,e^{n-1})$, and let $\sigma$ be a permutation of $\{0,\ldots,n-1\}$. Then for every $k$ with $k + l = n$,
+\[
+{*}\bigl(e^{\sigma(0)} \wedge \cdots \wedge e^{\sigma(k-1)}\bigr)
+  = (\operatorname{sgn}\sigma)\; e^{\sigma(k)} \wedge \cdots \wedge e^{\sigma(n-1)}.
+\]
+This is the general basis-wedge form of the Hodge star behind Lee's hint; the case $k = 1$ is Proposition \ref{prop:hodge-star-euclidean-single}.
+\end{proposition}
+\begin{proof}
+\leanok
+\uses{prop:hodge-star-pointwise,lem:wedge-covectors-sign,lem:wedge-covectors-repeat-zero,def:wedge-covectors,def:inner-k-covectors}
+By the uniqueness clause of the Hodge star (Proposition \ref{prop:hodge-star-pointwise}) it suffices to verify the characterizing identity $\omega \wedge \bigl((\operatorname{sgn}\sigma)\,e^{\sigma(k)} \wedge \cdots\bigr) = \langle \omega, e^{\sigma(0)} \wedge \cdots \wedge e^{\sigma(k-1)}\rangle\, dV$ for every $k$-form $\omega$, where $dV = e^0 \wedge \cdots \wedge e^{n-1}$. Both sides are linear in $\omega$ and the coframe wedges $E^u = e^{u(0)} \wedge \cdots \wedge e^{u(k-1)}$ span the $k$-forms, so it suffices to take $\omega = E^u$ for each index map $u$. Write $a = \sigma \circ \iota_1$ and $b = \sigma \circ \iota_2$ for the two blocks, so that $(a,b)$ enumerates $\{0,\ldots,n-1\}$; the right-hand coefficient is $\langle E^u, E^a\rangle = \det\bigl(\langle e^{a(i)}, e^{u(j)}\rangle\bigr)$, the determinant of the $\{a(i) = u(j)\}$-matrix by orthonormality, and the left-hand wedge is $(\operatorname{sgn}\sigma)$ times the coframe wedge indexed by the concatenation $w = (u, b)$. If $u$ reindexes the first block, $u = a \circ \varphi$ for a permutation $\varphi$, then the determinant is the permutation determinant $\operatorname{sgn}\varphi$, while $w = (a\circ\varphi, b)$ reorders the full coframe by a permutation of sign $\operatorname{sgn}\sigma \cdot \operatorname{sgn}\varphi$ (Lemma \ref{lem:wedge-covectors-sign}), and the two factors $\operatorname{sgn}\sigma$ cancel, leaving $\operatorname{sgn}\varphi \cdot dV$ on both sides. Otherwise $u$ repeats an index or takes a value outside the first block: then $w$ repeats a coframe index, so the wedge vanishes (Lemma \ref{lem:wedge-covectors-repeat-zero}), and the matrix has two equal columns or a zero column, so the determinant vanishes.
+\end{proof}
+
+\begin{proposition}[The Hodge Star is an Involution on 2-Forms of a 4-Space]
+\label{prop:hodge-star-two-involution}
+\lean{LeeLib.Ch02.hodgeStar_hodgeStar_two}
+\leanok
+\uses{prop:hodge-star-classical-involution}
+Let $V$ be a $4$-dimensional oriented inner product space. Then the Hodge star ${*} \colon \Lambda^2(V^*) \to \Lambda^2(V^*)$ satisfies ${*}{*}\omega = \omega$ for every $2$-covector $\omega$.
+\end{proposition}
+\begin{proof}
+\leanok
+This is the case $n = 4$, $k = 2$ of the classical involution ${*}{*} = (-1)^{k(n-k)}$ (Proposition \ref{prop:hodge-star-classical-involution}), and here $(-1)^{k(n-k)} = (-1)^{2 \cdot 2} = 1$.
+\end{proof}
+
+\begin{proposition}[The Hodge Star of a Coordinate $2$-Covector on a $4$-Space]
+\label{prop:hodge-star-euclidean-pair}
+\lean{LeeLib.Ch02.hodgeStar_wedgeCovectors_pair, LeeLib.Ch02.hodgeStar_basisFun_pair, LeeLib.Ch02.hodgeStar_e01, LeeLib.Ch02.hodgeStar_e02, LeeLib.Ch02.hodgeStar_e03, LeeLib.Ch02.hodgeStar_e23, LeeLib.Ch02.hodgeStar_e13, LeeLib.Ch02.hodgeStar_e12}
+\leanok
+\dcref{ch2:2-19}
+\uses{prop:hodge-star-basis-wedge,prop:hodge-star-two-involution}
+Let $V$ be an oriented $4$-dimensional inner product space with an oriented orthonormal coframe $(e^0,e^1,e^2,e^3)$, and let $\sigma$ be a permutation of $\{0,1,2,3\}$. Then ${*}(e^{\sigma(0)} \wedge e^{\sigma(1)}) = (\operatorname{sgn}\sigma)\, e^{\sigma(2)} \wedge e^{\sigma(3)}$. In particular, on $\mathbb{R}^4$ with the Euclidean metric and the standard orientation, the six coordinate $2$-covectors are sent to
+\[
+{*}(e^0 \wedge e^1) = e^2 \wedge e^3,\qquad
+{*}(e^0 \wedge e^2) = -\,e^1 \wedge e^3,\qquad
+{*}(e^0 \wedge e^3) = e^1 \wedge e^2,
+\]
+\[
+{*}(e^2 \wedge e^3) = e^0 \wedge e^1,\qquad
+{*}(e^1 \wedge e^3) = -\,e^0 \wedge e^2,\qquad
+{*}(e^1 \wedge e^2) = e^0 \wedge e^3,
+\]
+where $e^i = dx^i$; in Lee's $1$-based convention this reads ${*}(dx^1 \wedge dx^2) = dx^3 \wedge dx^4$, and so on.
+\end{proposition}
+\begin{proof}
+\leanok
+\uses{prop:hodge-star-basis-wedge,prop:hodge-star-two-involution}
+The general formula is the case $n = 4$, $k = 2$ of Proposition \ref{prop:hodge-star-basis-wedge}. The three values ${*}(e^0\wedge e^1)$, ${*}(e^0\wedge e^2)$, ${*}(e^0\wedge e^3)$ are the permutations $\sigma = \mathrm{id}$, $(1\,2)$, $(1\,3\,2)$, of signs $+1$, $-1$, $+1$; the remaining three follow by applying ${*}$ and using ${*}{*} = \mathrm{id}$ on $\Lambda^2$ of a $4$-space (Proposition \ref{prop:hodge-star-two-involution}).
+\end{proof}
+
+\begin{proposition}[Self-Dual / Anti-Self-Dual Decomposition]
+\label{prop:self-dual-decomposition}
+\lean{LeeLib.Ch02.selfDualForms, LeeLib.Ch02.antiSelfDualForms, LeeLib.Ch02.isCompl_selfDual_antiSelfDual, LeeLib.Ch02.existsUnique_selfDual_add_antiSelfDual}
+\leanok
+\uses{prop:hodge-star-two-involution}
+Let $V$ be a $4$-dimensional oriented inner product space. Call a $2$-covector $\omega$ \textbf{self-dual} if ${*}\omega = \omega$ and \textbf{anti-self-dual} if ${*}\omega = -\omega$. The self-dual and anti-self-dual subspaces of $\Lambda^2(V^*)$ are complementary: every $2$-covector is uniquely the sum of a self-dual and an anti-self-dual one.
+\end{proposition}
+\begin{proof}
+\leanok
+By Proposition \ref{prop:hodge-star-two-involution} the star is a linear involution ${*}^2 = \mathrm{id}$, so the self-dual and anti-self-dual subspaces are its $+1$ and $-1$ eigenspaces. For existence, $\omega = \tfrac12(\omega + {*}\omega) + \tfrac12(\omega - {*}\omega)$, and applying ${*}$ shows ${*}\big(\tfrac12(\omega + {*}\omega)\big) = \tfrac12({*}\omega + \omega)$ (self-dual) while ${*}\big(\tfrac12(\omega - {*}\omega)\big) = \tfrac12({*}\omega - \omega) = -\tfrac12(\omega - {*}\omega)$ (anti-self-dual). For uniqueness, if $\omega$ is both self-dual and anti-self-dual then $\omega = {*}\omega = -\omega$, so $\omega = 0$; hence the two subspaces meet only in $0$.
+\end{proof}
+
+\begin{proposition}[Self-Dual and Anti-Self-Dual $2$-Forms on $\mathbb{R}^4$]
+\label{prop:self-dual-euclidean}
+\lean{LeeLib.Ch02.selfDual_add_e01_e23, LeeLib.Ch02.selfDual_sub_e02_e13, LeeLib.Ch02.selfDual_add_e03_e12, LeeLib.Ch02.antiSelfDual_sub_e01_e23, LeeLib.Ch02.antiSelfDual_add_e02_e13, LeeLib.Ch02.antiSelfDual_sub_e03_e12}
+\leanok
+\dcref{ch2:2-20}
+\uses{prop:hodge-star-euclidean-pair,prop:self-dual-decomposition}
+Let $V$ be an oriented $4$-dimensional inner product space with an oriented orthonormal coframe $(e^0,e^1,e^2,e^3)$. Then the three $2$-forms
+\[
+e^0 \wedge e^1 + e^2 \wedge e^3, \qquad e^0 \wedge e^2 - e^1 \wedge e^3, \qquad e^0 \wedge e^3 + e^1 \wedge e^2
+\]
+are self-dual, and the three $2$-forms
+\[
+e^0 \wedge e^1 - e^2 \wedge e^3, \qquad e^0 \wedge e^2 + e^1 \wedge e^3, \qquad e^0 \wedge e^3 - e^1 \wedge e^2
+\]
+are anti-self-dual. On $\mathbb{R}^4$ ($e^i = dx^i$) these six forms are Lee's self-dual and anti-self-dual $2$-forms in standard coordinates.
+\end{proposition}
+\begin{proof}
+\leanok
+\uses{prop:hodge-star-euclidean-pair,prop:self-dual-decomposition}
+Apply the Hodge star to each summand using Proposition \ref{prop:hodge-star-euclidean-pair}. For example ${*}(e^0\wedge e^1 + e^2\wedge e^3) = e^2\wedge e^3 + e^0\wedge e^1$, which equals the original form, so it is self-dual; and ${*}(e^0\wedge e^2 - e^1\wedge e^3) = -\,e^1\wedge e^3 - (-\,e^0\wedge e^2) = e^0\wedge e^2 - e^1\wedge e^3$, again self-dual. The anti-self-dual cases differ only by a sign in the second summand and give ${*}\omega = -\omega$ by the same computation.
+\end{proof}
+
 \begin{exercise}\label{prob:self-dual-anti-self-dual}\dcref{ch2:2-20}
+\lean{LeeLib.Ch02.existsUnique_selfDual_add_antiSelfDual, LeeLib.Ch02.selfDual_add_e01_e23, LeeLib.Ch02.selfDual_sub_e02_e13, LeeLib.Ch02.selfDual_add_e03_e12, LeeLib.Ch02.antiSelfDual_sub_e01_e23, LeeLib.Ch02.antiSelfDual_add_e02_e13, LeeLib.Ch02.antiSelfDual_sub_e03_e12}
+\leanok
+\uses{prop:self-dual-decomposition,prop:self-dual-euclidean}
 Let $M$ be an oriented Riemannian 4-manifold. A 2-form $\omega$ on $M$ is said to be \textbf{self-dual} if $*\omega = \omega$, and \textbf{anti-self-dual} if $*\omega = -\omega$.
 
 (a) Show that every 2-form $\omega$ on $M$ can be written uniquely as a sum of a self-dual form and an anti-self-dual form.
@@ -7278,6 +7885,8 @@ Suppose $(M,g)$ is a (not necessarily connected) Riemannian manifold. Show that 
 \end{exercise}
 
 \begin{exercise}\label{prob:local-isometry-distance}\dcref{ch2:2-31}
+\lean{LeeLib.Ch02.IsLocalIsometry.riemannianEDist_le}
+\leanok
 Suppose $(M,g)$ and $(\tilde{M}, \tilde{g})$ are connected Riemannian manifolds, and $\varphi: M \to \tilde{M}$ is a local isometry. Show that $d_{\tilde{g}}(\varphi(x), \varphi(y)) \leq d_g(x,y)$ for all $x, y \in M$. Give an example to show that equality need not hold. (Used on p. 37.)
 \end{exercise}
 

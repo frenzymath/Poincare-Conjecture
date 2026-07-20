@@ -16,8 +16,8 @@ algebraic operations evaluate to actual numbers on a computable field
 like `ℚ`. Also reusable for Hermitian forms (`𝕜 = ℂ`), quadratic forms,
 positive-definite forms in optimisation, matrix calculus.
 
-Vendored verbatim from the shared OpenGALib core
-(`OpenGALib/Algebraic/BilinearForm/Basic.lean`, identical in the openga
+Vendored verbatim from the shared DoCarmoLib core
+(`DoCarmoLib/Algebraic/BilinearForm/Basic.lean`, identical in the openga
 and DoCarmo projects).
 -/
 

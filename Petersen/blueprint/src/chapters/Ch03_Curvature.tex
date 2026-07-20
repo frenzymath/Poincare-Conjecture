@@ -1407,11 +1407,44 @@ pseudo-Riemannian setting; only formulas involving contractions need modificatio
 \begin{remark}[conjugate versus focal points for an ellipse]
   \label{rem:pet-ch3-conjugate-vs-focal-example}
   \lean{PetersenLib.conjugateVsFocal_ellipse}
+  \leanok
+  % Lean: formalized as elementary plane geometry (Ch03/EllipseEvolute.lean,
+  % conjugateVsFocal_ellipse), which is an honest ALTITUDE DROP: there is no
+  % FocalPoint definition in PetersenLib (Ch03/DistanceFunctions.lean explicitly
+  % punts on it) and no normal-exponential/caustic API, so the illustration is made
+  % precise in the plane and its link to def:pet-ch3-conjugate-focal-point is by
+  % prose, not by a formal dependency.  The three parts are:
+  % centerOfCurvature_ellipse (the centre of curvature at c(t) — where nearby
+  % normals meet, i.e. the conjugate point along the normal — is the evolute point),
+  % mem_ellipseNormalLine_axis + axis_inter_eq (the normals at t and -t both meet
+  % the major axis at exactly ((a^2-b^2)/a)cos t), and evolute_cusp_lt_focus (the
+  % correction below).  The sqrt-free form of the centre of curvature keeps
+  % Real.sqrt out of the computation entirely.
   \uses{def:pet-ch3-conjugate-focal-point}
-  For the lower half of an ellipse, conjugate points occur along its evolute.
-  For the entire ellipse, the focal set is the segment between the two focal
-  points of the ellipse, since the normal lines from the top and bottom arcs
-  intersect along this segment.
+  For the lower half of an ellipse $c(t)=(a\cos t,b\sin t)$, $0<b<a$, conjugate
+  points occur along its evolute
+  $e(t)=\big(\tfrac{a^2-b^2}{a}\cos^3t,\ \tfrac{b^2-a^2}{b}\sin^3t\big)$: the
+  centre of curvature at $c(t)$, which is where the normals infinitesimally near
+  $c(t)$ meet, is $e(t)$. For the entire ellipse, the normal lines from the top and
+  bottom arcs (the parameters $t$ and $-t$) intersect on the major axis, at the
+  single point $\big(\tfrac{a^2-b^2}{a}\cos t,0\big)$; so the focal set is the
+  segment swept by these, namely the segment between the two \emph{cusps of the
+  evolute} on the major axis, $e(0)=\big(\tfrac{a^2-b^2}{a},0\big)$ and
+  $e(\pi)=\big(-\tfrac{a^2-b^2}{a},0\big)$.
+
+  \emph{Correction.} The printed source says instead that this focal set ``is the
+  line between the focal points of the ellipse''. That is false: the foci lie at
+  $\pm\sqrt{a^2-b^2}$, whereas the segment just described has endpoints
+  $\pm\tfrac{a^2-b^2}{a}$, and
+  \[
+    \frac{a^2-b^2}{a}<\sqrt{a^2-b^2}\qquad\text{for every }0<b<a
+  \]
+  (equivalently $c^2/a<c$ for $c=\sqrt{a^2-b^2}$, since $c<a$). So the focal set is
+  strictly contained in the segment joining the foci and never equals it. The
+  geometry and Fig.~3.1 of the source are correct — the segment drawn there is
+  visibly shorter than the distance between the foci — but the prose identification
+  of its endpoints conflates the Riemannian \emph{focal point} just defined (where
+  integral curves of $\nabla r$ meet) with the two conic foci.
   \source{petersen:page-0120}
 \end{remark}
 
@@ -1558,7 +1591,13 @@ reference for foundational material).
 \begin{remark}[Exercise 3.4.9]
   \label{rem:pet-ch3-ex-9}
   \lean{PetersenLib.exercise3_4_9}
-  \uses{def:pet-ch3-sectional-curvature}
+  \leanok
+  % Lean: `X`, `Y` are realized as the lifts `liftFst X (p₁,p₂) = (X p₁, 0)` and
+  % `liftSnd Y (p₁,p₂) = (0, Y p₂)` under `T_{(p₁,p₂)}(M×N) = T_{p₁}M × T_{p₂}N`.
+  % Both conjuncts are proved: `∇_{liftFst X}(liftSnd Y) = 0` and `sec(X,Y) = 0`.
+  % The vanishing is of the MIXED curvatures (the `X`–`Y` planes); the factors keep
+  % their own curvature, which is what `cov_liftFst_liftFst` (the splitting of ∇) records.
+  \uses{def:pet-ch3-sectional-curvature,rem:pet-ch1-ex-1}
   For Riemannian manifolds $(M,g_M),(N,g_N)$ with product metric
   $(M\times N,g_M+g_N)$, and $X$ a vector field on $M$, $Y$ on $N$ regarded on
   $M\times N$, show $\nabla_XY=0$; conclude $\sec(X,Y)=0$, so product metrics
@@ -1772,9 +1811,9 @@ reference for foundational material).
   $\partial P^i_k/\partial x^j+(\partial P^i_k/\partial u^l)P^l_j=\partial
   P^i_j/\partial x^k+(\partial P^i_j/\partial u^l)P^l_k$. (2) Conversely show
   the integrability conditions suffice (equivalent to the Frobenius theorem). (3)
-  For the system $\partial U^i_k/\partial x^j=\Gamma^i_{kj}U^i_j$ on a Riemannian
-  $n$-manifold, show the integrability conditions are equivalent to
-  $R^i_{kij}=0$. (4) Show a flat Riemannian manifold admits Cartesian
+  For the system $\partial U^i_j/\partial x^k=\sum_s\Gamma^s_{kj}U^i_s$ on a
+  Riemannian $n$-manifold, show the integrability conditions are equivalent to
+  $R^s_{klj}=0$. (4) Show a flat Riemannian manifold admits Cartesian
   coordinates, via $\partial u^i/\partial x^k=U^i_k$ with appropriate initial
   values, checking $g^{kl}(\partial u^i/\partial x^k)(\partial u^j/\partial x^l)$
   is constant using \cref{prop:pet-ch3-curvature-coordinate-formula}.
@@ -1784,29 +1823,73 @@ reference for foundational material).
 \begin{remark}[Exercise 3.4.21 — fundamental theorem of (hyper-)surface theory]
   \label{rem:pet-ch3-ex-21}
   \lean{PetersenLib.exercise3_4_21}
+  \leanok
+  % Lean: parts (1)-(2) formalized (Ch03/HypersurfaceFundamentalTheorem.lean,
+  % exercise3_4_21) — the Gauss formula (gaussFormula), whose content is the
+  % codimension-one decomposition II_{jk} = -Pi_{jk}*N (secondFund_eq_smul_normal,
+  % from a spanning hypothesis + nondegeneracy of the ambient form), the Gauss
+  % equation (gaussEquation_hypersurface) and the Codazzi equation
+  % (codazziEquation), the latter being pd3_symm (Clairaut) read in the normal
+  % direction.  CAVEAT on (2): Petersen asks for an EQUIVALENCE, and only the
+  % forward direction is proved — that an actual immersion satisfies both equations
+  % (Clairaut ==> Gauss and Codazzi).  The reverse (Gauss-Codazzi ==> integrable) is
+  % the same Frobenius statement as part (3) and is not formalized.
+  % Parts (3)-(4) are the *existence* (Bonnet) statements —
+  % reconstructing an immersion from a Gauss-Codazzi-compatible (g,Pi), and
+  % realizing a constant-curvature metric inside a sphere — and need an
+  % integral-manifold / Frobenius PDE-existence theorem, absent from Mathlib and
+  % PetersenLib (the same blocker rem:pet-ch3-ex-20 records for its part (2)), and
+  % are not formalized.  The converse direction of (4) IS formalized, as
+  % umbilic_constantCurvature: an immersion whose normal is the position field
+  % N = R^{-1}F has Pi = R^{-1}g and hence constant curvature R^{-2}.
   \uses{prop:pet-ch3-curvature-coordinate-formula,thm:pet-ch3-tangential-curvature-equation,thm:pet-ch3-normal-curvature-equation}
   For a Riemannian immersion $F=(u^1,\dots,u^{n+1}):M^n\hookrightarrow\mathbb
   R^{n+1}$, $U^i_k=\partial u^i/\partial x^k$: (1) show
-  $\partial U^i_j/\partial x^k=\Gamma^i_{kj}U^i_j-\Pi_{jk}N^i$ for a unit normal
+  $\partial U^i_j/\partial x^k=\sum_s\Gamma^s_{kj}U^i_s-\Pi_{jk}N^i$ for a unit normal
   $N=N^i\partial/\partial u^i$ and $\Pi_{jk}=\Pi(\partial_j,\partial_k)=g(\nabla_jN,\partial_k)$;
   (2) show the integrability conditions are equivalent to the Gauss and Codazzi
-  equations, $R_{ikij}=\Pi_{ij}\Pi_{kl}-\Pi_{ik}\Pi_{jl}$; (3) conversely, given
+  equations, $R_{ijkl}=\Pi_{jk}\Pi_{il}-\Pi_{ik}\Pi_{jl}$ and
+  $(\nabla_i\Pi)_{jk}=(\nabla_j\Pi)_{ik}$; (3) conversely, given
   $g_{ij}$ and symmetric $\Pi_{ij}$ satisfying Gauss--Codazzi, show a local
   Riemannian immersion with second fundamental form $\Pi_{ij}$ exists; (4) for a
   metric of constant curvature $R^{-2}>0$, show there is a local Riemannian
   immersion into $\mathbb R^{n+1}$ landing in a sphere of radius $R$ (with unit
   normal $N=\pm R^{-1}F$).
+
+  \emph{Indices.} The curvature equation in (2) is written here in the convention
+  of \cref{thm:pet-ch3-tangential-curvature-equation}, with which it agrees: at a
+  flat ambient that theorem reads $R^H(X,Y,Z,W)=\Pi(X,W)\Pi(Y,Z)-\Pi(X,Z)\Pi(Y,W)$,
+  i.e. $R_{ijkl}=\Pi_{il}\Pi_{jk}-\Pi_{ik}\Pi_{jl}$. The printed source displays
+  it as $R_{iklj}=\Pi_{ij}\Pi_{kl}-\Pi_{ik}\Pi_{jl}$, whose right-hand side is not
+  antisymmetric in any pair of slots and so cannot be a curvature tensor as
+  written; its first term matches, its second does not.
   \source{petersen:page-0126,petersen:page-0127}
 \end{remark}
 
 \begin{remark}[Exercise 3.4.22]
   \label{rem:pet-ch3-ex-22}
   \lean{PetersenLib.exercise3_4_22}
+  \leanok
+  % Lean: parts (1)-(2) formalized (Ch03/HypersurfaceFundamentalTheorem.lean,
+  % exercise3_4_22), as the eps = -1 case of the same theorems that give
+  % exercise3_4_21 at eps = +1: the ambient form enters the whole coordinate
+  % immersion layer (Ch03/EuclideanImmersionCurvature.lean) only as a symmetric
+  % nondegenerate bilinear form B, so Minkowski space is that layer at
+  % B = minkowskiForm (Ch01/Minkowski.lean) and the only difference from the
+  % Euclidean case is the scalar B(N,N) = -1, which flips the sign of the Gauss
+  % equation and leaves Codazzi untouched.  The characterization of H^n(R) is the
+  % eps = -1 case of umbilic_constantCurvature: an immersion with N = +-R^{-1}F has
+  % constant curvature -R^{-2}.  As in rem:pet-ch3-ex-21, the *existence* half —
+  % that every metric of constant curvature -R^{-2} is locally realized this way —
+  % needs Frobenius and is not formalized.
   \uses{rem:pet-ch3-ex-21}
   Repeat \cref{rem:pet-ch3-ex-21} for an immersion $F:M^n\hookrightarrow\mathbb
   R^{n,1}$ with normal $N$ satisfying $|N|^2=-1$, obtaining a local
   characterization of the hyperbolic spaces $H^n(R)$ as the local model of
-  constant curvature $-R^{-2}$ (with unit normal $N=\pm R^{-1}F$).
+  constant curvature $-R^{-2}$ (with unit normal $N=\pm R^{-1}F$). Only the sign
+  $|N|^2=-1$ changes: the Gauss equation of (2) becomes
+  $R_{ijkl}=-(\Pi_{jk}\Pi_{il}-\Pi_{ik}\Pi_{jl})$, while the Codazzi equation
+  $(\nabla_i\Pi)_{jk}=(\nabla_j\Pi)_{ik}$ is unchanged.
   \source{petersen:page-0127}
 \end{remark}
 

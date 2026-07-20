@@ -67,6 +67,41 @@ theorem energyFunctional_nonneg (g : RiemannianMetric I M) (γ : ℝ → M) {a b
   mul_nonneg (by norm_num)
     (intervalIntegral.integral_nonneg hab fun t _ => curveSpeedSq_nonneg (I := I) g γ t)
 
+/-! ## Additivity over subintervals
+
+The energy is an integral, so it adds over adjacent subintervals.  This is used
+whenever a curve is cut at the times where it is only piecewise smooth, or at the
+times where a variation leaves one chart for the next — the first variation formula
+does it once, and Ch. 6's second variation does it again. -/
+
+/-- **Math.** **Additivity of the energy**: `E(γ)|_a^b + E(γ)|_b^c = E(γ)|_a^c`, for a
+curve whose squared speed is integrable on each of the two pieces.  The hypotheses are
+exactly what `ContMDiffOn.intervalIntegrable_curveSpeedSq` supplies for a smooth curve.
+Note `a ≤ b ≤ c` is *not* required: interval integrals are signed, so the identity holds
+for any three times. -/
+theorem energyFunctional_add (g : RiemannianMetric I M) (γ : ℝ → M) {a b c : ℝ}
+    (hab : IntervalIntegrable (curveSpeedSq (I := I) g γ) MeasureTheory.volume a b)
+    (hbc : IntervalIntegrable (curveSpeedSq (I := I) g γ) MeasureTheory.volume b c) :
+    energyFunctional (I := I) g γ a b + energyFunctional (I := I) g γ b c
+      = energyFunctional (I := I) g γ a c := by
+  simp only [energyFunctional_def]
+  rw [← mul_add, intervalIntegral.integral_add_adjacent_intervals hab hbc]
+
+/-- **Math.** **Additivity of the energy over a partition** `u 0 < u 1 < ⋯ < u n`: the
+energies of the pieces sum to the energy of the whole.  This is the form the variation
+formulas need, where the partition comes either from the curve's smoothness pieces or from
+a chart-adapted subdivision of the time interval. -/
+theorem energyFunctional_sum_range (g : RiemannianMetric I M) (γ : ℝ → M) {n : ℕ} {u : ℕ → ℝ}
+    (hint : ∀ k < n, IntervalIntegrable (curveSpeedSq (I := I) g γ) MeasureTheory.volume
+      (u k) (u (k + 1))) :
+    (∑ i ∈ Finset.range n, energyFunctional (I := I) g γ (u i) (u (i + 1)))
+      = energyFunctional (I := I) g γ (u 0) (u n) := by
+  simp only [energyFunctional_def]
+  rw [← Finset.mul_sum]
+  congr 1
+  exact intervalIntegral.sum_integral_adjacent_intervals (a := u)
+    (μ := MeasureTheory.volume) (n := n) hint
+
 section Boundaryless
 
 variable [I.Boundaryless]

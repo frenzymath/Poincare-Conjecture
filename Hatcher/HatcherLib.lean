@@ -8,4 +8,7 @@ import HatcherLib.Ch0.HomotopyExtension
 import HatcherLib.Ch0.QuotientContractible
 import HatcherLib.Ch0.HomotopyExtensionRel
 import HatcherLib.Ch0.MappingCylinder
+import HatcherLib.Ch0.MappingCylinderHEP
 import HatcherLib.Ch0.MappingCylinderHomotopyEquiv
+import HatcherLib.Ch0.AttachingSpace
+import HatcherLib.Ch0.AttachingHomotopyEquiv

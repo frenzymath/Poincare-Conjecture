@@ -1,7 +1,7 @@
-import PetersenLib.Vendored.OpenGA.Geodesic.MaximalInterval
-import PetersenLib.Vendored.OpenGA.Geodesic.Homogeneity
-import PetersenLib.Vendored.OpenGA.Geodesic.InitialVelocity
-import PetersenLib.Vendored.OpenGA.Geodesic.CovariantDerivative
+import PetersenLib.Riemannian.Geodesic.MaximalInterval
+import PetersenLib.Riemannian.Geodesic.Homogeneity
+import PetersenLib.Riemannian.Geodesic.InitialVelocity
+import PetersenLib.Riemannian.Geodesic.CovariantDerivative
 
 /-!
 # Petersen Ch. 5, §5.2 — Geodesics (GTM 171, 3rd ed.)
@@ -12,7 +12,7 @@ equation in coordinates, geodesics, and geodesic completeness
 `def:pet-ch5-geodesically-complete`).
 
 The chapter's convention (following the chart-local pipeline vendored from the
-do Carmo project in `PetersenLib/Vendored/OpenGA/Geodesic/`) represents a curve
+do Carmo project in `PetersenLib/Riemannian/Geodesic/`) represents a curve
 as a total map `γ : ℝ → M`, restricted to a set of times where a property is
 asserted. At each base time `t` the acceleration is read in the canonical chart
 centred at the foot point `γ t`:

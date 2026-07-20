@@ -106,6 +106,67 @@ theorem isPiecewiseSmoothCurve_of_forall_contMDiffOn {γ : ℝ → M} {n : ℕ}
   have hlast := key n n.lt_succ_self
   exact ⟨hlast, n, u, hmono, rfl, rfl, hsm⟩
 
+/-! ## Restricting a piecewise smooth curve to a subinterval -/
+
+/-- **Math.** Every curve is `C^∞` on a one-point set: there is no room in
+`{x}` for a difference quotient, so the smoothness is vacuous.  This is the
+degenerate case that makes `IsPiecewiseSmoothCurve.mono` work — clamping a
+partition to a subinterval collapses the pieces outside it to single points. -/
+theorem contMDiffOn_singleton_real (γ : ℝ → M) (x : ℝ) :
+    ContMDiffOn 𝓘(ℝ, ℝ) I ∞ γ {x} := by
+  rintro y (rfl : y = x)
+  rw [contMDiffWithinAt_iff]
+  refine ⟨continuousWithinAt_singleton, ?_⟩
+  refine ContDiffWithinAt.mono (s := {(extChartAt 𝓘(ℝ, ℝ) y) y}) contDiffWithinAt_singleton ?_
+  intro z hz
+  simp only [mem_inter_iff, mem_preimage, mem_singleton_iff] at hz
+  simp only [mem_singleton_iff]
+  rw [← hz.1]; simp
+
+/-- **Math.** A piecewise smooth curve restricts to any subinterval: clamp the
+partition into `[c, d]`.  Pieces straddling an endpoint are cut down (still
+smooth, by monotonicity of `ContMDiffOn`); pieces lying entirely outside
+collapse to a single point, where `contMDiffOn_singleton_real` applies. -/
+theorem IsPiecewiseSmoothCurve.mono {γ : ℝ → M} {a b c d : ℝ}
+    (hγ : IsPiecewiseSmoothCurve (I := I) γ a b) (hac : a ≤ c) (hcd : c ≤ d)
+    (hdb : d ≤ b) : IsPiecewiseSmoothCurve (I := I) γ c d := by
+  obtain ⟨-, n, u, hmono, hu0, hulast, hsmooth⟩ := hγ
+  set f : ℝ → ℝ := fun x => max c (min d x) with hf
+  have hfmono : Monotone f := fun x y hxy => max_le_max le_rfl (min_le_min le_rfl hxy)
+  have hfa : f a = c := by
+    simp only [hf, min_eq_right (hac.trans hcd), max_eq_left hac]
+  have hfb : f b = d := by
+    simp only [hf, min_eq_left hdb, max_eq_right hcd]
+  have key : ∀ i : Fin n, ContMDiffOn 𝓘(ℝ, ℝ) I ∞ γ (Icc (f (u i.castSucc)) (f (u i.succ))) := by
+    intro i
+    have hstep : u i.castSucc ≤ u i.succ := hmono (Fin.castSucc_le_succ i)
+    show ContMDiffOn 𝓘(ℝ, ℝ) I ∞ γ (Icc (f (u i.castSucc)) (f (u i.succ)))
+    rcases le_or_gt d (u i.castSucc) with hd | hd
+    · -- the whole piece lies to the right of `d`: it clamps to the point `d`
+      have h1 : f (u i.castSucc) = d := by
+        simp only [hf, min_eq_left hd, max_eq_right hcd]
+      have h2 : f (u i.succ) = d := by
+        simp only [hf, min_eq_left (hd.trans hstep), max_eq_right hcd]
+      rw [h1, h2, Icc_self]
+      exact contMDiffOn_singleton_real (I := I) γ d
+    · rcases le_or_gt (u i.succ) c with hc | hc
+      · -- the whole piece lies to the left of `c`: it clamps to the point `c`
+        have h2 : f (u i.succ) = c := by
+          simp only [hf, min_eq_right (hc.trans hcd), max_eq_left hc]
+        have h1 : f (u i.castSucc) = c := by
+          simp only [hf, min_eq_right (hstep.trans (hc.trans hcd)), max_eq_left (hstep.trans hc)]
+        rw [h1, h2, Icc_self]
+        exact contMDiffOn_singleton_real (I := I) γ c
+      · -- the piece meets `[c, d]`: the clamped piece is a subinterval of it
+        refine (hsmooth i).mono (Icc_subset_Icc ?_ ?_)
+        · simp only [hf, min_eq_right hd.le]
+          exact le_max_right _ _
+        · exact max_le hc.le (min_le_right _ _)
+  have hres := isPiecewiseSmoothCurve_of_forall_contMDiffOn (I := I) (γ := γ)
+    (u := fun i => f (u i)) (hfmono.comp hmono) key
+  simp only [hu0, hulast, hfa, hfb] at hres
+  exact hres
+
 /-! ## Piecewise regular curves -/
 
 /-- **Math.** Petersen Ch. 5, §5.3 (p. 194): a **regular piecewise-`C^∞`

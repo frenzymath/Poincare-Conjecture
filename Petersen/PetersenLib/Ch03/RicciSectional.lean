@@ -112,6 +112,38 @@ theorem bivectorInnerProduct_self_pos (g : RiemannianMetric I M) (p : M)
   rw [bivectorInnerProduct, g.metricInner_comm p w v]
   nlinarith [hq, ha]
 
+/-- **Math.** The complement of `bivectorInnerProduct_self_pos`: the squared area
+`g(v∧w, v∧w) = g(v,v)g(w,w) − g(v,w)²` *vanishes* on linearly **dependent** pairs,
+i.e. exactly in the Cauchy–Schwarz equality case. Proof: `bivectorPairing` of the
+metric is the model algebraic curvature form
+(`isAlgCurvatureForm_bivectorPairing`), and the diagonal of any algebraic
+curvature form kills dependent pairs
+(`IsAlgCurvatureForm.diag_eq_zero_of_not_linearIndependent`), so no separate
+Cauchy–Schwarz argument is needed.
+
+Together with `bivectorInnerProduct_self_pos` this gives the exhaustive
+dichotomy that lets a `by_cases` on `LinearIndependent ℝ ![v, w]` discharge
+*unconditional* statements about `sectionalCurvature`, whose denominator is
+this quantity: on the dependent branch the denominator is `0`, so
+`sectionalCurvature` is `0` by Lean's `div_zero` junk convention. That is the
+route by which `Ch06/SecBounds.lean`'s `HasSecIn.abs_sectionalCurvature_le`
+meets `exercise3_4_30`'s unconditional `∀ v w, |sec| ≤ k` hypothesis. -/
+theorem bivectorInnerProduct_self_eq_zero_of_not_linearIndependent
+    (g : RiemannianMetric I M) (p : M) {v w : TangentSpace I p}
+    (h : ¬ LinearIndependent ℝ ![v, w]) :
+    bivectorInnerProduct g p v w v w = 0 :=
+  (isAlgCurvatureForm_bivectorPairing (g.metricBilin p)
+    (fun a b => g.metricInner_comm p a b)).diag_eq_zero_of_not_linearIndependent h
+
+/-- **Math.** The squared area `g(v∧w, v∧w)` is always nonnegative — the
+(non-strict) Cauchy–Schwarz inequality for `g`, obtained by combining the
+strict positivity on independent pairs with the vanishing on dependent ones. -/
+theorem bivectorInnerProduct_self_nonneg (g : RiemannianMetric I M) (p : M)
+    (v w : TangentSpace I p) : 0 ≤ bivectorInnerProduct g p v w v w := by
+  by_cases h : LinearIndependent ℝ ![v, w]
+  · exact (bivectorInnerProduct_self_pos g p h).le
+  · exact (bivectorInnerProduct_self_eq_zero_of_not_linearIndependent g p h).ge
+
 /-- Finite sums pull out of the first slot of the metric. -/
 theorem metricInner_sum_smul_left (g : RiemannianMetric I M) (p : M)
     {ι : Type*} (s : Finset ι) (c : ι → ℝ) (f : ι → TangentSpace I p)

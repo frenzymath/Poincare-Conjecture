@@ -7,8 +7,8 @@ A Lean 4 formalization following Peter Petersen, *Riemannian Geometry*
 
 ## Layout
 
-- `PetersenLib/Foundations/` — the metric core (vendored from the shared
-  OpenGALib infrastructure, namespace `PetersenLib`): `RiemannianMetric`
+- `PetersenLib/Foundations/` — the metric core (namespace `PetersenLib`,
+  originally derived from the DoCarmo project): `RiemannianMetric`
   (aliasing mathlib's `Bundle.ContMDiffRiemannianMetric`), `metricInner`
   algebra, Riesz duality, and the field-generic positive-definite
   bilinear-form core.

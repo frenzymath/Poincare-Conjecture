@@ -1,5 +1,5 @@
 import PetersenLib.Ch05.ExponentialMap
-import PetersenLib.Vendored.OpenGA.Exponential.GaussLemma
+import PetersenLib.Riemannian.Exponential.GaussLemma
 
 /-!
 # Petersen Ch. 5, §5.5.2–5.5.3 — the Gauss Lemma and the radial isometry

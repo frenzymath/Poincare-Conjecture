@@ -171,6 +171,7 @@ $T_p^\perp M$ components.
 \begin{proposition}[Prop. 5.1.3 — mixed partials in submanifolds]
   \label{prop:pet-ch5-mixed-partials-submanifold}
   \lean{PetersenLib.mixedPartialSubmanifoldProjection}
+  \leanok
   \uses{thm:pet-ch5-mixed-partials-existence}
   If $c:\Omega\to M\subset\tilde M$ and $\frac{\partial^2c}{\partial r\partial\theta}\in T_p\tilde M$
   is the mixed partial computed in $\tilde M$, then
@@ -181,7 +182,8 @@ $T_p^\perp M$ components.
   \source{petersen:page-0187}
 \end{proposition}
 \begin{proof}
-  \uses{prop:pet-ch5-mixed-partials-submanifold}
+  \leanok
+  \uses{thm:pet-ch5-mixed-partials-existence,lem:pet-ch5-mixed-partials-uniqueness}
   Let $\tilde g$ be the metric on $\tilde M$ and $g$ its restriction to $M$. The
   mixed partial in $\tilde M$ satisfies, for the coordinate curve
   $c:\Omega\to M\subset\tilde M$ with parameters $r,\theta,k$,
@@ -240,10 +242,23 @@ $T_p^\perp M$ components.
 
 \begin{remark}[Remark 5.2.1 — distance functions produce geodesics]
   \label{rem:pet-ch5-distance-function-geodesics}
-  \lean{PetersenLib.distanceFunctionIntegralCurvesAreGeodesics}
-  \uses{def:pet-ch5-geodesic}
-  If $r:U\to\mathbb R$ is a distance function then $\nabla_{\partial_r}\partial_r=0$, where
-  $\partial_r=\nabla r$; consequently the integral curves of $\nabla r$ are geodesics.
+  \lean{PetersenLib.distanceFunctionIntegralCurvesAreGeodesics,
+        PetersenLib.distanceFunctionIntegralCurvesAreGeodesicsOn}
+  \leanok
+  \uses{def:pet-ch5-geodesic,lem:pet-ch5-distance-function-segments,
+        thm:pet-ch5-energy-minima-geodesics}
+  If $r:U\to\mathbb R$ is a distance function then the integral curves of
+  $\partial_r=\nabla r$ are geodesics.  (Petersen derives this from the covariant
+  identity $\nabla_{\partial_r}\partial_r=0$; the formalization instead argues
+  variationally — an integral curve has unit speed and minimizes length in $U$ by
+  \cref{lem:pet-ch5-distance-function-segments}, hence minimizes energy by
+  Cauchy–Schwarz, hence is a geodesic by
+  \cref{thm:pet-ch5-energy-minima-geodesics} — and does not formalize the
+  covariant identity itself, which has no counterpart on the Lean side: the
+  Hessian operator there takes an arbitrary affine connection as an argument, and
+  no canonical Levi-Civita connection is attached to $g$.)  The formalized curve
+  is $C^\infty$ on all of $\mathbb R$ and an integral curve of $\nabla r$ on
+  $[a,b]$; the conclusion is the geodesic equation on $(a,b)$.
   The theory of geodesics is developed independently of distance functions and is
   ultimately used to establish their existence.
   \source{petersen:page-0188}
@@ -278,6 +293,7 @@ $T_p^\perp M$ components.
 \begin{theorem}[Thm. 5.2.3 — local existence of geodesics]
   \label{thm:pet-ch5-local-existence}
   \lean{PetersenLib.geodesic_local_existence}
+  \leanok
   \uses{def:pet-ch5-geodesic}
   For each $p\in U$ and $v\in\mathbb R^n$ there are a neighborhood $V_1$ of $p$, a
   neighborhood $V_2$ of $v$, and $\varepsilon>0$ such that for each $q\in V_1$,
@@ -287,20 +303,51 @@ $T_p^\perp M$ components.
   \source{petersen:page-0189}
 \end{theorem}
 \begin{proof}
-  \uses{thm:pet-ch5-local-existence}
+  \leanok
+  \uses{thm:pet-ch5-local-uniqueness}
   As in the proof of \cref{thm:pet-ch5-local-uniqueness}, the geodesic
   equation in the coordinates of $U$ is the first-order system $z'=F(z)$,
   $F(x,w)=(w,-\Gamma(w,w)(x))$, with $F$ smooth on
-  $\varphi(U)\times\mathbb R^n$. Picard--Lindel\"of with parameters gives, for
-  the initial condition $z_0=(\varphi(p),v)$, radii $r,\varepsilon>0$ and a
-  local flow $Z(z,t)$ defined for $|t|<\varepsilon$ and all initial conditions
-  $z$ in the ball of radius $r$ about $z_0$; the neighborhoods are
-  $V_1=\varphi^{-1}(B(\varphi(p),r/2))$ and $V_2=B(v,r/2)$, and
-  $c_{q,w}=\varphi^{-1}(Z((\varphi(q),w),\cdot)_1)$ solves the geodesic
-  equation with $c_{q,w}(0)=q$, $\dot c_{q,w}(0)=w$. Smooth dependence of
-  solutions of ODEs with smooth right-hand side on their initial conditions
-  makes $(q,w,t)\mapsto c_{q,w}(t)$ jointly $C^\infty$ on
-  $V_1\times V_2\times(-\varepsilon,\varepsilon)$.
+  $\varphi(U)\times\mathbb R^n$. Picard--Lindel\"of with parameters gives
+  radii $r,T,\varepsilon_0>0$ with $T<\varepsilon_0$ and a local flow $Z(z,t)$,
+  defined for $|t|\le\varepsilon_0$ and all initial conditions $z$ in the ball
+  of radius $r$ about the \emph{zero section} point $z_0=(\varphi(p),0)$, whose
+  restriction $z\mapsto Z(z,\cdot)|_{[0,T]}$ is $C^\infty$ as a map into
+  $C([0,T],\mathbb R^n\times\mathbb R^n)$.
+
+  The velocity $v$ need not lie in that ball, and the flow is smooth in the
+  initial condition rather than jointly with time. Both points are handled by
+  the degree-2 fibre homogeneity of $F$, i.e.\ $F(x,aw)=(aw,-a^2\Gamma(w,w)(x))$:
+  the geodesic from $q$ with velocity $w$ run for time $t$ coincides with the
+  geodesic from $q$ with velocity $\tfrac tT w$ run for the \emph{fixed} time
+  $T$,
+  \[
+    Z\big((\varphi(q),\tfrac tT w),T\big)_1
+      = Z\big((\varphi(q),\lambda w),\tfrac t\lambda\big)_1 ,
+  \]
+  for any $\lambda>0$ with $\lambda w$ and $\tfrac tT w$ small. Since
+  $\varepsilon$ may be chosen freely, fix $\lambda>0$ with
+  $\lambda(\lVert v\rVert+1)$ below both $r$ and the homogeneity threshold, and
+  set $V_2=B(v,1)$, $V_1=\varphi^{-1}(B(\varphi(p),\nu))$ and
+  $\varepsilon=T\lambda$. Then every rescaled initial condition
+  $(\varphi(q),\tfrac tT w)$, for $q\in V_1$, $w\in V_2$,
+  $|t|<\varepsilon$, lies in the ball of radius $r$ about $z_0$, so
+  \[
+    c_{q,w}(t) := \varphi^{-1}\Big(Z\big((\varphi(q),\tfrac tT w),T\big)_1\Big)
+  \]
+  is defined. By the displayed identity its coordinate representation is the
+  time-rescaled trajectory $Z((\varphi(q),\lambda w),\cdot/\lambda)_1$, whence
+  $c_{q,w}$ solves the geodesic equation, $c_{q,w}(0)=q$ (the spray vanishes on
+  the zero section, so $Z((\varphi(q),0),T)=(\varphi(q),0)$) and
+  $\dot c_{q,w}(0)=\lambda^{-1}\cdot\lambda w=w$.
+
+  Finally $t$ now enters only through the velocity slot of an evaluation at the
+  fixed time $T$: the map $(x,w,t)\mapsto(x,\tfrac tT w)$ is smooth, evaluation
+  at $T$ is a continuous linear map on $C([0,T],\mathbb R^n\times\mathbb R^n)$,
+  and $z\mapsto Z(z,\cdot)|_{[0,T]}$ is $C^\infty$ on the ball; composing the
+  three makes $(q,w,t)\mapsto c_{q,w}(t)$ jointly $C^\infty$ on
+  $V_1\times V_2\times(-\varepsilon,\varepsilon)$. No joint-in-time smoothness
+  of the flow is required.
   \source{petersen:page-0189}
 \end{proof}
 
@@ -505,6 +552,7 @@ above ideas on open subsets of $\mathbb R^2$.
 \begin{example}[Example 5.2.11 — left-invariant geodesics on Lie groups]
   \label{ex:pet-ch5-lie-group-geodesics}
   \lean{PetersenLib.leftInvariantGeodesicFields}
+  \leanok
   \uses{def:pet-ch5-geodesic}
   On a Lie group $G$ with left-invariant metric, the integral curves of a
   left-invariant vector field $X$ are geodesics iff $\nabla_XX\equiv0$; the
@@ -662,19 +710,95 @@ above ideas on open subsets of $\mathbb R^2$.
 
 \begin{remark}[rigidity of length-minimisers]
   \label{rem:pet-ch5-distance-function-rigidity}
-  \notready
-  \uses{lem:pet-ch5-distance-function-segments}
-  Moreover if $c\in\Omega_{p,q}(U)$ satisfies $L(c)=r(c(1))-r(c(0))$, the
-  Cauchy–Schwarz equality case in $dr(\dot c)\le|\dot c|$ forces
-  $\dot c=|\dot c|\,\nabla r$, so $c$ reparametrises the integral curve $\sigma$
-  of $\nabla r$ through $p$ via $\varphi(s)=\int_0^s|\dot c|\,dt$:
-  $c=\sigma\circ\varphi$.
+  \lean{PetersenLib.distanceFunction_velocity_eq_speed_smul_gradient_of_curveLength_eq}
+  \leanok
+  \uses{lem:pet-ch5-distance-function-length-bound,lem:pet-ch5-distance-function-segments}
+  Let $r:U\to\mathbb R$ be a smooth distance function on an open set
+  $U\subset(M,g)$, and let $c:[a,b]\to U$ be a smooth curve with $a<b$ attaining
+  the bound of \cref{lem:pet-ch5-distance-function-length-bound}, i.e.\
+  $L(c)|_a^b=r(c(b))-r(c(a))$. Then
+  \[
+    \dot c(t)=|\dot c(t)|\,\nabla r|_{c(t)}\qquad\text{for every }t\in[a,b].
+  \]
+  (Petersen states this for $c\in\Omega_{p,q}(U)$, the case $a=0$, $b=1$; the
+  hypothesis $a<b$ is automatic there. It is not removable in general: for $a=b$
+  the length hypothesis degenerates to $0=0$ while the conclusion fails.)
   \source{petersen:page-0195}
 \end{remark}
+\begin{proof}
+  \leanok
+  \uses{lem:pet-ch5-distance-function-length-bound}
+  Since $|\nabla r|=1$, Cauchy–Schwarz gives, for every $t\in[a,b]$,
+  \[
+    (r\circ c)'(t)=dr(\dot c(t))=g(\nabla r|_{c(t)},\dot c(t))\le|\dot c(t)|,
+  \]
+  with equality if and only if $\dot c(t)$ is a nonnegative multiple of
+  $\nabla r|_{c(t)}$, in which case the multiple is forced to be $|\dot c(t)|$ by
+  comparing norms, i.e.\ $\dot c(t)=|\dot c(t)|\,\nabla r|_{c(t)}$.
+
+  Integrating the displayed inequality over $[a,b]$ and using the fundamental
+  theorem of calculus,
+  \[
+    r(c(b))-r(c(a))=\int_a^b(r\circ c)'\,dt\le\int_a^b|\dot c|\,dt=L(c)|_a^b,
+  \]
+  and the hypothesis says the two ends are equal. Both integrands are continuous
+  and the pointwise inequality $(r\circ c)'\le|\dot c|$ holds on all of $[a,b]$,
+  so equality of the integrals over the nondegenerate interval $[a,b]$ forces the
+  integrands to agree at every point: $dr(\dot c(t))=|\dot c(t)|$ for all
+  $t\in[a,b]$. Thus the Cauchy–Schwarz equality case holds at every $t$, which is
+  the claim.
+  \source{petersen:page-0195}
+\end{proof}
+
+\begin{remark}[a minimiser is a reparametrised integral curve of $\nabla r$]
+  \label{rem:pet-ch5-minimizer-is-reparametrized-integral-curve}
+  \lean{PetersenLib.distanceFunction_minimizer_eq_integralCurve_comp}
+  \uses{rem:pet-ch5-distance-function-rigidity,lem:pet-ch5-distance-function-segments}
+  In the situation of \cref{rem:pet-ch5-distance-function-rigidity}, put
+  $L=L(c)|_a^b$ and $\varphi(s)=L(c)|_a^s=\int_a^s|\dot c|\,dt$, and suppose
+  $\sigma:[0,L]\to U$ is an integral curve of $\nabla r$ with $\sigma(0)=c(a)$.
+  Then $c=\sigma\circ\varphi$ on $[a,b]$: a curve realising the bound is a
+  reparametrisation of an integral curve of $\nabla r$.
+
+  \emph{Formalization status.} The Lean statement hypothesises $\sigma$, exactly
+  as stated here; the existence of an integral curve of $\nabla r$ on $[0,L]$ is a
+  separate standard fact and is not proved here. The node is not
+  \texttt{\textbackslash leanok} for a second reason: the Lean carries an
+  undischarged side condition asserting that $\nabla r$ is a $C^1$ section of $TM$
+  over $U$. That is mathematically automatic — bump-extend $r$ near any point of
+  $U$ to a globally smooth function and use that gradients agree near that point —
+  but the on-disk smooth-gradient lemma requires $r$ to be smooth on all of $M$,
+  so the hypothesis has not been discharged.
+  \source{petersen:page-0195}
+\end{remark}
+\begin{proof}
+  \uses{rem:pet-ch5-distance-function-rigidity}
+  By \cref{rem:pet-ch5-distance-function-rigidity},
+  $\dot c(s)=|\dot c(s)|\,\nabla r|_{c(s)}=\varphi'(s)\,\nabla r|_{c(s)}$ for every
+  $s\in[a,b]$, since $\varphi'=|\dot c|$ by the fundamental theorem of calculus.
+  On the other hand $\varphi(a)=0$ and $\varphi(b)=L$, so $\sigma\circ\varphi$ is
+  defined on $[a,b]$, and by the chain rule
+  \[
+    (\sigma\circ\varphi)'(s)=\varphi'(s)\,\dot\sigma(\varphi(s))
+      =\varphi'(s)\,\nabla r|_{\sigma(\varphi(s))}.
+  \]
+  Hence $c$ and $\sigma\circ\varphi$ both solve the non-autonomous equation
+  $y'(s)=\varphi'(s)\,\nabla r|_{y(s)}$ on $[a,b]$, and they agree at $s=a$:
+  $\sigma(\varphi(a))=\sigma(0)=c(a)$. The field $\nabla r$ is $C^1$ on $U$, hence
+  locally Lipschitz, and $\varphi'=|\dot c|$ is continuous, so solutions of this
+  equation agreeing at one point of $[a,b]$ agree throughout $[a,b]$ by Grönwall's
+  inequality. Therefore $c=\sigma\circ\varphi$ on $[a,b]$.
+
+  Note that $\varphi$ need not be strictly monotone — $c$ may rest on an interval
+  and still realise the bound — so the conclusion cannot be obtained by inverting
+  an arclength parametrisation; the uniqueness argument above avoids this.
+  \source{petersen:page-0195}
+\end{proof}
 
 \begin{example}[Example 5.3.3 — Euclidean segments]
   \label{ex:pet-ch5-euclidean-segments}
   \lean{PetersenLib.euclideanSegmentsAreStraightLines}
+  \leanok
   \uses{lem:pet-ch5-distance-function-segments}
   In $\mathbb R^n$, constant-speed straight segments $t\mapsto p+tv$ are segments, by
   \cref{lem:pet-ch5-distance-function-segments} applied to $r(x)=v\cdot x$ for a unit
@@ -731,7 +855,8 @@ above ideas on open subsets of $\mathbb R^2$.
 \begin{example}[Example 5.3.7 — punctured plane again]
   \label{ex:pet-ch5-punctured-plane-no-segment}
   \lean{PetersenLib.example_punctured_plane_no_segment}
-  \uses{ex:pet-ch5-infimum-not-realized}
+  \leanok
+  \uses{def:pet-ch5-segment,def:pet-ch5-distance}
   In $\mathbb R^2-\{(0,0)\}$, as already noted, not every pair of points is joined by
   a segment.
   \source{petersen:page-0196}
@@ -828,13 +953,47 @@ above ideas on open subsets of $\mathbb R^2$.
   \source{petersen:page-0198}
 \end{proof}
 
+\begin{lemma}[distance via constant-speed curves]
+  \label{lem:pet-ch5-constant-speed-distance}
+  \lean{PetersenLib.riemannianDistance_eq_sInf_constantSpeedDistanceSet}
+  \leanok
+  \uses{def:pet-ch5-distance,cor:pet-ch5-regular-curve-approx}
+  Let $(M,g)$ be a Riemannian manifold and $p,q\in M$. Then
+  \[
+    |pq|=\inf\{L(\gamma)\mid\gamma\in\Omega_{p,q}\text{ of constant speed}\},
+  \]
+  i.e.\ the infimum defining the Riemannian distance is unchanged if the competing
+  curves are required to have constant speed. (When $p$ and $q$ lie in different
+  components both infima are over the empty set, and the identity is the
+  degenerate one carried by the convention for $|pq|$ in that case; no
+  connectedness hypothesis is needed.)
+  \source{petersen:page-0198}
+\end{lemma}
+\begin{proof}
+  \leanok
+  \uses{cor:pet-ch5-regular-curve-approx}
+  The constant-speed competitors form a subset of the competitors defining
+  $|pq|$, so $|pq|\le\inf\{L(\gamma)\mid\gamma\in\Omega_{p,q}\text{ of constant
+  speed}\}$. Conversely, let $c\in\Omega_{p,q}$ and $\epsilon>0$. By
+  \cref{cor:pet-ch5-regular-curve-approx} there is a constant-speed
+  $\bar c\in\Omega_{p,q}$ with $L(\bar c)\le(1+\epsilon)L(c)$, so the restricted
+  infimum is at most $(1+\epsilon)L(c)$. Letting $\epsilon\to0$ gives that the
+  restricted infimum is at most $L(c)$, and taking the infimum over
+  $c\in\Omega_{p,q}$ gives the reverse inequality. Both competitor sets are empty
+  simultaneously, so the degenerate case needs no separate hypothesis.
+  \source{petersen:page-0198}
+\end{proof}
+
 \begin{remark}[Remark 5.3.11 — other classes of curves]
   \label{rem:pet-ch5-absolutely-continuous-curves}
-  \lean{PetersenLib.remark_absolutelyContinuousCurves}
-  \uses{cor:pet-ch5-regular-curve-approx}
+  \uses{lem:pet-ch5-constant-speed-distance,rem:pet-ch5-ex-29}
   The distance theory can equivalently be developed using absolutely continuous
   curves; by \cref{cor:pet-ch5-regular-curve-approx} one could also have restricted
   to piecewise smooth constant-speed curves throughout.
+
+  The constant-speed assertion is
+  \cref{lem:pet-ch5-constant-speed-distance}. The absolutely-continuous assertion
+  belongs to the program of \cref{rem:pet-ch5-ex-29} and is not developed here.
   \source{petersen:page-0198}
 \end{remark}
 
@@ -1071,6 +1230,18 @@ above ideas on open subsets of $\mathbb R^2$.
   so $E$ is a diffeomorphism from a neighborhood of the zero section of $TM$ onto a
   neighborhood of the diagonal in $M\times M$.
   \end{enumerate}
+
+  \emph{Formalization status.} Part (1) is proved. Part (2) is proved
+  \emph{locally and in coordinates}: \texttt{expDiagonalMap\_localDiffeomorphism}
+  gives, for each $p$, a $C^\infty$ diffeomorphism with $C^\infty$ inverse and open
+  image for the chart reading $(y,w)\mapsto(y,\exp_y w)$ of $E$ on a product ball
+  around $(\varphi_p(p),0)$, together with the $[[I,0],[I,I]]$ shear derivative.
+  The node is therefore not yet \texttt{\textbackslash leanok}: what is missing is
+  the \emph{global} half — patching the per-$p$ charts into one diffeomorphism from
+  a neighbourhood of the zero section of $TM$ onto a neighbourhood of the diagonal
+  (the Lean statement mentions no $O\subseteq TM$, no zero section and no
+  \texttt{Diffeomorph}) — and the identification of the second component with
+  $\exp_q v$, which is an unwritten consequence of geodesic uniqueness.
   \source{petersen:page-0204,petersen:page-0205}
 \end{proposition}
 \begin{proof}
@@ -1100,6 +1271,34 @@ above ideas on open subsets of $\mathbb R^2$.
   \source{petersen:page-0205,petersen:page-0206}
 \end{proof}
 
+\begin{lemma}[Prop. 5.5.1(1) — $D\exp_p$ is nonsingular at the origin]
+  \label{lem:pet-ch5-exp-differential-nonsingular}
+  \lean{PetersenLib.expMap_localDiffeomorphism}
+  \leanok
+  \uses{def:pet-ch5-exponential-map}
+  For every $p\in M$ there is $\rho>0$ such that $B_\rho(0)\subset\mathcal O_p$,
+  $\exp_p$ is injective on $B_\rho(0)$, its chart reading $w\mapsto\varphi_p(\exp_p
+  w)$ has strict Fréchet derivative the identity at $0$ (so $D\exp_p$ is nonsingular
+  at the origin), and $\exp_p$ pushes the neighbourhood filter of $0\in T_pM$ onto
+  that of $p$.  With the inverse function theorem this is part (1) of
+  \cref{prop:pet-ch5-exp-diffeomorphism-properties}: $\exp_p$ is a local
+  diffeomorphism near $0$.  (Part (2), the map $E=(\pi,\exp)$ near the diagonal, is
+  not yet formalized.  It does \emph{not} need the joint $(q,v,t)$-smoothness of the
+  geodesic flow, as previously recorded here: $E$ evaluates at a fixed time, and its
+  chart reading is already a $C^1$ diffeomorphism onto a neighbourhood of the
+  diagonal; only the upgrade to a smooth one remains.)
+  \source{petersen:page-0204,petersen:page-0205}
+\end{lemma}
+\begin{proof}
+  \leanok
+  \uses{def:pet-ch5-exponential-map}
+  By homogeneity $\exp_p(tv)=c_v(t)$, so the chart reading of $\exp_p$ has strict
+  Fréchet derivative $\mathrm{id}$ at $0$; the strict-derivative form of the inverse
+  function theorem gives injectivity on a small ball and the filter-pushforward
+  identity.
+  \source{petersen:page-0205}
+\end{proof}
+
 \begin{definition}[injectivity radius]
   \label{def:pet-ch5-injectivity-radius}
   \lean{PetersenLib.injectivityRadius}
@@ -1111,9 +1310,36 @@ above ideas on open subsets of $\mathbb R^2$.
   \source{petersen:page-0206}
 \end{definition}
 
+\begin{lemma}[positivity of the injectivity radius]
+  \label{lem:pet-ch5-injectivity-radius-positive}
+  \lean{PetersenLib.injectivityRadius_pos}
+  \leanok
+  \uses{def:pet-ch5-injectivity-radius,lem:pet-ch5-exp-differential-nonsingular}
+  For every $p\in M$ the injectivity radius is strictly positive,
+  $\operatorname{inj}_p>0$. In particular the supremum defining $\operatorname{inj}_p$
+  is a genuine positive number and Riemannian normal coordinates exist at every point.
+  \source{petersen:page-0206}
+\end{lemma}
+\begin{proof}
+  \leanok
+  \uses{def:pet-ch5-injectivity-radius,lem:pet-ch5-exp-differential-nonsingular}
+  By \cref{lem:pet-ch5-exp-differential-nonsingular} there is $\rho>0$ with
+  $\exp_p$ defined and injective on the model-norm ball $\{w:\|w\|<\rho\}$. Fibre
+  coercivity at $p$ gives $c>0$ with $\|v\|\le\sqrt c\,|v|_g$ for all $v\in T_pM$
+  (the coordinate norm is dominated by the Riemannian norm, since at the pole the
+  chart-Gram form is the intrinsic inner product $g_p$). Setting
+  $\varepsilon=\rho/(\sqrt c+1)>0$, any $v$ with $|v|_g<\varepsilon$ satisfies
+  $\|v\|\le\sqrt c\,|v|_g<\sqrt c\,\varepsilon<\rho$, so the whole $g$-metric ball
+  $\{v:|v|_g<\varepsilon\}$ lies inside the model-norm ball where $\exp_p$ is defined
+  and injective. Hence $\varepsilon$ belongs to the set whose supremum is
+  $\operatorname{inj}_p$, and $\varepsilon>0$ gives $\operatorname{inj}_p>0$.
+  \source{petersen:page-0206}
+\end{proof}
+
 \begin{remark}[Riemannian normal coordinates]
   \label{rem:pet-ch5-riemannian-normal-coordinates}
   \lean{PetersenLib.riemannianNormalCoordinates}
+  \leanok
   \uses{def:pet-ch5-injectivity-radius}
   Identifying $T_pM$ with $\mathbb R^n$ via a linear isomorphism and using that
   $\exp_p$ is a diffeomorphism near $0$ gives \emph{exponential} or \emph{Riemannian
@@ -1127,14 +1353,42 @@ above ideas on open subsets of $\mathbb R^2$.
 
 \begin{corollary}[uniform injectivity radius on a compact set]
   \label{cor:pet-ch5-uniform-injectivity-radius-compact}
-  \lean{PetersenLib.compactSet_uniformInjectivityRadius}
+  \lean{PetersenLib.compactSet_uniformInjectivityRadius,PetersenLib.compactSet_uniformCInftyDiffeo}
+  \leanok
   \uses{prop:pet-ch5-exp-diffeomorphism-properties}
   Let $K\subset(M,g)$ be compact. There is $\varepsilon>0$ such that for every
   $p\in K$, $\exp_p:B(0,\varepsilon)\to M$ is defined and a diffeomorphism onto its
   image.
+
+  \emph{Formalization status.} Proved in full.
+  \texttt{compactSet\_uniformCInftyDiffeo} produces a single $\varepsilon>0$ such
+  that for every $q\in K$: $\exp_q v$ is defined for every $v\in T_qM$ with
+  $|v|_g<\varepsilon$; the map $v\mapsto\exp_q v$ is injective and $C^\infty$ on
+  $\{v\mid|v|_g<\varepsilon\}$; its image is open; and it admits a $C^\infty$ left
+  inverse on that image.  ``Diffeomorphism onto its image'' is rendered by these
+  unbundled clauses rather than by a bundled diffeomorphism object: $T_qM$ carries
+  no charted-space structure in the formalization, so the smoothness clause is
+  stated on the model space with the definitional identification of the two.  A
+  left inverse on the image is also a right inverse there, since every image point
+  is of the form $\exp_q w$.  The quantifier structure ($\forall K$ compact,
+  $\exists\varepsilon>0$, $\forall p\in K$, $\forall v$ in the ball), the norm
+  ($|\cdot|_g$, the book's) and the hypotheses are Petersen's, and the Lean proof is
+  the book's proof.  One caveat:
+  \begin{enumerate}
+    \item The Lean is phrased with the \emph{intrinsic} moving-foot exponential,
+      not with \texttt{PetersenLib.expDomain}.  This is forced, not a convenience:
+      $\texttt{expDomain}(g,p)$ is defined by integral curves of the geodesic field
+      of the \emph{single chart at $p$}, which the trivialization makes $0$ off
+      that chart's source, so an \texttt{expDomain} geodesic can never leave the
+      chart at its own initial point.  Chart sources admit no uniform lower bound
+      over a compact set, so this corollary stated at \texttt{expDomain} is
+      \emph{false}, not merely unproven.  See
+      \cref{rem:pet-ch5-injectivity-radius-chart-artifact}.
+  \end{enumerate}
   \source{petersen:page-0206}
 \end{corollary}
 \begin{proof}
+  \leanok
   \uses{cor:pet-ch5-uniform-injectivity-radius-compact}
   By compactness it suffices to find, for a fixed $x\in M$, $\varepsilon>0$ working
   for all $p$ in a neighborhood of $x$. Choose a neighborhood $U$ of $(x,0_x)\in TM$
@@ -1151,6 +1405,38 @@ above ideas on open subsets of $\mathbb R^2$.
   Compactness of $K$ finishes the proof.
   \source{petersen:page-0206}
 \end{proof}
+
+\begin{remark}[the Lean \texttt{injectivityRadius} is a chart artifact]
+  \label{rem:pet-ch5-injectivity-radius-chart-artifact}
+  \uses{def:pet-ch5-injectivity-radius}
+  The Lean \texttt{PetersenLib.injectivityRadius} is defined through
+  \texttt{PetersenLib.expDomain}, which is anchored to the chart at the initial
+  point (see the formalization note on
+  \cref{cor:pet-ch5-uniform-injectivity-radius-compact}).  It is therefore
+  \emph{not} the injectivity radius of this text: on the round circle it is bounded
+  by the size of the chart at $p$ rather than by $\pi$.
+  \Cref{lem:pet-ch5-injectivity-radius-positive} is unaffected — it asserts only
+  $\mathrm{inj}_p>0$, and the chart anchoring only shrinks the set whose supremum
+  is taken — but any downstream statement that consumes $\mathrm{inj}_p$
+  \emph{quantitatively} must be read against the intrinsic moving-foot exponential
+  instead.  This is a known defect of the vendored geodesic engine, whose authors
+  record the same point: the chart-anchored witnesses solve the junk-extended
+  equation of a single chart.
+
+  The defect propagates to every object defined through \texttt{expMap}.  In
+  particular \texttt{PetersenLib.segmentDomain} is defined as
+  $\{v\mid t\mapsto\texttt{expMap}(g,p,tv)\text{ is a segment on }[0,1]\}$, and
+  \texttt{segmentDomainStarInterior} and \texttt{cutLocus} are defined from it, so
+  all three are chart artifacts as well: a geodesic witnessing membership of
+  $\operatorname{seg}(p)$ can never leave the chart at $p$, whereas the predicate
+  \texttt{IsSegment} that it must satisfy is chart-free.  Consequently
+  \cref{lem:pet-ch5-cut-locus-characterization}, read against these definitions, is
+  \emph{false}, not merely unproven: see
+  \cref{rem:pet-ch5-segment-domain-chart-artifact}.  The repair is the same one
+  used for \cref{cor:pet-ch5-uniform-injectivity-radius-compact} and for part~(2)
+  of \cref{prop:pet-ch5-local-isometry-properties} — restate at the intrinsic
+  maximal geodesic — and it is not yet carried out for the segment domain.
+\end{remark}
 
 \begin{definition}[normal exponential map]
   \label{def:pet-ch5-normal-exponential-map}
@@ -1197,13 +1483,26 @@ above ideas on open subsets of $\mathbb R^2$.
 
 \begin{theorem}[Thm. 5.5.4 — short geodesics are segments]
   \label{thm:pet-ch5-short-geodesics-segments}
-  \lean{PetersenLib.shortGeodesicsAreUniqueSegments}
-  \uses{def:pet-ch5-exponential-map,def:pet-ch5-segment}
+  \lean{PetersenLib.expMap_isSegment_unique}
+  \uses{def:pet-ch5-exponential-map,def:pet-ch5-segment,
+        lem:pet-ch5-short-geodesics-segments-normal}
   Let $(M,g)$ be Riemannian, $p\in M$, $\varepsilon>0$ such that
   $\exp_p:B(0,\varepsilon)\to U\subset M$ is a diffeomorphism onto its image $U$.
   Then $U=B(p,\varepsilon)$, and for each $v\in B(0,\varepsilon)$ the geodesic
   $\exp_p(tv)$, $t\in[0,1]$, is the unique segment of speed $|v|$ from $p$ to
   $\exp_p(v)$ in $M$.
+
+  Not \texttt{\textbackslash leanok}: the Lean furnishes its own $\varepsilon$
+  rather than accepting the hypothesised diffeomorphism radius; everything else is
+  \cref{lem:pet-ch5-short-geodesics-segments-normal}, including the two clauses
+  that were previously open (the ball clause and the uniqueness clause now measure
+  the radius in the same intrinsic norm, and the uniqueness is pointwise equality
+  with the radial geodesic rather than equality up to reparametrization).  Closing
+  the residue needs the $\exists\rho$ Gauss/minimizing-equality chain restated in
+  hypothesised-$\rho$ form; the first link of that chain,
+  \texttt{PetersenLib.Exponential.gauss\_lemma\_ball\_at}, is done, and the
+  single-chart hypothesis it still takes is discharged by the chart-anchoring of
+  \texttt{expDomain} recorded in \texttt{ExpChartConfinement.lean}.
   \source{petersen:page-0207}
 \end{theorem}
 
@@ -1250,9 +1549,133 @@ above ideas on open subsets of $\mathbb R^2$.
   \source{petersen:page-0207}
 \end{proof}
 
+\begin{lemma}[uniqueness of the short radial segment, smooth competitors]
+  \label{lem:pet-ch5-radial-geodesic-unique}
+  \lean{PetersenLib.exists_expMap_smoothSegment_unique}
+  \leanok
+  \uses{lem:pet-ch5-radial-geodesic-segment,lem:pet-ch5-gauss-lemma}
+  For every $p\in M$ there is $\varepsilon>0$ such that $B_\varepsilon(0)\subset
+  \mathcal O_p$ and, for every $v$ with $|v|<\varepsilon$, every $C^\infty$ curve
+  $\sigma:[0,1]\to M$ from $p$ to $\exp_p v$ whose length realizes the radial
+  length, $L(\sigma)|_0^1=|v|_g=\sqrt{g_p(v,v)}$, is a monotone reparametrization
+  of the radial geodesic: there is a continuous nondecreasing $s:[0,1]\to[0,1]$
+  with $s(0)=0$, $s(1)=1$ and $\sigma(t)=\exp_p\bigl(s(t)\,v\bigr)$ for all
+  $t\in[0,1]$. Thus, up to reparametrization, $t\mapsto\exp_p(tv)$ is the
+  \emph{unique} smooth segment of speed $|v|_g$ from $p$ to $\exp_p v$ — the
+  uniqueness clause of \cref{thm:pet-ch5-short-geodesics-segments} restricted to
+  globally-$C^\infty$ competitors.
+  \source{petersen:page-0207,petersen:page-0208}
+\end{lemma}
+\begin{proof}
+  \leanok
+  \uses{lem:pet-ch5-gauss-lemma,lem:pet-ch5-radial-geodesic-segment}
+  This is the equality clause of the do Carmo minimizing-geodesic estimate. On a
+  normal ball, read in exponential coordinates, the Gauss Lemma
+  (\cref{lem:pet-ch5-gauss-lemma}) gives $|\dot\sigma|\ge dr(\dot\sigma)$ with
+  equality iff $\dot\sigma$ is radial; a competitor realizing the radial length
+  must therefore have $\dot\sigma$ everywhere proportional to $\partial_r$, i.e.
+  $\sigma$ traces the radial ray $\exp_p(s\,v)$ with $s$ the (nondecreasing)
+  running fraction of radial length. The escape estimate keeps a length-realizing
+  competitor inside the normal ball, so no confinement hypothesis is needed. The
+  $C^\infty$ length hypothesis $L(\sigma)=|v|_g$ is converted to the equal-length
+  clause of the vendored engine by the length bridge $\operatorname{pathELength}
+  \sigma=\int_0^1|\dot\sigma|_g$, and the chart-origin identity identifies the
+  chart-Gram radial length with $|v|_g$.
+  \source{petersen:page-0208}
+\end{proof}
+
+\begin{lemma}[the uniqueness clause for piecewise-smooth competitors]
+  \label{lem:pet-ch5-radial-geodesic-unique-piecewise}
+  \lean{PetersenLib.shortGeodesicsAreUniqueSegments}
+  \leanok
+  \uses{lem:pet-ch5-radial-geodesic-unique,def:pet-ch5-piecewise-smooth-curve}
+  The strengthening of \cref{lem:pet-ch5-radial-geodesic-unique} from
+  globally-$C^\infty$ competitors to the piecewise-$C^\infty$ class
+  (\cref{def:pet-ch5-piecewise-smooth-curve}) that
+  \cref{def:pet-ch5-segment,def:pet-ch5-distance} actually range over. For every
+  $p\in M$ there is $\varepsilon>0$ such that $B_\varepsilon(0)\subset\mathcal
+  O_p$ and, for every $v$ with $|v|<\varepsilon$, every \emph{piecewise}-$C^\infty$
+  curve $\sigma:[0,1]\to M$ from $p$ to $\exp_p v$ with
+  $L(\sigma)|_0^1=|v|_g$ is a monotone reparametrization of the radial geodesic —
+  continuous nondecreasing $s:[0,1]\to[0,1]$, $s(0)=0$, $s(1)=1$,
+  $\sigma(t)=\exp_p(s(t)\,v)$ — and moreover the images agree,
+  $\sigma([0,1])=\exp_p([0,1]\cdot v)$.
+
+  This is the uniqueness clause of \cref{thm:pet-ch5-short-geodesics-segments} in
+  Petersen's own regularity class. The parent theorem is still not
+  \texttt{\textbackslash leanok}, but for one reason only: it quantifies
+  \emph{universally} over every $\varepsilon$ for which $\exp_p$ is a
+  diffeomorphism on $B(0,\varepsilon)$, whereas this lemma supplies its own
+  $\varepsilon$.  The norm discrepancy this lemma used to carry (its radius in the
+  model norm, the clause $U=B(p,\varepsilon)$ of
+  \cref{cor:pet-ch5-metric-ball-image} in $|v|_g$) is resolved in
+  \cref{lem:pet-ch5-short-geodesics-segments-normal}, which restates every radius
+  intrinsically and upgrades the monotone reparametrization $s$ below to
+  $s=\mathrm{id}$.
+  \source{petersen:page-0207,petersen:page-0208}
+\end{lemma}
+\begin{proof}
+  \leanok
+  \uses{lem:pet-ch5-radial-geodesic-unique}
+  Identical to \cref{lem:pet-ch5-radial-geodesic-unique}: the Gauss-radius
+  deficits telescope over the partition, so the do Carmo minimizing-equality
+  engine applies verbatim in its piecewise form; no corner-shortening step is
+  needed. The only new ingredient is the length bridge
+  $\operatorname{pathELength}\sigma=\int|\dot\sigma|_g$ for piecewise-$C^\infty$
+  $\sigma$, obtained from the smooth case by telescoping the partition against
+  additivity of both sides.
+  \source{petersen:page-0208}
+\end{proof}
+
+\begin{lemma}[Thm. 5.5.4 on a normal ball — all clauses]
+  \label{lem:pet-ch5-short-geodesics-segments-normal}
+  \lean{PetersenLib.expMap_isSegment_unique}
+  \leanok
+  \uses{lem:pet-ch5-radial-geodesic-segment,
+        lem:pet-ch5-radial-geodesic-unique-piecewise,
+        cor:pet-ch5-metric-ball-image,def:pet-ch5-segment}
+  For every $p\in M$ there is $\varepsilon>0$ such that
+  \begin{enumerate}
+    \item $\{v:|v|_g<\varepsilon\}\subset\mathcal O_p$;
+    \item $\exp_p(\{v:|v|_g<\delta\})=B(p,\delta)$ for every $0<\delta\le\varepsilon$;
+    \item for every $v$ with $|v|_g<\varepsilon$, the curve $t\mapsto\exp_p(tv)$,
+      $t\in[0,1]$, \emph{is} a segment, and every segment $\sigma:[0,1]\to M$ from
+      $p$ to $\exp_p(v)$ satisfies $\sigma(t)=\exp_p(tv)$ for all $t\in[0,1]$.
+  \end{enumerate}
+  This is \cref{thm:pet-ch5-short-geodesics-segments} verbatim \emph{except} that
+  $\varepsilon$ is furnished rather than hypothesised.  Every radius is measured in
+  the intrinsic $|\cdot|_g$, so clauses (ii) and (iii) agree on what the ball is.
+  Clause (iii) is in fact stronger than the book's: it quantifies over every
+  segment competitor — not only those declared to have speed $|v|$, since a
+  segment's speed is forced to be $|v|_g$ by
+  \cref{lem:pet-ch5-radial-geodesic-segment} — and concludes pointwise equality
+  with the radial geodesic rather than equality up to reparametrization.
+  \source{petersen:page-0207}
+\end{lemma}
+\begin{proof}
+  \leanok
+  \uses{lem:pet-ch5-radial-geodesic-unique-piecewise,
+        lem:pet-ch5-radial-geodesic-segment,cor:pet-ch5-metric-ball-image}
+  Take $\varepsilon$ below the radii supplied by
+  \cref{cor:pet-ch5-metric-ball-image}, \cref{lem:pet-ch5-radial-geodesic-segment}
+  and \cref{lem:pet-ch5-radial-geodesic-unique-piecewise}, rescaled by the
+  one-sided coercivity $\|w\|\le\sqrt c\,|w|_g$ of the chart Gram form at the pole,
+  so that the intrinsic hypothesis $|v|_g<\varepsilon$ implies the model-norm
+  hypothesis the engine wants.  For (iii), a segment $\sigma$ from $p$ to
+  $\exp_p(v)$ has $L(\sigma)|_0^1=|pq|=|v|_g$ by
+  \cref{lem:pet-ch5-radial-geodesic-segment}, so its proportional-arclength
+  constant is $k=|v|_g$ and $L(\sigma)|_0^t=|v|_g\,t$.  Feeding that into the
+  length-fraction clause of the minimizing-equality engine, which gives
+  $L(\sigma)|_0^t=s(t)\,|v|_g$, forces $s(t)\,|v|_g=t\,|v|_g$; cancelling
+  $|v|_g>0$ gives $s=\mathrm{id}$, i.e. $\sigma(t)=\exp_p(tv)$.  When $v=0$ both
+  sides are constant at $p$.
+  \source{petersen:page-0207,petersen:page-0208}
+\end{proof}
+
 \begin{definition}[radial distance function in exponential coordinates]
   \label{def:pet-ch5-radial-distance-function}
   \lean{PetersenLib.radialDistanceFunction}
+  \leanok
   \uses{thm:pet-ch5-short-geodesics-segments}
   On $U=\exp_p(B(0,\varepsilon))$ let $r(x)=|\exp_p^{-1}(x)|$, the Euclidean
   distance from the origin in $B(0,\varepsilon)\subset T_pM$, continuously extended
@@ -1347,23 +1770,31 @@ above ideas on open subsets of $\mathbb R^2$.
 
 \begin{corollary}[Corollary 5.5.6 — exponential image of balls]
   \label{cor:pet-ch5-metric-ball-image}
-  \lean{PetersenLib.expMap_ballImage}
-  \uses{thm:pet-ch5-short-geodesics-segments}
-  If $\exp_p:B(0,\varepsilon)\to B(p,\varepsilon)$ is defined and a diffeomorphism,
-  then for each $\delta<\varepsilon$, $\exp_p(B(0,\delta))=B(p,\delta)$ and
-  $\exp_p(\bar B(0,\delta))=\bar B(p,\delta)$.
+  \lean{PetersenLib.expMap_ballImage,PetersenLib.expMap_closedBallImage}
+  \leanok
+  \uses{lem:pet-ch5-radial-geodesic-segment,def:pet-ch5-metric-balls}
+  There is $\varepsilon>0$ such that for each $\delta$ with $0<\delta\le\varepsilon$
+  the exponential map carries the $g$-metric ball onto the Riemannian metric ball,
+  both in the open and the closed form,
+  \[
+    \exp_p\bigl(\{v\in T_pM\mid |v|_g<\delta\}\bigr)=B(p,\delta),\qquad
+    \exp_p\bigl(\{v\in T_pM\mid |v|_g\le\delta\}\bigr)=\bar B(p,\delta).
+  \]
   \source{petersen:page-0209}
 \end{corollary}
 \begin{proof}
-  \uses{cor:pet-ch5-metric-ball-image}
-  By \cref{thm:pet-ch5-short-geodesics-segments} applied with radius $\delta$
-  (restricting the diffeomorphism), $\exp_p(tv)$ for $v\in B(0,\delta)$, $t\in[0,1]$,
-  is the unique segment of speed $|v|<\delta$ from $p$ to $\exp_p(v)$, so
-  $|p\exp_p(v)|=|v|<\delta$: this shows $\exp_p(B(0,\delta))\subset B(p,\delta)$.
-  Conversely if $q\in B(p,\delta)\subset B(p,\varepsilon)=U$, the theorem gives a
-  unique $v\in B(0,\varepsilon)$ with $\exp_p(v)=q$ and $|v|=|pq|<\delta$, so
-  $v\in B(0,\delta)$. This proves the open case; the closed case follows by the same
-  argument with non-strict inequalities, using continuity of $\exp_p$ and $r$.
+  \leanok
+  \uses{lem:pet-ch5-radial-geodesic-segment,def:pet-ch5-metric-balls}
+  ($\subseteq$) For $v$ with $|v|_g<\delta$ the radial geodesic realizes the
+  distance, $d(p,\exp_p v)=|v|_g<\delta$
+  (\cref{lem:pet-ch5-radial-geodesic-segment}), so $\exp_p v\in B(p,\delta)$; fibre
+  coercivity $|v|\le\sqrt c\,|v|_g$ keeps $v$ inside the normal ball where that
+  identity holds.  ($\supseteq$) If $q\in B(p,\delta)$ then, using the proven
+  forward comparison $\operatorname{edist}(p,q)\le d(p,q)<\delta$ and the escape
+  estimate for the normal ball, $q=\exp_p w$ for some $w$; the normal-ball distance
+  identity $\operatorname{edist}(p,\exp_p w)=|w|_g$ then forces $|w|_g<\delta$, so
+  $q\in\exp_p(\{|v|_g<\delta\})$.  The closed-ball identity is the same argument
+  with non-strict inequalities, choosing $\delta$ strictly below the escape radius.
   \source{petersen:page-0209}
 \end{proof}
 
@@ -1382,16 +1813,75 @@ above ideas on open subsets of $\mathbb R^2$.
   \source{petersen:page-0210}
 \end{remark}
 
+\begin{lemma}[Lemma 5.5.7, jet form — exponential coordinates are flat to first order]
+  \label{lem:pet-ch5-normal-coords-jet}
+  \lean{PetersenLib.expCoordinates_jetFlatness}
+  \leanok
+  \uses{rem:pet-ch5-radial-isometry,lem:pet-ch5-exp-differential-nonsingular}
+  In exponential coordinates at $p$ the metric is differentiable at the origin, its
+  value there is $g_p$ (that is, $g_{ij}|_p=\delta_{ij}$ in a $g_p$-orthonormal
+  frame), and all of its first partial derivatives vanish: $\partial_kg_{ij}|_p=0$.
+  \source{petersen:page-0210,petersen:page-0211}
+\end{lemma}
+\begin{proof}
+  \leanok
+  \uses{rem:pet-ch5-radial-isometry,lem:pet-ch5-exp-differential-nonsingular}
+  Write $g_x$ for the metric read in exponential coordinates at the point $x$ of the
+  normal ball, so that $g_x(a,b)=g_{ij}(x)a^ib^j$; each $g_x$ is symmetric and
+  bilinear.  Since the chart reading of $\exp_p$ is $C^2$ on a ball about the origin
+  (\cref{lem:pet-ch5-exp-differential-nonsingular}), $x\mapsto g_x(a,b)$ is $C^1$
+  there; in particular the derivatives below exist.  Because $D\exp_p|_0=\mathrm{id}$,
+  $g_0=g_p$, which is the first claim.
+
+  The radial isometry (\cref{rem:pet-ch5-radial-isometry}) states $g_x(x,w)=g_p(x,w)$
+  for every $x$ in the normal ball and every $w$; this is Petersen's
+  $\sum_jg_{ij}x^j=\sum_j\delta_{ij}x^j$.  Substituting $x=tv$ and using bilinearity,
+  \[
+    t\,g_{tv}(v,w)=g_{tv}(tv,w)=g_p(tv,w)=t\,g_p(v,w),
+  \]
+  so for $t\neq0$ we may cancel $t$ to get $g_{tv}(v,w)=g_p(v,w)$: the metric
+  evaluated on the radial direction $v$ is \emph{constant along the whole ray}
+  $t\mapsto tv$.  At $t=0$ the same value obtains, so $t\mapsto g_{tv}(v,w)$ is
+  constant near $0$.
+
+  Let $D_u(a,b):=\partial_u\big(x\mapsto g_x(a,b)\big)\big|_0$.  It is additive in
+  $u$, and additive in $a$ and symmetric in $(a,b)$ because each $g_x$ is.
+  Differentiating the constant $t\mapsto g_{tv}(v,w)$ at $t=0$ gives the diagonal
+  identity $D_v(v,w)=0$ for all $v,w$.  Expanding $D_{a+b}(a+b,w)=0$ by additivity
+  and cancelling the diagonal terms $D_a(a,w)=D_b(b,w)=0$ yields the antisymmetry
+  $D_a(b,w)=-D_b(a,w)$.  Chaining this against the symmetry of $D$ in its last two
+  arguments around the three cyclic permutations of $(a,b,c)$,
+  \[
+    D_a(b,c)=-D_b(a,c)=-D_b(c,a)=D_c(b,a)=D_c(a,b)=-D_a(c,b)=-D_a(b,c),
+  \]
+  so $2D_a(b,c)=0$ and hence $D_a(b,c)=0$, i.e.\ $\partial_kg_{ij}|_p=0$ for all
+  $i,j,k$.  (This is Petersen's three-permutation computation carried out without
+  reference to a basis.)
+  \source{petersen:page-0210,petersen:page-0211}
+\end{proof}
+
 \begin{lemma}[Lemma 5.5.7 — first-order flatness of exponential coordinates]
   \label{lem:pet-ch5-normal-coords-first-order}
   \lean{PetersenLib.expCoordinates_firstOrderFlatness}
-  \uses{rem:pet-ch5-radial-isometry}
+  \uses{rem:pet-ch5-radial-isometry,lem:pet-ch5-normal-coords-jet}
   In exponential coordinates, $g_{ij}=\delta_{ij}+O(r^2)$.
+
+  Not \texttt{\textbackslash leanok}: the \emph{jet} is formalized
+  (\cref{lem:pet-ch5-normal-coords-jet}), but the $O(r^2)$ \emph{rate} is not.  The
+  jet alone yields only $o(r)$; the rate needs a second-order Taylor bound on
+  $g_{ij}$, hence $C^2$ of $g_{ij}$, hence $C^3$ of the chart reading of $\exp_p$.
+  The strongest packaged regularity on disk is $C^2$ of chart-$\exp$, which gives
+  $C^1$ of $g_{ij}$ — exactly enough for the jet and no more.
   \source{petersen:page-0210}
 \end{lemma}
 \begin{proof}
-  \uses{lem:pet-ch5-normal-coords-first-order}
-  Differentiate $g_{ij}v^j=\delta_{ij}v^j$, i.e.\ $\sum_jg_{ij}x^j=\sum_j\delta_{ij}x^j$
+  \uses{lem:pet-ch5-normal-coords-jet}
+  By \cref{lem:pet-ch5-normal-coords-jet}, $g_{ij}|_p=\delta_{ij}$ and
+  $\partial_kg_{ij}|_p=0$.  If moreover $g_{ij}$ is $C^2$ near the origin — the
+  hypothesis that is not currently available — Taylor's theorem with second-order
+  remainder leaves $g_{ij}=\delta_{ij}+O(r^2)$.  The original basis computation,
+  recorded for reference: differentiate $g_{ij}v^j=\delta_{ij}v^j$, i.e.\
+  $\sum_jg_{ij}x^j=\sum_j\delta_{ij}x^j$
   (valid for all $x$ in exponential coordinates), once in $x^k$:
   \[
     \delta_{ik}=\partial_k\Big(\sum_jg_{ij}x^j\Big)=(\partial_kg_{ij})x^j+g_{ik}.
@@ -1505,30 +1995,61 @@ above ideas on open subsets of $\mathbb R^2$.
 
 \begin{proposition}[Prop. 5.6.1 — basic properties of local isometries]
   \label{prop:pet-ch5-local-isometry-properties}
-  \lean{PetersenLib.localIsometry_mapsGeodesicsToGeodesics,PetersenLib.localIsometry_expNaturality,PetersenLib.localIsometry_distanceDecreasing,PetersenLib.localIsometry_distancePreserving}
-  \uses{def:pet-ch5-local-isometry,def:pet-ch5-geodesic,def:pet-ch5-exponential-map,def:pet-ch5-distance}
+  \lean{PetersenLib.localIsometry_mapsGeodesicsToGeodesics,PetersenLib.localIsometry_isGeodesicOn,PetersenLib.localIsometry_expNaturality,PetersenLib.localIsometry_distanceDecreasing,PetersenLib.localIsometry_distancePreserving}
+  \leanok
+  \uses{def:pet-ch5-local-isometry,def:pet-ch5-geodesic,def:pet-ch5-exponential-map,def:pet-ch5-distance,lem:pet-ch5-global-uniqueness}
   Let $F:(M,g_M)\to(N,g_N)$ be a local Riemannian isometry.
   \begin{enumerate}
-  \item[(1)] $F$ maps geodesics to geodesics.
-  \item[(2)] $F\circ\exp_p(v)=\exp_{F(p)}\circ DF_p(v)$ whenever $\exp_p(v)$ is
-  defined.
+  \item[(1)] $F$ maps geodesics to geodesics: if $\gamma$ is a continuous geodesic
+  in $(M,g_M)$, then $F\circ\gamma$ is a geodesic in $(N,g_N)$; likewise on any
+  open set of times on which $\gamma$ is a continuous geodesic.
+  \item[(2)] The exponential map is natural: for $p\in M$ and $v\in T_pM$, the
+  maximal existence domain of the geodesic initial-value problem $(p,v)$ is
+  contained in that of $(F(p),DF_p(v))$, and on it
+  \[
+    F\circ c_{p,v}=c_{F(p),DF_p(v)},
+  \]
+  where $c_{q,w}$ denotes the maximal geodesic with initial datum $(q,w)$. Since
+  $\exp_p(v)=c_{p,v}(1)$, the case $t=1$ is Petersen's
+  $F(\exp_p(v))=\exp_{F(p)}(DF_p(v))$ whenever $\exp_p(v)$ is defined.
   \item[(3)] $F$ is distance decreasing.
   \item[(4)] If $F$ is also a bijection, $F$ is distance preserving.
   \end{enumerate}
+
+  \emph{Formalization status.} All four parts are formalized. Two points of
+  wording are forced by the formal definitions and are recorded here rather than
+  smuggled into the statements. First, part~(1) carries a continuity hypothesis on
+  $\gamma$: the formal \texttt{IsGeodesic} predicate constrains only the chart
+  reading at the moving foot and so does not by itself imply that $\gamma$ is
+  continuous, which is needed to place nearby points of the curve in a common
+  chart. Continuity is automatic for Petersen's geodesics, which are smooth; the
+  same hypothesis is already recorded explicitly by the formal
+  initial-value predicate \texttt{IsGeodesicWithInitialOn} for this exact reason.
+  Second, part~(2) is formalized at the intrinsic maximal geodesic rather than at
+  the on-disk \texttt{expMap}; see
+  \cref{rem:pet-ch5-exp-naturality-intrinsic}. Parts~(1) and~(2) are proved
+  directly from the transformation law of the chart Christoffel symbols under an
+  isometry; no Levi-Civita connection object occurs anywhere in the proof.
   \source{petersen:page-0213}
 \end{proposition}
 \begin{proof}
+  \leanok
   \uses{prop:pet-ch5-local-isometry-properties}
   (1) The coordinate geodesic equation depends only on the metric and its first
   derivatives; a local isometry pulls back $g_N$ to $g_M$ and is a local
   diffeomorphism, so in matched coordinates the geodesic equations for $M$ and $N$
   coincide, and $F$ carries geodesics to geodesics.
 
-  (2) If $\exp_p(v)$ is defined, $t\mapsto\exp_p(tv)$ is a geodesic, so by (1)
-  $t\mapsto F(\exp_p(tv))$ is a geodesic in $N$, with initial velocity
-  $\frac{d}{dt}F(\exp_p(tv))|_{t=0}=DF(v)$ by the chain rule. By uniqueness of
-  geodesics (\cref{thm:pet-ch5-local-uniqueness}), $F(\exp_p(tv))=\exp_{F(p)}(tDF(v))$
-  for all valid $t$; setting $t=1$ gives the claim.
+  (2) Let $J$ be the maximal existence domain of $(p,v)$ and $c_{p,v}:J\to M$ the
+  maximal geodesic. By (1), $F\circ c_{p,v}$ is a geodesic on $J$, and it has
+  initial position $F(p)$ and initial velocity
+  $\frac{d}{dt}F(c_{p,v}(t))|_{t=0}=DF_p(v)$ by the chain rule. So $F\circ c_{p,v}$
+  realises the initial datum $(F(p),DF_p(v))$ on the open connected set $J\ni0$,
+  whence $J$ is contained in the maximal existence domain of $(F(p),DF_p(v))$. By
+  uniqueness of geodesics with a given initial datum
+  (\cref{lem:pet-ch5-global-uniqueness}), $F\circ c_{p,v}=c_{F(p),DF_p(v)}$ on
+  $J$. Since $\exp_p(v)=c_{p,v}(1)$, evaluating at $t=1$ (when $1\in J$, i.e.\ when
+  $\exp_p(v)$ is defined) gives $F(\exp_p(v))=\exp_{F(p)}(DF_p(v))$.
 
   (3) $F$ preserves lengths of curves since $DF$ preserves the norms of tangent
   vectors, so $L_N(F\circ c)=L_M(c)$ for any curve $c$; taking the infimum over
@@ -1540,24 +2061,60 @@ above ideas on open subsets of $\mathbb R^2$.
   \source{petersen:page-0213}
 \end{proof}
 
+\begin{remark}[why naturality is stated at the intrinsic maximal geodesic]
+  \label{rem:pet-ch5-exp-naturality-intrinsic}
+  \uses{prop:pet-ch5-local-isometry-properties,rem:pet-ch5-injectivity-radius-chart-artifact}
+  Part~(2) of \cref{prop:pet-ch5-local-isometry-properties} is Petersen's
+  $F(\exp_p(v))=\exp_{F(p)}(DF_p(v))$, and the formalization at the maximal
+  geodesic is faithful to the book: $\exp_p(v)$ \emph{is} the maximal geodesic
+  through $(p,v)$ evaluated at time $1$, so the intrinsic form contains the book's
+  statement as its $t=1$ case and is in fact stronger, giving the identity at every
+  admissible time.
+
+  The formalization does \emph{not} use the on-disk \texttt{PetersenLib.expMap} and
+  \texttt{expDomain}, and this is forced rather than a convenience: at those objects
+  the statement is \emph{false}, not merely unproven. They are anchored to the chart
+  at the initial point, so $\exp_p$-geodesics cannot leave the chart at $p$ while
+  $\exp_{F(p)}$-geodesics cannot leave the chart at $F(p)$; a local isometry need
+  not match the two atlases, and the inclusion of existence domains fails. This is
+  the defect recorded in \cref{rem:pet-ch5-injectivity-radius-chart-artifact}, and
+  it is a defect of the on-disk exponential — i.e.\ of
+  \cref{def:pet-ch5-exponential-map}, where it is already flagged — not of the
+  naturality statement. The formal statement additionally assumes $M$ and $N$
+  Hausdorff, which the uniqueness of maximal geodesics requires and which is part of
+  Petersen's standing conventions.
+\end{remark}
+
 \begin{proposition}[Prop. 5.6.2 — uniqueness of Riemannian isometries]
   \label{prop:pet-ch5-isometry-uniqueness}
   \lean{PetersenLib.localIsometry_uniquelyDeterminedByOnePoint}
-  \uses{prop:pet-ch5-local-isometry-properties}
+  \leanok
+  \uses{def:pet-ch5-local-isometry,prop:pet-ch5-local-isometry-properties,cor:pet-ch5-uniform-injectivity-radius-compact}
   Let $F,G:(M,g_M)\to(N,g_N)$ be local Riemannian isometries, $M$ connected. If
   $F(p)=G(p)$ and $DF_p=DG_p$ for some $p\in M$, then $F=G$ on $M$.
   \source{petersen:page-0214}
 \end{proposition}
 \begin{proof}
-  \uses{prop:pet-ch5-isometry-uniqueness}
+  \leanok
+  \uses{prop:pet-ch5-isometry-uniqueness,prop:pet-ch5-local-isometry-properties,cor:pet-ch5-uniform-injectivity-radius-compact}
   Let $A=\{x\in M\mid F(x)=G(x),\ DF_x=DG_x\}$. Then $p\in A$ and $A$ is closed by
   continuity. If $x\in A$, part (2) of \cref{prop:pet-ch5-local-isometry-properties}
   gives, for $v\in T_xM$ with $\exp_x(v)$ defined,
   \[
     F\circ\exp_x(v)=\exp_{F(x)}\circ DF_x(v)=\exp_{G(x)}\circ DG_x(v)=G\circ\exp_x(v),
   \]
-  and since $\exp_x$ maps onto a neighborhood of $x$, a neighborhood of $x$ lies in
-  $A$: $A$ is open. By connectedness $A=M$.
+  and since $\exp_x$ maps onto a neighborhood of $x$ — apply
+  \cref{cor:pet-ch5-uniform-injectivity-radius-compact} to the compact set $\{x\}$,
+  which gives a ball about $0\in T_xM$ on which $\exp_x$ is defined with open image
+  — a neighborhood of $x$ lies in the set where $F$ and $G$ agree.
+
+  To see that this neighborhood lies in $A$, i.e.\ that the differentials also
+  agree there, note that $F$ and $G$ agree on a neighborhood of each of its points,
+  and two maps agreeing on a neighborhood of a point have the same differential at
+  that point. (This step is where Petersen's argument is terse: agreement of the
+  differentials cannot be propagated by continuity of $x\mapsto DF_x$ alone, and is
+  instead obtained from local agreement of the maps.) Hence $A$ is open, and by
+  connectedness $A=M$.
   \source{petersen:page-0214}
 \end{proof}
 
@@ -1622,6 +2179,7 @@ above ideas on open subsets of $\mathbb R^2$.
 \begin{definition}[fixed-point set; totally geodesic submanifold]
   \label{def:pet-ch5-fixed-point-set}
   \lean{PetersenLib.fixedPointSet,PetersenLib.IsTotallyGeodesic}
+  \leanok
   \uses{def:pet-ch5-exponential-map}
   For a set $S$ of isometries of $(M,g)$, $\operatorname{Fix}(S)=\{x\in M\mid
   F(x)=x\ \forall F\in S\}$. A submanifold $N\subset(M,g)$ is \emph{totally
@@ -1631,22 +2189,92 @@ above ideas on open subsets of $\mathbb R^2$.
   \source{petersen:page-0215}
 \end{definition}
 
-\begin{proposition}[Prop. 5.6.5 — fixed-point sets are totally geodesic]
-  \label{prop:pet-ch5-fixed-point-totally-geodesic}
+\begin{definition}[the fixed tangent subspace]
+  \label{def:pet-ch5-fixed-tangent-subspace}
+  \lean{PetersenLib.fixedTangentSubspace}
+  \leanok
+  \uses{def:pet-ch5-fixed-point-set}
+  For a set $S$ of isometries of $(M,g)$ and $p\in M$,
+  \[
+    V_p=\{v\in T_pM\mid DF_p(v)=v\ \text{ for all }F\in S\},
+  \]
+  the intersection of the $+1$-eigenspaces of the $DF_p$, $F\in S$. It is a linear
+  subspace of $T_pM$.
+  \source{petersen:page-0215}
+\end{definition}
+
+\begin{proposition}[fixed-point components are totally geodesic]
+  \label{prop:pet-ch5-fixed-point-component-totally-geodesic}
   \lean{PetersenLib.fixedPointSetComponent_totallyGeodesic}
-  \uses{def:pet-ch5-fixed-point-set,cor:pet-ch5-metric-ball-image}
-  If $S\subset\operatorname{Iso}(M,g)$, each connected component of
-  $\operatorname{Fix}(S)$ is a totally geodesic submanifold.
+  \leanok
+  \uses{def:pet-ch5-fixed-point-set,def:pet-ch5-fixed-tangent-subspace,lem:pet-ch5-short-geodesics-segments-normal,prop:pet-ch5-local-isometry-properties}
+  Let $(M,g)$ be a connected Riemannian manifold whose Riemannian distance induces
+  its topology, and let $S\subset\operatorname{Iso}(M,g)$. Then every connected
+  component of $\operatorname{Fix}(S)$ is totally geodesic, with tangent
+  distribution $V_p$ as in \cref{def:pet-ch5-fixed-tangent-subspace}.
+
+  \emph{Formalization status.} This is the totally-geodesic half of
+  \cref{prop:pet-ch5-fixed-point-totally-geodesic}, which is the half that is
+  formalized; the submanifold half is not. Being totally geodesic is a chart-free
+  property and does not presuppose submanifold structure. The formal statement adds
+  two hypotheses to Petersen's: that the Riemannian distance induces the topology
+  of $M$ (the chapter's standing metric/length compatibility assumption, under
+  which the short-segment rigidity of
+  \cref{lem:pet-ch5-short-geodesics-segments-normal} is stated), and that $M$ is
+  connected (so that the infimum defining the distance runs over a nonempty set of
+  competitors). The statement quantifies over the intrinsic ball
+  $\{v\mid|v|_g<\varepsilon\}$ and does not mention the on-disk exponential's
+  domain, so the chart artifact of
+  \cref{rem:pet-ch5-injectivity-radius-chart-artifact} does not touch it.
   \source{petersen:page-0215}
 \end{proposition}
 \begin{proof}
-  \uses{prop:pet-ch5-fixed-point-totally-geodesic}
-  Let $p\in\operatorname{Fix}(S)$ and $V\subset T_pM$ the subspace fixed by every
-  $DF_p:T_pM\to T_pM$, $F\in S$ (each $F\in S$ fixes $p$, so $DF_p$ acts on
+  \leanok
+  \uses{def:pet-ch5-fixed-tangent-subspace,lem:pet-ch5-short-geodesics-segments-normal,prop:pet-ch5-local-isometry-properties}
+  Let $p\in\operatorname{Fix}(S)$ and $v\in V_p$. Each $F\in S$ fixes $p$ and
+  satisfies $DF_p(v)=v$, so $F$ preserves the initial datum $(p,v)$; by part~(2) of
+  \cref{prop:pet-ch5-local-isometry-properties} applied to the isometry $F$,
+  $F(\exp_p(tv))=\exp_{F(p)}(tDF_p(v))=\exp_p(tv)$ for every $t$ for which
+  $\exp_p(tv)$ is defined. Hence $\exp_p(tv)\in\operatorname{Fix}(S)$ for all such
+  $t$.
+
+  By \cref{lem:pet-ch5-short-geodesics-segments-normal} there is $\varepsilon>0$
+  such that for $|v|_g<\varepsilon$ the ray $t\mapsto\exp_p(tv)$ is defined and
+  continuous on $[0,1]$. For such $v\in V_p$ the ray is therefore a continuous path
+  in $\operatorname{Fix}(S)$ starting at $p$, so its image lies in the connected
+  component of $\operatorname{Fix}(S)$ containing $p$. Thus a neighborhood of
+  $0\in V_p$ is carried into that component by $\exp_p$, which is precisely the
+  assertion that the component is totally geodesic with tangent distribution $V_p$
+  at $p$. As $p$ was an arbitrary point of the component, the claim follows.
+  \source{petersen:page-0215,petersen:page-0216}
+\end{proof}
+
+\begin{proposition}[Prop. 5.6.5 — fixed-point sets are totally geodesic]
+  \label{prop:pet-ch5-fixed-point-totally-geodesic}
+  \uses{def:pet-ch5-fixed-point-set,def:pet-ch5-fixed-tangent-subspace,prop:pet-ch5-fixed-point-component-totally-geodesic,cor:pet-ch5-metric-ball-image}
+  If $S\subset\operatorname{Iso}(M,g)$, each connected component of
+  $\operatorname{Fix}(S)$ is a totally geodesic submanifold.
+
+  \emph{Formalization status.} Only the totally-geodesic half is formalized, as
+  \cref{prop:pet-ch5-fixed-point-component-totally-geodesic}. The submanifold half
+  — that $\exp_p$ restricts to a bijection $V_p\cap B(0,\varepsilon)\to
+  \operatorname{Fix}(S)\cap B(p,\varepsilon)$, exhibiting $\operatorname{Fix}(S)$
+  near $p$ as the image of a linear subspace and so furnishing a submanifold chart
+  — is not formalized, and nothing on disk asserts that
+  $\operatorname{Fix}(S)$ or any component of it is a submanifold.
+  \source{petersen:page-0215}
+\end{proposition}
+\begin{proof}
+  \uses{prop:pet-ch5-fixed-point-totally-geodesic,prop:pet-ch5-fixed-point-component-totally-geodesic}
+  Let $p\in\operatorname{Fix}(S)$ and let $V=V_p\subset T_pM$ be the subspace fixed
+  by every $DF_p:T_pM\to T_pM$, $F\in S$ (each $F\in S$ fixes $p$, so $DF_p$ acts on
   $T_pM$). If $v\in V$, the geodesic $t\mapsto\exp_p(tv)$ is fixed pointwise by
   every $F\in S$, since $F$ preserves the initial position $p$ and velocity $v$; so
   $\exp_p(tv)\in\operatorname{Fix}(S)$ whenever defined, giving $\exp_p:V\to
-  \operatorname{Fix}(S)$.
+  \operatorname{Fix}(S)$. This much is
+  \cref{prop:pet-ch5-fixed-point-component-totally-geodesic} and already gives that
+  each component is totally geodesic; the remainder of the argument upgrades this to
+  the submanifold assertion.
 
   Let $\varepsilon>0$ with $\exp_p:B(0,\varepsilon)\to B(p,\varepsilon)$ a
   diffeomorphism (\cref{def:pet-ch5-injectivity-radius}). If $q\in\operatorname{Fix}(S)
@@ -1835,6 +2463,7 @@ above ideas on open subsets of $\mathbb R^2$.
 \begin{definition}[distance coordinates]
   \label{def:pet-ch5-distance-coordinates}
   \lean{PetersenLib.distanceCoordinates}
+  \leanok
   \uses{cor:pet-ch5-uniform-injectivity-radius-compact}
   Fix $p\in M$ and $U\ni p$ with $B(q,\operatorname{inj}(q))\supset U$ for all
   $q\in U$; then $r_q(x)=|xq|$ is smooth on $U-\{q\}$ for each $q\in U$. Choosing
@@ -1883,6 +2512,7 @@ above ideas on open subsets of $\mathbb R^2$.
 \begin{definition}[submetry]
   \label{def:pet-ch5-submetry}
   \lean{PetersenLib.IsSubmetry}
+  \leanok
   \uses{def:pet-ch5-metric-balls}
   $F:(\tilde M,g_{\tilde M})\to(M,g_M)$ is a \emph{submetry} if for every
   $\tilde p\in\tilde M$ there is $r>0$ such that $F(B(\tilde p,\varepsilon))=
@@ -1937,6 +2567,7 @@ above ideas on open subsets of $\mathbb R^2$.
 \begin{definition}[proper action; orbit; isotropy group]
   \label{def:pet-ch5-proper-action}
   \lean{PetersenLib.IsProperAction,PetersenLib.orbit,PetersenLib.actionIsotropyGroup}
+  \leanok
   An action of a topological group $H$ on $M$ is \emph{proper} if
   $H\times M\to M\times M$, $(h,p)\mapsto(hp,p)$, is proper. The \emph{orbit}
   through $p$ is $Hp=\{hp\mid h\in H\}$; $H\backslash M$ carries the quotient
@@ -2236,7 +2867,8 @@ above ideas on open subsets of $\mathbb R^2$.
 \begin{theorem}[Thm. 5.7.1 (Hopf and Rinow, 1931) — equivalence of completeness notions]
   \label{thm:pet-ch5-hopf-rinow}
   \lean{PetersenLib.hopfRinowTheorem}
-  \uses{def:pet-ch5-geodesically-complete,def:pet-ch5-distance,cor:pet-ch5-metric-ball-image,cor:pet-ch5-regular-curve-approx,cor:pet-ch5-segments-are-geodesics}
+  \leanok
+  \uses{def:pet-ch5-geodesically-complete,def:pet-ch5-distance}
   For a Riemannian manifold $(M,g)$ the following are equivalent:
   \begin{enumerate}
   \item[(1)] $M$ is geodesically complete.
@@ -2249,7 +2881,23 @@ above ideas on open subsets of $\mathbb R^2$.
   \source{petersen:page-0227}
 \end{theorem}
 \begin{proof}
+  \leanok
   \uses{thm:pet-ch5-hopf-rinow}
+  The formalization (\texttt{PetersenLib.hopfRinowTheorem}) proves the cycle
+  $(1)\Rightarrow(2)\Rightarrow(3)\Rightarrow(4)\Rightarrow(1)$ through the
+  vendored do Carmo Ch.~7 geodesic-completeness engine, under the hypothesis
+  $g.\mathtt{IsRiemannianDist}$ that the metric-space distance on $M$ is the
+  Riemannian distance of $g$: $(2)\Rightarrow(3)$ is the single-point properness
+  \texttt{properSpace\_of\_geodesicallyComplete\_at} (do Carmo's geodesic-sphere
+  growth induction together with Bolzano–Weierstrass on the initial data of the
+  minimizing geodesics), $(3)\Rightarrow(4)$ is the metric fact that a proper
+  metric space is complete, and $(4)\Rightarrow(1)$ is
+  \texttt{isGeodesicallyComplete\_of\_complete} (a maximal geodesic that
+  Cauchy-converges at a finite endpoint is extended past it by the uniform local
+  geodesic flow). Petersen's own exposition, via the exponential-image
+  identities of \cref{cor:pet-ch5-metric-ball-image} and the corner-turning
+  clopen argument, is recorded below.
+
   $(1)\Rightarrow(2)$ and $(3)\Rightarrow(4)$ are immediate.
 
   $(4)\Rightarrow(1)$: a maximal geodesic $c:[0,b)\to M$ with $b<\infty$ must, by
@@ -2301,18 +2949,96 @@ above ideas on open subsets of $\mathbb R^2$.
   \source{petersen:page-0227,petersen:page-0228,petersen:page-0229}
 \end{proof}
 
+\begin{lemma}[geodesics are admissible piecewise-smooth competitors]
+  \label{lem:pet-ch5-geodesics-are-piecewise-smooth}
+  \lean{PetersenLib.IsGeodesicOn.isPiecewiseSmoothCurve,
+    PetersenLib.IsGeodesic.isPiecewiseSmoothCurve}
+  \leanok
+  \uses{def:pet-ch5-geodesic,def:pet-ch5-piecewise-smooth-curve,
+    def:pet-ch5-exponential-map}
+  A geodesic is $C^\infty$, hence an admissible competitor for the length
+  infimum of \cref{def:pet-ch5-distance}: if $\gamma$ is a geodesic on an open
+  time-set $s\supseteq[a,b]$ (in particular, if $\gamma$ is a globally defined
+  geodesic), then $\gamma|_{[a,b]}$ is piecewise smooth in the sense of
+  \cref{def:pet-ch5-piecewise-smooth-curve}.
+
+  This is a regularity bridge rather than a statement of Petersen's: the geodesic
+  equation is naturally solved at $C^1$, whereas
+  \cref{def:pet-ch5-piecewise-smooth-curve} — and therefore
+  \cref{def:pet-ch5-segment} — demands $C^\infty$ on each piece. It is what lets
+  a minimizing geodesic be recognized as a \emph{segment}.
+  \source{petersen:page-0204}
+\end{lemma}
+\begin{proof}
+  \leanok
+  \uses{def:pet-ch5-exponential-map,thm:pet-ch5-local-uniqueness}
+  The claim is local, and a partition is permitted, so it suffices to smooth
+  $\gamma$ near each $t_0\in[a,b]$ and assemble finitely many pieces. Near $t_0$,
+  uniqueness of geodesics (\cref{thm:pet-ch5-local-uniqueness}) identifies
+  $\gamma$ with a radial ray $\tau\mapsto\exp_{\gamma(t_0)}(\tau u)$ of the
+  exponential map after an affine reparametrization of time, and the ray is
+  $C^\infty$ because $\exp$ is. Each $t_0$ therefore has a closed two-sided
+  neighbourhood on which $\gamma$ is $C^\infty$; continuous induction on
+  $\{x\in[a,b]\mid\gamma|_{[a,x]}\text{ is piecewise smooth}\}$ (its supremum is
+  attained and can be pushed) exhausts $[a,b]$ in finitely many steps.
+  \source{petersen:page-0204}
+\end{proof}
+
 \begin{corollary}[Corollary 5.7.2 — complete manifolds have segments everywhere]
   \label{cor:pet-ch5-complete-segment-exists}
   \lean{PetersenLib.completeManifold_allPointsJoinedBySegment}
+  \leanok
   \uses{thm:pet-ch5-hopf-rinow}
   If $(M,g)$ is complete (in any of the equivalent senses), any two points of $M$
-  are joined by a segment.
+  are joined by a segment.  The formalization takes completeness in the metric
+  sense and produces the segment on $[0,1]$, with constant speed $|pq|$; the
+  unit-speed $[0,|pq|]$ form used by the notation $\overline{pq}$ of
+  \cref{def:pet-ch5-segment} is \cref{cor:pet-ch5-segment-notation-unitspeed}.
   \source{petersen:page-0229}
 \end{corollary}
 \begin{proof}
-  \uses{cor:pet-ch5-complete-segment-exists}
+  \leanok
+  \uses{cor:pet-ch5-complete-segment-exists,lem:pet-ch5-geodesics-are-piecewise-smooth}
   This is exactly what was shown in the proof of $(2)\Rightarrow(3)$ of
-  \cref{thm:pet-ch5-hopf-rinow}.
+  \cref{thm:pet-ch5-hopf-rinow}: a minimizing geodesic from $p$ to $q$ exists by
+  completeness, and it realizes the distance.  To see that it is a \emph{segment}
+  in the sense of \cref{def:pet-ch5-segment} one needs it to be an admissible
+  piecewise-$C^\infty$ competitor, which is
+  \cref{lem:pet-ch5-geodesics-are-piecewise-smooth}; its length then equals
+  $|pq|$ by the squeeze $d\le L(\gamma)$ (the infimum bound) against
+  $L(\gamma)=|pq|$ read off the local exponential identities, so no reverse
+  comparison between the Riemannian distance and the ambient metric is needed.
+  \source{petersen:page-0229}
+\end{proof}
+
+\begin{corollary}[unit-speed form: the notation $\overline{pq}$ is meaningful]
+  \label{cor:pet-ch5-segment-notation-unitspeed}
+  \lean{PetersenLib.completeManifold_exists_isSegment_unitSpeed,
+        PetersenLib.segmentNotation_spec,
+        PetersenLib.IsSegment.curveLength_eq_self_of_domain}
+  \leanok
+  \uses{cor:pet-ch5-complete-segment-exists,def:pet-ch5-segment}
+  Let $(M,g)$ be complete and $p,q\in M$.  Then $p$ and $q$ are joined by a segment
+  $\sigma:[0,|pq|]\to M$ with $\sigma(0)=p$ and $\sigma(|pq|)=q$, and any such
+  segment is parametrized by arclength: $L(\sigma|_{[0,t]})=t$ for all
+  $t\in[0,|pq|]$, i.e. the proportionality constant of \cref{def:pet-ch5-segment}
+  is forced to $k=1$.  Consequently the notation $\overline{pq}$ of
+  \cref{def:pet-ch5-segment} denotes such a segment rather than a junk value.
+  \source{petersen:page-0229}
+\end{corollary}
+\begin{proof}
+  \leanok
+  \uses{cor:pet-ch5-complete-segment-exists}
+  By \cref{cor:pet-ch5-complete-segment-exists} take a segment
+  $\gamma:[0,1]\to M$ from $p$ to $q$; its proportionality constant $k$ satisfies
+  $k=L(\gamma)=|pq|$ on evaluating the proportionality clause at $t=1$.  If $p=q$
+  the domain $[0,|pq|]$ degenerates to $[0,0]$ and the constant curve at $p$ is a
+  segment, for which the arclength clause is vacuous.  If $p\neq q$ then $|pq|>0$
+  and $\sigma(t):=\gamma(t/|pq|)$ is defined on $[0,|pq|]$; it is an admissible
+  competitor because piecewise smoothness and length are stable under an affine
+  reparametrization with positive slope, and its proportionality constant is
+  $k\cdot|pq|^{-1}=1$.  For the converse clause, a segment on $[0,|pq|]$ from $p$
+  to $q$ has $k\cdot|pq|=L=|pq|$, so $k=1$ since $|pq|\neq0$.
   \source{petersen:page-0229}
 \end{proof}
 
@@ -2454,6 +3180,7 @@ above ideas on open subsets of $\mathbb R^2$.
 \begin{definition}[segment domain and its star interior]
   \label{def:pet-ch5-segment-domain}
   \lean{PetersenLib.segmentDomain,PetersenLib.segmentDomainStarInterior}
+  \leanok
   \uses{def:pet-ch5-segment,thm:pet-ch5-hopf-rinow}
   For a complete $(M,g)$ and $p\in M$, the \emph{segment domain} is
   $\operatorname{seg}(p)=\{v\in T_pM\mid\exp_p(tv):[0,1]\to M\text{ is a segment}\}$,
@@ -2465,29 +3192,43 @@ above ideas on open subsets of $\mathbb R^2$.
 
 \begin{proposition}[Prop. 5.7.7 — injectivity of $\exp_p$ on the star interior]
   \label{prop:pet-ch5-segment-domain-injective}
-  \lean{PetersenLib.expMap_injectiveOnSegmentDomainStarInterior}
+  \lean{PetersenLib.expMap_injectiveOnSegmentDomainStarInterior,
+        PetersenLib.segment_eq_expMap_ray_of_mem_segmentDomainStarInterior',
+        PetersenLib.segmentDomainStarInterior_subset_segmentDomain}
+  \leanok
   \uses{def:pet-ch5-segment-domain,cor:pet-ch5-segments-are-geodesics}
   If $x\in\exp_p(\operatorname{seg}^0(p))$, it is joined to $p$ by a unique
   segment; in particular $\exp_p$ is injective on $\operatorname{seg}^0(p)$.
   \source{petersen:page-0233}
 \end{proposition}
 \begin{proof}
+  \leanok
   \uses{prop:pet-ch5-segment-domain-injective}
   Let $\sigma:[0,1]\to M$ be a segment with $\sigma(0)=p$, $\sigma(t_0)=x$,
   $t_0<1$. If $\tilde\sigma:[0,t_0]\to M$ were a different segment from $p$ to $x$,
   the concatenation $c(s)=\tilde\sigma(s)$ for $s\in[0,t_0]$, $\sigma(s)$ for
-  $s\in[t_0,1]$, would be a piecewise smooth segment (same total minimal length)
-  that is not smooth at $t_0$ unless $\tilde\sigma=\sigma|_{[0,t_0]}$, contradicting
-  \cref{cor:pet-ch5-segments-are-geodesics} (segments are geodesics, hence smooth,
-  and geodesics are uniquely determined by initial data) unless the two agree.
+  $s\in[t_0,1]$, would be a piecewise smooth segment (same total minimal length),
+  hence a geodesic on $(0,1)$ by \cref{cor:pet-ch5-segments-are-geodesics}.  Now
+  $c$ and $\sigma$ agree on the open set $(t_0,1)$, so they share position and
+  velocity at any $a\in(t_0,1)$; since geodesics are uniquely determined by
+  initial data and $(0,1)$ is connected, this agreement propagates across $t_0$,
+  giving $c=\sigma$ on $(0,1)$ and hence $\tilde\sigma=\sigma|_{[0,t_0]}$.  (This
+  route never needs $c$ to be smooth at the corner, which is why the node lands
+  without any global smoothness of $\exp$.)
   \source{petersen:page-0233}
 \end{proof}
 
 \begin{lemma}[Lemma 5.7.8 — nonsingularity of $\exp_p$ on the star interior]
   \label{lem:pet-ch5-exp-nonsingular-segment-domain}
-  \lean{PetersenLib.expMap_nonsingularOnSegmentDomainStarInterior}
+  \notready
   \uses{prop:pet-ch5-segment-domain-injective,cor:pet-ch5-uniform-injectivity-radius-compact}
   $D\exp_p$ is nonsingular at every point of $\operatorname{seg}^0(p)$.
+
+  \emph{Formalization status.} Not formalized. This lemma — equivalently, that
+  there is no conjugate point strictly before the cut point — is the genuine
+  dependency of \cref{prop:pet-ch5-segment-domain-open}; see
+  \cref{rem:pet-ch5-segment-domain-open-blocker}. Its proof needs the Jacobi-field
+  and Hessian-comparison apparatus of this subsection, none of which is on disk.
   \source{petersen:page-0233}
 \end{lemma}
 \begin{proof}
@@ -2532,11 +3273,19 @@ above ideas on open subsets of $\mathbb R^2$.
 
 \begin{lemma}[Lemma 5.7.9 — the star boundary of $\operatorname{seg}(p)$]
   \label{lem:pet-ch5-cut-locus-characterization}
-  \lean{PetersenLib.starBoundaryOfSegmentDomain}
-  \uses{lem:pet-ch5-exp-nonsingular-segment-domain}
+  \notready
+  \uses{lem:pet-ch5-exp-nonsingular-segment-domain,rem:pet-ch5-segment-domain-chart-artifact}
   If $v\in\operatorname{seg}(p)-\operatorname{seg}^0(p)$, then either (1) there is
   $w\ne v$ in $\operatorname{seg}(p)$ with $\exp_p(v)=\exp_p(w)$, or (2) $D\exp_p$
   is singular at $v$.
+
+  \emph{Formalization status.} Not formalized, and it cannot be formalized against
+  the on-disk definitions as they stand: read there, the statement is \emph{false}
+  rather than merely unproven, because \texttt{segmentDomain} inherits the chart
+  artifact of the on-disk exponential. See
+  \cref{rem:pet-ch5-segment-domain-chart-artifact}. The lemma as stated above — at
+  the intrinsic exponential, which is Petersen's — is the true statement and is what
+  a formalization should target.
   \source{petersen:page-0235}
 \end{lemma}
 \begin{proof}
@@ -2558,11 +3307,40 @@ above ideas on open subsets of $\mathbb R^2$.
   \source{petersen:page-0235}
 \end{proof}
 
+\begin{remark}[the Lean \texttt{segmentDomain} and \texttt{cutLocus} are chart artifacts]
+  \label{rem:pet-ch5-segment-domain-chart-artifact}
+  \uses{def:pet-ch5-segment-domain,rem:pet-ch5-injectivity-radius-chart-artifact}
+  \texttt{PetersenLib.segmentDomain} is defined as the set of $v\in T_pM$ for which
+  $t\mapsto\texttt{expMap}(g,p,tv)$ is a segment on $[0,1]$, and
+  \texttt{segmentDomainStarInterior} and \texttt{cutLocus} are defined from it.
+  All three therefore inherit the defect recorded in
+  \cref{rem:pet-ch5-injectivity-radius-chart-artifact}: \texttt{expMap} is built
+  from the geodesic vector field of the \emph{single chart at $p$}, which is
+  identically $0$ off that chart's source, so a geodesic witnessing membership of
+  $\operatorname{seg}(p)$ can never leave the chart at $p$. The predicate
+  \texttt{IsSegment} that such a geodesic is required to satisfy is, by contrast,
+  chart-free.
+
+  The mismatch is not a gap but a falsity: on a manifold whose chart at $p$ is
+  small, there are genuine segments emanating from $p$ that leave that chart, and
+  the corresponding $v$ lie outside the on-disk $\operatorname{seg}(p)$ while
+  satisfying the hypotheses of \cref{lem:pet-ch5-cut-locus-characterization}. That
+  lemma read against these definitions is therefore \emph{false}, not unproven, and
+  it must not be given a \texttt{\textbackslash leanok} against them. The repair is
+  the one already applied to
+  \cref{cor:pet-ch5-uniform-injectivity-radius-compact} and to part~(2) of
+  \cref{prop:pet-ch5-local-isometry-properties}: redefine the segment domain
+  through the intrinsic maximal geodesic. That work has not been done.
+\end{remark}
+
 \begin{proposition}[Prop. 5.7.10 — the star interior is open]
   \label{prop:pet-ch5-segment-domain-open}
-  \lean{PetersenLib.segmentDomainStarInterior_isOpen}
+  \notready
   \uses{lem:pet-ch5-cut-locus-characterization,lem:pet-ch5-exp-nonsingular-segment-domain}
   $\operatorname{seg}^0(p)$ is open in $T_pM$.
+
+  \emph{Formalization status.} Not formalized, and genuinely blocked; see
+  \cref{rem:pet-ch5-segment-domain-open-blocker}.
   \source{petersen:page-0235}
 \end{proposition}
 \begin{proof}
@@ -2584,10 +3362,35 @@ above ideas on open subsets of $\mathbb R^2$.
   \source{petersen:page-0235,petersen:page-0236}
 \end{proof}
 
+\begin{remark}[what \cref{prop:pet-ch5-segment-domain-open} is really blocked on]
+  \label{rem:pet-ch5-segment-domain-open-blocker}
+  \uses{prop:pet-ch5-segment-domain-open,lem:pet-ch5-exp-nonsingular-segment-domain}
+  Since $\operatorname{seg}(p)$ is star-shaped and $\operatorname{seg}^0(p)$ is its
+  set of proper radial multiples, the assertion of
+  \cref{prop:pet-ch5-segment-domain-open} amounts to
+  $\operatorname{seg}^0(p)=\operatorname{int}\operatorname{seg}(p)$; the inclusion
+  $\operatorname{int}\operatorname{seg}(p)\subset\operatorname{seg}^0(p)$ is the
+  easy half. The substance of the proposition is the reverse inclusion, which is
+  lower semicontinuity of the cut time $v\mapsto\sup\{t\mid tv\in
+  \operatorname{seg}(p)\}$.
+
+  That is not obtainable from the star-shapedness of $\operatorname{seg}(p)$ alone.
+  The proof above obtains it from
+  \cref{lem:pet-ch5-exp-nonsingular-segment-domain} — the statement that $D\exp_p$
+  is nonsingular on $\operatorname{seg}^0(p)$, i.e.\ that there is no conjugate
+  point strictly before the cut point — which supplies the local diffeomorphism $V$
+  the argument runs in. \Cref{lem:pet-ch5-exp-nonsingular-segment-domain} is itself
+  unformalized (its Jacobi-field and Hessian-comparison apparatus is the real cost),
+  and it is the genuine dependency: this is a real blocker on Lemma 5.7.8, not a
+  bookkeeping gap, and it should not be re-triaged as though the openness could be
+  had directly.
+\end{remark}
+
 \begin{definition}[cut locus]
   \label{def:pet-ch5-cut-locus}
   \lean{PetersenLib.cutLocus}
-  \uses{prop:pet-ch5-segment-domain-open}
+  \leanok
+  \uses{def:pet-ch5-segment-domain}
   The set $\operatorname{seg}(p)-\operatorname{seg}^0(p)\subset T_pM$ is the
   \emph{cut locus} of $p$ (in $T_pM$). By
   \cref{prop:pet-ch5-segment-domain-open,lem:pet-ch5-exp-nonsingular-segment-domain},

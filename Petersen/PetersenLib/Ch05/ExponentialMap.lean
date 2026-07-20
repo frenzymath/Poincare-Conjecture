@@ -1,6 +1,6 @@
 import PetersenLib.Ch05.Geodesics
-import PetersenLib.Vendored.OpenGA.Exponential.StrictDerivative
-import PetersenLib.Vendored.OpenGA.Exponential.Ray
+import PetersenLib.Riemannian.Exponential.StrictDerivative
+import PetersenLib.Riemannian.Exponential.Ray
 
 /-!
 # Petersen Ch. 5, §5.5.1 — the exponential map and Riemannian coordinates
@@ -20,8 +20,22 @@ geodesic through `(p, v)` gives a canonical curve; the **exponential map**
   small ball around `0` and maps the neighbourhood filter of `0` onto that of `p`;
   the inverse function theorem then makes `exp_p` a local diffeomorphism near `0`.
   Part 2 (the map `E : O → M × M`, `E(v) = (π v, exp v)`, is a local diffeomorphism
-  near the diagonal) needs the joint `(q, v)`-smoothness of the geodesic flow, which
-  is not yet available at this layer, so it is deferred.
+  near the diagonal) is formalized in `Ch05/ExpDiagonal.lean` as
+  `expDiagonalMap_localDiffeomorphism`, at `C^∞` — the `C¹` ceiling this file used to
+  record as "what is genuinely missing" was lifted in run 0181 r1 by
+  `Exponential.exists_totallyNormal_cinfty_diffeo`
+  (`Exponential/TotallyNormalCInfty.lean`), which ports the `C¹` package off
+  `Geodesic.exists_uniform_geodesic_flow_contDiffAt`.  It was never blocked on
+  smoothness of the geodesic flow in `t`: `E` is an evaluation at a **fixed** time, so
+  it needs joint smoothness in the initial condition `(q, v)` only.
+  What `expDiagonalMap_localDiffeomorphism` does *not* yet do — and why
+  `prop:pet-ch5-exp-diffeomorphism-properties` is still not `\leanok` — is global: it
+  is a per-`p`, chart-at-`p` statement about `(y, w) ↦ (y, (Z (y, T⁻¹ • w) T).1)` on a
+  product ball, whereas Petersen asks for a single diffeomorphism from a neighbourhood
+  of the zero section of `TM` onto a neighbourhood of the diagonal in `M × M`, and it
+  pins the second component via the geodesic characterization rather than by
+  identifying it with `expMap` (an easy but unwritten consequence of geodesic
+  uniqueness).
 * `def:pet-ch5-injectivity-radius` — `injectivityRadius`.
 
 The crux is that the strict Fréchet derivative of the chart reading
@@ -107,8 +121,8 @@ theorem this is exactly the statement that `exp_p` is a local diffeomorphism nea
 
 Part (2) of Prop. 5.5.1 — that `E(v) = (π v, \exp v)` is a local diffeomorphism of
 a neighbourhood of the zero section of `TM` onto a neighbourhood of the diagonal in
-`M × M` — needs the joint `(q, v)`-smoothness of the geodesic flow, which is not
-available at this layer, and is deferred. -/
+`M × M` — is `expDiagonalMap_localDiffeomorphism` in `Ch05/ExpDiagonal.lean`, proved
+at `C^∞` but only in the chart at a fixed `p`; see this file's header. -/
 theorem expMap_localDiffeomorphism (g : RiemannianMetric I M) (p : M) :
     ∃ ρ : ℝ, 0 < ρ ∧
       (∀ w : E, ‖w‖ < ρ → (w : TangentSpace I p) ∈ expDomain (I := I) g p) ∧

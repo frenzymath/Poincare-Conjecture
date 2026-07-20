@@ -1,6 +1,6 @@
 import PetersenLib.Ch02.Connections
 import PetersenLib.Ch02.CovariantDerivative
-import PetersenLib.Vendored.OpenGA.Connection.ChartFrameBridge
+import PetersenLib.Riemannian.Connection.ChartFrameBridge
 
 /-!
 # Petersen Ch. 2, §2.4 — The Connection in Tensor Notation

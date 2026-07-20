@@ -772,6 +772,8 @@ involves the idea of continuously varying how its parts are attached together.
 \begin{definition}[Attaching one space to another]
 \label{def:attaching-space}
 \group{CW Complexes}
+\lean{HatcherLib.AttachingSpace}
+\leanok
 We start with a space $X_0$ and another space $X_1$ that we wish to attach to $X_0$
 by identifying the points in a subspace $A \subset X_1$ with points of $X_0$. The data
 needed to do this is a map $f : A \to X_0$, for then we can form a quotient space of
@@ -934,6 +936,42 @@ $r(z) = z$, a closed set if $X$ is Hausdorff, so $X \times \{0\} \cup A \times I
 $X \times I$ and hence $A$ is closed in $X$.
 \end{proof}
 
+In fact a retraction of $X \times I$ onto $X \times \{0\} \cup A \times I$ is automatically a
+deformation retraction, by an explicit formula:
+
+\begin{lemma}[A retract $X \times \{0\} \cup A \times I$ of the cylinder is a deformation retract]
+\label{lem:hep-cylinder-deformation-retract}
+\group{CW Complexes}
+\lean{HatcherLib.hepBaseDeformationRetract, HatcherLib.HasHEP.hepBase_deformationRetract}
+\leanok
+\uses{def:homotopy-extension-property,def:deformation-retraction,prop:hep-iff-retract}
+If $X \times \{0\} \cup A \times I$ is a retract of the cylinder $X \times I$, then it is a
+deformation retract of it. In particular, if the pair $(X,A)$ has the homotopy
+extension property, then $X \times I$ deformation retracts onto
+$X \times \{0\} \cup A \times I$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+Let $r : X \times I \to X \times \{0\} \cup A \times I$ be a retraction, with components
+$r(x,s) = (r_1(x,s), r_2(x,s))$. Define, for $u \in I$,
+\[
+h_u(x,s) = \bigl( r_1(x, us),\ (1-u)\,s + u\,r_2(x,s) \bigr).
+\]
+This is jointly continuous, and it is a homotopy rel $X \times \{0\} \cup A \times I$
+from the identity to $r$: at $u = 0$ it is $(r_1(x,0), s) = (x,s)$ since $r$ fixes
+$X \times \{0\}$; at $u = 1$ it is $(r_1(x,s), r_2(x,s)) = r(x,s)$; for $a \in A$ the
+retraction fixes both $(a, us)$ and $(a, s)$, so
+$h_u(a,s) = (a, (1-u)s + us) = (a,s)$; and for $s = 0$ it gives
+$h_u(x,0) = (r_1(x,0), u\,r_2(x,0)) = (x, 0)$. Hence $r$, which lands in
+$X \times \{0\} \cup A \times I$ and fixes it, is the terminal stage of a deformation
+retraction.
+
+For the second statement, the homotopy extension property furnishes the retraction
+$r$ by \cref{prop:hep-iff-retract} (whose forward implication needs no closedness
+hypothesis on $A$).
+\end{proof}
+
 \begin{example}[A pair without the homotopy extension property]
 \label{ex:hep-fails-for-bad-subspace}
 \group{CW Complexes}
@@ -1028,31 +1066,75 @@ $qg = \bar f_1 \simeq \bar f_0 = \one$ via $\bar f_t$.
 \end{proof}
 
 Another application of the homotopy extension property, giving a slightly more
-refined version of one of our earlier criteria for homotopy equivalence, is the following.
+refined version of one of our earlier criteria for homotopy equivalence, is the
+following. Here the definition of $W \simeq Z \rel Y$ for pairs $(W,Y)$ and $(Z,Y)$ is
+that there are maps $\varphi : W \to Z$ and $\psi : Z \to W$ restricting to the identity
+on $Y$, such that $\psi\varphi \simeq \one$ and $\varphi\psi \simeq \one$ via homotopies
+that restrict to the identity on $Y$ at all times. We first prove the statement for an
+arbitrary pair $(X_1, A)$ with $A$ closed satisfying the homotopy extension property
+(Hatcher's exercise generalizing his CW-pair statement); the CW case follows once CW
+pairs are known to have the homotopy extension property.
+
+\begin{lemma}[Homotopic attaching maps and the HEP]
+\label{lem:attach-homotopic-hep-rel}
+\group{CW Complexes}
+\lean{HatcherLib.attachingSpace_homotopyEquiv_rel, HatcherLib.attachingSpace_homotopyEquiv}
+\leanok
+\uses{def:attaching-space,def:homotopy-extension-property,lem:hep-cylinder-deformation-retract,def:homotopy-rel-a}
+Let $A \subset X_1$ be closed, let the pair $(X_1,A)$ satisfy the homotopy extension
+property, and let $f,g : A \to X_0$ be homotopic attaching maps. Then
+$X_0 \sqcup_f X_1 \simeq X_0 \sqcup_g X_1 \rel X_0$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+Let $F : A \times I \to X_0$ be a homotopy from $f$ to $g$ and form the attaching
+cylinder $W = X_0 \sqcup_F (X_1 \times I)$, the cylinder $X_1 \times I$ attached to
+$X_0$ along $A \times I$. For each $t_0 \in \{0,1\}$ there is a canonical map
+$\alpha_{t_0} : X_0 \sqcup_{F_{t_0}} X_1 \to W$ sending $X_0$ identically to $X_0$ and
+$x_1 \mapsto (x_1, t_0)$; it is well defined since $(a, t_0) \sim F(a,t_0)$ in $W$ for
+$a \in A$.
+
+By \cref{lem:hep-cylinder-deformation-retract} the homotopy extension property gives a
+deformation retraction $(h_u)$ of $X_1 \times I$ onto $X_1 \times \{0\} \cup A \times I$;
+conjugating by the flip $(x,t) \mapsto (x, 1-t)$ gives one onto
+$X_1 \times \{1\} \cup A \times I$. Fix $t_0$ and let $(h_u)$ be the corresponding
+deformation retraction onto $S = X_1 \times \{t_0\} \cup A \times I$, with terminal
+retraction $r$. Since each $h_u$ fixes $A \times I$ pointwise — the locus of the
+attaching identification — the maps $\one_{X_0} \sqcup h_u$ descend to a homotopy
+$\bar h_u : W \to W$ with $\bar h_0 = \one$, constant on $X_0$ and on the level
+$X_1 \times \{t_0\}$.
+
+Define the collapse $\gamma : S \to X_0 \sqcup_{F_{t_0}} X_1$ by $\gamma(a, t) = F(a,t)$
+for $a \in A$ and $\gamma(x_1, t_0) = x_1$ otherwise; the two prescriptions agree on
+$A \times \{t_0\}$ by the attaching identification, and $\gamma$ is continuous because
+$A \times I$ and $X_1 \times \{t_0\}$ are closed in $S$ ($A$ being closed). The map
+$\beta : W \to X_0 \sqcup_{F_{t_0}} X_1$ given by the identity on $X_0$ and by
+$\gamma \circ r$ on the cylinder is then well defined and continuous, and:
+$\beta \alpha_{t_0} = \one$ (for $x_1 \in A$ this is the attaching identification, and
+$r$ fixes the level $t_0$); and $\alpha_{t_0} \beta = \bar h_1$, which is homotopic to
+$\one_W$ rel the image of $\alpha_{t_0}$ via $\bar h_u$. Thus $\alpha_{t_0}$ exhibits
+$X_0 \sqcup_{F_{t_0}} X_1$ as a deformation retract of $W$, rel $X_0$.
+
+Applying this at $t_0 = 0$ and $t_0 = 1$ gives $\beta_0, \beta_1$; the compositions
+$\varphi = \beta_1 \alpha_0$ and $\psi = \beta_0 \alpha_1$ restrict to the identity on
+$X_0$, and $\psi\varphi = \beta_0(\alpha_1\beta_1)\alpha_0 \simeq \beta_0\alpha_0 = \one$
+rel $X_0$ via $\bar h$, and symmetrically $\varphi\psi \simeq \one$ rel $X_0$.
+\end{proof}
 
 \begin{proposition}[Homotopic attaching maps give a homotopy equivalence rel $X_0$]
 \label{prop:attaching-maps-homotopic-rel-x0}
 \dcref{ch0:0.18}
 \group{CW Complexes}
-\uses{def:cw-pair,def:attaching-space,prop:cw-pairs-have-hep}
+\uses{def:cw-pair,def:attaching-space,prop:cw-pairs-have-hep,lem:attach-homotopic-hep-rel}
 If $(X_1,A)$ is a CW pair and we have attaching maps $f,g : A \to X_0$ that are
 homotopic, then $X_0 \sqcup_f X_1 \simeq X_0 \sqcup_g X_1 \rel X_0$.
 \end{proposition}
 
-Here the definition of $W \simeq Z \rel Y$ for pairs $(W,Y)$ and $(Z,Y)$ is that there are
-maps $\varphi : W \to Z$ and $\psi : Z \to W$ restricting to the identity on $Y$, such that
-$\psi\varphi \simeq \one$ and $\varphi\psi \simeq \one$ via homotopies that restrict to the identity on $Y$ at
-all times.
-
 \begin{proof}
-If $F : A \times I \to X_0$ is a homotopy from $f$ to $g$, consider the space
-$X_0 \sqcup_F (X_1 \times I)$. This contains both $X_0 \sqcup_f X_1$ and $X_0 \sqcup_g X_1$ as
-subspaces. A deformation retraction of $X_1 \times I$ onto $X_1 \times \{0\} \cup A \times I$ as in
-\cref{prop:cw-pairs-have-hep} induces a deformation retraction of
-$X_0 \sqcup_F (X_1 \times I)$ onto $X_0 \sqcup_f X_1$. Similarly $X_0 \sqcup_F (X_1 \times I)$
-deformation retracts onto $X_0 \sqcup_g X_1$. Both these deformation retractions restrict
-to the identity on $X_0$, so together they give a homotopy equivalence
-$X_0 \sqcup_f X_1 \simeq X_0 \sqcup_g X_1 \rel X_0$.
+A CW pair $(X_1, A)$ has the homotopy extension property by
+\cref{prop:cw-pairs-have-hep}, and the subcomplex $A$ is closed in $X_1$. Hence
+\cref{lem:attach-homotopic-hep-rel} applies.
 \end{proof}
 
 We finish this chapter with a technical result whose proof will involve several
@@ -1153,32 +1235,105 @@ $r|_A = \one$ and $\iota r \simeq \one_X \rel A$, which is exactly a deformation
 retraction of $X$ onto $A$.
 \end{proof}
 
+The corollary below needs the homotopy extension property of the pair $(M_f, X)$,
+where $X$ sits inside the mapping cylinder as the bottom $X \times \{0\}$. Hatcher
+obtains it from the mapping cylinder neighborhood $X \times [0,1/2]$ as in
+\cref{ex:mapping-cylinder-neighborhood-hep}; we record it as a separate lemma, proved
+by an explicit projection formula.
+
+\begin{lemma}[The pair $(M_f, X)$ has the homotopy extension property]
+\label{lem:mapping-cylinder-pair-hep}
+\group{CW Complexes}
+\lean{HatcherLib.hasHEPMap_mcylInclX}
+\leanok
+\uses{def:mapping-cylinder,def:homotopy-extension-property}
+For any map $f : X \to Y$, the pair $(M_f, X)$ — the mapping cylinder together with
+the copy $X \times \{0\}$ of its domain — has the homotopy extension property.
+\end{lemma}
+
+\begin{proof}
+\leanok
+Write points of the cylinder part of $M_f$ as $[x,s]$ with $x \in X$, $s \in I$, so
+that $[x,1] = [f(x)] \in Y$ and $X$ is included as the bottom $x \mapsto [x,0]$. Let
+$\varphi : M_f \to Z$ be a map and $h : X \times I \to Z$ a homotopy of
+$\varphi|_X$, so $h(x,0) = \varphi[x,0]$.
+
+Consider the square $I \times I$ with coordinates $(s,t)$ ($s$ the cylinder
+coordinate, $t$ the homotopy time), and project it radially from the external point
+$(1,2)$ onto the union of the bottom edge $I \times \{0\}$ and the left edge
+$\{0\} \times I$: the ray from $(1,2)$ through $(s,t)$ exits the square through the
+left edge at height $\beta(s,t) = (t-2s)/(1-s)$ when $t \ge 2s$, and through the
+bottom edge at abscissa $\alpha(s,t) = (2s-t)/(2-t)$ when $t \le 2s$. Both formulas
+are continuous on their (closed) regions — on the region $t \ge 2s$ one has
+$s \le 1/2$, so the denominator $1-s$ is bounded below by $1/2$, while $2-t \ge 1$
+everywhere — and on the seam $t = 2s$ both edges project to the common corner
+$(0,0)$.
+
+Define $F : M_f \times I \to Z$ by
+\[
+F([x,s],t) =
+\begin{cases}
+\varphi[x, \alpha(s,t)] & t \le 2s,\\
+h(x, \beta(s,t)) & t \ge 2s,
+\end{cases}
+\qquad
+F([y],t) = \varphi[y] \quad (y \in Y).
+\]
+The two prescriptions agree on the seam $t = 2s$, where both read
+$\varphi[x,0] = h(x,0)$, so $F$ is continuous on (the image of) each of the two
+closed pieces of the cylinder part, hence on their union by the pasting lemma. $F$ is
+well defined on the quotient $M_f$: the whole right edge of the square projects to
+the corner $(1,0)$ — for $t \le 2$ always $\alpha(1,t) = 1$ — so
+$F([x,1],t) = \varphi[x,1] = \varphi[f(x)] = F([f(x)],t)$, matching the constant
+prescription on $Y$; since $M_f \times I$ is a quotient of
+$((X \times I) \sqcup Y) \times I$ (the interval being locally compact), continuity
+descends.
+
+Finally, the bottom edge of the square is fixed by the projection
+($\alpha(s,0) = s$), so $F(\cdot,0) = \varphi$, and the left edge is fixed
+($\beta(0,t) = t$), so $F([x,0],t) = h(x,t)$: $F$ is the required extension of the
+homotopy $h$ of $\varphi$. (The mapping cylinder neighborhood of
+\cref{ex:mapping-cylinder-neighborhood-hep} is implicit: the region $t \ge 2s$ where
+$F$ reads the homotopy $h$ only meets the collar $s \le 1/2$.)
+\end{proof}
+
 \begin{corollary}[Homotopy equivalences are exactly deformation retractions of mapping cylinders]
 \label{cor:homotopy-equivalence-iff-deformation-retract-mapping-cylinder}
 \dcref{ch0:0.21}
 \group{CW Complexes}
-\uses{cor:hep-inclusion-homotopy-equiv-deformation-retract,def:mapping-cylinder,ex:mapping-cylinder-neighborhood-hep}
+\lean{HatcherLib.isHmtpyEquiv_iff_isMcylDeformationRetract, HatcherLib.homotopyEquiv_iff_common_deformationRetract}
+\leanok
+\uses{cor:hep-inclusion-homotopy-equiv-deformation-retract,def:mapping-cylinder,lem:mapping-cylinder-pair-hep}
 A map $f : X \to Y$ is a homotopy equivalence iff $X$ is a deformation retract of the
 mapping cylinder $M_f$. Hence, two spaces $X$ and $Y$ are homotopy equivalent iff
 there is a third space containing both $X$ and $Y$ as deformation retracts.
 \end{corollary}
 
 \begin{proof}
-Let $i : X \to M_f$ and $j : M_f \to Y$ be the natural inclusion and retraction, and let
-$r : M_f \to Y$ be the canonical retraction of $M_f$ onto $Y$, so that $f = ri$ (viewing $r$
-as landing in $Y$) and $i$ followed by the deformation retraction of $M_f$ onto $Y$
-recovers $f$ up to homotopy.
+\leanok
+Let $i : X \to M_f$ be the natural inclusion and $r : M_f \to Y$ the canonical
+retraction of $M_f$ onto $Y$, so that $f = ri$. Since $r$ is a homotopy equivalence,
+$f$ is a homotopy equivalence iff $i$ is: if $i$ is one then so is the composite
+$f = ri$; conversely, if $f$ is one then, $j : Y \to M_f$ denoting the inclusion,
+$jf$ is a homotopy equivalence and $i \simeq jri = jf$ (via the deformation
+retraction of $M_f$ onto $Y$), so $i$ is a homotopy equivalence, being homotopic to
+one. Here we use that the composition of two homotopy equivalences is a homotopy
+equivalence and that a map homotopic to a homotopy equivalence is a homotopy
+equivalence.
 
+If $X$ is a deformation retract of $M_f$, the inclusion $i$ is a homotopy
+equivalence, hence so is $f$. Conversely, if $f$ is a homotopy equivalence then so is
+$i$, and applying \cref{cor:hep-inclusion-homotopy-equiv-deformation-retract} to the
+pair $(M_f, X)$ — which satisfies the homotopy extension property by
+\cref{lem:mapping-cylinder-pair-hep} — upgrades a homotopy inverse of $i$ to a
+deformation retraction of $M_f$ onto $X$.
 
-
-Since $j$ and $r$ are homotopy equivalences, it follows that $f$ is a homotopy
-equivalence iff $i$ is a homotopy equivalence, since the composition of two homotopy
-equivalences is a homotopy equivalence and a map homotopic to a homotopy
-equivalence is a homotopy equivalence. Now apply
-\cref{cor:hep-inclusion-homotopy-equiv-deformation-retract} to the pair $(M_f, X)$,
-which satisfies the homotopy extension property by
-\cref{ex:mapping-cylinder-neighborhood-hep} using the neighborhood $X \times [0,1/2]$
-of $X$ in $M_f$.
+For the final statement: if $X$ and $Y$ are homotopy equivalent via $f$, the mapping
+cylinder $M_f$ contains both $X$ and $Y$ as deformation retracts — $X$ by the above,
+$Y$ by the sliding deformation retraction of \cref{def:mapping-cylinder}. Conversely,
+if some space $Z$ contains both $X$ and $Y$ as deformation retracts, then both
+inclusions $X \to Z$ and $Y \to Z$ are homotopy equivalences, and composing the first
+with a homotopy inverse of the second gives a homotopy equivalence $X \to Y$.
 \end{proof}
 
 \section*{Exercises}

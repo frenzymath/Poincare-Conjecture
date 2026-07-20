@@ -42,7 +42,7 @@ applied to the ambient tangent bundle `T M̃|_M` restricted to a submanifold
 at the end of the file is Lee's Proposition 2.8 verbatim, for `TM` and a
 `RiemannianMetric`.
 
-Note on prior art: the sibling OpenGALib (do Carmo) development contains a
+Note on prior art: the sibling DoCarmoLib (do Carmo) development contains a
 `smoothOrthoFrame`, but it is a different statement — a hand-rolled Gram-Schmidt
 recursion against the metric, applied to *the chart-induced frame* and cut off by
 a bump function, with no initial-span condition and no arbitrary input frame.  It

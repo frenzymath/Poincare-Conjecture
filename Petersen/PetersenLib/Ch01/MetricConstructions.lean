@@ -17,7 +17,7 @@ existence-and-uniqueness statement (`quotientMetric`), and the flat torus
 (`circleMetric`, `flatTorus`).
 
 The product and left-invariant constructions are vendored from the shared
-OpenGALib construction (`DoCarmoCh1.lean`: `DCProductForm`/`DCProductMetric`
+DoCarmoLib construction (`DoCarmoCh1.lean`: `DCProductForm`/`DCProductMetric`
 and `DCLeftInvariantForm`/`DCLeftInvariantMetric`, identical in the openga
 and DoCarmo projects), renamed into the PetersenLib namespace.
 

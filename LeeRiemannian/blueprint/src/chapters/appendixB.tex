@@ -239,6 +239,75 @@ For the left-hand side, expand $\det(A[\,\cdot\,, s])$ by the Leibniz formula an
 Fix $\sigma$ and substitute $s = u \circ \sigma$, a bijection of the set of maps $\iota \to \iota'$ onto itself. Reindexing the product by $j = \sigma(i)$ gives $\prod_{i} A_{\sigma(i)\,u(\sigma(i))} = \prod_{j} A_{j\,u(j)}$, and since $\theta$ is alternating, $\theta(e_{u(\sigma(1))}, \ldots, e_{u(\sigma(k))}) = \operatorname{sgn}(\sigma)\,\theta(e_{u(1)}, \ldots, e_{u(k)})$. The two signs multiply to $\operatorname{sgn}(\sigma)^2 = 1$, so the inner sum equals $\sum_{u} \big(\prod_{j} A_{j\,u(j)}\big)\theta(e_{u(1)}, \ldots, e_{u(k)})$ for every $\sigma$, and $S_\iota$ has $k!$ elements.
 \end{proof}
 
+A companion identity in the same style is the Laplace expansion of a determinant along a block of rows, by complementary minors. As with Cauchy--Binet, summing over all permutations rather than over shuffles trades a factorial multiplicity for freedom from shuffle bookkeeping; it is the identity behind the fact that the wedge product of two wedges of covectors is the wedge of the concatenated family.
+
+\begin{proposition}
+\label{lem:laplace-expansion-block}
+\lean{Matrix.sum_sign_det_submatrix_inl_mul_det_submatrix_inr}
+\leanok
+\textbf{(Generalized Laplace expansion.)} Let $M$ be a square matrix over $R$ whose rows and columns are indexed by the disjoint union $\iota_a \sqcup \iota_b$, and write $k = \#\iota_a$, $l = \#\iota_b$. Then
+\[
+\sum_{\sigma \in S_{\iota_a \sqcup \iota_b}} \operatorname{sgn}(\sigma)\, \det\big(M[\iota_a, \sigma|_a]\big)\, \det\big(M[\iota_b, \sigma|_b]\big) = k!\, l!\, \det M,
+\]
+where $M[\iota_a, \sigma|_a]$ is the submatrix with rows the $\iota_a$-rows of $M$ and columns $\sigma(\iota_a)$-columns in the order induced by $\sigma$, and similarly for $\iota_b$.
+\end{proposition}
+\begin{proof}
+\leanok
+Expand both minors by the Leibniz formula: the left-hand side becomes
+\[
+\sum_{\sigma} \sum_{\pi \in S_{\iota_a}} \sum_{\rho \in S_{\iota_b}} \operatorname{sgn}(\sigma)\operatorname{sgn}(\pi)\operatorname{sgn}(\rho) \prod_{i \in \iota_a} M_{\pi(i)\, \sigma(i)} \prod_{j \in \iota_b} M_{\rho(j)\, \sigma(j)},
+\]
+indices read in $\iota_a \sqcup \iota_b$. Fix $(\pi, \rho)$ and substitute $\sigma = \tau \circ (\pi \oplus \rho)^{-1}$, i.e.\ reindex the outer sum by $\tau = \sigma \circ (\pi \oplus \rho)$, where $\pi \oplus \rho$ is the permutation of $\iota_a \sqcup \iota_b$ acting as $\pi$ on $\iota_a$ and $\rho$ on $\iota_b$. Reindexing the two products by $\pi$ and $\rho$ respectively turns them into $\prod_{i} M_{i\,\tau(i)} \prod_{j} M_{j\,\tau(j)} = \prod_{x \in \iota_a \sqcup \iota_b} M_{x\,\tau(x)}$, and the signs combine as $\operatorname{sgn}(\tau)\operatorname{sgn}(\pi)^2\operatorname{sgn}(\rho)^2 = \operatorname{sgn}(\tau)$. The inner sum is therefore the Leibniz expansion of $\det M^{T} = \det M$, independent of $(\pi, \rho)$, and there are $k!\,l!$ such pairs.
+\end{proof}
+
+Two further counting lemmas concern permutations of a disjoint union $\iota_a \sqcup \iota_b$ with $\#\iota_a = k$ and $\#\iota_b = l$; they drive the collapse of the permutation sums in the characterization of the Hodge star operator (Problem 2-18 of Chapter 2). We say a permutation $\chi$ of $\iota_a \sqcup \iota_b$ \emph{preserves the blocks} if it maps the $\iota_a$-summand into itself, or equivalently the $\iota_b$-summand into itself; the block-preserving permutations are exactly those of the form $\pi \oplus \rho$ with $(\pi, \rho) \in S_{\iota_a} \times S_{\iota_b}$.
+
+\begin{lemma}[Block-Permutation Collapse]
+\label{lem:perm-block-collapse}
+\lean{LeeLib.Ch02.det_inrBlock_sumCongr, LeeLib.Ch02.det_inrBlock_eq_zero, LeeLib.Ch02.sum_perm_sign_mul_mul_det_inrBlock}
+\leanok
+For a permutation $\chi$ of $\iota_a \sqcup \iota_b$, let
+\[
+D(\chi) = \det\big(\mathbf{1}[\chi(j) = j']\big)_{j, j' \in \iota_b}
+\]
+be the determinant of the $l \times l$ matrix recording where $\chi$ sends the $\iota_b$-block: the $(j,j')$-entry is $1$ if $\chi(j) = j'$, both read in the $\iota_b$-summand, and $0$ otherwise. Then:
+\begin{enumerate}
+\item if $\chi = \pi \oplus \rho$ preserves the blocks, then $D(\chi) = \operatorname{sgn}(\rho)$;
+\item if $\chi$ does not preserve the blocks, then $D(\chi) = 0$;
+\item consequently, for every commutative ring $R$ and every function $F$ from maps $\iota_a \to \iota_a \sqcup \iota_b$ to $R$,
+\[
+\sum_{\chi \in S_{\iota_a \sqcup \iota_b}} \operatorname{sgn}(\chi)\, F\big(\chi|_{\iota_a}\big)\, D(\chi)
+  \;=\; l! \sum_{\pi \in S_{\iota_a}} \operatorname{sgn}(\pi)\, F(\pi),
+\]
+where $\chi|_{\iota_a}$ is the restriction of $\chi$ to the $\iota_a$-summand and, on the right, $\pi$ is read as a map $\iota_a \to \iota_a \sqcup \iota_b$ into the first summand.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+\leanok
+(1) If $\chi = \pi \oplus \rho$, the matrix has $(j,j')$-entry $\mathbf{1}[\rho(j) = j']$; this is the permutation matrix of $\rho$, whose determinant is $\operatorname{sgn}(\rho)$.
+
+(2) A permutation maps the $\iota_a$-summand into itself if and only if it maps the $\iota_b$-summand into itself (the two conditions each say that $\chi$ restricts to a bijection of the finite complement). So if $\chi$ does not preserve the blocks, some $j \in \iota_b$ has $\chi(j)$ in the $\iota_a$-summand; the $j$-th row of the matrix is then identically zero, and the determinant vanishes.
+
+(3) By (2) the sum restricts to the block permutations, which are enumerated bijectively by the pairs $(\pi, \rho) \in S_{\iota_a} \times S_{\iota_b}$. For $\chi = \pi \oplus \rho$ one has $\chi|_{\iota_a} = \pi$ (as a map into the first summand), $\operatorname{sgn}(\pi \oplus \rho) = \operatorname{sgn}(\pi)\operatorname{sgn}(\rho)$, and $D(\chi) = \operatorname{sgn}(\rho)$ by (1); the term is therefore $\operatorname{sgn}(\pi)\operatorname{sgn}(\rho)^2\, F(\pi) = \operatorname{sgn}(\pi)\, F(\pi)$, independent of $\rho$, and there are $l!$ choices of $\rho$.
+\end{proof}
+
+\begin{lemma}[Extensions of an Injection to a Permutation]
+\label{lem:perm-extension-count}
+\lean{LeeLib.Ch02.exists_perm_comp_inl_eq, LeeLib.Ch02.card_perm_comp_inl_eq, LeeLib.Ch02.sum_perm_comp_inl}
+\leanok
+Every injection $j \colon \iota_a \to \iota_a \sqcup \iota_b$ is the restriction to the $\iota_a$-summand of exactly $l!$ permutations of $\iota_a \sqcup \iota_b$. Consequently, for every function $G$ from maps $\iota_a \to \iota_a \sqcup \iota_b$ into a commutative monoid, vanishing on the non-injective maps,
+\[
+\sum_{\sigma \in S_{\iota_a \sqcup \iota_b}} G\big(\sigma|_{\iota_a}\big) \;=\; l! \sum_{j \colon \iota_a \to \iota_a \sqcup \iota_b} G(j),
+\]
+the right-hand sum running over \emph{all} maps.
+\end{lemma}
+\begin{proof}
+\leanok
+First, one extension exists: the complement of the range of $j$ in $\iota_a \sqcup \iota_b$ has cardinality $(k+l) - k = l$, so there is a bijection $\psi$ of $\iota_b$ onto it, and the map equal to $j$ on $\iota_a$ and to $\psi$ on $\iota_b$ is a permutation extending $j$. Next, the extensions of $j$ form a left coset $\sigma_0 H$ of the subgroup $H \le S_{\iota_a \sqcup \iota_b}$ of permutations fixing the $\iota_a$-summand pointwise: if $\sigma|_{\iota_a} = \sigma_0|_{\iota_a} = j$, then $\chi = \sigma_0^{-1}\sigma$ fixes the $\iota_a$-summand pointwise, and conversely. A permutation fixing the $\iota_a$-summand pointwise maps the $\iota_b$-summand into itself by injectivity, so $H \cong S_{\iota_b}$ and each fibre has cardinality $l!$.
+
+For the sum formula, group the left-hand side by the fibres of $\sigma \mapsto \sigma|_{\iota_a}$. A non-empty fibre lies over an injective map (a restriction of an injection is injective), and then has cardinality $l!$ by the previous paragraph; over the non-injective maps both sides contribute $0$ by the hypothesis on $G$.
+\end{proof}
+
 \section{Symmetric Tensors}
 
 There are two classes of tensors that play particularly important roles in differential geometry: the symmetric and alternating tensors. Here we discuss the symmetric ones; we will take up alternating tensors later in this appendix when we discuss differential forms.

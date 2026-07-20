@@ -20,7 +20,7 @@ and pseudo-Riemannian metrics with their index
 (`PseudoRiemannianMetric`, `pseudoRiemannianIndex`, `minkowskiMetric`).
 
 The pullback-metric smoothness argument is adapted from the shared
-OpenGALib construction (`DoCarmoCh1.lean`: `DCInducedForm`,
+DoCarmoLib construction (`DoCarmoCh1.lean`: `DCInducedForm`,
 `DCInducedForm_contMDiff`, `DCInducedMetric`, identical in the openga and
 DoCarmo projects).
 

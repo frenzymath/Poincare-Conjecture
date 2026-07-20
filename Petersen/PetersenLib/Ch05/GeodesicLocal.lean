@@ -1,4 +1,6 @@
-import PetersenLib.Vendored.OpenGA.Geodesic.UniformExistence
+import PetersenLib.Riemannian.Geodesic.UniformExistence
+import PetersenLib.Riemannian.Geodesic.FlowCInftyDependence
+import PetersenLib.Riemannian.Exponential.MovingBaseRayODE
 
 /-! # Petersen Ch. 5, §5.2 — local existence and uniqueness of geodesics
 
@@ -22,13 +24,20 @@ reading `u = φ_α ∘ γ` solves the coordinate geodesic equation
   together with the flow computing the chart readings — position and
   velocity — and its Lipschitz dependence on the initial condition.
 * `geodesic_local_existence` (Theorem 5.2.3): the locally-uniform existence
-  statement. Its final clause — joint `C^∞`-dependence of `c q w (t)` on
-  `(q, w, t)` — requires smooth dependence of ODE solutions on initial
-  conditions, which is not yet in mathlib; that single conjunct is a
-  documented `sorry`.
-* `geodesic_local_existence_lipschitz`: a fully proven (sorry-free) variant of
-  Theorem 5.2.3 in which the `C^∞`-dependence clause is replaced by the
-  Lipschitz-in-initial-data estimate that mathlib's Grönwall theory provides.
+  statement, including its final clause — joint `C^∞`-dependence of
+  `c q w (t)` on `(q, w, t)`. Mathlib has no smooth dependence of ODE
+  solutions on initial conditions, and the vendored geodesic flow is `C^∞` in
+  the initial condition only on a ball around the *zero section*; both gaps
+  are bridged by degree-2 fibre homogeneity of the spray. Since `ε` is ours to
+  choose, running the geodesic from `q` with velocity `(t/T)·w` for the
+  **fixed** time `T` rather than with velocity `w` for time `t` puts every
+  initial condition in the zero-section ball *and* moves the time variable
+  into the velocity slot, where smoothness is a composition of the smooth
+  rescaling with a fixed-time evaluation.
+* `geodesic_local_existence_lipschitz`: a variant of Theorem 5.2.3 in which
+  the `C^∞`-dependence clause is replaced by the Lipschitz-in-initial-data
+  estimate that mathlib's Grönwall theory provides; it needs no `T2Space`
+  assumption on the tangent bundle.
 -/
 
 set_option linter.unusedSectionVars false
@@ -347,14 +356,32 @@ every `p : M` and initial velocity `v ∈ T_pM` there are `ε > 0`,
 neighbourhoods `V₁` of `p` and `V₂` of `v` (in chart coordinates), and a
 family `c` of geodesics in the chart at `p`, defined on `(-ε, ε)` for **all**
 initial conditions `(q, w) ∈ V₁ × V₂`, with `c q w 0 = q` and initial chart
-velocity `w`. The final conjunct is Petersen's clause that
-`(q, w, t) ↦ c_{q,w}(t)` is jointly `C^∞`, read in chart coordinates; smooth
-dependence of ODE solutions on initial conditions is not yet available in
-mathlib, so that one conjunct is left as a documented `sorry` (see
-`geodesic_local_existence_lipschitz` for a sorry-free variant with Lipschitz
-dependence instead). -/
+velocity `w`, such that `(q, w, t) ↦ c_{q,w}(t)` is jointly `C^∞` read in
+chart coordinates.
+
+**The `C^∞` clause by fibre–time rescaling.** Mathlib has no smooth dependence
+of ODE solutions on initial conditions, and the vendored geodesic flow is `C^∞`
+in the initial condition *only on a ball around the zero section*
+(`Geodesic.exists_uniform_geodesic_flow_contDiffAt`: the Picard family
+`σ : E × E → C([0, T], E × E)` is `C^∞` on `B_r(φ_p(p), 0)`), which does not
+reach the arbitrary velocity `v`, and is in any case smoothness in the initial
+condition alone — not jointly with time.
+
+Both gaps are closed at once by *degree-2 fibre homogeneity of the spray*: the
+geodesic from `q` with velocity `w` run for time `t` is the geodesic from `q`
+with velocity `(t/T)·w` run for the **fixed** time `T`. Since `ε` is ours to
+choose, shrinking it drives the rescaled velocities `(t/T)·w` into the
+zero-section ball where `σ` is `C^∞` — and the time variable `t` now enters
+only through the *velocity slot* of a fixed-time evaluation, so joint
+`C^∞`-ness in `(q, w, t)` is a composition of the smooth rescaling
+`(x, w, t) ↦ (x, (t/T)·w)` with `z ↦ (σ z T)₁`, the latter smooth because
+evaluation at `T` is a continuous linear map. The family is therefore *defined*
+by `c q w t := φ_p⁻¹((Z(φ_p q, (t/T)·w) T)₁)`, and the moving-base
+reparametrization `Exponential.geodesicFlow_fst_fibre_time_movingBase`
+identifies it with the honest time-rescaled trajectory `(Z(φ_p q, λ·w)(t/λ))₁`,
+from which the chart geodesic equation and the initial data follow. -/
 theorem geodesic_local_existence (g : RiemannianMetric I M) [I.Boundaryless] [CompleteSpace E]
-    (p : M) (v : TangentSpace I p) :
+    [T2Space (TangentBundle I M)] (p : M) (v : TangentSpace I p) :
     ∃ ε > 0, ∃ V₁ ∈ 𝓝 p, ∃ V₂ ∈ 𝓝 (v : E), ∃ c : M → E → ℝ → M,
       (∀ q ∈ V₁, ∀ w ∈ V₂,
         IsChartGeodesicOn (I := I) g p (c q w) (Ioo (-ε) ε) ∧
@@ -364,13 +391,214 @@ theorem geodesic_local_existence (g : RiemannianMetric I M) [I.Boundaryless] [Co
         (fun xwt : (E × E) × ℝ =>
           extChartAt I p (c ((extChartAt I p).symm xwt.1.1) xwt.1.2 xwt.2))
         (((extChartAt I p '' V₁) ×ˢ V₂) ×ˢ Ioo (-ε) ε) := by
-  obtain ⟨ε, hε, V₁, hV₁, V₂, hV₂, c, r, Z, L, hr, hball, hfam, hread, -, hLip⟩ :=
-    exists_uniform_chart_geodesic_family (I := I) g p v
-  refine ⟨ε, hε, V₁, hV₁, V₂, hV₂, c, hfam, ?_⟩
-  -- Smooth dependence of ODE solutions on initial conditions is not yet in
-  -- mathlib (only Lipschitz dependence via Gronwall). Blocked: this is the
-  -- C^∞ clause of Petersen Thm 5.2.3.
-  sorry
+  classical
+  set x₀ : E := extChartAt I p p with hx₀def
+  set z₀ : E × E := ((x₀, (0 : E)) : E × E) with hz₀def
+  -- the zero-section-anchored `C^∞` local geodesic flow
+  obtain ⟨r, ε₀, T, Z, L, σ, hT, hr, hε₀, hTε₀, hflow, hLip, -, hσ, hσC⟩ :=
+    Geodesic.exists_uniform_geodesic_flow_contDiffAt (I := I) g p
+  -- the moving-base fibre–time reparametrization of that flow
+  obtain ⟨η, ρv, b, hη, hρv, hb1, hfibre⟩ :=
+    Exponential.geodesicFlow_fst_fibre_time_movingBase (I := I) g p hr hT hTε₀ hflow hLip
+  -- thresholds: `δ` bounds the velocities, `lam` shrinks them into the flow ball
+  set vE : E := (v : E) with hvEdef
+  set δ : ℝ := ‖vE‖ + 1 with hδdef
+  have hδpos : 0 < δ := by rw [hδdef]; positivity
+  set lam : ℝ := min ρv r / (2 * δ) with hlamdef
+  have hlampos : 0 < lam := by
+    rw [hlamdef]; exact div_pos (lt_min hρv hr) (by positivity)
+  have hlamδ : lam * δ < min ρv r := by
+    have hhalf : lam * δ = min ρv r / 2 := by
+      rw [hlamdef]; field_simp
+    rw [hhalf]
+    have : 0 < min ρv r := lt_min hρv hr
+    linarith
+  have hlamδr : lam * δ < r := lt_of_lt_of_le hlamδ (min_le_right _ _)
+  have hlamδρ : lam * δ < ρv := lt_of_lt_of_le hlamδ (min_le_left _ _)
+  set ν : ℝ := min η r with hνdef
+  have hνpos : 0 < ν := lt_min hη hr
+  -- the neighbourhoods of `p` and `v`, and the rescaled time window
+  set ε : ℝ := T * lam with hεdef
+  have hεpos : 0 < ε := by rw [hεdef]; positivity
+  set V₁ : Set M := (extChartAt I p).source ∩
+    extChartAt I p ⁻¹' ball x₀ ν with hV₁def
+  set V₂ : Set E := ball vE 1 with hV₂def
+  have hV₁ : V₁ ∈ 𝓝 p :=
+    Filter.inter_mem (extChartAt_source_mem_nhds p)
+      ((continuousAt_extChartAt p).preimage_mem_nhds (ball_mem_nhds _ hνpos))
+  have hV₂ : V₂ ∈ 𝓝 (v : E) := ball_mem_nhds (α := E) _ one_pos
+  -- the family: the flow's foot at the FIXED time `T`, with `t` rescaled into
+  -- the velocity slot.  This is `exp_q(t · w)` read in the chart at `p`.
+  set c : M → E → ℝ → M := fun q w t =>
+    (extChartAt I p).symm ((Z ((extChartAt I p q, (t / T) • w) : E × E) T).1) with hcdef
+  -- velocities from `V₂` are bounded by `δ`
+  have hwδ : ∀ w ∈ V₂, ‖w‖ < δ := by
+    intro w hw
+    have h1 : ‖w‖ ≤ ‖w - vE‖ + ‖vE‖ := by simpa using norm_add_le (w - vE) vE
+    have h2 : ‖w - vE‖ < 1 := by rw [← dist_eq_norm]; exact mem_ball.mp hw
+    rw [hδdef]; linarith
+  have hyν : ∀ q ∈ V₁, dist (extChartAt I p q) x₀ < ν := fun q hq => mem_ball.mp hq.2
+  -- the rescaled velocities `(t/T)·w` are tiny
+  have hscale : ∀ w ∈ V₂, ∀ t ∈ Ioo (-ε) ε, ‖(t / T) • w‖ < lam * δ := by
+    intro w hw t ht
+    have habs : |t| < ε := abs_lt.mpr ⟨ht.1, ht.2⟩
+    have hdT : |t / T| < lam := by
+      rw [abs_div, abs_of_pos hT, div_lt_iff₀ hT]
+      rw [hεdef] at habs; linarith [habs]
+    rw [norm_smul, Real.norm_eq_abs]
+    exact mul_lt_mul'' hdT (hwδ w hw) (abs_nonneg _) (norm_nonneg _)
+  -- initial conditions of both flavours lie in the flow ball
+  have hmemball : ∀ q ∈ V₁, ∀ w ∈ V₂, ∀ t ∈ Ioo (-ε) ε,
+      ((extChartAt I p q, (t / T) • w) : E × E) ∈ ball z₀ r := by
+    intro q hq w hw t ht
+    rw [mem_ball, hz₀def, Prod.dist_eq]
+    refine max_lt (lt_of_lt_of_le (hyν q hq) (min_le_right _ _)) ?_
+    rw [dist_zero_right]
+    exact lt_trans (hscale w hw t ht) hlamδr
+  have hlamw : ∀ q ∈ V₁, ∀ w ∈ V₂,
+      ((extChartAt I p q, lam • w) : E × E) ∈ closedBall z₀ r := by
+    intro q hq w hw
+    rw [mem_closedBall, hz₀def, Prod.dist_eq]
+    refine max_le (le_of_lt (lt_of_lt_of_le (hyν q hq) (min_le_right _ _))) ?_
+    rw [dist_zero_right, norm_smul, Real.norm_eq_abs, abs_of_pos hlampos]
+    exact le_of_lt (lt_trans (mul_lt_mul_of_pos_left (hwδ w hw) hlampos) hlamδr)
+  have hzero : ∀ q ∈ V₁, ((extChartAt I p q, (0 : E)) : E × E) ∈ closedBall z₀ r := by
+    intro q hq
+    rw [mem_closedBall, hz₀def, Prod.dist_eq]
+    exact max_le (le_of_lt (lt_of_lt_of_le (hyν q hq) (min_le_right _ _)))
+      (by simp [hr.le])
+  have hTmemIcc : T ∈ Icc (-ε₀) ε₀ := ⟨by linarith, hTε₀.le⟩
+  have hTmemIoo : T ∈ Ioo (-ε₀) ε₀ := ⟨by linarith, hTε₀⟩
+  -- the chart-target confinement of the flow at the fixed time `T`
+  have htarget : ∀ q ∈ V₁, ∀ w ∈ V₂, ∀ t ∈ Ioo (-ε) ε,
+      (Z ((extChartAt I p q, (t / T) • w) : E × E) T).1 ∈ (extChartAt I p).target :=
+    fun q hq w hw t ht =>
+      ((hflow _ (ball_subset_closedBall (hmemball q hq w hw t ht))).2.2 T hTmemIcc).1
+  -- **the key identity**: rescaling time into the velocity slot
+  have hkey : ∀ q ∈ V₁, ∀ w ∈ V₂, ∀ t ∈ Ioo (-ε) ε,
+      (Z ((extChartAt I p q, (t / T) • w) : E × E) T).1
+        = (Z ((extChartAt I p q, lam • w) : E × E) (t / lam)).1 := by
+    intro q hq w hw t ht
+    have hTlam : (0 : ℝ) < T * lam := by positivity
+    have habs : |t| < ε := abs_lt.mpr ⟨ht.1, ht.2⟩
+    have ha : |t / (T * lam)| < b := by
+      have : |t / (T * lam)| < 1 := by
+        rw [abs_div, abs_of_pos hTlam, div_lt_one hTlam]
+        rw [hεdef] at habs; linarith [habs]
+      linarith
+    have hρ : ‖lam • w‖ < ρv := by
+      rw [norm_smul, Real.norm_eq_abs, abs_of_pos hlampos]
+      exact lt_trans (mul_lt_mul_of_pos_left (hwδ w hw) hlampos) hlamδρ
+    have h1 : (t / (T * lam)) • (lam • w) = (t / T) • w := by
+      rw [smul_smul]; congr 1; field_simp
+    have h2 := hfibre (extChartAt I p q) (lam • w)
+      (lt_of_lt_of_le (hyν q hq) (min_le_left _ _)) hρ (t / (T * lam)) ha
+    rw [h1] at h2
+    rw [h2]
+    congr 2
+    field_simp
+  refine ⟨ε, hεpos, V₁, hV₁, V₂, hV₂, c, ?_, ?_⟩
+  · -- ## the geodesic clauses, one initial condition at a time
+    intro q hq w hw
+    set y : E := extChartAt I p q with hydef
+    set ψ : ℝ → E × E := fun s => Z ((y, lam • w) : E × E) s with hψdef
+    obtain ⟨hψ0, hψd, -⟩ := hflow _ (hlamw q hq w hw)
+    -- the chart reading of the family is the time-rescaled trajectory
+    have hu_eq : ∀ t ∈ Ioo (-ε) ε, extChartAt I p (c q w t) = (ψ (t / lam)).1 := by
+      intro t ht
+      simp only [hcdef]
+      rw [(extChartAt I p).right_inv (htarget q hq w hw t ht)]
+      exact hkey q hq w hw t ht
+    -- the trajectory solves the spray ODE on the open window
+    have hψHD : ∀ s ∈ Ioo (-ε₀) ε₀,
+        HasDerivAt ψ (Geodesic.geodesicSprayCoord (I := I) g p (ψ s).1 (ψ s).2) s :=
+      fun s hs => (hψd s (Ioo_subset_Icc_self hs)).hasDerivAt (Icc_mem_nhds hs.1 hs.2)
+    have hts : ∀ t ∈ Ioo (-ε) ε, t / lam ∈ Ioo (-ε₀) ε₀ := by
+      intro t ht
+      have habs : |t| < ε := abs_lt.mpr ⟨ht.1, ht.2⟩
+      have h : |t / lam| < T := by
+        rw [abs_div, abs_of_pos hlampos, div_lt_iff₀ hlampos]
+        rw [hεdef] at habs; linarith [habs]
+      have := abs_lt.mp h
+      exact ⟨by linarith [this.1], by linarith [this.2]⟩
+    have hdiv : ∀ t : ℝ, HasDerivAt (fun s : ℝ => s / lam) lam⁻¹ t := by
+      intro t
+      simpa using (hasDerivAt_id t).div_const lam
+    have hcomp : ∀ t ∈ Ioo (-ε) ε, HasDerivAt (fun s => ψ (s / lam))
+        (lam⁻¹ • Geodesic.geodesicSprayCoord (I := I) g p (ψ (t / lam)).1 (ψ (t / lam)).2) t :=
+      fun t ht => (hψHD (t / lam) (hts t ht)).scomp t (hdiv t)
+    -- first derivative of the chart reading
+    have hfst : ∀ t ∈ Ioo (-ε) ε,
+        HasDerivAt (fun s => extChartAt I p (c q w s)) (lam⁻¹ • (ψ (t / lam)).2) t := by
+      intro t ht
+      have h := (ContinuousLinearMap.fst ℝ E E).hasFDerivAt.comp_hasDerivAt t (hcomp t ht)
+      have heq : (fun s => extChartAt I p (c q w s)) =ᶠ[𝓝 t] (fun s => (ψ (s / lam)).1) := by
+        filter_upwards [isOpen_Ioo.mem_nhds ht] with s hs using hu_eq s hs
+      refine (h.congr_of_eventuallyEq heq).congr_deriv ?_
+      simp [Geodesic.geodesicSprayCoord_def]
+    have hderiv_eq : ∀ t ∈ Ioo (-ε) ε,
+        deriv (fun s => extChartAt I p (c q w s)) t = lam⁻¹ • (ψ (t / lam)).2 :=
+      fun t ht => (hfst t ht).deriv
+    have h0Ioo : (0 : ℝ) ∈ Ioo (-ε) ε := ⟨by linarith, hεpos⟩
+    -- the initial chart velocity is `w`
+    have hvel0 : HasDerivAt (fun s => extChartAt I p (c q w s)) w 0 := by
+      have hψ0' : ψ 0 = ((y, lam • w) : E × E) := hψ0
+      have hww : lam⁻¹ • ((y, lam • w) : E × E).2 = w := by
+        show lam⁻¹ • (lam • w) = w
+        rw [smul_smul, inv_mul_cancel₀ hlampos.ne', one_smul]
+      have h := hfst 0 h0Ioo
+      rw [zero_div, hψ0', hww] at h
+      exact h
+    refine ⟨⟨?_, ?_, ?_⟩, ?_, hvel0⟩
+    · -- the foot stays in the chart source
+      intro t ht
+      have h := (extChartAt I p).map_target (htarget q hq w hw t ht)
+      rwa [extChartAt_source I] at h
+    · -- the chart reading is differentiable
+      intro t ht
+      rw [hderiv_eq t ht]
+      exact hfst t ht
+    · -- the chart reading solves the coordinate geodesic equation
+      intro t ht
+      have hev : deriv (fun s => extChartAt I p (c q w s))
+          =ᶠ[𝓝 t] (fun s => lam⁻¹ • (ψ (s / lam)).2) := by
+        filter_upwards [isOpen_Ioo.mem_nhds ht] with s hs using hderiv_eq s hs
+      have h2 := (ContinuousLinearMap.snd ℝ E E).hasFDerivAt.comp_hasDerivAt t (hcomp t ht)
+      have h3 := h2.const_smul lam⁻¹
+      refine (h3.congr_of_eventuallyEq hev).congr_deriv ?_
+      rw [hderiv_eq t ht, hu_eq t ht,
+        Geodesic.chartChristoffelContraction_smul_smul]
+      simp [Geodesic.geodesicSprayCoord_def, smul_smul]
+    · -- the initial position is `q`
+      have hz : Z ((y, (0 : E)) : E × E) T = ((y, (0 : E)) : E × E) :=
+        Exponential.geodesicFlow_eqOn_of_zero_velocity (I := I) g p hε₀ hflow
+          (hzero q hq) T hTmemIoo
+      simp only [hcdef, zero_div, zero_smul]
+      rw [← hydef, hz]
+      exact (extChartAt I p).left_inv hq.1
+  · -- ## the joint `C^∞` clause
+    have hG : ContDiff ℝ ∞ (fun xwt : (E × E) × ℝ => ((xwt.1.1, (xwt.2 / T) • xwt.1.2) : E × E)) :=
+      (contDiff_fst.fst).prodMk ((contDiff_snd.div_const T).smul contDiff_fst.snd)
+    have hTmem : (T : ℝ) ∈ Icc (0 : ℝ) T := ⟨hT.le, le_refl T⟩
+    have hΨ : ContDiffOn ℝ ∞ (fun z : E × E => ((σ z) ⟨T, hTmem⟩ : E × E).1) (ball z₀ r) := by
+      intro z hz
+      exact ((((ContinuousLinearMap.fst ℝ E E).comp
+        (ContinuousMap.evalCLM ℝ (⟨T, hTmem⟩ : Icc (0 : ℝ) T))).contDiff.contDiffAt).comp z
+          (hσC z hz)).contDiffWithinAt
+    have hmaps : MapsTo (fun xwt : (E × E) × ℝ => ((xwt.1.1, (xwt.2 / T) • xwt.1.2) : E × E))
+        (((extChartAt I p '' V₁) ×ˢ V₂) ×ˢ Ioo (-ε) ε) (ball z₀ r) := by
+      rintro ⟨⟨x, u⟩, t⟩ ⟨⟨hx, hu⟩, ht⟩
+      obtain ⟨q, hq, rfl⟩ := hx
+      exact hmemball q hq u hu t ht
+    have hcomp := hΨ.comp hG.contDiffOn hmaps
+    refine hcomp.congr ?_
+    rintro ⟨⟨x, u⟩, t⟩ ⟨⟨hx, hu⟩, ht⟩
+    obtain ⟨q, hq, rfl⟩ := hx
+    have hqinv : (extChartAt I p).symm (extChartAt I p q) = q := (extChartAt I p).left_inv hq.1
+    simp only [Function.comp_apply, hcdef, hqinv]
+    rw [(extChartAt I p).right_inv (htarget q hq u hu t ht)]
+    exact congrArg Prod.fst
+      (hσ _ (ball_subset_closedBall (hmemball q hq u hu t ht)) ⟨T, hTmem⟩).symm
 
 /-- **Math.** **Local existence of geodesics, with Lipschitz dependence on the
 initial data** (Petersen Theorem 5.2.3, with the `C^∞`-dependence clause
