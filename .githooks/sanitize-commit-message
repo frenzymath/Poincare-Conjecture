@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Remove Claude/Anthropic attribution without affecting human co-authors.
+set -euo pipefail
+
+msg_file=${1:?"usage: sanitize-commit-message <message-file>"}
+
+perl -0777 -i -pe '
+  s/^[ \t]*Co-Authored-By:[^\r\n]*(?:Claude|Anthropic)[^\r\n]*(?:\r?\n|\z)//gim;
+  s/^[ \t]*Generated with[^\r\n]*(?:Claude|Anthropic)[^\r\n]*(?:\r?\n|\z)//gim;
+  s/^[ \t]*\xF0\x9F\xA4\x96[^\r\n]*(?:\r?\n|\z)//gm;
+  s/(?:\r?\n){2,}\z/\n/;
+' -- "$msg_file"
