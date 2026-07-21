@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# Refuse to publish history containing Claude/Anthropic attribution.
+set -euo pipefail
+
+declare -A checked_oids=()
+
+while read -r _local_ref local_oid _remote_ref _remote_oid; do
+  if [[ "$local_oid" =~ ^0+$ ]]; then
+    continue
+  fi
+  if ! commit_oid=$(git rev-parse --verify "$local_oid^{commit}" 2>/dev/null); then
+    continue
+  fi
+  if [[ -n "${checked_oids[$commit_oid]:-}" ]]; then
+    continue
+  fi
+  checked_oids[$commit_oid]=1
+
+  if bad_commits=$(
+    git log --format='%H%n%B%x00' "$commit_oid" |
+      perl -0ne '
+        s/^\n//;
+        my ($commit, $message) = split /\n/, $_, 2;
+        next unless defined $message;
+        if (
+          $message =~ /^[ \t]*Co-Authored-By:[^\r\n]*(?:Claude|Anthropic)/mi ||
+          $message =~ /^[ \t]*Generated with[^\r\n]*(?:Claude|Anthropic)/mi ||
+          $message =~ /^[ \t]*\xF0\x9F\xA4\x96/m
+        ) {
+          print "$commit\n";
+          $found = 1;
+        }
+        END { exit($found ? 1 : 0) }
+      '
+  ); then
+    continue
+  fi
+
+  printf 'error: refusing to push AI-attributed commit(s):\n%s\n' \
+    "$bad_commits" >&2
+  printf 'Rewrite those commit messages before pushing.\n' >&2
+  exit 1
+done
