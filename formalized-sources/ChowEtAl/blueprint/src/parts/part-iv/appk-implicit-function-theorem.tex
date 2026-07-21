@@ -1,0 +1,447 @@
+\chapter{Implicit Function Theorem}
+\label{app:chow-iv-appendix-k}
+\dcref{appk}
+\source{chow-et-al-ricci-flow-part-iv:page-0348}
+
+This appendix collects tools from functional analysis, spaces of maps,
+harmonic maps, and Hodge theory that are used throughout Part IV.  All spaces
+in the first section are real Banach or Hilbert spaces.
+
+\section{The implicit function theorem}
+
+\begin{theorem}[Lax--Milgram--Lions theorem (Theorem K.1)]
+\label{thm:chow-iv-k1-lax-milgram-lions}
+\dcref{appk:K.1}
+\group{Implicit Function Theorem}
+\source{chow-et-al-ricci-flow-part-iv:page-0348}
+Let $A$ be a Hilbert space, $B$ a normed linear space, and
+$f:A\times B\to\mathbb R$ a continuous bilinear form.  The following are
+equivalent:
+\begin{enumerate}
+\item there is $c>0$ with
+\[
+\inf_{\|b\|=1}\sup_{\|a\|\le1}|f(a,b)|\ge c;
+\]
+\item for every $L\in B^*$ there is $a_L\in A$ such that
+$f(a_L,b)=L(b)$ for all $b\in B$.
+\end{enumerate}
+When $A=B$, the condition $f(a,a)\ge c\|a\|_A^2$ implies coercivity.
+\end{theorem}
+
+\begin{lemma}[Contraction mapping theorem (Lemma K.2)]
+\label{lem:chow-iv-k2-contraction}
+\dcref{appk:K.2}
+\group{Implicit Function Theorem}
+\source{chow-et-al-ricci-flow-part-iv:page-0348}
+If $(X,d)$ is complete and $f:X\to X$ satisfies
+$d(f(x),f(y))\le\lambda d(x,y)$ for some $0\le\lambda<1$, then $f$ has a
+unique fixed point.
+\end{lemma}
+
+\begin{theorem}[Banach inverse function theorem (Theorem K.3)]
+\label{thm:chow-iv-k3-banach-inverse-function}
+\dcref{appk:K.3}
+\group{Implicit Function Theorem}
+\source{chow-et-al-ricci-flow-part-iv:page-0349,chow-et-al-ricci-flow-part-iv:page-0350,chow-et-al-ricci-flow-part-iv:page-0351}
+\uses{lem:chow-iv-k2-contraction}
+Let $f:U\subset X\to Y$ be $C^k$ between Banach spaces, $k\ge1$, and let
+$Df(x_0)$ be bijective.  Then on neighborhoods $W$ of $x_0$ and $f(x_0)$,
+$f|_W$ is a $C^k$ diffeomorphism.  Its inverse satisfies
+\[
+D(f^{-1})(y)=\bigl(Df(f^{-1}(y))\bigr)^{-1}.
+\]
+\end{theorem}
+
+\begin{theorem}[Banach implicit function theorem (Theorem K.4)]
+\label{thm:chow-iv-k4-banach-implicit-function}
+\dcref{appk:K.4}
+\group{Implicit Function Theorem}
+\source{chow-et-al-ricci-flow-part-iv:page-0351}
+\uses{thm:chow-iv-k3-banach-inverse-function}
+Let $f:\mathcal U\subset\mathcal X\times\mathcal Y\to\mathcal Z$ be $C^k$.
+If $(\partial_yf)_{(x_0,y_0)}:\mathcal Y\to\mathcal Z$ is an isomorphism,
+then for $x$ near $x_0$ there is a unique $C^k$ function $y=\phi(x)$ near
+$y_0$ with $f(x,\phi(x))=f(x_0,y_0)$, and
+\[
+(D\phi)_x=-\bigl((\partial_yf)_{(x,\phi(x))}\bigr)^{-1}
+\circ(\partial_xf)_{(x,\phi(x))}.
+\]
+\end{theorem}
+
+\begin{definition}[Banach-manifold charts for maps (Definition K.5)]
+\label{def:chow-iv-k5-map-banach-manifold}
+\dcref{appk:K.5}
+\group{Mapping Spaces}
+\source{chow-et-al-ricci-flow-part-iv:page-0352,chow-et-al-ricci-flow-part-iv:page-0353}
+For closed manifolds, the space $C^k(\mathcal M,\mathcal N)$ is charted at
+$f$ by sections of $f^*T\mathcal N$ via
+\[
+\varphi_f(\sigma)(x)=\exp^{g_{\mathcal N}}_{f(x)}\sigma(x).
+\]
+For manifolds with boundary, choose a uniformly equivalent product metric with
+totally geodesic boundary and restrict to sections tangent to the boundary.
+\end{definition}
+
+\section{Hölder spaces, Sobolev spaces, and jets}
+
+\begin{definition}[$C^k$ spaces of sections (Definition K.6)]
+\label{def:chow-iv-k6-ck-sections}
+\dcref{appk:K.6}
+\group{Function Spaces}
+\source{chow-et-al-ricci-flow-part-iv:page-0353}
+For a bundle section $\phi$ with compatible connection, set
+$[\phi]_j=\sup|\nabla^j\phi|$ and
+$\|\phi\|_k=\sum_{j=0}^k[\phi]_j$.  The Banach space
+$C^k(\mathcal M,\mathcal E)$ consists of locally $C^k$ sections with finite
+$\|\cdot\|_k$ norm.
+\end{definition}
+
+\begin{definition}[Hölder spaces (Definition K.7)]
+\label{def:chow-iv-k7-holder-spaces}
+\dcref{appk:K.7}
+\group{Function Spaces}
+\source{chow-et-al-ricci-flow-part-iv:page-0354}
+\uses{def:chow-iv-k6-ck-sections}
+In local trivializations define
+\[
+[\nabla^k\phi]_\alpha=
+\sup_{\beta,p\ne q\in U_\beta}
+\frac{|\phi^\beta_{;i_1\cdots i_k}(p)-\phi^\beta_{;i_1\cdots i_k}(q)|}{d(p,q)^\alpha},
+\qquad
+\|\phi\|_{k,\alpha}=\|\phi\|_k+[\nabla^k\phi]_\alpha.
+\]
+The sections of finite norm form $C^{k,\alpha}(\mathcal M,\mathcal E)$.
+Equivalently one may define the seminorm by parallel translation; on compact
+manifolds the resulting norm is uniformly equivalent and independent of the
+auxiliary choices.
+\end{definition}
+
+\begin{definition}[Sobolev spaces (Definition K.8)]
+\label{def:chow-iv-k8-sobolev-spaces}
+\dcref{appk:K.8}
+\group{Function Spaces}
+\source{chow-et-al-ricci-flow-part-iv:page-0354}
+\uses{def:chow-iv-k6-ck-sections}
+The Sobolev norm is
+\[
+\|\phi\|_{k,p}=\sum_{j=0}^k\left(\int_{\mathcal M}|\nabla^j\phi|^p\,d\mu\right)^{1/p},
+\]
+and $W^{k,p}$ is the completion of $C^k$ in this norm.
+\end{definition}
+
+Two pointed maps have the same $k$-jet if their coordinate derivatives through
+order $k$ agree.  The fiber $J^k_{p,q}(\mathcal M,\mathcal N)$ is naturally
+isomorphic to $\bigoplus_{i=1}^k(S^iT_p^*\mathcal M\otimes T_q\mathcal N)$,
+or, invariantly, to the symmetrized tensors
+$\operatorname{Sym}(\nabla^{i-1}dF)(p)$.  The induced Riemannian distance gives
+\[
+d_{C^k(\mathcal M,\mathcal N)}(F,G)=
+\sup_{p\in\mathcal M}d_{J^k}\bigl([F]^k_{p,F(p)},[G]^k_{p,G(p)}\bigr),
+\]
+with the $C^0$ case given by the supremum target distance.  This metric space
+is complete.
+
+\begin{definition}[$C^{k,\alpha}$-closeness of hypersurfaces (Definition K.9)]
+\label{def:chow-iv-k9-hypersurface-closeness}
+\dcref{appk:K.9}
+\group{Function Spaces}
+\source{chow-et-al-ricci-flow-part-iv:page-0356,chow-et-al-ricci-flow-part-iv:page-0357}
+\uses{def:chow-iv-k7-holder-spaces}
+A normal graph $\mathcal Y_\varphi$ is $\varepsilon$-close to a hypersurface
+$\mathcal X$ in $C^{k,\alpha}$ when
+$\|\varphi\|_{C^{k,\alpha}(\mathcal X)}\le\varepsilon$.
+\end{definition}
+
+\section{Harmonic maps and their linearization}
+
+\begin{definition}[Map energy (Definition K.10)]
+\label{def:chow-iv-k10-map-energy}
+\dcref{appk:K.10}
+\group{Harmonic Maps}
+\source{chow-et-al-ricci-flow-part-iv:page-0357}
+For $f:(\mathcal M,g)\to(\mathcal N,h)$,
+\[
+|df|^2_{g\boxtimes h}=\operatorname{tr}_g(f^*h),\qquad
+E_{g,h}(f)=\int_{\mathcal M}|df|^2_{g\boxtimes h}\,d\mu_g.
+\]
+\end{definition}
+
+\begin{lemma}[Map-Laplacian in local coordinates (Lemma K.11)]
+\label{lem:chow-iv-k11-map-laplacian-coordinates}
+\dcref{appk:K.11}
+\group{Harmonic Maps}
+\source{chow-et-al-ricci-flow-part-iv:page-0358}
+\uses{def:chow-iv-k10-map-energy}
+The pullback connection on $T^*\mathcal M\otimes f^*T\mathcal N$ defines
+$\Delta_{g,h}f=\operatorname{tr}_g(\nabla^{g\boxtimes h}df)$.  In coordinates,
+\[
+(\Delta_{g,h}f)^\gamma=g^{ij}\left(\partial_{ij}f^\gamma-
+\Gamma(g)^k_{ij}\partial_kf^\gamma+
+(\Gamma(h)^\gamma_{\alpha\beta}\circ f)\partial_if^\alpha\partial_jf^\beta\right).
+\]
+\end{lemma}
+
+\begin{definition}[Harmonic map (Definition K.12)]
+\label{def:chow-iv-k12-harmonic-map}
+\dcref{appk:K.12}
+\group{Harmonic Maps}
+\source{chow-et-al-ricci-flow-part-iv:page-0359}
+\uses{lem:chow-iv-k11-map-laplacian-coordinates}
+A map $f:(\mathcal M,g)\to(\mathcal N,h)$ is harmonic when
+$\Delta_{g,h}f=0$.
+\end{definition}
+
+\begin{example}[Minimal immersions and harmonic maps (Example K.13)]
+\label{ex:chow-iv-k13-minimal-immersion}
+\dcref{appk:K.13}
+\group{Harmonic Maps}
+\source{chow-et-al-ricci-flow-part-iv:page-0359}
+\uses{def:chow-iv-k12-harmonic-map}
+For a smooth immersion $f$, its mean curvature vector is
+$\Delta_{f^*h,h}f$.  Hence an isometric immersion is minimal exactly when it
+is harmonic.
+\end{example}
+
+\begin{lemma}[First variation of map energy (Lemma K.14)]
+\label{lem:chow-iv-k14-first-variation}
+\dcref{appk:K.14}
+\group{Harmonic Maps}
+\source{chow-et-al-ricci-flow-part-iv:page-0360,chow-et-al-ricci-flow-part-iv:page-0361}
+\uses{def:chow-iv-k10-map-energy}
+For a variation with field $V=\partial_sf_s|_{s=0}$,
+\[
+\left.\frac{d}{ds}\right|_{0}E_{g,h}(f_s)=
+2\int_{\mathcal M}\langle\nabla^{f^*h}V,df\rangle\,d\mu_g
+=-2\int_{\mathcal M}\langle V,\Delta_{g,h}f\rangle\,d\mu_g
+\]
+when $V$ is compactly supported in the interior (or under the corresponding
+boundary conditions).  Thus harmonic maps are critical points.
+\end{lemma}
+
+\begin{lemma}[Second variation and index form (Lemma K.15)]
+\label{lem:chow-iv-k15-second-variation}
+\dcref{appk:K.15}
+\group{Harmonic Maps}
+\source{chow-et-al-ricci-flow-part-iv:page-0362,chow-et-al-ricci-flow-part-iv:page-0363,chow-et-al-ricci-flow-part-iv:page-0364}
+\uses{lem:chow-iv-k14-first-variation}
+At a harmonic map, for a compactly supported variation field $V$,
+\[
+\left.\frac{d^2}{ds^2}\right|_0E_{g,h}(f_s)=I(V,V)
+=2\int_{\mathcal M}\left(|\nabla^{f^*h}V|^2-
+\operatorname{tr}_g(R^N(V,df,df,V))\right)d\mu_g.
+\]
+The map is weakly stable when $I(V,V)\ge0$ for all such $V$.  Nonpositive
+sectional curvature of $N$ implies weak stability.
+\end{lemma}
+
+\begin{example}[Linearization of the map-Laplacian (Exercise K.16)]
+\label{ex:chow-iv-k16-map-laplacian-linearization}
+\dcref{appk:K.16}
+\group{Harmonic Maps}
+\source{chow-et-al-ricci-flow-part-iv:page-0364}
+\uses{lem:chow-iv-k15-second-variation}
+For the variation map $F(x,s)=f_s(x)$ and $V=\partial_sF|_{s=0}$, prove
+\[
+\nabla_{\partial/\partial s}(\Delta_{g,h}^{\mathcal M}F)
+=\Delta_{g,h}V+\operatorname{tr}_g(R^N(V,df)df).
+\]
+\end{example}
+
+\begin{theorem}[Existence of harmonic maps into nonpositively curved targets (Theorem K.17)]
+\label{thm:chow-iv-k17-eells-sampson}
+\dcref{appk:K.17}
+\group{Harmonic Map Heat Flow}
+\source{chow-et-al-ricci-flow-part-iv:page-0365}
+If $M,N$ are closed and $N$ has nonpositive sectional curvature, every smooth
+$f_0:M\to N$ is homotopic to a harmonic map.  The harmonic map heat flow
+\[
+\partial_tf=\Delta_{g,h}f
+\]
+exists for all $t\ge0$ and converges smoothly to a harmonic map; strict
+negative curvature gives uniqueness in the homotopy class.
+\end{theorem}
+
+\begin{lemma}[Evolution of the energy density (Lemma K.18)]
+\label{lem:chow-iv-k18-energy-density}
+\dcref{appk:K.18}
+\group{Harmonic Map Heat Flow}
+\source{chow-et-al-ricci-flow-part-iv:page-0365,chow-et-al-ricci-flow-part-iv:page-0366}
+\uses{thm:chow-iv-k17-eells-sampson}
+Along the harmonic map heat flow,
+\[
+\partial_t|df|^2=\Delta_g|df|^2-2|\nabla df|^2
+-2\operatorname{Rc}^M(df\odot df)+2R^N(df\odot df\odot df\odot df).
+\]
+If $\sec_N\le0$ and $\operatorname{Rc}_M\ge-Kg$, then
+$\partial_t|df|^2\le\Delta_g|df|^2-2|\nabla df|^2+2K|df|^2$, hence
+$|df|^2\le Ce^{2Kt}$ on a closed source.  Moreover,
+\[
+\partial_t|\Delta_{g,h}f|^2
+=\Delta_g|\Delta_{g,h}f|^2-2|\nabla(\Delta_{g,h}f)|^2
++2R^N(\Delta_{g,h}f,df,df,\Delta_{g,h}f),
+\]
+so nonpositive target curvature gives a uniform maximum-principle bound.
+\end{lemma}
+
+\begin{remark}[Linearization with normal boundary condition]
+\label{rem:chow-iv-k-linearization-boundary}
+\dcref{appk:K.43--K.44}
+\group{Harmonic Map Heat Flow}
+\source{chow-et-al-ricci-flow-part-iv:page-0367,chow-et-al-ricci-flow-part-iv:page-0368}
+For a boundary-preserving variation $V$ of the identity, the two components of
+the linearization of the harmonic-map gauge map are
+\[
+\left.\partial_s\right|_0(F_s^{-1})_*(\Delta_{g,g}F_s)=\Delta_gV+\operatorname{Rc}(V),
+\]
+\[
+\left.\partial_s\right|_0(F_s^{-1})_*((F_s)_*N)_\top
+=([N,V])_\top=(\nabla_NV)_\top-\mathrm{II}(V).
+\]
+\end{remark}
+
+\section{Spectrum of the Hodge--de Rham Laplacian on the sphere}
+
+\begin{proposition}[Space of homogeneous (harmonic) polynomials (Proposition K.19)]
+\label{prop:chow-iv-k19-harmonic-polynomial-decomposition}
+\dcref{appk:K.19}
+\group{Sphere Spectrum}
+\source{chow-et-al-ricci-flow-part-iv:page-0368,chow-et-al-ricci-flow-part-iv:page-0369}
+For $\mathcal P_k$ the degree-$k$ homogeneous polynomials and $\mathcal H_k$
+the harmonic ones,
+\[
+\mathcal P_{k+2}=\mathcal H_{k+2}\oplus r^2\mathcal P_k.
+\]
+Consequently $\mathcal P_{2j}$ and $\mathcal P_{2j+1}$ decompose orthogonally
+into the corresponding sums of $r^{2\ell}\mathcal H_{k-2\ell}$, and the
+restrictions of the $\mathcal H_k$ form a complete orthogonal system on $S^n$.
+\end{proposition}
+
+\begin{proposition}[Eigenvalues of $S^n$ (Proposition K.20)]
+\label{prop:chow-iv-k20-function-spectrum-sphere}
+\dcref{appk:K.20}
+\group{Sphere Spectrum}
+\source{chow-et-al-ricci-flow-part-iv:page-0369}
+\uses{prop:chow-iv-k19-harmonic-polynomial-decomposition}
+The eigenvalues of the Laplacian on functions on the unit sphere are
+\[
+\lambda_k=k(k+n-1),\qquad k\in\mathbb N\cup\{0\},
+\]
+with eigenspace the restrictions of $\mathcal H_k$.
+\end{proposition}
+
+\begin{theorem}[Hodge decomposition (Theorem K.21)]
+\label{thm:chow-iv-k21-hodge-decomposition}
+\dcref{appk:K.21}
+\group{Hodge Theory}
+\source{chow-et-al-ricci-flow-part-iv:page-0369,chow-et-al-ricci-flow-part-iv:page-0370}
+For a closed Riemannian manifold,
+\[
+\Omega^p=\Delta_d(\Omega^p)\oplus H^p
+=d\delta(\Omega^p)\oplus\delta d(\Omega^p)\oplus H^p
+=d(\Omega^{p-1})\oplus\delta(\Omega^{p+1})\oplus H^p,
+\]
+where $H^p=\ker\Delta_d$ and $\Delta_d=-(d\delta+\delta d)$ in the
+convention of the source.  The operators satisfy
+$\Delta_d(d\varphi)=d(\Delta_d\varphi)$ and
+$\Delta_d(*\varphi)=*(\Delta_d\varphi)$.
+\end{theorem}
+
+\begin{theorem}[Closed eigenforms on $S^n$ (Theorem K.22)]
+\label{thm:chow-iv-k22-closed-eigenforms}
+\dcref{appk:K.22}
+\group{Sphere Spectrum}
+\source{chow-et-al-ricci-flow-part-iv:page-0370}
+\uses{thm:chow-iv-k21-hodge-decomposition}
+The $k$-th eigenvalue on closed $p$-forms on the unit sphere is
+\[
+\lambda_k^{[p]}(S^n)=(k+p)(n+k-p+1).
+\]
+The eigenspace consists of restrictions of degree-$k$ homogeneous harmonic
+$p$-forms on $\mathbb R^{n+1}$.
+\end{theorem}
+
+\begin{theorem}[Co-closed eigenforms on $S^n$ (Theorem K.23)]
+\label{thm:chow-iv-k23-coclosed-eigenforms}
+\dcref{appk:K.23}
+\group{Sphere Spectrum}
+\source{chow-et-al-ricci-flow-part-iv:page-0370}
+\uses{thm:chow-iv-k22-closed-eigenforms}
+The $k$-th eigenvalue on co-closed $p$-forms is
+\[
+{}^{\mathrm{cc}}\lambda_k^{[p]}(S^n)=(k+n-p)(k+p+1).
+\]
+\end{theorem}
+
+\begin{corollary}[Lowest $p$-form eigenvalue (Corollary K.24)]
+\label{cor:chow-iv-k24-lowest-p-form-eigenvalue}
+\dcref{appk:K.24}
+\group{Sphere Spectrum}
+\source{chow-et-al-ricci-flow-part-iv:page-0370}
+\uses{thm:chow-iv-k22-closed-eigenforms,thm:chow-iv-k23-coclosed-eigenforms}
+The lowest eigenvalue of $\Delta_d$ on $p$-forms on $S^n$ is
+\[
+\min\{p(n-p+1),(p+1)(n-p)\}.
+\]
+\end{corollary}
+
+\begin{lemma}[Codifferential restriction to $S^n$ (Lemma K.25)]
+\label{lem:chow-iv-k25-codifferential-sphere}
+\dcref{appk:K.25}
+\group{Sphere Spectrum}
+\source{chow-et-al-ricci-flow-part-iv:page-0371,chow-et-al-ricci-flow-part-iv:page-0372}
+For a $p$-form $\eta$ near $S^n\subset\mathbb R^{n+1}$ and homogeneous degree-one
+extensions of tangent fields,
+\[
+(\delta_{S^n}\eta|_{S^n}-\delta_{\mathbb R^{n+1}}\eta)(X_1,\ldots,X_{p-1})
+=(n-2p+2)\eta(\nu,X_1,\ldots,X_{p-1})
+ +\nu\!\left(\eta(\nu,X_1,\ldots,X_{p-1})\right).
+\]
+\end{lemma}
+
+\begin{lemma}[Hodge Laplacian restriction (Lemma K.26)]
+\label{lem:chow-iv-k26-hodge-laplacian-sphere}
+\dcref{appk:K.26}
+\group{Sphere Spectrum}
+\source{chow-et-al-ricci-flow-part-iv:page-0372}
+\uses{lem:chow-iv-k25-codifferential-sphere}
+If $\eta$ is a closed $p$-form on $\mathbb R^{n+1}$, then
+\[
+(\Delta_d^{S^n}\eta|_{S^n}-\Delta_d^{\mathbb R^{n+1}}\eta)(X_1,\ldots,X_p)
+=\nu\!\left(\nu(\eta(X_1,\ldots,X_p))\right)
+ +(n-2p+2)\nu(\eta(X_1,\ldots,X_p)).
+\]
+\end{lemma}
+
+\begin{lemma}[Closed eigenforms from homogeneous extensions (Lemma K.27)]
+\label{lem:chow-iv-k27-homogeneous-closed-forms}
+\dcref{appk:K.27}
+\group{Sphere Spectrum}
+\source{chow-et-al-ricci-flow-part-iv:page-0372}
+\uses{lem:chow-iv-k26-hodge-laplacian-sphere}
+If $\eta$ is a homogeneous degree-$k$ harmonic $p$-form on $\mathbb R^{n+1}$,
+then $\eta|_{S^n}$ is closed and
+\[
+\Delta_d^{S^n}(\eta|_{S^n})=(k+p)(n-p+k+1)\eta|_{S^n}.
+\]
+\end{lemma}
+
+\begin{theorem}[Gallot--Meyer estimate (Theorem K.28)]
+\label{thm:chow-iv-k28-gallot-meyer}
+\dcref{appk:K.28}
+\group{Hodge Theory}
+\source{chow-et-al-ricci-flow-part-iv:page-0373}
+\uses{thm:chow-iv-k21-hodge-decomposition,cor:chow-iv-k24-lowest-p-form-eigenvalue}
+If $(\mathcal M^n,g)$ is closed and the curvature operator satisfies
+$\lambda_1(\operatorname{Rm})\ge k>0$, then the first positive eigenvalue on
+$p$-forms obeys
+\[
+\lambda_1^{[p]}(\mathcal M,g)\ge
+\min\{p(n-p+1),(p+1)(n-p)\}\,k.
+\]
+This follows from the Bochner--Weitzenböck identity
+\[
+\langle\Delta_d\alpha,\alpha\rangle
+=\langle\Delta\alpha,\alpha\rangle+\mathcal R_p(\alpha,\alpha)
+\]
+and $\mathcal R_p(\alpha,\alpha)\ge p(n-p)k|\alpha|^2$.
+\end{theorem}

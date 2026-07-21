@@ -1,0 +1,815 @@
+\chapter{Geometric Tools and Point Picking Methods}
+\label{ch:chow-iii-geometric-tools-point-picking}
+
+Throughout, \(d_g\), \(B_g(x,r)\), and \(L_g\) denote distance, metric balls,
+and length for the metric \(g\).  For a time-dependent metric, let
+\(\mathcal Z(t_0)\) be the compact set of unit-speed \(g(t_0)\)-minimizing
+geodesics from \(x_0\) to \(x\).
+
+\section{Estimates for changing distances}
+
+\begin{lemma}[Time derivative of the distance function]
+\label{lem:chow-iii-forward-distance-derivative}
+\dcref{ch18:18.1}
+\group{Changing Distances}
+\source{chow-et-al-ricci-flow-part-iii:page-0062,chow-et-al-ricci-flow-part-iii:page-0063}
+Let \(g(t)\), \(t\in[0,T)\), be a smooth family of complete metrics.  In the
+sense of the lower forward derivative,
+\[
+ \left.\frac{\partial^-}{\partial t}\right|_{t=t_0}d_{g(t)}(x,x_0)
+ =\min_{\eta\in\mathcal Z(t_0)}\frac12\int_\eta
+ \partial_tg(t_0)(\eta',\eta')\,\dd s .
+\]
+\end{lemma}
+\begin{proof}
+For a fixed \(\eta\in\mathcal Z(t_0)\), comparison with its length at nearby
+times and the first variation formula give the upper bound.  Conversely,
+choose minimizing geodesics \(\eta_i\) at times \(t_0+h_i\), where
+\(h_i\downarrow0\).  Compactness of \(\mathcal Z(t_0)\) gives a subsequence
+converging to \(\eta_\infty\in\mathcal Z(t_0)\).  Applying the mean value
+theorem to \(L_{g(t)}(\eta_i)\) and passing to the limit gives the reverse
+inequality, hence equality.
+\end{proof}
+
+\begin{corollary}[Time derivative of distance under Ricci flow]
+\label{cor:chow-iii-forward-distance-derivative-ricci-flow}
+\dcref{ch18:18.2}
+\group{Changing Distances}
+\source{chow-et-al-ricci-flow-part-iii:page-0063}
+\uses{lem:chow-iii-forward-distance-derivative}
+If \(g(t)\) is a complete Ricci flow, then
+\[
+ \left.\frac{\partial^-}{\partial t}\right|_{t=t_0}d_{g(t)}(x,x_0)
+ =\min_{\eta\in\mathcal Z(t_0)}
+ \left(-\int_\eta\Ric_{g(t_0)}(\eta',\eta')\,\dd s\right).
+\]
+\end{corollary}
+\begin{proof}
+Substitute \(\partial_tg=-2\Ric\) in
+Lemma~\ref{lem:chow-iii-forward-distance-derivative}.
+\end{proof}
+
+\begin{example}[Problem: dependence on the minimizing geodesic]
+\label{ex:chow-iii-distance-derivative-any-minimizer}
+\dcref{ch18:18.3}
+\group{Changing Distances}
+\source{chow-et-al-ricci-flow-part-iii:page-0063}
+Determine whether, under Ricci flow, the formula in
+Corollary~\ref{cor:chow-iii-forward-distance-derivative-ricci-flow} equals
+\(-\int_\gamma\Ric(\gamma',\gamma')\,\dd s\) for every
+\(\gamma\in\mathcal Z(t_0)\).
+\end{example}
+
+\begin{lemma}[Backward lower derivative of the distance function]
+\label{lem:chow-iii-backward-distance-derivative}
+\dcref{ch18:18.4}
+\group{Changing Distances}
+\source{chow-et-al-ricci-flow-part-iii:page-0063,chow-et-al-ricci-flow-part-iii:page-0064}
+If \(g(t)\) is a smooth family of complete metrics, then, in the sense of the
+lower backward derivative,
+\[
+ \left.\frac{\partial_-}{\partial t}\right|_{t=t_0}d_{g(t)}(x,x_0)
+ \ge\frac12\max_{\eta\in\mathcal Z(t_0)}
+ \int_\eta\partial_tg(t_0)(\eta',\eta')\,\dd s.
+\]
+\end{lemma}
+\begin{proof}
+For every \(g(t_0)\)-minimizing geodesic \(\eta\), one has
+\(L_{g(t)}(\eta)\ge d_{g(t)}(x,x_0)\) for earlier times and equality at
+\(t_0\).  Taking the lower backward derivative and applying the first
+variation formula for length gives the asserted inequality for each \(\eta\);
+maximizing over the compact set \(\mathcal Z(t_0)\) completes the proof.
+\end{proof}
+
+\begin{definition}[Laplacian upper bound in the barrier sense]
+\label{def:chow-iii-laplacian-upper-barrier}
+\dcref{ch18:18.5}
+\group{Distance Barriers}
+\source{chow-et-al-ricci-flow-part-iii:page-0064}
+Let \(\varphi\) be continuous near \(x\).  The inequality
+\(\Delta\varphi(x)\le C\) holds in the barrier sense if, for every
+\(\varepsilon>0\), there is a \(C^2\) function \(\psi\) near \(x\) such that
+\(\psi(x)=\varphi(x)\), \(\psi\ge\varphi\) nearby, and
+\(\Delta\psi(x)\le C+\varepsilon\).
+\end{definition}
+
+\begin{lemma}[Upper bound for the Laplacian of distance]
+\label{lem:chow-iii-distance-laplacian-upper-bound}
+\dcref{ch18:18.6}
+\group{Distance Barriers}
+\source{chow-et-al-ricci-flow-part-iii:page-0064,chow-et-al-ricci-flow-part-iii:page-0065,chow-et-al-ricci-flow-part-iii:page-0066}
+\uses{def:chow-iii-laplacian-upper-barrier}
+Let \((\mathcal M^n,g)\) be complete, let \(x\ne x_0\), and let
+\(\gamma:[0,s_0]\to\mathcal M\) be a unit-speed minimizing geodesic from
+\(x_0\) to \(x\).  For every continuous piecewise smooth
+\(\zeta:[0,s_0]\to[0,1]\) with \(\zeta(0)=0\) and \(\zeta(s_0)=1\),
+\[
+ \Delta_gd_g(x_0,x)\le\int_0^{s_0}
+ \bigl((n-1)(\zeta')^2-\zeta^2\Ric(\gamma',\gamma')\bigr)\,\dd s
+\]
+in the barrier sense.
+\end{lemma}
+\begin{proof}
+Vary \(\gamma\) through paths whose endpoint moves by the exponential map at
+\(x\), using variation fields \(\zeta E_i\), where the \(E_i\) are parallel
+orthonormal fields normal to \(\gamma'\).  Their lengths define a smooth upper
+barrier for distance.  Summing the second variation formula over the
+\(n-1\) normal directions gives
+\[
+ \sum_{i=1}^{n-1}\int_0^{s_0}
+ \bigl((\zeta')^2-\zeta^2\langle R(\gamma',E_i)E_i,\gamma'\rangle\bigr)\,\dd s,
+\]
+which is the displayed expression after taking the trace of curvature.
+\end{proof}
+
+\begin{theorem}[Estimate for changing distances]
+\label{thm:chow-iii-changing-distances}
+\dcref{ch18:18.7}
+\group{Changing Distances}
+\source{chow-et-al-ricci-flow-part-iii:page-0066,chow-et-al-ricci-flow-part-iii:page-0067,chow-et-al-ricci-flow-part-iii:page-0068,chow-et-al-ricci-flow-part-iii:page-0069}
+\uses{cor:chow-iii-forward-distance-derivative-ricci-flow,lem:chow-iii-backward-distance-derivative,lem:chow-iii-distance-laplacian-upper-bound}
+Let \((\mathcal M^n,g(t))\), \(t\in[0,T)\), be a complete Ricci flow.
+If \(\Ric(\cdot,t_0)\le(n-1)K\) on \(B_{g(t_0)}(x_0,r_0)\), then outside
+that ball
+\[
+ (\partial_t-\Delta)d_{g(t)}(x,x_0)|_{t=t_0}
+ \ge-(n-1)\left(\frac23Kr_0+\frac1{r_0}\right)
+\]
+in the barrier sense.  If the same Ricci bound holds on the union of the
+\(r_0\)-balls about \(x_0,x_1\), then
+\[
+ \partial_td_{g(t)}(x_0,x_1)|_{t=t_0}\ge
+ \begin{cases}
+ -2(n-1)(\frac23Kr_0+r_0^{-1}),&d_{g(t_0)}(x_0,x_1)\ge2r_0,\\
+ -2(n-1)Kr_0,&d_{g(t_0)}(x_0,x_1)<2r_0.
+ \end{cases}
+\]
+\end{theorem}
+\begin{proof}
+Choose a minimizing geodesic realizing the appropriate one-sided distance
+derivative.  In Lemma~\ref{lem:chow-iii-distance-laplacian-upper-bound}, take
+\(\zeta(s)=s/r_0\) on \([0,r_0]\) and \(1\) thereafter.  Integrating
+\((n-1)K(1-s^2/r_0^2)+(n-1)r_0^{-2}\) gives the first estimate.  For two
+points at distance at least \(2r_0\), apply this argument from both endpoints
+to an interior point of a minimizing geodesic and use that the sum of the two
+distance functions has a minimum there.  If their distance is less than
+\(2r_0\), integrate the Ricci upper bound directly along the minimizing
+geodesic.  These are precisely the two asserted cases.
+\end{proof}
+
+\begin{proposition}[Estimate for Ricci curvature along a stable geodesic]
+\label{prop:chow-iii-ricci-integral-stable-geodesic}
+\dcref{ch18:18.8}
+\group{Changing Distances}
+\source{chow-et-al-ricci-flow-part-iii:page-0069}
+\uses{lem:chow-iii-distance-laplacian-upper-bound}
+Let \(\gamma:[0,L]\to\mathcal M\) be a stable unit-speed geodesic with
+\(L\ge2r\), and suppose
+\(\Ric\le(n-1)K\) on \(B(\gamma(0),r)\cup B(\gamma(L),r)\).  Then
+\[
+ \int_\gamma\Ric(\gamma',\gamma')\,\dd s
+ \le2(n-1)\left(\frac23Kr+\frac1r\right).
+\]
+In particular, for \(r=K^{-1/2}\) this is at most
+\(\frac{10}{3}(n-1)\sqrt K\).
+\end{proposition}
+\begin{proof}
+Use in the index form the piecewise linear test function which rises from
+zero to one over the initial segment of length \(r\), stays one, and falls to
+zero over the final segment of length \(r\).  Stability says the sum of the
+normal index forms is nonnegative.  Rearranging and integrating the endpoint
+Ricci bounds gives the displayed estimate; substitution of \(r=K^{-1/2}\)
+gives the final constant.
+\end{proof}
+
+\begin{remark}[Changing-distance bounds for ancient solutions]
+\label{rem:chow-iii-changing-distances-ancient-solutions}
+\dcref{ch18:18.9}
+\group{Changing Distances}
+\source{chow-et-al-ricci-flow-part-iii:page-0070}
+\uses{thm:chow-iii-changing-distances,prop:chow-iii-ricci-integral-stable-geodesic}
+The preceding bounds on the time derivative of distance are particularly
+useful in the study of ancient Ricci-flow solutions.
+\end{remark}
+
+\section{Spatial point picking methods}
+
+\begin{theorem}[Point picking when the asymptotic scalar curvature ratio is infinite]
+\label{thm:chow-iii-point-picking-infinite-ascr}
+\dcref{ch18:18.10}
+\group{Spatial Point Picking}
+\source{chow-et-al-ricci-flow-part-iii:page-0070,chow-et-al-ricci-flow-part-iii:page-0071}
+Let \((\mathcal M^n,g,O)\) be complete and noncompact with bounded scalar
+curvature and \(\operatorname{ASCR}(g)=\infty\).  There are points
+\(x_i\to\infty\), numbers \(\varepsilon_i\to0\), and radii \(r_i>0\) such
+that the balls \(B(x_i,r_i)\) are disjoint and
+\[
+ \sup_{B(x_i,r_i)}R\le(1+\varepsilon_i)R(x_i),\qquad
+ R(x_i)r_i^2\to\infty,\qquad \frac{d(x_i,O)}{r_i}\to\infty.
+\]
+\end{theorem}
+
+\begin{remark}[Rescaled metrics have bounded scalar curvature on large balls]
+\label{rem:chow-iii-rescaled-point-picked-balls}
+\dcref{ch18:18.11}
+\group{Spatial Point Picking}
+\source{chow-et-al-ricci-flow-part-iii:page-0071}
+\uses{thm:chow-iii-point-picking-infinite-ascr}
+For \(g_i=R(x_i)g\), one has \(R_{g_i}(x_i)=1\) and
+\[
+ \sup_{B_{g_i}(x_i,\widetilde r_i)}R_{g_i}\le1+\varepsilon_i,
+ \qquad \widetilde r_i=R(x_i)^{1/2}r_i\to\infty,
+\]
+while \(d_{g_i}(x_i,O)\to\infty\).
+\end{remark}
+
+\begin{proposition}[Unbounded-curvature point picking, version I]
+\label{prop:chow-iii-unbounded-curvature-point-picking-one}
+\dcref{ch18:18.12}
+\group{Spatial Point Picking}
+\source{chow-et-al-ricci-flow-part-iii:page-0071,chow-et-al-ricci-flow-part-iii:page-0072}
+If \((\mathcal M^n,g,O)\) is complete and noncompact with
+\(\sup_{\mathcal M} R=\infty\), there are disjoint balls \(B(x_i,r_i)\), with
+\(r_i\in(0,1]\) and \(d(x_i,O)\to\infty\), such that
+\[
+ \sup_{B(x_i,r_i)}R\le4R(x_i),\qquad R(x_i)r_i^2\to\infty.
+\]
+\end{proposition}
+\begin{proof}
+Choose \(y_i\) with \(R(y_i)\to\infty\), and maximize
+\(R(x)d(x,\partial B(y_i,2))^2\) on \(B(y_i,2)\).  If \(x_i\) is a maximizer,
+set \(r_i=\frac12d(x_i,\partial B(y_i,2))\).  Maximality gives the factor-four
+bound and \(R(x_i)r_i^2\ge R(y_i)\).  Properness of scalar curvature along the
+chosen sequence gives \(d(x_i,O)\to\infty\), and a subsequence has disjoint
+balls because \(r_i\le1\).
+\end{proof}
+
+\begin{proposition}[Unbounded-curvature point picking, version II]
+\label{prop:chow-iii-unbounded-curvature-point-picking-two}
+\dcref{ch18:18.13}
+\group{Spatial Point Picking}
+\source{chow-et-al-ricci-flow-part-iii:page-0072,chow-et-al-ricci-flow-part-iii:page-0073}
+Let \(\varepsilon_i>0\) be bounded.  Under the hypotheses of
+Proposition~\ref{prop:chow-iii-unbounded-curvature-point-picking-one}, there
+are disjoint balls \(B(x_i,r_i)\), with \(r_i\in(0,1]\) and
+\(d(x_i,O)\to\infty\), such that
+\[
+ \sup_{B(x_i,r_i)}R\le(1+\varepsilon_i)R(x_i),
+ \qquad R(x_i)r_i^2\to\infty.
+\]
+\end{proposition}
+\begin{proof}
+Choose \(y_i\) so that \(R(y_i)\varepsilon_i^2\to\infty\), maximize
+\(R(x)d(x,\partial B(y_i,1))^2\), and write the maximizing boundary distance
+as \(\widetilde r_i\).  Set
+\[
+ \widetilde\varepsilon_i=
+ \frac{\varepsilon_i}{\sqrt{1+\varepsilon_i}(1+\sqrt{1+\varepsilon_i})},
+ \qquad r_i=\widetilde\varepsilon_i\widetilde r_i.
+\]
+Maximality then yields \(R\le(1+\varepsilon_i)R(x_i)\) on \(B(x_i,r_i)\),
+and \(R(x_i)r_i^2\to\infty\).  The remaining conclusions follow as in
+Proposition~\ref{prop:chow-iii-unbounded-curvature-point-picking-one}.
+\end{proof}
+
+\begin{remark}[Rescaling the improved point-picked sequence]
+\label{rem:chow-iii-improved-point-picking-rescaling}
+\dcref{ch18:18.14}
+\group{Spatial Point Picking}
+\source{chow-et-al-ricci-flow-part-iii:page-0072}
+\uses{prop:chow-iii-unbounded-curvature-point-picking-two,rem:chow-iii-rescaled-point-picked-balls}
+The rescaling conclusion of
+Remark~\ref{rem:chow-iii-rescaled-point-picked-balls} applies equally to the
+sequence in Proposition~\ref{prop:chow-iii-unbounded-curvature-point-picking-two}.
+\end{remark}
+
+\begin{lemma}[Point picking when scalar-curvature change is unbounded]
+\label{lem:chow-iii-point-picking-unbounded-change}
+\dcref{ch18:18.15}
+\group{Spatial Point Picking}
+\source{chow-et-al-ricci-flow-part-iii:page-0073,chow-et-al-ricci-flow-part-iii:page-0074}
+Let \((\mathcal N_k^n,h_k,O_k)\) be complete pointed manifolds with
+\(R_{h_k}(O_k)=1\).  If, for some \(D>0\),
+\(\sup_{B_{h_k}(O_k,D)}R_{h_k}\to\infty\), then there are
+\(w_k\in B_{h_k}(O_k,D+1)\) and \(s_k\in(0,D+1)\) such that
+\[
+ R_{h_k}(w_k)s_k^2\to\infty,
+ \qquad \sup_{B_{h_k}(w_k,s_k)}R_{h_k}\le2R_{h_k}(w_k).
+\]
+\end{lemma}
+\begin{proof}
+Maximize
+\(F_k(w)=R_{h_k}(w)(D+1-d_{h_k}(w,O_k))^2\) on the compact closed ball.
+At a maximizer \(w_k\), set
+\(s_k=(1-2^{-1/2})(D+1-d(w_k,O_k))\).  The hypothesis forces
+\(F_k(w_k)\to\infty\), hence the first conclusion.  For
+\(w\in B(w_k,s_k)\), the triangle inequality bounds its distance to the
+boundary from below by \(s_k/(\sqrt2-1)\); comparison with the maximum of
+\(F_k\) gives \(R_{h_k}(w)\le2R_{h_k}(w_k)\).
+\end{proof}
+
+\begin{remark}[Curvature control on expanding rescaled balls]
+\label{rem:chow-iii-unbounded-change-rescaled-balls}
+\dcref{ch18:18.16}
+\group{Spatial Point Picking}
+\source{chow-et-al-ricci-flow-part-iii:page-0074}
+\uses{lem:chow-iii-point-picking-unbounded-change}
+After scaling by \(R_{h_k}(w_k)\), the balls in
+Lemma~\ref{lem:chow-iii-point-picking-unbounded-change} have radii tending to
+infinity and scalar curvature at most twice its value at the center.
+\end{remark}
+
+\begin{theorem}[Dimension reduction by splitting a line, version I]
+\label{thm:chow-iii-dimension-reduction-one}
+\dcref{ch18:18.17}
+\group{Dimension Reduction}
+\source{chow-et-al-ricci-flow-part-iii:page-0075}
+Let \((\mathcal M^n,g(t),O)\), \(t\in(-\infty,\omega)\), be a pointed complete
+noncompact ancient solution with bounded \(\Rm\ge0\).  Suppose there are
+\(x_i\), \(r_i\to\infty\), and \(A_i\to\infty\) such that
+\[
+ d_{g(0)}(O,x_i)/r_i\ge A_i,qquad
+ \Rm(\cdot,0)\le r_i^{-2}\ \text{on }B_{g(0)}(x_i,A_ir_i),
+\]
+and \(\operatorname{inj}_{g(0)}(x_i)\ge\iota_0r_i\).  A subsequence of
+\((\mathcal M,r_i^{-2}g(r_i^2t),x_i)\) converges smoothly in the pointed sense
+to a complete ancient product of a bounded nonnegatively curved
+\((n-1)\)-dimensional solution and a line.
+\end{theorem}
+
+\begin{remark}[Interpretation of the first dimension-reduction criterion]
+\label{rem:chow-iii-dimension-reduction-one-interpretation}
+\dcref{ch18:18.18}
+\group{Dimension Reduction}
+\source{chow-et-al-ricci-flow-part-iii:page-0075}
+\uses{thm:chow-iii-dimension-reduction-one}
+The hypotheses give curvature control on large balls centered relatively far
+from the origin, together with an injectivity-radius bound.  Since
+\(r_i\to\infty\), the resulting limit is a blow-down limit.
+\end{remark}
+
+\begin{theorem}[Dimension reduction by splitting a line, version II]
+\label{thm:chow-iii-dimension-reduction-two}
+\dcref{ch18:18.19}
+\group{Dimension Reduction}
+\source{chow-et-al-ricci-flow-part-iii:page-0075,chow-et-al-ricci-flow-part-iii:page-0076,chow-et-al-ricci-flow-part-iii:page-0077}
+Let \((\mathcal M^n,g(t))\) be a complete noncompact ancient solution with
+bounded \(\Rm\ge0\), and fix \(O\in\mathcal M\).  Suppose that for some
+\(C<\infty\) there are \(x_i\) and \(r_i>0\) with
+\[
+ d_{g(0)}(O,x_i)^2R(x_i,0)\to\infty,
+ \quad r_i^2R(x_i,0)\to\infty,
+ \quad \Rm(\cdot,0)\le CR(x_i,0)\ \text{on }B_{g(0)}(x_i,r_i),
+\]
+and \(\operatorname{inj}_{g(0)}(x_i)\ge\iota_0R(x_i,0)^{-1/2}\).  A
+subsequence of the flows scaled by \(R(x_i,0)\) about \(x_i\) converges to a
+complete nonflat product of a bounded nonnegatively curved
+\((n-1)\)-dimensional solution and a line.
+\end{theorem}
+\begin{proof}
+The trace Harnack inequality propagates the curvature bound backward in time,
+and the injectivity-radius hypothesis gives smooth pointed compactness.  The
+two divergence assumptions make the limit complete and nonflat.  Choose
+successive \(x_i\) so that minimizing geodesics from \(O\) approach a ray and
+the geodesics from \(x_i\) to \(x_{i+1}\) extend arbitrarily far after scaling.
+Toponogov comparison and its angle monotonicity show that their two limiting
+rays based at \(x_\infty\) meet at angle \(\pi\), hence form a line.  The
+Cheeger--Gromoll splitting theorem, preserved along the limiting Ricci flow,
+gives the asserted product.
+\end{proof}
+
+\begin{remark}[Infinite asymptotic scalar curvature ratio]
+\label{rem:chow-iii-dimension-reduction-infinite-ascr}
+\dcref{ch18:18.20}
+\group{Dimension Reduction}
+\source{chow-et-al-ricci-flow-part-iii:page-0076}
+\uses{thm:chow-iii-dimension-reduction-two}
+The hypotheses of Theorem~\ref{thm:chow-iii-dimension-reduction-two} imply
+\(\operatorname{ASCR}(g(0))=\infty\), and its curvature bounds are comparable
+to the curvature at the centers, ensuring that the limit is nonflat.
+\end{remark}
+
+\begin{corollary}[Dimension reduction for ancient kappa-solutions]
+\label{cor:chow-iii-dimension-reduction-kappa-solutions}
+\dcref{ch18:18.21}
+\group{Dimension Reduction}
+\source{chow-et-al-ricci-flow-part-iii:page-0077}
+\uses{thm:chow-iii-point-picking-infinite-ascr,thm:chow-iii-dimension-reduction-two}
+A noncompact ancient \(\kappa\)-solution with
+\(\operatorname{ASCR}(t)=\infty\) dimension reduces to the product of a
+bounded nonnegatively curved \((n-1)\)-dimensional \(\kappa\)-solution and a
+line.
+\end{corollary}
+\begin{proof}
+Theorem~\ref{thm:chow-iii-point-picking-infinite-ascr} provides the required
+centers and scales.  Noncollapsing supplies the injectivity-radius estimate,
+so Theorem~\ref{thm:chow-iii-dimension-reduction-two} applies.  Noncollapsing
+passes to smooth pointed limits and to the product factor.
+\end{proof}
+
+\begin{remark}[Kappa-solutions with Harnack]
+\label{rem:chow-iii-kappa-solution-harnack-ascr}
+\dcref{ch18:18.22}
+\group{Dimension Reduction}
+\source{chow-et-al-ricci-flow-part-iii:page-0077}
+A noncompact \(\kappa\)-solution satisfying Harnack has infinite asymptotic
+scalar curvature ratio at every time.
+\end{remark}
+
+\begin{theorem}[Finitely many remote curvature bumps]
+\label{thm:chow-iii-finite-remote-curvature-bumps}
+\dcref{ch18:18.23}
+\group{Dimension Reduction}
+\source{chow-et-al-ricci-flow-part-iii:page-0077,chow-et-al-ricci-flow-part-iii:page-0078}
+For every \(\varepsilon>0\) and \(n\ge2\), there is
+\(\lambda(\varepsilon,n)<\infty\) such that a complete nonnegatively curved
+\((\mathcal M^n,g)\) with basepoint \(O\) contains only finitely many disjoint
+balls \(B(p,r)\) satisfying
+\[
+ \operatorname{sect}(g)\ge\varepsilon r^{-2}\ \text{on }B(p,r),
+ \qquad d(p,O)\ge\lambda r.
+\]
+\end{theorem}
+
+\section{Space-time point picking with restrictions}
+
+For a Ricci flow \((\mathcal N^n,h(t))\), \(t\in[t_0,0]\), with
+\(\Ric\ge0\), and constants \(B,C>0\), put
+\[
+ \mathcal N_{B,C}=\{(y,t):t>t_0, R(y,t)>C+B(t-t_0)^{-1}\}.
+\]
+
+\begin{lemma}[Existence of a large-curvature point with local control]
+\label{lem:chow-iii-spacetime-point-picking}
+\dcref{ch18:18.24}
+\group{Space-Time Point Picking}
+\source{chow-et-al-ricci-flow-part-iii:page-0078,chow-et-al-ricci-flow-part-iii:page-0079,chow-et-al-ricci-flow-part-iii:page-0080}
+Suppose \(B_{h(0)}(p,1)\Subset\mathcal N\), and let
+\((y_1,t_1)\in\mathcal N_{B,C}\) satisfy
+\(y_1\in B_{h(t_1)}(p,1/4)\).  For \(\sigma\in(0,1)\), set
+\[
+ A_1(\sigma)=\bigl(C+B(t_1-t_0)^{-1}\bigr)
+ \min\left\{\frac\sigma2(t_1-t_0),\frac1{2304}\right\}.
+\]
+If \(A_1(\sigma)>1\), then for every \(A\in(1,A_1(\sigma)]\) there is
+\((y_*,t_*)\in\mathcal N_{B,C}\), with
+\(t_*-t_0\ge(1-\sigma)(t_1-t_0)\) and
+\(y_*\in B_{h(t_*)}(p,1/3)\), such that \(R(y,t)\le2R(y_*,t_*)\) whenever
+\[
+ t\in(t_*-A/R(y_*,t_*),t_*],
+ \quad d_{h(t)}(y,p)\le d_{h(t_*)}(y_*,p)+\sqrt{A/R(y_*,t_*)},
+\]
+and \((y,t)\in\mathcal N_{B,C}\).
+\end{lemma}
+\begin{proof}
+Starting at \((y_1,t_1)\), replace \((y_i,t_i)\) by an admissible point of
+more than twice its scalar curvature whenever the conclusion fails.  The
+curvatures then grow geometrically.  Consequently the accumulated spatial
+displacement is less than
+\(4A^{1/2}(C+B(t_1-t_0)^{-1})^{-1/2}\le1/12\), while the accumulated backward
+time is at most \(2A(C+B(t_1-t_0)^{-1})^{-1}\le\sigma(t_1-t_0)\).  Thus every
+chosen point stays in the compact cylinder
+\(B_{h(0)}(p,1/3)\times[t_0,t_1]\), where curvature is bounded.  Geometric
+growth therefore forces the process to terminate, and its final point has all
+the asserted properties.
+\end{proof}
+
+\begin{proposition}[Curvature control in a parabolic cylinder]
+\label{prop:chow-iii-parabolic-cylinder-curvature-control}
+\dcref{ch18:18.25}
+\group{Space-Time Point Picking}
+\source{chow-et-al-ricci-flow-part-iii:page-0080,chow-et-al-ricci-flow-part-iii:page-0081,chow-et-al-ricci-flow-part-iii:page-0082,chow-et-al-ricci-flow-part-iii:page-0083}
+\uses{lem:chow-iii-spacetime-point-picking,thm:chow-iii-changing-distances}
+Let \((y_*,t_*)\) be as in
+Lemma~\ref{lem:chow-iii-spacetime-point-picking}, and set
+\[
+ D=\min\left\{\frac{A^{1/2}}{100(n-1)},
+ \frac{C(t_*-t_0)+B}{2}\right\}.
+\]
+Then \(R(y,t)\le2R(y_*,t_*)\) on
+\[
+ B_{h(t_*)}\left(y_*,\frac1{10}A^{1/2}R(y_*,t_*)^{-1/2}\right)
+ \times[t_*-D/R(y_*,t_*),t_*].
+\]
+\end{proposition}
+\begin{proof}
+If a violating point existed, it would lie in \(\mathcal N_{B,C}\).  Follow
+the distance from that point to \(p\) backward until it first reaches half the
+allowed spatial margin.  On this interval all endpoint balls used by
+Theorem~\ref{thm:chow-iii-changing-distances} have scalar curvature at most
+\(2R(y_*,t_*)\), either by the definition of \(\mathcal N_{B,C}\) or by
+Lemma~\ref{lem:chow-iii-spacetime-point-picking}.  Integrating the changing
+distance estimate with \(r_0=R(y_*,t_*)^{-1/2}/10\) shows that the distance can
+increase by less than the available margin.  This contradicts the first-time
+choice, so no violating point exists.
+\end{proof}
+
+\section{Necks in manifolds with positive sectional curvature}
+
+Put \(c_n=\sqrt{(n-1)(n-2)}\).
+
+\begin{definition}[Embedded epsilon-neck]
+\label{def:chow-iii-embedded-epsilon-neck}
+\dcref{ch18:18.26}
+\group{Necks}
+\source{chow-et-al-ricci-flow-part-iii:page-0083,chow-et-al-ricci-flow-part-iii:page-0084}
+Let \((\mathcal N^n,h)\) be complete, \(R(p)>0\), and
+\(r=c_nR(p)^{-1/2}\).  The ball \(\mathfrak N=B(p,\varepsilon^{-1}r)\) is an
+embedded \(\varepsilon\)-neck if there is an embedding
+\(\varphi:\mathfrak N\to S^{n-1}\times\mathbb R\), with
+\(\varphi(p)\in S^{n-1}\times\{0\}\), such that
+\[
+ \left|\varphi^*(g_{S^{n-1}}+\dd u^2)-r^{-2}h\right|_
+ {C^{\lceil\varepsilon^{-1}\rceil+1}(r^{-2}h)}<\varepsilon.
+\]
+The inverse image of \(S^{n-1}\times\{0\}\) is its center sphere.
+\end{definition}
+
+\begin{remark}[Comparison with fixed-quality necks]
+\label{rem:chow-iii-neck-quality-comparison}
+\dcref{ch18:18.27}
+\group{Necks}
+\source{chow-et-al-ricci-flow-part-iii:page-0084}
+\uses{def:chow-iii-embedded-epsilon-neck}
+Every embedded \(\varepsilon\)-neck with
+\(\varepsilon\le\varepsilon(n)\) is also an embedded
+\(\varepsilon(n)\)-neck.  Given fixed \((\varepsilon_0,k_0,L_0)\), sufficiently
+small \(\varepsilon\) also guarantees the presence of an embedded neck of
+that fixed quality and length.
+\end{remark}
+
+\begin{lemma}[Center spheres of sufficiently good necks bound smooth balls]
+\label{lem:chow-iii-neck-center-bounds-ball}
+\dcref{ch18:18.28}
+\group{Necks}
+\source{chow-et-al-ricci-flow-part-iii:page-0084}
+\uses{def:chow-iii-embedded-epsilon-neck}
+There is \(\varepsilon(n)>0\) such that, if \((\mathcal N^n,h)\) is complete,
+noncompact, and has positive sectional curvature, then the center sphere of
+every embedded \(\varepsilon(n)\)-neck bounds a smooth \(n\)-ball in
+\(\mathcal N\).
+\end{lemma}
+
+\begin{example}[Conjecture: smooth Schoenflies in dimension four]
+\label{ex:chow-iii-smooth-schoenflies-four}
+\dcref{ch18:18.29}
+\group{Necks}
+\source{chow-et-al-ricci-flow-part-iii:page-0084}
+Every smoothly embedded three-sphere in \(\mathbb R^4\) bounds a smooth
+four-ball.
+\end{example}
+
+\begin{lemma}[Diameter of a Busemann level through a neck]
+\label{lem:chow-iii-busemann-level-diameter-neck}
+\dcref{ch18:18.30}
+\group{Necks and Busemann Functions}
+\source{chow-et-al-ricci-flow-part-iii:page-0085,chow-et-al-ricci-flow-part-iii:page-0086,chow-et-al-ricci-flow-part-iii:page-0087,chow-et-al-ricci-flow-part-iii:page-0088}
+\uses{lem:chow-iii-neck-center-bounds-ball}
+For \(n\ge3\), there is \(\varepsilon(n)>0\) with the following property.
+Let \((\mathcal N^n,h)\) be complete, noncompact, and positively curved; let
+\(\gamma\) be a ray; and let \(q_0\) lie on the center sphere of an embedded
+\(\varepsilon(n)\)-neck.  If \(b_0=b_\gamma(q_0)\), then
+\[
+ \frac{11}{12}\pi c_nR(q_0)^{-1/2}
+ \le\operatorname{diam}b_\gamma^{-1}(b_0)
+ \le11\pi c_nR(q_0)^{-1/2}.
+\]
+\end{lemma}
+\begin{proof}
+Lemma~\ref{lem:chow-iii-neck-center-bounds-ball} separates the neck into an
+inner compact side and an outer side.  Cylinder closeness and Toponogov
+comparison imply that \(b_\gamma<b_0\) beyond a fixed distance on the inner
+side and \(b_\gamma>b_0\) beyond that distance on the outer side.  Thus the
+level set lies in the cylindrical slab \(S^{n-1}\times[-5\pi,5\pi]\), whose
+diameter, after allowing the prescribed neck error, is at most the displayed
+upper bound.  For each \(z\in S^{n-1}\), continuity gives a point
+\((z,u(z))\) in that slab on the level set.  Taking \(z\) antipodal to the
+angular coordinate of \(q_0\), cylinder closeness gives the displayed lower
+bound.
+\end{proof}
+
+\begin{lemma}[A sufficiently good neck forces a Busemann minimum]
+\label{lem:chow-iii-busemann-attains-minimum}
+\dcref{ch18:18.31}
+\group{Necks and Busemann Functions}
+\source{chow-et-al-ricci-flow-part-iii:page-0088}
+\uses{lem:chow-iii-busemann-level-diameter-neck}
+There is \(\varepsilon(n)>0\) such that, if a complete noncompact positively
+curved \((\mathcal N^n,h)\) contains an embedded \(\varepsilon(n)\)-neck,
+then the Busemann function of every ray is bounded below and attains its
+minimum.
+\end{lemma}
+\begin{proof}
+In the proof of Lemma~\ref{lem:chow-iii-busemann-level-diameter-neck}, the
+union of the inner component and the neck has compact closure, while the
+Busemann function on its complement is strictly greater than its value at a
+point of the center sphere.  Hence its global infimum is achieved on that
+compact closure.
+\end{proof}
+
+\begin{remark}[The neck hypothesis is essential]
+\label{rem:chow-iii-busemann-minimum-neck-essential}
+\dcref{ch18:18.32}
+\group{Necks and Busemann Functions}
+\source{chow-et-al-ricci-flow-part-iii:page-0088}
+Without a sufficiently good neck, a Busemann function need not be bounded
+below.
+\end{remark}
+
+\begin{proposition}[Farther necks have almost larger radii]
+\label{prop:chow-iii-farther-necks-larger-radii}
+\dcref{ch18:18.33}
+\group{Necks and Busemann Functions}
+\source{chow-et-al-ricci-flow-part-iii:page-0089}
+\uses{lem:chow-iii-busemann-level-diameter-neck,lem:chow-iii-busemann-attains-minimum}
+There is \(\varepsilon(n)>0\) such that the following holds.  Let
+\((\mathcal N^n,h)\) be complete, noncompact, and positively curved, let
+\(\gamma\) be a ray, and let \(\mathfrak N_1,\mathfrak N_2\) be disjoint
+embedded \(\varepsilon(n)\)-necks with center points \(y_1,y_2\).  If
+\(d(p_*,y_1)\le d(p_*,y_2)\), where \(p_*\) minimizes \(b_\gamma\), then
+\[
+ R(y_2)\le144R(y_1).
+\]
+\end{proposition}
+\begin{proof}
+The neck separation inequalities give \(b_\gamma(y_1)<b_\gamma(y_2)\).
+Sharafutdinov monotonicity for the convex Busemann function then gives
+\(\operatorname{diam}b_\gamma^{-1}(b_\gamma(y_1))\le
+\operatorname{diam}b_\gamma^{-1}(b_\gamma(y_2))\).  Applying the lower and
+upper diameter bounds of Lemma~\ref{lem:chow-iii-busemann-level-diameter-neck}
+at \(y_1\) and \(y_2\), respectively, gives
+\((11/12)\pi c_nR(y_1)^{-1/2}\le11\pi c_nR(y_2)^{-1/2}\), which is equivalent
+to the assertion.
+\end{proof}
+
+\section{Localized no local collapsing}
+
+\begin{definition}[Weakly kappa-noncollapsed]
+\label{def:chow-iii-weakly-kappa-noncollapsed}
+\dcref{ch18:18.34}
+\group{Localized Noncollapsing}
+\source{chow-et-al-ricci-flow-part-iii:page-0090}
+A complete bounded-curvature Ricci flow \(g(t)\), \(t\in[0,T)\), is weakly
+\(\kappa\)-noncollapsed at \((x_0,t_0)\) below scale \(\rho\) if, whenever
+\(0<r\le\rho\) and
+\[
+ |\Rm|\le r^{-2}\quad\text{on }B_{g(t_0)}(x_0,r)\times[t_0-r^2,t_0],
+\]
+one has \(\Vol_{g(t_0)}B_{g(t_0)}(x_0,r)\ge\kappa r^n\).
+\end{definition}
+
+\begin{remark}[Largest curvature-controlled scale]
+\label{rem:chow-iii-largest-curvature-controlled-scale}
+\dcref{ch18:18.35}
+\group{Localized Noncollapsing}
+\source{chow-et-al-ricci-flow-part-iii:page-0090}
+\uses{def:chow-iii-weakly-kappa-noncollapsed}
+The function
+\[
+ \Psi(r)=r^2\max_{B_{g(t_0)}(x_0,r)\times[t_0-r^2,t_0]}|\Rm|
+\]
+is nondecreasing and tends to zero with \(r\).  If \(\bar r\) is the largest
+radius on which \(\Psi\le1\), weak \(\kappa\)-noncollapsing below \(\rho\) is
+equivalent to the volume lower bound for all
+\(0<r\le\min\{\rho,\bar r\}\).
+\end{remark}
+
+\begin{theorem}[Localized no local collapsing]
+\label{thm:chow-iii-localized-no-local-collapsing}
+\dcref{ch18:18.36}
+\group{Localized Noncollapsing}
+\source{chow-et-al-ricci-flow-part-iii:page-0090,chow-et-al-ricci-flow-part-iii:page-0091,chow-et-al-ricci-flow-part-iii:page-0092,chow-et-al-ricci-flow-part-iii:page-0093}
+\uses{def:chow-iii-weakly-kappa-noncollapsed,lem:chow-iii-localized-reduced-distance-control}
+For every \(n\ge2\) and \(A>0\), there is \(\kappa(n,A)>0\) such that the
+following holds.  Let \(g(t)\), \(t\in[0,r_0^2]\), be a complete
+bounded-curvature Ricci flow with
+\[
+ |\Rm|\le r_0^{-2}\quad\text{on }B_{g(0)}(x_0,r_0)\times[0,r_0^2],
+ \qquad \Vol_{g(0)}B_{g(0)}(x_0,r_0)\ge A^{-1}r_0^n.
+\]
+Then at time \(r_0^2\), the flow is weakly \(\kappa(n,A)\)-noncollapsed below
+scale \(r_0\) at every point of \(B_{g(r_0^2)}(x_0,Ar_0)\).
+\end{theorem}
+\begin{proof}
+Scale to \(r_0=1\), reverse time, and base reduced distance and reduced volume
+at a candidate point \(x\in B_{g(1)}(x_0,A)\).  If a radius \(r\le1\) has
+curvature at most \(r^{-2}\), write
+\(\kappa=\Vol_{g(1)}B_{g(1)}(x,r)/r^n\).  The standard reduced-volume estimate
+at the collapsed scale gives
+\(\widetilde V(\kappa^{1/n}r^2)\le c_2(n,\kappa)\), where
+\(c_2(n,\kappa)\to0\) as \(\kappa\downarrow0\).
+
+Lemma~\ref{lem:chow-iii-localized-reduced-distance-control} supplies a point
+at backward time \(1/2\) with uniformly bounded reduced distance.  Concatenate
+a minimizing reduced geodesic to that point with a controlled ordinary
+geodesic inside the unit ball.  The curvature and metric-comparison estimates
+give \(\ell(q,1)\le c_5(n,A)\) throughout \(B_{g(1)}(x_0,1)\).  Hence
+\[
+ \widetilde V(1)\ge(4\pi)^{-n/2}e^{-c_5(n,A)}A^{-1}=:c_3(n,A)>0.
+\]
+Reduced-volume monotonicity yields
+\(c_3(n,A)\le c_2(n,\kappa)\), which prevents \(\kappa\) from tending to zero
+and furnishes the required \(\kappa(n,A)\).
+\end{proof}
+
+\begin{remark}[The theorem at the maximal initial scale]
+\label{rem:chow-iii-localized-noncollapsing-maximal-scale}
+\dcref{ch18:18.37}
+\group{Localized Noncollapsing}
+\source{chow-et-al-ricci-flow-part-iii:page-0090}
+\uses{thm:chow-iii-localized-no-local-collapsing}
+For a nonflat flow on \([0,T]\), let \(\bar r_0\le\sqrt T\) be the largest
+radius for which the curvature bound in
+Theorem~\ref{thm:chow-iii-localized-no-local-collapsing} holds, and set
+\(A(r_0)=r_0^n/\Vol_{g(0)}B_{g(0)}(x_0,r_0)\).  For every
+\(r_0\le\bar r_0\), the theorem gives weak noncollapsing below scale \(r_0\)
+on \(B_{g(r_0^2)}(x_0,A(r_0)r_0)\).
+\end{remark}
+
+\begin{lemma}[Localized reduced-distance control]
+\label{lem:chow-iii-localized-reduced-distance-control}
+\dcref{ch18:18.38}
+\group{Localized Noncollapsing}
+\source{chow-et-al-ricci-flow-part-iii:page-0092,chow-et-al-ricci-flow-part-iii:page-0093,chow-et-al-ricci-flow-part-iii:page-0094,chow-et-al-ricci-flow-part-iii:page-0095,chow-et-al-ricci-flow-part-iii:page-0096,chow-et-al-ricci-flow-part-iii:page-0097}
+\uses{thm:chow-iii-changing-distances}
+Let \(g(t)\), \(t\in[0,1]\), be a complete bounded-curvature Ricci flow, and
+suppose
+\(\lvert\Rm\rvert\le1\) on \(B_{g(0)}(x_0,1)\times[0,1]\).  Then
+\begin{enumerate}
+\item \(|W|_{g(t)}\le e^{n-1}|W|_{g(0)}\) for
+\(z\in B_{g(0)}(x_0,1)\), \(W\in T_z\mathcal M\), and \(t\in[0,1]\);
+\item \(B_{g(t)}(x_0,e^{1-n})\subset B_{g(0)}(x_0,1)\);
+\item in the setting of Theorem~\ref{thm:chow-iii-localized-no-local-collapsing}
+with \(r_0=1\), there is \(c_4(n,A)<\infty\) such that
+\[
+ \min_{y\in\overline B_{g(1/2)}(x_0,e^{1-n})}\ell(y,1/2)\le c_4(n,A).
+\]
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+The curvature bound gives \(|\Ric|\le n-1\); integrating
+\(|\partial_tg(W,W)|\le2(n-1)g(W,W)\) proves the first assertion, and applying
+it along minimizing geodesics proves the second.
+
+For the third, choose a nondecreasing cutoff \(\phi\) which is one below
+\(e^{1-n}/2\), diverges at \(e^{1-n}\), and satisfies
+\[
+ 2(\phi')^2/\phi-\phi''\ge(2A+ne^n)\phi'-C_1(n,A)\phi.
+\]
+For backward time \(\tau=1-t\), put
+\[
+ h(w,t)=\phi(d_{g(t)}(x_0,w)-(2t-1)A)(\overline L(w,1-t)+2n+1).
+\]
+The scalar-curvature lower bound gives \(\overline L\ge-2n\) for
+\(\tau\le1/2\).  At a spatial minimum of \(h\), the reduced-distance
+inequality \(\overline L_t+\Delta\overline L\le2n\), the cutoff inequality,
+and Theorem~\ref{thm:chow-iii-changing-distances} imply
+\[
+ (\partial_t-\Delta)h\ge-(2n+C_1(n,A))h.
+\]
+The minimum principle, integrated from \(t=1\) to \(t=1/2\), bounds the
+minimum of \(h(\cdot,1/2)\).  Since \(\phi\) diverges at the boundary of the
+ball and is at least one, that minimum occurs inside
+\(B_{g(1/2)}(x_0,e^{1-n})\) and yields the asserted bound for \(\ell\).
+\end{proof}
+
+\begin{remark}[Nonsmoothness of the localized barrier]
+\label{rem:chow-iii-localized-barrier-nonsmoothness}
+\dcref{ch18:18.39}
+\group{Localized Noncollapsing}
+\source{chow-et-al-ricci-flow-part-iii:page-0097}
+The nonsmooth distance terms in the proof of
+Lemma~\ref{lem:chow-iii-localized-reduced-distance-control} are interpreted
+using upper support functions and the corresponding barrier maximum
+principle.
+\end{remark}
+
+\begin{example}[Problem: general point picking]
+\label{ex:chow-iii-general-point-picking}
+\dcref{ch18:18.40}
+\group{Notes and Problems}
+\source{chow-et-al-ricci-flow-part-iii:page-0097}
+Formulate general point-picking results for a metric space \(S\), an objective
+function \(f:S\to\mathbb R\), and a reference function
+\(\phi:S\to\mathbb R\), encompassing the spatial and space-time methods of
+this chapter.
+\end{example}
+
+\begin{example}[Exercise: trivial pointed limits after rescaling]
+\label{ex:chow-iii-trivial-limits-rescaling}
+\dcref{ch18:18.41}
+\group{Notes and Problems}
+\source{chow-et-al-ricci-flow-part-iii:page-0097}
+For every sequence of pointed Riemannian manifolds
+\((\mathcal M_i^n,g_i,O_i)\), there are \(K_i\to\infty\) such that
+\((\mathcal M_i^n,K_ig_i,O_i)\) converges to pointed Euclidean space.
+\end{example}
+\begin{proof}
+Choose a normal-coordinate radius \(\rho_i>0\) at \(O_i\) on which the metric
+and its first \(i\) derivatives are within \(1/i\) of the Euclidean metric
+after identifying \(T_{O_i}\mathcal M_i\) with \(\mathbb R^n\).  Choose
+\(K_i\ge i\) so large that every fixed-radius ball in \(K_ig_i\) lies inside
+that normal-coordinate ball and the rescaled curvature derivatives through
+order \(i\) are at most \(1/i\).  A diagonal argument then gives smooth
+pointed convergence to \((\mathbb R^n,g_{\mathrm{Euc}},0)\).
+\end{proof}

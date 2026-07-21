@@ -1,0 +1,337 @@
+\chapter{Introduction}
+
+\section{Ricci flow: what is it, and from where did it come?}
+
+Let $\mathcal M$ be a smooth closed manifold equipped with a smooth Riemannian
+metric $g$. Ricci flow evolves $g$ by the partial differential equation
+of curvature form below.
+
+\begin{definition}[Ricci flow evolution equation]
+\label{topping-intro-ricci-flow-evolution}
+\dcref{1.1.1}
+\group{ricci-flow}
+\source{topping:page-0007}
+\uses{topping-intro-ricci-curvature}
+The Ricci flow equation is
+\[
+\frac{\partial g}{\partial t} = -2\,\Ric(g).
+\]
+\end{definition}
+
+\begin{remark}
+\label{topping-intro-ricci-curvature}
+\dcref{Ricci curvature}
+\group{ricci-flow}
+\source{topping:page-0007}
+Here $\Ric(g)$ denotes the Ricci curvature of the metric $g$.
+\end{remark}
+
+In simple situations the flow deforms a metric into one distinguished by its
+curvature. In dimension two, after a suitable renormalisation, it deforms a
+metric conformally to one of constant curvature and so yields a proof of the
+two-dimensional uniformisation theorem. More generally, topology may prevent
+the existence of such distinguished metrics, and the flow can then develop a
+finite-time singularity. The strategy is to stop at a singularity and perform
+surgeries that remove the singular regions before continuing the flow.
+
+Provided the singularity structure is sufficiently understood, one may hope to
+reconstruct the topology of the original manifold from the limiting flow and
+the pieces removed during surgery. These notes develop some of the machinery
+used to analyse singularities and illustrate it by proving Hamilton's theorem
+that closed three-manifolds with positive Ricci curvature admit a metric of
+constant positive sectional curvature.
+
+One motivation for the choice of evolution equation is that it behaves like a
+heat equation for the metric. In harmonic coordinates the Ricci tensor has the
+form
+\[
+R_{ij} = -\frac12 \Delta g_{ij} + \text{lower order terms},
+\]
+while in normal coordinates centred at a point $p$ one has
+\[
+R_{ij} = -\frac32 \Delta g_{ij}
+\]
+at $p$. Here the notation $\Delta g_{ij}$ is to be read carefully: it does not
+mean the rough Laplacian applied to the metric tensor, which vanishes because
+the metric is parallel.
+
+\section{Examples and special solutions}
+
+\subsection{Einstein manifolds}
+
+A round sphere evolves by shrinking homothetically to a point in finite time.
+
+\begin{remark}
+\label{topping-intro-einstein-flow}
+\dcref{Einstein metric flow}
+\group{examples}
+\source{topping:page-0009}
+If $\Ric(g_0)=\lambda g_0$ for some constant $\lambda\in\mathbb R$, then
+\[
+g(t)=(1-2\lambda t)g_0
+\]
+is a solution of Ricci flow with initial condition $g(0)=g_0$.
+\end{remark}
+
+\begin{proof}
+Differentiate $g(t)$ to get $\partial_t g(t)=-2\lambda g_0$. Since
+\[
+\Ric(g_0)=\lambda g_0,
+\]
+and the Ricci tensor is invariant under uniform scaling,
+\[
+-2\Ric(g(t))=-2\Ric((1-2\lambda t)g_0)=-2\Ric(g_0)=-2\lambda g_0,
+\]
+which matches $\partial_t g(t)$.
+\end{proof}
+
+In particular, for the round unit sphere $(S^n,g_0)$ one has
+\[
+\Ric(g_0)=(n-1)g_0,
+\]
+so the flow is $g(t)=(1-2(n-1)t)g_0$ and the sphere collapses at
+\[
+T=\frac{1}{2(n-1)}.
+\]
+
+If $g_0$ is hyperbolic, meaning that it has constant sectional curvature $-1$,
+then $\Ric(g_0)=-(n-1)g_0$ and the flow expands homothetically for all time.
+
+\subsection{Ricci solitons}
+
+There is a more general notion of self-similarity than uniform shrinking or
+expansion. Let $X(t)$ be a time-dependent smooth vector field on $\mathcal M$
+with flow $\psi_t$. For any smooth $f:\mathcal M\to\mathbb R$,
+\begin{definition}[Flow of a time-dependent vector field]
+\label{topping-intro-flow-field}
+\dcref{1.2.1}
+\group{ricci-solitons}
+\source{topping:page-0009}
+The flow satisfies
+\[
+X(\psi_t(y),t)f = \frac{\partial}{\partial t}(f\circ\psi_t)(y).
+\]
+\end{definition}
+
+\begin{proposition}
+\label{topping-intro-pushforward-evolution}
+\dcref{1.2.1--1.2.3}
+\group{ricci-solitons}
+\source{topping:page-0010}
+\uses{topping-intro-flow-field}
+If $\sigma(t)$ is a smooth function and
+\[
+\hat g(t)=\sigma(t)\psi_t^*(g(t)),
+\]
+then
+\[
+\frac{\partial \hat g}{\partial t}
+=\sigma'(t)\psi_t^*(g)+\sigma(t)\psi_t^*\!\left(\frac{\partial g}{\partial t}\right)
++\sigma(t)\psi_t^*(\mathcal L_X g).
+\]
+\end{proposition}
+
+\begin{proof}
+Differentiate the product $\sigma(t)\psi_t^*(g(t))$ using the ordinary product
+rule. The derivative of the pullback term is the Lie derivative term by the
+definition of $\mathcal L_X$ and the characterisation in
+\eqref{topping-intro-flow-field}.
+\end{proof}
+
+\begin{definition}
+\label{topping-intro-ricci-soliton}
+\dcref{1.2.2--1.2.4}
+\group{ricci-solitons}
+\source{topping:page-0010}
+If a metric $g_0$, a vector field $Y$, and a constant $\lambda\in\mathbb R$
+satisfy
+\[
+-2\Ric(g_0)=\mathcal L_Y g_0-2\lambda g_0,
+\]
+then the associated self-similar Ricci flow is called a steady, expanding, or
+shrinking Ricci soliton according to whether $\lambda=0$, $\lambda<0$, or
+$\lambda>0$.
+\end{definition}
+
+\begin{definition}
+\label{topping-intro-gradient-soliton}
+\dcref{1.2.3--1.2.5}
+\group{ricci-solitons}
+\source{topping:page-0011}
+A Ricci soliton whose vector field is the gradient of a function
+$f:\mathcal M\to\mathbb R$ is called a gradient Ricci soliton. In this case
+\[
+\Hess_{g_0}(f)+\Ric(g_0)=\lambda g_0.
+\]
+\end{definition}
+
+\begin{example}
+\label{topping-intro-cigar-soliton}
+\dcref{Hamilton's cigar soliton}
+\group{ricci-solitons}
+\source{topping:page-0011}
+On $\mathbb R^2$, let $g_0=\rho^2(dx^2+dy^2)$ with
+\[
+\rho^2=\frac{1}{1+x^2+y^2}.
+\]
+Then
+\[
+\Ric(g_0)=\frac{2}{1+x^2+y^2}g_0,
+\]
+and for
+\[
+Y=-2\!\left(x\frac{\partial}{\partial x}+y\frac{\partial}{\partial y}\right)
+\]
+one has
+\[
+\mathcal L_Y g_0=-\frac{4}{1+x^2+y^2}g_0.
+\]
+Hence $g_0$ is a steady Ricci soliton. In geodesic polar coordinates
+\[
+g_0=ds^2+\tanh^2(s)\,d\theta^2,
+\]
+with Gauss curvature
+\[
+K=\frac{2}{\cosh^2 s}.
+\]
+It is also a gradient soliton, with potential function
+\[
+f=-2\ln(\cosh s).
+\]
+\end{example}
+
+The cigar is historically important because it appears as a possible blow-up
+limit for three-dimensional Ricci flows near finite-time singularities. Later
+work of Perelman rules out that possibility. Another rotationally symmetric
+steady gradient soliton exists on $\mathbb R^3$, due to Bryant; it opens
+asymptotically like a paraboloid and has positive sectional curvature. The flat
+metric on $\mathbb R^n$ gives the Gaussian soliton and can be viewed as steady,
+expanding, or shrinking according to the choice of potential.
+
+\subsection{Parabolic rescaling of Ricci flows}
+
+\begin{remark}
+\label{topping-intro-parabolic-rescaling}
+\dcref{1.2.7--1.2.9}
+\group{rescaling}
+\source{topping:page-0012}
+If $g(t)$ is a Ricci flow on $[0,T]$ and $\lambda>0$, then
+\[
+\hat g(x,t)=\lambda\, g(x,t/\lambda)
+\]
+is also a Ricci flow on $[0,\lambda T]$. Under this scaling the Ricci tensor is
+invariant, while sectional curvature and scalar curvature scale by
+$\lambda^{-1}$.
+\end{remark}
+
+The connection is unchanged under this parabolic rescaling.
+
+\section{Getting a feel for Ricci flow}
+
+The main use of this rescaling is to analyse singularities by blowing up a flow
+where curvature becomes large and passing to a limit. This is a standard
+strategy in geometric analysis.
+
+\subsection{Two dimensions}
+
+In two dimensions one has $\Ric(g)=Kg$. The flow therefore expands regions with
+negative Gauss curvature and shrinks regions with positive Gauss curvature.
+
+\subsection{Three dimensions}
+
+The three-dimensional picture is more complicated. A neck pinch is the basic
+heuristic singularity: the flow tends to contract a positively curved
+cross-sectional sphere while stretching in the neck direction. A blow-up of
+such a singularity is expected to look like a cylinder $S^2\times\mathbb R$,
+and in some asymmetrical situations one expects a degenerate neck pinch whose
+blow-up resembles the Bryant soliton.
+
+\section*{Infinite time behaviour}
+
+Ricci flow need not converge as $t\to\infty$. Hyperbolic metrics expand
+homothetically, and solitons may evolve in more complicated ways. In
+long-time behaviour one expects thick-thin decompositions and, in appropriate
+settings, the emergence of geometric pieces.
+
+\section{The topology and geometry of manifolds in low dimensions}
+
+Let us consider only closed, oriented manifolds in this section.
+
+\subsection{Dimension 1}
+
+There is only one such manifold: the circle $S^1$.
+
+\subsection{Dimension 2}
+
+Closed surfaces are classified by their genus. Each admits a conformally
+equivalent metric of constant Gauss curvature, and after rescaling the
+curvature can be taken to be $1$, $0$, or $-1$. The universal cover is then
+$S^2$, $\mathbb R^2$, or $\mathbb H^2$ respectively, yielding the classical
+uniformisation theorem for compact Riemann surfaces.
+
+For later comparison with dimension three, note that $\pi_1(S^2)=1$,
+\[
+\pi_1(T^2)=\mathbb Z\oplus\mathbb Z,
+\]
+and for higher genus surfaces the fundamental group is infinite but contains
+no copy of $\mathbb Z\oplus\mathbb Z$.
+
+\subsection{Dimension 3}
+
+Thurston conjectured a classification for three-manifolds analogous to the
+two-dimensional picture. For irreducible closed oriented three-manifolds, one
+expects either a spherical space form, the presence of
+$\mathbb Z\oplus\mathbb Z$ in the fundamental group, or a hyperbolic quotient.
+Prime decomposition reduces the general case to irreducible pieces. Thurston
+then introduces geometric pieces built from one of eight geometries:
+\[
+S^3,\ \mathbb R^3,\ \mathbb H^3,\ S^2\times\mathbb R,\ \mathbb H^2\times\mathbb R,\ Nil,\ Sol,\ \overline{\mathrm{SL}_2}(\mathbb R).
+\]
+
+\begin{definition}
+\label{topping-intro-geometry}
+\dcref{1.4.1}
+\group{three-manifolds}
+\source{topping:page-0021}
+A geometry is a simply connected homogeneous unimodular Riemannian manifold.
+\end{definition}
+
+Here homogeneous means that any two points are related by an isometry, and
+unimodular means that the geometry admits a discrete group of isometries with
+compact quotient.
+
+\begin{definition}
+\label{topping-intro-geometric-manifold}
+\dcref{1.4.2}
+\group{three-manifolds}
+\source{topping:page-0021}
+A compact manifold $\mathcal M$ is geometric if $\Int(\mathcal M)=X/\Gamma$
+has finite volume, where $X$ is a geometry and $\Gamma$ is a discrete group of
+isometries acting freely.
+\end{definition}
+
+When a geometric manifold has boundary, that boundary is a union of
+incompressible tori.
+
+\begin{conjecture}
+\label{topping-intro-thurston-geometrization}
+\dcref{1.4.3}
+\group{three-manifolds}
+\source{topping:page-0021}
+Every smooth, closed, oriented prime three-manifold can be obtained by gluing a
+finite number of geometric pieces along their boundary tori.
+\end{conjecture}
+
+Hamilton's theorem, proved later in these notes, gives a special case of this
+conjecture for manifolds of positive Ricci curvature.
+
+\section{Using Ricci flow to prove topological and geometric results}
+
+In dimension two, the Ricci flow proves the uniformisation theorem after
+renormalisation. In dimension three, the long-term program for the geometrisation
+conjecture begins with arbitrary metrics, expects singularities such as neck
+pinches, and uses surgery to excise the necks and restart the flow. In
+favourable cases, such as positive Ricci curvature, the flow becomes extinct
+and one can conclude that the manifold is a spherical space form. In general,
+one expects a thick-thin decomposition at large times. Four-dimensional analogues
+exist under additional curvature hypotheses, but are substantially harder.

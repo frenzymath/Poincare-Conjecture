@@ -1,0 +1,1457 @@
+% Source: Lee, "Introduction to Riemannian Manifolds" (2nd ed.), Chapter 6 "Geodesics and Distance", PDF pages 163-203 of the cited source.
+% Transcribed from the cited source and organized according to
+% leanblueprint conventions (semantic \label, bracketed titles, \uses dependency edges, \dcref to Lee's own numbering) below.
+
+In this chapter, we explore the relationships among geodesics, lengths, and distances on a Riemannian manifold. A primary goal is to show that all length-minimizing curves are geodesics, and that all geodesics are locally length-minimizing. Later, we prove the \emph{Hopf--Rinow theorem}, which states that a connected Riemannian manifold is geodesically complete if and only if it is complete as a metric space. At the end of the chapter, we study \emph{distance functions} (which express the distance to a point or other subset) and show that they can be used to construct coordinates, called \emph{semigeodesic coordinates}, that put a metric in a particularly simple form.
+
+Most of the results of this chapter do not apply to general pseudo-Riemannian metrics, at least without substantial modification. For this reason, we restrict our focus here to the Riemannian case. (For a treatment of lengths of curves in the pseudo-Riemannian setting, see [O'N83].) Also, the theory of minimizing curves becomes considerably more complicated in the presence of a nonempty boundary; thus, unless otherwise stated, throughout this chapter we assume that $(M, g)$ is a Riemannian manifold without boundary. And because we will be using the Riemannian distance function, we assume for most results that $M$ is connected.
+
+\section{Geodesics and Minimizing Curves}
+
+Let $(M,g)$ be a Riemannian manifold. An admissible curve $\gamma$ in $M$ is said to be a \emph{minimizing curve} if $L_g(\gamma) \le L_g(\tilde{\gamma})$ for every admissible curve $\tilde{\gamma}$ with the same endpoints. When $M$ is connected, it follows from the definition of the Riemannian distance that $\gamma$ is minimizing if and only if $L_g(\gamma)$ is equal to the distance between its endpoints.
+
+Our first goal in this section is to show that all minimizing curves are geodesics. To do so, we will think of the length function $L_g$ as a functional on the set of all admissible curves in $M$ with fixed starting and ending points. (Real-valued functions whose domains are themselves sets of functions are typically called \emph{functionals}.) Our project is to search for minima of this functional.
+
+From calculus, we might expect that a necessary condition for a curve $\gamma$ to be minimizing would be that the ``derivative'' of $L_g$ vanish at $\gamma$, in some sense. This brings us to the brink of the subject known as the \emph{calculus of variations}: the use of calculus to identify and analyze extrema of functionals defined on spaces of functions or maps. In its fully developed state, the calculus of variations allows one to apply all the usual tools of multivariable calculus in the infinite-dimensional setting of function spaces---tools such as directional derivatives, gradients, critical points, local extrema, saddle points, and Hessians. For our purposes, however, we do not need to formalize the theory of calculus in the infinite-dimensional setting. It suffices to note that if $\gamma$ is a minimizing curve, and $\{\Gamma_s : s \in (-\varepsilon,\varepsilon)\}$ is a one-parameter family of admissible curves with the same endpoints such that $L_g(\Gamma_s)$ is a differentiable function of $s$ and $\Gamma_0 = \gamma$, then by elementary calculus, the $s$-derivative of $L_g(\Gamma_s)$ must vanish at $s = 0$ because $L_g(\Gamma_s)$ attains a minimum there.
+
+\section{Families of Curves}
+
+To make this rigorous, we introduce some more definitions. Let $(M, g)$ be a Riemannian manifold.
+
+\begin{definition}[One-Parameter Family of Curves]
+\label{def:one-parameter-family-of-curves}
+\dcref{ch6:6.1}
+
+Given intervals $I, J \subseteq \mathbb{R}$, a continuous map $\Gamma: J \times I \to M$ is called a \emph{one-parameter family of curves}. Such a family defines two collections of curves in $M$: the \emph{main curves} $\Gamma_s(t) = \Gamma(s,t)$ defined for $t \in I$ by holding $s$ constant, and the \emph{transverse curves} $\Gamma^{(t)}(s) = \Gamma(s,t)$ defined for $s \in J$ by holding $t$ constant.
+
+If such a family $\Gamma$ is smooth (or at least continuously differentiable), we denote the velocity vectors of the main and transverse curves by
+\[
+\partial_t \Gamma(s,t) = (\Gamma_s)'(t) \in T_{\Gamma(s,t)} M; \quad \partial_s \Gamma(s,t) = (\Gamma^{(t)})'(s) \in T_{\Gamma(s,t)} M.
+\]
+
+Each of these is an example of a \emph{vector field along $\Gamma$}, which is a continuous map $V: J \times I \to TM$ such that $V(s,t) \in T_{\Gamma(s,t)} M$ for each $(s,t)$.
+\end{definition}
+
+The families of curves that will interest us most in this chapter are of the following type. A one-parameter family $\Gamma$ is called an \emph{admissible family of curves} if (i) its domain is of the form $J \times [a,b]$ for some open interval $J$; (ii) there is a partition $(a_0, \ldots, a_k)$ of $[a,b]$ such that $\Gamma$ is smooth on each rectangle of the form $J \times [a_{i-1}, a_i]$; and (iii) $\Gamma_s(t) = \Gamma(s,t)$ is an admissible curve for each $s \in J$ (Fig.~6.1). Every such partition is called an \emph{admissible partition for the family}.
+
+\begin{definition}[Variations]
+\label{def:variations-proper-variations}
+\dcref{ch6:6.2}
+
+If $\gamma: [a,b] \to M$ is a given admissible curve, a \emph{variation} of $\gamma$ is an admissible family of curves $\Gamma: J \times [a,b] \to M$ such that $J$ is an open interval containing $0$ and $\Gamma_0 = \gamma$. It is called a \emph{proper variation} if in addition, all of the main curves have the same starting and ending points: $\Gamma_s(a) = \gamma(a)$ and $\Gamma_s(b) = \gamma(b)$ for all $s \in J$.
+\end{definition}
+
+In the case of an admissible family, the transverse curves are smooth on $J$ for each $t$, but the main curves are in general only piecewise regular. Thus the velocity vector fields $\partial_s \Gamma$ and $\partial_t \Gamma$ are smooth on each rectangle $J \times [a_{i-1}, a_i]$, but not generally on the whole domain.
+
+We can say a bit more about $\partial_s\Gamma$, though. If $\Gamma$ is an admissible family, a \emph{piecewise smooth vector field along $\Gamma$} is a (continuous) vector field along $\Gamma$ whose restriction to each rectangle $J \times [a_{i-1}, a_i]$ is smooth for some admissible partition $(a_0, \ldots, a_k)$ of $[a,b]$. In fact, $\partial_s\Gamma$ is always such a vector field. We see that it is continuous on the whole domain $J \times [a,b]$; note on the one hand that for each $i = 1, \ldots, k-1$, the values of $\partial_s\Gamma$ along the set $J \times \{a_i\}$ depend only on the values of $\Gamma$ on that set, since the derivative is taken only with respect to the $s$ variable; on the other hand, $\partial_s\Gamma$ is continuous (in fact smooth) on each subrectangle $J \times [a_{i-1}, a_i]$ and $J \times [a_i, a_{i+1}]$, so the right-hand and left-hand limits at $t = a_i$ must be equal. Therefore $\partial_s\Gamma$ is always a piecewise smooth vector field along $\Gamma$. (However, $\partial_t\Gamma$ is typically not continuous at $t = a_i$.)
+
+If $\Gamma$ is a variation of $\gamma$, the \emph{variation field of $\Gamma$} is the piecewise smooth vector field $V(t) = \partial_s\Gamma(0,t)$ along $\gamma$. We say that a vector field $V$ along $\gamma$ is \emph{proper} if $V(a) = 0$ and $V(b) = 0$; it follows easily from the definitions that the variation field of every proper variation is itself proper.
+
+% [FIGURE 6.1: An admissible family of curves - rectangle on left with labeled intervals and segments on axes, mapping via Gamma arrow to curved surface on right with horizontal bands]
+
+\begin{lemma}
+\label{lem:variation-field-existence}
+\dcref{ch6:6.1}
+
+If $\gamma$ is an admissible curve and $V$ is a piecewise smooth vector field along $\gamma$, then $V$ is the variation field of some variation of $\gamma$. If $V$ is proper, the variation can be taken to be proper as well.
+\end{lemma}
+
+\begin{proof}
+Suppose $\gamma$ and $V$ satisfy the hypotheses, and set $\Gamma(s,t) = \exp_{\gamma(t)}(sV(t))$ (Fig. 6.2). By compactness of $[a,b]$, there is some positive $\varepsilon$ such that $\Gamma$ is defined on $(-\varepsilon, \varepsilon) \times [a,b]$. By composition, $\Gamma$ is smooth on $(-\varepsilon, \varepsilon) \times [a_{i-1}, a_i]$ for each subinterval $[a_{i-1}, a_i]$ on which $V$ is smooth, and it is continuous on its whole domain. By the properties of the exponential map, the variation field of $\Gamma$ is $V$. Moreover, if $V(a) = 0$ and $V(b) = 0$, the definition gives $\Gamma(s, a) \equiv \gamma(a)$ and $\Gamma(s, b) \equiv \gamma(b)$, so $\Gamma$ is proper. $\square$
+\end{proof}
+
+If $V$ is a piecewise smooth vector field along $\Gamma$, we can compute the covariant derivative of $V$ either along the main curves (at points where $V$ is smooth) or along the transverse curves; the resulting vector fields along $\Gamma$ are denoted by $D_t V$ and $D_s V$ respectively.
+
+A key ingredient in the proof that minimizing curves are geodesics is the symmetry of the Levi-Civita connection. It enters into our proofs in the form of the following lemma. (Although we state and use this lemma only for the Levi-Civita connection, the proof shows that it is actually true for every symmetric connection in $TM$.)
+
+% [FIGURE: Curve  \gamma  with vectors V(t) showing a variation field perpendicular to the curve at multiple points along  \gamma (t) from  \gamma (a) to  \gamma (b)]
+
+\begin{lemma}[Symmetry Lemma]
+\label{lem:symmetry-lemma}
+\dcref{ch6:6.2}
+
+Let $\Gamma: J \times [a,b] \to M$ be an admissible family of curves in a Riemannian manifold. On every rectangle $J \times [a_{i-1}, a_i]$ where $\Gamma$ is smooth,
+\[
+D_s \partial_t \Gamma = D_t \partial_s \Gamma.
+\]
+\end{lemma}
+
+\begin{proof}
+This is a local question, so we may compute in local coordinates $(x^i)$ around a point $\Gamma(s_0, t_0)$. Writing the components of $\Gamma$ as $\Gamma(s,t) = (x^1(s,t), \ldots, x^n(s,t))$, we have
+\[
+\partial_t \Gamma = \frac{\partial x^k}{\partial t} \partial_k; \quad \partial_s \Gamma = \frac{\partial x^k}{\partial s} \partial_k.
+\]
+Then, using the coordinate formula (4.15) for covariant derivatives along curves, we obtain
+\[
+D_s \partial_t \Gamma = \left( \frac{\partial^2 x^k}{\partial s \partial t} + \frac{\partial x^i}{\partial t} \frac{\partial x^j}{\partial s} \Gamma^k_{ij} \right) \partial_k;
+\]
+\[
+D_t \partial_s \Gamma = \left( \frac{\partial^2 x^k}{\partial t \partial s} + \frac{\partial x^i}{\partial s} \frac{\partial x^j}{\partial t} \Gamma^k_{ij} \right) \partial_k.
+\]
+Reversing the roles of $i$ and $j$ in the second line above and using the symmetry condition $\Gamma^k_{ij} = \Gamma^k_{ji}$, we conclude that these two expressions are equal. $\square$
+\end{proof}
+
+\section{Minimizing Curves Are Geodesics}
+
+We can now compute an expression for the derivative of the length functional along a variation of a curve. Traditionally, the derivative of a functional on a space of maps is called its \textit{first variation}.
+
+\begin{theorem}[First Variation Formula]
+\label{thm:first-variation-formula}
+\dcref{ch6:6.3}
+\uses{lem:symmetry-lemma}
+
+Let $(M,g)$ be a Riemannian manifold. Suppose $\gamma: [a,b] \to M$ is a unit-speed admissible curve, $\Gamma: J \times [a,b] \to M$ is a variation of $\gamma$, and $V$ is its variation field. Then $L_g(\Gamma_s)$ is a smooth function of $s$, and
+\begin{equation}
+\frac{d}{ds}\bigg|_{s=0} L_g(\Gamma_s) = -\int_a^b \langle V, D_t \gamma'\rangle \, dt - \sum_{i=1}^{k-1} \langle V(a_i), \Delta_i \gamma'\rangle + \langle V(b), \gamma'(b)\rangle - \langle V(a), \gamma'(a)\rangle, \tag{6.1}
+\end{equation}
+where $(a_0,\ldots,a_k)$ is an admissible partition for $\gamma$, and for each $i = 1,\ldots,k-1$, $\Delta_i \gamma' = \gamma'(a_i^+) - \gamma'(a_i^-)$ is the ``jump'' in the velocity vector field $\gamma'$ at $a_i$ (Fig. 6.3). In particular, if $\Gamma$ is a proper variation, then
+\begin{equation}
+\frac{d}{ds}\bigg|_{s=0} L_g(\Gamma_s) = -\int_a^b \langle V, D_t \gamma'\rangle \, dt - \sum_{i=1}^{k-1} \langle V(a_i), \Delta_i \gamma'\rangle. \tag{6.2}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+On every rectangle $J \times [a_{i-1}, a_i]$ where $\Gamma$ is smooth, since the integrand in $L_g(\Gamma_s)$ is smooth and the domain of integration is compact, we can differentiate under the integral sign as many times as we wish. Because $L_g(\Gamma_s)$ is a finite sum of such integrals, it follows that it is a smooth function of $s$.
+
+For brevity, let us introduce the notations
+\[
+T(s,t) = \partial_t \Gamma(s,t), \quad S(s,t) = \partial_s \Gamma(s,t).
+\]
+
+Differentiating on the interval $[a_{i-1}, a_i]$ yields
+\begin{align*}
+\frac{d}{ds} L_g\bigl(\Gamma_s|_{[a_{i-1}, a_i]}\bigr) &= \int_{a_{i-1}}^{a_i} \frac{\partial}{\partial s} \langle T, T\rangle^{1/2} \, dt \\
+&= \int_{a_{i-1}}^{a_i} \tfrac{1}{2}\langle T,T\rangle^{-1/2} \, 2\langle D_s T, T\rangle \, dt \\
+&= \int_{a_{i-1}}^{a_i} \frac{1}{|T|} \langle D_t S, T\rangle \, dt, \tag{6.3}
+\end{align*}
+where we have used the symmetry lemma in the last line. Setting $s = 0$ and noting that $S(0,t) = V(t)$ and $T(0,t) = \gamma'(t)$ (which has length 1), we get
+\begin{align*}
+\frac{d}{ds}\bigg|_{s=0} L_g\bigl(\Gamma_s|_{[a_{i-1},a_i]}\bigr)
+&= \int_{a_{i-1}}^{a_i} \langle D_t V, \gamma' \rangle \, dt \\
+&= \int_{a_{i-1}}^{a_i} \left(\frac{d}{dt}\langle V, \gamma' \rangle - \langle V, D_t \gamma' \rangle\right) dt \\
+&= \langle V(a_i), \gamma'(a_i^-) \rangle - \langle V(a_{i-1}), \gamma'(a_{i-1}^+) \rangle - \int_{a_{i-1}}^{a_i} \langle V, D_t \gamma' \rangle \, dt.
+\end{align*}
+(The second equality follows from compatibility with the metric, and the third from the fundamental theorem of calculus.) Finally, summing over $i$, we obtain (6.1). $\square$
+\end{proof}
+
+Because every admissible curve has a unit-speed parametrization and length is independent of parametrization, the requirement in the above theorem that $\gamma$ be of unit speed is not a real restriction, but rather just a computational convenience.
+
+\begin{theorem}
+\label{thm:minimizing-geodesic-unit-speed}
+\dcref{ch6:6.4}
+\uses{lem:symmetry-lemma}
+
+In a Riemannian manifold, every minimizing curve is a geodesic when it is given a unit-speed parametrization.
+\end{theorem}
+
+\begin{proof}
+Suppose $\gamma : [a, b] \to M$ is minimizing and of unit speed, and $(a_0, \ldots, a_k)$ is an admissible partition for $\gamma$. If $\Gamma$ is any proper variation of $\gamma$, then $L_g(\Gamma_s)$ is a smooth function of $s$ that achieves its minimum at $s = 0$, so it follows from elementary calculus that $d(L_g(\Gamma_s))/ds = 0$ when $s = 0$. Since every proper vector field along $\gamma$ is the variation field of some proper variation, the right-hand side of (6.2) must vanish for every such $V$.
+
+First we show that $D_t \gamma' = 0$ on each subinterval $[a_{i-1}, a_i]$, so $\gamma$ is a ``broken geodesic.'' Choose one such interval, and let $\varphi \in C^\infty(\mathbb{R})$ be a bump function such that $\varphi > 0$ on $(a_{i-1}, a_i)$ and $\varphi = 0$ elsewhere. Then (6.2) with $V = \varphi D_t \gamma'$ becomes
+\[
+0 = -\int_{a_{i-1}}^{a_i} \varphi \left| D_t \gamma' \right|^2 dt.
+\]
+Since the integrand is nonnegative and $\varphi > 0$ on $(a_{i-1}, a_i)$, this shows that $D_t \gamma' = 0$ on each such subinterval.
+
+Next we need to show that $\Delta_i \gamma' = 0$ for each $i$ between $0$ and $k$, which is to say that $\gamma$ has no corners. For each such $i$, we can use a bump function in a coordinate chart to construct a piecewise smooth vector field $V$ along $\gamma$ such that $V(a_i) = \Delta_i \gamma'$ and $V(a_j) = 0$ for $j \ne i$. Then (6.2) reduces to $-|\Delta_i \gamma'|^2 = 0$, so $\Delta_i \gamma' = 0$ for each $i$.
+
+Finally, since the two one-sided velocity vectors of $\gamma$ match up at each $a_i$, it follows from uniqueness of geodesics that $\gamma|_{[a_i, a_{i+1}]}$ is the continuation of the geodesic $\gamma|_{[a_{i-1}, a_i]}$, and therefore $\gamma$ is smooth. $\square$
+\end{proof}
+
+The preceding proof has an enlightening geometric interpretation. Under the assumption that $D_t \gamma' \ne 0$, the first variation with $V = \varphi D_t \gamma'$ is negative, which shows that deforming $\gamma$ in the direction of its acceleration vector field decreases its length (Fig.\ 6.4). Similarly, the length of a broken geodesic $\gamma$ is decreased by deforming it in the direction of a vector field $V$ such that $V(a_i) = \Delta_i \gamma'$ (Fig. 6.5). Geometrically, this corresponds to ``rounding the corner.''
+
+The first variation formula actually tells us a bit more than is claimed in Theorem~\ref{thm:minimizing-geodesic-unit-speed}. In proving that $\gamma$ is a geodesic, we did not use the full strength of the assumption that the length of $\Gamma_s$ takes a minimum when $s = 0$; we only used the fact that its derivative is zero. We say that an admissible curve $\gamma$ is a \emph{critical point} of $L_g$ if for every proper variation $\Gamma_s$ of $\gamma$, the derivative of $L_g(\Gamma_s)$ with respect to $s$ is zero at $s = 0$. Therefore we can strengthen Theorem~\ref{thm:minimizing-geodesic-unit-speed} in the following way.
+
+\begin{corollary}
+\label{cor:critical-point-geodesic}
+\dcref{ch6:6.5}
+\uses{thm:minimizing-geodesic-unit-speed}
+
+A unit-speed admissible curve $\gamma$ is a \emph{critical point} for $L_g$ if and only if it is a geodesic.
+\end{corollary}
+
+\begin{proof}
+If $\gamma$ is a critical point, the proof of Theorem~\ref{thm:minimizing-geodesic-unit-speed} goes through without modification to show that $\gamma$ is a geodesic. Conversely, if $\gamma$ is a geodesic, then the first term on the right-hand side of (6.2) vanishes by the geodesic equation, and the second term vanishes because $\gamma'$ has no jumps. $\square$
+\end{proof}
+
+The geodesic equation $D_t \gamma' = 0$ thus characterizes the critical points of the length functional. In general, the equation that characterizes critical points of a functional on a space of maps is called the \emph{variational equation} or the \emph{Euler-Lagrange equation} of the functional. Many interesting equations in differential geometry arise as variational equations. We touch briefly on three others in this book: the Einstein equation (7.34), the Yamabe equation (7.59), and the minimal hypersurface equation $H \equiv 0$ (Thm.~8.18).
+
+\section{Geodesics Are Locally Minimizing}
+
+Next we turn to the converse of Theorem~\ref{thm:minimizing-geodesic-unit-speed}. It is easy to see that the literal converse is not true, because not every geodesic segment is minimizing. For example, every geodesic segment on $S^n$ that goes more than halfway around the sphere is not minimizing, because the other portion of the same great circle is a shorter curve segment between the same two points. For that reason, we concentrate initially on \emph{local minimization} properties of geodesics.
+
+As usual, let $(M, g)$ be a Riemannian manifold. A regular (or piecewise regular) curve $\gamma : I \to M$ is said to be \emph{locally minimizing} if every $t_0 \in I$ has a neighborhood $I_0 \subseteq I$ such that whenever $a, b \in I_0$ with $a < b$, the restriction of $\gamma$ to $[a,b]$ is minimizing.
+
+\begin{lemma}
+\label{lem:minimizing-curves-locally-minimizing}
+\dcref{ch6:6.6}
+
+Every minimizing admissible curve segment is locally minimizing.
+\end{lemma}
+
+\begin{exercise}
+\label{exer:prove-minimizing-lemma}
+\dcref{ch6:6.7}
+\uses{lem:minimizing-curves-locally-minimizing}
+
+Prove the preceding lemma.
+\end{exercise}
+
+Our goal in this section is to show that geodesics are locally minimizing. The proof will be based on a careful analysis of the geodesic equation in Riemannian normal coordinates.
+
+If $\varepsilon$ is a positive number such that $\exp_p$ is a diffeomorphism from the ball $B_\varepsilon(0) \subset T_p M$ to its image (where the radius of the ball is measured with respect to the norm defined by $g_p$), then the image set $\exp_p(B_\varepsilon(0))$ is a normal neighborhood of $p$, called a \emph{geodesic ball in $M$}, or sometimes an \emph{open geodesic ball} for clarity. Also, if the closed ball $\bar{B}_\varepsilon(0)$ is contained in an open set $V \subseteq T_p M$ on which $\exp_p$ is a diffeomorphism onto its image, then $\exp_p(\bar{B}_\varepsilon(0))$ is called a \emph{closed geodesic ball}, and $\exp_p(\partial B_\varepsilon(0))$ is called a \emph{geodesic sphere}. Given such a $V$, by compactness there exists $\varepsilon' > \varepsilon$ such that $B_{\varepsilon'}(0) \subseteq V$, so every closed geodesic ball is contained in an open geodesic ball of larger radius. In Riemannian normal coordinates centered at $p$, the open and closed geodesic balls and geodesic spheres centered at $p$ are just the coordinate balls and spheres.
+
+% [FIGURE 6.6: The radial vector field in a normal neighborhood, showing a circle with center point $p$, radial vectors pointing outward labeled $v$, $\partial_r$, and a curve $\gamma_v(t)$]
+
+Suppose $U$ is a normal neighborhood of $p \in M$. Given any normal coordinates $(x^i)$ on $U$ centered at $p$, define the \emph{radial distance function} $r : U \to \mathbb{R}$ by
+\begin{equation}
+r(x) = \sqrt{(x^1)^2 + \cdots + (x^n)^2}, \tag{6.4}
+\end{equation}
+and the \emph{radial vector field} on $U \setminus \{p\}$, denoted by $\partial_r$, by
+\begin{equation}
+\partial_r = \frac{x^i}{r(x)} \frac{\partial}{\partial x^i}. \tag{6.5}
+\end{equation}
+
+In Euclidean space, $r(x)$ is the distance to the origin, and $\partial_r$ is the unit vector field pointing radially outward from the origin. (The notation is suggested by the fact that $\partial_r$ is a coordinate derivative in polar or spherical coordinates.)
+
+\begin{lemma}
+\label{lem:radial-distance-well-defined}
+\dcref{ch6:6.8}
+\uses{prop:uniqueness-normal-coordinates}
+
+In every normal neighborhood $U$ of $p \in M$, the radial distance function and the radial vector field are well defined, independently of the choice of normal coordinates. Both $r$ and $\partial_r$ are smooth on $U \setminus \{p\}$, and $r^2$ is smooth on all of $U$.
+\end{lemma}
+
+\begin{proof}
+Proposition 5.23 shows that any two normal coordinate charts on $U$ are related by $\tilde{x}^i = A^i_j x^j$ for some orthogonal matrix $(A^i_j)$, and a straightforward computation shows that both $r$ and $\partial_r$ are invariant under such coordinate changes. The smoothness statements follow directly from the coordinate formulas. $\square$
+\end{proof}
+
+The crux of the proof that geodesics are locally minimizing is the following deceptively simple geometric lemma.
+
+\begin{theorem}[The Gauss Lemma]
+\label{thm:gauss-lemma}
+\dcref{ch6:6.9}
+\uses{prop:properties-normal-coordinates}
+
+Let $(M, g)$ be a Riemannian manifold, let $U$ be a geodesic ball centered at $p \in M$, and let $\partial_r$ denote the radial vector field on $U \setminus \{p\}$. Then $\partial_r$ is a unit vector field orthogonal to the geodesic spheres in $U \setminus \{p\}$.
+\end{theorem}
+
+\begin{proof}
+We will work entirely in normal coordinates $(x^i)$ on $U$ centered at $p$, using the properties of normal coordinates described in Proposition 5.24.
+
+Let $q \in U \setminus \{p\}$ be arbitrary, with coordinate representation $(q^1, \ldots, q^n)$, and let
+\[
+b = r(q) = \sqrt{(q^1)^2 + \cdots + (q^n)^2},
+\]
+where $r$ is the radial distance function defined by (6.4). It follows that $\partial_r|_q$ has the coordinate representation
+\[
+\partial_r|_q = \frac{q^i}{b} \frac{\partial}{\partial x^i}\bigg|_q.
+\]
+
+Let $v = v^i \partial_i|_p \in T_p M$ be the tangent vector at $p$ with components $v^i = q^i / b$. By Proposition 5.24(c), the radial geodesic with initial velocity $v$ is given in these coordinates by
+\[
+\gamma_v(t) = (tv^1, \ldots, tv^n).
+\]
+
+It satisfies $\gamma_v(0) = p$, $\gamma_v(b) = q$, and $\gamma'_v(b) = v^i \partial_i|_q = \partial_r|_q$. Because $g_p$ is equal to the Euclidean metric in these coordinates, we have
+\[
+|\gamma'_v(0)|_g = |v|_g = \sqrt{(v^1)^2 + \cdots + (v^n)^2} = \frac{1}{b}\sqrt{(q^1)^2 + \cdots + (q^n)^2} = 1,
+\]
+so $v$ is a unit vector, and thus $\gamma_v$ is a unit-speed geodesic. It follows that $\partial_r|_q = \gamma'_v(b)$ is also a unit vector.
+
+To prove that $\partial_r$ is orthogonal to the geodesic spheres, let $q$, $b$, and $v$ be as above, and let $\Sigma_b = \exp_p(\partial B_b(0))$ be the geodesic sphere containing $q$. In these coordinates, $\Sigma_b$ is the set of points satisfying the equation $(x^1)^2 + \cdots + (x^n)^2 = b^2$. Let $w \in T_q M$ be any vector tangent to $\Sigma_b$ at $q$. We need to show that $\langle w, \partial_r|_q \rangle_g = 0$.
+
+Choose a smooth curve $\sigma \colon (-\varepsilon, \varepsilon) \to \Sigma_b$ satisfying $\sigma(0) = q$ and $\sigma'(0) = w$, and write its coordinate representation in $(x^i)$-coordinates as $\sigma(s) = (\sigma^1(s), \ldots, \sigma^n(s))$. The fact that $\sigma(s)$ lies in $\Sigma_b$ for all $s$ means that
+\begin{equation}
+(\sigma^1(s))^2 + \cdots + (\sigma^n(s))^2 = b^2. \tag{6.6}
+\end{equation}
+
+% [FIGURE 6.7: Coordinate plane with vertical lines and circular diagram with tangent vectors illustrating the Gauss lemma proof]
+
+Define a smooth map $\Gamma: (-\varepsilon, \varepsilon) \times [0, b] \to U$ by
+\[
+\Gamma(s,t) = \left( \frac{t}{b}\sigma^1(s), \ldots, \frac{t}{b}\sigma^n(s) \right).
+\]
+
+For each $s \in (-\varepsilon, \varepsilon)$, $\Gamma_s$ is a geodesic by Proposition 5.24(c). Its initial velocity is $\Gamma_s'(0) = (1/b)\sigma^i(s)\partial_i|_p$, which is a unit vector by (6.6) and the fact that $g_p$ is the Euclidean metric in coordinates; thus each $\Gamma_s$ is a unit-speed geodesic.
+
+As before, let $S = \partial_s \Gamma$ and $T = \partial_t \Gamma$. It follows from the definitions that
+\begin{align*}
+S(0,0) &= \frac{d}{ds}\Big|_{s=0} \Gamma_s(0) = 0; \\
+T(0,0) &= \frac{d}{dt}\Big|_{t=0} \gamma_v(t) = v; \\
+S(0,b) &= \frac{d}{ds}\Big|_{s=0} \sigma(s) = w; \\
+T(0,b) &= \frac{d}{dt}\Big|_{t=b} \gamma_v(t) = \gamma_v'(b) = \partial_r|_q.
+\end{align*}
+
+Therefore $\langle S,T\rangle$ is zero when $(s,t) = (0,0)$ and equal to $\langle w, \partial_r|_q \rangle$ when $(s,t) = (0,b)$, so to prove the theorem it suffices to show that $\langle S,T\rangle$ is independent of $t$. We compute
+\begin{align}
+\frac{\partial}{\partial t}\langle S,T\rangle &= \langle D_t S, T\rangle + \langle S, D_t T\rangle \quad \text{(compatibility with the metric)} \notag\\
+&= \langle D_s T, T\rangle + \langle S, D_t T\rangle \quad \text{(symmetry lemma)} \notag\\
+&= \langle D_s T, T\rangle + 0 \quad \text{(each $\Gamma_s$ is a geodesic)} \tag{6.7} \\
+&= \frac{1}{2}\frac{\partial}{\partial s}|T|^2 = 0 \quad (|T| = |\Gamma_s'| \equiv 1 \text{ for all } (s,t)). \notag
+\end{align}
+This proves the theorem. $\square$
+\end{proof}
+
+We will use the Gauss lemma primarily in the form of the next corollary.
+
+% [FIGURE 6.8: Geodesic ball showing radial geodesic and comparison curve intersecting geodesic sphere]
+
+\begin{corollary}
+\label{cor:gradient-radial-distance}
+\dcref{ch6:6.10}
+\uses{prob:gradient-characterization}
+
+Let $U$ be a geodesic ball centered at $p \in M$, and let $r$ and $\partial_r$ be the radial distance and radial vector field as defined by (6.4) and (6.5). Then $\operatorname{grad} r = \partial_r$ on $U \setminus \{p\}$.
+\end{corollary}
+
+\begin{proof}
+By the result of Problem 2-10, it suffices to show that $\partial_r$ is orthogonal to the level sets of $r$ and $\partial_r(r) \equiv |\partial_r|_g^2$. The first claim follows directly from the Gauss lemma, and the second from the fact that $\partial_r(r) \equiv 1$ by direct computation in normal coordinates, which in turn is equal to $|\partial_r|_g^2$ by the Gauss lemma. $\square$
+\end{proof}
+
+Here is the payoff: our first step toward proving that geodesics are locally minimizing. Note that this is not yet the full strength of the theorem we are aiming for, because it shows only that for each point on a geodesic, sufficiently small segments of the geodesic \emph{starting at that point} are minimizing. We will remove this restriction after a little more work below.
+
+\begin{proposition}
+\label{prop:radial-geodesic-unique-minimizer}
+\dcref{ch6:6.11}
+\lean{LeeLib.Ch06.radialGeodesicUniqueMinimizer}
+\leanok
+
+Let $(M, g)$ be a Riemannian manifold. Suppose $p \in M$ and $q$ is contained in a geodesic ball around $p$. Then (up to reparametrization) the radial geodesic from $p$ to $q$ is the unique minimizing curve in $M$ from $p$ to $q$.
+\end{proposition}
+
+\begin{proof}
+Choose $\varepsilon > 0$ such that $\exp_p(B_\varepsilon(0))$ is a geodesic ball containing $q$. Let $\gamma: [0, c] \to M$ be the radial geodesic from $p$ to $q$ parametrized by arc length, and write $\gamma(t) = \exp_p(tv)$ for some unit vector $v \in T_p M$. Then $L_g(\gamma) = c$, since $\gamma$ has unit speed.
+
+To show that $\gamma$ is minimizing, we need to show that every other admissible curve from $p$ to $q$ has length at least $c$. Let $\sigma: [0, b] \to M$ be an arbitrary admissible curve from $p$ to $q$, which we may assume to be parametrized by arc length as well. Let $a_0 \in [0, b]$ denote the last time that $\sigma(t) = p$, and $b_0 \in [0, b]$ the first time after $a_0$ that $\sigma(t)$ meets the geodesic sphere $\Sigma_c$ of radius $c$ around $p$. Then the composite function $r \circ \sigma$ is continuous on $[a_0, b_0]$ and piecewise smooth on $(a_0, b_0)$, so we can apply the fundamental theorem of calculus to conclude that
+\begin{align}
+r(\sigma(b_0)) - r(\sigma(a_0)) &= \int_{a_0}^{b_0} \frac{d}{dt} r(\sigma(t)) \, dt \notag\\
+&= \int_{a_0}^{b_0} dr(\sigma'(t)) \, dt \notag\\
+&= \int_{a_0}^{b_0} \langle \operatorname{grad} r|_{\sigma(t)}, \sigma'(t) \rangle \, dt \tag{6.8}\\
+&\le \int_{a_0}^{b_0} |\operatorname{grad} r|_{\sigma(t)}| \cdot |\sigma'(t)| \, dt \notag\\
+&= \int_{a_0}^{b_0} |\sigma'(t)| \, dt \notag\\
+&= L_g(\sigma|_{[a_0,b_0]}) \le L_g(\sigma). \notag
+\end{align}
+
+Thus $L_g(\sigma) \ge r(\sigma(b_0)) - r(\sigma(a_0)) = c$, so $\gamma$ is minimizing.
+
+Now suppose $L_g(\sigma) = c$. Then $b = c$, and both inequalities in (6.8) are equalities. Because we assume that $\sigma$ is a unit-speed curve, the second of these equalities implies that $a_0 = 0$ and $b_0 = b = c$, since otherwise the segments of $\sigma$ before $t = a_0$ and after $t = b_0$ would contribute positive lengths. The first equality then implies that the nonnegative expression $|\operatorname{grad} r|_{\sigma(t)}| \, |\sigma'(t)| - \langle \operatorname{grad} r|_{\sigma(t)}, \sigma'(t) \rangle$ is identically zero on $[0, b]$, which is possible only if $\sigma'(t)$ is a positive multiple of $\operatorname{grad} r|_{\sigma(t)}$ for each $t$. Since we assume that $\sigma$ has unit speed, we must have $\sigma'(t) = \operatorname{grad} r|_{\sigma(t)} = \partial_r|_{\sigma(t)}$. Thus $\sigma$ and $\gamma$ are both integral curves of $\partial_r$ passing through $q$ at time $t = c$, so $\sigma = \gamma$. $\square$
+\end{proof}
+
+The next two corollaries show how radial distance functions, balls, and spheres in normal coordinates are related to their global metric counterparts.
+
+\begin{corollary}
+\label{cor:radial-distance-riemannian-distance}
+\dcref{ch6:6.12}
+\lean{LeeLib.Ch06.radialDistance_eq_riemannianDistance}
+\leanok
+\uses{prop:radial-geodesic-unique-minimizer}
+
+Let $(M, g)$ be a connected Riemannian manifold and $p \in M$. Within every open or closed geodesic ball around $p$, the radial distance function $r(x)$ defined by (6.4) is equal to the Riemannian distance from $p$ to $x$ in $M$.
+\end{corollary}
+
+\begin{proof}
+Since every closed geodesic ball is contained in an open geodesic ball of larger radius, we need only consider the open case. If $x$ is in the open geodesic ball $\exp_p(B_c(0))$, the radial geodesic $\gamma$ from $p$ to $x$ is minimizing by Proposition~\ref{prop:radial-geodesic-unique-minimizer}. Since its velocity is equal to $\partial_r$, which is a unit vector in both the $g$-norm and the Euclidean norm in normal coordinates, the $g$-length of $\gamma$ is equal to its Euclidean length, which is $r(x)$. $\square$
+\end{proof}
+
+\begin{corollary}
+\label{cor:geodesic-ball-metric-ball}
+\dcref{ch6:6.13}
+\lean{LeeLib.Ch06.geodesicBall_eq_metricBall}
+\leanok
+\uses{cor:radial-distance-riemannian-distance}
+
+In a connected Riemannian manifold, every open or closed geodesic ball is also an open or closed metric ball of the same radius, and every geodesic sphere is a metric sphere of the same radius.
+\end{corollary}
+
+\begin{proof}
+Let $(M, g)$ be a Riemannian manifold, and let $p \in M$ be arbitrary. First, let $V = \exp_p(\bar{B}_c(0)) \subseteq M$ be a closed geodesic ball of radius $c > 0$ around $p$. Suppose $q$ is an arbitrary point of $M$. If $q \in V$, then Corollary~\ref{cor:radial-distance-riemannian-distance} shows that $q$ is also in the closed metric ball of radius $c$. Conversely, suppose $q \notin V$. Let $S$ be the geodesic sphere $\exp_p(\partial B_c(0))$. The complement of $S$ is the disjoint union of the open sets $\exp_p(B_c(0))$ and $M \setminus \exp_p(\bar{B}_c(0))$, and hence disconnected. Thus if $\gamma : [a,b] \to M$ is any admissible curve from $p$ to $q$, there must be a time $t_0 \in (a,b)$ when $\gamma(t_0) \in S$, and then Corollary~\ref{cor:radial-distance-riemannian-distance} shows that the length of $\gamma|_{[a,t_0]}$ must be at least $c$. Since $\gamma|_{[t_0,b]}$ must have positive length, it follows that $d_g(p,q) > c$, so $q$ is not in the closed metric ball of radius $c$ around $p$.
+
+Next, let $W = \exp_p(B_c(0))$ be an open geodesic ball of radius $c$. Since $W$ is the union of all closed geodesic balls around $p$ of radius less than $c$, and the open metric ball of radius $c$ is similarly the union of all closed metric balls of smaller radii, the result of the preceding paragraph shows that $W$ is equal to the open metric ball of radius $c$.
+
+Finally, if $S = \exp_p(\partial B_c(0))$ is a geodesic sphere of radius $c$, the arguments above show that $S$ is equal to the closed metric ball of radius $c$ minus the open metric ball of radius $c$, which is exactly the metric sphere of radius $c$. $\square$
+\end{proof}
+
+The last corollary suggests a simplified notation for geodesic balls and spheres in $M$. From now on, we will use the notations $B_c(p) = \exp_p(B_c(0))$, $\bar{B}_c(p) = \exp_p(\bar{B}_c(0))$, and $S_c(p) = \exp_p(\partial B_c(0))$ for open and closed geodesic balls and geodesic spheres, which we now know are also open and closed metric balls and spheres. (To avoid confusion, we refrain from using this notation for other metric balls and spheres unless explicitly stated.)
+
+\section{Uniformly Normal Neighborhoods}
+
+We continue to let $(M,g)$ be a Riemannian manifold. In order to prove that geodesics in $M$ are locally minimizing, we need the following refinement of the concept of normal neighborhoods. A subset $W \subset M$ is called uniformly normal if there exists some $\delta > 0$ such that $W$ is contained in a geodesic ball of radius $\delta$ around each of its points (Fig.\ 6.9). If $\delta$ is any such constant, we will also say that $W$ is uniformly $\delta$-normal. Clearly every subset of a uniformly $\delta$-normal set is itself uniformly $\delta$-normal.
+
+\begin{lemma}[Uniformly Normal Neighborhood Lemma]
+\label{lem:uniformly-normal-neighborhood}
+\dcref{ch6:6.14}
+\uses{cor:geodesic-ball-metric-ball}
+
+Given $p \in M$ and any neighborhood $U$ of $p$, there exists a uniformly normal neighborhood of $p$ contained in $U$.
+\end{lemma}
+
+\begin{proof}
+Choose a normal coordinate chart $(U_0, (x^i))$ centered at $p$ and contained in $U$, and let $(x^i, v^i)$ be the corresponding natural coordinates for $\pi^{-1}(U_0) \subseteq TM$. Because this is a local question, we might as well identify $U_0$ with an open subset of $\mathbb{R}^n$, and identify $TM$ with $U_0 \times \mathbb{R}^n$. The exponential map for the Riemannian manifold $(U_0,g)$ is defined on an open subset $\mathcal{E} \subseteq U_0 \times \mathbb{R}^n$. Consider the map $E : \mathcal{E} \to U_0 \times U_0$ defined by
+\[
+E(x,v) = (x,\exp_x v).
+\]
+
+The differential of $E$ at $(p,0)$ is represented by the matrix
+\[
+dE_{(p,0)} = \begin{pmatrix}
+\dfrac{\partial x^i}{\partial x^j} & \dfrac{\partial x^i}{\partial v^j} \\
+\dfrac{\partial \exp^i}{\partial x^j} & \dfrac{\partial \exp^i}{\partial v^j}
+\end{pmatrix} = \begin{pmatrix}
+\text{Id} & 0 \\
+* & \text{Id}
+\end{pmatrix},
+\]
+which is invertible. By the inverse function theorem, therefore, there are neighborhoods $\mathcal{U} \subseteq U_0 \times \mathbb{R}^n$ of $(p,0)$ and $\mathcal{V} \subseteq U_0 \times U_0$ of $(p,p)$ such that $E$ restricts to a diffeomorphism from $\mathcal{U}$ to $\mathcal{V}$. Shrinking both neighborhoods if necessary, we may assume that $\mathcal{U}$ is a product set of the form $W \times B_\varepsilon(0)$, where $W$ is a neighborhood of $p$ and $B_\varepsilon(0)$ is a Euclidean ball in $v$-coordinates. It follows that for each $x \in W$, $\exp_x$ maps $B_\varepsilon(0)$ smoothly onto the open set $V_x = \{y : (x,y) \in \mathcal{V}\}$, and it is a diffeomorphism because its inverse is given explicitly by $\exp_x^{-1}(y) = \pi_2 \circ E^{-1}(x,y)$, where $\pi_2 : U_0 \times \mathbb{R}^n \to \mathbb{R}^n$ is the projection. Shrinking $W$ still further if necessary, we may assume that the metric $g$ satisfies an estimate of the form (2.21) for all $x \in W$. This means that for each $x \in W$, the coordinate ball $B_\varepsilon(0) \subseteq T_x M$ contains a $g_x$-ball of radius at least $\varepsilon/c$. Put $\delta = \varepsilon/c$; we have shown that for each $x \in W$, there is a $g$-geodesic ball of radius $\delta$ in $M$ centered at $x$.
+
+% [FIGURE 6.9: Uniformly normal neighborhood - shows concentric spheres/balls in Euclidean space with points p, q and region W labeled, with  \delta  marking distances]
+
+Now, shrinking $W$ once more, we may assume that its diameter (with respect to the metric $d_g$) is less than $\delta$. It follows that for each $x \in W$, the entire set $W$ is contained in the metric ball of radius $\delta$ around $x$, and Corollary~\ref{cor:geodesic-ball-metric-ball} shows that this metric ball is also a geodesic ball of radius $\delta$. Thus $W$ is the required uniformly normal neighborhood of $p$. $\square$
+\end{proof}
+
+We are now ready to prove the main result of this section.
+
+% [FIGURE 6.10: Diagram showing a curve  \gamma  with marked points  \gamma (a),  \gamma (b),  \gamma (t₀) contained within a geodesic ball W, with parameter interval I₀ marked on a horizontal axis showing points a, b, t₀]
+
+\begin{theorem}[Every Riemannian geodesic is locally minimizing]
+\label{thm:locally-minimizing-geodesics}
+\dcref{ch6:6.15}
+\uses{prop:radial-geodesic-unique-minimizer,lem:uniformly-normal-neighborhood}
+
+Let $(M, g)$ be a Riemannian manifold. Suppose $\gamma: I \to M$ is a geodesic, which we may assume to be defined on an open interval, and let $t_0 \in I$.
+\end{theorem}
+
+\begin{proof}
+Let $W$ be a uniformly normal neighborhood of $\gamma(t_0)$, and let $I_0 \subseteq I$ be the connected component of $\gamma^{-1}(W)$ containing $t_0$. If $a, b \in I_0$ with $a < b$, then the definition of uniformly normal neighborhood implies that $\gamma(b)$ is contained in a geodesic ball centered at $\gamma(a)$. Therefore, by Proposition~\ref{prop:radial-geodesic-unique-minimizer}, the radial geodesic segment from $\gamma(a)$ to $\gamma(b)$ is the unique minimizing curve segment between these points. However, the restriction of $\gamma$ to $[a,b]$ is also a geodesic segment from $\gamma(a)$ to $\gamma(b)$ lying in the same geodesic ball, and thus $\gamma|_{[a,b]}$ must coincide with this minimizing geodesic. $\square$
+\end{proof}
+
+It is interesting to note that the Gauss lemma and the uniformly normal neighborhood lemma also yield another proof that minimizing curves are geodesics, without using the first variation formula. On the principle that knowing more than one proof of an important fact always deepens our understanding of it, we present this proof for good measure.
+
+\begin{proof}[Another proof of Theorem~\ref{thm:minimizing-geodesic-unit-speed}]
+Suppose $\gamma: [a,b] \to M$ is a minimizing admissible curve. Just as in the preceding proof, for every $t_0 \in [a,b]$ we can find a connected neighborhood $I_0$ of $t_0$ such that $\gamma(I_0)$ is contained in a uniformly normal neighborhood $W$. Then for every $a_0, b_0 \in I_0$, the same argument as above shows that the unique minimizing curve segment from $\gamma(a_0)$ to $\gamma(b_0)$ is a radial geodesic. Since the restriction of $\gamma$ to $[a_0, b_0]$ is such a minimizing curve segment, it must coincide with this radial geodesic. Therefore $\gamma$ solves the geodesic equation in a neighborhood of $t_0$. Since $t_0$ was arbitrary, $\gamma$ is a geodesic. $\square$
+\end{proof}
+
+Given a Riemannian manifold $(M, g)$ (without boundary), for each point $p \in M$ we define the \emph{injectivity radius of $M$ at $p$}, denoted by $\operatorname{inj}(p)$, to be the supremum of all $a > 0$ such that $\exp_p$ is a diffeomorphism from $B_a(0) \subseteq T_p M$ onto its image. If there is no upper bound to the radii of such balls (as is the case, for example, on $\mathbb{R}^n$), then we set $\operatorname{inj}(p) = \infty$. Then we define the \emph{injectivity radius} of $M$, denoted by $\operatorname{inj}(M)$, to be the infimum of $\operatorname{inj}(p)$ as $p$ ranges over points of $M$. It can be zero, positive, or infinite. (The terminology is explained by Problem 10-24.)
+
+\begin{lemma}
+\label{lem:compact-injectivity-radius-positive}
+\dcref{ch6:6.16}
+\uses{lem:uniformly-normal-neighborhood}
+
+If $(M, g)$ is a compact Riemannian manifold, then $\operatorname{inj}(M)$ is positive.
+\end{lemma}
+
+\begin{proof}
+For each $x \in M$, there is a positive number $\delta(x)$ such that $x$ is contained in a uniformly $\delta(x)$-normal neighborhood $W_x$, and $\operatorname{inj}(x') \geq \delta(x)$ for each $x' \in W_x$. Since $M$ is compact, it is covered by finitely many such neighborhoods $W_{x_1}, \ldots, W_{x_k}$. Therefore, $\operatorname{inj}(M)$ is at least equal to the minimum of $\delta(x_1), \ldots, \delta(x_k)$. It cannot be infinite, because a compact metric space is bounded, and a geodesic ball of radius $c$ contains points whose distances from the center are arbitrarily close to $c$. $\square$
+\end{proof}
+
+In addition to uniformly normal neighborhoods, there is another, more specialized, kind of normal neighborhood that is frequently useful. Let $(M, g)$ be a Riemannian manifold. A subset $U \subseteq M$ is said to be \emph{geodesically convex} if for each $p, q \in U$, there is a unique minimizing geodesic segment from $p$ to $q$ in $M$, and the image of this geodesic segment lies entirely in $U$.
+
+The next theorem says that every sufficiently small geodesic ball is geodesically convex.
+
+\begin{theorem}
+\label{thm:small-geodesic-ball-convex}
+\dcref{ch6:6.17}
+Let $(M, g)$ be a Riemannian manifold. For each $p \in M$, there exists $\varepsilon_0 > 0$ such that every geodesic ball centered at $p$ of radius less than or equal to $\varepsilon_0$ is geodesically convex.
+\end{theorem}
+
+\begin{proof}
+Problem 6-5. $\square$
+\end{proof}
+
+\section{Completeness}
+
+Suppose $(M, g)$ is a connected Riemannian manifold. Now that we can view $M$ as a metric space, it is time to address one of the most important questions one can ask about a metric space: Is it complete? In general, the answer is no: for example, if $M$ is an open ball in $\mathbb{R}^n$ with its Euclidean metric, then every sequence in $M$ that converges in $\mathbb{R}^n$ to a point in $\partial M$ is Cauchy, but not convergent in $M$.
+
+In Chapter 5, we introduced another notion of completeness for Riemannian and pseudo-Riemannian manifolds: recall that such a manifold is said to be \emph{geodesically complete} if every maximal geodesic is defined for all $t \in \mathbb{R}$. For clarity, we will use the phrase \emph{metrically complete} for a connected Riemannian manifold that is complete as a metric space with the Riemannian distance function, in the sense that every Cauchy sequence converges.
+
+The Hopf--Rinow theorem, which we will state and prove below, shows that these two notions of completeness are equivalent for connected Riemannian manifolds. Before we prove it, let us establish a preliminary result, which will have other important consequences besides the Hopf--Rinow theorem itself.
+
+% [FIGURE 6.11: Circle with points p, x, y on radial lines from center, and point q to the right with curves labeled  \sigma ₁ and  \sigma ₂ showing geodesic path construction]
+
+\begin{lemma}
+\label{lem:exponential-map-implies-completeness}
+\dcref{ch6:6.18}
+\lean{LeeLib.Ch06.exponentialMapDefined_implies_completeness}
+\leanok
+
+Suppose $(M,g)$ is a connected Riemannian manifold, and there is a point $p \in M$ such that $\exp_p$ is defined on the whole tangent space $T_p M$.
+\begin{enumerate}
+\item[(a)] Given any other $q \in M$, there is a minimizing geodesic segment from $p$ to $q$.
+\item[(b)] $M$ is metrically complete.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+\leanok
+Let $q \in M$ be arbitrary. If $\gamma: [a,b] \to M$ is a geodesic segment starting at $p$, let us say that $\gamma$ \emph{aims at $q$} if $\gamma$ is minimizing and
+\begin{equation}
+d_g(p,q) = d_g(p,\gamma(b)) + d_g(\gamma(b),q). \tag{6.9}
+\end{equation}
+
+(This would be the case, for example, if $\gamma$ were an initial segment of a minimizing geodesic from $p$ to $q$; but we are not assuming that.) To prove (a), it suffices to show that there is a geodesic segment $\gamma: [a,b] \to M$ that begins at $p$, aims at $q$, and has length equal to $d_g(p,q)$, for then the fact that $\gamma$ is minimizing means that $d_g(p,\gamma(b)) = L_g(\gamma) = d_g(p,q)$, and (6.9) becomes
+\[
+d_g(p,q) = d_g(p,q) + d_g(\gamma(b),q),
+\]
+which implies $\gamma(b) = q$. Since $\gamma$ is a segment from $p$ to $q$ of length $d_g(p,q)$, it is the desired minimizing geodesic segment.
+
+Choose $\varepsilon > 0$ such that there is a closed geodesic ball $\bar{B}_\varepsilon(p)$ around $p$ that does not contain $q$. Since the distance function on a metric space is continuous, there is a point $x$ in the geodesic sphere $S_\varepsilon(p)$ where $d_g(x,q)$ attains its minimum on the set $S_\varepsilon(p)$. Let $\gamma$ be the maximal unit-speed geodesic whose restriction to $[0,\varepsilon]$ is the radial geodesic segment from $p$ to $x$; by assumption, $\gamma$ is defined for all $t \in \mathbb{R}$.
+
+We begin by showing that $\gamma|_{[0,\varepsilon]}$ aims at $q$. Since it is minimizing by Proposition~\ref{prop:radial-geodesic-unique-minimizer} (noting that every closed geodesic ball is contained in a larger open one), we need only show that (6.9) holds with $b = \varepsilon$, or
+\begin{equation}
+d_g(p,q) = d_g(p,x) + d_g(x,q). \tag{6.10}
+\end{equation}
+
+To this end, let $\sigma: [a_0, b_0] \to M$ be any admissible curve from $p$ to $q$. Let $t_0$ be the first time $\sigma$ hits $S_\varepsilon(p)$, and let $\sigma_1$ and $\sigma_2$ denote the restrictions of $\sigma$ to $[a_0,t_0]$ and $[t_0, b_0]$, respectively. Since every point in $S_\varepsilon(p)$ is at a distance $\varepsilon$ from $p$, we have $L_g(\sigma_1) \geq d_g(p, \sigma(t_0)) = d_g(p, x)$; and by our choice of $x$ we have $L_g(\sigma_2) \geq d_g(\sigma(t_0), q) \geq d_g(x, q)$. Putting these two inequalities together yields
+\[
+L_g(\sigma) = L_g(\sigma_1) + L_g(\sigma_2) \geq d_g(p, x) + d_g(x, q).
+\]
+
+Taking the infimum over all such $\sigma$, we find that $d_g(p, q) \geq d_g(p, x) + d_g(x, q)$. The opposite inequality is just the triangle inequality, so (6.10) holds.
+
+Now let $T = d_g(p, q)$ and
+\[
+\mathcal{A} = \{b \in [0, T] : \gamma|_{[0,b]} \text{ aims at } q\}.
+\]
+
+We have just shown that $\varepsilon \in \mathcal{A}$. Let $A = \sup \mathcal{A} \geq \varepsilon$. By continuity of the distance function, it is easy to see that $\mathcal{A}$ is closed in $[0, T]$, and therefore $A \in \mathcal{A}$. If $A = T$, then $\gamma|_{[0,T]}$ is a geodesic of length $T = d_g(p, q)$ that aims at $q$, and by the remark above we are done. So we assume $A < T$ and derive a contradiction.
+
+% [FIGURE 6.12: Two circles with geodesic paths showing points p, x =  \gamma ( \varepsilon ) on the left circle, and y =  \gamma (A),  \gamma (T), z, and q on the right circle, with radial geodesic  \tau  and distance  \delta  marked]
+
+Let $y = \gamma(A)$ and choose $\delta > 0$ such that there is a closed geodesic ball $\bar{B}_\delta(y)$ around $y$, small enough that it does not contain $q$. The fact that $A \in \mathcal{A}$ means that
+\[
+d_g(y, q) = d_g(p, q) - d_g(p, y) = T - A.
+\]
+
+Let $z \in S_\delta(y)$ be a point where $d_g(z, q)$ attains its minimum, and let $\tau : [0, \delta] \to M$ be the unit-speed radial geodesic from $y$ to $z$. By exactly the same argument as before, $\tau$ aims at $q$, so
+\begin{equation}
+d_g(z, q) = d_g(y, q) - d_g(y, z) = (T - A) - \delta. \tag{6.11}
+\end{equation}
+
+By the triangle inequality and (6.11),
+\[
+d_g(p, z) \geq d_g(p, q) - d_g(z, q) = T - (T - A - \delta) = A + \delta.
+\]
+
+Therefore, the admissible curve consisting of $\gamma|_{[0,A]}$ (of length $A$) followed by $\tau$ (of length $\delta$) is a minimizing curve from $p$ to $z$. This means that it has no corners, so $z$ must lie on $\gamma$, and in fact, $z = \gamma(A + \delta)$. But then (6.11) says that
+\[
+d_g(p, q) = T = (A + \delta) + d_g(z, q) = d_g(p, z) + d_g(z, q),
+\]
+so $\gamma|_{[0,A+\delta]}$ aims at $q$ and $A + \delta \in \mathcal{A}$, which is a contradiction. This completes the proof of (a).
+
+% [FIGURE 6.13: Cauchy sequences converge - diagram showing tangent space vectors mapping via exponential map to geodesics converging to a point]
+
+To prove (b), we need to show that every Cauchy sequence in $M$ converges. Let $(q_i)$ be a Cauchy sequence in $M$. For each $i$, let $\gamma_i(t) = \exp_p(tv_i)$ be a unit-speed minimizing geodesic from $p$ to $q_i$, and let $d_i = d_g(p, q_i)$, so that $q_i = \exp_p(d_i v_i)$. The sequence $(d_i)$ is bounded in $\mathbb{R}$ (because Cauchy sequences in a metric space are bounded), and the sequence $(v_i)$ consists of unit vectors in $T_p M$, so the sequence of vectors $(d_i v_i)$ in $T_p M$ is bounded. Therefore a subsequence $(d_{i_k} v_{i_k})$ converges to some $v \in T_p M$. By continuity of the exponential map, $q_{i_k} = \exp_p(d_{i_k} v_{i_k}) \to \exp_p v$, and since the original sequence $(q_i)$ is Cauchy, it converges to the same limit. $\square$
+\end{proof}
+
+The next theorem is the main result of this section.
+
+\begin{theorem}[Hopf--Rinow]
+\label{thm:hopf-rinow}
+\dcref{ch6:6.19}
+\lean{LeeLib.Ch06.hopfRinow}
+\leanok
+
+A connected Riemannian manifold is metrically complete if and only if it is geodesically complete.
+\end{theorem}
+
+\begin{proof}
+\uses{lem:exponential-map-implies-completeness}
+\leanok
+Let $(M, g)$ be a connected Riemannian manifold. Suppose first that $M$ is geodesically complete. Then in particular, it satisfies the hypothesis of Lemma~\ref{lem:exponential-map-implies-completeness}, so it is metrically complete.
+
+Conversely, suppose $M$ is metrically complete, and assume for the sake of contradiction that it is not geodesically complete. Then there is some unit-speed geodesic $\gamma : [0, b) \to M$ that has no extension to a geodesic on any interval $[0, b')$ for $b' > b$. Let $(t_i)$ be any increasing sequence in $[0, b)$ that approaches $b$, and set $q_i = \gamma(t_i)$. Since $\gamma$ is parametrized by arc length, the length of $\gamma|_{[t_i,t_j]}$ is exactly $|t_j - t_i|$, so $d_g(q_i, q_j) \leq |t_j - t_i|$ and $(q_i)$ is a Cauchy sequence in $M$. By completeness, $(q_i)$ converges to some point $q \in M$.
+
+% [FIGURE 6.14:  \gamma  extends past q]
+
+Let $W$ be a uniformly $\delta$-normal neighborhood of $q$ for some $\delta > 0$. Choose $j$ large enough that $t_j > b - \delta$ and $q_j \in W$. The fact that $B_\delta(q_j)$ is a geodesic ball means that every unit-speed geodesic starting at $q_j$ exists at least for $t \in [0, \delta)$. In particular, this is true of the geodesic $\sigma$ with $\sigma(0) = q_j$ and $\sigma'(0) = \gamma'(t_j)$. Define $\tilde{\gamma} : [0, t_j + \delta) \to M$ by
+\[
+\tilde{\gamma}(t) = \begin{cases} \gamma(t), & t \in [0, b), \\ \sigma(t - t_j), & t \in (t_j - \delta, t_j + \delta). \end{cases}
+\]
+
+Note that both expressions on the right-hand side are geodesics, and they have the same position and velocity when $t = t_j$. Therefore, by uniqueness of geodesics, the two definitions agree where they overlap. Since $t_j + \delta > b$, $\tilde{\gamma}$ is an extension of $\gamma$ past $b$, which is a contradiction. $\square$
+\end{proof}
+
+A connected Riemannian manifold is simply said to be \emph{complete} if it is either geodesically complete or metrically complete; the Hopf--Rinow theorem then implies that it is both. For disconnected manifolds, we interpret ``complete'' to mean geodesically complete, which is equivalent to the requirement that each component be a complete metric space. As mentioned in the previous chapter, complete manifolds are the natural setting for global questions in Riemannian geometry.
+
+We conclude this section by stating three important corollaries, whose proofs are easy applications of Lemma~\ref{lem:exponential-map-implies-completeness} and the Hopf--Rinow theorem.
+
+\begin{corollary}
+\label{cor:exponential-map-defined-implies-complete}
+\dcref{ch6:6.20}
+\lean{LeeLib.Ch06.exponentialMapDefined_implies_complete}
+\leanok
+\uses{lem:exponential-map-implies-completeness,thm:hopf-rinow}
+
+If $M$ is a connected Riemannian manifold and there exists a point $p \in M$ such that the restricted exponential map $\exp_p$ is defined on all of $T_p M$, then $M$ is complete.
+\end{corollary}
+
+\begin{corollary}
+\label{cor:complete-implies-minimizing-geodesics}
+\dcref{ch6:6.21}
+\uses{thm:hopf-rinow,lem:exponential-map-implies-completeness}
+
+If $M$ is a complete, connected Riemannian manifold, then any two points in $M$ can be joined by a minimizing geodesic segment.
+\end{corollary}
+
+\begin{corollary}
+\label{cor:compact-implies-maximal-geodesics-defined}
+\dcref{ch6:6.22}
+\uses{thm:hopf-rinow}
+
+If $M$ is a compact Riemannian manifold, then every maximal geodesic in $M$ is defined for all time.
+\end{corollary}
+
+The Hopf--Rinow theorem and Corollary~\ref{cor:exponential-map-defined-implies-complete} are key ingredients in the following theorem about Riemannian covering maps. This theorem will play a key role in the proofs of some of the local-to-global theorems in Chapter 12.
+
+% [FIGURE 6.15: Lifting geodesics under covering map \pi: \tilde{M} \to M]
+
+\begin{theorem}
+\label{thm:completeness-of-covering-map}
+\dcref{ch6:6.23}
+\lean{LeeLib.Ch06.completeLocalIsometry}
+\leanok
+\uses{prop:lifting-properties-covering,cor:exponential-map-defined-implies-complete,cor:geodesic-ball-metric-ball}
+
+Suppose $(\tilde{M}, \tilde{g})$ and $(M, g)$ are connected Riemannian manifolds with $\tilde{M}$ complete, and $\pi: \tilde{M} \to M$ is a local isometry. Then $M$ is complete and $\pi$ is a Riemannian covering map.
+\end{theorem}
+
+\begin{proof}
+A fundamental property of covering maps is the \emph{path-lifting property} (Prop. A.54(b)): if $\pi$ is a covering map, then every continuous path $\gamma: I \to M$ lifts to a path $\tilde{\gamma}$ in $\tilde{M}$ such that $\pi \circ \tilde{\gamma} = \gamma$. We begin by proving that $\pi$ possesses the path-lifting property for geodesics: if $p \in M$ is a point in the image of $\pi$, $\gamma: I \to M$ is any geodesic starting at $p$, and $\tilde{p}$ is any point in $\pi^{-1}(p)$, then $\gamma$ has a unique lift starting at $\tilde{p}$. The lifted curve is necessarily also a geodesic because $\pi$ is a local isometry.
+
+To prove the path-lifting property for geodesics, suppose $p \in \pi(\tilde{M})$ and $\tilde{p} \in \pi^{-1}(p)$, and let $\gamma: I \to M$ be any geodesic with $p = \gamma(0)$. Let $v = \gamma'(0)$ and $\tilde{v} = (d\pi_{\tilde{p}})^{-1}(v) \in T_{\tilde{p}}\tilde{M}$ (which is well defined because $d\pi_{\tilde{p}}$ is an isomorphism), and let $\tilde{\gamma}$ be the geodesic in $\tilde{M}$ with initial point $\tilde{p}$ and initial velocity $\tilde{v}$. Because $\tilde{M}$ is complete, $\tilde{\gamma}$ is defined on all of $\mathbb{R}$. Since $\pi$ is a local isometry, it takes geodesics to geodesics; and since by construction $\pi(\tilde{\gamma}(0)) = \gamma(0)$ and $d\pi_{\tilde{p}}(\tilde{\gamma}'(0)) = \gamma'(0)$, we must have $\pi \circ \tilde{\gamma} = \gamma$ on $I$, so $\tilde{\gamma}|_I$ is a lift of $\gamma$ starting at $\tilde{p}$.
+
+To show that $M$ is complete, let $p$ be any point in the image of $\pi$. If $\gamma : I \to M$ is any geodesic starting at $p$, then $\gamma$ has a lift $\tilde{\gamma} : I \to \tilde{M}$. Because $\tilde{M}$ is complete, $\pi \circ \tilde{\gamma}$ is a geodesic defined for all $t$ that coincides with $\gamma$ on $I$, so $\gamma$ extends to all of $\mathbb{R}$. Thus $M$ is complete by Corollary~\ref{cor:exponential-map-defined-implies-complete}.
+
+Next we show that $\pi$ is surjective. Choose some point $\tilde{p} \in \tilde{M}$, write $p = \pi(\tilde{p})$, and let $q \in M$ be arbitrary. Because $M$ is connected and complete, there is a minimizing unit-speed geodesic segment $\gamma$ from $p$ to $q$. Letting $\tilde{\gamma}$ be the lift of $\gamma$ starting at $\tilde{p}$ and $r = d_{\tilde{g}}(p, q)$, we have $\pi(\tilde{\gamma}(r)) = \gamma(r) = q$, so $q$ is in the image of $\pi$.
+
+To show that $\pi$ is a smooth covering map, we need to show that every point of $M$ has a neighborhood $U$ that is evenly covered, which means that $\pi^{-1}(U)$ is a disjoint union of connected open sets $\tilde{U}_\alpha$ such that $\pi|_{\tilde{U}_\alpha} : \tilde{U}_\alpha \to U$ is a diffeomorphism. We will show, in fact, that every geodesic ball is evenly covered.
+
+Let $p \in M$, and let $U = B_\varepsilon(p)$ be a geodesic ball centered at $p$. Write $\pi^{-1}(p) = \{\tilde{p}_\alpha\}_{\alpha \in A}$, and for each $\alpha$ let $\tilde{U}_\alpha$ denote the metric ball of radius $\varepsilon$ around $\tilde{p}_\alpha$ (we are not claiming that $\tilde{U}_\alpha$ is a geodesic ball). The first step is to show that the various sets $\tilde{U}_\alpha$ are disjoint. For every $\alpha \neq \beta$, there is a minimizing geodesic segment $\tilde{\gamma}$ from $\tilde{p}_\alpha$ to $\tilde{p}_\beta$ because $\tilde{M}$ is complete. The projected curve $\gamma = \pi \circ \tilde{\gamma}$ is a geodesic segment that starts and ends at $p$ (Fig. 6.16), whose length is the same as that of $\tilde{\gamma}$. Such a geodesic must leave $U$ and reenter it (since all geodesics passing through $p$ lying in $U$ are radial line segments), and thus must have length at least $2\varepsilon$. This means that $d_{\tilde{g}}(\tilde{p}_\alpha, \tilde{p}_\beta) \geq 2\varepsilon$, and thus by the triangle inequality, $\tilde{U}_\alpha \cap \tilde{U}_\beta = \emptyset$.
+
+The next step is to show that $\pi^{-1}(U) = \bigcup_\alpha \tilde{U}_\alpha$. If $\tilde{q}$ is any point in $\tilde{U}_\alpha$, then there is a geodesic $\tilde{\gamma}$ of length less than $\varepsilon$ from $\tilde{p}_\alpha$ to $\tilde{q}$, and then $\pi \circ \tilde{\gamma}$ is a geodesic of the same length from $p$ to $\pi(\tilde{q})$, showing that $\pi(\tilde{q}) \in U$. It follows that $\bigcup_\alpha \tilde{U}_\alpha \subseteq \pi^{-1}(U)$.
+
+% [FIGURE 6.16: Lifting of a radial geodesic in the covering space]
+
+Conversely, suppose $\tilde{q} \in \pi^{-1}(U)$, and set $q = \pi(\tilde{q})$. This means that $q \in U$, so there is a minimizing radial geodesic $\gamma$ in $U$ from $q$ to $p$, and $r = d_g(q, p) < \varepsilon$. Let $\tilde{\gamma}$ be the lift of $\gamma$ starting at $\tilde{q}$. It follows that $\pi(\tilde{\gamma}(r)) = \gamma(r) = p$. Therefore $\tilde{\gamma}(r) = \tilde{p}_\alpha$ for some $\alpha$, and $d_{\tilde{g}}(\tilde{q}, \tilde{p}_\alpha) \le L_g(\tilde{\gamma}) = r < \varepsilon$, so $\tilde{q} \in \tilde{U}_\alpha$.
+
+It remains only to show that $\pi: \tilde{U}_\alpha \to U$ is a diffeomorphism for each $\alpha$. It is certainly a local diffeomorphism (because $\pi$ is). It is bijective because its inverse can be constructed explicitly: it is the map sending each radial geodesic starting at $p$ to its lift starting at $\tilde{p}_\alpha$. This completes the proof. $\square$
+\end{proof}
+
+\begin{corollary}
+\label{cor:complete-iff-covering-complete}
+\dcref{ch6:6.24}
+\uses{thm:completeness-of-covering-map}
+
+Suppose $\tilde{M}$ and $M$ are connected Riemannian manifolds, and $\pi: \tilde{M} \to M$ is a Riemannian covering map. Then $M$ is complete if and only if $\tilde{M}$ is complete.
+\end{corollary}
+
+\begin{proof}
+A Riemannian covering map is, in particular, a local isometry. Thus if $\tilde{M}$ is complete, $\pi$ satisfies the hypotheses of Theorem~\ref{thm:completeness-of-covering-map}, which implies that $M$ is also complete.
+
+Conversely, suppose $M$ is complete. Let $\tilde{p} \in \tilde{M}$ and $\tilde{v} \in T_{\tilde{p}}\tilde{M}$ be arbitrary, and let $p = \pi(\tilde{p})$ and $v = d\pi(\tilde{v})$. Completeness of $M$ implies that the geodesic $\gamma$ with $\gamma(0) = p$ and $\gamma'(0) = v$ is defined for all $t \in \mathbb{R}$, and then its lift $\tilde{\gamma}: \mathbb{R} \to \tilde{M}$ starting at $\tilde{p}$ is a geodesic in $\tilde{M}$ with initial velocity $\tilde{v}$, also defined for all $t$. $\square$
+\end{proof}
+
+Corollary~\ref{cor:complete-implies-minimizing-geodesics} to the Hopf--Rinow theorem shows that any two points in a complete, connected Riemannian manifold can be joined by a minimizing geodesic segment. The next proposition gives a refinement of that statement.
+
+\begin{proposition}
+\label{prop:path-homotopy-contains-minimizing-geodesic}
+\dcref{ch6:6.25}
+\uses{cor:complete-implies-minimizing-geodesics,prop:lifting-properties-covering}
+
+Suppose $(M, g)$ is a complete, connected Riemannian manifold, and $p, q \in M$. Every path-homotopy class of paths from $p$ to $q$ contains a geodesic segment $\gamma$ that minimizes length among all admissible curves in the same path-homotopy class.
+\end{proposition}
+
+\begin{proof}
+Let $\pi: \tilde{M} \to M$ be the universal covering manifold of $M$, endowed with the pullback metric $\tilde{g} = \pi^* g$. Given $p, q \in M$ and a path $\sigma: [0, 1] \to M$ from $p$ to $q$, choose a point $\tilde{p} \in \pi^{-1}(p)$, and let $\tilde{\sigma}: [0, 1] \to \tilde{M}$ be the lift of $\sigma$ starting at $\tilde{p}$, and set $\tilde{q} = \tilde{\sigma}(1)$. By Corollary~\ref{cor:complete-implies-minimizing-geodesics}, there is a minimizing $\tilde{g}$-geodesic segment $\tilde{\gamma}$ from $\tilde{p}$ to $\tilde{q}$, and because $\pi$ is a local isometry, $\gamma = \pi \circ \tilde{\gamma}$ is a geodesic in $M$ from $p$ to $q$. If $\gamma_1$ is any other admissible curve from $p$ to $q$ in the same path-homotopy class, then by the monodromy theorem (Prop. A.54(c)), its lift $\tilde{\gamma}_1$ starting at $\tilde{p}$ also ends at $\tilde{q}$. Thus $\tilde{\gamma}_1$ is no longer than $\tilde{\gamma}$, which implies $\gamma_1$ is no longer than $\gamma$. $\square$
+\end{proof}
+
+\section{Closed Geodesics}
+
+Suppose $(M, g)$ is a connected Riemannian manifold. A \emph{closed geodesic} in $M$ is a nonconstant geodesic segment $\gamma: [a, b] \to M$ such that $\gamma(a) = \gamma(b)$ and $\gamma'(a) = \gamma'(b)$.
+
+\begin{exercise}
+\label{exer:closed-geodesic-periodic-extension}
+\dcref{ch6:6.26}
+
+Show that a geodesic segment is closed if and only if it extends to a periodic geodesic defined on all of $\mathbb{R}$.
+\end{exercise}
+
+Round spheres have the remarkable property that all of their geodesics are closed when restricted to appropriate intervals. Of course, this is not typically the case, even for compact Riemannian manifolds; but it is natural to wonder whether closed geodesics exist in more general manifolds. Much work has been done in Riemannian geometry to determine how many closed geodesics exist in various situations. Here we can only touch on the simplest case; these results will be useful in some of the proofs of local-to-global theorems in Chapter 12.
+
+A continuous path $\sigma : [0,1] \to M$ is called a \emph{loop} if $\sigma(0) = \sigma(1)$. Two loops $\sigma_0, \sigma_1 : [0,1] \to M$ are said to be \emph{freely homotopic} if they are homotopic through closed paths (but not necessarily preserving the base point), that is, if there exists a homotopy $H : [0,1] \times [0,1] \to M$ satisfying
+\begin{align}
+H(s,0) = \sigma_0(s) \quad &\text{and} \quad H(s,1) = \sigma_1(s) \quad \text{for all } s \in [0,1], \notag\\
+H(0,t) &= H(1,t) \quad \text{for all } t \in [0,1]. \tag{6.12}
+\end{align}
+
+This is an equivalence relation on the set of all loops in $M$, and an equivalence class is called a \emph{free homotopy class}. The \emph{trivial free homotopy class} is the equivalence class of any constant path.
+
+\begin{exercise}
+\label{exer:trivial-free-homotopy-identity}
+\dcref{ch6:6.27}
+
+Given a connected manifold $M$ and a point $x \in M$, show that a loop based at $x$ represents the trivial free homotopy class if and only if it represents the identity element of $\pi_1(M, x)$.
+\end{exercise}
+
+The next proposition shows that closed geodesics are easy to find on compact Riemannian manifolds that are not simply connected.
+
+\begin{proposition}[Existence of Closed Geodesics]
+\label{prop:existence-closed-geodesics}
+\dcref{ch6:6.28}
+Suppose $(M, g)$ is a compact, connected Riemannian manifold. Every nontrivial free homotopy class in $M$ is represented by a closed geodesic that has minimum length among all admissible loops in the given free homotopy class.
+\end{proposition}
+
+\begin{proof}
+Problem 6-17. $\square$
+\end{proof}
+
+The previous proposition guarantees the existence of at least one closed geodesic on every non-simply-connected compact Riemannian manifold. In fact, it was proved in 1951 by the Russian mathematicians Lazar Lyusternik and Abram Fet that closed geodesics exist on \emph{every} compact Riemannian manifold, but the proof in the simply connected case is considerably harder. Proofs can be found in \cite{Jos17} and \cite{Kli95}.
+
+\section{Distance Functions}
+
+Suppose $(M, g)$ is a connected Riemannian manifold and $S \subseteq M$ is any subset. For each point $x \in M$, we define the \emph{distance from $x$ to $S$} to be
+\[
+d_g(x, S) = \inf\{d_g(x, p) : p \in S\}.
+\]
+
+\begin{lemma}
+\label{lem:distance-triangle-inequality-and-continuity}
+\dcref{ch6:6.29}
+
+Suppose $(M, g)$ is a connected Riemannian manifold and $S \subseteq M$ is any subset.
+\begin{enumerate}[label=(\alph*)]
+\item $d_g(x, S) \leq d_g(x, y) + d_g(y, S)$ for all $x, y \in M$.
+\item $x \mapsto d_g(x, S)$ is a continuous function on $M$.
+\end{enumerate}
+\end{lemma}
+
+\begin{exercise}
+\label{exer:prove-distance-lemma}
+\dcref{ch6:6.30}
+\uses{lem:distance-triangle-inequality-and-continuity}
+
+Prove the preceding lemma.
+\end{exercise}
+
+The simplest example of a distance function occurs when the set $S$ is just a singleton, $S = \{p\}$. Inside a geodesic ball around $p$, Corollary~\ref{cor:radial-distance-riemannian-distance} shows that $d_g(x, S) = r(x)$, the radial distance function, and Corollary~\ref{cor:gradient-radial-distance} shows that it has unit gradient where it is smooth (everywhere inside the geodesic ball except at $p$ itself). The next theorem is a far-reaching generalization of that result.
+
+\begin{theorem}
+\label{thm:distance-to-subset-unit-gradient}
+\dcref{ch6:6.31}
+\uses{lem:distance-triangle-inequality-and-continuity}
+
+Suppose $(M, g)$ is a connected Riemannian manifold, $S \subseteq M$ is arbitrary, and $f: M \to [0, \infty)$ is the distance to $S$, that is, $f(x) = d_g(x, S)$ for all $x \in M$. If $f$ is continuously differentiable on some open subset $U \subseteq M \setminus S$, then $|\operatorname{grad} f| \equiv 1$ on $U$.
+\end{theorem}
+
+\begin{proof}
+Suppose $U \subseteq M \setminus S$ is an open subset on which $f$ is continuously differentiable, and $x \in U$. We will show first that $|\operatorname{grad} f|_x \leq 1$, and then that $|\operatorname{grad} f|_x \geq 1$.
+
+To prove the first inequality, we may assume $\operatorname{grad} f|_x \neq 0$, for otherwise the inequality is trivial. Let $v \in T_x M$ be any unit vector, and let $\gamma$ be the unit-speed geodesic with $\gamma(0) = x$ and $\gamma'(0) = v$. Then for every positive $t$ sufficiently small so that $\gamma|_{[0,t]}$ is minimizing, Lemma~\ref{lem:distance-triangle-inequality-and-continuity} gives $d_g(\gamma(t), S) \leq d_g(\gamma(t), \gamma(0)) + d_g(\gamma(0), S)$, or equivalently $f(\gamma(t)) \leq t + f(\gamma(0))$. Therefore, since $f$ is differentiable at $x$,
+\[
+\frac{d}{dt}\bigg|_{t=0} f(\gamma(t)) = \lim_{t \searrow 0} \frac{f(\gamma(t)) - f(\gamma(0))}{t} \leq 1.
+\]
+
+In particular, taking $v = (\operatorname{grad} f|_x) / |\operatorname{grad} f|_x|$ (the unit vector in the direction of $\operatorname{grad} f|_x$), we obtain
+\[
+\frac{d}{dt}\bigg|_{t=0} f(\gamma(t)) = df_x(\gamma'(0)) = \langle \operatorname{grad} f|_x, v \rangle = |\operatorname{grad} f|_x|.
+\]
+
+This proves that $|\operatorname{grad} f|_x \leq 1$.
+
+To prove the reverse inequality, assume for the sake of contradiction that $|\operatorname{grad} f|_x < 1$. Since we are assuming that $\operatorname{grad} f$ is continuous on $U$, there exist $\delta, \varepsilon > 0$ such that $\bar{B}_\varepsilon(x)$ is a closed geodesic ball contained in $U$ and $|\operatorname{grad} f| \leq 1 - \delta$ on $\bar{B}_\varepsilon(x)$. Let $c$ be a positive constant less than $\varepsilon\delta$. By definition of $d_g(x, S)$, there is an admissible curve $\alpha: [0, b] \to M$ (which we may assume to be parametrized by arc length) such that $\alpha(0) = x$, $\alpha(b) \in S$, and $b = L_g(\alpha) < d_g(x, S) + c$.
+
+Since we are assuming $\bar{B}_\varepsilon(x) \subseteq U \subseteq M \setminus S$, we have that $b > \varepsilon$, so $\alpha|_{[\varepsilon,b]}$ is an admissible curve from $\alpha(\varepsilon)$ to $S$. On the one hand,
+\begin{equation}
+d_g(\alpha(\varepsilon), S) \leq L_g\left(\alpha|_{[\varepsilon,b]}\right) = b - \varepsilon < d_g(x, S) + c - \varepsilon. \tag{6.13}
+\end{equation}
+
+On the other hand, for $0 \le t \le \varepsilon$, the fact that $\alpha(t) \in \bar{B}_\varepsilon(x)$ implies
+\[
+\left| \frac{d}{dt} f(\alpha(t)) \right| = \left| \langle \operatorname{grad} f|_{\alpha(t)}, \alpha'(t) \rangle \right| \le |\operatorname{grad} f|_{\alpha(t)}| \, |\alpha'(t)| \le 1 - \delta.
+\]
+
+Thus $f(\alpha(t)) \ge f(x) - (1-\delta)t$ for all such $t$. In particular, for $t = \varepsilon$, this means that
+\begin{equation}
+d_g(\alpha(\varepsilon), S) \ge d_g(x, S) - (1-\delta)\varepsilon. \tag{6.14}
+\end{equation}
+
+Combining (6.13) and (6.14) yields $c > \varepsilon\delta$, contradicting our choice of $c$. $\square$
+\end{proof}
+
+Motivated by the previous theorem, if $(M, g)$ is a Riemannian manifold and $U \subseteq M$ is an open subset, we define a \emph{local distance function on $U$} to be a continuous function $f : U \to \mathbb{R}$ such that $|\operatorname{grad} f|_g \equiv 1$ on $U$. Theorem~\ref{thm:smooth-local-distance-function} and Corollary~\ref{cor:local-distance-smooth-level-sets} below will justify this terminology. But first, we develop some important general properties of local distance functions.
+
+\begin{theorem}
+\label{thm:local-distance-geodesic-integral-curve}
+\dcref{ch6:6.32}
+
+Suppose $(M, g)$ is a Riemannian manifold and $f$ is a smooth local distance function on an open subset $U \subseteq M$. Then $\nabla_{\operatorname{grad} f} (\operatorname{grad} f) \equiv 0$, and each integral curve of $\operatorname{grad} f$ is a unit-speed geodesic.
+\end{theorem}
+
+\begin{proof}
+Let $F \in \mathfrak{X}(U)$ denote the unit vector field $\operatorname{grad} f$. The definition of the gradient shows that for every vector field $W$, we have
+\begin{equation}
+Wf = df(W) = \langle F, W \rangle, \tag{6.15}
+\end{equation}
+and therefore
+\begin{equation}
+Ff = \langle F, F \rangle = |\operatorname{grad} f|^2 = 1. \tag{6.16}
+\end{equation}
+
+For every smooth vector field $W$ on $U$, we have
+\begin{align*}
+\langle W, \nabla_F F \rangle &= F\langle W, F \rangle - \langle \nabla_F W, F \rangle \quad \text{(compatibility with $g$)} \\
+&= FWf - \langle [F, W], F \rangle - \langle \nabla_W F, F \rangle \quad \text{((6.15), symmetry of $\nabla$)} \\
+&= FWf - [F, W]f - \tfrac{1}{2}W|F|^2 \quad \text{((6.15), compatibility with $g$)} \\
+&= Wff - \tfrac{1}{2}W|F|^2 \quad \text{(definition of $[F, W]$)} \\
+&= 0 \quad \text{(since $Ff \equiv |F|^2 \equiv 1$)}.
+\end{align*}
+
+Since $W$ is arbitrary, this proves that $\nabla_F F = 0$.
+
+If $\gamma : I \to U$ is an integral curve of $F$, then the fact that $\gamma'$ is extendible implies
+\[
+D_t \gamma'(t) = \nabla_F F|_{\gamma(t)} = 0,
+\]
+so $\gamma$ is a geodesic. $\square$
+\end{proof}
+
+\begin{lemma}
+\label{lem:local-distance-curve-arc-length}
+\dcref{ch6:6.33}
+
+Suppose $(M, g)$ is a Riemannian manifold, $K \subseteq M$, and $f : K \to \mathbb{R}$ is a continuous function whose restriction to some open set $W \subseteq K$ is a smooth local distance function. For every admissible curve $\sigma : [a_0, b_0] \to K$ such that $\sigma((a_0, b_0)) \subseteq W$, we have
+\[
+L_g(\sigma) \geq |f(\sigma(b_0)) - f(\sigma(a_0))|.
+\]
+\end{lemma}
+
+\begin{proof}
+This is proved exactly as in (6.8), noting that the only properties of $r$ we used in that computation were that it is continuous on the image of $\sigma$ and continuously differentiable on $\sigma((a_0, b_0))$, and its gradient has unit length there. $\square$
+\end{proof}
+
+The next theorem and its corollary explain why the name ``local distance function'' is justified. Its proof is an adaptation of the proof of Proposition~\ref{prop:radial-geodesic-unique-minimizer}.
+
+% [FIGURE 6.18: A Riemannian manifold M containing a subset S with geodesic neighborhoods; a point p in S is shown at the center, with concentric geodesic balls and regions labeled U_0, S, and showing a radial geodesic segment. Proving that $f(x) = d_g(x, S)$ in a neighborhood of $S$]
+
+\begin{theorem}
+\label{thm:smooth-local-distance-function}
+\dcref{ch6:6.34}
+\uses{prop:radial-geodesic-unique-minimizer,thm:local-distance-geodesic-integral-curve,lem:local-distance-curve-arc-length}
+
+Suppose $(M, g)$ is a Riemannian manifold, $U \subseteq M$ is an open subset, $S \subseteq U$, and $f: U \to [0,\infty)$ is a continuous function such that $f^{-1}(0) = S$ and $f$ is a smooth local distance function on $U \setminus S$. Then there is a neighborhood $U_0 \subseteq U$ of $S$ in which $f(x)$ is equal to the distance in $M$ from $x$ to $S$.
+\end{theorem}
+
+\begin{proof}
+For each $p \in S$, there are positive numbers $\varepsilon_p, \delta_p$ such that $B_{\varepsilon_p}(p)$ is a uniformly $\delta_p$-normal geodesic ball and $B_{\delta_p}(p) \subseteq U$. This means that $B_{\varepsilon_p}(p)$ is contained in the open geodesic ball of radius $\delta_p$ around each of its points. In particular, $B_{\varepsilon_p}(p) \subseteq B_{\delta_p}(p)$, which means that $\delta_p \geq \varepsilon_p$, and thus every geodesic starting at a point of $B_{\varepsilon_p}(p)$ is defined at least for $t \in (-\varepsilon_p, \varepsilon_p)$. Let $U_0$ be the union of all of the geodesic balls $B_{\varepsilon_p}(p)$ for $p \in S$, which is a neighborhood of $S$ contained in $U$ (Fig. 6.18).
+
+Let $x \in U_0$ be arbitrary, and let $c = f(x)$. We will show that $d_g(x, S) = c$. If $x \in S$, then $d_g(x, S) = 0 = c$, so we may as well assume $x \notin S$. There is some $p \in S$ such that $x \in B_{\varepsilon_p}(p)$, which means that $d_g(x, S) < \varepsilon_p$ and geodesics starting at $x$ are defined at least on $(-\varepsilon_p, \varepsilon_p)$. Also, if $\alpha: [0, b] \to B_{\varepsilon_p}(p)$ is the radial geodesic segment from $p$ to $x$, it follows from Lemma~\ref{lem:local-distance-curve-arc-length} that $L_g(\alpha) \geq |f(x) - f(p)| = c$, and we conclude that $c \leq L_g(\alpha) < \varepsilon_p$ as well.
+
+Let $\gamma: (-\varepsilon_p, \varepsilon_p) \to U$ be the unit-speed geodesic starting at $x$ with initial velocity equal to $-\operatorname{grad} f|_x$. By Theorem~\ref{thm:local-distance-geodesic-integral-curve} and uniqueness of geodesics, $\gamma$ coincides with an integral curve of $-\operatorname{grad} f$ as long as $\gamma(t) \in U \setminus S$, which is to say as long as $f(\gamma(t)) \neq 0$. For all such $t$ we have
+\[
+\frac{d}{dt} f(\gamma(t)) = \langle \operatorname{grad} f|_{\gamma(t)}, \gamma'(t) \rangle = -|\operatorname{grad} f|_{\gamma(t)}|^2 = -1,
+\]
+so $f(\gamma(t)) = c - t$ as long as $t < c$, and by continuity, $f(\gamma(c)) = 0$. This means that $\gamma(c) \in S$, and $\gamma|_{[0,c]}$ is a curve segment of length $c$ connecting $x$ with $S$, so $d_g(x,S) \le c$.
+
+To prove the reverse inequality, suppose $\alpha : [a,b] \to M$ is any admissible curve starting at $x$ and ending at a point of $S$. Assume first that $\alpha(t) \in U$ for all $t \in [a,b]$, and let $b_0 \in [a,b]$ be the first time that $\alpha(b_0) \in S$. Then Lemma~\ref{lem:local-distance-curve-arc-length} shows that
+\[
+L_g(\alpha) \ge L_g(\alpha|_{[a,b_0]}) \ge |f(\alpha(b_0)) - f(\alpha(a))| = c.
+\]
+
+On the other hand, suppose $\alpha(t) \in M \setminus U$ for some $t$. The triangle inequality implies $\bar{B}_{\varepsilon_p}(x) \subseteq U$, so there is a first time $b_0 \in [a,b]$ such that $d_g(x,\alpha(b_0)) \ge \varepsilon_p$. Then $L_g(\alpha) \ge L_g(\alpha|_{[a,b_0]}) \ge \varepsilon_p > c$. Taken together, these two inequalities show that $L_g(\alpha) \ge c$ for every such $\alpha$, which implies $d_g(x,S) \ge c$. $\square$
+\end{proof}
+
+See Problem 6-27 for a global version of the preceding theorem.
+
+\begin{corollary}
+\label{cor:local-distance-smooth-level-sets}
+\dcref{ch6:6.35}
+\uses{thm:smooth-local-distance-function}
+
+Let $(M,g)$ be a Riemannian manifold, and let $f$ be a smooth local distance function on an open subset $U \subseteq M$. If $c$ is a real number such that $S = f^{-1}(c)$ is nonempty, then there is a neighborhood $U_0$ of $S$ in $U$ on which $|f(x) - c|$ is equal to the distance in $M$ from $x$ to $S$.
+\end{corollary}
+
+\begin{exercise}
+\label{exer:prove-local-distance-corollary}
+\dcref{ch6:6.36}
+\uses{cor:local-distance-smooth-level-sets}
+
+Prove the preceding corollary.
+\end{exercise}
+
+\section{Distance Functions for Embedded Submanifolds}
+
+The most important local distance functions are those associated with embedded submanifolds. As we will see in this section, such distance functions are always smooth near the manifold.
+
+Suppose $(M,g)$ is a Riemannian $n$-manifold (without boundary) and $P \subseteq M$ is an embedded $k$-dimensional submanifold. Let $NP$ denote the normal bundle of $P$ in $M$, and let $U \subseteq M$ be a normal neighborhood of $P$ in $M$, which is the diffeomorphic image of a certain open subset $V \subseteq NP$ under the normal exponential map. (Such a neighborhood always exists by Thm. 5.25.) We begin by constructing generalizations of the radial distance function and radial vector field (see (6.4) and (6.5)). Recall the definition of Fermi coordinates from Chapter 5 (see Prop. 5.26).
+
+\begin{proposition}
+\label{prop:fermi-coordinates-radial-function}
+\dcref{ch6:6.37}
+
+Let $P$ be an embedded submanifold of a Riemannian manifold $(M,g)$ and let $U$ be any normal neighborhood of $P$ in $M$. There exist a unique continuous function $r : U \to [0,\infty)$ and smooth vector field $\partial_r$ on $U \setminus P$ that have the following coordinate representations in terms of any Fermi coordinates $(x^1,\ldots,x^k,v^1,\ldots,v^{n-k})$ for $P$ on a subset $U_0 \subseteq U$:
+\begin{equation}
+r(x^1,\ldots,x^k,v^1,\ldots,v^{n-k}) = \sqrt{(v^1)^2 + \cdots + (v^{n-k})^2}, \tag{6.17}
+\end{equation}
+\begin{equation}
+\partial_r = \frac{v^1}{r(x,v)} \frac{\partial}{\partial v^1} + \cdots + \frac{v^{n-k}}{r(x,v)} \frac{\partial}{\partial v^{n-k}}. \tag{6.18}
+\end{equation}
+
+The function $r$ is smooth on $U \setminus P$, and $r^2$ is smooth on all of $U$.
+\end{proposition}
+
+\begin{proof}
+The uniqueness, continuity, and smoothness claims follow immediately from the coordinate expressions (6.17) and (6.18), so we need only prove that $r$ and $\partial_r$ can be globally defined so as to have the indicated coordinate expressions in any Fermi coordinates.
+
+Let $V \subseteq NP$ be the subset that is mapped diffeomorphically onto $U$ by the normal exponential map $E$. Define a function $\rho: V \to [0,\infty)$ by $\rho(p,v) = |v|_g$. We define $r: U \to [0,\infty)$ by $r = \rho \circ E^{-1}$. Any Fermi coordinates for $P$ are defined by choosing local coordinates $(x^1,\ldots,x^k)$ for $P$ and a local orthonormal frame $(E_a)$ for $NP$, and assigning the coordinates $(x^1(p),\ldots,x^k(p), v^1,\ldots,v^{n-k})$ to the point $E(p, v^a E_a|_p)$. (Here we are using the summation convention with Greek indices running from 1 to $n-k$.) Because the frame is orthonormal, for each $(p,v) = (p, v^a E_a|_p) \in V$ we have $r(E(p,v))^2 = \rho(p,v)^2 = (v^1)^2 + \cdots + (v^{n-k})^2$, which shows that $r$ has the coordinate representation (6.17).
+
+To define $\partial_r$, let $q$ be an arbitrary point in $U \setminus P$. Then $q = \exp_p(v)$ for a unique $(p,v) \in V$, and the curve $\gamma: [0,1] \to U$ given by $\gamma(t) = \exp_p(tv)$ is a geodesic from $p$ to $q$. Define
+\begin{equation}
+\partial_r|_q = \frac{1}{r(q)}\gamma'(1), \tag{6.19}
+\end{equation}
+which is independent of the choice of coordinates. Proposition 5.26 shows that in any Fermi coordinates, if we write $v = v^a E_a|_p$, then $\gamma$ has the coordinate formula $\gamma(t) = (x^1,\ldots,x^k, tv^1,\ldots,tv^{n-k})$, and therefore $\gamma'(t) = v^a \partial/\partial v^a|_{\gamma(t)}$. It follows that $\partial_r$ has the coordinate formula (6.18). $\square$
+\end{proof}
+
+By analogy with the special case in which $P$ is a point, we call $r$ the \emph{radial distance function for} $P$ and $\partial_r$ the \emph{radial vector field for} $P$.
+
+\begin{theorem}[Gauss Lemma for Submanifolds]
+\label{thm:gauss-lemma-submanifolds}
+\dcref{ch6:6.38}
+\uses{prop:fermi-coordinates-radial-function}
+
+Let $P$ be an embedded submanifold of a Riemannian manifold $(M,g)$, let $U$ be a normal neighborhood of $P$ in $M$, and let $r$ and $\partial_r$ be as defined in Proposition~\ref{prop:fermi-coordinates-radial-function}. On $U \setminus P$, $\partial_r$ is a unit vector field orthogonal to the level sets of $r$.
+\end{theorem}
+
+\begin{proof}
+The proof is a dressed-up version of the proof of the ordinary Gauss lemma. Let $q \in U \setminus P$ be arbitrary, and let $(x^1,\ldots,x^k, v^1,\ldots,v^{n-k})$ be the coordinate representation of $q$ in some choice of Fermi coordinates associated with a local orthonormal frame $(E_a)$ for $NP$. As in the proof of Proposition~\ref{prop:fermi-coordinates-radial-function}, $q = \gamma(1)$, where $\gamma$ is the geodesic $\exp_p(tv)$ for some $p \in P$ and $v = v^a E_a|_p \in N_p M$. Since the frame $(E_a)$ is orthonormal, we have
+\[
+|\gamma'(0)|_g = |v|_g = \sqrt{(v^1)^2 + \cdots + (v^{n-k})^2} = r(q).
+\]
+
+Since geodesics have constant speed, it follows that $|\gamma'(1)|_g = r(q)$ as well, and then (6.19) shows that $\partial_r|_q$ is a unit vector.
+
+Next we show that $\partial_r$ is orthogonal to the level sets of $r$. Suppose $q \in U \setminus P$, and write $q = \exp_{p_0}(v_0)$ for some $p_0 \in P$ and $v_0 \in N_{p_0} P$ with $v_0 \neq 0$. Let $b = r(q) = |v_0|_g$, so $q$ lies in the level set $r^{-1}(b)$. The coordinate representation (6.17) shows that this is a regular level set, and hence an embedded submanifold of $U$.
+
+Let $w \in T_q M$ be an arbitrary vector tangent to this level set, and let $\sigma : (-\varepsilon, \varepsilon) \to U$ be a smooth curve lying in the same level set, with $\sigma(0) = q$ and $\sigma'(0) = w$. We can write $\sigma(s) = \exp_{x(s)}(v(s))$, where $x(s) \in P$ and $v(s) \in N_{x(s)} P$ with $|v(s)|_g = b$. The initial condition $\sigma(0) = q$ translates to $x(0) = p_0$ and $v(0) = v_0$. Define a smooth one-parameter family of curves $\Gamma : (-\varepsilon, \varepsilon) \times [0, b] \to M$ by
+\[
+\Gamma(s, t) = \exp_{x(s)}\left(\frac{t}{b}v(s)\right).
+\]
+
+Since $|v(s)|_g / b = 1$, each $\Gamma_s$ is a unit-speed geodesic.
+
+Write $T(s,t) = \partial_t \Gamma(s,t)$ and $S(s,t) = \partial_s \Gamma(s,t)$ as in the proof of Theorem~\ref{thm:gauss-lemma}. We have the following endpoint conditions:
+\begin{align*}
+S(0, 0) &= \frac{d}{ds}\bigg|_{s=0} x(s) = x'(0); \\
+T(0, 0) &= \frac{d}{dt}\bigg|_{t=0} \exp_{p_0}\left(\frac{t}{b}v_0\right) = \frac{1}{b}v_0; \\
+S(0, b) &= \frac{d}{ds}\bigg|_{s=0} \sigma(s) = w; \\
+T(0, b) &= \frac{d}{dt}\bigg|_{t=b} \exp_{p_0}\left(\frac{t}{b}v_0\right) = \partial_r\big|_q.
+\end{align*}
+
+Then the same computation as in (6.7) shows that $(\partial/\partial t)\langle S, T \rangle_g \equiv 0$, and therefore $\langle w, \partial_r|_q \rangle_g = \langle S(0,b), T(0,b) \rangle_g = \langle S(0,0), T(0,0) \rangle_g = (1/b)\langle x'(0), v_0 \rangle_g$, which is zero because $x'(0)$ is tangent to $P$ and $v_0$ is normal to it. This proves that $\partial_r$ is orthogonal to the level sets of $r$. $\square$
+\end{proof}
+
+\begin{corollary}[Assume the hypotheses of Theorem~6.38]
+\label{cor:distance-function-local-properties}
+\dcref{ch6:6.39}
+\uses{thm:gauss-lemma-submanifolds,thm:small-geodesic-ball-convex,lem:exponential-map-implies-completeness,prob:gradient-characterization,prop:fermi-coordinates-properties,thm:smooth-local-distance-function}
+
+\begin{enumerate}
+\item[(a)] $\partial_r$ is equal to the gradient of $r$ on $U \setminus P$.
+\item[(b)] $r$ is a local distance function.
+\item[(c)] Each unit-speed geodesic $\gamma : [a, b] \to U$ with $\gamma'(a)$ normal to $P$ coincides with an integral curve of $\partial_r$ on $(a,b)$.
+\item[(d)] $P$ has a tubular neighborhood in which the distance in $M$ to $P$ is equal to $r$.
+\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+By direct computation in Fermi coordinates using formulas (6.17) and (6.18), $\partial_r(r) \equiv 1$, which is equal to $|\partial_r|_g^2$ by the previous theorem. Thus $\partial_r = \operatorname{grad} r$ on $U \setminus P$ by Problem 2-10. Because $\operatorname{grad} r$ is a unit vector field, $r$ is a local distance function. By Proposition 5.26, the geodesics in $U$ that are normal to $P$ are represented in any Fermi coordinates by $t \mapsto (x^1, \ldots, x^k, tv^1, \ldots, tv^{n-k})$, and such a geodesic has unit speed if and only if $(v^1)^2 + \cdots + (v^{n-k})^2 = 1$. Another direct computation shows that each such curve is an integral curve of $\partial_r$ wherever $r \neq 0$.
+
+Finally, to prove (d), note that Theorem~\ref{thm:smooth-local-distance-function} shows that there is \emph{some} neighborhood $\widetilde{U}_0$ of $P$ in $M$ on which $r(x) = d_g(x, P)$; if we take $U_0$ to be a tubular neighborhood of $P$ in $\widetilde{U}_0$, then $U_0$ satisfies the conclusion. $\square$
+\end{proof}
+
+When $P$ is compact, we can say more.
+
+\begin{theorem}
+\label{thm:tubular-neighborhood-metric-distance}
+\dcref{ch6:6.40}
+\uses{prop:fermi-coordinates-radial-function,lem:local-distance-curve-arc-length}
+
+Suppose $(M, g)$ is a connected Riemannian manifold, $P \subseteq M$ is a compact submanifold, and $U_\varepsilon$ is an $\varepsilon$-tubular neighborhood of $P$. Then $U_\varepsilon$ is also an $\varepsilon$-neighborhood in the metric space sense, and inside $U_\varepsilon$, the distance in $M$ to $P$ is equal to the function $r$ defined in Proposition~\ref{prop:fermi-coordinates-radial-function}.
+\end{theorem}
+
+\begin{proof}
+First we show that $r$ can be extended continuously to $\overline{U}_\varepsilon$ by setting $r(q) = \varepsilon$ for $q \in \partial U_\varepsilon$. Indeed, suppose $q \in \partial U_\varepsilon$ and $q_i$ is any sequence of points in $U_\varepsilon$ converging to $q$. Then $\limsup_i r(q_i) \le \varepsilon$ because $r(q_i) < \varepsilon$ for each $i$. Let $c = \liminf_i r(q_i)$; we will prove the result by showing that $c = \varepsilon$. Suppose for the sake of contradiction that $c < \varepsilon$. By passing to a subsequence, we may assume that $r(q_i) \to c$. We can write $q_i = \exp_{p_i}(v_i)$ for $p_i \in P$ and $v_i \in N_{p_i} P$, and because $P$ is compact and $\lim_i |v_i|_g = \lim_i r(q_i) = c$, we can pass to a further subsequence and assume that $(p_i, v_i) \to (p, v) \in NP$ with $|v|_g = c < \varepsilon$. Then we have $q = \lim_i q_i = \lim_i \exp_{p_i}(v_i) = \exp_p(v)$, which lies in the open set $U_\varepsilon$, contradicting our assumption that $q \in \partial U_\varepsilon$. Henceforth, we regard $r$ as a continuous function on $\overline{U}_\varepsilon$.
+
+Now to prove the theorem, let $W_\varepsilon$ denote the $\varepsilon$-neighborhood of $P$ in the metric space sense. Suppose first that $q \in M \setminus U_\varepsilon$, and suppose $\alpha: [a, b] \to M$ is any admissible curve from a point of $P$ to $q$. There is a first time $b_0 \in [a, b]$ that $\alpha(b_0) \in \partial U_\varepsilon$, and then Lemma~\ref{lem:local-distance-curve-arc-length} shows that
+\[
+L_g(\alpha) \ge L_g(\alpha|_{[a,b_0]}) \ge |r(\alpha(b_0)) - r(\alpha(a))| = \varepsilon.
+\]
+Thus $q \notin U_\varepsilon \Rightarrow q \notin W_\varepsilon$, or equivalently $W_\varepsilon \subseteq U_\varepsilon$.
+
+Conversely, suppose $q \in U_\varepsilon$. Then $q$ is connected to $P$ by a geodesic segment of length $r(q)$, so $d_g(q, P) \le r(q)$. To prove the reverse inequality, suppose $\alpha: [a, b] \to M$ is any admissible curve starting at a point of $P$ and ending at $q$. If $\alpha(t)$ remains in $U$ for all $t \in [a, b]$, then Lemma~\ref{lem:local-distance-curve-arc-length} shows that
+\[
+L_g(\alpha) \ge L_g(\alpha|_{[a_0,b]}) \ge |r(\alpha(b)) - r(\alpha(a_0))| = r(q),
+\]
+where $a_0$ is the last time that $\alpha(a_0) \in P$. On the other hand, if $\alpha(t)$ does not remain in $U$, then there is a first time $b_0$ such that $\alpha(b_0) \in \partial U_\varepsilon$, and the argument in the preceding paragraph shows that $L_g(\alpha) \ge \varepsilon > r(q)$. Thus $d_g(q, P) = r(q)$ for all $q \in U_\varepsilon$. Since $r(q) < \varepsilon$ for all such $q$, it follows also that $U_\varepsilon \subseteq W_\varepsilon$. $\square$
+\end{proof}
+
+\section{Semigeodesic Coordinates}
+
+Local distance functions can be used to build coordinate charts near submanifolds in which the metric has a particularly simple form. We begin by describing the kind of coordinates we are looking for.
+
+Let $(M, g)$ be an $n$-dimensional Riemannian manifold. Smooth local coordinates $(x^1, \ldots, x^n)$ on an open subset $U \subseteq M$ are called \emph{semigeodesic coordinates} if each $x^n$-coordinate curve $t \mapsto (x^1, \ldots, x^{n-1}, t)$ is a unit-speed geodesic that meets each level set of $x^n$ orthogonally.
+
+Because of the distinguished role played by the last coordinate function, throughout the rest of this section we will use the summation convention with Latin indices running from 1 to $n$ and Greek indices running from 1 to $n - 1$.
+
+We will see below that semigeodesic coordinates are easy to construct. But first, let us develop some alternative characterizations of them.
+
+\begin{proposition}[Characterizations of Semigeodesic Coordinates]
+\label{prop:characterizations-semigeodetic-coordinates}
+\dcref{ch6:6.41}
+\uses{thm:local-distance-geodesic-integral-curve}
+
+Let $(M, g)$ be a Riemannian $n$-manifold, and let $(x^1, \ldots, x^n)$ be smooth coordinates on an open subset of $M$. The following are equivalent:
+\begin{enumerate}
+  \item[(a)] $(x^i)$ are semigeodesic coordinates.
+  \item[(b)] $|\partial_n|_g \equiv 1$ and $\langle\partial_\alpha, \partial_n\rangle_g \equiv 0$ for $\alpha = 1, \ldots, n-1$.
+  \item[(c)] $|dx^n|_g \equiv 1$ and $\langle dx^\alpha, dx^n\rangle_g \equiv 0$ for $\alpha = 1, \ldots, n-1$.
+  \item[(d)] $|\operatorname{grad} x^n|_g \equiv 1$ and $\langle\operatorname{grad} x^\alpha, \operatorname{grad} x^n\rangle_g \equiv 0$ for $\alpha = 1, \ldots, n-1$.
+  \item[(e)] $x^n$ is a local distance function and $x^1, \ldots, x^{n-1}$ are constant along the integral curves of $\operatorname{grad} x^n$.
+  \item[(f)] $\operatorname{grad} x^n \equiv \partial_n$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+We begin by showing that $(b) \Leftrightarrow (c) \Leftrightarrow (d) \Leftrightarrow (e)$ and $(c) \Leftrightarrow (f)$. Note that $(b)$ is equivalent to the coordinate matrix of $g$ having the block form $\begin{pmatrix} * & 0 \\ 0 & 1 \end{pmatrix}$, where the asterisk represents an arbitrary $(n-1) \times (n-1)$ positive definite symmetric matrix, while $(c)$ is equivalent to the inverse matrix having the same form. It follows from Cramer's rule that the matrix of $g$ has this form if and only if its inverse does, and thus $(b)$ is equivalent to $(c)$.
+
+The equivalence of $(c)$ and $(d)$ follows from the definitions of the gradient and of the inner product on 1-forms: for all $i, j = 1, \ldots, n$,
+\[
+\langle dx^i, dx^j\rangle_g = \langle (dx^i)^\#, (dx^j)^\#\rangle_g = \langle \operatorname{grad} x^i, \operatorname{grad} x^j\rangle_g.
+\]
+
+The equivalence of $(d)$ and $(e)$ also follows from the definition of the gradient: $\langle\operatorname{grad} x^\alpha, \operatorname{grad} x^n\rangle_g = dx^\alpha(\operatorname{grad} x^n) = (\operatorname{grad} x^n)(x^\alpha)$ for each $\alpha$, which means that $x^\alpha$ is constant along the $\operatorname{grad} x^n$ integral curves if and only if $\langle\operatorname{grad} x^\alpha, \operatorname{grad} x^n\rangle_g = 0$. Finally, by examining the individual components of the coordinate formula $\operatorname{grad} x^n = g^{nj} \partial_j$, we see that $(c)$ is also equivalent to $(f)$.
+
+To complete the proof, we show that $(a) \Leftrightarrow (b)$. Assume first that $(a)$ holds. Because the $x^n$-coordinate curves have unit speed, it follows that $|\partial_n|_g \equiv 1$. The tangent space to any $x^n$-level set is spanned at each point by $\partial_1, \ldots, \partial_{n-1}$, and $(a)$ guarantees that $\partial_n$ is orthogonal to each of these, showing that $(b)$ holds. Conversely, if we assume $(b)$, the first part of the proof shows that $(f)$ holds as well, so $|\operatorname{grad} x^n|_g \equiv |\partial_n|_g \equiv 1$, showing that $x^n$ is a local distance function. Thus the $x^n$-coordinate curves are also integral curves of $\operatorname{grad} x^n$ and hence are unit-speed geodesics by Theorem~\ref{thm:local-distance-geodesic-integral-curve}. The fact that $\langle\partial_\alpha, \partial_n\rangle = 0$ for $\alpha = 1, \ldots, n-1$ implies that these geodesics are orthogonal to the level sets of $x^n$, thus proving $(a)$. $\square$
+\end{proof}
+
+Part (b) of this proposition leads to the following simplified coordinate representations for the metric and Christoffel symbols in semigeodesic coordinates. Recall that implied summations with Greek indices run from 1 to $n - 1$.
+
+\begin{corollary}
+\label{cor:semigeodesic-metric-christoffel}
+\dcref{ch6:6.42}
+\uses{prop:characterizations-semigeodetic-coordinates,prop:tangential-connection-compatible-metric}
+
+Let $(x^i)$ be semigeodesic coordinates on an open subset of a Riemannian $n$-manifold $(M, g)$.
+
+(a) The metric has the following coordinate expression:
+\[
+g = (dx^n)^2 + g_{\alpha\beta}(x^1, \ldots, x^n) \, dx^\alpha \, dx^\beta.
+\]
+
+(b) The Christoffel symbols of $g$ have the following coordinate expressions:
+\begin{align*}
+\Gamma^n_{nn} &= \Gamma^\alpha_{nn} = \Gamma^n_{\alpha n} = \Gamma^n_{n\alpha} = 0,\\
+\Gamma^n_{\alpha\beta} &= -\frac{1}{2}\partial_n g_{\alpha\beta},\\
+\Gamma^\beta_{n\alpha} &= \Gamma^\beta_{\alpha n} = \frac{1}{2}g^{\beta\gamma}\partial_n g_{\alpha\gamma},\\
+\Gamma^\gamma_{\alpha\beta} &= \tilde{\Gamma}^\gamma_{\alpha\beta},
+\end{align*}
+where for each fixed value of $x^n$, the quantities $\tilde{\Gamma}^\gamma_{\alpha\beta}$ are the Christoffel symbols in $(x^\alpha)$ coordinates for the induced metric $\tilde{g}$ on the level set $x^n = \text{constant}$.
+\end{corollary}
+
+\begin{proof}
+Part (a) follows immediately from part (b) of Proposition~\ref{prop:characterizations-semigeodetic-coordinates}, and (b) is proved by inserting $g_{nn} = 1$ and $g_{\alpha n} = g_{n\alpha} = 0$ into formula (5.8) for the Christoffel symbols. $\square$
+\end{proof}
+
+Proposition~\ref{prop:characterizations-semigeodetic-coordinates}(e) gives us an effective way to construct semigeodesic coordinates: if $r$ is any smooth local distance function (for example, the distance from a point or a smooth submanifold), just set $x^n = r$, choose any local coordinates $x^1, \ldots, x^{n-1}$ for a level set of $r$, and then extend them to be constant along the integral curves of $\operatorname{grad} r$. Here are some explicit examples.
+
+\begin{example}[Fermi Coordinates for a Hypersurface]
+\label{ex:fermi-coordinates-hypersurface}
+\dcref{ch6:6.43}
+\uses{thm:tubular-neighborhood,thm:small-geodesic-ball-convex,cor:distance-function-local-properties,lem:exponential-map-implies-completeness,prop:characterizations-semigeodetic-coordinates}
+
+Suppose $P$ is an embedded hypersurface in a Riemannian manifold $(M, g)$, and let $(x^1, \ldots, x^{n-1}, v)$ be any Fermi coordinates for $P$ on an open subset $U \subseteq M$ (see (5.25)). In this case, the function $r$ defined by (6.17) is just $r(x^1, \ldots, x^{n-1}, v) = (v^2)^{1/2} = |v|$, so $v$ is a local distance function on $U \setminus P$. It follows from Corollary~\ref{cor:distance-function-local-properties} that there is a neighborhood $U_0$ of $P$ on which $|v|$ is equal to the distance from $P$. Moreover, (6.18) reduces to $\partial_r = \pm\partial_v$, which is equal to $\operatorname{grad}|v|$ by Corollary~\ref{cor:distance-function-local-properties}, so it follows from Proposition~\ref{prop:characterizations-semigeodetic-coordinates}(f) that Fermi coordinates for a hypersurface are automatically semigeodesic coordinates. $\hfill\square$
+\end{example}
+
+\begin{example}[Boundary Normal Coordinates]
+\label{ex:boundary-normal-coordinates}
+\dcref{ch6:6.44}
+\uses{prop:double-manifold}
+
+Suppose $(M, g)$ is a smooth Riemannian manifold with nonempty boundary. The results in this chapter do not apply directly to manifolds with boundary, but we can embed $M$ in its double $\tilde{M}$ (Prop. A.31), extend the metric smoothly to $\tilde{M}$, and construct Fermi coordinates $(x^1, \ldots, x^{n-1}, v)$ for $\partial M$ in $\tilde{M}$. By replacing $v$ with $-v$ if necessary, we can arrange that $v > 0$ in $\operatorname{Int} M$, and then these Fermi coordinates restrict to smooth boundary coordinates for $M$ that are also semigeodesic coordinates. Such coordinates are called \emph{boundary normal coordinates} for $M$. $\hfill\square$
+\end{example}
+
+% [FIGURE 6.19: Diagrams illustrating polar normal coordinates on a manifold M with point p and normal neighborhood V, showing the parametrization map  \psi  mapping to the sphere, and the coordinate spaces R^n with product space Ũ × R^+]
+
+\begin{example}[Polar Normal Coordinates]
+\label{ex:polar-normal-coordinates}
+\dcref{ch6:6.45}
+
+Polar coordinates for $\mathbb{R}^n$ are constructed by choosing a smooth local parametrization $\psi: \tilde{U} \to U \subset S^{n-1}$ for an open subset $U$ of $S^{n-1}$, and defining $\Psi: \tilde{U} \times \mathbb{R}^+ \to \mathbb{R}^n$ by $\Psi(\theta^1,\ldots,\theta^{n-1},r) = r\psi(\theta^1,\ldots,\theta^{n-1})$. It is straightforward to show that the differential of $\Psi$ vanishes nowhere, so $\Theta = \Psi^{-1}$ is a smooth coordinate map on the open subset $U = \Psi(\tilde{U} \times \mathbb{R}^+) \subseteq \mathbb{R}^n \setminus \{0\}$. Familiar examples are ordinary polar coordinates in the plane and spherical coordinates in $\mathbb{R}^3$. Such coordinates have the property that the last coordinate function is $r(x) = |x|$.
+
+Now let $(M,g)$ be a Riemannian $n$-manifold, $p$ a point in $M$, and $\varphi$ any normal coordinate chart defined on a normal neighborhood $V$ of $p$. For every choice of polar coordinates $(\Theta, r)$ for $\mathbb{R}^n \setminus \{0\}$, we obtain a smooth coordinate map $\Theta \circ \varphi$ on an open subset of $V \setminus \{p\}$ (see Fig. 6.19). Such coordinates are called \emph{polar normal coordinates}. They have the property that the last coordinate function $r$ is the radial distance function on $V$, and the other coordinates are constant along the integral curves of $\operatorname{grad} r$, so they are semigeodesic coordinates. $\hfill\square$
+\end{example}
+
+\begin{example}[Polar Fermi Coordinates]
+\label{ex:polar-fermi-coordinates}
+\dcref{ch6:6.46}
+\uses{prop:fermi-coordinates-properties}
+
+Now let $P$ be an embedded submanifold of $(M,g)$, and let $\varphi = (x^1,\ldots,x^k, v^1,\ldots,v^{n-k})$ be Fermi coordinates on a neighborhood $U_0$ of a point $p \in P$. Then any polar coordinate map $\Theta$ for $\mathbb{R}^{n-k}$ can be applied to the variables $(v^1,\ldots,v^{n-k})$ to yield a coordinate chart $(\text{Id}_{\mathbb{R}^k} \times \Theta) \circ \varphi$ on an open subset of $U_0 \cap P$, taking values in $\mathbb{R}^k \times \mathbb{R}^{n-k-1} \times \mathbb{R}^+$.
+
+If we write the coordinate functions as $(x^1,\ldots,x^k, \theta^1,\ldots,\theta^{n-k-1}, r)$, it follows from Proposition 5.26 that each coordinate curve $t \mapsto (x^1,\ldots,x^k, \theta^1,\ldots,\theta^{n-k-1}, t)$ is a unit-speed geodesic. Thus these are semigeodesic coordinates, called \emph{polar Fermi coordinates}. The polar normal coordinates described above are just the special case $P = \{p\}$. $\hfill\square$
+\end{example}
+
+\section{Problems}
+
+\begin{exercise}
+\label{prob:connected-riemannian-1-manifold-structure}
+\dcref{ch6:6-1}
+
+Suppose $M$ is a nonempty connected Riemannian 1-manifold. Show that if $M$ is noncompact, then it is isometric to an open interval in $\mathbb{R}$ with the Euclidean metric, while if it is compact, it is isometric to a circle $S^1(R) = \{x \in \mathbb{R}^2 : |x| = R\}$ with its induced metric for some $R > 0$, using the following steps.
+\begin{enumerate}
+\item[(a)] Let $\gamma : I \to M$ be any maximal unit-speed geodesic. Show that its image is open and closed, and therefore $\gamma$ is surjective.
+\item[(b)] Show that if $\gamma$ is injective, then it is an isometry between $I$ with its Euclidean metric and $M$.
+\item[(c)] Now suppose $\gamma(t_1) = \gamma(t_2)$ for some $t_1 \ne t_2$. In case $\gamma'(t_1) = \gamma'(t_2)$, show that $\gamma$ is periodic, and descends to a global isometry from an appropriate circle to $M$.
+\item[(d)] It remains only to rule out the case $\gamma(t_1) = \gamma(t_2)$ and $\gamma'(t_1) = -\gamma'(t_2)$. If this occurs, let $t_0 = (t_1 + t_2)/2$, and define geodesics $\alpha$ and $\beta$ by
+\[
+\alpha(t) = \gamma(t_0 + t), \quad \beta(t) = \gamma(t_0 - t).
+\]
+Use uniqueness of geodesics to conclude that $\alpha \equiv \beta$ on their common domain, and show that this contradicts the fact that $\gamma$ is injective on some neighborhood of $t_0$.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+\label{prob:round-metric-distance-sphere}
+\dcref{ch6:6-2}
+
+Let $n$ be a positive integer and $R$ a positive real number.
+\begin{enumerate}
+\item[(a)] Prove that the Riemannian distance between any two points $p, q$ in $S^n(R)$ with the round metric is given by
+\[
+d_{\bar{g}_R}(p,q) = R \arccos \frac{\langle p,q\rangle}{R^2},
+\]
+where $\langle\cdot,\cdot\rangle$ is the Euclidean inner product on $\mathbb{R}^{n+1}$.
+\item[(b)] Prove that the metric space $(S^n(R), d_{\bar{g}_R})$ has diameter $\pi R$.
+\end{enumerate}
+(Used on pp. 39, 359.)
+\end{exercise}
+
+\begin{exercise}
+\label{prob:poincare-ball-distance-formula}
+\dcref{ch6:6-3}
+\uses{prob:sphere-hyperbolic-scaling,prob:poincare-disk}
+
+Let $n$ be a positive integer and $R$ a positive real number. Prove that the Riemannian distance between any two points in the Poincaré ball model $(\mathbb{B}^n(R), \bar{g}_R)$ of hyperbolic space of radius $R$ is given by
+\[
+d_{\bar{g}_R}(p,q) = R \operatorname{arcosh}\left(1 + \frac{2R^2|p-q|^2}{(R^2 - |p|^2)(R^2 - |q|^2)}\right),
+\]
+where $|\cdot|$ represents the Euclidean norm in $\mathbb{R}^n$. [Hint: First use the result of Problem 3-5 to show that it suffices to consider the case $R = 1$. Then use a rotation to reduce to the case $n = 2$, and use the group action of Problem 3-8 to show that it suffices to consider the case in which $p$ is the origin.]
+\end{exercise}
+
+\begin{exercise}[Metric and Riemannian distance]
+\label{prob:distance-determines-metric}
+\dcref{ch6:6-4}
+
+In Chapter 2, we started with a Riemannian metric and used it to define the Riemannian distance function. This problem shows how to go back the other way: the distance function determines the Riemannian metric. Let $(M, g)$ be a connected Riemannian manifold.
+\begin{enumerate}
+\item[(a)] Show that if $\gamma: (-\varepsilon, \varepsilon) \to M$ is any smooth curve, then
+\[
+|\gamma'(0)|_g = \lim_{t \searrow 0} \frac{d_g(\gamma(0), \gamma(t))}{t}.
+\]
+\item[(b)] Show that if $g$ and $\tilde{g}$ are two Riemannian metrics on $M$ such that $d_g(p,q) = d_{\tilde{g}}(p,q)$ for all $p,q \in M$, then $g = \tilde{g}$.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[Geodesic balls are geodesically convex]
+\label{prob:geodesic-ball-convexity}
+\dcref{ch6:6-5}
+\uses{thm:small-geodesic-ball-convex}
+
+Prove Theorem~\ref{thm:small-geodesic-ball-convex} (sufficiently small geodesic balls are geodesically convex) as follows.
+\begin{enumerate}
+\item[(a)] Let $(M,g)$ be a Riemannian manifold, let $p \in M$ be fixed, and let $W$ be a uniformly normal neighborhood of $p$. For $\varepsilon > 0$ small enough that $B_{2\varepsilon}(p) \subseteq W$, define a subset $W_\varepsilon \subseteq TM \times \mathbb{R}$ by
+\[
+W_\varepsilon = \{(q, v, t) \in TM \times \mathbb{R} : q \in B_\varepsilon(p), v \in T_q M, |v| = 1, |t| < 2\varepsilon\}.
+\]
+Define $f: W_\varepsilon \to \mathbb{R}$ by
+\[
+f(q, v, t) = d_g(p, \exp_q(tv))^2.
+\]
+Show that $f$ is smooth. [Hint: Use normal coordinates centered at $p$.]
+\item[(b)] Show that if $\varepsilon$ is chosen small enough, then $\frac{\partial^2 f}{\partial t^2} > 0$ on $W_\varepsilon$. [Hint: Compute $f(p, v, t)$ explicitly and use continuity. Be careful to verify that $\varepsilon$ can be chosen independently of $v$.]
+\item[(c)] Suppose $\varepsilon$ is chosen as in (b). Show that if $q_1, q_2 \in B_\varepsilon(p)$ and $\gamma$ is a minimizing geodesic segment from $q_1$ to $q_2$, then $d_g(p, \gamma(t))$ attains its maximum at one of the endpoints of $\gamma$.
+\item[(d)] Show that $B_\varepsilon(p)$ is geodesically convex.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[Convexity radius is continuous]
+\label{prob:convexity-radius-continuous}
+\dcref{ch6:6-6}
+
+Suppose $(M, g)$ is a Riemannian manifold. For each $x \in M$, define the \emph{convexity radius of $M$ at $x$}, denoted $\operatorname{conv}(x)$, to be the supremum of all $\varepsilon > 0$ such that there is a geodesically convex geodesic ball of radius $\varepsilon$ centered at $x$. Show that $\operatorname{conv}(x)$ is a continuous function of $x$.
+\end{exercise}
+
+\begin{exercise}[Characterization of metric isometry]
+\label{prob:metric-isometry-characterization}
+\label{prob:exponential-distance-limit}
+\dcref{ch6:6-7}
+\uses{prop:isometry-invariance-riemannian-distance,prob:distance-preserving-map-linear-isometry}
+
+We now have two kinds of ``metrics'' on a connected Riemannian manifold: the Riemannian metric and the distance function. Correspondingly, there are two definitions of ``isometry'' between connected Riemannian manifolds: a \emph{Riemannian isometry} is a diffeomorphism that pulls one Riemannian metric back to the other, and a \emph{metric isometry} is a homeomorphism that preserves distances. Proposition 2.51 shows that every Riemannian isometry is a metric isometry. This problem outlines a proof of the converse. Suppose $(M, g)$ and $(\tilde{M}, \tilde{g})$ are connected Riemannian manifolds, and $\varphi: M \to \tilde{M}$ is a metric isometry.
+\begin{enumerate}
+\item[(a)] Show that for every $p \in M$ and $v, w \in T_p M$, we have
+\[
+\lim_{t \to 0} \frac{d_g(\exp_p tv, \exp_p tw)}{t} = |v - w|_g.
+\]
+[Hint: Use the Taylor series for $g$ in Riemannian normal coordinates on a convex geodesic ball centered at $p$.]
+\item[(b)] Show that $\varphi$ takes geodesics to geodesics.
+\item[(c)] For each $p \in M$, show that there exist an open ball $B_\epsilon(0) \subseteq T_p M$ and a continuous map $\psi : B_\epsilon(0) \to T_{\varphi(p)} \tilde{M}$ satisfying $\psi(0) = 0$ and $\exp_{\varphi(p)} \psi(v) = \varphi(\exp_p v)$ for all $v \in B_\epsilon(0)$.
+\item[(d)] With $\psi$ as above, show that $|\psi(v) - \psi(w)|_{\tilde{g}} = |v - w|_g$ for all $v, w \in B_\epsilon(0)$, and conclude from Problem 2-2 that $\psi$ is the restriction of a linear isometry.
+\item[(e)] With $p$ and $\psi$ as above, show that $\varphi$ is smooth on a neighborhood of $p$ and $d\varphi_p = \psi$.
+\item[(f)] Conclude that $\varphi$ is a Riemannian isometry.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+\label{prob:limit-isometry}
+\dcref{ch6:6-8}
+
+Suppose $(M, g)$ and $(\tilde{M}, \tilde{g})$ are connected Riemannian manifolds (not necessarily complete), and for each $i \in \mathbb{Z}^+$, $\varphi_i : M \to \tilde{M}$ is a Riemannian isometry such that $\varphi_i$ converges pointwise to a map $\varphi : M \to \tilde{M}$. Show that $\varphi$ is a Riemannian isometry. [Hint: Once you have shown that $\varphi$ is a local isometry, to show that $\varphi$ is surjective, suppose $y$ is a limit point of $\varphi(M)$. Choose $x \in M$ such that $\varphi(x)$ lies in a uniformly normal neighborhood of $y$, and show that there exists a convergent sequence of points $(x_i, v_i) \in TM$ such that $\varphi_i(x_i) = \varphi(x)$ and $\varphi_i(\exp_{x_i} v_i) = y$.]
+\end{exercise}
+
+\begin{exercise}
+\label{prob:distance-complete-metric}
+\dcref{ch6:6-9}
+\uses{prob:distance-disconnected-riemannian}
+
+Suppose $(M, g)$ is a (not necessarily connected) Riemannian manifold. In Problem 2-30, you were asked to show that there is a distance function $d : M \times M \to \mathbb{R}$ that induces the given topology and restricts to the Riemannian distance on each connected component of $M$. Show that if each component of $M$ is geodesically complete, then $d$ can be chosen so that $(M, d)$ is a complete metric space. Show also that if $M$ has infinitely many components, then $d$ can be chosen so that $(M, d)$ is not complete.
+\end{exercise}
+
+\begin{exercise}
+\label{prob:completeness-divergence}
+\dcref{ch6:6-10}
+
+A curve $\gamma : [0, b) \to M$ (with $0 < b \leq \infty$) is said to \emph{diverge to infinity} if for every compact set $K \subseteq M$, there is a time $T \in [0, b)$ such that $\gamma(t) \notin K$ for $t > T$. (For those who are familiar with one-point compactifications, this means that $\gamma(t)$ converges to the ``point at infinity'' in the one-point compactification of $M$ as $t \nearrow b$.) Prove that a connected Riemannian manifold is complete if and only if every regular curve that diverges to infinity has infinite length. (The length of a curve whose domain is not compact is just the supremum of the lengths of its restrictions to compact subintervals.)
+\end{exercise}
+
+\begin{exercise}
+\label{prob:submanifold-distance-inequality}
+\dcref{ch6:6-11}
+
+Suppose $(M, g)$ is a connected Riemannian manifold, $P \subseteq M$ is a connected embedded submanifold, and $\bar{g}$ is the induced Riemannian metric on $P$.
+\begin{enumerate}
+\item[(a)] Show that $d_{\bar{g}}(p, q) \geq d_g(p, q)$ for $p, q \in P$.
+\item[(b)] Prove that if $(M, g)$ is complete and $P$ is closed in $M$, then $(P, \bar{g})$ is complete.
+\item[(c)] Give an example of a complete Riemannian manifold $(M, g)$ and a connected embedded submanifold $P \subseteq M$ that is complete but not closed in $M$.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+\label{prob:geodesic-completeness}
+\dcref{ch6:6-12}
+
+Let $(M, g)$ be a connected Riemannian manifold.
+\begin{enumerate}
+\item[(a)] Suppose there exists $\delta > 0$ such that for each $p \in M$, every maximal unit-speed geodesic starting at $p$ is defined at least on an interval of the form $(-\delta, \delta)$. Prove that $M$ is complete.
+\item[(b)] Prove that if $M$ has positive or infinite injectivity radius, then it is complete.
+\item[(c)] Prove that if $M$ is homogeneous, then it is complete.
+\item[(d)] Give an example of a complete, connected Riemannian manifold that has zero injectivity radius.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+\label{prob:lie-group-exp-surjective}
+\dcref{ch6:6-13}
+\uses{prob:lie-group-bi-invariant-metric}
+
+Let $G$ be a connected compact Lie group. Show that the Lie group exponential map of $G$ is surjective. [Hint: Use Problem 5-8.]
+\end{exercise}
+
+\begin{exercise}
+\label{prob:compact-complete-characterization}
+\dcref{ch6:6-14}
+
+Let $(M, g)$ be a connected Riemannian manifold.
+\begin{enumerate}
+\item[(a)] Show that $M$ is complete if and only if the compact subsets of $M$ are exactly the closed and bounded ones.
+\item[(b)] Show that $M$ is compact if and only if it is complete and bounded.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+\label{prob:onion-skin-geodesics}
+\dcref{ch6:6-15}
+
+Let $S$ be the unit 2-sphere minus its north and south poles, and let $M = (0, \pi) \times \mathbb{R}$. Define $q : M \to S$ by $q(\varphi, \theta) = (\sin \varphi \cos \theta, \sin \varphi \sin \theta, \cos \varphi)$, and let $g$ be the metric on $M$ given by pulling back the round metric: $g = q^* \bar{g}$. (Think of $M$ as an infinitely long onion skin wrapping infinitely many times around an onion.) Prove that the Riemannian manifold $(M, g)$ has diameter $\pi$, but contains infinitely long properly embedded geodesics.
+\end{exercise}
+
+\begin{exercise}
+\label{prob:inj-radius-diffeomorphism}
+\dcref{ch6:6-16}
+
+Suppose $(M, g)$ is a complete, connected Riemannian manifold with positive or infinite injectivity radius.
+\begin{enumerate}
+\item[(a)] Let $\rho \in (0, \infty]$ denote the injectivity radius of $M$, and define $T^\rho M$ to be the subset of $TM$ consisting of vectors of length less than $\rho$, and $D^\rho$ to be the subset $\{(p, q) : d_g(p, q) < \rho\} \subseteq M \times M$. Define $E : T^\rho M \to D^\rho$ by $E(x, v) = (x, \exp_x v)$. Prove that $E$ is a diffeomorphism.
+\item[(b)] Use part (a) to prove that if $B$ is a topological space and $F, G : B \to M$ are continuous maps such that $d_g(F(x), G(x)) < \operatorname{inj}(M)$ for all $x \in B$, then $F$ and $G$ are homotopic.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+\label{prob:closed-geodesic-free-homotopy}
+\dcref{ch6:6-17}
+\uses{prop:existence-closed-geodesics,prop:path-homotopy-contains-minimizing-geodesic}
+
+Prove Proposition~\ref{prop:existence-closed-geodesics} (existence of a closed geodesic in a free homotopy class). [Hint: Use Prop.~\ref{prop:path-homotopy-contains-minimizing-geodesic} to show that the given free homotopy class is represented by a \emph{geodesic loop}, i.e., a geodesic whose starting and ending points are the same. Show that the lengths of such loops have a positive greatest lower bound; then choose a sequence of geodesic loops whose lengths approach that lower bound, and show that a subsequence converges uniformly to a closed geodesic.]
+\end{exercise}
+
+\begin{exercise}
+\label{prob:k-point-homogeneous}
+\dcref{ch6:6-18}
+\uses{prob:inj-radius-diffeomorphism,prob:geodesic-completeness}
+
+A connected Riemannian manifold $(M,g)$ is said to be $k$-point \emph{homogeneous} if for any two ordered $k$-tuples $(p_1,\ldots,p_k)$ and $(q_1,\ldots,q_k)$ of points in $M$ such that $d_g(p_i, p_j) = d_g(q_i,q_j)$ for all $i,j$, there is an isometry $\varphi: M \to M$ such that $\varphi(p_i) = q_i$ for $i = 1,\ldots,k$. Show that $(M,g)$ is 2-point homogeneous if and only if it is isotropic. [Hint: Assuming that $M$ is isotropic, first show that it is homogeneous by considering the midpoint of a geodesic segment joining sufficiently nearby points $p, q \in M$, and then use the result of Problem 6-12(c) to show that it is complete.] (Used on pp. 56, 261.)
+\end{exercise}
+
+\begin{exercise}
+\label{prob:symmetric-space-homogeneous}
+\dcref{ch6:6-19}
+\uses{prob:k-point-homogeneous}
+
+Prove that every Riemannian symmetric space is homogeneous. [Hint: Proceed as in Problem 6-18.] (Used on p. 78.)
+\end{exercise}
+
+\begin{exercise}
+\label{prob:extendible}
+\dcref{ch6:6-20}
+
+A connected Riemannian manifold is said to be \emph{extendible} if it is isometric to a proper open subset of a larger connected Riemannian manifold.
+\begin{enumerate}
+\item[(a)] Show that every complete, connected Riemannian manifold is nonextendible.
+\item[(b)] Show that the converse is false by giving an example of a nonextendible connected Riemannian manifold that is not complete.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+\label{prob:ray-definition}
+\dcref{ch6:6-21}
+
+Let $(M,g)$ be a complete, connected, noncompact Riemannian manifold. Define a \emph{ray} in $M$ to be a geodesic $\gamma$ whose domain is $[0,\infty)$, and such that the restriction of $\gamma$ to $[0,b]$ is minimizing for every $b > 0$. Prove that for each $p \in M$ there is a ray in $M$ starting at $p$.
+\end{exercise}
+
+\begin{exercise}
+\label{prob:manifold-boundary-complete}
+\dcref{ch6:6-22}
+
+Let $(M,g)$ be a connected Riemannian manifold with boundary. Prove that $(M, d_g)$ is a complete metric space if and only if the following condition holds: for every geodesic $\gamma: [0,b) \to M$ that cannot be extended to a geodesic on any interval $[0,b')$ with $b' > b$, $\gamma(t)$ converges to a point of $\partial M$ as $t \nearrow b$.
+\end{exercise}
+
+\begin{exercise}
+\label{prob:energy-functional}
+\dcref{ch6:6-23}
+
+In some treatments of Riemannian geometry, instead of minimizing the length functional, one considers the following \emph{energy functional} for an admissible curve $\gamma: [a,b] \to M$:
+\[
+E(\gamma) = \frac{1}{2} \int_a^b |\gamma'(t)|^2 \, dt.
+\]
+(Note that $E(\gamma)$ is \emph{not} independent of parametrization.)
+\begin{enumerate}
+\item[(a)] Prove that an admissible curve is a critical point for $E$ (with respect to proper variations) if and only if it is a geodesic (which means, in particular, that it has constant speed).
+\item[(b)] Prove that if $\gamma$ is an admissible curve that minimizes energy among admissible curves with the same endpoints, then it also minimizes length.
+\item[(c)] Prove that if $\gamma$ is an admissible curve that minimizes length among admissible curves with the same endpoints, then it minimizes energy if and only if it has constant speed.
+\end{enumerate}
+[Remark: For our limited purposes, it is easier and more straightforward to use the length functional. But because the energy functional does not involve the square root function, and its critical points automatically have constant-speed parametrizations, it is sometimes more useful for proving the existence of geodesics with certain properties.]
+\end{exercise}
+
+\begin{exercise}
+\label{prob:killing-vector-field-properties}
+\dcref{ch6:6-24}
+\uses{prob:killing-vector-field}
+
+Let $(M, g)$ be a Riemannian manifold. Recall that a vector field $X \in \mathfrak{X}(M)$ is called a \emph{Killing vector field} if $\mathcal{L}_X g = 0$ (see Problem 5-22).
+\begin{enumerate}
+\item[(a)] Prove that a Killing vector field that is normal to a geodesic at one point is normal everywhere along the geodesic.
+\item[(b)] Prove that if a Killing vector field vanishes at a point $p$, then it is tangent to geodesic spheres centered at $p$.
+\item[(c)] Prove that a Killing vector field on an odd-dimensional manifold cannot have an isolated zero.
+\end{enumerate}
+(Used on p.\ 315.)
+\end{exercise}
+
+\begin{exercise}
+\label{prob:distance-function-submersion}
+\dcref{ch6:6-25}
+
+Suppose $(M, g)$ is a Riemannian manifold and $f : M \to \mathbb{R}$ is a smooth local distance function. Prove that $f$ is a Riemannian submersion.
+\end{exercise}
+
+\begin{exercise}
+\label{prob:geodesic-to-closed-subset}
+\dcref{ch6:6-26}
+
+Suppose $(M, g)$ is a complete, connected Riemannian manifold and $S \subseteq M$ is a closed subset.
+\begin{enumerate}
+\item[(a)] Show that for every $p \in M \setminus S$, there is a geodesic segment from $p$ to a point of $S$ whose length is equal to $d_g(p, S)$.
+\item[(b)] In case $S$ is a properly embedded submanifold of $M$, show that every geodesic segment satisfying the conclusion of (a) intersects $S$ orthogonally.
+\item[(c)] Give a counterexample to (a) if $S$ is not closed.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+\label{prob:smooth-function-equals-distance}
+\dcref{ch6:6-27}
+
+Suppose $(M, g)$ is a complete, connected Riemannian manifold, $S \subseteq M$ is a closed subset, and $f : M \to \mathbb{R}$ is a continuous function such that $f^{-1}(0) = S$ and $f$ is smooth with unit gradient on $M \setminus S$. Prove that $f(x) = d_g(x, S)$ for all $x \in M$.
+\end{exercise}
+
+\begin{exercise}
+\label{prob:isometry-group-acts-properly}
+\dcref{ch6:6-28}
+
+Suppose $(M, g)$ is a complete, connected Riemannian $n$-manifold whose isometry group is a Lie group acting smoothly on $M$. (The Myers--Steenrod theorem shows that this is always the case when $M$ is connected, but we have not proved this.) Prove that if $G$ is a closed subgroup of $\operatorname{Iso}(M)$, then $G$ acts properly on $M$, using the following outline. Suppose $(\varphi_m)$ is a sequence in $G$ and $(p_m)$ is a sequence in $M$ such that $p_m \to p_0$ and $\varphi_m(p_m) \to q_0$.
+\begin{enumerate}
+\item[(a)] Prove that $\varphi_m(p_0) \to q_0$.
+\item[(b)] Let $B_r(p_0)$ be a geodesic ball centered at $p_0$; let $0 < \varepsilon < r$; let $\{b_1, \ldots, b_n\}$ be an orthonormal basis for $T_{p_0}M$; and let $p_i = \exp_{p_0}(\varepsilon b_i)$ for $i = 1, \ldots, n$. Prove that there exist a linear isometry $A : T_{p_0}M \to T_{q_0}M$ and a subsequence $(\varphi_{m_j})$ such that $\varphi_{m_j}(p_i) \to \exp_{q_0}(\varepsilon A b_i)$ for $i = 1, \ldots, n$. [Hint: Use Prop. 5.20.]
+\item[(c)] Prove that there is an isometry $\varphi \in G$ such that $\varphi_{m_j} \to \varphi$ pointwise, meaning that $\varphi_{m_j}(x) \to \varphi(x)$ for every $x \in M$.
+\item[(d)] Prove that $\varphi_{m_j} \to \varphi$ in the topology of $G$. [Hint: Define a map $F: G \to M^{n+1}$ by $F(\psi) = (\psi(p_0), \psi(p_1), \ldots, \psi(p_n))$, where $p_1, \ldots, p_n$ are the points introduced in part (b). Show that $F$ is continuous, injective, and closed, and therefore is a homeomorphism onto its image.]
+\end{enumerate}
+(Used on p. 349.)
+\end{exercise}
+
+\begin{exercise}
+\label{prob:parallel-vector-field}
+\dcref{ch6:6-29}
+
+Suppose $(M, g)$ is a Riemannian $n$-manifold that admits a nonzero parallel vector field $X$. Show that for each $p \in M$, there exist a neighborhood $U$ of $p$, a Riemannian $(n - 1)$-manifold $N$, and an open interval $I \subseteq \mathbb{R}$ with its Euclidean metric such that $U$ is isometric to the Riemannian product $N \times I$. [Hint: It might be helpful to prove that the 1-form $X^\flat$ is closed and to compute the Lie derivative $\mathcal{L}_X g$.]
+\end{exercise}
+
+\begin{exercise}
+\label{prob:volume-geodesic-ball}
+\dcref{ch6:6-30}
+
+Suppose $(M, g)$ is a Riemannian $n$-manifold, $p \in M$, and $B_\varepsilon(p)$ is a geodesic ball centered at $p$. Prove that for every $\delta$ such that $0 < \delta < \varepsilon$,
+\[
+\operatorname{Vol}\left(\overline{B_\delta(p)}\right) = \int_0^\delta \operatorname{Area}(\partial B_r(p)) \, dr,
+\]
+where $\operatorname{Area}(\partial B_r(p))$ represents the $(n-1)$-dimensional volume of $\partial B_r(p)$ with its induced Riemannian metric.
+\end{exercise}
+
+\begin{exercise}
+\label{prob:tubular-neighborhood-volume}
+\dcref{ch6:6-31}
+\uses{prob:volume-geodesic-ball}
+
+Suppose $(M, g)$ is a Riemannian $n$-manifold, $P \subseteq M$ is a compact embedded submanifold, and $U$ is an $\varepsilon$-tubular neighborhood of $P$ for some $\varepsilon > 0$. For $0 < \delta < \varepsilon$, define $U_\delta$ and $P_\delta$ by
+\[
+U_\delta = \{x \in U : d_g(x, P) \leq \delta\},
+\]
+\[
+P_\delta = \{x \in U : d_g(x, P) = \delta\}.
+\]
+\begin{enumerate}
+\item[(a)] Prove that $U_\delta$ is a regular domain and $P_\delta$ is a compact, embedded submanifold of $M$ for each $\delta \in (0, \varepsilon)$.
+\item[(b)] Generalize the result of Problem 6-30 by proving that
+\[
+\operatorname{Vol}(U_\delta) = \int_0^\delta \operatorname{Area}(P_r) \, dr,
+\]
+where $\operatorname{Area}(P_r)$ denotes the $(n-1)$-dimensional volume of $P_r$ with the induced Riemannian metric.
+\end{enumerate}
+\end{exercise}

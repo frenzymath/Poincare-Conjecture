@@ -1,0 +1,946 @@
+% Source: Lee, "Introduction to Riemannian Manifolds" (2nd ed.), Chapter 11 "Comparison Theory", PDF pages 329-354 of the cited source.
+% Transcribed from the cited source, with manual checks for a few pages, and organized according to leanblueprint
+% conventions (semantic \label, bracketed titles, \uses dependency edges, \dcref to Lee's own numbering) below.
+
+The purpose of this chapter is to show how upper or lower bounds on curvature can be used to derive bounds on other geometric quantities such as lengths of tangent vectors, distances, and volumes. The intuition behind all the comparison theorems is that negative curvature forces geodesics to spread apart faster as you move away from a point, and positive curvature forces them to spread slower and eventually to begin converging.
+
+One of the most useful comparison theorems is the \emph{Jacobi field comparison theorem} (see Thm.~11.9 below), which gives bounds on the sizes of Jacobi fields based on curvature bounds. Its importance is based on four observations: first, in a normal neighborhood of a point $p$, every tangent vector can be represented as the value of a Jacobi field that vanishes at $p$ (by Cor.~10.11); second, zeros of Jacobi fields correspond to conjugate points, beyond which geodesics cannot be minimizing; third, Jacobi fields represent the first-order behavior of families of geodesics; and fourth, each Jacobi field satisfies a differential equation that directly involves the curvature.
+
+In the first section of the chapter, we set the stage for the comparison theorems by showing how the growth of Jacobi fields in a normal neighborhood is controlled by the Hessian of the radial distance function, which satisfies a first-order differential equation called a \emph{Riccati equation}. We then state and prove a fundamental comparison theorem for Riccati equations.
+
+Next we proceed to derive some of the most important geometric comparison theorems that follow from the Riccati comparison theorem. The first few comparison theorems are all based on upper or lower bounds on sectional curvatures. Then we explain how some comparison theorems can also be proved based on lower bounds for the Ricci curvature. In the next chapter, we will see how these comparison theorems can be used to prove significant local-to-global theorems in Riemannian geometry.
+
+Since all of the results in this chapter are deeply intertwined with lengths and distances, we restrict attention throughout the chapter to the Riemannian case.
+
+\section{Jacobi Fields, Hessians, and Riccati Equations}
+
+Our main aim in this chapter is to use curvature inequalities to derive consequences about how fast the metric grows or shrinks, based primarily on size estimates for Jacobi fields. But first, we need to make one last stop along the way.
+
+The Jacobi equation is a second-order differential equation, but comparison theory for differential equations generally works much more smoothly for first-order equations. In order to get the sharpest results about Jacobi fields and other geometric quantities, we will derive a first-order equation, called a \emph{Riccati equation}, that is closely related to the Jacobi equation.
+
+Let $(M,g)$ be an $n$-dimensional Riemannian manifold, let $U$ be a normal neighborhood of a point $p \in M$, and let $r: U \to \mathbb{R}$ be the radial distance function as defined by $(6.4)$. The Gauss lemma shows that the gradient of $r$ on $U \setminus \{p\}$ is the radial vector field $\partial_r$.
+
+On $U \setminus \{p\}$, we can form the symmetric covariant $2$-tensor field $\nabla^2 r$ (the covariant Hessian of $r$) and the $(1,1)$-tensor field $\mathcal{H}_r = \nabla(\partial_r)$. Because $\partial_r = \operatorname{grad} r = (\nabla r)^{\sharp}$ and $\nabla$ commutes with the musical isomorphisms (Prop.~5.17), we have
+\[
+\mathcal{H}_r = \nabla(\partial_r) = \nabla((\nabla r)^{\sharp}) = (\nabla^2 r)^{\sharp}.
+\]
+
+In other words, $\mathcal{H}_r$ is obtained from $\nabla^2 r$ by raising one of its indices.
+
+Using Proposition B.1, we can also interpret the $(1,1)$-tensor field $\mathcal{H}_r$ as an element of $\Gamma(\operatorname{End}(TM|_{U \setminus \{p\}}))$ (that is, a field of endomorphisms of $TM$ over $U \setminus \{p\}$), defined by
+\begin{equation}
+\mathcal{H}_r(w) = \nabla_w \partial_r
+\tag{11.1}
+\end{equation}
+for all $w \in TM|_{U \setminus \{p\}}$. The endomorphism field $\mathcal{H}_r$ is called the \textbf{Hessian operator of $r$}. It is related to the $(0,2)$-Hessian by
+\begin{equation}
+(\mathcal{H}_r(v), w) = (\nabla^2 r)(v, w),
+\qquad \text{for all } q \in U \setminus \{p\} \text{ and } v, w \in T_q M.
+\tag{11.2}
+\end{equation}
+
+The next lemma summarizes some of its basic algebraic properties.
+
+\begin{lemma}
+\label{lem:hessian-operator-properties}
+\dcref{ch11:11.1}
+\uses{prop:jacobi-field-hessian-equation,lem:symmetric-bilinear-form-unit-vectors}
+Let $r$, $\partial_r$, and $\mathcal{H}_r$ be defined as above.
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item $\mathcal{H}_r$ is self-adjoint.
+\item $\mathcal{H}_r(\partial_r) \equiv 0$.
+\item The restriction of $\mathcal{H}_r$ to vectors tangent to a level set of $r$ is equal to the shape operator of the level set associated with the normal vector field $N = -\partial_r$.
+\end{enumerate}
+
+\begin{proof}
+Since the covariant Hessian $\nabla^2 r$ is symmetric, equation (11.2) shows that the Hessian operator is self-adjoint. Part (b) follows immediately from the fact that $\mathcal{H}_r(\partial_r) = \nabla_{\partial_r} \partial_r = 0$ because the integral curves of $\partial_r$ are geodesics.
+
+Next, note that $\partial_r$ is a unit vector field normal to each level set of $r$ by the Gauss lemma, so (c) follows from the Weingarten equation 8.11.
+\end{proof}
+\end{lemma}
+
+Problem 11-1 gives another geometric interpretation of $\nabla^2 r$, as the radial derivative of the nonconstant components of the metric in polar normal coordinates.
+
+The Hessian operator also has a close relationship with Jacobi fields.
+
+\begin{proposition}[]
+\label{prop:jacobi-field-hessian-equation}
+\dcref{ch11:11.2}
+\uses{prop:jacobi-fields-vanishing-at-point,prop:normal-jacobi-equivalent-conditions}
+Suppose $(M, g)$ is a Riemannian manifold, $U \subseteq M$ is a normal neighborhood of $p \in M$, and $r$ is the radial distance function on $U$. If $\gamma : [0, b] \to U$ is a unit-speed radial geodesic segment starting at $p$, and $J \in \mathfrak{J}^{\perp}(\gamma)$ is a normal Jacobi field along $\gamma$ that vanishes at $t = 0$, then the following equation holds for all $t \in (0, b]$:
+\begin{equation}
+D_t J(t) = \mathcal{H}_r(J(t)).
+\tag{11.3}
+\end{equation}
+\end{proposition}
+
+\textbf{Proof.} Let $v = \gamma'(0)$, so $|v|_g = 1$ and $\gamma(t) = \exp_p(tv)$. Proposition 10.10 shows that
+\[
+J(t) = d(\exp_p)_{tv}(tw),
+\]
+where $D_t J(0) = w = w^i \partial_i|_p$. Because we are assuming that $J$ is normal, it follows from Proposition 10.7 that $w \perp v$.
+
+Because $v$ ensures that $w$ is tangent to the unit sphere in $T_p M$ at $v$, we can choose a smooth curve $\sigma : (-\varepsilon, \varepsilon) \to T_p M$ that satisfies $|\sigma(s)|_g = 1$ for all $s \in (-\varepsilon, \varepsilon)$, with initial conditions $\sigma(0) = v$ and $\sigma'(0) = w$. (As always, we are using the canonical identification between $T_v(T_p M)$ and $T_p M$.) Define a smooth family of curves $\Gamma : (-\varepsilon, \varepsilon) \times [0, b] \to M$ by $\Gamma(s, t) = \exp_p(t\sigma(s))$. Then $\Gamma(0, t) = \exp_p(tv) = \gamma(t)$, so $\Gamma$ is a variation of $\gamma$. The stipulation that $|\sigma(s)|_g = 1$ ensures that each main curve $\Gamma_s(t) = \Gamma(s, t)$ is a unit-speed radial geodesic, so its velocity satisfies the following identity for all $(s, t)$:
+\begin{equation}
+\partial_t \Gamma(s, t) = (\Gamma_s)'(t) = \partial_r\big|_{\Gamma(s,t)}.
+\tag{11.4}
+\end{equation}
+
+The chain rule yields
+\[
+\partial_s \Gamma(0, t) = d(\exp_p)_{t\sigma(0)}(t\sigma'(0)) = d(\exp_p)_{tv}(tw) = J(t),
+\]
+so $J$ is the variation field of $\Gamma$. By the symmetry lemma,
+\begin{equation}
+D_t J(t) = D_t \partial_s \Gamma(0, t) = D_s \partial_t \Gamma(0, t).
+\tag{11.5}
+\end{equation}
+
+This last expression is the covariant derivative of $\partial_t \Gamma(s, t)$ along the curve $\Gamma^{(0)}(s) = \Gamma(s, t)$ evaluated at $s = 0$. Since the velocity of this curve at $s = 0$ is $\partial_s \Gamma(0, t) = J(t)$ and $\partial_t \Gamma(s, t) = \partial_r$ is an extendible vector field by (11.4), we obtain
+\[
+D_s \partial_t \Gamma(0, t) = \nabla_{J(t)}(\partial_r) = \mathcal{H}_r(J(t)).
+\]
+
+Combining this with (11.5) yields the result. \quad$\square$
+
+In order to compare the Hessian operator of an arbitrary metric with those of the constant-curvature models, we need the following explicit formula for the constant-curvature case.
+
+\begin{proposition}[]
+\label{prop:hessian-radial-distance-constant-curvature}
+\dcref{ch11:11.3}
+Suppose $(M, g)$ is a Riemannian manifold, $U \subseteq M$ is a normal neighborhood of $p \in M$, and $r$ is the radial distance function on $U$. Then $g$ has constant sectional curvature $c$ on $U$ if and only if the following formula holds at all points of $U \setminus \{p\}$:
+\begin{equation}
+\mathcal{H}_r = \frac{s_c'(r)}{s_c(r)}\pi_r, \tag{11.6}
+\end{equation}
+where $s_c$ is defined by (10.8), and for each $q \in U \setminus \{p\}$, $\pi_r : T_q M \to T_q M$ is the orthogonal projection onto the tangent space of the level set of $r$ (equivalently, onto the orthogonal complement of $\partial_r|_q$).
+\end{proposition}
+
+Proof. First suppose $g$ has constant sectional curvature $c$ on $U$. Let $q \in U \setminus \{p\}$, and let $\gamma : [0, b] \to U$ be the unit-speed radial geodesic from $p$ to $q$, so $b = r(q)$. Let $(E_1,\ldots, E_n)$ be a parallel orthonormal frame along $\gamma$, chosen so that $E_n(t) = \gamma'(t) = \partial_r|_{\gamma(t)}$. It follows from Proposition 10.12 that for $i = 1, \ldots, n-1$, the vector fields $J_i(t) = s_c(t)E_i(t)$ are normal Jacobi fields along $\gamma$ that vanish at $t = 0$. The assumption that $U$ is a normal neighborhood of $p$ means that $U = \exp_p(V)$ for some star-shaped neighborhood $V$ of $0 \in T_p M$, and every point of $V$ is a regular point for $\exp_p$. Thus Proposition 10.20 shows that $p$ has no conjugate points along $\gamma$, which implies that $s_c(t) \neq 0$ for $t \in (0, b]$. (For $c \le 0$, this is automatic, because $s_c$ vanishes only at $0$; but in the case $c = 1/R^2 > 0$, it means that $b < \pi R$.)
+
+For $1 \le i \le n-1$, we use Proposition 11.2 to compute
+$$D_t J_i(t) = \mathcal{H}_r(J_i(t)) = s_c(t)\mathcal{H}(E_i(t)).$$
+
+On the other hand, because each $E_i$ is parallel along $\gamma$,
+$$D_t J_i(t) = s_c'(t)E_i(t).$$
+
+Comparing these two equations at $t = b$ and dividing by $s_c(b)$, we obtain
+$$\mathcal{H}_r(E_i(b)) = \frac{s_c'(b)}{s_c(b)}E_i(b) = \frac{s_c'(b)}{s_c(b)}\pi_r(E_i(b)).$$
+
+On the other hand, Lemma 11.1(b) shows that
+$$\mathcal{H}_r(E_n(b)) = \mathcal{H}_r(\partial_r|_q) = 0 = \frac{s_c'(b)}{s_c(b)}\pi_r(E_n(b)),$$
+because $\pi_r(E_n(b)) = \pi_r(\partial_r|_q) = 0$. Since $(E_i(b))$ is a basis for $T_q M$, this proves (11.6).
+
+Conversely, suppose $\mathcal{H}_r$ is given by (11.6). Let $\gamma$ be a radial geodesic starting at $p$, and let $J$ be a normal Jacobi field along $\gamma$ that vanishes at $t = 0$. By Proposition 11.2, $D_t J(t) = \mathcal{H}_r J(t) = s_c'(t) J(t)/s_c(t)$. A straightforward computation then shows that $s_c(t)^{-1}J(t)$ is parallel along $\gamma$. Thus we can write every such Jacobi field in the form $J(t) = k s_c(t) E(t)$ for some constant $k$ and some parallel unit normal vector field $E$ along $\gamma$. Proceeding exactly as in the proof of Theorem 10.14, we conclude that $g$ is given by formula (10.17) in these coordinates, and therefore has constant sectional curvature $c$. $\square$
+
+% [FIGURE: Graph showing three curves representing s'_c/s_c for constant curvature comparison: upper curve for positive curvature (c = 1/R^2), horizontal line for flat case (c = 0), and lower curve for negative curvature (c = -1/R^2), with key points marked at 1/R and \pi R on the horizontal axis]
+
+For convenience, we record the exact formulas for the quotient $s'_c/s_c$ that appeared in the previous proposition (see Fig.~11.1):
+\[
+\frac{s'_c(t)}{s_c(t)} = \begin{cases}
+\frac{1}{t}, & \text{if } c = 0; \\
+\frac{1}{R} \cot \frac{t}{R}, & \text{if } c = \frac{1}{R^2} > 0; \\
+\frac{1}{R} \coth \frac{t}{R}, & \text{if } c = -\frac{1}{R^2} < 0.
+\end{cases}
+\]
+
+Now we are in a position to derive the first-order equation mentioned at the beginning of this section. (Problem~11-3 asks you to show, with a different argument, that the conclusion of the next theorem holds for the Hessian operator of every smooth local distance function, not just the radial distance function in a normal neighborhood.) This theorem concerns the covariant derivative of the morphism field $\mathcal{H}_r$ along a curve $\gamma$. We can compute the action of $D_t\mathcal{H}_r$ on every $V \in \mathfrak{X}(\gamma)$ by noting that $\mathcal{H}_r(V(t))$ is a contraction of $\mathcal{H}_r \otimes V(t)$, so the product rule implies
+\[
+D_t(\mathcal{H}_r(V)) = (D_t \mathcal{H}_r)V + \mathcal{H}_r(D_t V).
+\]
+
+\begin{theorem}[The Riccati Equation]
+\label{thm:riccati-equation}
+\dcref{ch11:11.4}
+Let $(M, g)$ be a Riemannian manifold; let $U$ be a normal neighborhood of a point $p \in M$; let $r : U \to \mathbb{R}$ be the radial distance function; and let $\gamma : [0, b] \to U$ be a unit-speed radial geodesic. The Hessian operator $\mathcal{H}_r$ satisfies the following equation along $\gamma|_{[0,b]}$, called a \emph{Riccati equation}:
+\begin{equation}
+D_t \mathcal{H}_r + \mathcal{H}_r^2 + R_{\gamma'} = 0, \tag{11.7}
+\end{equation}
+where $\mathcal{H}_r^2$ and $R_{\gamma'}$ are the endomorphism fields along $\gamma$ defined by $\mathcal{H}_r^2(w) = \mathcal{H}_r(\mathcal{H}_r(w))$ and $R_{\gamma'}(w) = R(w,\gamma')\gamma'$, with $R$ the curvature endomorphism of $g$.
+\end{theorem}
+
+Proof. Let $t_0 \in (0,b]$ and $w \in T_{\gamma(t_0)} M$ be arbitrary. We can decompose $w$ as $w = y + z$, where $y$ is a multiple of $\partial_r$ and $z$ is tangent to a level set of $r$. Since (11.7) is an equation between linear operators, we can prove the equation by evaluating it separately on $y$ and $z$.
+
+Because $\gamma$ is a unit-speed radial geodesic, its velocity is equal to $\partial_r$, and thus $D_t \partial_r = 0$ along $\gamma$. It follows that $(D_t \mathcal{H}_r)(\partial_r) = D_t(\mathcal{H}_r(\partial_r)) - \mathcal{H}_r(D_t \partial_r) = 0$. Since all three terms on the left-hand side of (11.7) annihilate $\partial_r$, the equation holds when applied to any multiple of $\partial_r$.
+
+Next we consider a vector $z \in T_{\gamma(t_0)} M$ that is tangent to a level set of $r$, and thus by the Gauss lemma orthogonal to $\gamma'(t_0)$. By Corollary 10.11, $z$ can be expressed as the value at $t = t_0$ of a Jacobi field $J$ along $\gamma$ vanishing at $t = 0$. Because $J(0)$ and $J(t_0)$ are orthogonal to $\gamma'$, it follows that $J$ is a normal Jacobi field, so Proposition 11.2 shows that $D_t J(t) = \mathcal{H}_r(J(t))$ for all $t \in [0,b]$. Differentiation yields
+\[
+D_t^2 J = D_t(\mathcal{H}_r(J)) = (D_t \mathcal{H}_r)J + \mathcal{H}_r(D_t J) = (D_t \mathcal{H}_r)J + \mathcal{H}_r(\mathcal{H}_r(J)).
+\]
+
+On the other hand, the Jacobi equation gives $D_t^2 J = -R_{\gamma'}(J)$, so
+\[
+(D_t \mathcal{H}_r + \mathcal{H}_r^2 + R_{\gamma'})(J) \equiv 0.
+\]
+
+Evaluating this at $t = t_0$ proves the result. $\square$
+
+The Riccati equation is named after Jacopo Riccati, an eighteenth-century Italian mathematician who studied scalar differential equations of the form $v' + pv^2 + qv + r = 0$, where $p,q,r$ are known functions and $v$ is an unknown function of one real variable. As is shown in some ODE texts, a linear second-order equation in one variable of the form $au'' + bu' + cu = 0$ can be transformed to a Riccati equation wherever $u \neq 0$ by making the substitution $v = u'/u$. The relation (11.3) generalizes this, and allows us to replace the analysis of the second-order linear Jacobi equation by an analysis of the first-order nonlinear Riccati equation.
+
+The primary tool underlying all of our geometric comparison theorems is a fundamental comparison theorem for solutions to Riccati equations. It says, roughly, that a larger curvature term results in a smaller solution, and vice versa. When we apply this to (11.3), it will yield analogous comparison for Jacobi fields.
+
+In the statement and proof of this theorem, we will compare self-adjoint endomorphisms by comparing the quadratic forms they determine. Given a finite-dimensional inner product space $V$ and self-adjoint endomorphisms $A, B : V \to V$, the notation $A \le B$ means that $\langle Av, v \rangle \le \langle Bv, v \rangle$ for all $v \in V$, or equivalently that $B - A$ is positive semidefinite. In particular, $B \ge 0$ means that $B$ is positive semidefinite. Note that the square of every self-adjoint endomorphism is positive semidefinite, because $\langle B^2 v, v \rangle = \langle Bv, Bv \rangle \ge 0$ for all $v \in V$.
+
+\begin{theorem}[Riccati Comparison Theorem]
+\label{thm:riccati-comparison-theorem}
+\dcref{ch11:11.5}
+Suppose $(M,g)$ is a Riemannian manifold and $\gamma : [a,b] \to M$ is a unit-speed geodesic segment. Suppose $\eta, \bar{\eta}$ are self-adjoint endomorphism fields along $\gamma|_{[a,b]}$ that satisfy the following Riccati equations:
+\begin{equation}
+D_t \eta + \eta^2 + \sigma = 0, \quad D_t \tilde{\eta} + \tilde{\eta}^2 + \tilde{\sigma} = 0,
+\tag{11.8}
+\end{equation}
+where $\sigma$ and $\tilde{\sigma}$ are continuous self-adjoint endomorphism fields along $\gamma$ satisfying
+\begin{equation}
+\tilde{\sigma}(t) \ge \sigma(t) \quad \text{for all } t \in [a, b].
+\tag{11.9}
+\end{equation}
+
+Suppose further that $\lim_{t \searrow a} (\tilde{\eta}(t) - \eta(t))$ exists and satisfies
+\[
+\lim_{t \searrow a} (\tilde{\eta}(t) - \eta(t)) \le 0.
+\]
+
+Then
+\[
+\tilde{\eta}(t) \le \eta(t) \quad \text{for all } t \in (a, b].
+\]
+\end{theorem}
+
+To prove this theorem, we will express the endomorphism fields $\eta$, $\tilde{\eta}$, $\sigma$, and $\tilde{\sigma}$ in terms of a parallel orthonormal frame along $\gamma$. In this frame, they become symmetric matrix-valued functions, and then the Riccati equations for $\eta$ and $\tilde{\eta}$ become ordinary differential equations for these matrix-valued functions. The crux of the matter is the following comparison theorem for solutions to such matrix-valued equations.
+
+Let $M(n, \mathbb{R})$ be the space of all $n \times n$ real matrices, viewed as linear endomorphisms of $\mathbb{R}^n$, and let $S(n, \mathbb{R}) \subseteq M(n, \mathbb{R})$ be the subspace of symmetric matrices, corresponding to self-adjoint endomorphisms of $\mathbb{R}^n$ with respect to the standard inner product.
+
+\begin{theorem}[Matrix Riccati Comparison Theorem]
+\label{thm:matrix-riccati-comparison}
+\dcref{ch11:11.6}
+
+Suppose $H, \tilde{H}: [a,b] \to S(n, \mathbb{R})$ satisfy the following matrix Riccati equations:
+\begin{equation}
+H' + H^2 + S = 0, \quad \tilde{H}' + \tilde{H}^2 + \tilde{S} = 0,
+\tag{11.10}
+\end{equation}
+where $S, \tilde{S}: [a,b] \to S(n, \mathbb{R})$ are continuous and satisfy
+\begin{equation}
+\tilde{S}(t) \ge S(t) \quad \text{for all } t \in [a,b].
+\tag{11.11}
+\end{equation}
+
+Suppose further that $\lim_{t \searrow a} (\tilde{H}(t) - H(t))$ exists and satisfies
+\begin{equation}
+\lim_{t \searrow a} (\tilde{H}(t) - H(t)) \le 0.
+\tag{11.12}
+\end{equation}
+
+Then
+\begin{equation}
+\tilde{H}(t) \le H(t) \quad \text{for all } t \in (a,b].
+\tag{11.13}
+\end{equation}
+\end{theorem}
+
+\noindent\textbf{Proof.} Define functions $A, B: (a,b] \to S(n, \mathbb{R})$ by
+\[
+A(t) = \tilde{H}(t) - H(t), \quad B(t) = -\frac{1}{2}(\tilde{H}(t) + H(t)).
+\]
+
+The hypothesis implies that $A$ extends to a continuous matrix-valued function (still denoted by $A$) on $[a,b]$ satisfying $A(a) \le 0$. We need to show that $A(t) \le 0$ for all $t \in (a,b]$.
+
+Simple computations show that the following equalities hold on $(a,b)$:
+\begin{align*}
+A' &= BA + AB - \tilde{S} + S,\\
+B' &= \tfrac{1}{2}(\tilde{H}^2 + \tilde{S} + H^2 + S).
+\end{align*}
+
+Our hypotheses applied to these formulas imply
+\begin{align*}
+A' &\le BA + AB, \tag{11.14}\\
+B' &\ge k \mathop{\mathrm{Id}}, \tag{11.15}
+\end{align*}
+where the last inequality holds for some (possibly negative) real number $k$ because $H^2$ and $\tilde{H}^2$ are positive semidefinite and $S$ and $\tilde{S}$ are continuous on all of $[a,b]$ and thus bounded below. Therefore, for every $t \in (a,b)$,
+\begin{equation}
+B(t) = B(b) - \int_t^b B'(u) \, du \tag{11.16}
+\end{equation}
+\[
+\le B(b) - (b-t)k \, \mathop{\mathrm{Id}} \le B(b) + |b-a||k|\mathop{\mathrm{Id}},
+\]
+which shows that $B(t)$ is bounded above on $(a,b)$. Let $K$ be a constant large enough that $B(t) - K \, \mathop{\mathrm{Id}}$ is negative definite for all such $t$.
+
+Define a continuous function $f : [a,b] \times S^{n-1} \to \mathbb{R}$ by
+\[
+f(t,x) = e^{-2Kt} \langle A(t)x, x \rangle.
+\]
+
+To prove the theorem, we need to show that $f(t,x) \le 0$ for all $(t,x) \in [a,b] \times S^{n-1}$. Suppose this is not the case; then by compactness of $[a,b] \times S^{n-1}$, $f$ takes on a positive maximum at some $(t_0, x_0) \in [a,b] \times S^{n-1}$. Since $f(a,x) = 0$ for all $x$, we must have $a < t_0 \le b$. Because $\langle A(t_0)x, x \rangle \le \langle A(t_0)x_0, x_0 \rangle$ for all $x \in S^{n-1}$, it follows from Lemma 8.14 that $x_0$ is an eigenvector of $A(t_0)$ with eigenvalue $\lambda_0 = \langle A(t_0)x_0, x_0 \rangle > 0$.
+
+Since $f$ is differentiable at $(t_0, x_0)$ and $f(t, x_0) \le f(t_0, x_0)$ for $a < t < t_0$, we have
+\[
+\frac{\partial f}{\partial t}(t_0, x_0) = \lim_{t \to t_0^-} \frac{f(t,x_0) - f(t_0, x_0)}{t - t_0} \ge 0.
+\]
+
+(We have to take a one-sided limit here to accommodate the fact that $t_0$ might equal $b$.) On the other hand, from (11.14) and the fact that $A(t_0)$ and $B(t_0)$ are self-adjoint, we have
+
+\[
+\frac{\partial f}{\partial t}(t_0, x_0) = e^{-2Kt_0}\left(\langle A'(t_0)x_0, x_0 \rangle - 2K \langle A(t_0)x_0, x_0 \rangle\right)
+\]
+\[
+\le e^{-2Kt_0}\left(\langle B(t_0)A(t_0)x_0, x_0 \rangle + \langle A(t_0)B(t_0)x_0, x_0 \rangle - 2K \langle A(t_0)x_0, x_0 \rangle\right)
+\]
+\[
+= e^{-2Kt_0}\left(2\langle A(t_0)x_0, B(t_0)x_0 \rangle - 2K \langle A(t_0)x_0, x_0 \rangle\right)
+\]
+\[
+= e^{-2Kt_0}\left(2\lambda_0 \langle x_0, (B(t_0) - K \mathop{\mathrm{Id}})x_0 \rangle\right) < 0.
+\]
+
+These two inequalities contradict each other, thus completing the proof. \hfill $\square$
+
+% Continuation of Proof of Theorem 11.5
+
+Suppose $\eta$, $\tilde{\eta}$, $\sigma$, and $\tilde{\sigma}$ are self-adjoint endomorphism fields
+along $\gamma$ satisfying the hypotheses of the theorem. Let $(E_1, \ldots, E_n)$ be a parallel
+orthonormal frame along $\gamma$, and let $H, \tilde{H}: (a,b] \to S(n,\mathbb{R})$ and $S, \tilde{S}: [a,b] \to
+S(n,\mathbb{R})$ be the symmetric matrix-valued functions defined by
+\begin{align*}
+\eta(t)(E_i(t)) &= H^j_i(t)E_j(t), & \tilde{\eta}(t)(E_i(t)) &= \tilde{H}^j_i(t)E_j(t), \\
+\sigma(t)(E_i(t)) &= S^j_i(t)E_j(t), & \tilde{\sigma}(t)(E_i(t)) &= \tilde{S}^j_i(t)E_j(t).
+\end{align*}
+
+Because $D_t E_i \equiv 0$, the Riccati equations (11.8) reduce to the ordinary differential
+equations (11.10) for these matrix-valued functions. Theorem 11.6 shows that
+$\tilde{H}(t) \leq H(t)$ for all $t \in (a,b]$, which in turn implies that $\tilde{\eta}(t) \leq \eta(t)$. \qed
+
+\section{Comparisons Based on Sectional Curvature}
+
+Now we are ready to establish some comparison theorems for metric quantities
+based on comparing sizes of Hessian operators and Jacobi fields for an arbitrary
+metric with those of the constant-curvature models.
+
+The most fundamental comparison theorem is the following result, which compares
+the Hessian of the radial distance function with its counterpart for a constant-
+curvature metric.
+
+\begin{theorem}[Hessian Comparison]
+\label{thm:hessian-comparison}
+\dcref{ch11:11.7}
+\uses{prop:hessian-radial-distance-constant-curvature}
+
+Suppose $(M, g)$ is a Riemannian $n$-manifold, $p \in M$, $U$ is a normal neighborhood of $p$, and $r$ is the radial distance function
+on $U$.
+
+\begin{enumerate}
+\item[(a)] If all sectional curvatures of $M$ are bounded above by a constant $c$, then the
+following inequality holds in $U_0 \setminus \{p\}$:
+\begin{equation}
+\mathcal{H}_r \geq \frac{s'_c(r)}{s_c(r)}\pi_r,
+\tag{11.17}
+\end{equation}
+where $s_c$ and $\pi_r$ are defined as in Proposition 11.3, and $U_0 = U$ if $c \leq 0$,
+while $U_0 = \{q \in U : r(q) < \pi R\}$ if $c = 1/R^2 > 0$.
+
+\item[(b)] If all sectional curvatures of $M$ are bounded below by a constant $c$, then the
+following inequality holds in all of $U \setminus \{p\}$:
+\begin{equation}
+\mathcal{H}_r \leq \frac{s'_c(r)}{s_c(r)}\pi_r.
+\tag{11.18}
+\end{equation}
+\end{enumerate}
+
+\end{theorem}
+
+Proof. Let $(x^1, \ldots, x^n)$ be Riemannian normal coordinates on $U$ centered at $p$, let
+$r$ be the radial distance function on $U$, and let $s_c$ be the function defined by (10.8).
+Let $U_0 \subseteq U$ be the subset on which $s_c(r) > 0$; when $c \leq 0$, this is all of $U$, but when
+$c = 1/R^2 > 0$, it is the subset where $r < \pi R$. Let $\mathcal{H}^c_r$ be the endomorphism field on $U_0 \setminus \{p\}$ given by
+\[
+\mathcal{H}_r^c = \frac{s_c'(r)}{s_c(r)} \pi_r.
+\]
+
+Let $q \in U_0 \setminus \{p\}$ be arbitrary, and let $\gamma: [0,b] \to U_0$ be the unit-speed radial geodesic from $p$ to $q$. Note that at every point $\gamma(t)$ for $0 < t \leq b$, the endomorphism field $\pi_r$ can be expressed as $\pi_r(w) = w - \langle w, \partial_r\rangle \partial_r = w - \langle w, \gamma'\rangle \gamma'$, and in this form it extends smoothly to an endomorphism field along all of $\gamma$. Moreover, since $D_t\gamma' = 0$ along $\gamma$, it follows that $D_t\pi_r = 0$ along $\gamma$ as well. Therefore, direct computation using the facts that $s_c' = -cs_c$ and $\pi_r^2 = \pi_r$ shows that $\mathcal{H}_r^c$ satisfies the following Riccati equation along $\gamma|_{[0,b]}$:
+
+\[
+D_t \mathcal{H}_r^c + (\mathcal{H}_r^c)^2 + c\pi_r = 0.
+\]
+
+On the other hand, Theorem 11.4 shows that $\mathcal{H}_r$ satisfies
+
+\[
+D_t \mathcal{H}_r + \mathcal{H}_r^2 + R_{\gamma'} = 0.
+\]
+
+The sectional curvature hypothesis implies that $R_{\gamma'} \leq c\pi_r$ in case (a) and $R_{\gamma'} \geq c\pi_r$ in case (b), using the facts that $R_{\gamma'}(\gamma') = 0 = \pi_r(\gamma')$, and $\langle R_{\gamma'}(w), w\rangle = \sec(\gamma', w)$ if $w$ is a unit vector orthogonal to $\gamma'$.
+
+In order to apply the Riccati comparison theorem to $\mathcal{H}_r$ and $\mathcal{H}_r^c$, we need to show that $\mathcal{H}_r - \mathcal{H}_r^c$ has a finite limit along $\gamma$ as $t \searrow 0$. A straightforward series expansion shows that no matter what $c$ is,
+
+\begin{equation}
+\frac{s_c'(r)}{s_c(r)} = \frac{1}{r} + O(r)
+\tag{11.19}
+\end{equation}
+
+as $r \searrow 0$. We will show that $\mathcal{H}_r$ satisfies the analogous estimate:
+
+\begin{equation}
+\mathcal{H}_r = \frac{1}{r}\pi_r + O(r).
+\tag{11.20}
+\end{equation}
+
+The easiest way to verify (11.20) is to note that on $U \setminus \{p\}$, $\mathcal{H}_r$ has the following coordinate expression in normal coordinates:
+
+\[
+\mathcal{H}_r = g^{ij}\left(\partial_j \partial_k r - \Gamma_{jk}^m \partial_m r\right)\partial_i \otimes dx^k.
+\]
+
+Now $\partial_m r = x^m/r$, which is bounded on $U \setminus \{p\}$, and $\partial_i\partial_k r = O(r^{-1})$. Moreover, $g^{ij} = \delta^{ij} + O(r^2)$ and $\Gamma_{jk}^m = O(r)$, so $\mathcal{H}_r$ is equal to $\delta^{ij}(\partial_i\partial_k r)\partial_i \otimes dx^k$ plus terms that are $O(r)$ in these coordinates. But this last expression is exactly the coordinate expression for $\mathcal{H}_r$ in the case of the Euclidean metric in normal coordinates, which Proposition 11.3 shows is equal to $(1/r)\pi_r$. This proves (11.20), from which we conclude that $\mathcal{H}_r - \mathcal{H}_r^c$ approaches zero along $\gamma$ as $t \searrow 0$.
+
+If the sectional curvatures of $q$ are bounded above by $c$, then the arguments above show that the hypotheses of the Riccati comparison theorem are satisfied along $\gamma|_{[0,b]}$ with $\eta(t) = \mathcal{H}_r|_{\gamma(t)}$, $\sigma(t) = R_{\gamma'}|_{\gamma(t)}$, $\bar{\eta}(t) = \mathcal{H}_r^c|_{\gamma(t)}$, and $\bar{\sigma}(t) = c\pi_r|_{\gamma(t)}$. It follows that $\mathcal{H}_r \geq \mathcal{H}_r^c$ at $q = \gamma(b)$, thus proving (a).
+
+On the other hand, if the sectional curvatures are bounded below by $c$, the same argument with the roles of $\mathcal{H}_r$ and $\mathcal{H}_r^c$ reversed shows that $\mathcal{H}_r \leq \mathcal{H}_r^c$ on $U_0$. It remains only to show that $U_0 = U$ in this case. If $c \leq 0$, this is automatic. If $c = 1/R^2 > 0$, then $s_c'(r)/s_c(r) \to -\infty$ as $r \to \pi R$; since $\mathcal{H}_r$ is defined and smooth in all of $U \setminus \{p\}$ and bounded above by $\mathcal{H}_r^c$, it must be the case that $r < \pi R$ in $U$, which implies that $U_0 = U$. \qed
+
+\begin{corollary}[Principal Curvature Comparison]
+\label{cor:principal-curvature-comparison}
+\dcref{ch11:11.8}
+\uses{prop:hessian-radial-distance-constant-curvature,lem:hessian-operator-properties}
+
+Suppose $(M,g)$ is a Riemannian $n$-manifold, $p \in M$, $U$ is a normal neighborhood of $p$, $r$ is the radial distance function on $U$, and $s_c$ and $\pi_r$ are defined as in Proposition~11.3.
+
+\begin{enumerate}
+\item[(a)] If all sectional curvatures of $M$ are bounded above by a constant $c$, then the principal curvatures of the $r$-level sets in $U_0 \setminus \{p\}$ (with respect to the inward unit normal) satisfy
+\begin{equation*}
+\kappa \geq \frac{s_c'(r)}{s_c(r)},
+\end{equation*}
+where $U_0 = U$ if $c \leq 0$, while $U_0 = \{q \in U : r(q) < \pi R\}$ if $c = 1/R^2 > 0$.
+
+\item[(b)] If all sectional curvatures of $M$ are bounded below by a constant $c$, then the principal curvatures of the $r$-level sets in $U \setminus \{p\}$ (with respect to the inward unit normal) satisfy
+\begin{equation*}
+\kappa \leq \frac{s_c'(r)}{s_c(r)}.
+\end{equation*}
+\end{enumerate}
+
+Proof. This follows immediately from the fact that the shape operator of each $r$-level set is the restriction of $\mathcal{H}_r$ by Lemma~11.1(c). \qed
+\end{corollary}
+
+Because Jacobi fields describe the behavior of families of geodesics, the next theorem gives some substance to the intuitive notion that negative curvature tends to make nearby geodesics spread out, while positive curvature tends to make them converge. More precisely, an upper bound on curvature forces Jacobi fields to be at least as large as their constant-curvature counterparts, and a lower curvature bound constrains them to be no larger.
+
+\begin{theorem}[Jacobi Field Comparison]
+\label{thm:jacobi-field-comparison}
+\dcref{ch11:11.9}
+\uses{cor:jacobi-field-decomposition}
+
+Suppose $(M,g)$ is a Riemannian manifold, $\gamma : [0,b] \to M$ is a unit-speed geodesic segment, and $J$ is any normal Jacobi field along $\gamma$ such that $J(0) = 0$. For each $c \in \mathbb{R}$, let $s_c$ be the function defined by~(10.8).
+
+\begin{enumerate}
+\item[(a)] If all sectional curvatures of $M$ are bounded above by a constant $c$, then
+\begin{equation*}
+|J(t)| \geq s_c(t)|D_t J(0)| \tag{11.21}
+\end{equation*}
+for all $t \in [0, b_1]$, where $b_1 = b$ if $c \leq 0$, and $b_1 = \min(b, \pi R)$ if $c = 1/R^2 > 0$.
+
+\item[(b)] If all sectional curvatures of $M$ are bounded below by a constant $c$, then
+\begin{equation*}
+|J(t)| \leq s_c(t)|D_t J(0)| \tag{11.22}
+\end{equation*}
+for all $t \in [0, b_2]$, where $b_2$ is chosen so that $\gamma(b_2)$ is the first conjugate point to $\gamma(0)$ along $\gamma$ if there is one, and otherwise $b_2 = b$.
+\end{enumerate}
+\end{theorem}
+
+Proof. If $D_t J(0) = 0$, then $J$ vanishes identically, so we may as well assume that $D_t J(0) \neq 0$. Let $b_0$ be the largest time in $(0,b]$ such that $\gamma$ has no conjugate points in $(0, b_0)$ and $s_c(t) > 0$ for $t \in (0, b_0)$. Let $p = \gamma(0)$, and assume temporarily that $\gamma([0, b_0))$ is contained in a normal neighborhood $U$ of $p$. Define a function $f : (0, b_0) \to \mathbb{R}$ by
+$$f(t) = \log(s_c(t)^{-1}|J(t)|).$$
+
+Differentiating with respect to $t$ and using $D_t J = \mathcal{H}_r(J)$, we get
+$$f' = \frac{d}{dt}\log|J| - \frac{d}{dt}\log s_c = \frac{\langle D_t J, J \rangle}{|J|^2} - \frac{s_c'}{s_c} = \frac{\langle \mathcal{H}_r(J), J \rangle}{|J|^2} - \frac{s_c'}{s_c}$$
+
+Under hypothesis (a), it follows from the Hessian comparison theorem that $f'(t) \geq 0$ for all $t \in (0, b_0)$, so $f(t)$ is nondecreasing, and thus so is $s_c(t)^{-1}|J(t)|$. Similarly, under hypothesis (b), we get $f'(t) \leq 0$, which implies that $s_c(t)^{-1}|J(t)|$ is nonincreasing.
+
+Next we consider the limit of $s_c(t)^{-1}|J(t)|$ as $t \searrow 0$. Two applications of l'Hôpital's rule yield
+$$\lim_{t\searrow 0} \frac{|J|^2}{s_c^2} = \lim_{t\searrow 0} \frac{2(D_t J, J)}{2s_c' s_c} = \lim_{t\searrow 0} \frac{2(D_t^2 J, J) + 2|D_t J|^2}{2s_c'' s_c + 2s_c'^2}$$
+$$= \lim_{t\searrow 0} \frac{-2(R(J, \gamma')\gamma', J) + 2|D_t J|^2}{2s_c'' s_c + 2s_c'^2},$$
+
+provided the last limit exists. Since $J \to 0$, $s_c \to 0$, and $s_c' \to 1$ as $t \searrow 0$, this last limit does exist and is equal to $|D_t J(0)|^2$. Combined with the derivative estimates above, this shows that the appropriate conclusion (11.21) or (11.22) holds on $(0, b_0)$, and thus by continuity on $[0, b_0]$, when $\gamma([0, b_0))$ is contained in a normal neighborhood of $p$.
+
+Now suppose $\gamma$ is an arbitrary geodesic segment, not assumed to be contained in a normal neighborhood of $p$. Let $v = \gamma'(0)$, so that $\gamma(t) = \exp_p(tv)$ for $t \in [0, b]$, and define $b_0$ as above. The definition ensures that $\gamma(t)$ is not conjugate to $\gamma(0)$ for $t \in (0, b_0)$, and therefore $\exp_p$ is a local diffeomorphism on some neighborhood of the set $L = \{tv : 0 \leq t < b_0\}$. Let $W \subseteq T_p M$ be a convex open set containing $L$ on which $\exp_p$ is a local diffeomorphism, and let $\tilde{g} = \exp_p^* g$, which is a Riemannian metric on $W$ that satisfies the same curvature estimates as $g$ (Fig. 11.2). By construction, $W$ is a normal neighborhood of $0$, and $\exp_p$ is a local isometry from $(W, \tilde{g})$ to $(M, g)$. The curve $\tilde{\gamma}(t) = tv$ for $t \in [0, b_0)$ is a radial geodesic in $W$, and Proposition 10.5 shows that the vector field $\tilde{J}(t) = d(\exp_p)_{tv}(J(t))$ is a Jacobi field along $\tilde{\gamma}$ that vanishes at $t = 0$. Therefore, for $t \in (0, b_0)$, the preceding argument implies that $|\tilde{J}(t)|_{\tilde{g}} \geq s_c(t)|\tilde{D}_t\tilde{J}(0)|_{\tilde{g}}$ in case (a) and $|\tilde{J}(t)|_{\tilde{g}} \leq s_c(t)|\tilde{D}_t\tilde{J}(0)|_{\tilde{g}}$ in case (b). This implies that the conclusions of the theorem hold for $J$ on the interval $(0, b_0)$ and thus by continuity on $[0, b_0]$.
+
+To complete the proof, we need to show that $b_0 \geq b_1$ in case (a) and $b_0 \geq b_2$ in case (b). Assuming the hypothesis of (a), suppose for contradiction that $b_0 < b_1$. The only way this can occur is if $\gamma(b_0)$ is conjugate to $\gamma(0)$ along $\gamma$, while $s_c(b_0) > 0$. This means that there is a nontrivial normal Jacobi field $J \in \mathfrak{J}(\gamma)$ satisfying $J(0) = 0 = J(b_0)$. But the argument above showed that every such Jacobi field satisfies $|J(t)| \geq s_c(t)|D_t J(0)|$ for $t \in [0, b_0]$ and thus $|J(b_0)| \geq s_c(b_0)|D_t J(0)| > 0$, which is a contradiction. Similarly, in case (b), suppose $b_0 < b_2$. Then $s_c(b_0) = 0$, but $\gamma(b_0)$ is not conjugate to $\gamma(0)$ along $\gamma$. If $J$ is any nontrivial normal Jacobi field along $\gamma$ that vanishes at $t = 0$, the argument above shows that $|J(t)| \leq s_c(t)|D_t J(0)|$ for $t \in [0, b_0]$, so $|J(b_0)| \leq s_c(b_0)|D_t J(0)| = 0$; but this is impossible because $\gamma(b_0)$ is not conjugate to $\gamma(0)$. $\square$
+
+% [FIGURE: Exponential map diagram showing $T_p M$ with region $W$ and curve $\tilde{\gamma}(t)$ mapping via $\exp_p$ to manifold $M$ with geodesic $\gamma(t)$ and Jacobi field $J(t)$]
+
+There is a generalization of the preceding theorem, called the \emph{Rauch comparison theorem}, that allows for comparison of Jacobi fields in two different Riemannian manifolds when neither is assumed to have constant curvature. The statement and proof can be found in [CE08, Kl95].
+
+Because all tangent vectors in a normal neighborhood are values of Jacobi fields along radial geodesics, the Jacobi field comparison theorem leads directly to the following comparison theorem for metrics.
+
+\begin{theorem}[Metric Comparison]
+\label{thm:metric-comparison}
+\dcref{ch11:11.10}
+\uses{cor:polar-decomposition-integrals}
+Let $(M, g)$ be a Riemannian manifold, and let $(U, (x^i))$ be any normal coordinate chart for $g$ centered at $p \in M$. For each $c \in \mathbb{R}$, let $g_c$ denote the constant-curvature metric on $U \setminus \{p\}$ given in the same coordinates by formula (10.17).
+
+\begin{enumerate}
+\item[(a)] Suppose all sectional curvatures of $g$ are bounded above by a constant $c$. If $c \leq 0$, then for all $q \in U \setminus \{p\}$ and all $w \in T_q M$, we have $g(w, w) \geq g_c(w, w)$. If $c = 1/R^2 > 0$, then the same holds, provided that $d_g(p, q) < \pi R$.
+
+\item[(b)] If all sectional curvatures of $g$ are bounded below by a constant $c$, then for all $q \in U \setminus \{p\}$ and all $w \in T_q M$, we have $g(w,w) \le g_c(w,w)$.
+\end{enumerate}
+\end{theorem}
+
+\emph{Proof.} Let $q \in U \setminus \{p\}$, satisfying the restriction $d_g(p, q) < \pi R$ if we are in case (a) with $c = 1/R^2 > 0$, but otherwise arbitrary; and let $b = d_g(p, q)$. Given $w \in T_q M$, we can decompose $w$ as a sum $w = y + z$, where $y$ is a multiple of the radial vector field $\partial_r$ and $z$ is tangent to the level set $r = b$. Then $g_c(y, z) = 0$ by direct computation, and the Gauss lemma shows that $g(y, z) = 0$, so
+\begin{align*}
+g(w, w) &= g(y, y) + g(z, z), \\
+g_c(w, w) &= g_c(y, y) + g_c(z, z).
+\end{align*}
+
+Because $\partial_r$ is a unit vector with respect to both $g$ and $g_c$, it follows that $g(y, y) = g_c(y, y)$. So it suffices to prove the comparison for $z$.
+
+There is a radial geodesic $\gamma : [0, b] \to U$ satisfying $\gamma(0) = p$ and $\gamma(b) = q$, and Corollary 10.11 shows that $z = J(b)$ for some Jacobi field $J$ along $\gamma$ vanishing at $t = 0$, which is normal because it is orthogonal to $\gamma'$ at $t = 0$ and $t = b$. Proposition 10.10 shows that $J$ has the coordinate formula $J(t) = ta^i \partial_i|_{\gamma(t)}$ for some constants $(a^1, \ldots, a^n)$. Since the coordinates $(x^i)$ are normal coordinates for both $g$ and $g_c$, it follows that $\gamma$ is also a radial geodesic for $g_c$, and in the same way $J$ is also a normal Jacobi field for $g_c$ along $\gamma$. Therefore, $g(z, z) = |J(b)|^2_g$ and $g_c(z, z) = |J(b)|^2_{g_c}$. In case (a), our hypothesis guarantees that $s_c(b) > 0$, so
+\begin{align*}
+g(z, z) &= |J(b)|^2_g \ge |s_c(b)|^2 |D_t J(0)|^2_g \quad \text{(Jacobi field comparison theorem)} \\
+&= |s_c(b)|^2 |D_t J(0)|^2_{g_c} \quad \text{(since $g$ and $g_c$ agree at $p$)} \\
+&= |J(b)|^2_{g_c} = g_c(z, z) \quad \text{(by Prop. 10.12)}.
+\end{align*}
+
+In case (b), the same argument with the inequalities reversed shows that $g(z, z) \le g_c(z, z)$. \hfill$\square$
+
+The next three comparison theorems (Laplacian, conjugate point, and volume comparisons) can be proved equally easily under the assumption of either an upper bound or a lower bound for the sectional curvature, just like the preceding theorems. However, we state these only for the case of an upper bound, because we will prove stronger theorems later in the chapter based on lower bounds for the Ricci curvature (see Thms. 11.15, 11.16, and 11.19).
+
+The first of the three is a comparison of the Laplacian of the radial distance function with its constant-curvature counterpart. Our primary interest in the Laplacian of the distance function stems from its role in volume and conjugate point comparisons (see Thms. 11.14, 11.16, and 11.19 below); but it also plays an important role in the study of various partial differential equations on Riemannian manifolds.
+
+\begin{theorem}[Laplacian Comparison 1]
+\label{thm:laplacian-comparison-1}
+\dcref{ch11:11.11}
+\uses{prop:hessian-radial-distance-constant-curvature}
+
+Suppose $(M, g)$ is a Riemannian $n$-manifold whose sectional curvatures are all bounded above by a constant $c$. Suppose $p \in M$, $U$ is a normal neighborhood of $p$, $r$ is the radial distance function on $U$, and $s_c$ is defined as in Proposition 11.3. Then on $U_0 \setminus \{p\}$, we have
+\[
+\Delta r \geq (n-1) \frac{s'_c(r)}{s_c(r)},
+\]
+where $U_0 = U$ if $c \leq 0$, while $U_0 = \{q \in U : r(q) < \pi R\}$ if $c = 1/R^2 > 0$.
+\end{theorem}
+
+Proof. By the result of Problem 5-14, $\Delta r = \operatorname{tr}_g(\nabla^2 r) = \operatorname{tr}(\mathcal{H}_r)$. The result then follows from the Hessian comparison theorem, using the fact that $\operatorname{tr}(\pi_r) = n - 1$, which can be verified easily by expressing $\pi_r$ locally in an adapted orthonormal frame for the $r$-level sets. $\square$
+
+The next theorem shows how an upper curvature bound prevents the formation of conjugate points. It will play a decisive role in the proof of the Cartan--Hadamard theorem in the next chapter.
+
+\begin{theorem}[Conjugate Point Comparison I]
+\label{thm:conjugate-point-comparison-I}
+\dcref{ch11:11.12}
+\lean{LeeLib.Ch11.conjugatePointComparisonI_nonpos, LeeLib.Ch11.conjugatePointComparisonI_pos}
+\leanok
+
+Suppose $(M, g)$ is a Riemannian $n$-manifold whose sectional curvatures are all bounded above by a constant $c$. If $c \leq 0$, then no point of $M$ has conjugate points along any geodesic. If $c = 1/R^2 > 0$, then there is no conjugate point along any geodesic segment shorter than $\pi R$.
+
+\begin{proof}
+Let $\gamma:[0,b]\to M$ be a unit-speed geodesic segment, and let $J$ be a
+nontrivial normal Jacobi field along $\gamma$ with $J(0)=0$. Its initial
+covariant derivative is nonzero by uniqueness for the Jacobi equation. If
+$c\leq0$, the Sturm inequality for the Euclidean comparison field gives
+\[
+|J(t)|\geq t|D_tJ(0)|>0
+\]
+for every $t\in(0,b]$. If $c=1/R^2>0$, comparison with the constant-curvature
+field gives
+\[
+|J(t)|\geq R\sin(t/R)|D_tJ(0)|>0
+\]
+whenever $0<t<\pi R$. Thus no such field can vanish again in either of the
+stated ranges, so there is no conjugate point there. \qed
+\end{proof}
+
+\end{theorem}
+
+The last of our sectional curvature comparison theorems is a comparison of volume growth of geodesic balls. Before proving it, we need the following lemma, which shows how the Riemannian volume form is related to the Laplacian of the radial distance function.
+
+\begin{lemma}
+\label{lem:riemannian-volume-laplacian}
+\dcref{ch11:11.13}
+\uses{cor:gradient-radial-distance,prop:coordinate-representations-divergence-laplacian}
+
+Suppose $(M, g)$ is a Riemannian manifold and $(x^i)$ are Riemannian normal coordinates on a normal neighborhood $U$ of $p \in M$. Let $\det g$ denote the determinant of the matrix $(g_{ij})$ in these coordinates, let $r$ be the radial distance function, and let $\partial_r$ be the unit radial vector field. The following identity holds on $U \setminus \{p\}$:
+\begin{equation}
+\Delta r = \partial_r \log(r^{n-1} \sqrt{\det g}).
+\tag{11.23}
+\end{equation}
+
+\begin{proof}
+Corollary 6.10 to the Gauss lemma shows that the vector fields $\operatorname{grad} r$ and $\partial_r$ are equal on $U \setminus \{p\}$. Comparing the components of these two vector fields in normal coordinates, we conclude (using the summation convention as usual) that
+\[
+g^{ij} \partial_j r = \frac{x^i}{r}.
+\]
+
+Based on the formula for $\Delta r$ from Proposition 2.46, we compute
+\[
+\Delta r = \frac{1}{\sqrt{\det g}} \partial_i \left( g^{ij} \sqrt{\det g} \partial_j r \right)
+\]
+\[
+= \frac{1}{\sqrt{\det g}} \partial_i \left( \frac{x^i}{r} \sqrt{\det g} \right)
+\]
+\[
+= \partial_i \left( \frac{x^i}{r} \right) + \frac{1}{\sqrt{\det g} r} \partial_i \sqrt{\det g}
+\]
+\[
+= \frac{n-1}{r} + \frac{1}{\sqrt{\det g}} \partial_r \sqrt{\det g},
+\]
+where the first term in the last line follows by direct computation using $r = \left(\sum_i (x^i)^2\right)^{1/2}$. This is equivalent to (11.23).
+\end{proof}
+\end{lemma}
+
+The following result was proved by Paul Günther in 1960 \cite{Gun60}. (Günther also proved an analogous result in the case of a lower sectional curvature bound, but that result has been superseded by the Bishop--Gromov theorem, Thm.\ 11.19 below.)
+
+\begin{theorem}[Günther's Volume Comparison]
+\label{thm:gunther-volume-comparison}
+\dcref{ch11:11.14}
+\uses{thm:bishop-gromov-volume-comparison,lem:riemannian-volume-laplacian,prop:hessian-radial-distance-constant-curvature}
+
+Suppose $(M,g)$ is a connected Riemannian $n$-manifold whose sectional curvatures are all bounded above by a constant $c$. Given $p \in M$, let $\delta_0 = \operatorname{inj}(p)$ if $c \le 0$, and $\delta_0 = \min(\pi R, \operatorname{inj}(p))$ if $c = 1/R^2 > 0$. For every positive number $\delta \le \delta_0$, let $V_g(\delta)$ denote the volume of the geodesic ball $B_\delta(p)$ in $(M,g)$, and let $V_c(\delta)$ denote the volume of a geodesic ball of radius $\delta$ in the $n$-dimensional Euclidean space, hyperbolic space, or sphere with constant sectional curvature $c$. Then for every $0 < \delta \le \delta_0$, we have
+\[
+V_g(\delta) \ge V_c(\delta), \quad (11.24)
+\]
+and the quotient $V_g(\delta)/V_c(\delta)$ is a nondecreasing function of $\delta$ that approaches $1$ as $\delta \searrow 0$. If equality holds in (11.24) for some $\delta \in (0, \delta_0]$, then $g$ has constant sectional curvature $c$ on the entire geodesic ball $B_\delta(p)$.
+
+\begin{proof}
+The volume estimate (11.24) follows easily from the metric comparison theorem, which implies that the determinants of the metrics $g$ and $g_c$ in normal coordinates satisfy $\sqrt{\det g} \ge \sqrt{\det g_c}$. If that were all we needed, we could stop here; but to prove the other statements, we need a more involved argument, which incidentally provides another proof of (11.24) that does not rely directly on the metric comparison theorem, and therefore can be adapted more easily to the case in which we have only an estimate of the Ricci curvature (see Thm.\ 11.19 below).
+
+Let $(x^i)$ be normal coordinates on $B_{\delta_0}(p)$ (interpreted as all of $M$ if $\delta_0 = \infty$). Using these coordinates, we might as well consider $g$ to be a Riemannian metric on an open subset of $\mathbb{R}^n$ and $p$ to be the origin. Let $\bar{g}$ denote the Euclidean metric in these coordinates, and let $g_c$ denote the constant-curvature metric in the same coordinates, given on the complement of the origin by (10.17).
+
+The Laplacian comparison theorem together with Lemma 11.13 shows that
+\[
+\partial_r \log(r^{n-1}\sqrt{\det g}) = \Delta r \ge (n-1) \frac{s_c'(r)}{s_c(r)} = \partial_r \log(s_c(r)^{n-1}). \quad (11.25)
+\]
+
+Thus $\log(r^{n-1}\sqrt{\det g/s_c(r)^{n-1}})$ is a nondecreasing function of $r$ along each radial geodesic, and so is the ratio $r^{n-1}\sqrt{\det g/s_c(r)^{n-1}}$. To compute the limit as $r \searrow 0$, note that $g_{ij} = \delta_{ij}$ at the origin, so $\sqrt{\det g}$ converges uniformly to $1$ as $r \searrow 0$. Also, for every $c$, we have $s_c(r)/r \to 1$ as $r \searrow 0$, so $r^{n-1}\sqrt{\det g/s_c(r)^{n-1}} \to 1$.
+
+We can write $dV_g = \sqrt{\det g}\, dV_{\bar{g}}$. Corollary 10.17 in the case $c=0$ shows that
+\[
+V_g(\delta) = \int_{S^{n-1}} \int_0^\delta (\sqrt{\det g}) \circ \Phi(\rho,\omega) \rho^{n-1} d\rho\, dV_{\bar{g}},
+\]
+where $\Phi(\rho,\omega) = \rho\omega$ for $\rho \in (0,\delta_0)$ and $\omega \in S^{n-1}$. The same corollary shows that
+\[
+V_c(\delta) = \int_{S^{n-1}} \int_0^\delta s_c(\rho)^{n-1} d\rho\, dV_{\bar{g}} = \left(\int_0^\delta s_c(\rho)^{n-1} d\rho\right) \left(\int_{S^{n-1}} dV_{\bar{g}}\right).
+\]
+
+Therefore,
+\[
+\frac{V_g(\delta)}{V_c(\delta)} = \frac{\int_{S^{n-1}} \int_0^\delta (\sqrt{\det g}) \circ \Phi(\rho,\omega) \rho^{n-1} d\rho\, dV_{\bar{g}}}{\left(\int_0^\delta s_c(\rho)^{n-1} d\rho\right) \left(\int_{S^{n-1}} dV_{\bar{g}}\right)}
+\]
+\[
+= \frac{1}{\operatorname{Vol}(S^{n-1})} \int_{S^{n-1}} \left(\frac{\int_0^\delta \lambda(\rho,\omega) s_c(\rho)^{n-1} d\rho}{\int_0^\delta s_c(\rho)^{n-1} d\rho}\right) dV_{\bar{g}}, \quad \text{(11.26)}
+\]
+where we have written
+\[
+\lambda(\rho,\omega) = \frac{(\sqrt{\det g}) \circ \Phi(\rho,\omega) \rho^{n-1}}{s_c(\rho)^{n-1}}.
+\]
+
+The argument above (together with the fact that $r \circ \Phi = \rho$) shows that $\lambda(\rho,\omega)$ is a nondecreasing function of $\rho$ for each $\omega$, which approaches $1$ uniformly as $\rho \searrow 0$. We need to show that the quotient in parentheses in the last line of (11.26) is also nondecreasing as $\delta$ increases. Suppose $0 < \delta_1 < \delta_2$. Because $\lambda$ is nondecreasing, we have
+\[
+\int_0^{\delta_1} \lambda(\rho,\omega) s_c(\rho)^{n-1} d\rho \int_{\delta_1}^{\delta_2} s_c(\rho)^{n-1} d\rho
+\]
+\[
+\le \left(\int_0^{\delta_1} s_c(\rho)^{n-1} d\rho\right) \lambda(\delta_1,\omega) \left(\int_{\delta_1}^{\delta_2} s_c(\rho)^{n-1} d\rho\right)
+\]
+\[
+\le \int_0^{\delta_1} s_c(\rho)^{n-1} d\rho \int_{\delta_1}^{\delta_2} \lambda(\rho,\omega) s_c(\rho)^{n-1} d\rho,
+\]
+and therefore (suppressing the dependence of the integrands on $\rho$ and $\omega$ for brevity),
+\[
+\int_0^{\delta_1} \lambda s_c^{n-1}\, d\rho \int_0^{\delta_2} s_c^{n-1}\, d\rho
+= \int_0^{\delta_1} \lambda s_c^{n-1}\, d\rho \left(\int_0^{\delta_1} s_c^{n-1}\, d\rho + \int_{\delta_1}^{\delta_2} s_c^{n-1}\, d\rho\right)
+\]
+\[
+\le \int_0^{\delta_1} \lambda s_c^{n-1}\, d\rho \int_0^{\delta_1} s_c^{n-1}\, d\rho + \int_0^{\delta_1} s_c^{n-1}\, d\rho \int_{\delta_1}^{\delta_2} \lambda s_c^{n-1}\, d\rho
+\]
+\[
+= \int_0^{\delta_1} s_c^{n-1}\, d\rho \int_0^{\delta_2} \lambda s_c^{n-1}\, d\rho.
+\]
+
+Evaluating (11.26) at $\delta_1$ and $\delta_2$ and inserting the inequality above shows that the ratio $V_g(\delta)/V_c(\delta)$ is nondecreasing as a function of $\delta$, and it approaches 1 as $\delta \searrow 0$ because $\lambda(\rho,\omega) \to 1$ as $\rho \searrow 0$. It follows that $V_g(\delta) \ge V_c(\delta)$ for all $\delta \in (0,\delta_0]$. It remains only to consider the case in which the volume ratio is equal to 1 for some $\delta$. If $\lambda(\rho,\omega)$ is not identically 1 on the set where $0 < \rho < \delta$, then it is strictly greater than 1 on a nonempty open subset, which implies that the volume ratio in (11.26) is strictly greater than 1; so $V_g(\delta) = V_c(\delta)$ implies $\lambda(\rho,\omega) \equiv 1$ on $(0,\delta) \times S^{n-1}$, and pulling back to $U$ via $\varphi^{-1}$ shows that $r^{n-1}\sqrt{\det g} = s_c(r)^{n-1}$ on $B_\delta(p)$. By virtue of (11.25), we have $\Delta r \equiv (n-1)s_c'(r)/s_c(r)$, or in other words, $\text{tr}(\mathcal{H}_r) = \text{tr}((s_c'(r)/s_c(r))\pi_r)$. It follows from the Hessian comparison theorem that the endomorphism field $\mathcal{H}_r - (s_c'(r)/s_c(r))\pi_r$ is positive semidefinite, so its eigenvalues are all nonnegative. Since its trace is zero, the eigenvalues must all be zero. In other words, $\mathcal{H}_r \equiv (s_c'(r)/s_c(r))\pi_r$ on the geodesic ball $B_\delta(p)$. It then follows from Proposition 11.3 that $g$ has constant sectional curvature $c$ on that ball. \quad $\square$
+\end{proof}
+\end{theorem}
+
+\section{Comparisons Based on Ricci Curvature}
+
+All of our comparison theorems so far have been based on assuming an upper or lower bound for the sectional curvature. It is natural to wonder whether anything can be said if we weaken the hypotheses and assume only bounds on other curvature quantities such as Ricci or scalar curvature.
+
+It should be noted that except in very low dimensions, assuming a bound on Ricci or scalar curvature is a strictly weaker hypothesis than assuming one on sectional curvature. Recall Proposition 8.32, which says that on an $n$-dimensional Riemannian manifold, the Ricci curvature evaluated on a unit vector is a sum of $n - 1$ sectional curvatures, and the scalar curvature is a sum of $n(n-1)$ sectional curvatures. Thus if $(M,g)$ has sectional curvatures bounded below by $c$, then its Ricci curvature satisfies $\text{Rc}(v,v) \ge (n-1)c$ for all unit vectors $v$, and its scalar curvature satisfies $S \ge n(n-1)c$, with analogous inequalities if the sectional curvature is bounded above. However, the converse is not true: an upper or lower bound on the Ricci curvature implies nothing about individual sectional curvatures, except in dimensions 2 and 3, where the entire curvature tensor is determined by the Ricci curvature (see Cors.~7.26 and 7.27). For example, in every even dimension greater than or equal to 4, there are compact Riemannian manifolds called \emph{Calabi--Yau manifolds} that have zero Ricci curvature but nonzero sectional curvatures (see, for example, [Bes87, Chap.~11]).
+
+In this section we investigate the extent to which bounds on the Ricci curvature lead to useful comparison theorems. The strongest theorems of the preceding section, such as the Hessian, Jacobi field, and metric comparison theorems, do not generalize to the case in which we merely have bounds on Ricci curvature. However, it is a remarkable fact that Laplacian, conjugate point, and volume comparison theorems can still be proved assuming only a lower (but not upper) bound on the Ricci curvature. (The problem of drawing global conclusions from scalar curvature bounds is far more subtle, and we do not pursue it here. A good starting point for learning about that problem is [Bes87].)
+
+The next theorem is the analogue of Theorem~11.11.
+
+\begin{theorem}[Laplacian Comparison II]
+\label{thm:laplacian-comparison-ii}
+\dcref{ch11:11.15}
+\uses{thm:laplacian-comparison-1,cor:jacobi-field-decomposition}
+
+Let $(M, g)$ be a Riemannian $n$-manifold, and suppose there is a constant $c$ such that the Ricci curvature of $M$ satisfies $\operatorname{Rc}(v, v) \geq (n-1)c$ for all unit vectors $v$. Given any point $p \in M$, let $U$ be a normal neighborhood of $p$ and let $r$ be the radial distance function on $U$. Then the following inequality holds on $U_0 \setminus \{p\}$:
+\begin{equation}
+\Delta r \le (n-1) \frac{s_c'(r)}{s_c(r)},
+\tag{11.27}
+\end{equation}
+where $s_c$ is defined by (10.8), and $U_0 = U$ if $c \le 0$, while $U_0 = \{q \in U : r(q) < \pi R\}$ if $c = 1/R^2 > 0$.
+\end{theorem}
+
+\textit{Proof.} Let $q \in U_0 \setminus \{p\}$ be arbitrary, and let $\gamma : [0, b] \to U_0$ be the unit-speed radial geodesic from $p$ to $q$. We will show that (11.27) holds at $\gamma(t)$ for $0 < t \le b$.
+
+Because covariant differentiation commutes with the trace operator (since it is just a particular kind of contraction), the Riccati equation (11.7) for $\mathcal{H}_r$ implies the following scalar equation along $\gamma$ for $\Delta r = \operatorname{tr}(\mathcal{H}_r)$:
+\begin{equation}
+\frac{d}{dt} \Delta r + \operatorname{tr}(\mathcal{H}_r^2) + \operatorname{tr}(R_{\gamma'}) = 0.
+\tag{11.28}
+\end{equation}
+
+We need to analyze the last two terms on the left-hand side. We begin with the last term. In terms of any local orthonormal frame $(E_i)$, we have
+\[
+\operatorname{tr} R_{\gamma'} = \sum_{i=1}^{n} \langle R_{\gamma'}(E_i), E_i \rangle = \sum_{i=1}^{n} \langle R(E_i, \gamma') \gamma', E_i \rangle = \sum_{i=1}^{n} \operatorname{Rm}(E_i, \gamma', \gamma', E_i) = \operatorname{Rc}(\gamma', \gamma').
+\]
+
+To analyze the $\mathcal{H}_r^2$ term, let us set
+\[
+\hat{\mathcal{H}}_r = \mathcal{H}_r - \frac{\Delta r}{n-1} \pi_r.
+\]
+
+We compute
+\[
+\operatorname{tr}(\hat{\mathcal{H}}^2_r) = \operatorname{tr}(\mathcal{H}^2_r) - \frac{\Delta r}{n-1}\operatorname{tr}(\mathcal{H}_r \circ \pi_r) - \frac{\Delta r}{n-1}\operatorname{tr}(\pi_r \circ \mathcal{H}_r) + \frac{(\Delta r)^2}{(n-1)^2}\operatorname{tr}(\pi^2_r).
+\]
+
+To simplify this, note that $\pi^2_r = \pi_r$ because $\pi_r$ is a projection, and thus $\operatorname{tr}(\pi^2_r) = \operatorname{tr}(\pi_r) = n-1$. Also, $\mathcal{H}_r(\partial_r) \equiv 0$ implies that $\mathcal{H}_r \circ \pi_r = \mathcal{H}_r$; and since $\mathcal{H}_r$ is self-adjoint, $\langle \mathcal{H}_r v, \partial_r \rangle_g = \langle v, \mathcal{H}_r \partial_r \rangle_g = 0$ for all $v$, so the image of $\mathcal{H}_r$ is contained in the orthogonal complement of $\partial_r$, and it follows that $\pi_r \circ \mathcal{H}_r = \mathcal{H}_r$ as well. Thus the last three terms in the formula for $\operatorname{tr}(\hat{\mathcal{H}}^2_r)$ combine to yield
+\[
+\operatorname{tr}(\hat{\mathcal{H}}^2_r) = \operatorname{tr}(\mathcal{H}^2_r) - \frac{(\Delta r)^2}{n-1}.
+\]
+
+Solving this for $\operatorname{tr}(\mathcal{H}^2_r)$, substituting into (11.28), and dividing by $n-1$, we obtain
+\begin{equation}
+\frac{d}{dt}\left(\frac{\Delta r}{n-1}\right) + \left(\frac{\Delta r}{n-1}\right)^2 + \frac{\operatorname{tr}(\hat{\mathcal{H}}^2_r) + \operatorname{Rc}(\gamma', \gamma')}{n-1} = 0. \tag{11.30}
+\end{equation}
+
+Let $H(t) = s'_c(t)/s_c(t)$, so that
+\[
+H'(t) + H(t)^2 + c \equiv 0.
+\]
+
+We wish to apply the $1 \times 1$ case of the matrix Riccati comparison theorem (Thm.\ 11.6) with $H(t)$ as above, $S(t) \equiv c$,
+\[
+\tilde{H}(t) = \frac{\Delta r}{n-1}\Big|_{\gamma(t)}, \quad \text{and} \quad \tilde{S}(t) = \frac{\operatorname{tr}(\hat{\mathcal{H}}^2_r)|_{\gamma(t)} + \operatorname{Rc}(\gamma'(t), \gamma'(t))}{n-1}.
+\]
+
+Note that $\hat{\mathcal{H}}^2_r$ is positive semidefinite, which means that all of its eigenvalues are nonnegative, so its trace (which is the sum of the eigenvalues) is also nonnegative. (This is the step that does not work in the case of an upper bound on Ricci curvature.) Thus our hypothesis on the Ricci curvature guarantees that $\tilde{S}(t) \geq c$ for all $t \in (0, b)$. To apply Theorem 11.6, we need to verify that $\tilde{S}$ has a continuous extension to $[0, b]$ and that $\tilde{H}(t) - H(t)$ has a nonnegative limit as $t \searrow 0$. Recall that we showed in (11.19) and (11.20) that $s'_c(r)/s_c(r) = 1/r + O(r)$ and $\mathcal{H}_r = (1/r)\pi_r + O(r)$ as $r \searrow 0$. This implies that $\Delta r = \operatorname{tr}(\mathcal{H}_r) = (n-1)/r + O(r)$, and therefore both $\hat{\mathcal{H}}_r|_{\gamma(t)}$ and $\tilde{H}(t) - H(t)$ approach $0$ and $\tilde{S}(t)$ approaches $\operatorname{Rc}(\gamma'(0), \gamma'(0))/(n-1) \geq c$ as $t \searrow 0$. Therefore, we can apply Theorem 11.6 to conclude that $\tilde{H}(t) \leq H(t)$ for $t \in (0, b]$. Since $\gamma(b) = q$ was arbitrary, this completes the proof. \quad $\square$
+
+The next theorem and its two corollaries will be crucial ingredients in the proofs of our theorems in the next chapter about manifolds with positive Ricci curvature (see Thms.\ 12.28 and 12.24).
+
+\begin{theorem}[Conjugate Point Comparison II]
+\label{thm:conjugate-points-ricci-bounded}
+\dcref{ch11:11.16}
+\uses{thm:laplacian-comparison-ii,lem:riemannian-volume-laplacian,thm:jacobi-field-comparison}
+
+Let $(M, g)$ be a Riemannian $n$-manifold, and suppose there is a positive constant $c = 1/R^2$ such that the Ricci curvature of $M$ satisfies $\mathrm{Rc}(v,v) \geq (n-1)c$ for all unit vectors $v$. Then every geodesic segment of length at least $\pi R$ has a conjugate point.
+
+\begin{proof}
+Let $U$ be a normal neighborhood of an arbitrary point $p \in M$. The second Laplacian comparison theorem (Thm. 11.15) combined with Lemma 11.13 shows that
+\[
+\partial_r \log(r^{n-1}\sqrt{\det g}) = \Delta r \leq (n-1) \frac{s_c'(r)}{s_c(r)} = \partial_r \log(s_c(r)^{n-1})
+\]
+on the subset $U_0 \subseteq U$ where $r < \pi R$. Since $r^{n-1}\sqrt{\det g}/s_c(r)^{n-1} \to 1$ as $r \to 0$, this implies that $r^{n-1}\sqrt{\det g}/s_c(r)^{n-1} \leq 1$ everywhere in $U_0$, or equivalently,
+\begin{equation}
+\sqrt{\det g} \leq s_c(r)^{n-1}/r^{n-1}. \tag{11.31}
+\end{equation}
+
+Suppose $U$ contains a point $q$ where $r \geq \pi R$, and let $\gamma : [0,b] \to U$ be the unit-speed radial geodesic from $p$ to $q$. Because $s_c(\pi R) = 0$, (11.31) shows that $\det g(\gamma(t)) \to 0$ as $t \to \pi R$, and therefore by continuity $\det g = 0$ at $\gamma(b)$, which contradicts the fact that $\det g > 0$ in every coordinate neighborhood. The upshot is that no normal neighborhood can include points where $r \geq \pi R$.
+
+Now suppose $\gamma : [0,b] \to M$ is a unit-speed geodesic with $b \geq \pi R$, and assume for the sake of contradiction that $\gamma$ has no conjugate points. Let $p = \gamma(0)$ and $q = \gamma(b)$, so $\gamma(t) = \exp_p(tv_0)$ for $t \in [0, b]$. As in the proof of Theorem 11.9, because $\gamma$ has no conjugate points, we can choose a star-shaped open subset $W \subseteq T_pM$ containing the set $L = \{tv : 0 \leq t < b_0\} \subseteq T_pM$ on which $\exp_p$ is a local diffeomorphism, and let $\bar{g}$ be the pulled-back metric $\exp_p^* g$ on $W$, which satisfies the same curvature estimates as $g$. Then $\bar{\gamma}(t) = tv$ is a radial $\bar{g}$-geodesic in $W$ of length greater than or equal to $\pi R$, which contradicts the argument in the preceding paragraph. \qed
+\end{proof}
+\end{theorem}
+
+\begin{corollary}[Injectivity Radius Comparison]
+\label{cor:injectivity-radius-ricci-bounded}
+\dcref{ch11:11.17}
+\uses{thm:conjugate-points-ricci-bounded}
+
+Let $(M, g)$ be a Riemannian $n$-manifold, and suppose there is a positive constant $c = 1/R^2$ such that the Ricci curvature of $M$ satisfies $\mathrm{Rc}(v,v) \geq (n-1)c$ for all unit vectors $v$. Then for every point $p \in M$, we have $\mathrm{inj}(p) \leq \pi R$.
+
+\begin{proof}
+Every radial geodesic segment in a geodesic ball is minimizing, but the preceding theorem shows that no geodesic segment of length $\pi R$ or greater is minimizing. Thus no geodesic ball has radius greater than $\pi R$. \qed
+\end{proof}
+\end{corollary}
+
+\begin{corollary}[Diameter Comparison]
+\label{cor:diameter-ricci-bounded}
+\dcref{ch11:11.18}
+\uses{thm:conjugate-points-ricci-bounded}
+
+Let $(M, g)$ be a complete, connected Riemannian $n$-manifold, and suppose there is a positive constant $c = 1/R^2$ such that the Ricci curvature of $M$ satisfies $\mathrm{Rc}(v,v) \geq (n-1)c$ for all unit vectors $v$. Then the diameter of $M$ is less than or equal to $\pi R$.
+
+\begin{proof}
+This follows from the fact that any two points of $M$ can be connected by a minimizing geodesic segment, and the conjugate point comparison theorem implies that no such segment can have length greater than $\pi R$. \qed
+\end{proof}
+\end{corollary}
+
+Our final comparison theorem is a powerful volume estimate under the assumption
+of a lower bound on the Ricci curvature. We will use it in the proof of Theorem
+12.28 in the next chapter, and it plays a central role in many of the more advanced
+results of Riemannian geometry.
+
+A weaker version of this result was proved by Paul G\"unther in 1960 [G\"un60]
+for balls within the injectivity radius under the assumption of a lower bound on
+sectional curvature; it was improved by Richard L.\ Bishop in 1963 announced in
+[Bis63], with a proof in [BC64] to require only a lower Ricci curvature bound; and
+then it was extended by Misha Gromov in 1981 [Gro07] to cover all metric balls in
+the complete case, not just those inside the injectivity radius.
+
+\begin{theorem}[Bishop--Gromov Volume Comparison]
+\label{thm:bishop-gromov-volume-comparison}
+\dcref{ch11:11.19}
+\uses{thm:chengs-maximal-diameter,thm:gunther-volume-comparison,thm:laplacian-comparison-ii,thm:cut-locus-properties,cor:polar-decomposition-integrals}
+
+Let $(M,g)$ be a connected Riemannian $n$-manifold, and suppose there is a constant
+$c$ such that the Ricci curvature of $M$ satisfies $\text{Rc}(v,v) \geq (n-1)c$ for all unit vectors $v$. Let $p \in M$
+be given, and for every positive number $\delta$, let $V_g(\delta)$ denote the volume of the metric
+ball of radius $\delta$ about $p$ in $(M,g)$, and let $V_c(\delta)$ denote the volume of a metric ball
+of radius $\delta$ in the $n$-dimensional Euclidean space, hyperbolic space, or sphere with
+constant sectional curvature $c$. Then for every $0 < \delta \leq \operatorname{inj}(p)$, we have
+\begin{equation}
+  V_g(\delta) \leq V_c(\delta), \tag{11.32}
+\end{equation}
+and the quotient $V_g(\delta)/V_c(\delta)$ is a nonincreasing function of $\delta$ that approaches $1$ as
+$\delta \searrow 0$. If $(M,g)$ is complete, the same is true for all positive $\delta$, not just $\delta \leq \operatorname{inj}(p)$.
+In either case, if equality holds in (11.32) for some $\delta$, then $g$ has constant sectional
+curvature on the entire metric ball of radius $\delta$ about $p$.
+
+\begin{proof}
+First consider $\delta \leq \operatorname{inj}(p)$, in which case a metric ball of radius $\delta$ in $M$ is
+actually a geodesic ball. With the exception of the first and last paragraphs, the proof
+of Theorem 11.14 goes through with all of the inequalities reversed, and with the
+first Laplacian comparison theorem replaced by its counterpart Theorem 11.15, to
+show that $V_g(\delta)/V_c(\delta)$ is a nonincreasing function of $\delta$ that approaches $1$ as $\delta \searrow 0$,
+and (11.32) follows.
+
+In case $M$ is complete, $\exp_p$ is defined and smooth on all of $T_pM$. Theorem
+10.34 shows that $\operatorname{Cut}(p)$ has measure zero in $M$ and $\exp_p$ maps the open subset
+$\operatorname{ID}(p) \subseteq T_pM$ diffeomorphically onto the complement of $\operatorname{Cut}(p)$ in $M$. Therefore,
+for every $\delta > 0$, the metric ball of radius $\delta$ is equal to $\exp_p\left(B_\delta(0) \cap \operatorname{ID}(p)\right)$ up to
+a set of measure zero, where $B_\delta(0)$ denotes the $\delta$-ball about $0$ in $T_pM$. Using an
+orthonormal basis to identify $(T_pM, g_p)$ with $(\mathbb{R}^n, \tilde{g})$, we can compute the volume
+of a metric $\delta$-ball as
+\[
+  V_g(\delta) = \int_{\operatorname{ID}(p) \cap B_\delta(0)} \exp_p^* dV_g = \int_{\operatorname{ID}(p) \cap B_\delta(0)} \sqrt{\det g} \, dV_{\tilde{g}},
+\]
+where $\det g$ denotes the determinant of the matrix of $g$ in the normal coordinates
+determined by the choice of basis.
+
+Let $\Phi: \mathbb{R}^+ \times S^{n-1} \to T_pM \setminus \{0\} \cong \mathbb{R}^n \setminus \{0\}$ be the map $\Phi(\rho,\omega) = \rho\omega$ as in
+Corollary 10.17, and define $\tilde{s}_c: \mathbb{R}^+ \to [0,\infty)$ by $\tilde{s}_c(\rho) = s_c(\rho)$ if $c \leq 0$, while in
+the case $c = 1/R^2 > 0$,
+\[
+\tilde{s}_c(\rho) = \begin{cases}
+s_c(\rho), & \rho < \pi R, \\
+0, & \rho \geq \pi R.
+\end{cases}
+\]
+
+Corollary 11.18 shows that the cut time of every unit vector in $T_p M$ is less than or equal to $\pi R$. Thus $\tilde{s}_c(\rho) > 0$ whenever $\Phi(\rho,\omega) \in \operatorname{ID}(p)$, and we can define $\tilde{\lambda}: \mathbb{R}^+ \times S^{n-1} \to \mathbb{R}$ by
+\[
+\tilde{\lambda}(\rho,\omega) = \begin{cases}
+\frac{(\sqrt{\det g}) \circ \Phi(\rho,\omega)\rho^{n-1}}{\tilde{s}_c(\rho)^{n-1}}, & \Phi(\rho,\omega) \in \operatorname{ID}(p), \\
+0, & \Phi(\rho,\omega) \notin \operatorname{ID}(p),
+\end{cases}
+\]
+and just as in the proof of Theorem 11.14, we can write
+\begin{align}
+V_g(\delta) &= \int_{S^{n-1}} \int_0^\delta \tilde{\lambda}(\rho,\omega)\tilde{s}_c(\rho)^{n-1} \, d\rho \, dV_{\bar{g}}, \\
+V_c(\delta) &= \int_{S^{n-1}} \int_0^\delta \tilde{s}_c(\rho)^{n-1} \, d\rho \, dV_{\bar{g}}.
+\end{align}
+
+The arguments of Theorem 11.14 (with inequalities reversed) show that for each $\omega \in S^{n-1}$, the function $\tilde{\lambda}(\rho,\omega)$ is nonincreasing in $\rho$ for all positive $\rho$, and it follows just as in that proof that $V_g(\delta)/V_c(\delta)$ (now interpreted as a ratio of volumes of metric balls) is nonincreasing for all $\delta > 0$ and approaches 1 as $\delta \searrow 0$, and (11.32) follows.
+
+Finally, suppose $V_g(\delta) = V_c(\delta)$ for some $\delta > 0$, and assume first that $\delta < \operatorname{inj}(p)$. An argument exactly analogous to the one at the end of the proof of Theorem 11.14 shows that $\lambda(\rho,\omega) \equiv 1$ everywhere on the set where $0 < \rho < \delta$. Combined with Lemma 11.13, this implies that
+\begin{equation}
+\Delta r = (n-1)\frac{s'_c(r)}{s_c(r)} \tag{11.33}
+\end{equation}
+everywhere on $B_\delta(p) \setminus \{p\}$. This means that along each unit-speed radial geodesic $\gamma$, the function $u(t) = (\Delta r)|_{\gamma(t)}/(n-1) = s'_c(t)/s_c(t)$ satisfies $u' + u^2 + c \equiv 0$ by direct computation. Comparing this to (11.30), we conclude that
+\[
+\frac{\operatorname{tr}(\mathcal{H}_r^2) + \operatorname{Rc}(\gamma', \gamma')}{n-1} = c
+\]
+on $B_\delta(p) \setminus \{p\}$. Since $\operatorname{tr}(\mathcal{H}_r^2) \geq 0$ and $\operatorname{Rc}(\gamma', \gamma') \geq (n-1)c$ everywhere, this is possible only if $\operatorname{tr}(\mathcal{H}_r^2)$ vanishes identically there. Because $\mathcal{H}_r^2$ is positive semidefinite and its trace is zero, it must vanish identically, which by definition of $\mathcal{H}_r$ means
+\[
+\mathcal{H}_r = \frac{\Delta r}{n-1}\pi_r = \frac{s_c'(r)}{s_c(r)}\pi_r.
+\]
+
+Proposition 11.3 then shows that $g$ has constant sectional curvature $c$ on $B_\delta(p)$.
+Now suppose $(M,g)$ is complete. The argument of Theorem 11.14 then shows that $\tilde{\lambda}(\rho,\omega) = 1$ everywhere on the set where $0 < \rho < \delta$ and $\tilde{s}_c(\rho) > 0$. In view of the definition of $\tilde{\lambda}$, this implies in particular that $\mathrm{ID}(p) \cap B_\delta(0)$ contains all of the points in $B_\delta(0)$ where $\tilde{s}_c(r) > 0$. In case $c \le 0$, $\tilde{s}_c(r) = s_c(r) > 0$ everywhere, so $\mathrm{ID}(p) \cap B_\delta(0) = B_\delta(0)$ and therefore the metric ball of radius $\delta$ around $p$ is actually a geodesic ball, and the argument above applies.
+
+In case $c = 1/R^2 > 0$, if $\delta \le \pi R$, then $\tilde{s}_c(r) = s_c(r) > 0$ on $B_\delta(0)$, and once again we conclude that the metric $\delta$-ball is a geodesic ball. On the other hand, if $\delta > \pi R$, then the diameter comparison theorem (Cor.\ 11.18) shows that the metric ball of radius $\delta$ is actually the entire manifold. The fact that the volume ratio is nonincreasing implies that $V_g(\pi R) = V_c(\pi R)$, and the argument above shows that $g$ has constant sectional curvature $c$ on the metric ball of radius $\pi R$. Since the closure of that ball is all of $M$, the result follows by continuity.
+\end{proof}
+\end{theorem}
+
+The next corollary is immediate.
+
+\begin{corollary}
+\label{cor:ricci-volume-comparison}
+\dcref{ch11:11.20}
+\uses{thm:bishop-gromov-volume-comparison}
+
+Suppose $(M,g)$ is a compact Riemannian manifold and there is a positive constant $c = 1/R^2$ such that the Ricci curvature of $M$ satisfies $\mathrm{Rc}(v,v) \ge (n-1)c$ for all unit vectors $v$. Then the volume of $M$ is no greater than the volume of the $n$-sphere of radius $R$ with its round metric, and if equality holds, then $(M,g)$ has constant sectional curvature $c$.
+\end{corollary}
+
+(For explicit formulas for the volumes of $n$-spheres, see Problem 10-4.)
+
+\section{Problems}
+
+\begin{exercise}
+\label{prob:hessian-polar-coordinates}
+\dcref{ch11:11-1}
+\uses{cor:semigeodesic-metric-christoffel,ex:polar-normal-coordinates}
+
+Let $(M,g)$ be a Riemannian manifold, and let $U$ be a normal neighborhood of $p \in M$. Use Corollary 6.42 to show that in every choice of polar normal coordinates $(\theta^1,\ldots,\theta^{n-1},r)$ on a subset of $U \setminus \{p\}$ (see Example 6.45), the covariant Hessian of $r$ is given by
+\[
+\nabla^2 r = \frac{1}{2} \sum_{\alpha,\beta=1}^{n-1} (\partial_r g_{\alpha\beta}) \, d\theta^\alpha d\theta^\beta.
+\]
+\end{exercise}
+
+\begin{exercise}
+\label{prob:jacobi-field-submanifold}
+\dcref{ch11:11-2}
+\uses{prop:jacobi-field-hessian-equation,prop:fermi-coordinates-radial-function,prob:transverse-jacobi-field}
+
+Prove the following extension to Proposition 11.2: Suppose $P$ is an embedded submanifold of a Riemannian manifold $(M,g)$, $U$ is a normal neighborhood of $P$ in $M$, and $r$ is the radial distance function for $P$ in $U$ (see Prop.\ 6.37). If $\gamma : [0,b] \to U$ is a geodesic segment with $\gamma(0) \in P$ and $\gamma'(0)$ normal to $P$, and $J$ is a Jacobi field along $\gamma$ that is transverse to $P$ in the sense of Problem 10-14, then $D_t J(t) = \mathcal{H}_r(J(t))$ for all $t \in [0,b]$.
+\end{exercise}
+
+\begin{exercise}\label{prob:riccati-equation}\dcref{ch11:11-3}
+Let $(M, g)$ be a Riemannian manifold, and let $f$ be any smooth local distance function defined on an open subset $U \subseteq M$. Let $F = \text{grad } f$ (so the integral curves of $F$ are unit-speed geodesics), and let $\mathcal{H}_f = \nabla F$ (the Hessian operator of $f$). Show that $\mathcal{H}_f$ satisfies the following Riccati equation along each integral curve $\gamma$ of $F$:
+\[
+D_t \mathcal{H}_f + \mathcal{H}_f^2 + R_{\gamma'} = 0, \quad (11.34)
+\]
+where $R_{\gamma'}(w) = R(w, \gamma')\gamma'$. [Hint: Let $W$ be any smooth vector field on $U$, and evaluate $\nabla_F \nabla_W F$ in two different ways.]
+\end{exercise}
+
+\begin{exercise}\label{prob:injectivity-radius-comparison}\dcref{ch11:11-4}
+\uses{prob:distance-cut-locus}
+Let $(M, g)$ be a compact Riemannian manifold. Prove that if $R, L$ are positive numbers such that all sectional curvatures of $M$ are less than or equal to $1/R^2$ and all closed geodesics have lengths greater than or equal to $L$, then
+\[
+\text{inj}(M) \geq \min(\pi R, \tfrac{1}{2}L).
+\]
+[Hint: Assume not, and use the result of Problem 10-23(b).]
+\end{exercise}
+
+\begin{exercise}[Transverse Jacobi Field Comparison Theorem]\label{prob:transverse-jacobi-comparison}\dcref{ch11:11-5}
+\uses{thm:jacobi-field-comparison,prob:riccati-equation,prob:jacobi-field-submanifold}
+Let $P$ be an embedded hypersurface in a Riemannian manifold $(M, g)$. Suppose $\gamma: [0, b] \to M$ is a unit-speed geodesic segment with $\gamma(0) \in P$ and $\gamma'(0)$ normal to $P$, and $J$ is a normal Jacobi field along $\gamma$ that is transverse to $P$. Let $\lambda = h(J(0), J(0))$, where $h$ is the scalar second fundamental form of $P$ with respect to the normal $-\gamma'(0)$. Let $c$ be a real number, and let $u: \mathbb{R} \to \mathbb{R}$ be the unique solution to the initial value problem
+\[
+\begin{aligned}
+u''(t) + cu(t) &= 0, \\
+u(0) &= 1, \quad (11.35) \\
+u'(0) &= \lambda.
+\end{aligned}
+\]
+
+In the following statements, the principal curvatures of $P$ are computed with respect to the normal $-\gamma'(0)$.
+
+\begin{enumerate}
+\item[(a)] If all sectional curvatures of $M$ are bounded above by $c$, all principal curvatures of $P$ at $\gamma(0)$ are bounded below by $\lambda$, and $u(t) \neq 0$ for $t \in (0, b)$, then $|J(t)| \geq u(t)|J(0)|$ for all $t \in [0, b]$.
+
+\item[(b)] If all sectional curvatures of $M$ are bounded below by $c$, all principal curvatures of $P$ at $\gamma(0)$ are bounded above by $\lambda$, and $J(t) \neq 0$ for $t \in (0, b)$, then $|J(t)| \leq u(t)|J(0)|$ for all $t \in [0, b]$.
+\end{enumerate}
+
+[Hint: Mimic the proof of Theorem 11.9, using the results of Problems 11-3 and 11-2.]
+\end{exercise}
+
+\begin{exercise}\label{prob:focal-points-hypersurface}\dcref{ch11:11-6}
+Suppose $P$ is an embedded hypersurface in a Riemannian manifold $(M, g)$ and $N$ is a unit normal vector field along $P$. Suppose the principal curvatures of $P$ with respect to $-N$ are bounded below by a constant $\lambda$, and the sectional curvatures of $M$ are bounded above by $-\lambda^2$. Prove that $P$ has no focal points along any geodesic segment with initial velocity $N_p$ for $p \in P$.
+\end{exercise}
+
+\begin{exercise}\label{prob:focal-points-hypersurface-ii}\dcref{ch11:11-7}
+\uses{prob:transverse-jacobi-comparison}
+Suppose $P$ is an embedded hypersurface in a Riemannian manifold $(M, g)$ and $N$ is a unit normal vector field along $P$. Suppose the sectional curvatures of $M$ are bounded below by a constant $c$, and the principal curvatures of $P$ with respect to $-N$ are bounded above by a constant $\lambda$. Let $u$ be the solution to the initial value problem (11.35). Prove that if $b$ is a positive real number such that $u(b) = 0$, then $P$ has a focal point along every geodesic segment with initial velocity $N_p$ for some $p \in P$ and with length greater than or equal to $b$.
+\end{exercise}

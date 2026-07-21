@@ -1,0 +1,375 @@
+\chapter{Type II Singularities and Degenerate Neckpinches}
+\label{ch:chow-iv-type-ii-degenerate-neckpinches}
+\dcref{ch36}
+\source{chow-et-al-ricci-flow-part-iv:page-0328}
+
+This chapter surveys numerical and formal matched-asymptotic descriptions of
+degenerate neckpinches.  The statements below record the scale conventions,
+regional equations, and the topological argument used to obtain solutions
+with the predicted asymptotics.
+
+\section{Types of singularity}
+
+\begin{definition}[Finite-time and infinite-time types (Definition 36.1)]
+\label{def:chow-iv-singularity-types}
+\dcref{ch36:36.1}
+\group{Singularity Types}
+\source{chow-et-al-ricci-flow-part-iv:page-0330}
+For a Ricci flow becoming singular at time $T<\infty$, call it Type I if
+\[
+ \sup_{M\times[0,T)}(T-t)|\Rm|<\infty,
+\]
+and Type IIa if this supremum is infinite.  For a flow on
+$[0,\infty)$, call it Type III if $\sup t|\Rm|<\infty$ and Type IIb
+otherwise.  An ancient flow on $(-\infty,0]$ is Type I-ancient when
+$\sup |t||\Rm|<\infty$ and Type II-ancient otherwise.  A flow singular at
+$t=0$ from the interval $(0,T)$ is Type IV when $\sup t|\Rm|<\infty$ and
+Type IIc otherwise.  Type II means Type IIa, IIb, or IIc.
+\end{definition}
+
+\begin{remark}[Genericity problem (Problem 36.1)]
+\label{rem:chow-iv-type-ii-genericity-problem}
+\dcref{ch36:36.1-problem}
+\group{Singularity Types}
+\source{chow-et-al-ricci-flow-part-iv:page-0330}
+It is an open problem whether Type II singularities are nongeneric, separately
+for the types IIa, IIb, and IIc.
+\end{remark}
+
+\section{Numerical rotationally symmetric flows}
+
+\begin{definition}[Rotationally symmetric $S^3$ metric (Equation 36.1)]
+\label{def:chow-iv-rotational-s3-metric}
+\dcref{ch36:36.1-metric}
+\group{Numerical Simulation}
+\source{chow-et-al-ricci-flow-part-iv:page-0331}
+A rotationally symmetric metric on $S^3$ is written
+\[
+ g=e^{2X}\bigl(e^{-2W}\,d\psi^2+e^{2W}\sin^2\psi\,[d\theta^2+
+ \sin^2\theta\,d\phi^2]\bigr),
+\]
+where $X,W$ depend only on $\psi$.  Smoothness at the poles requires
+$S:=W/\sin^2\psi$ to have finite limits there.
+\end{definition}
+
+\begin{proposition}[Volume-normalized Ricci--DeTurck equations (36.2--36.5)]
+\label{prop:chow-iv-numerical-deturck-equations}
+\dcref{ch36:eq-36.2,eq-36.3,eq-36.4,eq-36.5}
+\group{Numerical Simulation}
+\source{chow-et-al-ricci-flow-part-iv:page-0332,chow-et-al-ricci-flow-part-iv:page-0333}
+\uses{def:chow-iv-rotational-s3-metric}
+For the metric in Definition~\ref{def:chow-iv-rotational-s3-metric}, the
+volume-normalized Ricci--DeTurck flow is the $1+1$ initial-boundary value
+problem
+\begin{align*}
+ X_t={}&e^{2(W-X)}\!\bigl[X''+2\cot\psi X'-2+\tfrac12((X')^2+(W')^2)
+ +3X'W' \\[-2pt]
+ &\qquad +(1-e^{-4W})\bigl(\tfrac1{2\sin^2\psi}+1+2\cot\psi W'\bigr)\bigr]
+ +\tfrac{\hat r}{3},\\
+ S_t={}&e^{2(W-X)}\!\bigl[S''+6\cot\psi S'-8S
+ -\frac{3(1-4W-e^{-4W})}{2\sin^4\psi}\\[-2pt]
+ &\qquad+\frac{1-e^{-4W}}{\sin^2\psi}
+ \bigl(1-2(\cot\psi X'+2\sin\psi\cos\psi S'+4\cos^2\psi S)\bigr)\\[-2pt]
+ &\qquad-\tfrac12\bigl((X'/\sin\psi)^2+(\sin\psi S'+2\cos\psi S)^2
+ +6(X'/\sin\psi)(\sin\psi S'+2\cos\psi S)\bigr)\bigr],
+\end{align*}
+where
+\[
+ \hat r=\frac2N\int_0^\pi e^{X+3W}\bigl(e^{-4W}-1-4\sin\psi\cos\psi W'
+ +\sin^2\psi[3+(X'+W')^2]\bigr)\,d\psi,
+ \quad N=\int_0^\pi e^{3X+W}\sin^2\psi\,d\psi.
+\]
+\end{proposition}
+
+\begin{definition}[Parameterized neckpinch data]
+\label{def:chow-iv-lambda-neckpinch-data}
+\dcref{ch36:eq-36.5}
+\group{Numerical Simulation}
+\source{chow-et-al-ricci-flow-part-iv:page-0333}
+Set $W=X$ and choose $X$ by
+\[
+4e^{4X}\sin^2\psi=\sin^22\psi\quad(\cos^2\psi\ge\tfrac12),
+\]
+and
+\[
+4e^{4X}\sin^2\psi=\sin^22\psi+4\lambda\cos^22\psi
+ \quad(\cos^2\psi\le\tfrac12),
+\]
+where $\lambda\in(0,\infty)$.  The parameter interpolates between two
+round spheres joined at the poles ($\lambda=0$) and a smoothed single round
+ sphere for large $\lambda$.
+\end{definition}
+
+\begin{definition}[Finite-difference scheme (36.6--36.8)]
+\label{def:chow-iv-finite-difference-scheme}
+\dcref{ch36:36.6,ch36:36.7,ch36:36.8}
+\group{Numerical Simulation}
+\source{chow-et-al-ricci-flow-part-iv:page-0333,chow-et-al-ricci-flow-part-iv:page-0334}
+With $\Delta\psi=\pi/(N-2)$ and
+$F_i=F((i-\tfrac32)\Delta\psi,t_0)$, use
+\[
+ F'\approx\frac{F_{i+1}-F_{i-1}}{2\Delta\psi},\qquad
+ F''\approx\frac{F_{i+1}+F_{i-1}-2F_i}{(\Delta\psi)^2},\qquad
+ F_i^{n+1}=F_i^n+\Delta t\,G_i^n.
+\]
+The ghost-zone conditions are $X_1=X_2$, $X_N=X_{N-1}$ and the analogous
+equalities for $S$.
+\end{definition}
+
+\begin{definition}[Ricci eigenvalues in the rotational ansatz (36.9--36.10)]
+\label{def:chow-iv-rotational-ricci-eigenvalues}
+\dcref{ch36:36.9,ch36:36.10}
+\group{Numerical Simulation}
+\source{chow-et-al-ricci-flow-part-iv:page-0335}
+\uses{def:chow-iv-rotational-s3-metric}
+The radial and tangential Ricci eigenvalues are
+\begin{align*}
+ R_\perp&=-2e^{2(W-X)}[-1+X''+W''+(X'+3W')\cot\psi+2(X'+W')W'],\\
+ R_{S^2}&=-e^{2(W-X)}\bigl[-2+(1-e^{-4W})/\sin^2\psi+X''+W''
+ +(3X'+5W')\cot\psi +(X'+W')(X'+3W')\bigr].
+\end{align*}
+\end{definition}
+
+\begin{remark}[Numerical phase transition]
+\label{rem:chow-iv-numerical-phase-transition}
+\dcref{ch36:36.11}
+\group{Numerical Simulation}
+\source{chow-et-al-ricci-flow-part-iv:page-0334,chow-et-al-ricci-flow-part-iv:page-0335,chow-et-al-ricci-flow-part-iv:page-0336}
+\uses{def:chow-iv-lambda-neckpinch-data,def:chow-iv-rotational-ricci-eigenvalues}
+Numerics show convergence to the round sphere for a subcritical parameter,
+neckpinching at the equator for a supercritical parameter, and a transition
+near $\lambda=0.1639$.  At the transition the curvature concentrates at the
+poles while the geometry approaches a long thin javelin.  After curvature
+normalization at a pole, the critical profiles are observed to approach the
+Bryant steady soliton.  These are numerical observations, not existence
+theorems.
+\end{remark}
+
+\section{Matched asymptotics}
+
+\begin{definition}[Primary degenerate-neckpinch ansatz (Ansatz 36.2)]
+\label{def:chow-iv-primary-degenerate-neckpinch-ansatz}
+\dcref{ch36:36.2-ansatz}
+\group{Matched Asymptotics}
+\source{chow-et-al-ricci-flow-part-iv:page-0339,chow-et-al-ricci-flow-part-iv:page-0340}
+The initial manifold is $S^{n+1}$ with an $\SO(n+1)$-invariant metric,
+$n\ge2$.  The Ricci curvature is positive near both poles, tangential
+sectional curvature is positive, scalar curvature is everywhere positive, and
+there is a bump--neck--bump configuration near the right pole.  Curvature
+becomes unbounded there at a finite first singular time $T$.
+\end{definition}
+
+\begin{definition}[Rotational flow coordinates and equations (36.11--36.14)]
+\label{def:chow-iv-rotational-flow-equations}
+\dcref{ch36:eq-36.11,eq-36.12,eq-36.13,eq-36.14}
+\group{Matched Asymptotics}
+\source{chow-et-al-ricci-flow-part-iv:page-0340}
+Write
+\[
+ g=\phi^2(x,t)\,dx^2+\psi^2(x,t)g_{\mathrm{round}}
+ =ds^2+\psi^2(s(x,t),t)g_{\mathrm{round}},\qquad
+ s(x,t)=\int_0^x\phi(\xi,t)\,d\xi.
+\]
+Then
+\[
+ \phi_t=n\frac{\psi_{ss}}\psi\phi,
+ \qquad \psi_t=\psi_{ss}-(n-1)\frac{1-\psi_s^2}{\psi},
+ \qquad [\partial_t,\partial_s]=-(\phi_t/\phi)\partial_s.
+\]
+\end{definition}
+
+\begin{definition}[Parabolic rescaling (36.15--36.18)]
+\label{def:chow-iv-parabolic-rescaling}
+\dcref{ch36:36.15,ch36:36.16,ch36:36.17,ch36:36.18}
+\group{Matched Asymptotics}
+\source{chow-et-al-ricci-flow-part-iv:page-0341}
+\uses{def:chow-iv-primary-degenerate-neckpinch-ansatz,def:chow-iv-rotational-flow-equations}
+Set
+\[
+ \tau=-\log(T-t),\qquad \sigma=e^{\tau/2}s,qquad
+ U(\sigma,\tau)=\frac{\psi(s,t)}{\sqrt{2(n-1)(T-t)}}.
+\]
+Then
+\[
+ U_\tau=U_{\sigma\sigma}-(\sigma/2+nI)U_\sigma
+ +(n-1)\frac{U_\sigma^2}{U}+\tfrac12(U-U^{-1}),
+ \qquad I=\int_0^\sigma\frac{U_\sigma}{U}\,d\sigma.
+\]
+\end{definition}
+
+\begin{definition}[Parabolic Ansatz 1 and linearization (36.19--36.21)]
+\label{def:chow-iv-parabolic-linearization}
+\dcref{ch36:36.3-ansatz,ch36:36.19,ch36:36.20,ch36:36.21}
+\group{Matched Asymptotics}
+\source{chow-et-al-ricci-flow-part-iv:page-0341}
+\uses{def:chow-iv-parabolic-rescaling}
+In the parabolic region, $U\to1$ uniformly as $\tau\to\infty$.  With
+$V=U-1$, the equation is $V_\tau=\mathcal LV+N(V)$, where
+\[
+ \mathcal LV=V_{\sigma\sigma}-\tfrac\sigma2V_\sigma+V.
+\]
+The operator is self-adjoint in
+$L^2(\mathbb R,e^{-\sigma^2/4}d\sigma)$ and has eigenvalues
+$\lambda_k=1-k/2$ with Hermite-polynomial eigenfunctions $h_k$.
+\end{definition}
+
+\begin{definition}[Parabolic Ansatz 2 (36.22)]
+\label{def:chow-iv-parabolic-leading-mode}
+\dcref{ch36:36.4-ansatz,ch36:36.22}
+\group{Matched Asymptotics}
+\source{chow-et-al-ricci-flow-part-iv:page-0342}
+\uses{def:chow-iv-parabolic-linearization}
+For an integer $k\ge3$, assume
+\[
+ V(\sigma,\tau)=b_ke^{\lambda_k\tau}\sigma^k
+ +O(e^{\lambda_k\tau}\sigma^{k-2})
+ \quad(\sigma\to\infty),
+\]
+with this quantity small throughout the parabolic region.  Consequently that
+region satisfies $|\sigma|\ll e^{(1/2-1/k)\tau}$.
+\end{definition}
+
+\begin{definition}[Intermediate scaling and profile (36.23--36.27)]
+\label{def:chow-iv-intermediate-profile}
+\dcref{ch36:36.23,ch36:36.24,ch36:36.25,ch36:36.26,ch36:36.27}
+\group{Matched Asymptotics}
+\source{chow-et-al-ricci-flow-part-iv:page-0342}
+\uses{def:chow-iv-parabolic-leading-mode}
+Set
+\[
+ \rho=e^{(1/k-1/2)\tau}\sigma,\qquad W(\rho,t)=U(\sigma,\tau).
+\]
+If $W_t$ and the spatial functional in the rescaled equation remain bounded,
+the leading profile $\widetilde W$ satisfies
+\[
+ \frac\rho k\widetilde W_\rho-\frac12\widetilde W-\frac12\widetilde W^{-1}=0,
+ \qquad \widetilde W(\rho,t)=\sqrt{1-(\rho/c(t))^k}.
+\]
+\end{definition}
+
+\begin{definition}[Tip equation and Bryant profile (36.28--36.32)]
+\label{def:chow-iv-tip-bryant-profile}
+\dcref{ch36:36.28,ch36:36.29,ch36:36.30,ch36:36.31,ch36:36.32}
+\group{Matched Asymptotics}
+\source{chow-et-al-ricci-flow-part-iv:page-0343}
+\uses{def:chow-iv-rotational-flow-equations}
+Near the right pole use $\psi$ as radial coordinate and write
+\[
+ g=z(\psi,t)^{-1}d\psi^2+\psi^2g_{\mathrm{ground}},
+\]
+where
+\[
+ z_t=\mathcal F_\psi[z]=\psi^{-2}\{\psi^2zz_{\psi\psi}
+ -\tfrac12(\psi z_\psi)^2+(n-1-z)\psi z_\psi+2(n-1)(1-z)z\}.
+\]
+For $\gamma=\Gamma(\tau)\psi$ and $Z(\gamma,t)=z(\psi,t)$,
+\[
+ \Gamma^{-2}(Z_t+\Gamma^{-1}\Gamma_\tau\gamma Z_\gamma)=\mathcal F_\gamma[Z].
+\]
+The stationary boundary-value solutions $\mathcal F_\gamma[Z]=0$,
+$Z(0)=1$, $Z(\infty)=0$, are
+$Z(\gamma)=B(\gamma/a)$, where
+$g=B(r)^{-1}dr^2+r^2g_{\mathrm{ground}}$ is the Bryant steady soliton.
+\end{definition}
+
+\begin{definition}[Tip Ansatz (Ansatz 36.6)]
+\label{def:chow-iv-tip-ansatz}
+\dcref{ch36:36.6-ansatz}
+\group{Matched Asymptotics}
+\source{chow-et-al-ricci-flow-part-iv:page-0344}
+\uses{def:chow-iv-tip-bryant-profile}
+In the tip region, as $t\uparrow T$, assume
+$\Gamma(\tau)\gg e^{\tau/2}$, $\partial_\tau\Gamma=o(\Gamma^3)$, and
+$\partial_tZ=o(\Gamma^2)$.  Then the left side of the rescaled tip equation
+is negligible and the Bryant boundary-value equation governs the tip.
+\end{definition}
+
+\begin{proposition}[Outer profile (36.33)]
+\label{prop:chow-iv-outer-profile}
+\dcref{ch36:36.33}
+\group{Matched Asymptotics}
+\source{chow-et-al-ricci-flow-part-iv:page-0344}
+\uses{def:chow-iv-parabolic-leading-mode,def:chow-iv-intermediate-profile}
+In an outer region where $\sigma=e^{\tau/2}s\to-\infty$, matching with the
+parabolic region gives
+\[
+ \psi(s,t)^2\approx2(n-1)\left[(T-t)-(s/c)^2\right].
+\]
+If $k$ is even, the full diameter decays on the scale
+$|s|\le c(T-t)^{1/(2k)}$; if $k$ is odd, the distance from the equator to the
+right pole has this scale.
+\end{proposition}
+
+\begin{proposition}[Matched parameters and Type II rate (36.34)]
+\label{prop:chow-iv-matched-parameters}
+\dcref{ch36:36.34}
+\group{Matched Asymptotics}
+\source{chow-et-al-ricci-flow-part-iv:page-0344,chow-et-al-ricci-flow-part-iv:page-0345}
+\uses{def:chow-iv-parabolic-leading-mode,def:chow-iv-intermediate-profile,def:chow-iv-tip-ansatz,prop:chow-iv-outer-profile}
+Matching the regional profiles forces $k\ge3$ to be an arbitrary integer,
+$c(t)=c$ constant,
+\[
+ b_k=-\tfrac12c^{-k},\qquad a=\frac{k(n-1)}{2c},
+ \qquad \Gamma(\tau)=e^{(1-1/k)\tau}.
+\]
+The resulting approximate solution has curvature blow-up
+\[
+ \sup_{x\in S^{n+1}}|\Rm(x,t)|\sim C(T-t)^{-2+2/k},
+\]
+which is Type II for every $k\ge3$.
+\end{proposition}
+
+\section{Existence by the Ważewski method}
+
+\begin{definition}[Tubular neighborhood for a formal solution]
+\label{def:chow-iv-wazewski-tubular-neighborhood}
+\dcref{ch36:36.35}
+\group{Degenerate Neckpinch Existence}
+\source{chow-et-al-ricci-flow-part-iv:page-0345,chow-et-al-ricci-flow-part-iv:page-0346}
+\uses{prop:chow-iv-matched-parameters}
+For a formal profile $\widehat g_{\{n,k,c\}}(t)$ and $\epsilon>0$, choose a
+tubular neighborhood $\Xi_{\{n,k,c;\epsilon\}}$ in the space of rotationally
+symmetric metrics times time, narrowing toward $T$, whose boundary decomposes
+as
+\[
+ \partial\Xi=\partial\Xi^-\cup\partial\Xi^0\cup\partial\Xi^+.
+\]
+No trajectory inside contacts $\partial\Xi^+$, while a trajectory contacting
+$\partial\Xi^-$ exits immediately.
+\end{definition}
+
+\begin{theorem}[Ważewski existence of degenerate neckpinches]
+\label{thm:chow-iv-wazewski-degenerate-neckpinch}
+\dcref{ch36:36.36}
+\group{Degenerate Neckpinch Existence}
+\source{chow-et-al-ricci-flow-part-iv:page-0346,chow-et-al-ricci-flow-part-iv:page-0347}
+\uses{def:chow-iv-wazewski-tubular-neighborhood,prop:chow-iv-matched-parameters}
+For every matched formal profile indexed by $(n,k,c)$, there is a rotationally
+symmetric Ricci flow solution that remains in
+$\Xi_{\{n,k,c;\epsilon\}}$ until time $T$ and hence converges to that formal
+profile in the matched regions.  In particular, the solution develops a
+degenerate neckpinch with the Type II curvature rate in
+Proposition~\ref{prop:chow-iv-matched-parameters}.
+\end{theorem}
+\begin{proof}
+Choose a closed connected $k$-dimensional parameter set $B^k$ of initial data
+at a time $t_0$ close to $T$ so that its boundary maps noncontractibly into
+the instant-exit set $\partial\Xi^-$.  Choose it away from the neutral set
+$\partial\Xi^0$.  If every trajectory from $B^k$ exited, continuous dependence
+would give a retraction of $B^k$ onto $\partial\Xi^-$ extending the boundary
+map, contradicting its noncontractibility.  A trajectory therefore remains in
+$\Xi$ for all $t\in[t_0,T)$ and approaches the narrowing formal profile.
+\end{proof}
+
+\begin{remark}[Scope of the construction]
+\label{rem:chow-iv-degenerate-neckpinch-scope}
+\dcref{ch36:36.37}
+\group{Degenerate Neckpinch Existence}
+\source{chow-et-al-ricci-flow-part-iv:page-0346,chow-et-al-ricci-flow-part-iv:page-0347}
+\uses{thm:chow-iv-wazewski-degenerate-neckpinch}
+The barrier construction of the tubular neighborhoods is straightforward in
+the tip, intermediate, and outer regions and most delicate in the parabolic
+region.  The argument establishes rotationally symmetric examples; genericity
+and extension to nonrotational flows remain open, although canonical-neighborhood
+results suggest Bryant-soliton models for three-dimensional Type II limits.
+\end{remark}

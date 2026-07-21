@@ -8,84 +8,109 @@ on:
 
 jobs:
   build:
-    name: Lake build (${{ matrix.project }})
+    name: Lake build (${{ matrix.name }})
     runs-on: ubuntu-latest
     timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:
-        project: [DoCarmo, MorganTian, Petersen, LeeRiemannian, Hatcher, Evans, LeeSmooth]
+        include:
+          - name: PoincareConjecture
+            path: PoincareConjecture
+            sorry_baseline: 0
+          - name: Shared
+            path: shared
+            sorry_baseline: 0
+          - name: CaoZhu
+            path: formalized-sources/CaoZhu
+            sorry_baseline: 0
+          - name: CheegerGromovTaylor
+            path: formalized-sources/CheegerGromovTaylor
+            sorry_baseline: 0
+          - name: ChowEtAl
+            path: formalized-sources/ChowEtAl
+            sorry_baseline: 0
+          - name: ChowKnopf
+            path: formalized-sources/ChowKnopf
+            sorry_baseline: 0
+          - name: DoCarmo
+            path: formalized-sources/DoCarmo
+            sorry_baseline: 0
+          - name: Evans
+            path: formalized-sources/Evans
+            sorry_baseline: 0
+          - name: HanLinLectureNotes
+            path: formalized-sources/HanLinLectureNotes
+            sorry_baseline: 0
+          - name: Hatcher
+            path: formalized-sources/Hatcher
+            sorry_baseline: 0
+          - name: KleinerLott
+            path: formalized-sources/KleinerLott
+            sorry_baseline: 0
+          - name: LeeRiemannian
+            path: formalized-sources/LeeRiemannian
+            sorry_baseline: 0
+          - name: LeeSmooth
+            path: formalized-sources/LeeSmooth
+            sorry_baseline: 280
+          - name: MorganTian
+            path: formalized-sources/MorganTian
+            sorry_baseline: 0
+          - name: Petersen
+            path: formalized-sources/Petersen
+            sorry_baseline: 0
+          - name: Topping
+            path: formalized-sources/Topping
+            sorry_baseline: 0
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install elan (Lean toolchain manager)
+      - name: Install elan
         run: |
           curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
 
       - name: Print Lean version
-        working-directory: ${{ matrix.project }}
+        working-directory: ${{ matrix.path }}
         run: lean --version
 
-      # Cache the full Lake build (oleans + packages) for this project. Keyed
-      # on its own manifest + toolchain so a Mathlib/toolchain bump
-      # invalidates just that project's cache.
-      - name: Cache .lake build artifacts
+      - name: Cache Lake build artifacts
         uses: actions/cache@v4
         with:
           path: |
-            ${{ matrix.project }}/.lake/build
-            ${{ matrix.project }}/.lake/packages
-          key: lake-${{ runner.os }}-${{ matrix.project }}-${{ hashFiles(format('{0}/lake-manifest.json', matrix.project), format('{0}/lean-toolchain', matrix.project)) }}
+            ${{ matrix.path }}/.lake/build
+            ${{ matrix.path }}/.lake/packages
+          key: lake-${{ runner.os }}-${{ matrix.name }}-${{ hashFiles(format('{0}/lake-manifest.json', matrix.path), format('{0}/lean-toolchain', matrix.path)) }}
           restore-keys: |
-            lake-${{ runner.os }}-${{ matrix.project }}-
+            lake-${{ runner.os }}-${{ matrix.name }}-
 
       - name: Fetch Mathlib cache
-        working-directory: ${{ matrix.project }}
+        working-directory: ${{ matrix.path }}
         run: lake exe cache get
 
       - name: Lake build
-        working-directory: ${{ matrix.project }}
+        working-directory: ${{ matrix.path }}
         run: lake build
 
-  sorry-axiom-count:
-    name: Sorry / axiom count
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      # Tracked baseline, not "zero forever": fails only if a project's
-      # sorry count goes UP. Lower the corresponding EXPECTED value when a
-      # sorry is closed; raise it (deliberately, in the same PR) when a new
-      # one is added.
-      - name: Count sorries against tracked baseline
+      - name: Check sorry and axiom counts
+        env:
+          PROJECT: ${{ matrix.path }}
+          SORRY_BASELINE: ${{ matrix.sorry_baseline }}
         run: |
-          declare -A EXPECTED=( [DoCarmo]=0 [MorganTian]=0 [Petersen]=3 [LeeRiemannian]=0 [Hatcher]=0 [Evans]=0 [LeeSmooth]=280 )
-          fail=0
-          for p in "${!EXPECTED[@]}"; do
-            actual=$(grep -rnE "^[[:space:]]*sorry[[:space:]]*$|by sorry|:= sorry" \
-              --include="*.lean" "$p" 2>/dev/null | wc -l | tr -d ' ')
-            expected=${EXPECTED[$p]}
-            if [ "$actual" -gt "$expected" ]; then
-              echo "::error::$p: sorry count increased ($actual > $expected). If intentional, raise EXPECTED[$p] in this workflow."
-              fail=1
-            else
-              echo "$p: sorry count $actual (baseline $expected)"
-            fi
-          done
-          exit $fail
+          sorry_count=$({ grep -rnE "^[[:space:]]*sorry[[:space:]]*$|by sorry|:= sorry" \
+            --include="*.lean" "$PROJECT" 2>/dev/null || true; } | wc -l | tr -d ' ')
+          if [ "$sorry_count" -gt "$SORRY_BASELINE" ]; then
+            echo "::error::$PROJECT: sorry count increased ($sorry_count > $SORRY_BASELINE)"
+            exit 1
+          fi
+          echo "$PROJECT: sorry count $sorry_count (baseline $SORRY_BASELINE)"
 
-      - name: Count axioms (expect zero)
-        run: |
-          fail=0
-          for p in DoCarmo MorganTian Petersen LeeRiemannian Hatcher Evans LeeSmooth; do
-            actual=$(grep -rnE "^axiom[[:space:]]+[a-zA-Z_][a-zA-Z0-9_']*[[:space:]]*$" \
-              --include="*.lean" "$p" 2>/dev/null | wc -l | tr -d ' ')
-            if [ "$actual" -ne 0 ]; then
-              echo "::error::$p: found $actual axiom declaration(s), expected 0. Document and update this workflow if intentional."
-              fail=1
-            else
-              echo "$p: axiom count 0"
-            fi
-          done
-          exit $fail
+          axiom_count=$({ grep -rnE "^axiom[[:space:]]+[a-zA-Z_][a-zA-Z0-9_']*[[:space:]]*$" \
+            --include="*.lean" "$PROJECT" 2>/dev/null || true; } | wc -l | tr -d ' ')
+          if [ "$axiom_count" -ne 0 ]; then
+            echo "::error::$PROJECT: found $axiom_count axiom declaration(s), expected 0"
+            exit 1
+          fi
+          echo "$PROJECT: axiom count 0"

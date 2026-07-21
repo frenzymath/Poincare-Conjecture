@@ -1,0 +1,579 @@
+% Source: Evans, "Partial Differential Equations" (2nd ed., AMS Graduate Studies in Mathematics vol. 19, 2010),
+% Chapter D "Linear Functional Analysis", PDF pages 637-646 of the cited source.
+% Transcribed from the cited source and organized according to
+% leanblueprint conventions (semantic \label, bracketed titles, \uses dependency edges) below.
+%
+% NOTE: The raw OCR for PDF page 637 opened with the statement of the Arzel\`a-Ascoli
+% Theorem (with no theorem number, in italics, immediately preceding the "APPENDIX D"
+% title). Cross-checking against appendixC.tex shows that file's final subsection,
+% "Uniform Convergence", ends exactly with the lead-in sentence "We record here the
+% Arzel\`a-Ascoli compactness criterion for uniform convergence:" and no statement --
+% i.e. that theorem is the missing continuation of Appendix C, not part of Appendix D.
+% It has accordingly been appended to appendixC.tex (as \dcref{appC:thm-9} /
+% \label{thm:arzela-ascoli-theorem} and \dcref{appC:def-9} / \label{def:uniform-equicontinuity})
+% rather than duplicated here.
+
+\section{Linear Functional Analysis}
+\label{sec:linear-functional-analysis}
+
+\subsection{Banach Spaces}
+\label{sec:banach-spaces}
+
+Let $X$ denote a real linear space.
+
+\begin{definition}[Norm]
+\label{def:norm-normed-linear-space}
+\dcref{appD:D.1-def-1}
+\group{Functional Analysis}
+A \textit{mapping} $\|\cdot\| : X \to [0, \infty)$ is called a norm if
+\begin{enumerate}
+\item[(i)] $\|u + v\| \leq \|u\| + \|v\|$ for all $u, v \in X$.
+\item[(ii)] $\|\lambda u\| = |\lambda| \|u\|$ for all $u \in X$, $\lambda \in \mathbb{R}$.
+\item[(iii)] $\|u\| = 0$ if and only if $u = 0$.
+\end{enumerate}
+Inequality (i) is the \textit{triangle inequality}.
+\end{definition}
+
+Hereafter we assume $X$ is a normed linear space.
+
+\begin{definition}[Convergence in a normed space]
+\label{def:convergence-normed-space}
+\dcref{appD:D.1-def-2}
+\group{Functional Analysis}
+\uses{def:norm-normed-linear-space}
+\textit{We say a sequence} $\{u_k\}_{k=1}^{\infty} \subset X$ \textit{converges to} $u \in X$, \textit{written}
+$$u_k \to u,$$
+\textit{if}
+$$\lim_{k \to \infty} \|u_k - u\| = 0.$$
+\end{definition}
+
+\begin{definition}[Cauchy sequence, completeness, and Banach space]
+\label{def:cauchy-sequence-complete-banach-space}
+\dcref{appD:D.1-def-3}
+\group{Functional Analysis}
+\uses{def:norm-normed-linear-space}
+(i) A \textit{sequence} $\{u_k\}_{k=1}^{\infty} \subset X$ is called a Cauchy sequence \textit{provided for each} $\varepsilon > 0$ \textit{there exists} $N > 0$ \textit{such that}
+$$\|u_k - u_l\| < \varepsilon \quad \text{for all } k, l \geq N.$$
+
+(ii) $X$ is complete if each Cauchy sequence in $X$ converges; that is, whenever $\{u_k\}_{k=1}^{\infty}$ is a Cauchy sequence, there exists $u \in X$ such that $\{u_k\}_{k=1}^{\infty}$ converges to $u$.
+
+(iii) A Banach space $X$ is a complete, normed linear space.
+\end{definition}
+
+\begin{definition}[Separable space]
+\label{def:separable-space}
+\dcref{appD:D.1-def-4}
+\group{Functional Analysis}
+We say $X$ is \textit{separable} if $X$ \textit{contains a countable dense subset}.
+\end{definition}
+
+\begin{example}[Banach space examples: $L^p$, H\"older, and Sobolev spaces]
+\label{ex:banach-space-examples-lp-holder-sobolev}
+\dcref{appD:D.1-ex-1}
+\group{Functional Analysis}
+\uses{def:cauchy-sequence-complete-banach-space,def:holder-space,def:sobolev-space-wkp}
+(i) $L^p$ spaces. Assume $U$ is an open subset of $\mathbb{R}^n$, and $1 \le p \le \infty$. If $f : U \to \mathbb{R}$ is \textit{measurable}, we define
+
+$$\|f\|_{L^p(U)} := \begin{cases} \left(\int_U |f|^p dx\right)^{1/p} & \text{if } 1 \le p < \infty \\ \text{ess sup}_U |f| & \text{if } p = \infty. \end{cases}$$
+
+We define $L^p(U)$ to be the linear space of all \textit{measurable} functions $f : U \to \mathbb{R}$ for which $\|f\|_{L^p(U)} < \infty$. Then $L^p(U)$ is a \textit{Banach space}, provided we identify two functions which agree a.e.
+
+(ii) H\"older spaces. See \cref{def:holder-space}.
+
+(iii) Sobolev spaces. See \cref{def:sobolev-space-wkp}. $\square$
+\end{example}
+
+\subsection{Hilbert Spaces}
+\label{sec:hilbert-spaces}
+
+Let $H$ be a real linear space.
+
+\begin{definition}[Inner product]
+\label{def:inner-product}
+\dcref{appD:D.2-def-1}
+\group{Functional Analysis}
+A mapping $(\,\cdot\,,\,\cdot\,) : H \times H \to \mathbb{R}$ is called an \textit{inner product} if
+
+(i) $(u, v) = (v, u)$ for all $u, v \in H$,
+
+(ii) the mapping $u \mapsto (u, v)$ is \textit{linear} for each $v \in H$,
+
+(iii) $(u, u) \ge 0$ for all $u \in H$,
+
+(iv) $(u, u) = 0$ if and only if $u = 0$.
+\end{definition}
+
+\begin{definition}[Norm induced by an inner product]
+\label{def:norm-from-inner-product}
+\dcref{appD:D.2-def-2}
+\group{Functional Analysis}
+\uses{def:inner-product}
+\textbf{Notation.} If $(\,\cdot\,,\,\cdot\,)$ is an \textit{inner product}, the associated \textit{norm} is
+$$(1) \qquad \|u\| := (u, u)^{1/2} \quad (u \in H). \qquad \square$$
+\end{definition}
+
+\begin{lemma}[Cauchy--Schwarz inequality in a Hilbert space]
+\label{lem:cauchy-schwarz-inequality-hilbert}
+\dcref{appD:D.2-lem-1}
+\group{Functional Analysis}
+\uses{lem:cauchy-schwarz-inequality,def:inner-product,def:norm-from-inner-product}
+The \textit{Cauchy--Schwarz inequality} states
+$$(2) \qquad |(u, v)| \le \|u\| \|v\| \quad (u, v \in H).$$
+This inequality is proved as in \cref{lem:cauchy-schwarz-inequality}.
+\end{lemma}
+
+Using (2), we easily verify (1) defines a norm on $H$.
+
+\begin{definition}[Hilbert space]
+\label{def:hilbert-space}
+\dcref{appD:D.2-def-3}
+\group{Functional Analysis}
+\uses{def:cauchy-sequence-complete-banach-space,def:inner-product,def:norm-from-inner-product}
+A \textit{Hilbert space} $H$ is a \textit{Banach space} endowed with an \textit{inner product} which generates the norm.
+\end{definition}
+
+\begin{example}[$L^2(U)$ is a Hilbert space]
+\label{ex:l2-hilbert-space-example}
+\dcref{appD:D.2-ex-1}
+\group{Functional Analysis}
+\uses{def:hilbert-space,def:inner-product}
+The space $L^2(U)$ is a \textit{Hilbert space}, with
+$$(f, g) = \int_U fg \, dx.$$
+\end{example}
+
+\begin{example}[$H^1(U)$ is a Hilbert space]
+\label{ex:h1-hilbert-space-example}
+\dcref{appD:D.2-ex-2}
+\group{Functional Analysis}
+\uses{def:hilbert-space,def:inner-product}
+The Sobolev space $H^1(U)$ is a \textit{Hilbert space}, with
+$$(f, g) = \int_U fg + Df \cdot Dg \, dx.$$
+\end{example}
+
+\begin{definition}[Orthogonality and orthonormal bases]
+\label{def:orthogonal-orthonormal-basis}
+\dcref{appD:D.2-def-4}
+\group{Functional Analysis}
+\uses{def:hilbert-space}
+(i) Two elements $u, v \in H$ are \textit{orthogonal} if $(u,v) = 0$.
+
+(ii) A countable basis $\{w_k\}_{k=1}^{\infty} \subset H$ is called \textit{orthonormal} if
+$$\begin{cases} (w_k, w_l) = 0 & (k,l = 1, \ldots; k \neq l) \\ \|w_k\| = 1 & (k = 1, \ldots). \end{cases}$$
+
+If $u \in H$ and $\{w_k\}_{k=1}^{\infty} \subset H$ is an orthonormal basis, we can write
+$$u = \sum_{k=1}^{\infty} (u, w_k) w_k,$$
+the series converging in $H$. In addition
+$$\|u\|^2 = \sum_{k=1}^{\infty} (u, w_k)^2.$$
+\end{definition}
+
+\begin{definition}[Orthogonal complement]
+\label{def:orthogonal-complement-subspace}
+\dcref{appD:D.2-def-5}
+\group{Functional Analysis}
+\uses{def:orthogonal-orthonormal-basis}
+If $S$ is a subspace of $H$, $S^{\perp} = \{u \in H \mid (u,v) = 0 \text{ for all } v \in S\}$ is the subspace orthogonal to $S$.
+\end{definition}
+
+\subsection{Bounded Linear Operators}
+\label{sec:bounded-linear-operators}
+
+Let $X$ and $Y$ be real Banach spaces.
+
+\begin{definition}[Linear operator]
+\label{def:linear-operator-banach}
+\dcref{appD:D.3-def-1}
+\group{Functional Analysis}
+\uses{def:cauchy-sequence-complete-banach-space}
+(i) A mapping $A : X \to Y$ is a \textit{linear operator} provided
+$$A[\lambda u + \mu v] = \lambda Au + \mu Av$$
+for all $u, v \in X$, $\lambda, \mu \in \R$.
+
+(ii) The \textit{range} of $A$ is $R(A) := \{v \in Y \mid v = Au \text{ for some } u \in X\}$ and the \textit{null space} of $A$ is $N(A) := \{u \in X \mid Au = 0\}$.
+\end{definition}
+
+\begin{definition}[Bounded linear operator]
+\label{def:bounded-linear-operator}
+\dcref{appD:D.3-def-2}
+\group{Functional Analysis}
+\uses{def:linear-operator-banach}
+A linear operator $A : X \to Y$ is \textit{bounded} if
+$$\|A\| := \sup\{\|Au\|_Y \mid \|u\|_X \leq 1\} < \infty.$$
+\end{definition}
+
+It is easy to check that a bounded linear operator $A : X \to Y$ is continuous.
+
+\begin{definition}[Closed linear operator]
+\label{def:closed-linear-operator}
+\dcref{appD:D.3-def-3}
+\group{Functional Analysis}
+A \textit{linear operator} $A : X \to Y$ is called \textit{closed} if whenever $u_k \to u$ in $X$ and $Au_k \to v$ in $Y$, then
+$$Au = v.$$
+\end{definition}
+
+\begin{theorem}[Closed Graph Theorem]
+\label{thm:closed-graph-theorem}
+\dcref{appD:thm-1}
+\group{Functional Analysis}
+\uses{def:closed-linear-operator}
+Let $A : X \to Y$ be a closed, \textit{linear operator}. Then $A$ is \textit{bounded}.
+\end{theorem}
+
+\begin{definition}[Resolvent set and spectrum]
+\label{def:resolvent-set-spectrum-appendix-d}
+\dcref{appD:D.3-def-4}
+\group{Functional Analysis}
+Let $A : X \to X$ be a \textit{bounded linear operator}.
+
+(i) The \textit{resolvent set} of $A$ is
+$$\rho(A) = \{\eta \in \mathbb{R} \mid (A - \eta I) \text{ is one-to-one and onto}\}.$$
+
+(ii) The \textit{spectrum} of $A$ is
+$$\sigma(A) = \mathbb{R} - \rho(A).$$
+\end{definition}
+
+\begin{remark}[The resolvent yields a bounded inverse]
+\label{rem:resolvent-inverse-bounded}
+\dcref{appD:D.3-rem-1}
+\group{Functional Analysis}
+\uses{thm:closed-graph-theorem,def:resolvent-set-spectrum-appendix-d}
+If $\eta \in \rho(A)$, the Closed Graph Theorem then implies that the inverse $(A - \eta I)^{-1} : X \to X$ is a bounded linear operator.
+\end{remark}
+
+\begin{definition}[Eigenvalue and eigenvector]
+\label{def:eigenvalue-eigenvector-appendix-d}
+\dcref{appD:D.3-def-5}
+\group{Functional Analysis}
+\uses{def:resolvent-set-spectrum-appendix-d}
+(i) We say $\eta \in \sigma(A)$ is an \textit{eigenvalue} of $A$ provided
+$$N(A - \eta I) \neq \{0\}.$$
+We write $\sigma_p(A)$ to denote the collection of eigenvalues of $A$; $\sigma_p(A)$ is the point spectrum.
+
+(ii) If $\eta$ is an eigenvalue and $w \neq 0$ satisfies
+$$Aw = \eta w,$$
+we say $w$ is an associated eigenvector.
+\end{definition}
+
+\begin{definition}[Bounded linear functional and dual space]
+\label{def:bounded-linear-functional-dual-space}
+\dcref{appD:D.3-def-6}
+\group{Functional Analysis}
+(i) A bounded linear operator $u^* : X \to \mathbb{R}$ is called a bounded linear functional on $X$.
+
+(ii) We write $X^*$ to denote the collection of all bounded linear functionals on $X$; $X^*$ is the dual space of $X$.
+\end{definition}
+
+\begin{definition}[Duality pairing, dual norm, and reflexivity]
+\label{def:dual-pairing-reflexive-banach-space}
+\dcref{appD:D.3-def-7}
+\group{Functional Analysis}
+\uses{def:bounded-linear-functional-dual-space}
+(i) If $u \in X$, $u^* \in X^*$ we write
+$$\langle u^*, u \rangle$$
+to denote the real number $u^*(u)$. The symbol $\langle \, , \, \rangle$ denotes the pairing of $X^*$ and $X$.
+
+(ii) We define
+$$\|u^*\| := \sup\{\langle u^*, u \rangle \mid \|u\| \leq 1\}.$$
+
+(iii) A Banach space is \textit{reflexive} if $(X^*)^* = X$. More precisely, this means that for each $u^{**} \in (X^*)^*$, there exists $u \in X$ such that
+$$\langle u^{**}, u^* \rangle = \langle u^*, u \rangle \text{ for all } u^* \in X^*.$$
+\end{definition}
+
+\textbf{b. Linear operators on Hilbert spaces.}
+
+Now let $H$ be a real Hilbert space, with inner product $(\cdot, \cdot)$.
+
+\begin{theorem}[Riesz Representation Theorem]
+\label{thm:riesz-representation-theorem}
+\dcref{appD:thm-2}
+\group{Functional Analysis}
+\uses{def:hilbert-space,def:bounded-linear-functional-dual-space}
+$H^*$ \textit{can be canonically identified with} $H$; \textit{more precisely, for each} $u^* \in H^*$ \textit{there exists a unique element} $u \in H$ \textit{such that}
+$$(u^*, v) = (u, v) \quad \text{for all } v \in H.$$
+\textit{The mapping} $u^* \mapsto u$ \textit{is a linear isomorphism of} $H^*$ \textit{onto} $H$.
+\end{theorem}
+
+\begin{definition}[Adjoint operator and symmetric operator]
+\label{def:adjoint-symmetric-operator}
+\dcref{appD:D.3-def-8}
+\group{Functional Analysis}
+\uses{thm:riesz-representation-theorem}
+(i) If $A : H \to H$ is a bounded, linear operator, its adjoint $A^* : H \to H$ satisfies
+$$(Au, v) = (u, A^* v)$$
+for all $u, v \in H$.
+
+(ii) $A$ is symmetric if $A^* = A$.
+\end{definition}
+
+\subsection{Weak Convergence}
+\label{sec:weak-convergence-appendix-d}
+
+Let $X$ denote a real Banach space.
+
+\begin{definition}[Weak convergence]
+\label{def:weak-convergence}
+\dcref{appD:D.4-def-1}
+\group{Functional Analysis}
+\uses{def:bounded-linear-functional-dual-space}
+We say a sequence $\{u_k\}_{k=1}^\infty \subset X$ converges weakly to $u \in X$, written
+$$u_k \rightharpoonup u,$$
+if
+$$(u^*, u_k) \to (u^*, u)$$
+for each bounded linear functional $u^* \in X^*$.
+\end{definition}
+
+\begin{remark}[Basic properties of weak convergence]
+\label{rem:weak-convergence-basic-properties}
+\dcref{appD:D.4-rem-1}
+\group{Functional Analysis}
+\uses{def:weak-convergence,def:convergence-normed-space}
+It is easy to check that if $u_k \to u$, then $u_k \rightharpoonup u$. It is also true that any weakly convergent sequence is bounded. In addition, if $u_k \rightharpoonup u$, then
+$$\|u\| \le \liminf_{k \to \infty} \|u_k\|.$$
+\end{remark}
+
+\begin{theorem}[Weak compactness]
+\label{thm:weak-compactness-reflexive-banach}
+\dcref{appD:thm-3}
+\group{Functional Analysis}
+\uses{def:weak-convergence,def:dual-pairing-reflexive-banach-space}
+Let $X$ be a reflexive Banach space and suppose the sequence $\{u_k\}_{k=1}^\infty \subset X$ is bounded. Then there exists a subsequence $\{u_{k_j}\}_{j=1}^\infty \subset \{u_k\}_{k=1}^\infty$ and $u \in X$ such that
+$$u_{k_j} \rightharpoonup u.$$
+\end{theorem}
+
+In other words, bounded sequences in a reflexive Banach space are weakly precompact. In particular, a bounded sequence in a Hilbert space contains a weakly convergent subsequence.
+
+\begin{theorem}[Mazur's Theorem]
+\label{thm:mazurs-theorem}
+\dcref{appD:D.4-thm-mazur}
+\group{Functional Analysis}
+\uses{def:weak-convergence}
+A convex, closed subset of $X$ is weakly closed.
+\end{theorem}
+
+\begin{example}[Weak convergence in $L^p$]
+\label{ex:weak-convergence-lp-duality}
+\dcref{appD:D.4-ex-1}
+\group{Functional Analysis}
+\uses{def:weak-convergence,thm:weak-compactness-reflexive-banach,def:dual-pairing-reflexive-banach-space}
+\textbf{IMPORTANT EXAMPLE.} We will most often employ weak convergence ideas in the following context. Take $U \subset \mathbb{R}^n$ to be open, and assume $1 \leq p < \infty$. Then
+
+$$\text{the dual space of } X = L^p(U) \text{ is } X^* = L^q(U),$$
+
+where $\frac{1}{p} + \frac{1}{q} = 1, 1 < q \leq \infty$. More precisely, each bounded linear functional on $L^p(U)$ can be represented as $f \mapsto \int_U gf \, dx$ for some $g \in L^q(U)$. Therefore
+
+$$f_k \rightharpoonup f \quad \text{weakly in } L^p(U)$$
+
+means
+
+$$(3) \quad \int_U gf_k \, dx \to \int_U gf \, dx \quad \text{as } k \to \infty, \text{ for all } g \in L^q(U).$$
+
+Now the identification of $L^q(U)$ as the dual of $L^p(U)$ shows that
+
+$$L^p(U) \text{ is reflexive if } 1 < p < \infty.$$
+
+In particular the Weak Compactness Theorem (\cref{thm:weak-compactness-reflexive-banach}) then assures us that from a bounded sequence in $L^p(U)$ $(1 < p < \infty)$ we can extract a \textit{weakly convergent} subsequence, that is, a sequence satisfying (3). This is an important compactness assertion, but note very carefully: \textit{the convergence (3) does not imply that $f_k \to f$ pointwise or almost everywhere.} It may very well be, for example, that the functions $\{f_k\}_{k=1}^\infty$ oscillate more and more rapidly as $k \to \infty$. See Problem 1 in Chapter 8. $\square$
+\end{example}
+
+\subsection{Compact Operators, Fredholm Theory}
+\label{sec:compact-operators-fredholm-theory}
+
+Let $X$ and $Y$ be real Banach spaces.
+
+\begin{definition}[Compact operator]
+\label{def:compact-linear-operator}
+\dcref{appD:D.5-def-1}
+\group{Fredholm Theory}
+\textit{A bounded linear operator}
+$$K : X \to Y$$
+\textit{is called compact provided for each bounded sequence $\{u_k\}_{k=1}^\infty \subset X$, the sequence $\{Ku_k\}_{k=1}^\infty$ is precompact in $Y$; that is, there exists a subsequence $\{u_{k_j}\}_{j=1}^\infty$ such that $\{Ku_{k_j}\}_{j=1}^\infty$ converges in $Y$.}
+\end{definition}
+
+\begin{remark}[Compact operators map weakly convergent to strongly convergent sequences]
+\label{rem:compact-operator-weak-to-strong-convergence}
+\dcref{appD:D.5-rem-1}
+\group{Fredholm Theory}
+\uses{def:compact-linear-operator,def:weak-convergence}
+Now let $H$ denote a real Hilbert space, with inner product $(\cdot, \cdot)$. It is easy to see that if a linear operator $K : H \to H$ is compact and $u_k \rightharpoonup u$, then $Ku_k \to Ku$.
+\end{remark}
+
+\begin{theorem}[Compactness of adjoints]
+\label{thm:compactness-of-adjoint-operator}
+\dcref{appD:thm-4}
+\group{Fredholm Theory}
+\uses{def:compact-linear-operator,def:adjoint-symmetric-operator}
+If $K : H \to H$ is compact, so is $K^* : H \to H$.
+\end{theorem}
+
+\begin{proof}
+Let $\{u_k\}_{k=1}^\infty$ be a bounded sequence in $H$ and extract a weakly convergent subsequence $u_{k_j} \rightharpoonup u$ in $H$. We will prove $K^*u_{k_j} \to K^*u$. Indeed,
+
+$$\|K^*u_{k_j} - K^*u\|^2 = (K^*u_{k_j} - K^*u, K^*[u_{k_j} - u])$$
+$$= (KK^*u_{k_j} - KK^*u, u_{k_j} - u).$$
+
+Now since $K^*$ is linear, $K^*u_{k_j} \to K^*u$, and so $KK^*u_{k_j} \to KK^*x$. Thus $K^*u_{k_j} \to K^*u$. $\square$
+\end{proof}
+
+\begin{theorem}[Fredholm alternative]
+\label{thm:fredholm-alternative}
+\dcref{appD:thm-5}
+\group{Fredholm Theory}
+\uses{thm:compactness-of-adjoint-operator,def:compact-linear-operator}
+Let $K : H \to H$ be a compact linear operator. Then
+\begin{itemize}
+\item[(i)] $N(I - K)$ is finite dimensional,
+\item[(ii)] $R(I - K)$ is closed,
+\item[(iii)] $R(I - K) = N(I - K^*)^\perp$,
+\item[(iv)] $N(I - K) = \{0\}$ if and only if $R(I - K) = H$,
+\end{itemize}
+\textit{and}
+\begin{itemize}
+\item[(v)] $\dim N(I - K) = \dim N(I - K^*)$.
+\end{itemize}
+\end{theorem}
+
+\begin{proof}
+1. If $\dim N(I - K) = +\infty$, we can find an infinite orthonormal set $\{u_k\}_{k=1}^\infty \subset N(I - K)$. Then
+
+$$Ku_k = u_k \quad (k = 1, \ldots).$$
+
+Now $\|u_k - u_l\|^2 = \|u_k\|^2 - 2(u_k, u_l) + \|u_l\|^2 = 2$ if $k \neq l$, and so $\|Ku_k - Ku_l\| = \sqrt{2}$ for $k \neq l$. This however contradicts the compactness of $K$, as $\{Ku_k\}_{k=1}^\infty$ would then contain no convergent subsequence. Assertion (i) is proved.
+
+2. We next claim there exists a constant $\gamma > 0$ such that
+
+$$(4) \quad \|u - Ku\| \geq \gamma\|u\| \quad \text{for all } u \in N(I - K)^\perp.$$
+
+Indeed, if not, there would exist for $k = 1, \ldots$ elements $u_k \in N(I - K)^\perp$ with $\|u_k\| = 1$ and $\|u_k - Ku_k\| < \frac{1}{k}$. Consequently
+
+$$(5) \quad u_k - Ku_k \to 0.$$
+
+But since $\{u_k\}_{k=1}^\infty$ is bounded, there exists a weakly convergent subsequence $u_{k_j} \rightharpoonup u$. By compactness $Ku_{k_j} \to Ku$, and then (5) implies $u_{k_j} \to u$. We therefore have $u \in N(I - K)$ and so
+
+$$(u_{k_j}, u) = 0 \quad (j = 1, \ldots).$$
+
+Let $k_j \to \infty$ to derive a contradiction to (4).
+
+3. Next let $\{v_k\}_{k=1}^\infty \subset R(I - K)$, $v_k \to v$. We can find $u_k \in N(I - K)^\perp$ solving $u_k - Ku_k = v_k$. Using (4) we deduce
+
+$$\|v_k - v\| \geq \gamma\|u_k - u\|.$$
+
+Thus $u_k \to u$ and $u - Ku = v$. This proves (ii).
+
+4. Assertion (iii) is now a consequence of (ii) and the general fact
+
+$$\overline{R(A)} = N(A^*)^\perp \text{ for each bounded linear operator } A : H \to H.$$
+
+5. To verify (iv), let us suppose to start with that $N(I - K) = \{0\}$, but $H_1 = (I - K)(H) \subsetneq H$. According to (ii) $H_1$ is a closed subspace of $H$. Furthermore $H_2 = (I - K)(H_1) \subsetneq H_1$, since $I - K$ is one-to-one. Similarly if we write $H_k \equiv (I - K)^k(H)$ ($k = 1, \ldots$), we see that $H_k$ is a closed subspace of $H$, $H_{k+1} \subsetneq H_k$ ($k = 1, \ldots$).
+
+Choose $u_k \in H_k$ with $\|u_k\| = 1$, $u_k \in H_{k+1}^\perp$. Then $Ku_k - Ku_l = -(u_k - Ku_k) + (u_l - Ku_l) + (u_k - u_l)$. Now if $k > l$, $H_{k+1} \subsetneq H_k \subsetneq H_{l+1} \subsetneq H_l$. Thus $u_k - Ku_k, u_l - Ku_l, u_k \in H_{l+1}$. Since $u_l \in H_{l+1}^\perp$, $\|u_l\| = 1$, we deduce $\|Ku_k - Ku_l\| \geq 1$ ($k, l = 1, \ldots$). But this is impossible since $K$ is compact.
+
+6. Now conversely assume $R(I - K) = H$. Then owing to (iii) we see that $N(I - K^*) = \{0\}$. Since $K^*$ is compact, we may utilize step 5 to conclude $R(I - K^*) = H$. But then $N(I - K) = R(I - K^*)^\perp = \{0\}$. This conclusion and step 5 complete the proof of assertion (iv).
+
+7. Next we assert
+
+$$\dim N(I - K) \geq \dim R(I - K)^\perp.$$
+
+To prove this, suppose instead $\dim N(I - K) < \dim R(I - K)^\perp$. Then there exists a bounded linear mapping $A : N(I - K) \to R(I - K)^\perp$ which is one-to-one, but \textit{not} onto. Extend $A$ to a linear mapping $A : H \to R(I - K)^\perp$ by setting $Au = 0$ for $u \in N(I - K)^\perp$. Now $A$ has a finite dimensional range and so $A$, and thus $K + A$, are compact. Furthermore $N(I - (K + A)) = \{0\}$. Indeed, if $Ku + Au = u$, then $u - Ku = Au \in R(I - K)^\perp$; whence $u - Ku = Au = 0$. Thus $u \in N(I - K)$ and so in fact $u = 0$, since $A$ is one-to-one on $N(I - K)$. Now apply assertion (iv) to $\tilde{K} = K + A$. We conclude $R(I - (K + A)) = H$. But this is impossible: if $v \in R(I - K)^\perp$, but $v \notin R(A)$, the equation
+
+$$u - (Ku + Au) = v$$
+
+has no solution.
+
+8. Since $R(I - K^*)^{\perp} = N(I - K)$, we deduce from step 7
+$$\dim N(I - K^*) \geq \dim R(I - K^*)^{\perp}$$
+$$= \dim N(I - K).$$
+
+The opposite inequality comes from interchanging the roles of $K$ and $K^*$. This establishes (v). $\square$
+\end{proof}
+
+\begin{remark}[The Fredholm alternative dichotomy]
+\label{rem:fredholm-alternative-dichotomy}
+\dcref{appD:D.5-rem-2}
+\group{Fredholm Theory}
+\uses{thm:fredholm-alternative}
+Theorem 5 asserts in particular either
+$$(\alpha) \quad \left\{ \begin{array}{l} \text{for each } f \in H, \text{ the equation } u - Ku = f \\ \text{has a unique solution} \end{array} \right.$$
+
+or else
+
+$$(\beta) \quad \left\{ \begin{array}{l} \text{the homogeneous equation } u - Ku = 0 \\ \text{has solutions } u \neq 0. \end{array} \right.$$
+
+This dichotomy is the \textit{Fredholm alternative}. In addition, should $(\beta)$ obtain, the space of solutions of the homogeneous problem is finite dimensional, and the nonhomogeneous equation
+
+$$(\gamma) \quad u - Ku = f$$
+
+has a solution if and only if $f \in N(I - K^*)^{\perp}$. $\square$
+\end{remark}
+
+Now we investigate the spectrum of a compact linear operator.
+
+\begin{theorem}[Spectrum of a compact operator]
+\label{thm:spectrum-of-compact-operator}
+\dcref{appD:thm-6}
+\group{Fredholm Theory}
+\uses{thm:fredholm-alternative,def:resolvent-set-spectrum-appendix-d,def:eigenvalue-eigenvector-appendix-d,def:compact-linear-operator}
+\textit{Assume} $\dim H = \infty$ \textit{and} $K : H \to H$ \textit{is compact. Then}
+\begin{itemize}
+\item[(i)] $0 \in \sigma(K)$,
+\item[(ii)] $\sigma(K) - \{0\} = \sigma_p(K) - \{0\}$,
+\end{itemize}
+\textit{and}
+\begin{itemize}
+\item[(iii)] $\left\{ \begin{array}{l} \sigma(K) - \{0\} \text{ is finite, or else} \\ \sigma(K) - \{0\} \text{ is a sequence tending to } 0. \end{array} \right.$
+\end{itemize}
+\end{theorem}
+
+\begin{proof}
+1. Assume $0 \notin \sigma(K)$. Then $K : H \to H$ is bijective and so $I = K \circ K^{-1}$, being the composition of a compact and a bounded linear operator, is compact. This is impossible, since $\dim H = \infty$.
+
+2. Assume $\eta \in \sigma(K)$, $\eta \neq 0$. Then if $N(K - \eta I) = \{0\}$, the Fredholm alternative would imply $R(K - \eta I) = H$. But then $\eta \in \rho(K)$, a contradiction.
+
+3. Suppose now $\{\eta_k\}_{k=1}^{\infty}$ is a sequence of \textit{distinct} elements of $\sigma(K) - \{0\}$, and $\eta_k \to \eta$. We will show $\eta = 0$.
+
+Indeed, since $\eta_k \in \sigma_p(K)$ there exists $w_k \neq 0$ such that $Kw_k = \eta_k w_k$. Let $H_k$ denote the subspace of $H$ spanned by $\{w_1, \ldots, w_k\}$. Then $H_k \subseteq H_{k+1}$ for each $k = 1, 2, \ldots$, since the $\{w_k\}_{k=1}^{\infty}$ are linearly independent.
+
+Observe also $(K - \eta_k I) H_k \subseteq H_{k-1}$ ($k = 2, \ldots$). Choose now for $k = 1, \ldots$ an element $u_k \in H_k$, with $u_k \in H_{k-1}^{\perp}$ and $\|u_k\| = 1$. Now if $k > l$, $H_{l-1} \subseteq H_l \subseteq H_{k-1} \subseteq H_k$. Thus
+
+$$\left\| \frac{Ku_k}{\eta_k} - \frac{Ku_l}{\eta_l} \right\| = \left\| \frac{(Ku_k - \eta_k u_k) - (Ku_l - \eta_l u_l)}{\eta_k \eta_l} + u_k - u_l \right\| \geq 1,$$
+
+since $Ku_k - \eta_k u_k, Ku_l - \eta_l u_l, u_l \in H_{k-1}$. If $\eta_k \to \eta \neq 0$, we obtain a contradiction to the compactness of $K$. $\square$
+\end{proof}
+
+\subsection{Symmetric Operators}
+\label{sec:symmetric-operators}
+
+Now let $S : H \to H$ be bounded, symmetric, and write
+
+$$m := \inf_{\substack{u \in H \\ \|u\| = 1}} (Su, u), \quad M := \sup_{\substack{u \in H \\ \|u\| = 1}} (Su, u).$$
+
+\begin{lemma}[Bounds on the spectrum of a symmetric operator]
+\label{lem:bounds-on-spectrum-symmetric-operator}
+\dcref{appD:D.6-lem-1}
+\group{Fredholm Theory}
+\uses{def:adjoint-symmetric-operator,def:resolvent-set-spectrum-appendix-d,thm:lax-milgram-theorem,lem:cauchy-schwarz-inequality}
+We have
+(i) $\sigma(S) \subset [m, M]$, and
+(ii) $m, M \in \sigma(S)$.
+\end{lemma}
+
+\begin{proof}
+1. Let $\eta > M$. Then
+
+$$((\eta - S)u, u) \geq (\eta - M)\|u\|^2 \quad (u \in H).$$
+
+Hence the Lax--Milgram Theorem (\cref{thm:lax-milgram-theorem}) asserts $\eta I - S$ is one-to-one and onto, and thus $\eta \in \rho(S)$. Similarly $\eta \in \rho(S)$ if $\eta < m$. This proves (i).
+
+2. We will prove $M \in \sigma(S)$. Since the pairing $[u, v] := (Mu - Su, v)$ is symmetric, with $[u, u] \geq 0$ for all $u \in H$, the Cauchy--Schwarz inequality (\cref{lem:cauchy-schwarz-inequality}) implies
+
+$$|(Mu - Su, v)| \leq (Mu - Su, u)^{1/2}(Mv - Sv, v)^{1/2}$$
+
+for all $u, v \in H$. In particular
+
+$$(6) \quad \|Mu - Su\| \leq C(Mu - Su, u)^{1/2} \quad (u \in H)$$
+
+for some constant $C$.
+
+Now let $\{u_k\}_k^{\infty} \subset H$ satisfy $\|u_k\| = 1$ ($k = 1, \ldots$) and $(Su_k, u_k) \to M$. Then (6) implies $\|Mu_k - Su_k\| \to 0$. Now if $M \in \rho(S)$, then
+
+$$u_k = (MI - S)^{-1}(Mu_k - Su_k) \to 0,$$
+
+a contradiction. Thus $M \in \sigma(S)$, and likewise $m \in \sigma(S)$. $\square$
+\end{proof}

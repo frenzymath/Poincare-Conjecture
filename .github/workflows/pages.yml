@@ -1,0 +1,62 @@
+name: Deploy website
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build-deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pinned hgraph
+        run: pip install "hgraph @ git+https://github.com/AxelDlv00/hgraph.git@957cc978b8b033a4fbd3c905ca1d206360ebea7d"
+
+      - name: Synchronize workspace graph
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import subprocess
+          import yaml
+
+          manifest = yaml.safe_load(Path("config.yaml").read_text(encoding="utf-8"))
+          for project in manifest["projects"]:
+              root = str(project["root"])
+              print(f"::group::hgraph sync {root}", flush=True)
+              subprocess.run(["hgraph", "--root", root, "sync"], check=True)
+              print("::endgroup::", flush=True)
+          PY
+
+      - name: Build static site
+        run: |
+          hgraph site --out _site/index.html
+          touch _site/.nojekyll
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

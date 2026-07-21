@@ -1,0 +1,813 @@
+\chapter{Weak Maximum Principles for Scalars, Tensors, and Systems}
+\label{chow-ii-ch10-weak-maximum-principles}
+\dcref{ch10}
+\source{chow-et-al-ricci-flow-part-ii:page-0028}
+
+This chapter records weak maximum principles for scalar functions, symmetric
+two-tensors, and sections of vector bundles, together with the convex-geometric
+tools used in their proofs and several analytic variants.
+
+\section{Scalar and tensor principles}
+
+\begin{definition}[semilinear heat operator]
+\label{def:chow-ii-semilinear-heat-operator}
+\dcref{ch10:eq-10.1}
+\group{Scalar maximum principles}
+\source{chow-et-al-ricci-flow-part-ii:page-0030}
+Let $M^n$ be a closed manifold equipped with metrics $g(t)$.  Let $X(t)$ be a
+time-dependent vector field and let $F:\mathbb R\times[0,T]\to\mathbb R$ be
+continuous and locally Lipschitz in its first variable.  Set
+\[
+ Lu=\partial_tu-\Delta_{g(t)}u-\langle X(t),\nabla u\rangle-F(u,t).
+\]
+\end{definition}
+
+\begin{theorem}[comparison for semilinear heat equations]
+\label{thm:chow-ii-scalar-comparison}
+\dcref{ch10:10.1}
+\group{Scalar maximum principles}
+\source{chow-et-al-ricci-flow-part-ii:page-0030}
+\uses{def:chow-ii-semilinear-heat-operator}
+If $Lu\le Lv$ on $M\times[0,T]$ and $u(\cdot,0)\le v(\cdot,0)$, then
+\(u\le v\) on $M\times[0,T]$.
+\end{theorem}
+\begin{proof}
+\uses{def:chow-ii-semilinear-heat-operator}
+Choose $L_0$ larger than the Lipschitz constant of $F$ on the compact range of
+$u$ and $v$, and put $w=e^{-L_0t}(u-v)$.  If $w$ had a positive maximum at
+$(x_0,t_0)$ with $t_0>0$, then at that point
+\(\nabla w=0\), $\Delta w\le0$, and $\partial_tw\ge0$.  The inequality
+\(Lu\le Lv\), together with the Lipschitz bound for $F$, gives
+\(\partial_tw-\Delta w-\langle X,\nabla w\rangle+(L_0-F_1)w\le0\), where
+$F_1\le L_0$; hence $0< (L_0-F_1)w\le0$, a contradiction.  Thus $w\le0$.
+\end{proof}
+
+\begin{theorem}[scalar weak maximum principle]
+\label{thm:chow-ii-scalar-wmp}
+\dcref{ch10:10.2}
+\group{Scalar maximum principles}
+\source{chow-et-al-ricci-flow-part-ii:page-0030}
+\uses{def:chow-ii-semilinear-heat-operator,thm:chow-ii-scalar-comparison}
+If $Lu\le0$ and $u(\cdot,0)\le c$, then, while the solution $\phi$ of
+\(\phi'=F(\phi,t),\ \phi(0)=c\) exists, one has $u(x,t)\le\phi(t)$.
+\end{theorem}
+\begin{proof}
+\uses{thm:chow-ii-scalar-comparison}
+The function $v(x,t)=\phi(t)$ satisfies $Lv=0$ and $u(\cdot,0)\le v(\cdot,0)$.
+Apply the comparison theorem.
+\end{proof}
+
+\begin{theorem}[scalar upper and lower bounds]
+\label{thm:chow-ii-scalar-two-sided}
+\dcref{ch10:10.3}
+\group{Scalar maximum principles}
+\source{chow-et-al-ricci-flow-part-ii:page-0030}
+\uses{thm:chow-ii-scalar-wmp}
+If $Lu=0$ and $c_1\le u(\cdot,0)\le c_2$, then the ODE solutions
+\(\phi_i'=F(\phi_i,t)$, $\phi_i(0)=c_i$, satisfy
+\(\phi_1(t)\le u(x,t)\le\phi_2(t)\).
+\end{theorem}
+\begin{proof}
+\uses{thm:chow-ii-scalar-wmp}
+Apply the scalar principle to $u$ for the upper bound and to $-u$ with the
+reversed comparison for the lower bound.
+\end{proof}
+
+\begin{example}[ODE decay estimate]
+\label{ex:chow-ii-ode-decay}
+\dcref{ch10:10.5}
+\group{Scalar maximum principles}
+\source{chow-et-al-ricci-flow-part-ii:page-0031}
+If $x\ge0$ and $x'\le-C_1x^{1+\alpha}$ whenever $x\ge C_2$, then
+\[
+x(t)\le\max\{(C_1\alpha t)^{-1/\alpha},C_2\}.
+\]
+\end{example}
+\begin{proof}
+On every interval where $x\ge C_2$, differentiation gives
+\((x^{-\alpha})'=-\alpha x^{-1-\alpha}x'\ge C_1\alpha\).  Integrating until
+the first time $x=C_2$ yields the displayed estimate; after that time the
+definition of the first hitting time gives $x\le C_2$.
+\end{proof}
+
+\begin{definition}[null-eigenvector condition]
+\label{def:chow-ii-null-eigenvector}
+\dcref{ch10:10.6}
+\group{Tensor maximum principles}
+\source{chow-et-al-ricci-flow-part-ii:page-0033}
+A map $\beta$ on symmetric two-tensors satisfies the null-eigenvector condition
+if $\omega\ge0$ and $\omega(V,\cdot)=0$ imply $\beta(\omega,t)(V,V)\ge0$.
+\end{definition}
+
+\begin{theorem}[maximum principle for symmetric two-tensors]
+\label{thm:chow-ii-two-tensor-wmp}
+\dcref{ch10:10.7}
+\group{Tensor maximum principles}
+\source{chow-et-al-ricci-flow-part-ii:page-0033}
+\uses{def:chow-ii-null-eigenvector}
+Let $\alpha(t)$ be a smooth symmetric two-tensor on a closed evolving manifold
+with
+\[
+\partial_t\alpha\ge\Delta\alpha+\langle X,\nabla\alpha\rangle+\beta(\alpha,t),
+\]
+where $\beta$ is locally Lipschitz and satisfies the null-eigenvector condition.
+If $\alpha(0)\ge0$, then $\alpha(t)\ge0$ for all later times.
+\end{theorem}
+\begin{proof}
+\uses{def:chow-ii-null-eigenvector}
+Assume positivity fails and let $t_0$ be the first time at which the minimum
+eigenvalue reaches zero.  At a minimizing point choose a unit null eigenvector
+$V$ and extend it by parallel transport.  The first-time condition gives
+$(\partial_t\alpha)(V,V)\le0$, while the spatial second derivative test gives
+$(\Delta\alpha)(V,V)\ge0$ and the gradient term vanishes.  The differential
+inequality therefore yields $0\ge\beta(\alpha,t_0)(V,V)\ge0$.  Applying the
+standard $e^{-\varepsilon t}$ barrier and letting $\varepsilon\downarrow0$
+excludes equality at a first crossing, proving preservation.
+\end{proof}
+
+\begin{remark}[limitations on nonnegative Ricci curvature]
+\label{rem:chow-ii-two-tensor-limitations}
+\dcref{ch10:10.8}
+\group{Tensor maximum principles}
+\source{chow-et-al-ricci-flow-part-ii:page-0034}
+Nonnegative Ricci and sectional curvature are not preserved by Ricci flow on
+arbitrary closed manifolds in dimensions at least four; the tensor principle
+requires its null-eigenvector hypothesis.
+\end{remark}
+
+\section{Vector-bundle systems}
+
+\begin{definition}[heat equation for a bundle section]
+\label{def:chow-ii-bundle-heat-equation}
+\dcref{ch10:10.20--10.25}
+\group{Bundle maximum principles}
+\source{chow-et-al-ricci-flow-part-ii:page-0036,chow-et-al-ricci-flow-part-ii:page-0038}
+Let $\pi:V\to M$ have fixed fiber metric and time-dependent compatible
+connections.  The rough Laplacian is $\Delta=\operatorname{tr}_g(\nabla^D\nabla)$,
+and a section satisfies
+\[
+\partial_tu=\Delta u+\nabla_{X(t)}u+F(u,t).
+\]
+The associated fiberwise ODE is $U'=F_x(U,t)$.
+\end{definition}
+
+\begin{definition}[parallel-invariant fiber set]
+\label{def:chow-ii-parallel-invariant-set}
+\dcref{ch10:10.10}
+\group{Bundle maximum principles}
+\source{chow-et-al-ricci-flow-part-ii:page-0038}
+A subset $\mathcal K\subset V$ is parallel invariant if parallel translation along
+every base path maps each fiber section of $\mathcal K$ into $\mathcal K$.
+\end{definition}
+
+\begin{lemma}[spectral criterion for parallel invariance]
+\label{lem:chow-ii-spectral-invariance}
+\dcref{ch10:10.11}
+\group{Bundle maximum principles}
+\source{chow-et-al-ricci-flow-part-ii:page-0039}
+\uses{def:chow-ii-parallel-invariant-set}
+For a self-adjoint bundle endomorphism with ordered eigenvalues
+$\lambda_1\ge\cdots\ge\lambda_r$, every set of the form
+\[
+\{u:G(\lambda_1(u),\ldots,\lambda_r(u))\le c\}
+\]
+is invariant under parallel translation.
+\end{lemma}
+\begin{proof}
+Parallel translation preserves the fiber metric and carries eigensections to
+eigensections with the same eigenvalues.  Thus the displayed spectral condition
+is unchanged along every parallel lift.
+\end{proof}
+
+\begin{corollary}[cone of nonnegative tensors]
+\label{cor:chow-ii-nonnegative-tensor-cone}
+\dcref{ch10:10.12}
+\group{Bundle maximum principles}
+\source{chow-et-al-ricci-flow-part-ii:page-0040}
+\uses{lem:chow-ii-spectral-invariance}
+The cone of self-adjoint tensors with all eigenvalues nonnegative is parallel
+invariant.
+\end{corollary}
+\begin{proof}
+\uses{lem:chow-ii-spectral-invariance}
+Use $G(\lambda)=-\min_a\lambda_a$ in the spectral criterion.
+\end{proof}
+
+\begin{theorem}[Weinberger--Hamilton maximum principle for systems]
+\label{thm:chow-ii-system-wmp}
+\dcref{ch10:10.13}
+\group{Bundle maximum principles}
+\source{chow-et-al-ricci-flow-part-ii:page-0040}
+\uses{def:chow-ii-bundle-heat-equation,def:chow-ii-parallel-invariant-set}
+Let $\mathcal K$ be closed, parallel invariant, and fiberwise convex.  If every
+solution of the associated ODE starting in $\mathcal K_x$ remains in
+$\mathcal K_x$, then every solution of the bundle heat equation starting in
+$\mathcal K$ remains in $\mathcal K$.
+\end{theorem}
+\begin{proof}
+\uses{def:chow-ii-bundle-heat-equation}
+Suppose the conclusion fails and let $t_0$ be the first exit time.  In the fiber
+at a point of maximal distance from $\mathcal K$, choose the nearest point $v$
+and a unit supporting covector $\ell$; parallel extend both radially.  The
+spatial maximum property gives $\ell(\Delta u)\le0$ and
+$\ell(\nabla_Xu)=0$.  The ODE invariance gives $\ell(F(v,t_0))\le0$; local
+Lipschitz continuity gives $\ell(F(u,t_0))\le C\,d(u,\mathcal K)$.  Thus the
+maximal distance $s$ satisfies $d^+s/dt\le Cs$ with $s(0)=0$, a contradiction.
+\end{proof}
+
+\begin{theorem}[nonnegative curvature operator]
+\label{thm:chow-ii-curvature-operator-preservation}
+\dcref{ch10:10.14}
+\group{Ricci-flow applications}
+\source{chow-et-al-ricci-flow-part-ii:page-0043,chow-et-al-ricci-flow-part-ii:page-0044}
+\uses{thm:chow-ii-system-wmp,cor:chow-ii-nonnegative-tensor-cone}
+For a closed Ricci flow, nonnegative curvature operator is preserved.
+\end{theorem}
+\begin{proof}
+\uses{thm:chow-ii-system-wmp,cor:chow-ii-nonnegative-tensor-cone}
+After Uhlenbeck's bundle identification, the curvature operator obeys
+\[
+\partial_t\Rm=\Delta\Rm+\Rm^2+\Rm^\#.
+\]
+If $\Rm\ge0$, then both quadratic terms are nonnegative on every null
+eigenvector, so the associated ODE preserves the nonnegative cone.  Apply the
+system principle.
+\end{proof}
+
+\begin{theorem}[time-dependent system maximum principle]
+\label{thm:chow-ii-time-dependent-system-wmp}
+\dcref{ch10:10.16}
+\group{Bundle maximum principles}
+\source{chow-et-al-ricci-flow-part-ii:page-0044}
+\uses{def:chow-ii-bundle-heat-equation,thm:chow-ii-system-wmp}
+Let $\mathcal K(t)$ be closed, fiberwise convex, parallel invariant sets with
+closed space-time track.  If each associated ODE carries $\mathcal K_x(t_0)$ into
+$\mathcal K_x(t)$ for later times, then the bundle heat equation carries
+$\mathcal K(0)$ into $\mathcal K(t)$.
+\end{theorem}
+\begin{proof}
+\uses{thm:chow-ii-system-wmp}
+Use the distance $s(t)=\max_xd(u(x,t),\mathcal K_x(t))$.  At a first positive
+distance, nearest-point support covectors and radial parallel extension give the
+same estimate as in the time-independent case; the ODE hypothesis supplies the
+forward tangent direction of the moving set.  Hence $d^+s/dt\le Cs$, while
+$s(0)=0$.  The scalar comparison lemma forces $s\equiv0$.
+\end{proof}
+
+\begin{theorem}[Hamilton--Ivey estimate]
+\label{thm:chow-ii-hamilton-ivey}
+\dcref{ch10:10.17}
+\group{Ricci-flow applications}
+\source{chow-et-al-ricci-flow-part-ii:page-0045,chow-et-al-ricci-flow-part-ii:page-0046}
+\uses{thm:chow-ii-time-dependent-system-wmp}
+For a normalized Ricci flow on a closed three-manifold with
+$\nu(\cdot,0)\ge-1$, every point with $\nu<0$ satisfies
+\[
+R\ge|\nu|\bigl(\log|\nu|+\log(1+t)-3\bigr).
+\]
+\end{theorem}
+\begin{proof}
+\uses{thm:chow-ii-time-dependent-system-wmp}
+The set of curvature operators satisfying the scalar lower bound
+$R\ge-3/(1+t)$ and, when $\nu\le-1/(1+t)$, the displayed logarithmic bound is
+closed, convex, and parallel invariant.  Along the curvature ODE, the first
+quantity has derivative at least $\frac23R^2$, while direct differentiation of
+\(R/(-\nu)-\log(-\nu)-\log(1+t)\) gives a nonnegative derivative whenever
+$\nu\le-1/(1+t)$.  Proposition 10.16 therefore preserves the set, proving the
+estimate.
+\end{proof}
+
+\begin{corollary}[Hamilton--Ivey estimate without normalization]
+\label{cor:chow-ii-hamilton-ivey-scaling}
+\dcref{ch10:10.18}
+\group{Ricci-flow applications}
+\source{chow-et-al-ricci-flow-part-ii:page-0046}
+\uses{thm:chow-ii-hamilton-ivey}
+If $C=\inf_x\nu(x,0)>0$ in dimension three, then at every point where
+$\nu<0$,
+\[
+R\ge|\nu|\bigl(\log|\nu|+\log(C^{-1}+t)-3\bigr).
+\]
+\end{corollary}
+\begin{proof}
+Apply the normalized estimate after parabolic rescaling by $C$ and undo the
+scaling of curvature and time.
+\end{proof}
+
+\begin{corollary}[almost nonnegative curvature]
+\label{cor:chow-ii-almost-nonnegative-curvature}
+\dcref{ch10:10.19}
+\group{Ricci-flow applications}
+\source{chow-et-al-ricci-flow-part-ii:page-0046}
+\uses{thm:chow-ii-hamilton-ivey}
+For a normalized three-dimensional flow with $\nu(\cdot,0)\ge-1$, there is a
+bounded nonincreasing function $\phi$ with $\phi(s)\to0$ as $s\to\infty$ such
+that
+\[
+\Rm\ge-\phi(R)R-3e^6,
+\]
+and, wherever $R\ge3e^6$, the additive constant may be omitted.
+\end{corollary}
+\begin{proof}
+Set $\psi(s)=s(\log s-3)$ on $(e^3,\infty)$ and let $\psi^{-1}$ be its
+inverse.  The Hamilton--Ivey inequality gives the assertion with
+$\phi(s)=\psi^{-1}(s)/s$ above $3e^6$ and $\phi=0$ below it.  Monotonicity and
+the limit follow by differentiating $\psi$.
+\end{proof}
+
+\begin{theorem}[system maximum principle with avoidance]
+\label{thm:chow-ii-system-avoidance-wmp}
+\dcref{ch10:10.20}
+\group{Bundle maximum principles}
+\source{chow-et-al-ricci-flow-part-ii:page-0046,chow-et-al-ricci-flow-part-ii:page-0047,chow-et-al-ricci-flow-part-ii:page-0074}
+\uses{def:chow-ii-bundle-heat-equation,prop:chow-ii-avoidance-ode}
+Let $\mathcal K(t)$ be closed, convex, parallel invariant sets and
+$\mathcal A(t)\subset\mathcal K(t)$ closed avoidance sets.  If every associated
+ODE starting in $\mathcal K(t_0)$ either stays in $\mathcal K(t)$ or first hits
+$\mathcal A(t)$, then every bundle heat solution starting in $\mathcal K(0)$
+and avoiding $\mathcal A(t)$ remains in $\mathcal K(t)$.
+\end{theorem}
+\begin{proof}
+\uses{prop:chow-ii-avoidance-ode}
+Assume an exit while the PDE solution stays a positive distance from the
+avoidance track.  On the compact interval up to the first exit, the nearest-point
+support argument for the moving-set principle applies because all supporting
+points remain away from $\mathcal A$.  The maximal distance therefore satisfies
+$d^+s/dt\le Cs$ and starts at zero, contradicting the Dini barrier.  Thus an
+exit can occur only after the avoidance set is reached.
+\end{proof}
+
+\begin{theorem}[existence of necklike points]
+\label{thm:chow-ii-necklike-points}
+\dcref{ch10:10.21}
+\group{Ricci-flow applications}
+\source{chow-et-al-ricci-flow-part-ii:page-0047,chow-et-al-ricci-flow-part-ii:page-0048,chow-et-al-ricci-flow-part-ii:page-0049,chow-et-al-ricci-flow-part-ii:page-0050}
+\uses{thm:chow-ii-system-avoidance-wmp,thm:chow-ii-hamilton-ivey}
+Let a finite-time singular Ricci flow on a closed three-manifold have
+$\Rm\ge-1$ initially and not converge after rescaling to a positive-curvature
+spherical space form.  For every $\tau<T$ and $\delta>0$ there is
+$(x,t)\in M\times[\tau,T)$ such that
+\[
+\mu(\Rm)^2+\nu(\Rm)^2\le\delta\lambda(\Rm)^2,
+\qquad
+\lambda(\Rm)\ge\frac1{4(T-t)}.
+\]
+\end{theorem}
+\begin{proof}
+\uses{thm:chow-ii-hamilton-ivey,thm:chow-ii-system-avoidance-wmp}
+Apply the avoidance principle to the Hamilton--Ivey set intersected with
+\[
+\frac{(T-t)^\varepsilon(\lambda-\nu)}{(R+6)^{1-2\varepsilon}}\le C.
+\]
+For sufficiently small $\varepsilon=\varepsilon(\delta)$, direct differentiation
+along the curvature ODE shows this quantity is nonincreasing whenever the
+avoidance inequalities fail.  Hence either the avoidance set is reached, giving
+the two displayed inequalities, or the normalized pinching persists.  In the
+latter case a blow-up sequence and compactness produce a positive-curvature
+spherical limit, contrary to the hypothesis.
+\end{proof}
+
+\section{Dini derivatives and spatial maxima}
+
+\begin{definition}[Dini derivatives]
+\label{def:chow-ii-dini-derivatives}
+\dcref{ch10:10.22}
+\group{Dini derivative tools}
+\source{chow-et-al-ricci-flow-part-ii:page-0051}
+For a function $f$, define $d^+f/dt$, $d^-f/dt$, $d_+f/dt$, and $d_-f/dt$ as
+the limsup/liminf of forward/backward difference quotients.
+\end{definition}
+
+\begin{lemma}[Dini criterion for an upper bound]
+\label{lem:chow-ii-dini-upper-bound}
+\dcref{ch10:10.23}
+\group{Dini derivative tools}
+\source{chow-et-al-ricci-flow-part-ii:page-0051,chow-et-al-ricci-flow-part-ii:page-0052}
+\uses{def:chow-ii-dini-derivatives}
+If $f$ is right upper and left lower semicontinuous, $f(0)\le c$, and
+$d^+f/dt\le0$ whenever $f>c$, then $f\le c$.
+\end{lemma}
+\begin{proof}
+\uses{def:chow-ii-dini-derivatives}
+For $\varepsilon>0$ set $f_\varepsilon=f-\varepsilon(1+t)$.  If it first exceeded
+$c$, the one-sided difference quotients at the first crossing would give
+$d^+f/dt\ge\varepsilon$, contradicting the hypothesis.  Let $\varepsilon\downarrow0$.
+\end{proof}
+
+\begin{corollary}[monotonicity and exponential barriers]
+\label{cor:chow-ii-dini-monotonicity}
+\dcref{ch10:10.25--10.26}
+\group{Dini derivative tools}
+\source{chow-et-al-ricci-flow-part-ii:page-0052}
+\uses{lem:chow-ii-dini-upper-bound}
+If $d^+f/dt\le0$ then $f$ is nonincreasing.  If $f(0)\le0$ and
+$d^+f/dt\le Cf$ whenever $f>0$, then $f\le0$.
+\end{corollary}
+\begin{proof}
+Apply the lemma to $f-f(t_0)$ for monotonicity, and to $e^{-Ct}f$ for the
+exponential assertion.
+\end{proof}
+
+\begin{lemma}[Dini derivative of a spatial maximum]
+\label{lem:chow-ii-spatial-maximum-dini}
+\dcref{ch10:10.29}
+\group{Dini derivative tools}
+\source{chow-et-al-ricci-flow-part-ii:page-0053,chow-et-al-ricci-flow-part-ii:page-0054}
+\uses{def:chow-ii-dini-derivatives}
+If $S$ is sequentially compact and $g,\partial_tg$ are continuous, then
+$f(t)=\max_Sg(\cdot,t)$ is locally Lipschitz and
+\[
+\frac{d^+f}{dt}=\max_{g(s,t)=f(t)}\partial_tg(s,t).
+\]
+\end{lemma}
+\begin{proof}
+Choose maximizing points at times $t+h_j$ and pass to a convergent subsequence.
+The mean-value theorem gives the upper bound by a maximizer at time $t$; fixing
+any maximizer at $t$ gives the reverse bound.  Compactness also gives local
+uniform Lipschitz bounds.
+\end{proof}
+
+\begin{corollary}[weak scalar heat maximum principle]
+\label{cor:chow-ii-heat-wmp}
+\dcref{ch10:10.31}
+\group{Dini derivative tools}
+\source{chow-et-al-ricci-flow-part-ii:page-0055}
+\uses{lem:chow-ii-spatial-maximum-dini,cor:chow-ii-dini-monotonicity}
+If $\partial_tu\le\Delta_{g(t)}u$ on a closed manifold, then
+$u(x,t)\le\max_xu(x,0)$.
+\end{corollary}
+\begin{proof}
+At a spatial maximizer, $\Delta u\le0$.  The spatial-maximum lemma gives
+$d^+f/dt\le0$ for $f(t)=\max_xu(x,t)$, and the monotonicity corollary applies.
+\end{proof}
+
+\begin{theorem}[continuously varying-set principle]
+\label{thm:chow-ii-continuous-set-wmp}
+\dcref{ch10:10.33}
+\group{Bundle maximum principles}
+\source{chow-et-al-ricci-flow-part-ii:page-0056,chow-et-al-ricci-flow-part-ii:page-0057,chow-et-al-ricci-flow-part-ii:page-0058,chow-et-al-ricci-flow-part-ii:page-0059}
+\uses{lem:chow-ii-spatial-maximum-dini,cor:chow-ii-dini-monotonicity}
+If $\mathcal K(t)$ is a continuously varying family of closed, convex,
+parallel-invariant fibers and the ODE $U'=F(U)$ preserves it, then
+$u_t=\Delta u+F(u)$ preserves $\mathcal K(t)$.
+\end{theorem}
+\begin{proof}
+Let $s(t)=\max_xd(u(x,t),\mathcal K_x(t))$.  The distance is convex and its
+nearest-point support covector annihilates the Laplacian contribution by the
+second derivative test and parallel invariance.  Comparing the ODE trajectory
+from the nearest point with $u$ gives $d^+s/dt\le Cs$.  Since $s(0)=0$, the
+exponential barrier yields $s=0$.
+\end{proof}
+
+\section{Convex geometry and ODE invariance}
+
+\begin{lemma}[nearest point and separating half-space]
+\label{lem:chow-ii-nearest-point-separation}
+\dcref{ch10:10.35--10.36}
+\group{Convex geometry}
+\source{chow-et-al-ricci-flow-part-ii:page-0060,chow-et-al-ricci-flow-part-ii:page-0061}
+Every point outside a closed convex set has a unique nearest boundary point,
+depending continuously on the point (and on a continuously varying convex set),
+and the hyperplane perpendicular to the joining segment separates the point
+from the set.
+\end{lemma}
+\begin{proof}
+Existence follows from coercivity of distance on a closed set.  If two nearest
+points existed, their midpoint would be strictly closer by the parallelogram
+identity.  The same identity plus compactness proves continuity.  For the
+nearest point $V$ to $W$, convexity implies $\langle X-V,W-V\rangle\le0$ for
+all $X$ in the set, which is the separating half-space.
+\end{proof}
+
+\begin{definition}[tangent cone and support function]
+\label{def:chow-ii-tangent-support}
+\dcref{ch10:10.38,ch10:10.44--10.47}
+\group{Convex geometry}
+\source{chow-et-al-ricci-flow-part-ii:page-0061,chow-et-al-ricci-flow-part-ii:page-0062}
+The tangent cone at a boundary point is the intersection of all containing
+closed half-spaces through that point.  A support function at $V$ is a unit
+linear functional $\ell$ with $\ell(X)\le\ell(V)$ on the convex set.
+\end{definition}
+
+\begin{lemma}[distance as a supremum of supports]
+\label{lem:chow-ii-distance-support}
+\dcref{ch10:10.50--10.53}
+\group{Convex geometry}
+\source{chow-et-al-ricci-flow-part-ii:page-0063,chow-et-al-ricci-flow-part-ii:page-0064}
+\uses{def:chow-ii-tangent-support,lem:chow-ii-nearest-point-separation}
+For a closed convex set $\mathcal J$ and $W\notin\mathcal J$,
+\[
+d(W,\mathcal J)=\sup_{V,\ell}\ell(W-V),
+\]
+where $V$ ranges over boundary points and $\ell$ over support functions at $V$.
+The supremum is attained; the distance is convex and $C^1$ off $\mathcal J$,
+with gradient the unit vector from the nearest point to $W$.
+\end{lemma}
+\begin{proof}
+The separating half-space from the nearest-point lemma gives one support
+attaining the distance, while every supporting half-space gives a value no
+larger than the distance.  A supremum of affine functions is convex.  Uniqueness
+of the nearest point gives the stated gradient, and continuity follows from
+continuous dependence of that point.
+\end{proof}
+
+\begin{proposition}[ODE criterion for a fixed convex set]
+\label{prop:chow-ii-fixed-convex-ode}
+\dcref{ch10:10.54}
+\group{Convex geometry}
+\source{chow-et-al-ricci-flow-part-ii:page-0064,chow-et-al-ricci-flow-part-ii:page-0065,chow-et-al-ricci-flow-part-ii:page-0066}
+\uses{lem:chow-ii-distance-support,cor:chow-ii-dini-monotonicity}
+The ODE $U'=F(U,t)$ preserves a closed convex set $\mathcal J$ iff
+\(\ell(F(V,t))\le0\) for every boundary point $V$ and support function $\ell$
+at $V$.
+\end{proposition}
+\begin{proof}
+If the inequality fails, the derivative of $\ell(U(t))$ at the boundary points
+outward.  Conversely, for $s(t)=d(U(t),\mathcal J)$, the distance-support formula
+and local Lipschitz continuity give $d^+s/dt\le Cs$ whenever $s>0$; since
+$s(t_0)=0$, the Dini barrier yields $s=0$.
+\end{proof}
+
+\begin{definition}[forward tangent directions]
+\label{def:chow-ii-forward-track-direction}
+\dcref{ch10:10.58}
+\group{Convex geometry}
+\source{chow-et-al-ricci-flow-part-ii:page-0066}
+For the closed space-time track $\mathcal L=\{(V,t):V\in\mathcal J(t)\}$,
+$D_{(V,t)}\mathcal L$ consists of limits of vectors $W_i$ for which
+$V+h_iW_i\in\mathcal J(t+h_i)$ for every sequence $h_i\downarrow0$ after passage
+to a subsequence.
+\end{definition}
+
+\begin{lemma}[convexity of forward directions]
+\label{lem:chow-ii-forward-directions-convex}
+\dcref{ch10:10.60}
+\group{Convex geometry}
+\source{chow-et-al-ricci-flow-part-ii:page-0067}
+\uses{def:chow-ii-forward-track-direction}
+If every $\mathcal J(t)$ is convex, then $D_{(V,t)}\mathcal L$ is convex.
+\end{lemma}
+\begin{proof}
+Take approximating vectors for two directions and form their convex combinations;
+convexity of $\mathcal J(t+h_i)$ gives the required approximation.
+\end{proof}
+
+\begin{proposition}[ODE criterion for moving convex sets]
+\label{prop:chow-ii-moving-convex-ode}
+\dcref{ch10:10.61}
+\group{Convex geometry}
+\source{chow-et-al-ricci-flow-part-ii:page-0067,chow-et-al-ricci-flow-part-ii:page-0068,chow-et-al-ricci-flow-part-ii:page-0069}
+\uses{def:chow-ii-forward-track-direction,lem:chow-ii-distance-support,cor:chow-ii-dini-monotonicity}
+The ODE preserves every $\mathcal J(t)$ iff
+\(F(V,t)\in D_{(V,t)}\mathcal L\) at every boundary point of the closed track.
+\end{proposition}
+\begin{proof}
+Necessity follows by taking difference quotients of an ODE trajectory.  For
+sufficiency, if an ODE trajectory exits, use the first exit interval and its
+distance to $\mathcal J(t)$.  Closedness gives left lower semicontinuity and right
+continuity.  Supporting points and forward directions yield
+$d^+s/dt\le Cs$, contradicting $s(t_1)=0$ by the Dini barrier.
+\end{proof}
+
+\begin{proposition}[ODE criterion with an avoidance set]
+\label{prop:chow-ii-avoidance-ode}
+\dcref{ch10:10.64}
+\group{Convex geometry}
+\source{chow-et-al-ricci-flow-part-ii:page-0069,chow-et-al-ricci-flow-part-ii:page-0070}
+\uses{prop:chow-ii-moving-convex-ode}
+Let $\mathcal A(t)\subset\mathcal J(t)$ have closed track.  If an ODE starting
+in $\mathcal J(t_0)\setminus\mathcal A(t_0)$ either stays in $\mathcal J(t)$ or
+hits $\mathcal A(t)$, then it suffices to require the forward-direction condition
+only on $\partial\mathcal L\setminus\mathcal A\mathcal L$.
+\end{proposition}
+\begin{proof}
+On an interval where the trajectory avoids $\mathcal A$, closedness gives a
+positive distance from its compact image to the avoidance track.  The proof of
+the moving-set criterion then applies on a shorter interval, forcing zero
+distance unless the trajectory reaches the avoidance set.
+\end{proof}
+
+\section{Maximum principles for weak heat solutions}
+
+\begin{proposition}[weighted $L^2$ monotonicity]
+\label{prop:chow-ii-weighted-l2}
+\dcref{ch10:10.68}
+\group{Weak heat solutions}
+\source{chow-et-al-ricci-flow-part-ii:page-0075,chow-et-al-ricci-flow-part-ii:page-0076}
+If $\partial_tg=-2h$, $\operatorname{tr}_gh\ge-K_1$, and
+$u(\partial_tu-\Delta u)\le0$ with $u\partial_\nu u\le0$, then for every
+Lipschitz $\xi$ satisfying $\xi_t+\frac12|\nabla\xi|^2\le0$,
+\[
+e^{-K_1t}\int u^2e^\xi\,d\mu_t
+\]
+is nonincreasing.
+\end{proposition}
+\begin{proof}
+Differentiate under the integral, use $\partial_td\mu_t=-(\operatorname{tr}_gh)d\mu_t$,
+the differential inequality for $\xi$, and integrate by parts.  The result is
+\[
+-2e^{-K_1t}\int|\nabla(ue^{\xi/2})|^2d\mu_t\le0,
+\]
+including the nonpositive boundary term.
+\end{proof}
+
+\begin{corollary}[$L^2$ uniqueness]
+\label{cor:chow-ii-l2-uniqueness}
+\dcref{ch10:10.70}
+\group{Weak heat solutions}
+\source{chow-et-al-ricci-flow-part-ii:page-0076}
+\uses{prop:chow-ii-weighted-l2}
+For $\xi=0$, the weighted energy is nonincreasing; zero initial $L^2$ norm
+forces $u\equiv0$.
+\end{corollary}
+\begin{proof}
+Apply the proposition with $\xi=0$ and use nonnegativity of the integrand.
+\end{proof}
+
+\begin{corollary}[exhaustion energy estimate]
+\label{cor:chow-ii-exhaustion-energy}
+\dcref{ch10:10.72}
+\group{Weak heat solutions}
+\source{chow-et-al-ricci-flow-part-ii:page-0077}
+\uses{prop:chow-ii-weighted-l2}
+The weighted energy monotonicity passes to a complete noncompact limit of
+compact exhaustions whenever the approximating solutions converge in $C^2$ on
+compact subsets.
+\end{corollary}
+\begin{proof}
+Apply the compact estimate on each exhaustion domain, then use $C^2$ convergence
+on compact sets and monotone convergence for the nonnegative integrands.
+\end{proof}
+
+\begin{proposition}[dual weighted energy]
+\label{prop:chow-ii-dual-l2}
+\dcref{ch10:10.73}
+\group{Weak heat solutions}
+\source{chow-et-al-ricci-flow-part-ii:page-0077,chow-et-al-ricci-flow-part-ii:page-0078}
+\uses{prop:chow-ii-weighted-l2}
+For a subsolution of the adjoint heat equation and a weight satisfying
+$-\xi_t+\frac12|\nabla\xi|^2\le0$, the corresponding backward weighted $L^2$ energy
+is nondecreasing in forward time.
+\end{proposition}
+\begin{proof}
+Differentiate the backward weight, integrate by parts, and complete the square:
+the derivative is $2e^{-K_1(T_0-t)}\int|\nabla(ve^{\xi/2})|^2d\mu_t\ge0$.
+\end{proof}
+
+\begin{definition}[weak heat solution]
+\label{def:chow-ii-weak-heat-solution}
+\dcref{ch10:10.75}
+\group{Weak heat solutions}
+\source{chow-et-al-ricci-flow-part-ii:page-0081}
+A function $u\in V_{2,\mathrm{loc}}$ is a weak subsolution of
+$u_t-\Delta_{g(t)}u=f$ if, for every nonnegative compactly supported test
+function $\phi$, the integrated-by-parts inequality
+\[
+\left(\int u\phi\,d\mu\right)(t_1)-\int_0^{t_1}\!\int
+(-\mathcal H u\phi+u\phi_t-\nabla u\cdot\nabla\phi)\,d\mu,dt
+\le\int_0^{t_1}\!\int f\phi\,d\mu,dt
+\]
+holds for a.e. $t_1$.  Reverse inequality defines a supersolution; equality a
+weak solution.
+\end{definition}
+
+\begin{definition}[weak initial-boundary solution]
+\label{def:chow-ii-weak-ibv-solution}
+\dcref{ch10:10.76}
+\group{Weak heat solutions}
+\source{chow-et-al-ricci-flow-part-ii:page-0082}
+\uses{def:chow-ii-weak-heat-solution}
+A function in $V^{1,0}_{2,0}(\Omega_T)$ is a weak solution of the initial-boundary
+value problem if the preceding identity holds for all admissible test functions,
+with the initial term $\int_\Omega u_0\phi(\cdot,0)\,d\mu$ included.
+\end{definition}
+
+\begin{corollary}[energy estimate for weak solutions]
+\label{cor:chow-ii-weak-energy-estimate}
+\dcref{ch10:10.77}
+\group{Weak heat solutions}
+\source{chow-et-al-ricci-flow-part-ii:page-0082,chow-et-al-ricci-flow-part-ii:page-0083}
+\uses{def:chow-ii-weak-ibv-solution}
+For uniformly equivalent metrics, a weak solution satisfies
+\[
+\|u\|_{V_2}\le C\bigl(\|u_0\|_{L^2}+\|f\|_{L^2}\bigr).
+\]
+\end{corollary}
+\begin{proof}
+Test the weak equation by $u$, use uniform metric equivalence and
+$2ab\le a^2+b^2$, and integrate the resulting differential inequality.
+\end{proof}
+
+\begin{theorem}[weak maximum principle]
+\label{thm:chow-ii-weak-solution-wmp}
+\dcref{ch10:10.78}
+\group{Weak heat solutions}
+\source{chow-et-al-ricci-flow-part-ii:page-0083}
+\uses{def:chow-ii-weak-ibv-solution}
+If $u\in V^{1,0}_2$ satisfies $u_t-\Delta_{g(t)}u\le f$ weakly, with
+$f\in L^{n+2p}_{n+2+p}$ and $p>n+2$, then
+\[
+\operatorname*{ess\,sup}u\le \sup_{\partial_{\rm par}\Omega_T}u_+
+ +C\,\operatorname{Vol}(\Omega)^{1/(n+2)-1/p}\|f\|_{L^{n+2p}_{n+2+p}}.
+\]
+\end{theorem}
+\begin{proof}
+Test the weak inequality with truncated powers $(u-k)_+^q$, apply the parabolic
+Sobolev inequality, and iterate the resulting level-set estimate with the
+De Giorgi exponents.  The iteration drives the measure of every superlevel
+set above the displayed right-hand side to zero, yielding the essential bound.
+\end{proof}
+
+\section{ABP and elementary variants}
+
+\begin{theorem}[Aleksandrov--Bakelman--Pucci estimate]
+\label{thm:chow-ii-elliptic-abp}
+\dcref{ch10:10.79}
+\group{ABP maximum principles}
+\source{chow-et-al-ricci-flow-part-ii:page-0084,chow-et-al-ricci-flow-part-ii:page-0085,chow-et-al-ricci-flow-part-ii:page-0086}
+If $a^{ij}V_iV_j\ge\lambda|V|^2$ and $a^{ij}u_{ij}=f$ on a bounded smooth
+domain, then
+\[
+\|u\|_{C^0(\Omega)}\le\|\varphi\|_{C^0(\partial\Omega)}+
+\frac{\operatorname{diam}(\Omega)}{n\omega_n^{1/n}\lambda}\|f\|_{L^n(\Omega)}.
+\]
+\end{theorem}
+\begin{proof}
+Subtract the boundary supremum and consider the upper concave envelope.  Its
+gradient image contains the gradient ball of radius $\sup u/\operatorname{diam}(\Omega)$.
+The area formula on the contact set and arithmetic--geometric mean give
+\(n^n\lambda^n|\det D^2u|\le|f|^n\).  Comparing the two gradient volumes gives
+the estimate for $\sup u$; apply it to $-u$ for the lower bound and combine.
+\end{proof}
+
+\begin{theorem}[parabolic ABP estimate]
+\label{thm:chow-ii-parabolic-abp}
+\dcref{ch10:10.80}
+\group{ABP maximum principles}
+\source{chow-et-al-ricci-flow-part-ii:page-0087}
+For a weakly parabolic operator with bounded measurable coefficients satisfying
+the stated determinant and drift bounds, every continuous
+$W^{2,1}_{n+1,\mathrm{loc}}$ subsolution obeys the parabolic ABP bound
+\[
+\sup u\le\sup_{\partial_{\rm par}\Omega_T}u_+
+ +c(n)d^{n/(n+1)}e^{c(n)d^{-1}\|b/\mathcal D^*\|_{L^{n+1}}^{n+1}}
+ \|f^+/\mathcal D^*\|_{L^{n+1}}.
+\]
+\end{theorem}
+\begin{proof}
+The parabolic contact set maps under the space-time gradient map onto a set
+whose Jacobian is controlled by $(f^+/\mathcal D^*)^{n+1}$.  The determinant
+bound and Holder's inequality give the stated power of the diameter; integrating
+the drift along contact curves yields the exponential factor.  The boundary
+maximum is added by applying the argument to $(u-k)_+$.
+\end{proof}
+
+\begin{proposition}[elementary parabolic variant]
+\label{prop:chow-ii-elementary-parabolic-wmp}
+\dcref{ch10:10.81}
+\group{ABP maximum principles}
+\source{chow-et-al-ricci-flow-part-ii:page-0088}
+If $(\partial_t-a^{ij}\nabla_i\nabla_j)u\le F(u,x,t)$, $u\le k$ on the
+parabolic boundary, and $F(z,x,t)\le Az$ for $z\le K$, then
+\[
+u\le K\quad\text{on }\Omega_{T_1},\qquad
+T_1=\min\{T,A^{-1}\log(K/k)\}.
+\]
+\end{proposition}
+\begin{proof}
+Let $m(t)=\max_{\Omega_t}u$.  Before the first time $m$ reaches $K$, the scalar
+maximum principle applied to $u_t-a^{ij}\nabla_i\nabla_ju\le Au$ gives
+$m(t)\le ke^{At}$.  This is $<K$ for $t<T_1$, contradiction.
+\end{proof}
+
+\begin{proposition}[$C^0$ estimate for Ricci--DeTurck flow]
+\label{prop:chow-ii-detruck-c0-estimate}
+\dcref{ch10:10.82}
+\group{Ricci-flow applications}
+\source{chow-et-al-ricci-flow-part-ii:page-0088,chow-et-al-ricci-flow-part-ii:page-0089,chow-et-al-ricci-flow-part-ii:page-0090,chow-et-al-ricci-flow-part-ii:page-0091,chow-et-al-ricci-flow-part-ii:page-0092}
+\uses{prop:chow-ii-elementary-parabolic-wmp}
+For a bounded domain in a complete background with uniformly bounded curvature,
+the Ricci--DeTurck Dirichlet solution remains uniformly $C^0$-close to the
+background metric for a time depending only on the desired error, dimension,
+and curvature bound, independently of the domain.
+\end{proposition}
+\begin{proof}
+The DeTurck equation has principal part $g^{pq}\bar\nabla_p\bar\nabla_qg_{ij}$.
+Apply the elementary variant to $\psi=\sum_i\lambda_i^m$, where $\lambda_i$ are
+the background-relative eigenvalues.  The differentiated equation and
+$g\ge(1-\delta_0)\bar g$ make the quadratic gradient terms nonpositive for
+suitable $m$ and $\delta_0$, leaving $\psi_t\le g^{pq}\bar\nabla_p\bar\nabla_q\psi+A\psi$.
+The boundary value is $\psi=n$; the variant gives $\psi\le2n$ for a uniform
+short time, hence $\lambda_i\le(2n)^{1/m}\le1+\delta$.  The lower bound follows
+from the preliminary lower estimate, proving the claim.
+\end{proof}
+
+\begin{remark}[historical provenance]
+\label{rem:chow-ii-ch10-history}
+\dcref{ch10:10.83}
+\group{ABP maximum principles}
+\source{chow-et-al-ricci-flow-part-ii:page-0092}
+The system maximum principle originated in work of Stys, Weinberger, and
+Hamilton; time-dependent and avoidance-set forms are developed in the cited
+references.
+\end{remark}
