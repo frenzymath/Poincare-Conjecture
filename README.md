@@ -59,6 +59,7 @@ site/                  authored website content and assets
 | [Cheeger-Gromov-Taylor](https://frenzymath.github.io/Poincare-Conjecture/#/formalized-sources/CheegerGromovTaylor) | Kernel estimates on complete Riemannian manifolds |
 | [Hatcher](https://frenzymath.github.io/Poincare-Conjecture/#/formalized-sources/Hatcher) | Algebraic topology |
 | [Evans](https://frenzymath.github.io/Poincare-Conjecture/#/formalized-sources/Evans) | Partial differential equations |
+| [Gilbarg-Trudinger](https://frenzymath.github.io/Poincare-Conjecture/#/formalized-sources/GilbargTrudinger) | Second-order elliptic partial differential equations |
 | [Han-Lin](https://frenzymath.github.io/Poincare-Conjecture/#/formalized-sources/HanLinLectureNotes) | Elliptic differential equations |
 
 ## Contributing

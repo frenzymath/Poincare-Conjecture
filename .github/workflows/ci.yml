@@ -39,6 +39,9 @@ jobs:
           - name: Evans
             path: formalized-sources/Evans
             sorry_baseline: 0
+          - name: GilbargTrudinger
+            path: formalized-sources/GilbargTrudinger
+            sorry_baseline: 0
           - name: HanLinLectureNotes
             path: formalized-sources/HanLinLectureNotes
             sorry_baseline: 0
@@ -99,16 +102,16 @@ jobs:
           PROJECT: ${{ matrix.path }}
           SORRY_BASELINE: ${{ matrix.sorry_baseline }}
         run: |
-          sorry_count=$({ grep -rnE "^[[:space:]]*sorry[[:space:]]*$|by sorry|:= sorry" \
-            --include="*.lean" "$PROJECT" 2>/dev/null || true; } | wc -l | tr -d ' ')
+          sorry_count=$({ git grep -nE "^[[:space:]]*sorry[[:space:]]*$|by sorry|:= sorry" \
+            -- ":(glob)$PROJECT/**/*.lean" 2>/dev/null || true; } | wc -l | tr -d ' ')
           if [ "$sorry_count" -gt "$SORRY_BASELINE" ]; then
             echo "::error::$PROJECT: sorry count increased ($sorry_count > $SORRY_BASELINE)"
             exit 1
           fi
           echo "$PROJECT: sorry count $sorry_count (baseline $SORRY_BASELINE)"
 
-          axiom_count=$({ grep -rnE "^axiom[[:space:]]+[a-zA-Z_][a-zA-Z0-9_']*[[:space:]]*$" \
-            --include="*.lean" "$PROJECT" 2>/dev/null || true; } | wc -l | tr -d ' ')
+          axiom_count=$({ git grep -nE "^axiom[[:space:]]+[a-zA-Z_][a-zA-Z0-9_']*[[:space:]]*$" \
+            -- ":(glob)$PROJECT/**/*.lean" 2>/dev/null || true; } | wc -l | tr -d ' ')
           if [ "$axiom_count" -ne 0 ]; then
             echo "::error::$PROJECT: found $axiom_count axiom declaration(s), expected 0"
             exit 1

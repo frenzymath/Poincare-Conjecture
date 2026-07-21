@@ -23,6 +23,7 @@ also keeps cross-project Lake paths stable.
 | `CheegerGromovTaylor` | Kernel estimates on complete Riemannian manifolds |
 | `Hatcher` | Algebraic topology |
 | `Evans` | Partial differential equations |
+| `GilbargTrudinger` | Second-order elliptic partial differential equations |
 | `HanLinLectureNotes` | Elliptic differential equations |
 
 Build and hgraph instructions are centralized in the repository root
