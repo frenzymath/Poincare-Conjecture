@@ -6,6 +6,7 @@
 <div align="center">
 
 [![Website: Live](https://img.shields.io/badge/Website-Live-0969da?style=flat-square)](https://frenzymath.github.io/Poincare-Conjecture/)
+[![Project board: Worklist](https://img.shields.io/badge/Project-Worklist-2da44e?style=flat-square)](https://github.com/orgs/frenzymath/projects/1)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-yellow?style=flat-square)](LICENSE)
 [![Lean: v4.30.0](https://img.shields.io/badge/Lean-v4.30.0-6f42c1?style=flat-square)](https://github.com/leanprover/lean4/tree/v4.30.0)
 </div>
@@ -60,5 +61,7 @@ Open <http://127.0.0.1:8000/> to explore the blueprints, dependency graphs, and 
 ## Contributing
 
 Contributions are welcome through [issues](https://github.com/frenzymath/Poincare-Conjecture/issues) and focused [pull requests](https://github.com/frenzymath/Poincare-Conjecture/pulls). See the [contribution guide](CONTRIBUTING.md) to get started.
+
+Work in progress is coordinated on the [**Poincaré Conjecture Formalization Library** project board](https://github.com/orgs/frenzymath/projects/1). The two views are complementary: the [website](https://frenzymath.github.io/Poincare-Conjecture/) is the map of *all* the mathematics, while the board is the live worklist of what contributors are actively claiming, grouped by theorem milestone (e.g. Bonnet–Myers, Hopf–Rinow, Cartan–Hadamard). To claim a task, open a sub-issue for the specific lemma or definition, assign yourself, add the relevant `book:` label(s), and move the card to *In Progress*.
 
 Licensed under [Apache 2.0](LICENSE).
