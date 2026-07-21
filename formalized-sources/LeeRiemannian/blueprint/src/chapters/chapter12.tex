@@ -1,5 +1,6 @@
-% Source: Lee, "Introduction to Riemannian Manifolds" (2nd ed.), Chapter 12 "Curvature and Topology", PDF pages 355-380 of the cited source.
-% Transcribed from the cited source, with manual checks for a few pages, and organized according to leanblueprint
+% Source: Lee, "Introduction to Riemannian Manifolds" (2nd ed.), Chapter 12 "Curvature and Topology", PDF pages 355-380 of /home/axel/MathBooks/Introduction to Riemannian Manifolds (Second Edition) 2(1).pdf.
+% Transcribed page-by-page by vision subagents (haiku, plus manual transcription for a few
+% pages a safety classifier kept rejecting), then merged and restructured into leanblueprint
 % conventions (semantic \label, bracketed titles, \uses dependency edges, \dcref to Lee's own numbering) below.
 
 In this final chapter, we bring together most of the tools we have developed so far to prove some significant local-to-global theorems relating curvature and topology of Riemannian manifolds.
@@ -420,11 +421,52 @@ No product of positive-dimensional connected compact manifolds admits a metric o
 
 Finally, we consider manifolds with positive curvature. The most important fact about such manifolds is the following theorem, which was first proved in 1941 by Sumner B. Myers [Mye41], building on earlier work of Ossian Bonnet, Heinz Hopf, and John L. Synge.
 
+\begin{theorem}[Myers diameter and compactness]
+\label{thm:myers-positive-ricci-geometric}
+\lean{LeeLib.Ch12.myersPositiveRicci_diameterCompact_of_dim}
+\leanok
+Let $(M,g)$ be a complete, connected Riemannian $n$-manifold with $n\ge2$.
+If $R>0$ and $\operatorname{Rc}(v,v)\ge(n-1)/R^2$ for every unit tangent
+vector $v$, then $M$ is compact and $\operatorname{diam}(M)\le\pi R$.
+\end{theorem}
+\begin{proof}
+\leanok
+The sine-field index inequality along a minimizing geodesic rules out any
+minimizing segment of length greater than $\pi R$. Hopf--Rinow supplies such a
+segment between every pair of points, giving the diameter bound; completeness
+and boundedness then imply compactness.
+\end{proof}
+
+\begin{theorem}[Myers on an explicit simply connected Riemannian cover]
+\label{thm:myers-explicit-simply-connected-cover}
+\lean{LeeLib.Ch12.myers_of_simplyConnected_riemannianCover_of_complete_base}
+\leanok
+\uses{thm:myers-positive-ricci-geometric,cor:complete-iff-covering-complete}
+Let $\pi:(\widetilde M,\widetilde g)\to(M,g)$ be a Riemannian covering of
+connected Riemannian $n$-manifolds, with $\widetilde M$ simply connected and
+$M$ complete. If $n\ge2$, $R>0$, and
+$\operatorname{Rc}_{\widetilde g}(v,v)\ge(n-1)/R^2$ for every unit tangent
+vector $v$ on $\widetilde M$, then $M$ is compact,
+$\operatorname{diam}(M)\le\pi R$, and $\pi_1(M,p)$ is finite for every
+$p\in M$.
+\end{theorem}
+\begin{proof}
+\leanok
+By \cref{cor:complete-iff-covering-complete}, $\widetilde M$ is complete, so
+\cref{thm:myers-positive-ricci-geometric} makes it compact with diameter at
+most $\pi R$. The covering map is a surjective local isometry, hence does not
+increase distances; it transfers the diameter bound to $M$, and its continuous
+surjectivity makes $M$ compact. Finally, monodromy embeds each fundamental
+group of $M$ into a covering fiber. The fibers are closed discrete subspaces of
+the compact space $\widetilde M$, and therefore finite.
+\end{proof}
+
 \begin{theorem}[Myers]
 \label{thm:myers-positive-ricci}
 \dcref{ch12:12.24}
 \notready
-\uses{cor:diameter-ricci-bounded,cor:complete-iff-covering-complete,prop:fiber-cardinality-fundamental-group}
+\uses{thm:myers-positive-ricci-geometric,thm:myers-explicit-simply-connected-cover,
+cor:complete-iff-covering-complete,prop:fiber-cardinality-fundamental-group}
 Let $(M,g)$ be a complete, connected Riemannian $n$-manifold, and suppose there is a positive constant $R$ such that the Ricci curvature of $M$ satisfies $\text{Rc}(v,v) \geq (n-1)/R^2$ for all unit vectors $v$. Then $M$ is compact, with diameter less than or equal to $\pi R$, and its fundamental group is finite.
 
 Proof. The diameter comparison theorem (Cor. 11.18) shows that the diameter of $M$ is no greater than $\pi R$. To show that $M$ is compact, we just choose a base point $p$ and note that every point in $M$ can be connected to $p$ by a geodesic segment of length at most $\pi R$. Therefore, $\exp_p : \bar{B}_{\pi R}(0) \to M$ is surjective, so $M$ is the continuous image of a compact set.

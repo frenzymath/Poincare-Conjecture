@@ -1,5 +1,6 @@
 import LeeLib.AppendixA.CoveringLifting
 import LeeLib.Ch02.RiemannianCovering
+import LeeLib.Ch06.CompleteLocalIsometry
 import LeeLib.Ch06.HopfRinow
 import LeeLib.Ch12.MyersIndex
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup
@@ -25,14 +26,16 @@ group and a fiber or the covering-automorphism group.  The latter conditional
 forms are retained as useful alternate interfaces.  Finally,
 `myers_finiteFundamentalGroup_of_simplyConnected_riemannianCover` combines this
 topological step with the callback-free compactness theorem for an explicitly
-given simply connected Riemannian cover.
+given simply connected Riemannian cover.  For covers modelled on the same vector
+space, `myers_of_simplyConnected_riemannianCover_of_complete_base` obtains the
+cover's completeness from completeness of the base via Lee Corollary 6.24.
 -/
 
 noncomputable section
 
 namespace LeeLib.Ch12
 
-open Set
+open Set Riemannian
 open scoped Manifold ContDiff Topology
 
 /-- **Math.** Every fiber of a covering map with compact total space and a
@@ -330,8 +333,10 @@ curvature and completeness on the covering manifold make it compact by
 fundamental group of the base into a finite covering fiber.
 
 The geometric hypotheses are stated on the cover because construction of the
-universal smooth cover, pullback of the metric and Ricci bound, and transfer of
-completeness are separate inputs not yet available in this project. -/
+universal smooth cover and transfer of the Ricci bound are separate inputs not
+yet available in this project.  For same-model covers, completeness can instead
+be supplied on the base through
+`myers_of_simplyConnected_riemannianCover_of_complete_base`. -/
 theorem myers_finiteFundamentalGroup_of_simplyConnected_riemannianCover
     (gt : LeeLib.Ch02.RiemannianMetric It Mt)
     (g : LeeLib.Ch02.RiemannianMetric I M)
@@ -359,9 +364,8 @@ covering does not increase distance, so surjectivity transfers the diameter
 bound to the base; the base is compact as a continuous image of the cover, and
 monodromy gives finiteness of every fundamental group.
 
-This is the strongest assumption-free package currently available without a
-general construction of the universal Riemannian cover and the corresponding
-completeness and Ricci-curvature transfer theorems. -/
+This general, possibly different-model package states completeness on the cover.
+The same-model wrapper below derives it from completeness of the base. -/
 theorem myers_of_simplyConnected_riemannianCover
     [T3Space M] [ConnectedSpace M]
     (gt : LeeLib.Ch02.RiemannianMetric It Mt)
@@ -405,6 +409,144 @@ theorem myers_of_simplyConnected_riemannianCover
       gt g π hπ hr hdim hRic hcomplete
 
 end RiemannianCoverMyers
+
+/-! ## The explicit-cover conclusion from completeness of the base -/
+
+section SameModelRiemannianCoverMyers
+
+variable
+  {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)]
+  {Ht : Type*} [TopologicalSpace Ht] {It : ModelWithCorners ℝ E Ht}
+    [It.Boundaryless]
+  {Mt : Type*} [TopologicalSpace Mt] [ChartedSpace Ht Mt]
+    [IsManifold It ∞ Mt] [SigmaCompactSpace Mt] [T3Space Mt]
+    [ConnectedSpace Mt]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    [I.Boundaryless]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    [IsManifold I ∞ M] [T3Space M] [ConnectedSpace M]
+
+set_option linter.unusedVariables false in
+/-- **Math.** Myers' full conclusion for an explicitly supplied simply connected
+Riemannian cover, with completeness stated on the base as in the classical theorem.
+Lee Corollary 6.24 transfers completeness to the cover; positive Ricci curvature
+on the cover then makes it compact, bounds the base diameter, and makes every
+fundamental group of the base finite.
+
+The cover and base use the same model vector space because the current
+geodesic-reflection proof of Corollary 6.24 has that scope.  The remaining input
+needed for a theorem stated entirely on the base is transfer of the Ricci lower
+bound to a constructed universal Riemannian cover. -/
+theorem myers_of_simplyConnected_riemannianCover_of_complete_base
+    (gt : LeeLib.Ch02.RiemannianMetric It Mt)
+    (g : LeeLib.Ch02.RiemannianMetric I M)
+    (π : C^∞⟮It, Mt; I, M⟯)
+    (hπ : LeeLib.Ch02.IsRiemannianCovering gt g π)
+    [SimplyConnectedSpace Mt] {r : ℝ} :
+    letI : MetricSpace Mt := gt.toMetricSpace
+    letI : MetricSpace M := g.toMetricSpace
+    ∀ (hr : 0 < r) (hdim : 2 ≤ Module.finrank ℝ E)
+      (hRic : Riemannian.Variation.HasRicciLowerBound (I := It) gt r),
+      CompleteSpace M →
+        Metric.diam (Set.univ : Set M) ≤ Real.pi * r ∧
+        CompactSpace M ∧ ∀ p : M, Finite (FundamentalGroup M p) := by
+  letI : MetricSpace Mt := gt.toMetricSpace
+  letI : MetricSpace M := g.toMetricSpace
+  intro hr hdim hRic hcomplete
+  have hcompleteCover : CompleteSpace Mt :=
+    (LeeLib.Ch06.complete_iff_of_riemannianCovering gt g π hπ).mpr hcomplete
+  exact myers_of_simplyConnected_riemannianCover
+    gt g π hπ hr hdim hRic hcompleteCover
+
+omit [It.Boundaryless] [I.Boundaryless] in
+/-- **Math.** Curvature-form naturality for a smooth covering equipped with
+the metric pulled back from its base.  This is the pointwise tensor equation
+that a local isometry preserves Riemann curvature. -/
+def IsCurvatureFormNaturalForCoveringMetric
+    [SigmaCompactSpace M]
+    (g : LeeLib.Ch02.RiemannianMetric I M)
+    (π : C^∞⟮It, Mt; I, M⟯)
+    (hπ : LeeLib.Ch02.IsSmoothCoveringMap π) : Prop :=
+  ∀ (p : Mt) (u v w z : TangentSpace It p),
+    (Riemannian.RiemannianMetric.leviCivitaConnection
+        (hπ.coveringMetric g)).curvatureFormAt
+        (hπ.coveringMetric g) p u v w z =
+      (Riemannian.RiemannianMetric.leviCivitaConnection g).curvatureFormAt g (π p)
+        (mfderiv It I π p u) (mfderiv It I π p v)
+        (mfderiv It I π p w) (mfderiv It I π p z)
+
+set_option linter.unusedVariables false in
+omit [It.Boundaryless] [I.Boundaryless] in
+/-- **Math.** A Ricci lower bound transfers to the canonical covering metric
+once curvature-form naturality for the covering projection is available.
+
+The proof is purely the trace argument: push an orthonormal frame on the cover
+through `dπ`, use that the covering metric makes `dπ` an isometry, apply the
+base Ricci bound to the pushed frame, and rewrite each curvature summand.  This
+packages all of the algebra needed by Myers and isolates the remaining
+differential-geometric input as the standard naturality equation for the
+Riemann curvature tensor under a local isometry. -/
+theorem hasRicciLowerBound_coveringMetric_of_curvatureFormAt
+    [SigmaCompactSpace M]
+    (g : LeeLib.Ch02.RiemannianMetric I M)
+    (π : C^∞⟮It, Mt; I, M⟯)
+    (hπ : LeeLib.Ch02.IsSmoothCoveringMap π) {r : ℝ} :
+    let gt := hπ.coveringMetric g
+    letI : MetricSpace Mt := gt.toMetricSpace
+    letI : MetricSpace M := g.toMetricSpace
+    IsCurvatureFormNaturalForCoveringMetric g π hπ →
+    Riemannian.Variation.HasRicciLowerBound (I := I) g r →
+    Riemannian.Variation.HasRicciLowerBound (I := It) gt r := by
+  dsimp only
+  intro hcurv hRic p e n₀ he
+  let e' : Fin (Module.finrank ℝ E) → E := fun i =>
+    mfderiv It I π p (e i : TangentSpace It p)
+  have he' : ∀ i j,
+      Riemannian.RiemannianMetric.metricInner g (π p)
+          (e' i : TangentSpace I (π p)) (e' j : TangentSpace I (π p)) =
+        if i = j then 1 else 0 := by
+    intro i j
+    change g.inner (π p)
+      (mfderiv It I π p (e i : TangentSpace It p))
+      (mfderiv It I π p (e j : TangentSpace It p)) = _
+    rw [(hπ.isRiemannianCovering_coveringMetric g).2.inner_mfderiv]
+    simpa only [Riemannian.RiemannianMetric.metricInner_apply] using he i j
+  have hbase := hRic (π p) e' n₀ he'
+  refine hbase.trans_eq ?_
+  apply Finset.sum_congr rfl
+  intro j hj
+  exact (hcurv p (e n₀) (e j) (e n₀) (e j)).symm
+
+set_option linter.unusedVariables false in
+/-- **Math.** Myers' full conclusion from an explicitly supplied simply
+connected *smooth* cover, equipped with its canonical covering metric.
+
+Unlike `myers_of_simplyConnected_riemannianCover_of_complete_base`, the caller
+does not need to construct a metric on the cover or prove that the projection
+is a Riemannian covering: both are supplied by
+`IsSmoothCoveringMap.coveringMetric`.  The remaining geometric input is the
+Ricci lower bound for that pullback metric.  Thus a universal-smooth-cover
+existence theorem together with naturality of Ricci curvature under local
+isometries suffices to specialize this statement to the classical theorem. -/
+theorem myers_of_simplyConnected_smoothCover_of_complete_base
+    (g : LeeLib.Ch02.RiemannianMetric I M)
+    (π : C^∞⟮It, Mt; I, M⟯)
+    (hπ : LeeLib.Ch02.IsSmoothCoveringMap π)
+    [SimplyConnectedSpace Mt] {r : ℝ} :
+    let gt := hπ.coveringMetric g
+    letI : MetricSpace Mt := gt.toMetricSpace
+    letI : MetricSpace M := g.toMetricSpace
+    ∀ (hr : 0 < r) (hdim : 2 ≤ Module.finrank ℝ E)
+      (hRic : Riemannian.Variation.HasRicciLowerBound (I := It) gt r),
+      CompleteSpace M →
+        Metric.diam (Set.univ : Set M) ≤ Real.pi * r ∧
+        CompactSpace M ∧ ∀ p : M, Finite (FundamentalGroup M p) := by
+  dsimp only
+  exact myers_of_simplyConnected_riemannianCover_of_complete_base
+    (hπ.coveringMetric g) g π (hπ.isRiemannianCovering_coveringMetric g)
+
+end SameModelRiemannianCoverMyers
 
 end LeeLib.Ch12
 

@@ -1,4 +1,6 @@
 import PetersenLib.Ch05.IsometryUniqueness
+import Mathlib.Analysis.Convex.Contractible
+import Mathlib.Topology.Homotopy.Lifting
 
 /-!
 # Petersen Ch. 5, §5.6.1 — Lemma 5.6.4: a complete local isometry covers
@@ -51,6 +53,109 @@ theorem isGeodesicWithInitialOn_restart (g : RiemannianMetric I M) {γ : ℝ →
   have hd : deriv (Geodesic.chartLocalCurve (I := I) γ t₁) t₁ = v := hv.deriv
   rw [hd]
   exact hv
+
+/-- **Math.** Geodesic completeness lifts through a Riemannian covering.  Given
+a complete base geodesic with initial velocity `dF(v)`, lift it continuously
+through the covering.  Near each time, compare that lift with the local
+geodesic whose initial velocity maps to the base velocity.  Their projections
+are geodesics with the same initial data, hence agree; covering-lift
+uniqueness then makes the two lifts agree locally. -/
+theorem geodesicallyComplete_of_riemannianCovering
+    {gM : RiemannianMetric I M} {gN : RiemannianMetric I' M'} {F : M → M'}
+    (hF : IsLocalRiemannianIsometry gM gN F) (hcov : IsCoveringMap F)
+    (hN : IsGeodesicallyComplete (I := I') gN) :
+    IsGeodesicallyComplete (I := I) gM := by
+  intro p v
+  let v' : TangentSpace I' (F p) := mfderiv I I' F p v
+  obtain ⟨c, hccont, hc0, hcv, hcgeo⟩ := hN (F p) v'
+  let cc : C(ℝ, M') := ⟨c, hccont⟩
+  obtain ⟨γc, ⟨hγ0, hγlift⟩, -⟩ :=
+    hcov.existsUnique_continuousMap_lifts cc 0 p (by
+      simpa only [cc, ContinuousMap.coe_mk] using hc0.symm)
+  let γ : ℝ → M := γc
+  have hγzero : γ 0 = p := hγ0
+  have hγcont : Continuous γ := γc.continuous
+  have hlift : ∀ t : ℝ, F (γ t) = c t := by
+    intro t
+    exact congrFun hγlift t
+  have hlocal : ∀ (t : ℝ) (w : TangentSpace I (γ t)),
+      mfderiv I I' F (γ t) w =
+        ((deriv (Geodesic.chartLocalCurve (I := I') c t) t : E') :
+          TangentSpace I' (F (γ t))) →
+      ∃ (D : Set ℝ) (δ : ℝ → M), IsOpen D ∧ D.OrdConnected ∧ (0 : ℝ) ∈ D ∧
+        IsGeodesicWithInitialOn (I := I) gM δ D 0 (γ t) w ∧
+        Set.EqOn δ (fun s => γ (s + t)) D := by
+    intro t w hw
+    let D : Set ℝ := geodesicMaximalDomain (I := I) gM (γ t) w
+    let δ : ℝ → M := geodesicMaximalCurve (I := I) gM (γ t) w
+    have hDo : IsOpen D := isOpen_geodesicMaximalDomain (I := I) gM (γ t) w
+    have hDc : D.OrdConnected := ordConnected_geodesicMaximalDomain (I := I) gM (γ t) w
+    have h0D : (0 : ℝ) ∈ D := zero_mem_geodesicMaximalDomain (I := I) gM (γ t) w
+    have hδ : IsGeodesicWithInitialOn (I := I) gM δ D 0 (γ t) w :=
+      geodesicMaximalCurve_spec (I := I) gM (γ t) w
+    have hFδ : IsGeodesicWithInitialOn (I := I') gN (F ∘ δ) D 0
+        (F (γ t)) (mfderiv I I' F (γ t) w) :=
+      localIsometry_isGeodesicWithInitialOn hF hDo h0D hδ
+    have hcRestart : IsGeodesicWithInitialOn (I := I') gN c Set.univ t (c t)
+        ((deriv (Geodesic.chartLocalCurve (I := I') c t) t : E') :
+          TangentSpace I' (c t)) :=
+      isGeodesicWithInitialOn_restart (I := I') gN hccont.continuousOn
+        (fun s _ => hcgeo s) (Set.mem_univ t)
+    have hcShift : IsGeodesicWithInitialOn (I := I') gN (fun s => c (s + t))
+        Set.univ 0 (c t)
+        ((deriv (Geodesic.chartLocalCurve (I := I') c t) t : E') :
+          TangentSpace I' (c t)) := by
+      simpa only [sub_neg_eq_add, add_neg_cancel] using hcRestart.shift (-t)
+    have hcShift' := hcShift
+    rw [← hlift t] at hcShift'
+    have hFδ' := hFδ
+    rw [hw] at hFδ'
+    have hproj : Set.EqOn (F ∘ δ) (fun s => c (s + t)) D := by
+      have h := geodesicWithInitialOn_eqOn (I := I') gN hDo hDc isOpen_univ
+        Set.ordConnected_univ hFδ' hcShift' h0D (Set.mem_univ 0)
+      simpa only [Set.inter_univ] using h
+    have heqComp : Set.EqOn (F ∘ δ) (F ∘ fun s => γ (s + t)) D := by
+      intro s hs
+      rw [hproj hs, Function.comp_apply, hlift]
+    have heqLift : Set.EqOn δ (fun s => γ (s + t)) D :=
+      hcov.eqOn_of_comp_eqOn hDc.isPreconnected hδ.1
+        (hγcont.comp (continuous_id.add continuous_const)).continuousOn
+        heqComp h0D (by simpa only [zero_add] using hδ.2.1)
+    exact ⟨D, δ, hDo, hDc, h0D, hδ, heqLift⟩
+  have hγgeo : IsGeodesic (I := I) gM γ := by
+    intro t
+    obtain ⟨w, hw⟩ := (hF.bijective_mfderiv (γ t)).2
+      (((deriv (Geodesic.chartLocalCurve (I := I') c t) t : E') :
+        TangentSpace I' (F (γ t))))
+    obtain ⟨D, δ, hDo, -, h0D, hδ, heq⟩ := hlocal t w hw
+    have hδt : Geodesic.HasGeodesicEquationAt (I := I) gM
+        (fun s => δ (s - t)) t := by
+      apply hasGeodesicEquationAt_comp_sub_const (I := I) gM t
+      simpa only [sub_self] using hδ.2.2.2 0 h0D
+    refine hasGeodesicEquationAt_congr (γ₁ := fun s => δ (s - t)) ?_ hδt
+    have hJo : IsOpen {s : ℝ | s - t ∈ D} :=
+      hDo.preimage (continuous_id.sub continuous_const)
+    have htJ : t ∈ {s : ℝ | s - t ∈ D} := by
+      simpa only [Set.mem_setOf_eq, sub_self] using h0D
+    have hJ : {s : ℝ | s - t ∈ D} ∈ 𝓝 t := hJo.mem_nhds htJ
+    filter_upwards [hJ] with s hs
+    have heq' := heq hs
+    simpa only [sub_add_cancel] using heq'
+  obtain ⟨D, δ, hDo, -, h0D, hδ, heq⟩ := hlocal 0 v (by
+    rw [hγzero]
+    have hcv' : HasDerivAt (Geodesic.chartLocalCurve (I := I') c 0) (v' : E') 0 := by
+      change HasDerivAt (fun s => extChartAt I' (c 0) (c s)) (v' : E') 0
+      rw [hc0]
+      exact hcv
+    simpa only [v'] using hcv'.deriv.symm)
+  have hγvel : HasDerivAt (fun s => extChartAt I p (γ s)) (v : E) 0 := by
+    have hδvel : HasDerivAt (fun s => extChartAt I p (δ s)) (v : E) 0 := by
+      simpa only [hγzero] using hδ.2.2.1
+    apply hδvel.congr_of_eventuallyEq
+    filter_upwards [hDo.mem_nhds h0D] with s hs
+    rw [heq hs]
+    simp only [add_zero]
+  exact ⟨γ, hγcont, hγzero, hγvel, hγgeo⟩
 
 /-- **Math.** **Time reversal of a geodesic.**  A geodesic `γ` on an open, order-connected
 time set `J`, run backwards from the time `t₁`, is the maximal geodesic of a suitable

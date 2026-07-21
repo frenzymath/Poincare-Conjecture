@@ -200,6 +200,7 @@ import DoCarmoLib.Riemannian.Manifold.DoCarmoCh8HyperbolicGeodesic
 import DoCarmoLib.Riemannian.Manifold.DoCarmoCh8HyperbolicGeodesicClassification
 import DoCarmoLib.Riemannian.Variation.ArcLengthBridge
 import DoCarmoLib.Riemannian.Variation.BonnetMyers
+import DoCarmoLib.Riemannian.Variation.BonnetMyersFundamentalGroup
 import DoCarmoLib.Riemannian.Variation.CovariantField
 import DoCarmoLib.Riemannian.Variation.Energy
 import DoCarmoLib.Riemannian.Variation.EnergyDerivative

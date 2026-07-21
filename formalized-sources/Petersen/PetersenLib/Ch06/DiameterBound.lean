@@ -15,11 +15,13 @@ import Mathlib.Analysis.Calculus.DerivativeTest
 This file proves the diameter-and-compactness content of Corollary 6.3.2 (Hopf–Rinow 1931 /
 Myers 1932, `sec ≥ k > 0`) and Theorem 6.3.3 (Myers 1941, `Ric ≥ (n-1)k > 0`): a complete
 manifold under the curvature bound has `Metric.diam ≤ π/√k` and is `CompactSpace`.  The curvature
-bound is **genuinely consumed** (via `bonnetSynge_index_core` / `myers_index_core`); the only
-hypothesis carried is the *technical* existence of the exponential variation — the same
-slab-smoothness gap already carried, as a hypothesis, by the sanctioned-`\leanok` Lemma 6.3.1
-(`bonnetSynge_longGeodesicsNotMinimizing`).  The diameter-and-compactness declarations are
-axiom-clean.  The final compact-cover-to-finite-`π₁` implication is formalized in
+bound is **genuinely consumed** (via `bonnetSynge_index_core` / `myers_index_core`).  The
+callback-free theorem `myersRicciDiameterBound_of_ricciLowerBound` constructs the
+velocity-seeded parallel frame and intrinsic exponential sine variations internally, proves
+their slab smoothness and minimizing-index nonnegativity, and derives integrability of the
+curvature coefficients from local chart continuity.  The lower-level variation-data interfaces
+are retained for reuse.  All diameter-and-compactness declarations are axiom-clean.  The final
+compact-cover-to-finite-`π₁` implication is formalized in
 `Ch06/MyersFundamentalGroup.lean`; constructing the universal Riemannian cover and transferring
 the geometric hypotheses to it remain open, so the headline blueprint nodes remain incomplete.
 
@@ -55,9 +57,13 @@ the geometric hypotheses to it remain open, so the headline blueprint nodes rema
 * `myersRicciDiameterBound_of_velocityFrameIndexNonneg` — additionally constructs the
   velocity-seeded parallel orthonormal frame, derives unit speed and the Ricci frame sum, and
   leaves only per-perpendicular-direction minimizing-index nonnegativity to the caller.
-* `hopfRinowMyers_diameterBound` (6.3.2) / `myersRicciDiameterBound` (6.3.3) — the headline
-  theorems: a genuine sectional / Ricci curvature bound plus `hvar` (technical variation and
-  frame existence) imply `diam ≤ π/√k ∧ compact`.
+* `intrinsicSine_index_nonneg_of_segment` — constructs the proper intrinsic exponential
+  variation and derives the standard sine-field index inequality from distance realization.
+* `myersRicciDiameterBound_of_ricciLowerBound` — the callback-free Ricci theorem:
+  `Ric ≥ (n-1)k`, `k > 0`, completeness, and `dim M ≥ 2` imply
+  `diam ≤ π/√k ∧ compact`.
+* `hopfRinowMyers_diameterBound` / `myersRicciDiameterBound` — retained lower-level
+  sectional/Ricci interfaces with explicit variation-data hypotheses.
 -/
 
 open Set Filter Bundle Manifold MeasureTheory
@@ -69,8 +75,6 @@ set_option maxHeartbeats 1000000
 noncomputable section
 
 namespace PetersenLib
-
-open PetersenLib.Jacobi
 
 open PetersenLib.Tensor
 
@@ -110,6 +114,8 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpa
   [T2Space (TangentBundle I M)] [ConnectedSpace M]
 
 namespace PetersenLib
+
+open PetersenLib.Jacobi
 
 /-! ## The energy–distance inequality -/
 
@@ -995,6 +1001,62 @@ theorem myersRicciDiameterBound_of_velocityFrameCurvatureIntegrable
     (hepar i) hEunit hEperp
     (hint σ l hl hlk hσc hσgeo hseg hunit e n₀ hepar heorth hevel i hi)
 
+/-- **Math.** A sectional-curvature lower bound `sec ≥ k` implies the
+corresponding Ricci lower bound `Ric ≥ (n - 1) k g`.
+
+For a nonzero tangent vector, normalize it, complete it to an orthonormal
+basis, and sum the `n - 1` sectional-curvature inequalities in the Ricci trace
+formula.  Bilinearity then rescales the unit-vector inequality. -/
+theorem HasSecBoundedBelow.hasRicciBoundedBelow
+    {g : RiemannianMetric I M} {D : RiemannianConnection I g} {k : ℝ}
+    (hsec : HasSecBoundedBelow D k) : HasRicciBoundedBelow D k := by
+  intro p v
+  rcases eq_or_ne v 0 with rfl | hv
+  · have hRicZero : RicciCurvature D.toAffineConnection p
+        (0 : TangentSpace I p) 0 = 0 := by
+      simpa using ricciCurvature_smul_left D.toAffineConnection p 0
+        (0 : TangentSpace I p) (0 : TangentSpace I p)
+    simp [hRicZero]
+  · let r : ℝ := Real.sqrt (g.metricInner p v v)
+    let u : TangentSpace I p := r⁻¹ • v
+    have hvv : 0 < g.metricInner p v v := g.metricInner_self_pos p v hv
+    have hr : 0 < r := Real.sqrt_pos.mpr hvv
+    have hu : g.metricInner p u u = 1 := by
+      simp only [u, g.metricInner_smul_left, g.metricInner_smul_right]
+      rw [← mul_assoc, ← Real.sqrt_inv]
+      rw [Real.mul_self_sqrt (by positivity)]
+      exact inv_mul_cancel₀ hvv.ne'
+    let n₀ : Fin (Module.finrank ℝ E) := Classical.choice inferInstance
+    obtain ⟨e, he₀, heorth⟩ :=
+      exists_metricOrthonormalFrame_containing_unit (I := I) g p n₀ u hu
+    obtain ⟨b, hb⟩ := exists_orthonormalBasis_of_family (g := g) (p := p) heorth
+    have hborth : ∀ i j, g.metricInner p (b i) (b j) =
+        if i = j then (1 : ℝ) else 0 := by
+      intro i j
+      rw [show b i = e i from congrFun hb i, show b j = e j from congrFun hb j]
+      exact heorth i j
+    have hb₀ : b n₀ = u := by
+      rw [show b n₀ = e n₀ from congrFun hb n₀, he₀]
+    have hunitRic : ((Module.finrank ℝ E - 1 : ℕ) : ℝ) * k ≤
+        RicciCurvature D.toAffineConnection p u u := by
+      rw [← hb₀, ricciCurvature_eq_sum_sectionalCurvature D p b hborth n₀]
+      calc
+        ((Module.finrank ℝ E - 1 : ℕ) : ℝ) * k =
+            ∑ _i ∈ (Finset.univ : Finset (Fin (Module.finrank ℝ E))).erase n₀, k := by
+              simp
+        _ ≤ ∑ i ∈ (Finset.univ : Finset (Fin (Module.finrank ℝ E))).erase n₀,
+              sectionalCurvature D p (b n₀) (b i) := by
+          gcongr with i hi
+          exact hsec p (b n₀) (b i)
+            (basis_linearIndependent_pair b (Finset.ne_of_mem_erase hi).symm)
+    have hv_eq : v = r • u := by
+      simp only [u, smul_smul]
+      rw [mul_inv_cancel₀ hr.ne', one_smul]
+    have hscaled := mul_le_mul_of_nonneg_left hunitRic (sq_nonneg r)
+    rw [hv_eq, g.metricInner_smul_left, g.metricInner_smul_right,
+      ricciCurvature_smul_left, ricciCurvature_smul_right, hu] at ⊢
+    nlinarith [hscaled]
+
 set_option maxHeartbeats 2000000 in
 /-- **Math.** Petersen §6.3, **Myers' theorem** in callback-free diameter and
 compactness form.  On a complete connected Riemannian manifold of dimension at
@@ -1027,6 +1089,24 @@ theorem myersRicciDiameterBound_of_ricciLowerBound
   have hspeed := globalSegment_curveVelocity_unit (I := I) g hl hσc hσgeo hunit
   exact intervalIntegrable_sine_sq_sectionalCurvature_of_parallel (I := I)
     g hl hσc hσgeo (hepar i) hEunit hEperp hspeed
+
+set_option maxHeartbeats 2000000 in
+/-- **Math.** Petersen §6.3, **Bonnet--Myers in callback-free sectional
+curvature form**.  On a complete connected Riemannian manifold of dimension at
+least two, `sec ≥ k > 0` implies `diam M ≤ π / √k` and compactness.
+
+This discharges the former exponential-variation callback in
+`hopfRinowMyers_diameterBound`: the sectional bound is traced to the Ricci
+bound by `HasSecBoundedBelow.hasRicciBoundedBelow`, after which the intrinsic
+sine-variation theorem `myersRicciDiameterBound_of_ricciLowerBound` applies. -/
+theorem hopfRinowMyers_diameterBound_of_secLowerBound
+    (g : RiemannianMetric I M) (hg : g.IsRiemannianDist) [CompleteSpace M]
+    {k : ℝ} (hk : 0 < k)
+    (hdim : 2 ≤ Module.finrank ℝ E)
+    (hsec : HasSecBoundedBelow g.leviCivita k) :
+    Metric.diam (Set.univ : Set M) ≤ π / Real.sqrt k ∧ CompactSpace M :=
+  myersRicciDiameterBound_of_ricciLowerBound (I := I) g hg hk hdim
+    hsec.hasRicciBoundedBelow
 
 /-- **Math.** Petersen §6.3, Lemma 6.3.1 → not distance-minimizing (geometric wiring).  Under
 `sec ≥ k > 0`, given the technical Bonnet–Synge variation data for a unit-speed geodesic segment

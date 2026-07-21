@@ -210,6 +210,29 @@ def IsRiemannianCovering (g : RiemannianMetric I M) (g' : RiemannianMetric I' M'
     (π : C^∞⟮I, M; I', M'⟯) : Prop :=
   IsSmoothCoveringMap π ∧ IsMetricPreserving g g' (π : M → M')
 
+namespace IsSmoothCoveringMap
+
+variable {π : C^∞⟮I, M; I', M'⟯}
+
+/-- **The covering metric induced from the base.**  Every smooth covering
+`π : M → M'` becomes a Riemannian covering after equipping `M` with the
+pullback `π^*g'`.  The differential of a smooth covering is injective because
+it is a local diffeomorphism, so Lee's pullback-metric construction applies. -/
+noncomputable def coveringMetric (hπ : IsSmoothCoveringMap π)
+    (g' : RiemannianMetric I' M') : RiemannianMetric I M :=
+  pullbackMetric g' π hπ.isLocalDiffeomorph.contMDiff hπ.injective_mfderiv
+
+omit [FiniteDimensional ℝ E'] in
+/-- The covering projection preserves the covering metric by construction. -/
+theorem isRiemannianCovering_coveringMetric (hπ : IsSmoothCoveringMap π)
+    (g' : RiemannianMetric I' M') :
+    IsRiemannianCovering (hπ.coveringMetric g') g' π := by
+  refine ⟨hπ, ?_⟩
+  intro p
+  rfl
+
+end IsSmoothCoveringMap
+
 omit [FiniteDimensional ℝ E] [FiniteDimensional ℝ E'] in
 /-- **A Riemannian covering is a local isometry**, which is how Lee states the
 definition.

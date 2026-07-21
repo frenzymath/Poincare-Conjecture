@@ -1,3 +1,5 @@
+import PetersenLib.Ch06.DiameterBound
+import PetersenLib.Ch05.LocalIsometryCovering
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup
 import Mathlib.Topology.Homotopy.Lifting
 
@@ -12,10 +14,12 @@ covering fiber.
 
 This file proves that final implication for any explicitly supplied compact
 simply connected cover.  Construction of the universal Riemannian cover and
-transfer of completeness and the Ricci bound remain separate geometric inputs.
+transfer of the Ricci bound remain separate geometric inputs; completeness of
+an explicit cover is discharged from completeness of the base below.
 -/
 
 open Set
+open scoped Manifold ContDiff
 
 noncomputable section
 
@@ -87,6 +91,108 @@ theorem finite_fundamentalGroup_of_compact_simplyConnected_cover
   exact Finite.of_injective
     (fun γ : FundamentalGroup Y y => hp.monodromy γ ⟨x, hx⟩)
     (monodromy_at_injective hp x hx)
+
+/-! ## Myers' theorem on an explicitly supplied simply connected cover -/
+
+section RiemannianCover
+
+variable
+  {Et : Type*} [NormedAddCommGroup Et] [NormedSpace ℝ Et]
+    [InnerProductSpace ℝ Et]
+    [FiniteDimensional ℝ Et] [NeZero (Module.finrank ℝ Et)]
+    [CompleteSpace Et]
+  {Ht : Type*} [TopologicalSpace Ht] {It : ModelWithCorners ℝ Et Ht}
+  {Mt : Type*} [MetricSpace Mt] [ChartedSpace Ht Mt] [IsManifold It ∞ Mt]
+    [It.Boundaryless] [SigmaCompactSpace Mt] [LocallyCompactSpace Mt]
+    [T2Space (TangentBundle It Mt)] [ConnectedSpace Mt]
+    [SimplyConnectedSpace Mt]
+  {M : Type*} [TopologicalSpace M] [T1Space M]
+
+/-- **Math.** Myers' diameter, compactness, and finite-fundamental-group
+conclusions for an explicitly supplied simply connected cover.
+
+The Riemannian metric, completeness, dimension, and Ricci lower bound are
+stated on the covering space `Mt`.  Myers makes `Mt` compact; its continuous
+surjective image `M` is compact, and monodromy embeds each fundamental group
+of `M` into a finite fiber.  No construction of a universal smooth cover, nor
+transfer of metric or curvature data across `p`, is assumed here. -/
+theorem myersRicci_of_explicit_simplyConnectedCover
+    (gt : RiemannianMetric It Mt) (hgt : gt.IsRiemannianDist)
+    [CompleteSpace Mt] {k : ℝ} (hk : 0 < k)
+    (hdim : 2 ≤ Module.finrank ℝ Et)
+    (hRic : HasRicciBoundedBelow gt.leviCivita k)
+    {p : Mt → M} (hp : IsCoveringMap p) (hsurj : Function.Surjective p) :
+    Metric.diam (Set.univ : Set Mt) ≤ Real.pi / Real.sqrt k ∧
+      CompactSpace Mt ∧ CompactSpace M ∧
+      ∀ y : M, Finite (FundamentalGroup M y) := by
+  have hmc := myersRicciDiameterBound_of_ricciLowerBound (I := It)
+    gt hgt hk hdim hRic
+  letI : CompactSpace Mt := hmc.2
+  have hcompact : CompactSpace M := by
+    rw [← isCompact_univ_iff]
+    simpa only [image_univ, hsurj.range_eq] using
+      isCompact_univ.image hp.continuous
+  refine ⟨hmc.1, hmc.2, hcompact, ?_⟩
+  intro y
+  exact finite_fundamentalGroup_of_compact_simplyConnected_cover hp hsurj y
+
+end RiemannianCover
+
+/-! ## The explicit-cover conclusion from completeness of the base -/
+
+section CompleteBaseRiemannianCover
+
+variable
+  {Et : Type*} [NormedAddCommGroup Et] [NormedSpace ℝ Et]
+    [InnerProductSpace ℝ Et] [FiniteDimensional ℝ Et]
+    [NeZero (Module.finrank ℝ Et)] [CompleteSpace Et]
+  {Ht : Type*} [TopologicalSpace Ht] {It : ModelWithCorners ℝ Et Ht}
+  {Mt : Type*} [MetricSpace Mt] [ChartedSpace Ht Mt] [IsManifold It ∞ Mt]
+    [It.Boundaryless] [SigmaCompactSpace Mt] [LocallyCompactSpace Mt]
+    [T2Space (TangentBundle It Mt)] [ConnectedSpace Mt]
+    [SimplyConnectedSpace Mt]
+  {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [MetricSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    [I.Boundaryless] [T2Space (TangentBundle I M)] [ConnectedSpace M]
+
+/-- **Math.** Myers' conclusions for an explicitly supplied simply connected
+Riemannian cover, with completeness stated on the base.  Geodesic completeness
+lifts through the covering (`geodesicallyComplete_of_riemannianCovering`), so
+Hopf--Rinow makes the cover metrically complete.  The complete local isometry
+is then automatically surjective, and the existing compact-cover theorem
+gives compactness and finite fundamental groups.
+
+The Ricci lower bound remains an explicit hypothesis on the cover; this theorem
+does not assume or conceal curvature transfer from the base. -/
+theorem myersRicci_of_explicit_simplyConnectedRiemannianCover_completeBase
+    (gt : RiemannianMetric It Mt) (hgt : gt.IsRiemannianDist)
+    (g : RiemannianMetric I M) (hg : g.IsRiemannianDist)
+    [CompleteSpace M] {k : ℝ} (hk : 0 < k)
+    (hdim : 2 ≤ Module.finrank ℝ Et)
+    (hRic : HasRicciBoundedBelow gt.leviCivita k)
+    {p : Mt → M} (hp : IsCoveringMap p)
+    (hlocal : IsLocalRiemannianIsometry gt g p) :
+    Metric.diam (Set.univ : Set Mt) ≤ Real.pi / Real.sqrt k ∧
+      CompactSpace Mt ∧ CompactSpace M ∧
+      ∀ y : M, Finite (FundamentalGroup M y) := by
+  have hbaseGeo : IsGeodesicallyComplete (I := I) g :=
+    (isGeodesicallyComplete_iff_geodesic (I := I) g).mpr
+      (Geodesic.isGeodesicallyComplete_of_complete (I := I) g hg)
+  have hcoverGeo : IsGeodesicallyComplete (I := It) gt :=
+    geodesicallyComplete_of_riemannianCovering hlocal hp hbaseGeo
+  have hcoverGeo' : Geodesic.IsGeodesicallyComplete (I := It) gt :=
+    (isGeodesicallyComplete_iff_geodesic (I := It) gt).mp hcoverGeo
+  letI : CompleteSpace Mt :=
+    Geodesic.complete_of_isGeodesicallyComplete (I := It) gt hgt hcoverGeo'
+  have hsurj : Function.Surjective p :=
+    completeLocalIsometry_surjective hlocal hcoverGeo
+  exact myersRicci_of_explicit_simplyConnectedCover
+    gt hgt hk hdim hRic hp hsurj
+
+end CompleteBaseRiemannianCover
 
 end PetersenLib
 

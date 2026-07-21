@@ -1,4 +1,6 @@
 import DoCarmoLib.Riemannian.Variation.IndexForm
+import DoCarmoLib.Riemannian.Variation.SecondVariationFormula
+import DoCarmoLib.Riemannian.Variation.SmoothEnergy
 import DoCarmoLib.Riemannian.Variation.VelocitySeededFrameAlong
 import DoCarmoLib.Riemannian.Variation.ParallelCovariantField
 import DoCarmoLib.Riemannian.Manifold.DoCarmoCh4RicciSectional
@@ -30,7 +32,7 @@ rewrite of `indexForm` for the field `V = φ·e`.
 Reference: do Carmo, *Riemannian Geometry*, Ch. 9, §3, Theorem 3.1 (Bonnet–Myers).
 -/
 
-open Set Riemannian intervalIntegral MeasureTheory
+open Set Riemannian intervalIntegral MeasureTheory Bundle
 open scoped ContDiff Manifold Topology Real
 
 set_option linter.unusedSectionVars false
@@ -623,6 +625,34 @@ theorem exists_contMDiffOn_three_bonnetMyersSineVariation_strip [CompleteSpace M
     Riemannian.Exponential.exists_contMDiffOn_three_expMapGlobal_sine_parallel_strip
       (I := I) g hg hgeo hγc he hsegment
 
+/-- **Math.** The energy of the concrete Bonnet--Myers sine variation has a local minimum
+at its zero slice whenever the base geodesic realizes the distance between its endpoints.
+
+The exponential variation is smooth on a product strip, its zero slice is the base geodesic,
+and the sine factor fixes both endpoints.  The general smooth-variation energy theorem then
+reduces minimality to the Hopf--Rinow path-length equality.  No second-variation or index-form
+identity is used here. -/
+theorem isLocalMin_dcEnergy_bonnetMyersSineVariation [CompleteSpace M]
+    (g : RiemannianMetric I M) (hg : g.IsRiemannianDist)
+    {γ : ℝ → M} {e : ℝ → E} {a b : ℝ}
+    (hγc : Continuous γ) (hgeo : Riemannian.Geodesic.IsGeodesic (I := I) g γ)
+    (he : IsParallelFieldAlongOn (I := I) g γ e a b)
+    (hsegment : Set.Icc (0 : ℝ) 1 ⊆ Set.Ioo a b)
+    (hmin : letI : Bundle.RiemannianBundle (fun x : M ↦ TangentSpace I x) :=
+        ⟨g.toRiemannianMetric⟩
+      Manifold.pathELength I γ 0 1 = ENNReal.ofReal (dist (γ 0) (γ 1))) :
+    IsLocalMin (fun s => DCEnergy g
+      (fun t => bonnetMyersSineVariation (I := I) g hg γ e (s, t)) 0 1) 0 := by
+  obtain ⟨δ, hδ, J, hJ, hsub, hsmooth⟩ :=
+    exists_contMDiffOn_infty_bonnetMyersSineVariation_strip
+      (I := I) g hg hγc hgeo he hsegment
+  exact Riemannian.Variation.isLocalMin_dcEnergy_of_smooth_fixedEndpoint_variation
+    g hg zero_lt_one hδ hJ hsub hsmooth
+      (bonnetMyersSineVariation_zero (I := I) g hg γ e)
+      (fun s _ => bonnetMyersSineVariation_left (I := I) g hg γ e s)
+      (fun s _ => bonnetMyersSineVariation_right (I := I) g hg γ e s)
+      (hgeo.isGeodesicOn _) hmin
+
 /-! ### Bonnet--Myers assembly -/
 
 /-- **Math.** The global Ricci lower bound used by the Bonnet--Myers assembly.
@@ -686,6 +716,194 @@ theorem indexForm_nonneg_of_energyLocalMin {F : ℝ → ℝ} {Iform : ℝ}
     (hsecond : HasDerivAt (deriv F) (2 * Iform) 0) : 0 ≤ Iform := by
   have h := isLocalMin_deriv_deriv_nonneg hmin hcont hsecond
   nlinarith
+
+/-! ### Bundled proper-variation bridge -/
+
+/-- **Math.** The data consumed by the chart-free proper second-variation formula.
+
+`SecondVariationFormula.deriv_deriv_dcEnergy_eq_indexForm` is deliberately explicit: its
+proof is independent of how a variation is constructed, so it asks for the covariant-field
+pairs, the two surface identities, and the interval-integrability witnesses separately.  In
+the Bonnet--Myers argument the same package is assembled once for each sine field.  This
+structure records that package as one object, without hiding any analytic or geometric
+hypothesis behind an axiom.  The fields `T`, `S`, ... are the own-foot model-space readings
+used throughout DoCarmoLib; `hE2` is the analytic differentiation-under-the-integral-sign
+input, while the remaining fields are exactly the hypotheses of formula (6). -/
+structure ProperSecondVariationData (g : RiemannianMetric I M)
+    (f : ℝ × ℝ → M) (s₀ a b : ℝ) where
+  hab : a ≤ b
+  T : ℝ × ℝ → E
+  S : ℝ × ℝ → E
+  DsT : ℝ × ℝ → E
+  DsDsT : ℝ × ℝ → E
+  DtS : ℝ × ℝ → E
+  W2 : ℝ × ℝ → E
+  DtW2 : ℝ × ℝ → E
+  hE2 : HasDerivAt
+    (deriv (fun σ => DCEnergy (I := I) g (fun t => f (σ, t)) a b))
+    (2 * ∫ t in a..b, (g.metricInner (f (s₀, t))
+          (DsDsT (s₀, t) : TangentSpace I (f (s₀, t))) (T (s₀, t))
+        + g.metricInner (f (s₀, t))
+          (DsT (s₀, t) : TangentSpace I (f (s₀, t))) (DsT (s₀, t)))) s₀
+  hvel : ∀ t, T (s₀, t) = DCVelocity (I := I) (fun τ => f (s₀, τ)) t
+  hgeo : IsCovariantDerivFieldAlongOn (I := I) g (fun t => f (s₀, t))
+    (fun t => T (s₀, t)) (fun _ => 0) a b
+  hW2 : IsCovariantDerivFieldAlongOn (I := I) g (fun t => f (s₀, t))
+    (fun t => W2 (s₀, t)) (fun t => DtW2 (s₀, t)) a b
+  hdiff : IsChartDifferentiableOn (I := I) (fun t => f (s₀, t)) a b
+  hcont : ∀ t ∈ Icc a b, ContinuousAt (fun t => f (s₀, t)) t
+  hsymm : ∀ t ∈ Ioo a b, DsT (s₀, t) = DtS (s₀, t)
+  hric : ∀ t ∈ Ioo a b,
+    g.metricInner (f (s₀, t))
+        (DsDsT (s₀, t) : TangentSpace I (f (s₀, t))) (T (s₀, t))
+      = g.metricInner (f (s₀, t))
+          (DtW2 (s₀, t) : TangentSpace I (f (s₀, t))) (T (s₀, t))
+        - g.leviCivitaConnection.curvatureFormAt g (f (s₀, t))
+            (S (s₀, t)) (T (s₀, t)) (S (s₀, t)) (T (s₀, t))
+  hW2a : W2 (s₀, a) = 0
+  hW2b : W2 (s₀, b) = 0
+  hi_DsDsT : IntervalIntegrable
+    (fun t => g.metricInner (f (s₀, t))
+      (DsDsT (s₀, t) : TangentSpace I (f (s₀, t))) (T (s₀, t))) volume a b
+  hi_DsT : IntervalIntegrable
+    (fun t => g.metricInner (f (s₀, t))
+      (DsT (s₀, t) : TangentSpace I (f (s₀, t))) (DsT (s₀, t))) volume a b
+  hi_DtW2 : IntervalIntegrable
+    (fun t => g.metricInner (f (s₀, t))
+      (DtW2 (s₀, t) : TangentSpace I (f (s₀, t))) (T (s₀, t))) volume a b
+  hi_R : IntervalIntegrable
+    (fun t => g.leviCivitaConnection.curvatureFormAt g (f (s₀, t))
+      (S (s₀, t)) (T (s₀, t)) (S (s₀, t)) (T (s₀, t))) volume a b
+  hi_DtS : IntervalIntegrable
+    (fun t => g.metricInner (f (s₀, t))
+      (DtS (s₀, t) : TangentSpace I (f (s₀, t))) (DtS (s₀, t))) volume a b
+
+/-- **Math.** The bundled proper-variation data gives formula (6),
+`E''(s₀) = 2 I(V,V)`, in one call. -/
+theorem ProperSecondVariationData.deriv_deriv_dcEnergy_eq_indexForm
+    {g : RiemannianMetric I M} {f : ℝ × ℝ → M} {s₀ a b : ℝ}
+    (h : ProperSecondVariationData (I := I) g f s₀ a b) :
+    deriv (deriv (fun σ => DCEnergy (I := I) g (fun t => f (σ, t)) a b)) s₀
+      = 2 * indexForm (I := I) g (fun t => f (s₀, t))
+          (fun t => h.S (s₀, t)) (fun t => h.DtS (s₀, t)) a b := by
+  exact Riemannian.Variation.deriv_deriv_dcEnergy_eq_indexForm h.hab h.hE2 h.hvel h.hgeo h.hW2 h.hdiff h.hcont
+    h.hsymm h.hric h.hW2a h.hW2b h.hi_DsDsT h.hi_DsT h.hi_DtW2 h.hi_R h.hi_DtS
+
+/- The minimum test in `isLocalMin_deriv_deriv_nonneg` is useful at an arbitrary base
+   parameter, not only at `0`.  Keep the existing zero-based theorem as a compatibility
+   wrapper and expose the general form for bundled variations. -/
+theorem indexForm_nonneg_of_energyLocalMin_at {F : ℝ → ℝ} {x Iform : ℝ}
+    (hmin : IsLocalMin F x) (hcont : ContinuousAt F x)
+    (hsecond : HasDerivAt (deriv F) (2 * Iform) x) : 0 ≤ Iform := by
+  have h := isLocalMin_deriv_deriv_nonneg hmin hcont hsecond
+  nlinarith
+
+/-- **Math.** A minimizing energy slice makes the index form nonnegative once a bundled
+proper-variation second-variation witness is available.
+
+This is the high-level adapter used by Bonnet--Myers: the caller proves local minimality of
+the smooth fixed-endpoint variation and supplies the first derivative of its energy (only to
+obtain continuity).  The large chart/curvature/integrability package is hidden in
+`ProperSecondVariationData`, and formula (6) is then combined with the second-order minimum
+test. -/
+theorem ProperSecondVariationData.indexForm_nonneg_of_localMin
+    {g : RiemannianMetric I M} {f : ℝ × ℝ → M} {s₀ a b : ℝ}
+    (h : ProperSecondVariationData (I := I) g f s₀ a b)
+    (hmin : IsLocalMin (fun s => DCEnergy (I := I) g (fun t => f (s, t)) a b) s₀)
+    {e₁ : ℝ}
+    (hE : HasDerivAt (fun s => DCEnergy (I := I) g (fun t => f (s, t)) a b) e₁ s₀) :
+    0 ≤ indexForm (I := I) g (fun t => f (s₀, t))
+      (fun t => h.S (s₀, t)) (fun t => h.DtS (s₀, t)) a b := by
+  apply indexForm_nonneg_of_energyLocalMin_at hmin hE.continuousAt
+  have hformula := h.deriv_deriv_dcEnergy_eq_indexForm
+  have hcoeff :
+      (2 * ∫ t in a..b, (g.metricInner (f (s₀, t))
+            (h.DsDsT (s₀, t) : TangentSpace I (f (s₀, t))) (h.T (s₀, t))
+          + g.metricInner (f (s₀, t))
+            (h.DsT (s₀, t) : TangentSpace I (f (s₀, t))) (h.DsT (s₀, t))))
+        = 2 * indexForm (I := I) g (fun t => f (s₀, t))
+            (fun t => h.S (s₀, t)) (fun t => h.DtS (s₀, t)) a b := by
+    calc
+      2 * ∫ t in a..b, (g.metricInner (f (s₀, t))
+            (h.DsDsT (s₀, t) : TangentSpace I (f (s₀, t))) (h.T (s₀, t))
+          + g.metricInner (f (s₀, t))
+            (h.DsT (s₀, t) : TangentSpace I (f (s₀, t))) (h.DsT (s₀, t)))
+          = deriv (deriv (fun σ => DCEnergy (I := I) g
+              (fun t => f (σ, t)) a b)) s₀ := h.hE2.deriv.symm
+      _ = 2 * indexForm (I := I) g (fun t => f (s₀, t))
+            (fun t => h.S (s₀, t)) (fun t => h.DtS (s₀, t)) a b := hformula
+  rw [← hcoeff]
+  exact h.hE2
+
+/-- **Math.** The concrete Bonnet--Myers sine variation has nonnegative index form when its
+proper second-variation package is supplied.
+
+The endpoint-minimum theorem for `bonnetMyersSineVariation` supplies the local energy minimum;
+`ProperSecondVariationData` supplies formula (6), and the two pointwise equalities identify its
+abstract variation field with `sin (π t) • e t` and its covariant derivative with
+`(sin (π t))' • e t`.  Thus the remaining input is exposed precisely as a proper
+second-variation witness (and continuity of the energy, here represented by its first
+derivative), rather than as an opaque index-form inequality. -/
+theorem indexForm_nonneg_of_bonnetMyersSineVariation
+    [CompleteSpace M]
+    (g : RiemannianMetric I M) (hg : g.IsRiemannianDist)
+    {γ : ℝ → M} {e : ℝ → E} {a b : ℝ}
+    (hγc : Continuous γ) (hgeo : Riemannian.Geodesic.IsGeodesic (I := I) g γ)
+    (he : IsParallelFieldAlongOn (I := I) g γ e a b)
+    (hsegment : Set.Icc (0 : ℝ) 1 ⊆ Set.Ioo a b)
+    (hmin : letI : Bundle.RiemannianBundle (fun x : M ↦ TangentSpace I x) :=
+        ⟨g.toRiemannianMetric⟩
+      Manifold.pathELength I γ 0 1 = ENNReal.ofReal (dist (γ 0) (γ 1)))
+    (hdata : ProperSecondVariationData (I := I) g
+      (bonnetMyersSineVariation (I := I) g hg γ e) 0 0 1)
+    {e₁ : ℝ}
+    (hE : HasDerivAt
+      (fun s => DCEnergy g
+        (fun t => bonnetMyersSineVariation (I := I) g hg γ e (s, t)) 0 1) e₁ 0)
+    (hS : ∀ t, hdata.S (0, t) = Real.sin (Real.pi * t) • e t)
+    (hDtS : ∀ t,
+      hdata.DtS (0, t) = deriv (fun t => Real.sin (Real.pi * t)) t • e t) :
+    0 ≤ indexForm (I := I) g γ
+      (fun t => Real.sin (Real.pi * t) • e t)
+      (fun t => deriv (fun t => Real.sin (Real.pi * t)) t • e t) 0 1 := by
+  have hlocal := isLocalMin_dcEnergy_bonnetMyersSineVariation
+    (I := I) g hg hγc hgeo he hsegment hmin
+  have hidx := hdata.indexForm_nonneg_of_localMin hlocal hE
+  simpa only [bonnetMyersSineVariation_zero (I := I) g hg γ e, hS, hDtS] using hidx
+
+/-- **Math.** Assemble the per-direction sine-variation witnesses into the analytic data used
+by the Bonnet--Myers diameter theorem.  This is the frame-level interface: once each concrete
+sine variation is equipped with `ProperSecondVariationData`, no index-form nonnegativity
+callback remains. -/
+theorem bonnetMyersAnalyticData_of_sineVariation
+    [CompleteSpace M]
+    (g : RiemannianMetric I M) (hg : g.IsRiemannianDist)
+    {γ : ℝ → M} {e : Fin (Module.finrank ℝ E) → ℝ → E}
+    {n₀ : Fin (Module.finrank ℝ E)}
+    (hγc : Continuous γ) (hgeo : Riemannian.Geodesic.IsGeodesic (I := I) g γ)
+    (ha : ℝ) (hb : ℝ)
+    (hpar : ∀ j, IsParallelFieldAlongOn (I := I) g γ (e j) ha hb)
+    (hsegment : Set.Icc (0 : ℝ) 1 ⊆ Set.Ioo ha hb)
+    (hmin : letI : Bundle.RiemannianBundle (fun x : M ↦ TangentSpace I x) :=
+        ⟨g.toRiemannianMetric⟩
+      Manifold.pathELength I γ 0 1 = ENNReal.ofReal (dist (γ 0) (γ 1)))
+    (hdata : ∀ j ∈ Finset.univ.erase n₀,
+      ProperSecondVariationData (I := I) g
+        (bonnetMyersSineVariation (I := I) g hg γ (e j)) 0 0 1)
+    {e₁ : Fin (Module.finrank ℝ E) → ℝ}
+    (hE : ∀ j ∈ Finset.univ.erase n₀,
+      HasDerivAt
+        (fun s => DCEnergy g
+          (fun t => bonnetMyersSineVariation (I := I) g hg γ (e j) (s, t)) 0 1)
+        (e₁ j) 0)
+    (hS : ∀ j hj t, (hdata j hj).S (0, t) = Real.sin (Real.pi * t) • e j t)
+    (hDtS : ∀ j hj t,
+      (hdata j hj).DtS (0, t) = deriv (fun t => Real.sin (Real.pi * t)) t • e j t) :
+    BonnetMyersAnalyticData (I := I) g γ e n₀ := by
+  refine ⟨fun j hj => ?_⟩
+  exact indexForm_nonneg_of_bonnetMyersSineVariation (I := I) g hg hγc hgeo
+    (hpar j) hsegment hmin (hdata j hj) (hE j hj)
+    (hS j hj) (hDtS j hj)
 
 /-- **Math.** Bonnet--Myers (diameter and compactness), with the remaining analytic
 variation construction made explicit.
