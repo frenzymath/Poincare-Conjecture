@@ -156,16 +156,21 @@ however, we would like a weaker condition.
   \label{def:dc-ch7-2-4}
   \dcref{ch7:2.4}
   \uses{def:dc-ch1-2-9}
-  \lean{Manifold.riemannianEDist, Riemannian.RiemannianMetric.IsRiemannianDist}
+  \lean{Riemannian.piecewiseRiemannianEDist,
+    Riemannian.piecewiseRiemannianEDist_eq_riemannianEDist,
+    Riemannian.RiemannianMetric.IsRiemannianDist}
+  \leanok
   The \emph{distance} $d(p,q)$ is defined by $d(p,q)=$ infimum of the lengths of all
   curves $f_{p,q}$, where $f_{p,q}$ is a piecewise differentiable curve joining $p$
   to $q$.
 
-  Mathlib's \texttt{Manifold.riemannianEDist} takes the infimum over $C^1$
-  paths.  The formal development uses that $C^1$ presentation throughout;
-  the equivalence with do Carmo's larger piecewise differentiable curve class
-  has not been formalized, so this node is deliberately not marked
-  \texttt{\textbackslash leanok}.
+  In the formal presentation, \texttt{piecewiseRiemannianEDist} takes the infimum over explicit
+  finite partitions $(\gamma,n,\tau)$ whose restrictions to the intervals
+  $[\tau_i,\tau_{i+1}]$ are $C^\infty$.  Additivity of length and the triangle inequality show
+  that \texttt{Manifold.riemannianEDist} is a lower bound for every such competitor.  Conversely,
+  a $C^1$ path is subdivided into sufficiently small chart windows and replaced there by the
+  pullbacks of straight chart segments.  Continuity of the chart Gram forms controls the polygon's
+  length arbitrarily closely by the original path length.  Therefore the two infima agree.
 \end{definition}
 
 \begin{lemma}[finiteness of the distance]
@@ -302,7 +307,7 @@ however, we would like a weaker condition.
   Let $M$ be a Riemannian manifold and let $p\in M$. The following assertions are
   equivalent:
   
-  a) The intrinsic exponential map $\exp_p$ is defined on all of $T_p(M)$.
+  a) The exponential map $\exp_p$ is defined on all of $T_p(M)$.
   
   b) The closed and bounded sets of $M$ are compact.
   
@@ -317,6 +322,13 @@ however, we would like a weaker condition.
   
   f) For any $q\in M$ there exists a geodesic $\gamma$ joining $p$ to $q$ with
      $\ell(\gamma)=d(p,q)$.
+
+  \emph{Standing convention of the chapter.} The manifold $M$ is connected
+  (Lean: \texttt{[ConnectedSpace M]}) and $\dim M>0$
+  (Lean: \texttt{NeZero (Module.finrank} $\mathbb R$ \texttt{E)}).
+  In b), Lean's \texttt{ProperSpace M} formulation is related to the displayed
+  statement by \texttt{Metric.isCompact\_iff\_isClosed\_bounded}, together with
+  \texttt{Metric.isClosed\_closedBall} and \texttt{Metric.isBounded\_closedBall}.
 \end{theorem}
 \begin{proof}
   \leanok

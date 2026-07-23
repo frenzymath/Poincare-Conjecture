@@ -49,10 +49,11 @@ Status of the circle:
   argument — Cauchy step, Gram-bounded velocity, homogeneity rescaling into
   the flow ball, intrinsic uniqueness and gluing across chart changes — is
   `exists_global_geodesic` (`Completeness.lean`);
-* d) ⟹ a) is trivial; a)/d) ⟹ f) ⟹ b) ⟹ c) is the geodesic-sphere +
-  connectedness argument of do Carmo: the growth induction along a fixed
-  geodesic (`Exponential/GrowthInduction.lean`, fed by the metric engine of
-  `Exponential/NormalBallEDist.lean` and `Exponential/MinimizingStep.lean`)
+* d) ⟹ a) is trivial; the route a) ⟹ f), then a) + f) ⟹ b) ⟹ c), uses the
+  geodesic-sphere + connectedness argument of do Carmo: the growth induction
+  along a fixed geodesic (`Exponential/GrowthInduction.lean`, fed by the metric
+  engine of `Exponential/NormalBallEDist.lean` and
+  `Exponential/MinimizingStep.lean`)
   joins every point to `p` by a minimizing geodesic; Bolzano–Weierstrass on
   the initial data of these geodesics plus endpoint continuity of geodesics
   in their initial data (the flow-box chaining of

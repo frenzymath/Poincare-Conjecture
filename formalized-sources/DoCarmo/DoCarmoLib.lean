@@ -150,6 +150,7 @@ import DoCarmoLib.Riemannian.Geodesic.UniformExistence
 import DoCarmoLib.Riemannian.Geodesic.Uniqueness
 import DoCarmoLib.Riemannian.Geodesic.VariationalEquation
 import DoCarmoLib.Riemannian.Metric.RiemannianDistance
+import DoCarmoLib.Riemannian.Metric.RiemannianDistancePiecewise
 import DoCarmoLib.Riemannian.Manifold.DoCarmoCh0
 import DoCarmoLib.Riemannian.Manifold.DoCarmoCh1
 import DoCarmoLib.Riemannian.Manifold.ExpandingMap
