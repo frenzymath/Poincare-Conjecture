@@ -1,46 +1,28 @@
 \chapter{Affine Connections; Riemannian Connections}
 \label{chap:dc-affine-connections-riemannian-connections}
 
-Faithful transcription of do Carmo, \emph{Riemannian Geometry}. Each numbered
-statement keeps do Carmo's number, kind and (name); proofs keep his explicit
-cross-references ("by \cref{def:dc-ch2-2-1}", "from \cref{prop:dc-ch2-2-6}") so the dependency
-graph is recoverable from the text.
-
-\section{Introduction}
-
-Historically, the notion of covariant derivative arose from the Levi-Civita
-parallelism (1917). For a surface $S\subset\mathbb{R}^3$ and a vector field $V$
-along a curve $c$ tangent to $S$, the usual derivative $\frac{dV}{dt}$ need not
-lie in $T_{c(t)}S$; the \emph{covariant derivative} $\frac{DV}{dt}$ is its orthogonal
-projection onto $T_{c(t)}S$, depending only on the first fundamental form. A
-field $V$ is \emph{parallel} if $\frac{DV}{dt}\equiv 0$. The covariant derivative lets
-one define geodesics and curvature in settings more general than Riemannian
-manifolds, leading to the notion of \emph{affine connection} (\cref{def:dc-ch2-2-1}). Our
-interest in affine connections rests in the fact (\cref{thm:dc-ch2-3-6}) that a choice of
-Riemannian metric on $M$ uniquely determines a certain affine connection on $M$.
+Following the conventions of \cite{doCarmo}, $\mathcal{X}(M)$ denotes the space
+of smooth vector fields on $M$, and $\mathcal{D}(M)$ denotes the ring of smooth
+real-valued functions on $M$.
 
 \section{Affine connections}
-
-Throughout, $\mathcal{X}(M)$ denotes the set of all $C^\infty$ vector fields on
-$M$ and $\mathcal{D}(M)$ the ring of real-valued $C^\infty$ functions on $M$.
 
 \begin{definition}[affine connection]
   \label{def:dc-ch2-2-1}
   \dcref{ch2:2.1}
   \lean{Riemannian.AffineConnection}
   \leanok
-  An \emph{affine connection} $\nabla$ on a differentiable manifold $M$ is a mapping
-  
-  $$
-  \nabla:\mathcal{X}(M)\times\mathcal{X}(M)\to\mathcal{X}(M),
-  $$
-  
-  denoted $(X,Y)\mapsto\nabla_X Y$, satisfying:
-  - i) $\nabla_{fX+gY}Z = f\nabla_X Z + g\nabla_Y Z$.
-  - ii) $\nabla_X(Y+Z)=\nabla_X Y+\nabla_X Z$.
-  - iii) $\nabla_X(fY)=f\nabla_X Y + X(f)Y$,
-  
-  for all $X,Y,Z\in\mathcal{X}(M)$ and $f,g\in\mathcal{D}(M)$.
+  An \emph{affine connection} on a differentiable manifold $M$ is a map
+  \[
+    \nabla\colon \mathcal{X}(M)\times\mathcal{X}(M)\longrightarrow\mathcal{X}(M),
+    \qquad (X,Y)\longmapsto\nabla_XY,
+  \]
+  such that, for $X,Y,Z\in\mathcal{X}(M)$ and $f,g\in\mathcal{D}(M)$,
+  \begin{enumerate}
+    \item[(i)] $\nabla_{fX+gY}Z=f\nabla_XZ+g\nabla_YZ$;
+    \item[(ii)] $\nabla_X(Y+Z)=\nabla_XY+\nabla_XZ$;
+    \item[(iii)] $\nabla_X(fY)=f\nabla_XY+X(f)Y$.
+  \end{enumerate}
 \end{definition}
 
 \begin{proposition}[covariant derivative along a curve]
@@ -51,31 +33,32 @@ $M$ and $\mathcal{D}(M)$ the ring of real-valued $C^\infty$ functions on $M$.
     Riemannian.covariantDerivCoord_smul, Riemannian.covariantDerivCoord_induced,
     Riemannian.covariantDerivCoord_unique}
   \leanok
-  Let $M$ be a differentiable manifold with an affine connection $\nabla$. There
-  exists a unique correspondence which associates to a vector field $V$ along the
-  differentiable curve $c:I\to M$ another vector field $\frac{DV}{dt}$ along $c$,
-  called the \emph{covariant derivative} of $V$ along $c$, such that:
-  - a) $\frac{D}{dt}(V+W)=\frac{DV}{dt}+\frac{DW}{dt}$.
-  - b) $\frac{D}{dt}(fV)=\frac{df}{dt}V+f\frac{DV}{dt}$, where $W$ is a vector field along $c$ and $f$ a differentiable function on $I$.
-  - c) If $V$ is induced by a vector field $Y\in\mathcal{X}(M)$, i.e. $V(t)=Y(c(t))$, then $\frac{DV}{dt}=\nabla_{dc/dt}Y$.
+  Let $M$ carry an affine connection $\nabla$, and let $c\colon I\to M$ be a
+  differentiable curve. There is a unique operation assigning to every vector
+  field $V$ along $c$ a vector field $DV/dt$ along $c$ such that
+  \begin{enumerate}
+    \item[(a)] $\frac{D}{dt}(V+W)=\frac{DV}{dt}+\frac{DW}{dt}$;
+    \item[(b)] $\frac{D}{dt}(fV)=\frac{df}{dt}V+f\frac{DV}{dt}$ for every
+      differentiable $f\colon I\to\mathbb{R}$;
+    \item[(c)] if $V(t)=Y(c(t))$ for $Y\in\mathcal{X}(M)$, then
+      $\frac{DV}{dt}=\nabla_{dc/dt}Y$.
+  \end{enumerate}
+  This operation is the \emph{covariant derivative along $c$}.
 \end{proposition}
 \begin{proof}
   \leanok
-  Suppose first a correspondence satisfying (a), (b), (c) exists. In a
-  coordinate system $\mathbf{x}:U\subset\mathbb{R}^n\to M$ write $V=\sum_j v^j X_j$
-  with $X_j=\frac{\partial}{\partial x_j}(c(t))$. By a) and b),
-  $\frac{DV}{dt}=\sum_j \frac{dv^j}{dt}X_j+\sum_j v^j\frac{DX_j}{dt}$. By c) and (i)
-  of \cref{def:dc-ch2-2-1}, $\frac{DX_j}{dt}=\nabla_{dc/dt}X_j=\sum_i\frac{dx_i}{dt}\nabla_{X_i}X_j$.
-  Therefore
-  
-  $$
-  \frac{DV}{dt}=\sum_j\frac{dv^j}{dt}X_j+\sum_{i,j}\frac{dx_i}{dt}v^j\nabla_{X_i}X_j.\qquad(1)
-  $$
-  
-  Expression (1) shows uniqueness. For existence, define $\frac{DV}{dt}$ in
-  $\mathbf{x}(U)$ by (1); it has the desired properties, and on overlaps the local
-  definitions agree by uniqueness, so the definition extends over all of $M$.
-  $\blacksquare$
+  \sketch
+  In coordinates, write $V=\sum_jv^jX_j$, where
+  $X_j=\frac{\partial}{\partial x_j}(c(t))$. Properties (a)--(c) and
+  \cref{def:dc-ch2-2-1} force
+  \[
+    \frac{DV}{dt}
+    =\sum_j\frac{dv^j}{dt}X_j
+      +\sum_{i,j}\frac{dx_i}{dt}v^j\nabla_{X_i}X_j.\tag{1}
+  \]
+  Thus the operation is unique. Conversely, formula (1) defines it locally and
+  gives (a)--(c); uniqueness makes the local definitions agree on chart
+  overlaps.
 \end{proof}
 
 \begin{lemma}[covariant derivative in coordinates; properties (a), (b)]
@@ -85,16 +68,18 @@ $M$ and $\mathcal{D}(M)$ the ring of real-valued $C^\infty$ functions on $M$.
   \lean{Riemannian.covariantDerivCoord, Riemannian.covariantDerivCoord_add,
     Riemannian.covariantDerivCoord_smul}
   \leanok
-  Fix a Riemannian metric $g$ and a chart at $\alpha$, with Christoffel symbols
-  $\Gamma^k_{ij}$ and Christoffel contraction $\Gamma(v,w)(y)=\sum_k(\sum_{ij}\Gamma^k_{ij}(y)v^iw^j)e_k$.
-  For a coordinate curve $u:I\to\mathbb{R}^n$ and a coordinate vector field
-  $V:I\to\mathbb{R}^n$ along it, the covariant derivative of
-  \cref{prop:dc-ch2-2-2} is given by formula (1),
-  $$\frac{DV}{dt}=\dot V+\Gamma(\dot u,V)(u).$$
-  This coordinate operator is additive in $V$ and satisfies the Leibniz rule
-  $\frac{D}{dt}(fV)=\dot f\,V+f\frac{DV}{dt}$ for differentiable $f:I\to\mathbb{R}$,
-  i.e. properties (a) and (b) of \cref{prop:dc-ch2-2-2}, for the Levi-Civita
-  connection of $g$.
+  Fix a Riemannian metric and a chart with Christoffel symbols $\Gamma^k_{ij}$.
+  Set
+  \[
+    \Gamma(v,w)(y)=\sum_k\left(\sum_{i,j}\Gamma^k_{ij}(y)v^iw^j\right)e_k.
+  \]
+  For a coordinate curve $u\colon I\to\mathbb{R}^n$ and a coordinate vector
+  field $V$ along it, formula (1) becomes
+  \[
+    \frac{DV}{dt}=\dot V+\Gamma(\dot u,V)(u).
+  \]
+  This operator is additive and satisfies
+  $\frac{D}{dt}(fV)=\dot f\,V+f\frac{DV}{dt}$.
 \end{lemma}
 
 \begin{lemma}[property (c) in coordinates: induced fields]
@@ -103,16 +88,17 @@ $M$ and $\mathcal{D}(M)$ the ring of real-valued $C^\infty$ functions on $M$.
   \uses{lem:dc-ch2-2-2-coord, def:dc-ch2-3-7-christoffel}
   \lean{Riemannian.chartCovariantDeriv, Riemannian.covariantDerivCoord_induced}
   \leanok
-  Read the covariant derivative of a coordinate field $Y:E\to E$ in a direction $v$ at a base
-  point $y$ as $(\nabla_v Y)(y)=DY(y)\,v+\Gamma(v,Y(y))(y)$ (Remark 2.3,
-  $\nabla_X Y=\sum_k(\sum_{ij}x_iy_j\Gamma^k_{ij}+X(y_k))X_k$). When the vector field $V$ along
-  the coordinate curve $u$ is \emph{induced} by $Y$, $V(t)=Y(u(t))$, the covariant derivative
-  along $u$ equals the coordinate covariant derivative of $Y$ in the direction $\dot u(t)$:
-  $$\frac{D}{dt}\big(Y\circ u\big)=(\nabla_{\dot u}Y)(u).$$
-  This is do Carmo's key step $\frac{DX_j}{dt}=\nabla_{dc/dt}X_j$ (property (c) at the level of
-  the coordinate connection): the chain rule $\frac{d}{dt}Y(u(t))=DY(u(t))\,\dot u(t)$ turns the
-  $\dot V$ term into the directional-derivative term $DY\,\dot u$, while the Christoffel
-  contraction matches on the nose.
+  For a coordinate vector field $Y$ and a tangent vector $v$ at $y$, define
+  \[
+    (\nabla_vY)(y)=DY(y)v+\Gamma(v,Y(y))(y).
+  \]
+  If $V=Y\circ u$ along a coordinate curve $u$, then
+  \[
+    \frac{D}{dt}(Y\circ u)=(\nabla_{\dot u}Y)(u).
+  \]
+  \sketch
+  The chain rule gives $(Y\circ u)'=DY(u)\dot u$, and the Christoffel terms in
+  the two expressions coincide.
 \end{lemma}
 
 \begin{lemma}[formula (10): the Koszul reduction on a coordinate frame]
@@ -121,30 +107,26 @@ $M$ and $\mathcal{D}(M)$ the ring of real-valued $C^\infty$ functions on $M$.
   \uses{lem:dc-ch2-3-6-koszul, def:dc-ch2-3-7-christoffel, thm:dc-ch2-3-6}
   \lean{Riemannian.christoffel_bridge_inner, Riemannian.christoffel_bridge_vector}
   \leanok
-  Let $\nabla$ be a Levi-Civita connection for $g$ and let $X_1,\dots,X_n$ be smooth vector
-  fields that form a coordinate frame at $p$: the values $\{X_a(p)\}$ are the chart-basis
-  vectors (hence a basis of $T_pM$), the pairwise Lie brackets vanish, $[X_a,X_b](p)=0$, and the
-  directional derivatives of the metric are the partial derivatives of the chart Gram matrix,
-  $X_r\langle X_a,X_b\rangle(p)=\partial_r G_{ab}$. Then the inner product of the frame field
-  $X_k$ with $\nabla_{X_i}X_j$ is the Gram contraction of the chart Christoffel symbols
-  $\Gamma^m_{ij}=$ \texttt{chartChristoffel},
-  $$\langle X_k,\nabla_{X_i}X_j\rangle=\sum_m G_{km}\,\Gamma^m_{ij},$$
-  and hence
-  $$\nabla_{X_i}X_j=\sum_m\Gamma^m_{ij}\,X_m,$$
-  which is do Carmo's formula (10).
+  Let $\nabla$ be Levi-Civita and let $X_1,\dots,X_n$ be a coordinate frame at
+  $p$. Suppose $[X_a,X_b](p)=0$ and
+  $X_r\langle X_a,X_b\rangle(p)=\partial_rG_{ab}$, where
+  $G_{ab}=\langle X_a,X_b\rangle$. Then
+  \[
+    \langle X_k,\nabla_{X_i}X_j\rangle
+      =\sum_mG_{km}\Gamma^m_{ij},
+    \qquad
+    \nabla_{X_i}X_j=\sum_m\Gamma^m_{ij}X_m.\tag{10}
+  \]
   \begin{proof}
     \leanok
-    Apply the Koszul formula (9) (\cref{lem:dc-ch2-3-6-koszul}) with the covariant derivative
-    $\nabla_{X_i}X_j$ tested against $Z=X_k$. The three Lie-bracket terms of (9) vanish because
-    $[X_a,X_b](p)=0$, and the three directional derivatives become
-    $X_r\langle X_a,X_b\rangle(p)=\partial_r G_{ab}$, so the right-hand side of (9) is exactly the
-    metric-derivative combination $\partial_i G_{kj}+\partial_j G_{ki}-\partial_k G_{ij}$
-    (after using the symmetry $G_{ab}=G_{ba}$). By the Gram--Christoffel contraction
-    (\texttt{chartGram\_christoffel\_contraction}) this equals $2\sum_m G_{km}\Gamma^m_{ij}$,
-    which gives the inner form. For the vector form, both $\nabla_{X_i}X_j$ and
-    $\sum_m\Gamma^m_{ij}X_m$ have the same inner product against every $X_k$
-    (using $G_{km}=\langle X_k,X_m\rangle$), and $\{X_m(p)\}$ is a basis, so by non-degeneracy of
-    $g$ the two vectors are equal.
+    \sketch
+    Apply the Koszul formula (9) from \cref{lem:dc-ch2-3-6-koszul} with
+    $Y=X_i$, $X=X_j$, and $Z=X_k$. The bracket terms vanish, while the derivative
+    terms give
+    $\partial_iG_{kj}+\partial_jG_{ki}-\partial_kG_{ij}
+      =2\sum_mG_{km}\Gamma^m_{ij}$.
+    This proves the inner-product identity. Since the $X_k(p)$ form a basis and
+    the metric is nondegenerate, it also proves the vector identity.
   \end{proof}
 \end{lemma}
 
@@ -154,32 +136,24 @@ $M$ and $\mathcal{D}(M)$ the ring of real-valued $C^\infty$ functions on $M$.
   \uses{lem:dc-ch2-2-2-c-coord, lem:dc-ch2-2-2-c-formula10, thm:dc-ch2-3-6, def:dc-ch2-3-7-christoffel}
   \lean{Riemannian.exists_chartFrame_leviCivita_christoffel}
   \leanok
-  The remaining ingredient of the manifold-level property (c): the coordinate covariant
-  derivative $\nabla_v Y$ of \cref{lem:dc-ch2-2-2-c-coord}, built from the metric's chart
-  Christoffel symbols $\Gamma^k_{ij}=$ \texttt{chartChristoffel}, coincides with the abstract
-  Levi-Civita connection $\nabla$ of \cref{thm:dc-ch2-3-6} read in the chart, i.e.
-  $\Gamma^k_{ij}=\Gamma(\nabla)^k_{ij}$. Concretely: at any chart-source point $p$ there are
-  global smooth vector fields $X_1,\dots,X_n$ realising the chart basis at $p$ for which the
-  Levi-Civita connection $\nabla=$ \texttt{leviCivitaConnection} satisfies do Carmo's formula (10)
-  with the metric's own chart Christoffel symbols, $\nabla_{X_i}X_j=\sum_m\Gamma^m_{ij}X_m$.
+  The coordinate derivative in \cref{lem:dc-ch2-2-2-c-coord}, formed using the
+  metric Christoffel symbols, is the coordinate expression of the abstract
+  Levi-Civita connection from \cref{thm:dc-ch2-3-6}. At every point of a chart
+  there are global smooth fields $X_1,\dots,X_n$ agreeing locally with its
+  coordinate frame and satisfying
+  \[
+    \nabla_{X_i}X_j=\sum_m\Gamma^m_{ij}X_m.
+  \]
   \begin{proof}
     \leanok
-    The frame is the concrete chart frame \texttt{chartBasisVec} $\alpha\,\cdot$ extended to
-    global smooth vector fields agreeing with it near $p$
-    (\texttt{exists\_smoothVectorField\_eventuallyEq}). Its two analytic identities are
-    discharged germ-locally. \emph{Bracket vanishing} $[X_a,X_b](p)=0$: near $p$ the frame
-    field is the chart-pullback of the constant model field $e_i$ (the differential of the chart
-    sends $X_i(p)$ to $e_i$, \texttt{mfderiv\_extChartAt\_chartBasisVecFiber}), so by naturality
-    of the Lie bracket (\texttt{mpullback\_mlieBracket}) the frame bracket is the chart-pullback
-    of the bracket of two constant fields, which is $0$. \emph{Directional-derivative $=$
-    partial-derivative}: the chart Gram entry $q\mapsto G_{ab}(q)$ agrees near $p$ with
-    $G_{ab}\circ\varphi_\alpha$, so the chart chain rule and the same differential identity give
-    $X_r\langle X_a,X_b\rangle(p)=\partial_r G_{ab}$. Feeding these to
-    \cref{lem:dc-ch2-2-2-c-formula10} (\texttt{christoffel\_bridge\_vector}) with
-    $\nabla=$ \texttt{leviCivitaConnection} (Levi-Civita by
-    \texttt{isLeviCivita\_of\_koszulDual}) yields formula (10), identifying the coordinate
-    Christoffel symbols with those of the abstract Levi-Civita connection. This closes the full
-    property (c) and, with it, \cref{prop:dc-ch2-2-2}.
+    \sketch
+    Extend the coordinate frame fields globally without changing their germs at
+    the chosen point. Locally they are pullbacks of constant coordinate fields,
+    so their brackets vanish, and the directional derivatives of their Gram
+    entries are the corresponding partial derivatives. Formula (10) from
+    \cref{lem:dc-ch2-2-2-c-formula10} then identifies the coordinate and abstract
+    Christoffel symbols, establishing property (c) of
+    \cref{prop:dc-ch2-2-2}.
   \end{proof}
 \end{lemma}
 
@@ -187,34 +161,23 @@ $M$ and $\mathcal{D}(M)$ the ring of real-valued $C^\infty$ functions on $M$.
   \label{rem:dc-ch2-2-3}
   \dcref{ch2:2.3}
   \uses{rem:dc-ch0-5-7, def:dc-ch2-2-1}
-  The last line of (c) makes sense, since $\nabla_X Y(p)$ depends on the value of
-  $X(p)$ and the value of $Y$ along a curve tangent to $X$ at $p$. Part (iii) of
-  \cref{def:dc-ch2-2-1} shows that the affine connection is a \emph{local} notion (cf. \cref{rem:dc-ch0-5-7}). In coordinates $(x_1,\dots,x_n)$ about $p$ with
-  $X=\sum_i x_i X_i$, $Y=\sum_j y_j X_j$, $X_i=\frac{\partial}{\partial x_i}$,
-  
-  $$
-  \nabla_X Y=\sum_{ij}x_i y_j\nabla_{X_i}X_j+\sum_{ij}x_i X_i(y_j)X_j.
-  $$
-  
-  Setting $\nabla_{X_i}X_j=\sum_k\Gamma_{ij}^k X_k$ with $\Gamma_{ij}^k$
-  differentiable,
-  
-  $$
-  \nabla_X Y=\sum_k\Big(\sum_{ij}x_i y_j\Gamma_{ij}^k+X(y_k)\Big)X_k,
-  $$
-  
-  which shows $\nabla_X Y(p)$ depends on $x_i(p)$, $y_k(p)$ and the derivatives
-  $X(y_k)(p)$.
+  An affine connection is local. In coordinates, if
+  $X=\sum_ix_iX_i$, $Y=\sum_jy_jX_j$, and
+  $\nabla_{X_i}X_j=\sum_k\Gamma_{ij}^kX_k$, then
+  \[
+    \nabla_XY
+      =\sum_{i,j}x_iy_j\nabla_{X_i}X_j+\sum_jX(y_j)X_j
+      =\sum_k\left(\sum_{i,j}x_iy_j\Gamma_{ij}^k+X(y_k)\right)X_k.
+  \]
+  Hence $\nabla_XY(p)$ depends only on $X(p)$ and the germ of $Y$ at $p$.
 \end{remark}
 
 \begin{remark}[Remark 2.4]
   \label{rem:dc-ch2-2-4}
   \dcref{ch2:2.4}
   \uses{prop:dc-ch2-2-2}
-  \cref{prop:dc-ch2-2-2} shows that the choice of an affine connection on $M$ leads to a
-  bona fide (i.e. satisfying (a) and (b)) derivative of vector fields along curves,
-  furnishing a manner of differentiating vectors along curves; in particular one
-  may speak of the acceleration of a curve in $M$.
+  An affine connection supplies a derivative of vector fields along curves, and
+  therefore defines the acceleration $D(dc/dt)/dt$ of a curve in $M$.
 \end{remark}
 
 \begin{definition}[parallel vector field]
@@ -223,10 +186,11 @@ $M$ and $\mathcal{D}(M)$ the ring of real-valued $C^\infty$ functions on $M$.
   \uses{lem:dc-ch2-2-2-coord}
   \lean{Riemannian.IsParallelCoord}
   \leanok
-  Let $M$ be a differentiable manifold with an affine connection $\nabla$. A vector
-  field $V$ along a curve $c:I\to M$ is called \emph{parallel} when $\frac{DV}{dt}=0$ for
-  all $t\in I$. In coordinates (\cref{lem:dc-ch2-2-2-coord}) this is the linear
-  system $\dot V=-\Gamma(\dot u,V)(u)$.
+  A vector field $V$ along $c\colon I\to M$ is \emph{parallel} if
+  $DV/dt=0$ on $I$. In coordinates this is the linear system
+  \[
+    \dot V=-\Gamma(\dot u,V)(u).
+  \]
 \end{definition}
 
 \begin{lemma}[the parallel-transport coefficient is a bounded linear operator]
@@ -236,14 +200,11 @@ $M$ and $\mathcal{D}(M)$ the ring of real-valued $C^\infty$ functions on $M$.
   \lean{Riemannian.chartChristoffelContractionRight,
     Riemannian.lipschitzWith_neg_chartChristoffelContraction}
   \leanok
-  Fix a velocity $v$ and a base point $y$ in the chart at $\alpha$. The map
-  $w\mapsto\Gamma(v,w)(y)$ is linear in $w$, hence --- the model space being
-  finite-dimensional --- a bounded linear operator $A(v,y)\colon E\to E$.
-  Consequently the right-hand side $w\mapsto-\Gamma(\dot u(t),w)(u(t))$ of the
-  parallelism system~(2) is globally Lipschitz in $w$ with constant
-  $\lVert A(\dot u(t),u(t))\rVert$. This is the a-priori bound that drives
-  Grönwall's inequality in the uniqueness of parallel transport, and the estimate
-  underpinning the (linear) global existence of the solution of~(2).
+  For a chart velocity $v$ and base point $y$, the map
+  $w\mapsto\Gamma(v,w)(y)$ is a bounded linear operator $A(v,y)$ on the
+  finite-dimensional model space. Thus
+  $w\mapsto-\Gamma(\dot u(t),w)(u(t))$ is globally Lipschitz with constant
+  $\lVert A(\dot u(t),u(t))\rVert$.
 \end{lemma}
 
 \begin{proposition}[parallel transport]
@@ -252,32 +213,25 @@ $M$ and $\mathcal{D}(M)$ the ring of real-valued $C^\infty$ functions on $M$.
   \uses{def:dc-ch2-2-5, lem:dc-ch2-2-6-exist, lem:dc-ch2-2-6-unique, lem:dc-ch2-2-6-transport}
   \lean{Riemannian.parallelTransport}
   \leanok
-  Let $M$ be a differentiable manifold with an affine connection $\nabla$. Let
-  $c:I\to M$ be a differentiable curve and let $V_0$ be a vector tangent to $M$ at
-  $c(t_0)$, $t_0\in I$ (i.e. $V_0\in T_{c(t_0)}M$). Then there exists a unique
-  parallel vector field $V$ along $c$ with $V(t_0)=V_0$; $V(t)$ is called the
-  \emph{parallel transport} of $V(t_0)$ along $c$.
+  Let $c\colon I\to M$ be differentiable, $t_0\in I$, and
+  $V_0\in T_{c(t_0)}M$. There is a unique parallel vector field $V$ along $c$
+  with $V(t_0)=V_0$. Its values are the \emph{parallel transports} of $V_0$
+  along $c$.
 \end{proposition}
 \begin{proof}
   \leanok
   \uses{lem:dc-ch2-2-6-exist, lem:dc-ch2-2-6-unique, lem:dc-ch2-2-6-transport}
-  Suppose first that the theorem is proved when $c(I)$ is contained in a
-  local coordinate neighborhood. By compactness, for any $t_1\in I$,
-  $c([t_0,t_1])$ can be covered by finitely many coordinate neighborhoods, and
-  uniqueness makes the local definitions coincide on overlaps, so it suffices to
-  prove the theorem when $c(I)$ lies in one coordinate neighborhood
-  $\mathbf{x}(U)$. Writing $V=\sum v^j X_j$, parallelism gives
-  $0=\frac{DV}{dt}=\sum_j\frac{dv^j}{dt}X_j+\sum_{i,j}\frac{dx_i}{dt}v^j\nabla_{X_i}X_j$.
-  Putting $\nabla_{X_i}X_j=\sum_k\Gamma_{ij}^k X_k$ yields the system of $n$ linear
-  ODEs in $v^k(t)$,
-  
-  $$
-  0=\frac{dv^k}{dt}+\sum_{i,j}\Gamma_{ij}^k v^j\frac{dx_i}{dt},\quad k=1,\dots,n,\qquad(2)
-  $$
-  
-  which possesses a unique solution with $v^k(t_0)=v_0^k$. Since the system is
-  linear, the solution is defined for all $t\in I$, proving existence and
-  uniqueness. $\blacksquare$
+  \sketch
+  In one chart, writing $V=\sum_jv^jX_j$ reduces parallelism to
+  \[
+    0=\frac{dv^k}{dt}
+      +\sum_{i,j}\Gamma_{ij}^kv^j\frac{dx_i}{dt},
+      \qquad k=1,\dots,n.\tag{2}
+  \]
+  This linear system has a unique solution for each initial value. On a compact
+  subinterval, cover the curve by finitely many coordinate neighborhoods and
+  glue the local solutions using uniqueness. These solutions extend throughout
+  $I$.
 \end{proof}
 
 \begin{lemma}[existence of parallel transport]
@@ -286,18 +240,16 @@ $M$ and $\mathcal{D}(M)$ the ring of real-valued $C^\infty$ functions on $M$.
   \uses{def:dc-ch2-2-5, lem:dc-ch2-2-6-coeff}
   \lean{Riemannian.exists_isParallelCoord_Icc}
   \leanok
-  On a compact time interval $[a,b]$, for any prescribed initial vector $V_0$ there is a
-  coordinate vector field $V$ along the coordinate curve $u$ with $V(a)=V_0$ that is
-  parallel, i.e. solves the first-order linear system $\dot V=-\Gamma(\dot u,V)(u)$ on
-  $[a,b]$. This is the existence half of \cref{prop:dc-ch2-2-6}. The parallelism system is
-  the linear ODE $\dot V=A(t)V$ with coefficient
-  $A(t)=-\Gamma(\dot u(t),\,\cdot\,)(u(t))$, a continuous bounded operator by
-  \cref{lem:dc-ch2-2-6-coeff}; its global solution is obtained by solving Picard--Lindelöf on
-  short subintervals and gluing across a partition of $[a,b]$ (this global linear-ODE
-  existence, \texttt{Riemannian.LinearODE.exists\_hasDerivWithinAt\_Icc}, is not in mathlib's
-  purely local Picard--Lindelöf theory). The only hypotheses on the curve are that the
-  coefficient is continuous and bounded on $[a,b]$; both hold for a $C^1$ curve with
-  continuous Christoffel symbols by compactness.
+  On a compact interval $[a,b]$, every initial coordinate vector $V_0$ extends
+  to a solution of
+  \[
+    \dot V=-\Gamma(\dot u,V)(u),\qquad V(a)=V_0.
+  \]
+  It suffices that $u$ is $C^1$ and the Christoffel symbols are continuous.
+  \sketch
+  By \cref{lem:dc-ch2-2-6-coeff}, this is a linear ODE
+  $\dot V=A(t)V$ with continuous bounded coefficients. Local existence and a
+  finite subdivision of $[a,b]$ give a global solution.
 \end{lemma}
 
 \begin{lemma}[uniqueness of parallel transport]
@@ -306,13 +258,12 @@ $M$ and $\mathcal{D}(M)$ the ring of real-valued $C^\infty$ functions on $M$.
   \uses{def:dc-ch2-2-5, lem:dc-ch2-2-2-coord, lem:dc-ch2-2-6-coeff}
   \lean{Riemannian.isParallelCoord_eqOn_Icc, Riemannian.isParallelSol_eqOn_Icc}
   \leanok
-  On a compact time interval $[a,b]$, two parallel coordinate vector fields along
-  the same coordinate curve $u$ that agree at the initial time $a$ agree on all of
-  $[a,b]$. This is the uniqueness half of \cref{prop:dc-ch2-2-6}: the parallelism
-  equation (2) is a first-order linear ODE whose right-hand side is uniformly
-  Lipschitz by \cref{lem:dc-ch2-2-6-coeff}, so Grönwall's inequality forces the two
-  solutions to coincide. (Existence — the remaining half — is the Picard--Lindelöf
-  solution of the same linear system.)
+  Two parallel coordinate vector fields along the same coordinate curve on
+  $[a,b]$ that agree at $a$ agree throughout $[a,b]$.
+  \sketch
+  Their difference solves the homogeneous linear system (2) with zero initial
+  value. The Lipschitz estimate from \cref{lem:dc-ch2-2-6-coeff} and
+  Grönwall's inequality imply that it vanishes.
 \end{lemma}
 
 \begin{lemma}[parallel transport is a linear isomorphism]
@@ -321,17 +272,17 @@ $M$ and $\mathcal{D}(M)$ the ring of real-valued $C^\infty$ functions on $M$.
   \uses{lem:dc-ch2-2-6-exist, lem:dc-ch2-2-6-unique}
   \lean{Riemannian.parallelTransport, Riemannian.exists_parallelTransport_spec}
   \leanok
-  On a compact time interval $[a,b]$ the assignment $P_c:V_0\mapsto V(b)$, sending an
-  initial vector $V_0\in T_{c(a)}M$ to the value at $b$ of the parallel field $V$ along
-  the coordinate curve $u$ with $V(a)=V_0$, is a well-defined \emph{linear isomorphism}
-  $T_{c(a)}M\to T_{c(b)}M$ — do Carmo's \emph{parallel transport}. Well-definedness and
-  the value $V(b)=P_c V_0$ realize the parallel field of \cref{lem:dc-ch2-2-6-exist};
-  linearity holds because the parallelism system $\dot V=A(t)V$, $A(t)=-\Gamma(\dot u,\cdot)(u)$,
-  is linear, so solutions superpose and, by \cref{lem:dc-ch2-2-6-unique}, the endpoint map is
-  additive and homogeneous. Injectivity follows from backward uniqueness of the same linear
-  system (two fields sharing $V(b)$ share $V(a)$); an injective linear endomorphism of the
-  finite-dimensional tangent space is an isomorphism, so $P_c$ is invertible, with inverse the
-  parallel transport along the reversed curve.
+  On $[a,b]$, the endpoint map
+  \[
+    P_c\colon T_{c(a)}M\longrightarrow T_{c(b)}M,
+    \qquad V_0\longmapsto V(b),
+  \]
+  where $V$ is the parallel field with $V(a)=V_0$, is a linear isomorphism.
+  Its inverse is parallel transport along the reversed curve.
+  \sketch
+  Existence and uniqueness make the map well-defined. Superposition for the
+  linear system (2) gives linearity, and backward uniqueness gives injectivity
+  and the stated inverse.
 \end{lemma}
 
 \section{Riemannian connections}
@@ -341,11 +292,9 @@ $M$ and $\mathcal{D}(M)$ the ring of real-valued $C^\infty$ functions on $M$.
   \dcref{ch2:3.1}
   \lean{Riemannian.CompatibleGen}
   \leanok
-  Let $M$ be a differentiable manifold with an affine connection $\nabla$ and a
-  Riemannian metric $\langle\,,\,\rangle$. A connection is said to be \emph{compatible}
-  with the metric $\langle\,,\,\rangle$ when, for any smooth curve $c$ and any pair
-  of parallel vector fields $P$ and $P'$ along $c$, we have
-  $\langle P,P'\rangle=\text{constant}$.
+  An affine connection $\nabla$ on a Riemannian manifold is \emph{compatible
+  with the metric} if the inner product of any two parallel vector fields along
+  any smooth curve is constant.
 \end{definition}
 
 \begin{proposition}[product rule characterization]
@@ -354,26 +303,23 @@ $M$ and $\mathcal{D}(M)$ the ring of real-valued $C^\infty$ functions on $M$.
   \uses{def:dc-ch2-3-1, prop:dc-ch2-2-6, lem:dc-ch2-3-2-coord}
   \lean{Riemannian.compatibleGen_iff_productRuleGen}
   \leanok
-  Let $M$ be a Riemannian manifold. A connection $\nabla$ on $M$ is compatible with
-  a metric if and only if for any vector fields $V$ and $W$ along the differentiable
-  curve $c:I\to M$ we have
-  
-  $$
-  \frac{d}{dt}\langle V,W\rangle=\Big\langle\frac{DV}{dt},W\Big\rangle+\Big\langle V,\frac{DW}{dt}\Big\rangle,\quad t\in I.\qquad(3)
-  $$
+  A connection $\nabla$ is compatible with the metric if and only if, for all
+  vector fields $V,W$ along every differentiable curve $c\colon I\to M$,
+  \[
+    \frac{d}{dt}\langle V,W\rangle
+      =\left\langle\frac{DV}{dt},W\right\rangle
+       +\left\langle V,\frac{DW}{dt}\right\rangle,
+    \qquad t\in I.\tag{3}
+  \]
 \end{proposition}
 \begin{proof}
   \leanok
-  Equation (3) obviously implies $\nabla$ is compatible. For the converse,
-  choose an orthonormal basis $\{P_1(t_0),\dots,P_n(t_0)\}$ of $T_{c(t_0)}M$. Using
-  \cref{prop:dc-ch2-2-6}, extend the $P_i(t_0)$ along $c$ by parallel translation; since
-  $\nabla$ is compatible with the metric (\cref{def:dc-ch2-3-1}), $\{P_1(t),\dots,P_n(t)\}$
-  is an orthonormal basis of $T_{c(t)}M$ for each $t$. Writing $V=\sum_i v^i P_i$,
-  $W=\sum_i w^i P_i$ gives $\frac{DV}{dt}=\sum_i\frac{dv^i}{dt}P_i$,
-  $\frac{DW}{dt}=\sum_i\frac{dw^i}{dt}P_i$, whence
-  $\langle\frac{DV}{dt},W\rangle+\langle V,\frac{DW}{dt}\rangle
-  =\sum_i(\frac{dv^i}{dt}w^i+\frac{dw^i}{dt}v^i)
-  =\frac{d}{dt}\sum_i v^i w^i=\frac{d}{dt}\langle V,W\rangle$. $\blacksquare$
+  \sketch
+  Formula (3) immediately makes inner products of parallel fields constant.
+  Conversely, parallel-transport an orthonormal basis at one point along $c$;
+  compatibility keeps it orthonormal. Expanding
+  $V=\sum_iv^iP_i$ and $W=\sum_iw^iP_i$ in this parallel frame reduces (3) to
+  the ordinary product rule for $\sum_iv^iw^i$.
 \end{proof}
 
 \begin{corollary}[compatibility on vector fields]
@@ -382,20 +328,18 @@ $M$ and $\mathcal{D}(M)$ the ring of real-valued $C^\infty$ functions on $M$.
   \lean{Riemannian.AffineConnection.IsMetricCompatible}
   \leanok
   \uses{prop:dc-ch2-3-2}
-  A connection $\nabla$ on a Riemannian manifold $M$ is compatible with the metric
-  if and only if
-  
-  $$
-  X\langle Y,Z\rangle=\langle\nabla_X Y,Z\rangle+\langle Y,\nabla_X Z\rangle,\quad X,Y,Z\in\mathcal{X}(M).\qquad(4)
-  $$
+  A connection $\nabla$ is compatible with the metric if and only if
+  \[
+    X\langle Y,Z\rangle
+      =\langle\nabla_XY,Z\rangle+\langle Y,\nabla_XZ\rangle,
+    \qquad X,Y,Z\in\mathcal{X}(M).\tag{4}
+  \]
 \end{corollary}
 \begin{proof}
-  Suppose $\nabla$ is compatible with the metric. Let $p\in M$ and
-  $c:I\to M$ a curve with $c(t_0)=p$ and $\frac{dc}{dt}\big|_{t=t_0}=X(p)$. Then by
-  \cref{prop:dc-ch2-3-2},
-  $X(p)\langle Y,Z\rangle=\frac{d}{dt}\langle Y,Z\rangle\big|_{t=t_0}
-  =\langle\nabla_{X(p)}Y,Z\rangle_p+\langle Y,\nabla_{X(p)}Z\rangle_p$. Since $p$ is
-  arbitrary, (4) follows. The converse is obvious. $\blacksquare$
+  \sketch
+  Evaluate (3) at a point along a curve whose velocity there is $X$. This gives
+  (4). Conversely, apply (4) pointwise to the velocity field of a curve to
+  recover (3).
 \end{proof}
 
 \begin{lemma}[metric compatibility of $D/dt$, coordinate form]
@@ -404,27 +348,28 @@ $M$ and $\mathcal{D}(M)$ the ring of real-valued $C^\infty$ functions on $M$.
   \lean{Riemannian.hasDerivAt_chartMetricInner_along}
   \leanok
   \uses{lem:dc-ch2-2-2-coord, def:dc-ch2-3-7-christoffel}
-  Read in a coordinate chart at $\alpha$, let $\langle a,b\rangle_y=\sum_{i,j}g_{ij}(y)\,a^i b^j$
-  be the metric inner product on coordinate vectors and let $\frac{D}{dt}$ be the covariant
-  derivative along a curve of \cref{lem:dc-ch2-2-2-coord}, $\frac{DV}{dt}=\dot V+\Gamma(\dot u,V)(u)$,
-  built from the Levi-Civita chart Christoffel symbols. For a coordinate curve $u$ in the chart
-  domain and coordinate vector fields $V,W$ along it,
-  $$
-  \frac{d}{dt}\langle V,W\rangle=\Big\langle\frac{DV}{dt},W\Big\rangle+\Big\langle V,\frac{DW}{dt}\Big\rangle.
-  $$
-  This is do Carmo's equation (3) (\cref{prop:dc-ch2-3-2}) for the Levi-Civita connection.
+  In a chart, write
+  $\langle a,b\rangle_y=\sum_{i,j}g_{ij}(y)a^ib^j$ and
+  $DV/dt=\dot V+\Gamma(\dot u,V)(u)$. Then coordinate vector fields $V,W$
+  along $u$ satisfy
+  \[
+    \frac{d}{dt}\langle V,W\rangle
+      =\left\langle\frac{DV}{dt},W\right\rangle
+       +\left\langle V,\frac{DW}{dt}\right\rangle.
+  \]
 \end{lemma}
 \begin{proof}
   \leanok
   \uses{def:dc-ch2-3-7-christoffel}
-  Differentiate $t\mapsto\sum_{i,j}g_{ij}(u(t))\,V^i(t)\,W^j(t)$ by the product and chain rules:
-  $\frac{d}{dt}\langle V,W\rangle=\sum_{i,j}\big(\sum_k\dot u^k\,\partial_k g_{ij}\big)V^iW^j
-  +\sum_{i,j}g_{ij}\dot V^iW^j+\sum_{i,j}g_{ij}V^i\dot W^j$. Substitute the coordinate form of
-  $\nabla g=0$, do Carmo's formula (10) $\partial_k g_{ij}=\sum_m(g_{mj}\Gamma^m_{ki}+g_{im}\Gamma^m_{kj})$
-  (\cref{def:dc-ch2-3-7-christoffel}). Reindexing the two resulting Christoffel sums identifies them
-  with $\langle\Gamma(\dot u,V),W\rangle$ and $\langle V,\Gamma(\dot u,W)\rangle$, and combining with
-  the $\dot V,\dot W$ terms gives $\langle\dot V+\Gamma(\dot u,V),W\rangle+\langle V,\dot W+\Gamma(\dot u,W)\rangle
-  =\langle\frac{DV}{dt},W\rangle+\langle V,\frac{DW}{dt}\rangle$.
+  \sketch
+  Differentiate $\sum_{i,j}g_{ij}(u)V^iW^j$ and use
+  \[
+    \partial_kg_{ij}
+      =\sum_m\left(g_{mj}\Gamma^m_{ki}+g_{im}\Gamma^m_{kj}\right),
+  \]
+  which follows from \cref{def:dc-ch2-3-7-christoffel}. The two Christoffel
+  sums combine respectively with $\dot V$ and $\dot W$ to give the two
+  covariant derivatives.
 \end{proof}
 
 \begin{lemma}[parallel fields have constant inner product, coordinate form]
@@ -433,17 +378,15 @@ $M$ and $\mathcal{D}(M)$ the ring of real-valued $C^\infty$ functions on $M$.
   \lean{Riemannian.hasDerivAt_chartMetricInner_eq_zero_of_isParallelCoord}
   \leanok
   \uses{def:dc-ch2-2-5, def:dc-ch2-3-1, lem:dc-ch2-3-2-coord}
-  Read in a coordinate chart at $\alpha$, if $V$ and $W$ are parallel (\cref{def:dc-ch2-2-5})
-  coordinate vector fields along a curve $u$ in the chart domain, then $\langle V,W\rangle$ is
-  constant along $u$: its derivative vanishes identically. Thus the Levi-Civita connection is
-  compatible with the metric in do Carmo's sense (\cref{def:dc-ch2-3-1}).
+  If $V$ and $W$ are parallel coordinate vector fields along a coordinate
+  curve, then $\langle V,W\rangle$ is constant.
 \end{lemma}
 \begin{proof}
   \leanok
   \uses{lem:dc-ch2-3-2-coord}
-  Immediate from \cref{lem:dc-ch2-3-2-coord}: both covariant derivatives $\frac{DV}{dt}$ and
-  $\frac{DW}{dt}$ vanish, so $\frac{d}{dt}\langle V,W\rangle
-  =\langle 0,W\rangle+\langle V,0\rangle=0$.
+  \sketch
+  In \cref{lem:dc-ch2-3-2-coord}, both covariant derivatives vanish, so
+  $\frac{d}{dt}\langle V,W\rangle=0$.
 \end{proof}
 
 \begin{definition}[symmetric connection]
@@ -452,25 +395,22 @@ $M$ and $\mathcal{D}(M)$ the ring of real-valued $C^\infty$ functions on $M$.
   \lean{Riemannian.AffineConnection.IsSymmetric}
   \leanok
   \uses{def:dc-ch2-2-1}
-  An affine connection $\nabla$ on a smooth manifold $M$ is said to be \emph{symmetric}
-  when
-  
-  $$
-  \nabla_X Y-\nabla_Y X=[X,Y]\quad\text{for all }X,Y\in\mathcal{X}(M).\qquad(5)
-  $$
+  An affine connection $\nabla$ is \emph{symmetric} if
+  \[
+    \nabla_XY-\nabla_YX=[X,Y]
+    \quad\text{for all }X,Y\in\mathcal{X}(M).\tag{5}
+  \]
 \end{definition}
 
 \begin{remark}[Remark 3.5]
   \label{rem:dc-ch2-3-5}
   \dcref{ch2:3.5}
-  In a coordinate system $(U,\mathbf{x})$, symmetry of $\nabla$ implies for all
-  $i,j=1,\dots,n$,
-  
-  $$
-  \nabla_{X_i}X_j-\nabla_{X_j}X_i=[X_i,X_j]=0,\quad X_i=\frac{\partial}{\partial x_i},\qquad(5')
-  $$
-  
-  which justifies the terminology; (5') is equivalent to $\Gamma_{ij}^k=\Gamma_{ji}^k$.
+  In a coordinate frame $X_i=\partial/\partial x_i$, symmetry is equivalent to
+  \[
+    \nabla_{X_i}X_j-\nabla_{X_j}X_i=[X_i,X_j]=0,
+    \qquad
+    \Gamma_{ij}^k=\Gamma_{ji}^k.\tag{5'}
+  \]
 \end{remark}
 
 \begin{lemma}[Koszul formula]
@@ -479,40 +419,40 @@ $M$ and $\mathcal{D}(M)$ the ring of real-valued $C^\infty$ functions on $M$.
   \lean{Riemannian.AffineConnection.koszul_formula}
   \leanok
   \uses{def:dc-ch2-3-4, cor:dc-ch2-3-3}
-  Let $M$ be a Riemannian manifold with an affine connection $\nabla$ that is
-  symmetric (\cref{def:dc-ch2-3-4}) and compatible with the metric in the sense of
-  (4) (\cref{cor:dc-ch2-3-3}). Then for all $X,Y,Z\in\mathcal{X}(M)$,
-
-  $$
-  2\langle Z,\nabla_Y X\rangle=X\langle Y,Z\rangle+Y\langle Z,X\rangle-Z\langle X,Y\rangle-\langle[X,Z],Y\rangle-\langle[Y,Z],X\rangle-\langle[X,Y],Z\rangle.\qquad(9)
-  $$
+  If $\nabla$ is symmetric and metric-compatible, then, for all
+  $X,Y,Z\in\mathcal{X}(M)$,
+  \[
+    \begin{aligned}
+    2\langle Z,\nabla_YX\rangle
+      ={}&X\langle Y,Z\rangle+Y\langle Z,X\rangle-Z\langle X,Y\rangle\\
+       &-\langle[X,Z],Y\rangle-\langle[Y,Z],X\rangle
+        -\langle[X,Y],Z\rangle.
+    \end{aligned}\tag{9}
+  \]
 \end{lemma}
 \begin{proof}
   \leanok
   \uses{def:dc-ch2-3-4, cor:dc-ch2-3-3}
-  Applying (4) to the three cyclic orderings of $X,Y,Z$ gives (6), (7), (8).
-  Adding (6) and (7), subtracting (8), replacing
-  $\nabla_X Y-\nabla_Y X=[X,Y]$ and its two cyclic analogues by the symmetry (5) of
-  $\nabla$ (\cref{def:dc-ch2-3-4}), and using the symmetry of $\langle\,,\,\rangle$
-  to pair the remaining terms, yields (9).
+  \sketch
+  Apply (4) to the three cyclic orderings of $X,Y,Z$. Add the first two
+  identities, subtract the third, and replace differences of covariant
+  derivatives using symmetry (5). Symmetry of the metric gives (9).
 \end{proof}
 
 \begin{lemma}[tangent-vector extension]
   \label{lem:dc-ch2-tangent-extension}
   \lean{Riemannian.exists_smoothVectorField_eq}
   \leanok
-  On a finite-dimensional, $\sigma$-compact, Hausdorff smooth manifold $M$, every
-  tangent vector $v\in T_pM$ is the value at $p$ of some global smooth vector field
-  $Z\in\mathcal{X}(M)$; that is, $Z(p)=v$.
+  On a finite-dimensional, $\sigma$-compact, Hausdorff smooth manifold, every
+  $v\in T_pM$ is the value $Z(p)$ of a global smooth vector field
+  $Z\in\mathcal{X}(M)$.
 \end{lemma}
 \begin{proof}
   \leanok
-  Let $t_x=\{v\}$ for $x=p$ and $t_x=T_xM$ otherwise; each $t_x$ is convex. Near
-  $p$, the section $x\mapsto e^{-1}(x,c)$ that is constant in a bundle
-  trivialization $e$ around $p$ (with $c$ the fibre coordinate of $v$) is smooth and
-  equals $v$ at $p$; away from $p$ the zero section lies in $t_x$. Gluing these
-  local sections with a partition of unity yields a global smooth field $Z$ with
-  $Z(p)\in\{v\}$, i.e.\ $Z(p)=v$.
+  \sketch
+  In a bundle trivialization near $p$, take the locally constant section with
+  value $v$ at $p$; away from $p$, use the zero section. A partition of unity
+  glues these local sections to the required global field.
 \end{proof}
 
 \begin{lemma}[uniqueness of the Levi-Civita connection]
@@ -521,20 +461,19 @@ $M$ and $\mathcal{D}(M)$ the ring of real-valued $C^\infty$ functions on $M$.
   \lean{Riemannian.AffineConnection.leviCivita_unique'}
   \leanok
   \uses{lem:dc-ch2-3-6-koszul, lem:dc-ch2-tangent-extension}
-  On a finite-dimensional, $\sigma$-compact, Hausdorff Riemannian manifold there is
-  \emph{at most one} affine connection that is symmetric (\cref{def:dc-ch2-3-4})
-  and compatible with the metric in the sense of (4) (\cref{cor:dc-ch2-3-3}).
+  On a finite-dimensional, $\sigma$-compact, Hausdorff Riemannian manifold,
+  there is at most one affine connection that is symmetric and
+  metric-compatible.
 \end{lemma}
 \begin{proof}
   \leanok
   \uses{lem:dc-ch2-3-6-koszul, lem:dc-ch2-tangent-extension}
-  If $\nabla_1,\nabla_2$ are both symmetric and metric-compatible then, by the
-  Koszul formula (\cref{lem:dc-ch2-3-6-koszul}), $\langle Z,(\nabla_1)_YX\rangle=
-  \langle Z,(\nabla_2)_YX\rangle$ for every $Z\in\mathcal{X}(M)$: both sides equal
-  the metric-only right-hand side of (9). By \cref{lem:dc-ch2-tangent-extension}
-  every tangent vector is realized as some $Z(p)$, so the two covariant derivatives
-  have equal inner product against every tangent vector; non-degeneracy of the
-  metric then forces $(\nabla_1)_YX=(\nabla_2)_YX$, hence $\nabla_1=\nabla_2$.
+  \sketch
+  For two such connections, (9) gives equal inner products
+  $\langle Z,(\nabla_1)_YX\rangle=\langle Z,(\nabla_2)_YX\rangle$ for every
+  global field $Z$. By \cref{lem:dc-ch2-tangent-extension}, this tests against
+  every tangent vector at each point; nondegeneracy therefore gives
+  $\nabla_1=\nabla_2$.
 \end{proof}
 
 \begin{lemma}[well-definedness of the Koszul functional]
@@ -545,28 +484,25 @@ $M$ and $\mathcal{D}(M)$ the ring of real-valued $C^\infty$ functions on $M$.
     Riemannian.RiemannianMetric.koszulRHS_smul_right}
   \leanok
   \uses{lem:dc-ch2-3-6-koszul}
-  Fix a Riemannian manifold $M$ and $X, Y \in \mathcal{X}(M)$. The metric-only
-  right-hand side of the Koszul formula (9),
+  For fixed $X,Y\in\mathcal{X}(M)$, let
   \[
-    F_{Y,X}(Z) = X\langle Y,Z\rangle + Y\langle Z,X\rangle - Z\langle X,Y\rangle
-      - \langle[X,Z],Y\rangle - \langle[Y,Z],X\rangle - \langle[X,Y],Z\rangle,
+    F_{Y,X}(Z)
+      =X\langle Y,Z\rangle+Y\langle Z,X\rangle-Z\langle X,Y\rangle
+       -\langle[X,Z],Y\rangle-\langle[Y,Z],X\rangle
+       -\langle[X,Y],Z\rangle.
   \]
-  is $\mathcal{D}(M)$-linear in the test field $Z$: it is additive,
-  $F_{Y,X}(Z_1+Z_2) = F_{Y,X}(Z_1) + F_{Y,X}(Z_2)$, and function-homogeneous,
-  $F_{Y,X}(fZ) = f\,F_{Y,X}(Z)$ for every $f \in \mathcal{D}(M)$. Consequently
-  $Z \mapsto \tfrac12 F_{Y,X}(Z)$ is a tensorial functional, and its metric Riesz
-  dual is the candidate covariant derivative $\nabla_Y X$ for the existence half of
-  \cref{thm:dc-ch2-3-6}.
+  Then $F_{Y,X}$ is $\mathcal{D}(M)$-linear in $Z$. Hence
+  $Z\mapsto\frac12F_{Y,X}(Z)$ is tensorial and has a metric Riesz dual, the
+  candidate $\nabla_YX$.
 \end{lemma}
 \begin{proof}
   \leanok
   \uses{lem:dc-ch2-3-6-koszul}
-  Additivity is immediate from additivity of the directional derivative, of the
-  metric in each slot, and of the Lie bracket in the second slot. For homogeneity,
-  the Leibniz rule $X(fh) = f\,X(h) + h\,X(f)$ and the bracket Leibniz rule
-  $[X,fZ] = f\,[X,Z] + X(f)\,Z$ produce the extra terms $X(f)\langle Y,Z\rangle$
-  and $-X(f)\langle Z,Y\rangle$ (together with the analogous $Y(f)$ pair), which
-  cancel by symmetry of the metric $\langle Y,Z\rangle = \langle Z,Y\rangle$.
+  \sketch
+  Additivity is termwise. For $f\in\mathcal{D}(M)$, expand
+  $X(fh)=fX(h)+X(f)h$ and
+  $[X,fZ]=f[X,Z]+X(f)Z$. The derivative-of-$f$ terms cancel by symmetry of the
+  metric, leaving $F_{Y,X}(fZ)=fF_{Y,X}(Z)$.
 \end{proof}
 
 \begin{lemma}[the Koszul-dual connection is an affine connection]
@@ -578,40 +514,27 @@ $M$ and $\mathcal{D}(M)$ the ring of real-valued $C^\infty$ functions on $M$.
     Riemannian.RiemannianMetric.koszulRHS_smul_middle}
   \leanok
   \uses{def:dc-ch2-2-1, lem:dc-ch2-3-6-welldef}
-  Fix a Riemannian manifold $M$ and a test field $Z \in \mathcal{X}(M)$. As a
-  function of its two connection arguments, the Koszul functional
-  $F_{Y,X}(Z) = X\langle Y,Z\rangle + Y\langle Z,X\rangle - Z\langle X,Y\rangle
-    - \langle[X,Z],Y\rangle - \langle[Y,Z],X\rangle - \langle[X,Y],Z\rangle$
-  realizes the axioms of an affine connection (\cref{def:dc-ch2-2-1}) for the
-  candidate covariant derivative $\nabla_Y X := \tfrac12 (F_{Y,X})^\sharp$:
-  \begin{itemize}
-    \item additivity in the differentiated field,
-      $F_{Y,X_1+X_2} = F_{Y,X_1} + F_{Y,X_2}$;
-    \item the Leibniz rule in the differentiated field,
-      $F_{Y,fX} = f\,F_{Y,X} + 2\,Y(f)\,\langle X,Z\rangle$
-      (i.e.\ $\nabla_Y(fX) = f\,\nabla_Y X + Y(f)\,X$);
-    \item additivity in the direction field,
-      $F_{Y_1+Y_2,X} = F_{Y_1,X} + F_{Y_2,X}$;
-    \item $\mathcal{D}(M)$-homogeneity in the direction field,
-      $F_{fY,X} = f\,F_{Y,X}$ (i.e.\ $\nabla_{fY}X = f\,\nabla_Y X$).
-  \end{itemize}
+  The candidate $\nabla_YX=\frac12(F_{Y,X})^\sharp$ satisfies
+  \begin{align*}
+    F_{Y,X_1+X_2}&=F_{Y,X_1}+F_{Y,X_2},\\
+    F_{Y,fX}&=fF_{Y,X}+2Y(f)\langle X,Z\rangle,\\
+    F_{Y_1+Y_2,X}&=F_{Y_1,X}+F_{Y_2,X},\\
+    F_{fY,X}&=fF_{Y,X}.
+  \end{align*}
+  Therefore it is additive and $\mathcal{D}(M)$-linear in the direction field,
+  and additive with the Leibniz rule in the differentiated field; hence it is an
+  affine connection.
 \end{lemma}
 \begin{proof}
   \leanok
   \uses{lem:dc-ch2-3-6-koszul}
-  Each identity is obtained by substituting the modified field into the six terms of
-  $F$ and applying additivity/homogeneity of the directional derivative, the
-  bilinearity of the metric, and the corresponding bracket rule. Additivity in both
-  slots is immediate. In the differentiated field, the field homogeneity
-  $(fX)(h) = f\,X(h)$, the metric Leibniz rule and the bracket Leibniz rules
-  $[fX,W] = f\,[X,W] - W(f)\,X$ produce four boundary terms; two cancel against each
-  other and the remaining pair, $Y(f)\langle Z,X\rangle + Y(f)\langle X,Z\rangle$,
-  combines to $2\,Y(f)\langle X,Z\rangle$ by symmetry of the metric. In the direction
-  field all four boundary terms cancel in pairs by symmetry of the metric, leaving
-  pure homogeneity. Together with the $Z$-linearity of
-  \cref{lem:dc-ch2-3-6-welldef}, this is do Carmo's remark that $\nabla$ defined by
-  (9) is a well-defined affine connection; only the smoothness of the Riesz-dual
-  section remains for existence.
+  \sketch
+  Substitute the indicated sums and scalar multiples into the six terms of
+  $F$. Additivity is termwise. The Leibniz rules for derivatives and brackets
+  produce the displayed $2Y(f)\langle X,Z\rangle$ in the differentiated slot;
+  in the direction slot all derivative-of-$f$ terms cancel in pairs. Together
+  with \cref{lem:dc-ch2-3-6-welldef}, these identities give the connection
+  axioms.
 \end{proof}
 
 \begin{lemma}[the Koszul-dual connection is Levi-Civita]
@@ -623,80 +546,73 @@ $M$ and $\mathcal{D}(M)$ the ring of real-valued $C^\infty$ functions on $M$.
   \leanok
   \uses{def:dc-ch2-2-1, def:dc-ch2-3-4, lem:dc-ch2-3-6-koszul, lem:dc-ch2-3-6-welldef,
     lem:dc-ch2-tangent-extension}
-  On a finite-dimensional, $\sigma$-compact, Hausdorff Riemannian manifold, suppose
-  $\nabla$ is an affine connection (\cref{def:dc-ch2-2-1}) whose covariant derivative
-  is the metric Riesz dual of the Koszul functional (9): $2\langle\nabla_Y X, Z\rangle
-  = F_{Y,X}(Z)$ for every test field $Z$. Then $\nabla$ is a Levi-Civita connection
-  for the metric — it is symmetric (\cref{def:dc-ch2-3-4}) and compatible with the
-  metric (\cref{cor:dc-ch2-3-3}).
+  On a finite-dimensional, $\sigma$-compact, Hausdorff Riemannian manifold,
+  suppose an affine connection satisfies
+  \[
+    2\langle\nabla_YX,Z\rangle=F_{Y,X}(Z)
+  \]
+  for every $X,Y,Z$. Then it is symmetric and metric-compatible.
 \end{lemma}
 \begin{proof}
   \leanok
   \uses{lem:dc-ch2-3-6-koszul, lem:dc-ch2-tangent-extension}
-  Two algebraic identities for the Koszul functional close the two conditions.
-  Swapping its connection slots, $F_{Y,X}(Z)-F_{X,Y}(Z)=2\langle[X,Y],Z\rangle$: the
-  metric-derivative terms cancel by symmetry of the metric and the bracket terms
-  combine via $[Y,X]=-[X,Y]$. With the defining identity this reads
-  $2\langle\nabla_X Y-\nabla_Y X, Z\rangle=2\langle[X,Y],Z\rangle$ for all $Z$, so by
-  the tangent-vector extension (\cref{lem:dc-ch2-tangent-extension}) and
-  non-degeneracy of the metric, $\nabla_X Y-\nabla_Y X=[X,Y]$; that is symmetry.
-  Adding the two orderings that share the base field $X$,
-  $F_{Y,X}(Z)+F_{Z,X}(Y)=2\,X\langle Y,Z\rangle$: the bracket terms cancel in pairs by
-  antisymmetry. With the defining identity this is exactly
-  $X\langle Y,Z\rangle=\langle\nabla_X Y, Z\rangle+\langle Y,\nabla_X Z\rangle$, which
-  is metric-compatibility (\cref{cor:dc-ch2-3-3}).
+  \sketch
+  The identities
+  \[
+    F_{Y,X}(Z)-F_{X,Y}(Z)=2\langle[X,Y],Z\rangle
+  \]
+  and
+  \[
+    F_{Y,X}(Z)+F_{Z,X}(Y)=2X\langle Y,Z\rangle
+  \]
+  follow by cancellation. The first, together with
+  \cref{lem:dc-ch2-tangent-extension} and nondegeneracy, gives
+  $\nabla_XY-\nabla_YX=[X,Y]$. The second gives the product rule (4), hence
+  metric compatibility.
 \end{proof}
 
 \begin{theorem}[Levi-Civita]
   \label{thm:dc-ch2-3-6}
   \dcref{ch2:3.6}
-  % Lean: unconditional existence+uniqueness. The smoothness of the Koszul-Riesz
-  % dual section (do Carmo's "easy to verify") is discharged via the chart-frame
-  % musical-isomorphism smoothness engine, which is set up for a model space
-  % carrying an inner product; the Lean statement therefore additionally assumes
-  % the model E is an inner-product space and finrank E ≠ 0 (WLOG for a
-  % finite-dimensional manifold).
   \lean{Riemannian.RiemannianMetric.exists_unique_isLeviCivita}
   \leanok
   \uses{def:dc-ch2-3-4, cor:dc-ch2-3-3, lem:dc-ch2-3-6-koszul, lem:dc-ch2-3-6-unique, lem:dc-ch2-3-6-welldef, lem:dc-ch2-3-6-exist}
-  Given a Riemannian manifold $M$, there exists a unique affine connection $\nabla$
-  on $M$ satisfying the conditions:
-  - a) $\nabla$ is symmetric.
-  - b) $\nabla$ is compatible with the Riemannian metric.
+  Every Riemannian manifold admits a unique affine connection $\nabla$ that is
+  \begin{enumerate}
+    \item[(a)] symmetric;
+    \item[(b)] compatible with the Riemannian metric.
+  \end{enumerate}
 \end{theorem}
 \begin{proof}
   \leanok
   \uses{lem:dc-ch2-3-6-unique, lem:dc-ch2-3-6-exist}
-  Suppose such a $\nabla$ exists. By \cref{cor:dc-ch2-3-3},
-  
-  $$
-  X\langle Y,Z\rangle=\langle\nabla_X Y,Z\rangle+\langle Y,\nabla_X Z\rangle,\qquad(6)
-  $$
-  
-  $$
-  Y\langle Z,X\rangle=\langle\nabla_Y Z,X\rangle+\langle Z,\nabla_Y X\rangle,\qquad(7)
-  $$
-  
-  $$
-  Z\langle X,Y\rangle=\langle\nabla_Z X,Y\rangle+\langle X,\nabla_Z Y\rangle.\qquad(8)
-  $$
-  
-  Adding (6) and (7), subtracting (8), and using the symmetry of $\nabla$
-  (\cref{def:dc-ch2-3-4}) gives
-  
-  $$
-  X\langle Y,Z\rangle+Y\langle Z,X\rangle-Z\langle X,Y\rangle=\langle[X,Z],Y\rangle+\langle[Y,Z],X\rangle+\langle[X,Y],Z\rangle+2\langle Z,\nabla_Y X\rangle.
-  $$
-  
-  Therefore (the \emph{Koszul formula})
-  
-  $$
-  \langle Z,\nabla_Y X\rangle=\tfrac{1}{2}\big\{X\langle Y,Z\rangle+Y\langle Z,X\rangle-Z\langle X,Y\rangle-\langle[X,Z],Y\rangle-\langle[Y,Z],X\rangle-\langle[X,Y],Z\rangle\big\}.\qquad(9)
-  $$
-  
-  Expression (9) shows $\nabla$ is uniquely determined from the metric, so if it
-  exists it is unique. For existence, define $\nabla$ by (9); it is easy to verify
-  that $\nabla$ is well-defined and satisfies the desired conditions. $\blacksquare$
+  \sketch
+  Metric compatibility applied cyclically gives
+  \[
+    X\langle Y,Z\rangle
+      =\langle\nabla_XY,Z\rangle+\langle Y,\nabla_XZ\rangle,\tag{6}
+  \]
+  \[
+    Y\langle Z,X\rangle
+      =\langle\nabla_YZ,X\rangle+\langle Z,\nabla_YX\rangle,\tag{7}
+  \]
+  \[
+    Z\langle X,Y\rangle
+      =\langle\nabla_ZX,Y\rangle+\langle X,\nabla_ZY\rangle.\tag{8}
+  \]
+  Adding (6) and (7), subtracting (8), and using symmetry gives
+  \[
+    \begin{aligned}
+    \langle Z,\nabla_YX\rangle=\tfrac12\{&X\langle Y,Z\rangle
+      +Y\langle Z,X\rangle-Z\langle X,Y\rangle\\
+      &-\langle[X,Z],Y\rangle-\langle[Y,Z],X\rangle
+       -\langle[X,Y],Z\rangle\}.\tag{9}
+    \end{aligned}
+  \]
+  Thus uniqueness follows from \cref{lem:dc-ch2-3-6-unique}. For existence,
+  take the metric Riesz dual of the right-hand side of (9); its
+  well-definedness and Levi-Civita properties are
+  \cref{lem:dc-ch2-3-6-welldef,lem:dc-ch2-3-6-exist}.
 \end{proof}
 
 \begin{definition}[Christoffel symbols]
@@ -705,39 +621,37 @@ $M$ and $\mathcal{D}(M)$ the ring of real-valued $C^\infty$ functions on $M$.
   \lean{Riemannian.chartChristoffel}
   \leanok
   \uses{def:dc-ch1-2-1}
-  In a coordinate neighborhood $U$ with metric coefficients
-  $g_{ij}=\langle X_i,X_j\rangle$ and inverse matrix $(g^{km})$, the
-  \emph{Christoffel symbols} (of the second kind) are the functions on $U$ given
-  by the classical formula
-
-  $$
-  \Gamma_{ij}^m=\tfrac{1}{2}\sum_k\Big\{\frac{\partial}{\partial x_i}g_{jk}+\frac{\partial}{\partial x_j}g_{ki}-\frac{\partial}{\partial x_k}g_{ij}\Big\}g^{km}.\qquad(10)
-  $$
+  In coordinates, let $g_{ij}=\langle X_i,X_j\rangle$ and let $(g^{km})$ be
+  the inverse matrix. The \emph{Christoffel symbols of the second kind} are
+  \[
+    \Gamma_{ij}^m
+      =\tfrac12\sum_k\left(
+        \frac{\partial g_{jk}}{\partial x_i}
+       +\frac{\partial g_{ki}}{\partial x_j}
+       -\frac{\partial g_{ij}}{\partial x_k}\right)g^{km}.\tag{10}
+  \]
 \end{definition}
 
 \begin{remark}[the Levi-Civita connection and its coefficients]
   \label{rem:dc-ch2-3-7}
   \dcref{ch2:3.7}
   \uses{thm:dc-ch2-3-6,def:dc-ch2-3-7-christoffel}
-  The connection given by \cref{thm:dc-ch2-3-6} will be referred to, from now on, as the
-  \emph{Levi-Civita} (or \emph{Riemannian}) \emph{connection} on $M$. The functions $\Gamma_{ij}^k$
-  defined on $U$ by $\nabla_{X_i}X_j=\sum_k\Gamma_{ij}^k X_k$ are the
-  \emph{coefficients of the connection} $\nabla$ on $U$, and by uniqueness in
-  \cref{thm:dc-ch2-3-6} they agree with the Christoffel symbols of
-  \cref{def:dc-ch2-3-7-christoffel}: from (9) it follows that
-
-  $$
-  \sum_\ell\Gamma_{ij}^\ell g_{\ell k}=\tfrac{1}{2}\Big\{\frac{\partial}{\partial x_i}g_{jk}+\frac{\partial}{\partial x_j}g_{ki}-\frac{\partial}{\partial x_k}g_{ij}\Big\},
-  $$
-
-  which is equivalent to (10). For Euclidean space $\mathbb{R}^n$ one has
-  $\Gamma_{ij}^k=0$. In terms of the Christoffel symbols, the covariant derivative
-  has the classical expression
-
-  $$
-  \frac{DV}{dt}=\sum_k\Big\{\frac{dv^k}{dt}+\sum_{i,j}\Gamma_{ij}^k v^j\frac{dx_i}{dt}\Big\}X_k,
-  $$
-
-  which follows from (1). In Euclidean spaces the covariant derivative coincides
-  with the usual derivative.
+  The connection of \cref{thm:dc-ch2-3-6} is the \emph{Levi-Civita} or
+  \emph{Riemannian connection}. Its coordinate coefficients, defined by
+  $\nabla_{X_i}X_j=\sum_k\Gamma_{ij}^kX_k$, satisfy
+  \[
+    \sum_\ell\Gamma_{ij}^\ell g_{\ell k}
+      =\tfrac12\left(
+        \frac{\partial g_{jk}}{\partial x_i}
+       +\frac{\partial g_{ki}}{\partial x_j}
+       -\frac{\partial g_{ij}}{\partial x_k}\right),
+  \]
+  and hence agree with \cref{def:dc-ch2-3-7-christoffel}. Moreover,
+  \[
+    \frac{DV}{dt}
+      =\sum_k\left(\frac{dv^k}{dt}
+        +\sum_{i,j}\Gamma_{ij}^kv^j\frac{dx_i}{dt}\right)X_k.
+  \]
+  In Euclidean coordinates, $\Gamma_{ij}^k=0$, so this is the ordinary
+  derivative.
 \end{remark}

@@ -1,650 +1,690 @@
-% Source: Lee, "Introduction to Riemannian Manifolds" (2nd ed.), Chapter 9 "The Gauss–Bonnet Theorem", PDF pages 274-293 of the cited source.
-% Transcribed from the cited source and organized according to
-% leanblueprint conventions (semantic \label, bracketed titles, \uses dependency edges, \dcref to Lee's own numbering) below.
-
-All the work we have done so far has been focused on purely local properties of
-Riemannian manifolds and their submanifolds. We are finally in a position to prove
-our first major local-to-global theorem in Riemannian geometry: the Gauss--Bonnet
-theorem. The grandfather of all such theorems in Riemannian geometry, it is a local-
-to-global theorem par excellence, because it asserts the equality of two very differ-
-ently defined quantities on a compact Riemannian 2-manifold: the integral of the
-Gaussian curvature, which is determined by the local geometry, and $2\pi$ times the
-Euler characteristic, which is a global topological invariant. Although in this form
-it applies only in two dimensions, it has provided a model and an inspiration for
-innumerable local-to-global results in higher-dimensional geometry, some of which
-we will prove in Chapter 12.
-
-This chapter begins with some not-so-elementary notions from plane geometry,
-leading up to a proof of Hopf's rotation index theorem, which expresses the
-intuitive idea that the velocity vector of a simple closed plane curve, or more gen-
-erally of a ``curved polygon,'' makes a net rotation through an angle of exactly $2\pi$
-as one traverses the curve counterclockwise. Then we investigate curved polygons
-on Riemannian 2-manifolds, leading to a far-reaching generalization of the rota-
-tion index theorem called the Gauss--Bonnet formula, which relates the exterior an-
-gles, geodesic curvature of the boundary, and Gaussian curvature in the interior of
-a curved polygon. Finally, we use the Gauss--Bonnet formula to prove the global
-statement of the Gauss--Bonnet theorem.
-
 \section{Some Plane Geometry}
 
-Look back for a moment at the three local-to-global theorems about plane geometry
-stated in Chapter 1: the angle-sum theorem, the circumference theorem, and the total
-curvature theorem. When looked at correctly, these three theorems all turn out to be
-manifestations of the same phenomenon: as one traverses a simple closed plane
-curve, the velocity vector makes a net rotation through an angle of exactly $2\pi$. Our
-task in the first part of this chapter is to make these notions precise.
-
-Throughout this section, $\gamma : [a,b] \to \mathbb{R}^2$ is an admissible curve in the plane. We
-say that $\gamma$ is a \emph{simple closed curve} if $\gamma(a) = \gamma(b)$ but $\gamma$ is injective on $[a, b)$. We do not
-assume that $\gamma$ has unit speed; instead, we define the \emph{unit tangent vector field of $\gamma$} as
-the vector field $T$ along each smooth segment of $\gamma$ given by
+Let $\gamma\colon[a,b]\to\mathbb R^2$ be admissible. It is a \emph{simple
+closed curve} if $\gamma(a)=\gamma(b)$ and $\gamma$ is injective on $[a,b)$.
+On each smooth segment, its unit tangent is
 \[
-T(t) = \frac{\gamma'(t)}{|\gamma'(t)|}.
+T(t)=\frac{\gamma'(t)}{|\gamma'(t)|}\in S^1.
 \]
 
-Since each tangent space to $\mathbb{R}^2$ is naturally identified with $\mathbb{R}^2$ itself, we can think
-of $T$ as a map into $\mathbb{R}^2$, and since $T$ has unit length, it takes its values in $S^1$.
-
-If $\gamma$ is smooth (or at least continuously differentiable), we define a \emph{tangent angle
-function} for $\gamma$ to be a continuous function $\theta: [a,b] \to \mathbb{R}$ such that $T(t) =
-(\cos\theta(t), \sin\theta(t))$ for all $t \in [a,b]$. It follows from the theory of covering spaces
-that such a function exists: the map $q: \mathbb{R} \to S^1$ given by $q(s) = (\cos s, \sin s)$ is
-a smooth covering map, and the path-lifting property of covering maps (Prop.
-\uses{prop:lifting-properties-covering(b)}
-A.54(b)) ensures that there is a continuous function $\theta: [a,b] \to \mathbb{R}$ that satisfies
-$q(\theta(t)) = T(t)$. By the unique lifting property (Prop. A.54(a)),
-\uses{prop:lifting-properties-covering(a)}
-a lift is uniquely determined once its value at any single point is determined, and thus any two lifts
-differ by a constant integral multiple of $2\pi$.
-
-If $\gamma$ is a continuously differentiable simple closed curve such that $\gamma'(a) = \gamma'(b)$
-(Fig. 9.1), then $(\cos\theta(a), \sin\theta(a)) = (\cos\theta(b), \sin\theta(b))$, so $\theta(b) - \theta(a)$ must be an
-integral multiple of $2\pi$. For such a curve, we define the \emph{rotation index} of $\gamma$ to be
-the following integer:
+If $\gamma$ is continuously differentiable, a \emph{tangent angle function}
+is a continuous $\theta\colon[a,b]\to\mathbb R$ satisfying
 \[
-\rho(\gamma) = \frac{1}{2\pi} \bigl(\theta(b) - \theta(a)\bigr),
+T(t)=(\cos\theta(t),\sin\theta(t)).
 \]
-where $\theta$ is any tangent angle function for $\gamma$. For any other choice of tangent angle
-function, $\theta(a)$ and $\theta(b)$ would change by addition of the same constant, so the
-rotation index is independent of the choice of $\theta$.
+It exists by lifting $T$ through the covering
+$q(s)=(\cos s,\sin s)$.
+\uses{prop:lifting-properties-covering}
+The unique lifting property implies that any two tangent angle functions differ
+by a constant in $2\pi\mathbb Z$.
+\uses{prop:lifting-properties-covering}
+If in addition $\gamma$ is simple closed and
+$\gamma'(a)=\gamma'(b)$, its \emph{rotation index} is
+\[
+\rho(\gamma)=\frac{\theta(b)-\theta(a)}{2\pi}\in\mathbb Z.
+\]
+This integer is independent of the tangent angle function.
 
-We would also like to extend the definition of the rotation index to certain piecewise
-regular closed curves. For this purpose, we have to take into account the
-``jumps'' in the tangent angle function at corners. To do so, suppose $\gamma: [a, b] \to \mathbb{R}^2$
-is an admissible simple closed curve, and let $(a_0, \ldots, a_k)$ be an admissible partition of $[a,b]$. The points $\gamma(a_i)$ are called the \emph{vertices of $\gamma$}, and the curve segments $\gamma|_{[a_{i-1},a_i]}$ are called its \emph{edges or sides}.
-
-At each vertex $\gamma(a_i)$, recall that $\gamma$ has left-hand and right-hand velocity vectors denoted by $\gamma'(a_i^-)$ and $\gamma'(a_i^+)$, respectively; let $T(a_i^-)$ and $T(a_i^+)$ denote the corresponding unit vectors. We classify each vertex into one of three categories:
+Now let $(a_0,\ldots,a_k)$ be an admissible partition for an admissible simple
+closed curve, with $a_0=a$ and $a_k=b$. The points $\gamma(a_i)$ are its
+\emph{vertices}, and the restrictions to $[a_{i-1},a_i]$ are its \emph{edges}.
+At a vertex, write $T(a_i^-)$ and $T(a_i^+)$ for the left and right unit
+tangents. A vertex is
 \begin{itemize}
-\item If $T(a_i^-) \neq \pm T(a_i^+)$, then $\gamma(a_i)$ is an \emph{ordinary vertex}.
-\item If $T(a_i^-) = T(a_i^+)$, then $\gamma(a_i)$ is a \emph{flat vertex}.
-\item If $T(a_i^-) = -T(a_i^+)$, then $\gamma(a_i)$ is a \emph{cusp vertex}.
+\item \emph{ordinary} if $T(a_i^-)\ne\pm T(a_i^+)$;
+\item \emph{flat} if $T(a_i^-)=T(a_i^+)$;
+\item a \emph{cusp} if $T(a_i^-)=-T(a_i^+)$.
 \end{itemize}
 
-% [FIGURE 9.2: exterior angle at ordinary vertex, showing unit tangent vectors and angle measure]
-% [FIGURE 9.3: cusp vertex with circular arc showing ambiguity between pi and -pi]
+At an ordinary vertex, the \emph{exterior angle} $\varepsilon_i$ is the
+oriented angle from $T(a_i^-)$ to $T(a_i^+)$ in $(-\pi,\pi)$. It is positive
+exactly when the ordered pair $(T(a_i^-),T(a_i^+))$ is positively oriented.
+At a flat vertex set $\varepsilon_i=0$; at a cusp it is undefined because the
+choices $\pi$ and $-\pi$ cannot be distinguished. At the common endpoint
+$\gamma(a)=\gamma(b)$, use $T(b)$ as the left tangent and $T(a)$ as the right
+tangent. For an ordinary or flat vertex, the \emph{interior angle} is
+\[
+\vartheta_i=\pi-\varepsilon_i,
+\qquad 0<\vartheta_i<2\pi.
+\]
 
-At each ordinary vertex, define the \emph{exterior angle at $\gamma(a_i)$} to be the oriented measure $\varepsilon_i$ of the angle from $T(a_i^-)$ to $T(a_i^+)$, chosen to be in the interval $(-\pi, \pi)$, with a positive sign if $(T(a_i^-), T(a_i^+))$ is an oriented basis for $\mathbb{R}^2$, and a negative sign otherwise (Fig. 9.2). At a flat vertex, the exterior angle is defined to be zero. At a cusp vertex, there is no simple way to choose unambiguously between $\pi$ and $-\pi$ (Fig. 9.3), so we leave the exterior angle undefined. The vertex $\gamma(a) = \gamma(b)$ is handled in the same way, with $T(b)$ and $T(a)$ playing the roles of $T(a_j^-)$ and $T(a_j^+)$, respectively. If $\gamma(a_i)$ is an ordinary or a flat vertex, the \emph{interior angle at $\gamma(a_i)$} is defined to be $\theta_i = \pi - \varepsilon_i$; our conventions ensure that $0 < \theta_i < 2\pi$.
+A \emph{curved polygon} is an admissible simple closed plane curve without
+cusp vertices whose image is the boundary of a precompact open set
+$\Omega\subseteq\mathbb R^2$. It is \emph{positively oriented} when its smooth
+tangent agrees with the boundary orientation induced by Stokes's theorem;
+equivalently, $\Omega$ lies to its left.
 
-The curves we wish to consider are of the following type: a \emph{curved polygon} in the plane is an admissible simple closed curve without cusp vertices, whose image is the boundary of a precompact open set $\Omega \subseteq \mathbb{R}^2$. The set $\Omega$ is called the \emph{interior of $\gamma$} (not to be confused with the topological interior of its image as a subset of $\mathbb{R}^2$, which is the empty set).
-
-Suppose $\gamma : [a,b] \to \mathbb{R}^2$ is a curved polygon. If $\gamma$ is parametrized so that at smooth points, $\gamma'$ is positively oriented with respect to the induced orientation on $\partial \Omega$ in the sense of Stokes's theorem, we say that $\gamma$ is \emph{positively oriented} (Fig. 9.4). Intuitively, this means that $\gamma$ is parametrized in the counterclockwise direction, or that $\Omega$ is always to the left of $\gamma$.
-
-We define a \emph{tangent angle function for a curved polygon $\gamma$} to be a piecewise continuous function $\theta : [a,b] \to \mathbb{R}$ that satisfies $T(t) = (\cos\theta(t), \sin\theta(t))$ at each point $t$ where $\gamma$ is smooth, that is continuous from the right at each $a_i$, and that satisfies
-
-\[\theta(a_i) = \lim_{t \nearrow a_i} \theta(t) + \varepsilon_i \quad (9.1)\]
-
-and
-
-\[\theta(b) = \lim_{t \nearrow b} \theta(t) + \varepsilon_k \quad (9.2)\]
-
-where $\varepsilon_k$ is the exterior angle at $\gamma(b)$. (See Figs. 9.5 and 9.6.) Such a function always exists: start by defining $\theta(t)$ for $t \in [a, a_1)$ to be any lift of $T$ on that interval; then on $[a_1, a_2)$ define $\theta(t)$ to be the unique lift that satisfies (9.1), and continuing by induction, ending with $\theta(b)$ defined by (9.2). Once again, the difference between any two such functions is a constant integral multiple of $2\pi$. We define the \emph{rotation index} of $\gamma$ to be $\rho(\gamma) = \frac{1}{2\pi}(\theta(b) - \theta(a))$ just as in the smooth case. As before, $\rho(\gamma)$ is an integer, because the definition ensures that $(\cos \theta(b), \sin \theta(b)) = (\cos \theta(a), \sin \theta(a))$.
-
-% [FIGURE 9.4: Positively oriented curved polygon]
-% [FIGURE 9.5: Tangent angle at a vertex with exterior angle]
-% [FIGURE 9.6: Tangent angle function graph]
-
-The following theorem was first proved by Heinz Hopf in 1935. (For a readable version of Hopf's proof, see [Hop89, p. 42].) It is frequently referred to by the German name given to it by Hopf, the \emph{Umlaufsatz}.
+A tangent angle function for a curved polygon is a piecewise continuous
+$\theta\colon[a,b]\to\mathbb R$ that represents $T$, is right-continuous at
+each $a_i$, and incorporates the exterior-angle jumps
+\[
+\theta(a_i)=\lim_{t\nearrow a_i}\theta(t)+\varepsilon_i
+\qquad (9.1)
+\]
+at the interior vertices, together with
+\[
+\theta(b)=\lim_{t\nearrow b}\theta(t)+\varepsilon_k.
+\qquad (9.2)
+\]
+Successive path lifting on the edges gives such a function, unique up to a
+constant in $2\pi\mathbb Z$. Define
+\[
+\rho(\gamma)=\frac{\theta(b)-\theta(a)}{2\pi}\in\mathbb Z.
+\]
 
 \begin{theorem}[Rotation Index Theorem]
 \label{thm:rotation-index-theorem}
 \dcref{ch9:9.1}
-The rotation index of a positively oriented curved polygon in the plane is $+1$.
+Every positively oriented curved polygon in the plane has rotation index
+$+1$.
 \end{theorem}
 
-% [FIGURE 9.7: A curved polygon shown on coordinate axes, with  \gamma (a) translated to the origin (marked with a dot), arrows indicating positive x and y directions, and the tangent vector T(a) = T(b) shown on the positive x-axis.]
-
 \begin{proof}
-Let $\gamma : [a,b] \to \mathbb{R}^2$ be such a curved polygon. Assume first that all the vertices of $\gamma$ are flat. This means, in particular, that $\gamma'$ is continuous and $\gamma'(a) = \gamma'(b)$.
-Since $\gamma(a) = \gamma(b)$, we can extend $\gamma$ to a continuous map from $\mathbb{R}$ to $\mathbb{R}^2$ by requiring it to be periodic of period $b - a$, and our hypothesis $\gamma'(a) = \gamma'(b)$ guarantees that the extended map still has continuous first derivatives. Define $T(t) = \gamma'(t)/|\gamma'(t)|$ as before.
-
-Let $\theta : \mathbb{R} \to \mathbb{R}$ be any lift of $T : \mathbb{R} \to S^1$. Then $\theta|_{[a,b]}$ is a tangent angle function for $\gamma$, and thus $\theta(b) = \theta(a) + 2\pi\rho(\gamma)$. If we set $\tilde{\theta}(t) = \theta(t + b - a) - 2\pi\rho(\gamma)$, then
-
-$$(\cos \tilde{\theta}(t), \sin \tilde{\theta}(t)) = (\cos \theta(t + b - a), \sin \theta(t + b - a)) = T(t + b - a) = T(t),$$
-
-so $\tilde{\theta}$ is also a lift of $T$. Because $\tilde{\theta}(a) = \theta(a)$, it follows that $\tilde{\theta} \equiv \theta$, or in other words the following equation holds for all $t \in \mathbb{R}$:
-
+\sketch First suppose all vertices are flat. Reparametrize by arclength; the
+one-sided unit tangents then agree at every vertex, so the periodically
+extended curve is continuously differentiable. Write its period as $b-a$. If
+$\theta\colon\mathbb R\to\mathbb R$ lifts its periodic unit tangent, uniqueness
+of lifts gives
 \begin{equation}
-\theta(t + b - a) = \theta(t) + 2\pi\rho(\gamma). \tag{9.3}
+\theta(t+b-a)=\theta(t)+2\pi\rho(\gamma). \tag{9.3}
 \end{equation}
-
-If $a_1$ is an arbitrary point in $[a,b]$ and $b_1 = a_1 + b - a$, then $\gamma|_{[a_1,b_1]}$ is also a positively oriented curved polygon with only flat vertices, and $\theta|_{[a_1,b_1]}$ is a tangent angle function for it. Note that (9.3) implies
-
-$$\theta(b_1) - \theta(a_1) = \theta(a_1 + b - a) - \theta(a_1) = (\theta(a_1) + 2\pi\rho(\gamma)) - \theta(a_1) = 2\pi\rho(\gamma),$$
-
-so $\gamma|_{[a_1,b_1]}$ has the same rotation index as $\gamma|_{[a,b]}$. Thus we obtain the same result by restricting $\gamma$ to any closed interval of length $b - a$.
-
-Using this freedom, we can assume that the parameter interval $[a,b]$ has been chosen so that the $y$-coordinate of $\gamma$ achieves its minimum at $t = a$. Moreover, by a translation in the $xy$-plane (which does not change $\gamma'$ or $\theta$), we may as well assume that $\gamma(a)$ is the origin. With these adjustments, the image of $\gamma$ remains in the closed upper half-plane, and $T(a) = T(b) = (1,0)$ (Fig.\ 9.7). By adding a constant integral multiple of $2\pi$ to $\theta$ if necessary, we can also assume that $\theta(a) = 0$.
-
-Next, we define a continuous \emph{secant angle function}, denoted by $\varphi(t_1, t_2)$, representing the angle between the positive $x$-direction and the vector from $\gamma(t_1)$ to $\gamma(t_2)$. To be precise, let $\Delta \subseteq \mathbb{R}^2$ be the triangular region $\Delta = \{(t_1, t_2) : a \le t_1 \le t_2 \le b\}$ (Fig. 9.8), and define a map $V: \Delta \to S^1$ by
+Thus every restriction to an interval of length $b-a$ has the same rotation
+index. Choose the initial parameter at a minimum of the $y$-coordinate,
+translate that point to the origin, and use positive orientation to obtain
 \[
-V(t_1, t_2) = \begin{cases}
-\dfrac{\gamma(t_2) - \gamma(t_1)}{|\gamma(t_2) - \gamma(t_1)|}, & t_1 < t_2 \text{ and } (t_1, t_2) \ne (a,b); \\[1mm]
-T(t_1), & t_1 = t_2; \\[1mm]
--T(b), & (t_1, t_2) = (a,b).
+T(a)=T(b)=(1,0),
+\qquad \theta(a)=0.
+\]
+The curve lies in the closed upper half-plane.
+
+On
+\[
+\Delta=\{(t_1,t_2):a\leq t_1\leq t_2\leq b\},
+\]
+define the secant-direction map
+\[
+V(t_1,t_2)=
+\begin{cases}
+\dfrac{\gamma(t_2)-\gamma(t_1)}
+{|\gamma(t_2)-\gamma(t_1)|},
+&t_1<t_2\text{ and }(t_1,t_2)\ne(a,b),\\[2mm]
+T(t_1),&t_1=t_2,\\
+-T(b),&(t_1,t_2)=(a,b).
 \end{cases}
 \]
-
-% [FIGURE 9.8: Rectangular domain [a,b]×[a,b] in the (t₁, t₂)-plane with the upper triangular region  \Delta  shaded above the diagonal.]
-% [FIGURE: Smooth curve  \gamma (t) in the plane with marked points  \gamma (t₁) and  \gamma (t₂), showing the secant line between them and associated angle  \varphi (t₁, t₂) and unit vector V(t₁, t₂).]
-
-The function $V$ is continuous at points where $t_1 < t_2$ and $(t_1, t_2) \ne (a,b)$, because $\gamma$ is continuous and injective there. To see that it is continuous elsewhere, note that for $t_1 < t_2$, the fundamental theorem of calculus gives
-
+The fundamental theorem of calculus gives, uniformly near the diagonal,
 \[
-\gamma(t_2) - \gamma(t_1) = \int_0^1 \frac{d}{ds} \gamma(t_1 + s(t_2 - t_1)) \, ds = \int_0^1 \gamma'(t_1 + s(t_2 - t_1))(t_2 - t_1) \, ds,
+\frac{\gamma(t_2)-\gamma(t_1)}{t_2-t_1}\longrightarrow\gamma'(t)
+\quad\text{as }(t_1,t_2)\to(t,t),
+\]
+so $V$ is continuous there. Periodicity gives continuity at $(a,b)$. Since
+$\Delta$ is simply connected, $V$ has a unique lift
+$\varphi\colon\Delta\to\mathbb R$ with $\varphi(a,a)=0$. Along the side
+$t_1=a$, secants point into the closed upper half-plane, so
+$\varphi(a,t_2)\in[0,\pi]$ and $\varphi(a,b)=\pi$. Along the side $t_2=b$,
+they point into the closed lower half-plane, so
+$\varphi(t_1,b)\in[\pi,2\pi]$ and $\varphi(b,b)=2\pi$. On the diagonal,
+$\varphi$ is a tangent angle function; hence
+\[
+\rho(\gamma)
+=\frac{\varphi(b,b)-\varphi(a,a)}{2\pi}=1.
 \]
 
-and thus
-
+For ordinary vertices, choose the initial endpoint away from them and round
+each corner without changing the rotation index. At a vertex $\gamma(a_i)$
+with exterior angle $\varepsilon_i$, choose
 \[
-\left| \frac{\gamma(t_2) - \gamma(t_1)}{t_2 - t_1} - \gamma'(t_1) \right| \le \int_0^1 |\gamma'(t_1 + s(t_2 - t_1)) - \gamma'(t_1)| \, ds.
+0<\alpha<\frac12(\pi-|\varepsilon_i|).
 \]
-
-Because $\gamma'$ is uniformly continuous on the compact set $[a,b]$, this last expression can be made as small as desired by taking $(t_1, t_2)$ close to $(t,t)$. It follows that
-
+The jump convention gives
 \[
-\lim_{\substack{(t_1,t_2) \to (t,t) \\ t_1 < t_2}} \frac{\gamma(t_2) - \gamma(t_1)}{t_2 - t_1} = \gamma'(t),
+\lim_{t\nearrow a_i}\theta(t)=\theta(a_i)-\varepsilon_i.
 \]
-
-and therefore
-
+Choose $\delta>0$ so that
 \[
-\lim_{\substack{(t_1,t_2) \to (t,t) \\ t_1 < t_2}} V(t_1, t_2) = \lim_{\substack{(t_1,t_2) \to (t,t) \\ t_1 < t_2}} \frac{\gamma(t_2) - \gamma(t_1)}{|\gamma(t_2) - \gamma(t_1)|}
+|\theta(t)-(\theta(a_i)-\varepsilon_i)|<\alpha
+\quad(a_i-\delta<t<a_i),
 \]
-
+and
 \[
-= \lim_{\substack{(t_1,t_2) \to (t,t) \\ t_1 < t_2}} \frac{\gamma(t_2) - \gamma(t_1)}{t_2 - t_1} \bigg/ \left| \frac{\gamma(t_2) - \gamma(t_1)}{t_2 - t_1} \right|
+|\theta(t)-\theta(a_i)|<\alpha
+\quad(a_i<t<a_i+\delta).
 \]
-
+Isolate this portion of the curve in a ball about $\gamma(a_i)$, and let
+$t_1<a_i<t_2$ be its entry and exit times. The total tangent-angle change
+$\Delta\theta$ on $[t_1,t_2]$ satisfies
 \[
-= \frac{\gamma'(t)}{|\gamma'(t)|} = T(t) = V(t,t).
+\varepsilon_i-2\alpha<\Delta\theta<\varepsilon_i+2\alpha,
+\qquad -\pi<\Delta\theta<\pi.
 \]
-
-Similarly, because $T$ is continuous,
-
-\[
-\lim_{\substack{(t_1,t_2) \to (t,t) \\ t_1 = t_2}} V(t_1, t_2) = \lim_{t_1 \to t} T(t_1) = T(t) = V(t,t).
-\]
-
-It follows that $V$ is continuous at $(t,t)$.
-
-To prove that $V$ is continuous at $(a,b)$, recall that we have extended $\gamma$ to be periodic of period $b - a$. The argument above gives
-
-\[
-\lim_{\substack{(t_1,t_2) \to (a,b) \\ t_1 < t_2}} V(t_1, t_2) = \lim_{\substack{(t_1,t_2) \to (a,b) \\ t_1 < t_2}} \frac{\gamma(t_2) - \gamma(t_1 + b - a)}{|\gamma(t_2) - \gamma(t_1 + b - a)|}
-\]
-
-\[
-= \lim_{\substack{(s_1,s_2) \to (b,b) \\ s_1 < s_2}} \frac{\gamma(s_2) - \gamma(s_1)}{|\gamma(s_2) - \gamma(s_1)|} = -T(b) = V(a,b).
-\]
-
-Thus $V$ is continuous.
-
-Since $\Delta$ is simply connected, Corollary A.57 guarantees that $V: \Delta \to S^1$ has a continuous lift $\varphi: \Delta \to \mathbb{R}$, which is unique if we require $\varphi(a,a) = 0$ (Fig.~9.9). This is our secant angle function.
-
-We can express the rotation index in terms of the secant angle function as follows:
-
-\[
-\rho(\gamma) = \frac{1}{2\pi}(\theta(b) - \theta(a)) = \frac{1}{2\pi}(\varphi(b,b) - \varphi(a,a)) = \frac{1}{2\pi} \varphi(b,b).
-\]
-
-Observe that along the side of $\Delta$ where $t_1 = a$ and $t_2 \in [a,b]$, the vector $V(a,t_2)$ has its tail at the origin and its head in the upper half-plane. Since we stipulate that $\varphi(a,a) = 0$, we must have $\varphi(a,t_2) \in [0, \pi]$ on this segment. By continuity, therefore, $\varphi(a,b) = \pi$ (since $\varphi(a,t_2)$ represents the tangent angle of $-T(b) = (-1,0)$). Similarly, on the side where $t_2 = b$, the vector $V(t_1, b)$ has its head at the origin and its tail in the upper half-plane, so $\varphi(t_1, b) \in [\pi, 2\pi]$. Therefore, since $\varphi(b,b)$ represents the tangent angle of $T(b) = (1,0)$, we must have $\varphi(b,b) = 2\pi$ and therefore $\rho(\gamma) = 1$. This completes the proof for the case in which $\gamma'$ is continuous.
-
-Now suppose $\gamma$ has one or more ordinary vertices. It suffices to show there is a curve with a continuous velocity vector field that has the same rotation index as $\gamma$. We will construct such a curve by ``rounding the corners'' of $\gamma$. It will simplify the proof somewhat if we choose the parameter interval $[a,b]$ so that $\gamma(a) = \gamma(b)$ is not one of the ordinary vertices.
-
-% [FIGURE 9.10: Isolating the change in the tangent angle at a vertex, showing a curve approaching a circle with labeled tangent vectors T(a_i^+) and T(a_i^-), angle measurements  \theta (a_i) and  \theta (a_j) -  \varepsilon _i, and points  \gamma (a_i),  \gamma (t_1),  \gamma (t_2)]
-% [FIGURE 9.11: Rounding a corner, showing a smooth curve rounding a corner near a circle]
-
-Let $\gamma(a_i)$ be any ordinary vertex, let $\varepsilon_i$ be its exterior angle, and let $\alpha$ be a positive number less than $\frac{1}{2}(\pi - |\varepsilon_i|)$. Recall that $\theta$ is continuous from the right at $a_i$ and $\lim_{t \to a_i^+} \theta(t) = \theta(a_i) - \varepsilon_i$. Therefore, we can choose $\delta$ small enough that $|\theta(t) - (\theta(a_i) - \varepsilon_i)| < \alpha$ when $t \in (a_i - \delta, a_i)$, and $|\theta(t) - \theta(a_i)| < \alpha$ when $t \in (a_i, a_i + \delta)$.
-
-The image under $\gamma$ of $[a,b] \setminus (a_i - \delta, a_i + \delta)$ is a compact set that does not contain $\gamma(a_i)$, so we can choose $r$ small enough that $\gamma$ does not enter $B_r(\gamma(a_i))$ except when $t \in (a_i - \delta, a_i + \delta)$. Let $t_1 \in (a_i - \delta, a_i)$ denote a time when $\gamma$ enters $B_r(\gamma(a_i))$, and $t_2 \in (a_i, a_i + \delta)$ a time when it leaves (Fig.\ 9.10). By our choice of $\delta$, the total change in $\theta(t)$ is not more than $\alpha$ when $t \in [t_1, a_i)$, and again not more than $\alpha$ when $t \in (a_i, t_2]$. Therefore, the total change $\Delta \theta$ in $\theta(t)$ during the time interval $[t_1, t_2]$ is between $\varepsilon_i - 2\alpha$ and $\varepsilon_i + 2\alpha$, which implies $-\pi < \Delta \theta < \pi$.
-
-Now we simply replace $\gamma|_{[t_1, t_2]}$ with a smooth curve segment $\sigma$ that has the same velocity as $\gamma$ at $\gamma(t_1)$ and $\gamma(t_2)$, and whose tangent angle increases or decreases monotonically from $\theta(t_1)$ to $\theta(t_2)$; an arc of a hyperbola will do (Fig.\ 9.11). Since the change in tangent angle of $\sigma$ is between $-\pi$ and $\pi$ and represents the angle between $T(t_1)$ and $T(t_2)$, it must be exactly $\Delta\theta$. Repeating this process for each vertex, we obtain a new curved polygon with a continuous velocity vector field whose rotation index is the same as that of $\gamma$, thus proving the theorem.
+Replace this piece by a smooth segment with the same endpoints and endpoint
+velocities whose tangent angle varies monotonically from $\theta(t_1)$ to
+$\theta(t_2)$. Its angle change is the unique representative in
+$(-\pi,\pi)$, hence equals $\Delta\theta$. Repeating at every ordinary vertex
+produces a positively oriented simple closed curve with continuous velocity
+and the same rotation index, so the first case applies.
 \end{proof}
-
-From the rotation index theorem, it is not hard to deduce the three local-to-global theorems mentioned at the beginning of the chapter as corollaries. (The angle-sum theorem is immediate; for the total curvature theorem, the trick is to show that $\theta'(t)$ is equal to the signed curvature of $\gamma$; the circumference theorem follows from the total curvature theorem as mentioned in Chapter~1.) However, instead of proving them directly, we will prove a general formula, called the \emph{Gauss--Bonnet formula}, from which these results and more follow easily. You will easily see how the statement and proof of Theorem~9.3 below can be simplified in case the metric is Euclidean.
-
-% [FIGURE: A curved polygon on a surface: shows a manifold M with a region  \Omega  marked inside, with a mapping arrow to a corresponding curved region in  \mathbb{R} ²]
-
 \section{The Gauss--Bonnet Formula}
 
-We now direct our attention to the case of an oriented Riemannian 2-manifold $(M,g)$. In this setting, an admissible simple closed curve $\gamma : [a,b] \to M$ is called a \textbf{curved polygon in $M$} if the image of $\gamma$ is the boundary of a precompact open set $\Omega \subseteq M$, and there is an oriented smooth coordinate disk containing $\Omega$ under whose image $\gamma$ is a curved polygon in the plane (Fig.~9.12). As in the planar case, we call $\Omega$ the \textbf{interior of $\gamma$}. A curved polygon whose edges are all geodesic segments is called a \textbf{geodesic polygon}.
+Let $(M,g)$ be an oriented Riemannian $2$-manifold.  An admissible simple
+closed curve $\gamma:[a,b]\to M$ is a \emph{curved polygon} if its image is
+the boundary of a precompact open set $\Omega\subseteq M$ and
+$\overline\Omega$ lies in an oriented coordinate disk that sends $\gamma$ to
+a planar curved polygon.  The set $\Omega$ is the \emph{interior}; if every
+edge is a geodesic segment, $\gamma$ is a \emph{geodesic polygon}.
 
-For a curved polygon $\gamma$ in $M$, our previous definitions go through almost unchanged. We say that $\gamma$ is \textbf{positively oriented} if it is parametrized in the direction of its Stokes orientation as the boundary of $\Omega$. On each smooth segment of $\gamma$, we define the \textbf{unit tangent vector field} $T(t) = \gamma'(t)/|\gamma'(t)|_g$. If $\gamma(a_i)$ is an ordinary or flat vertex, we define the \textbf{exterior angle of $\gamma$ at $\gamma(a_i)$} as the oriented measure $\varepsilon_i$ of the angle from $T(a_i^-)$ to $T(a_i^+)$ with respect to the $g$-inner product and the given orientation of $M$; explicitly, this is
-\begin{equation}
-\varepsilon_i = \frac{dV_g(T(a_i^-), T(a_i^+))}{|dV_g(T(a_i^-), T(a_i^+))|} \arccos\langle T(a_i^-), T(a_i^+) \rangle_g.
-\tag{9.4}
-\end{equation}
-
-The corresponding \textit{interior angle} of $\gamma$ at $\gamma(a_i)$ is $\theta_i = \pi - \varepsilon_i$. Exterior and interior angles at $\gamma(a) = \gamma(b)$ are defined similarly.
-
-We need a version of the rotation index theorem for curved polygons in $M$. Suppose $\gamma : [a,b] \to M$ is a curved polygon and $\Omega$ is its interior, and let $(U,\varphi)$ be an oriented smooth chart such that $U$ contains $\overline{\Omega}$. Using the coordinate map $\varphi$ to transfer $\gamma$, $\Omega$, and $g$ to the plane, we may as well assume that $g$ is a metric on some open subset $U' \subset \mathbb{R}^2$, and $\gamma$ is a curved polygon in $U'$. Let $(E_1, E_2)$ be the oriented orthonormal frame for $g$ obtained by applying the Gram--Schmidt algorithm to $(\partial_x, \partial_y)$, so that $E_1$ is a positive scalar multiple of $\partial_x$ everywhere in $U'$.
-
-We define a \textbf{tangent angle function} for $\gamma$ to be a piecewise continuous function $\theta : [a,b] \to \mathbb{R}$ that satisfies
+The curve is \emph{positively oriented} when its parametrization has the
+Stokes boundary orientation.  On each smooth edge, set
 \[
-T(t) = \cos\theta(t) E_1|_{\gamma(t)} + \sin\theta(t) E_2|_{\gamma(t)}
+T(t)=\frac{\gamma'(t)}{|\gamma'(t)|_g}.
 \]
-at each $t$ where $\gamma'$ is continuous, and that is continuous from the right and satisfies (9.1) and (9.2) at vertices. The existence of such a function follows as in the planar case, using the fact that
+At an ordinary vertex $\gamma(a_i)$, the \emph{exterior angle} is the oriented
+angle from $T(a_i^-)$ to $T(a_i^+)$,
 \begin{equation}
-T(t) = u_1(t) E_1|_{\gamma(t)} + u_2(t) E_2|_{\gamma(t)} \tag{9.5}
+\varepsilon_i=
+\frac{dV_g(T(a_i^-),T(a_i^+))}
+{|dV_g(T(a_i^-),T(a_i^+))|}
+\arccos\langle T(a_i^-),T(a_i^+)\rangle_g. \tag{9.4}
 \end{equation}
-for a pair of piecewise continuous functions $u_1, u_2 : [a,b] \to \mathbb{R}$ that can be regarded as the coordinate functions of a map $(u_1, u_2) : [a,b] \to S^1$ because $T$ has unit length.
+At a flat vertex set $\varepsilon_i=0$.  The interior angle is
+$\theta_i=\pi-\varepsilon_i$; the endpoint vertex $\gamma(a)=\gamma(b)$ is
+treated identically.
 
-The \textbf{rotation index} of $\gamma$ is $\rho(\gamma) = \frac{1}{2\pi}(\theta(b) - \theta(a))$. Because of the role played by the specific frame $(E_1, E_2)$ in the definition, it is not obvious that the rotation index has any coordinate-independent meaning; however, the following easy consequence of the rotation index theorem shows that it does not depend on the choice of coordinates.
+Choose an oriented chart containing $\overline\Omega$, and apply
+Gram--Schmidt to its coordinate frame to obtain an oriented orthonormal frame
+$(E_1,E_2)$, with $E_1$ a positive multiple of the first coordinate vector.
+A \emph{tangent angle function} is a piecewise continuous
+$\theta:[a,b]\to\mathbb R$, right-continuous at vertices and satisfying the
+prescribed exterior-angle jumps, such that
+\[
+T(t)=\cos\theta(t)E_1|_{\gamma(t)}
++\sin\theta(t)E_2|_{\gamma(t)}.
+\]
+It exists because
+\begin{equation}
+T(t)=u_1(t)E_1|_{\gamma(t)}+u_2(t)E_2|_{\gamma(t)}, \tag{9.5}
+\end{equation}
+where the piecewise continuous map $(u_1,u_2)$ takes values in $S^1$ and
+lifts locally to an angle.  Define the \emph{rotation index} by
+\[
+\rho(\gamma)=\frac{\theta(b)-\theta(a)}{2\pi}.
+\]
 
-\begin{lemma}
+\begin{lemma}[Rotation Index of a Positive Curved Polygon]
 \label{lem:rotation-index-plus-one}
 \dcref{ch9:9.2}
 \uses{thm:rotation-index-theorem}
-If $M$ is an oriented Riemannian $2$-manifold, the rotation index of every positively oriented curved polygon in $M$ is $+1$.
+Every positively oriented curved polygon in an oriented Riemannian
+$2$-manifold has rotation index $+1$.
 \end{lemma}
 
 \begin{proof}
-If we use the given oriented coordinate chart to regard $\gamma$ as a curved polygon in the plane, we can compute its tangent angle function either with respect to $g$ or with respect to the Euclidean metric $\bar{g}$. In either case, $\rho(\gamma)$ is an integer because $\theta(a)$ and $\theta(b)$ both represent the angle between the same two vectors, calculated with respect to some inner product. Now for $0 \le s \le 1$, let $g_s = sg + (1-s)\bar{g}$. By the same reasoning, the rotation index $\rho_{g_s}(\gamma)$ with respect to $g_s$ is also an integer for each $s$, so the function $f(s) = \rho_{g_s}(\gamma)$ is integer-valued.
-
-In fact, the function $f$ is continuous in $s$, as can be deduced easily from the following observations: (1) Our preferred $g_s$-orthonormal frame $(E_1^{(s)}, E_2^{(s)})$ depends continuously on $s$, as can be seen from the formulas (2.5)--(2.6) used to implement the Gram--Schmidt algorithm. (2) On every interval $[a_{i-1}, a_i]$ where $\gamma$ is smooth, the functions $u_1$ and $u_2$ satisfying the $g_s$-analogue of (9.5) can be expressed as $u_j(t,s) = \langle T_s(t), E_j^{(s)}|_{\gamma(t)} \rangle_{g_s}$, where $T_s(t) = \gamma'(t)/|\gamma'(t)|_{g_s}$. Thus $u_1$ and $u_2$ depend continuously on $(t,s) \in [a_{i-1}, a_i] \times [0,1]$, so the function $(u_1, u_2) : [a_{i-1}, a_i] \times [0,1] \to S^1$ has a continuous lift $\theta : [a_{i-1}, a_i] \times [0,1] \to \mathbb{R}$, uniquely determined by its value at one point. (3) At each vertex, it follows from formula (9.4) that the exterior angle depends continuously on $g_s$.
-
-Because $f$ is continuous and integer-valued, it follows that $\rho_g(\gamma) = f(1) = f(0) = \rho_{\bar{g}}(\gamma) = 1$, which was to be proved.
+\sketch
+Transfer the curve and metric to the coordinate plane, and let $\bar g$ be the
+Euclidean metric there.  For $s\in[0,1]$, set
+$g_s=sg+(1-s)\bar g$.  The rotation index $\rho_{g_s}(\gamma)$ is integral for
+every $s$.  The Gram--Schmidt frame varies continuously with $s$; on each
+smooth edge the coefficients
+\[
+u_j(t,s)=\langle T_s(t),E_j^{(s)}|_{\gamma(t)}\rangle_{g_s},
+\qquad
+T_s=\frac{\gamma'}{|\gamma'|_{g_s}},
+\]
+have a continuous angle lift, and (9.4) makes every vertex angle continuous
+in $s$.  Thus $s\mapsto\rho_{g_s}(\gamma)$ is continuous and integer-valued,
+so it is constant.  The planar rotation-index theorem gives
+$\rho_g(\gamma)=\rho_{\bar g}(\gamma)=1$.
 \end{proof}
 
-% [FIGURE 9.13: Domain  \Omega  bounded by curve  \gamma (t) with inward-pointing normal vector N(t) and tangent vector  \gamma '(t)]
-
-From this point onward, we assume for convenience that our curved polygon $\gamma$
-is given a unit-speed parametrization, so the unit tangent vector field $T(t)$ is equal
-to $\gamma'(t)$. There is a unique unit normal vector field $N$ along the smooth portions
-of $\gamma$ such that $(\gamma'(t), N(t))$ is an oriented orthonormal basis for $T_{\gamma(t)}M$ for each $t$.
-If $\gamma$ is positively oriented as the boundary of $\Omega$, this is equivalent to $N$ being the
-inward-pointing normal to $\partial\Omega$ (Fig. 9.13). We define the \textbf{signed curvature} of $\gamma$ at
-smooth points of $\gamma$ by
+Henceforth parametrize $\gamma$ by unit speed.  On each smooth edge, let $N$
+be the unique unit normal for which $(\gamma',N)$ is positively oriented.  If
+$\gamma$ is positively oriented, $N$ points inward along $\partial\Omega$.
+The \emph{signed geodesic curvature} is
 \[
-\kappa_N(t) = \langle D_T \gamma'(t), N(t) \rangle_g.
+\kappa_N=\langle D_T\gamma',N\rangle_g.
 \]
-
-By differentiating $|\gamma'(t)|_g^2 = 1$, we see that $D_T\gamma'(t)$ is orthogonal to $\gamma'(t)$, and therefore
-we can write $D_T\gamma'(t) = \kappa_N(t) N(t)$, and the (unsigned) geodesic curvature of
-$\gamma$ is $\kappa(t) = |\kappa_N(t)|$. The sign of $\kappa_N(t)$ is positive if $\gamma$ is curving toward $\Omega$, and
-negative if it is curving away.
+Since $|\gamma'|=1$,
+$D_T\gamma'=\kappa_NN$ and the unsigned geodesic curvature is
+$|\kappa_N|$.  The sign is positive when the curve bends toward $\Omega$.
 
 \begin{theorem}[The Gauss--Bonnet Formula]
 \label{thm:gauss-bonnet-formula}
 \dcref{ch9:9.3}
 \uses{prob:arc-length-integral,thm:rotation-index-theorem,lem:rotation-index-plus-one}
-Let $(M, g)$ be an oriented Riemannian 2-manifold. Suppose $\gamma$ is a positively oriented curved polygon in $M$, and $\Omega$ is its interior. Then
+Let $\gamma$ be a positively oriented curved polygon in an oriented
+Riemannian $2$-manifold, with interior $\Omega$ and exterior angles
+$\varepsilon_1,\ldots,\varepsilon_k$.  Then
 \begin{equation}
-\int_\Omega K \, dA + \int_\gamma \kappa_N \, ds + \sum_{i=1}^k \varepsilon_i = 2\pi,
-\tag{9.6}
+\int_\Omega K\,dA+\int_\gamma\kappa_N\,ds
++\sum_{i=1}^k\varepsilon_i=2\pi, \tag{9.6}
 \end{equation}
-where $K$ is the Gaussian curvature of $g$, $dA$ is its Riemannian volume form,
-$\varepsilon_1, \ldots, \varepsilon_k$ are the exterior angles of $\gamma$, and the second integral is taken with respect
-to arc length (Problem 2-32).
+where $K$ is Gaussian curvature, $dA$ is the oriented Riemannian area form,
+and the boundary integral is with respect to arc length.
 \end{theorem}
 
 \begin{proof}
-Let $(a_0, \ldots, a_k)$ be an admissible partition of $[a,b]$, and let $(x, y)$ be oriented
-smooth coordinates on an open set $U$ containing $\bar{\Omega}$. Let $\theta : [a, b] \to \mathbb{R}$ be a tangent
-angle function for $\gamma$. Using the rotation index theorem and the fundamental theorem
-of calculus, we can write
+\sketch
+Let $(a_0,\ldots,a_k)$ be an admissible partition, choose oriented
+coordinates on a neighborhood of $\overline\Omega$, and let $\theta$ be a
+tangent angle function.  The rotation-index lemma and the fundamental theorem
+of calculus give
 \begin{equation}
-2\pi = \theta(b) - \theta(a) = \sum_{i=1}^k \varepsilon_i + \sum_{i=1}^k \int_{a_{i-1}}^{a_i} \theta'(t)\,dt. \tag{9.7}
+2\pi=\theta(b)-\theta(a)
+=\sum_{i=1}^k\varepsilon_i
++\sum_{i=1}^k\int_{a_{i-1}}^{a_i}\theta'(t)\,dt. \tag{9.7}
 \end{equation}
 
-To prove (9.6), we need to derive a relationship among $\theta'$, $\kappa_N$, and $K$.
-Let $(E_1, E_2)$ be the oriented $g$-orthonormal frame obtained by applying the
-Gram--Schmidt algorithm to $(\partial/\partial x, \partial/\partial y)$ as before. Then by definition of $\theta$ and
-$N$, the following formulas hold at smooth points of $\gamma$:
-\begin{align*}
-\gamma'(t) &= \cos\theta(t) E_1|_{\gamma(t)} + \sin\theta(t) E_2|_{\gamma(t)};\\
-N(t) &= -\sin\theta(t) E_1|_{\gamma(t)} + \cos\theta(t) E_2|_{\gamma(t)}.
-\end{align*}
-
-Differentiating $\gamma'$ (and omitting the $t$ dependence from the notation for simplicity),
-we get
-\begin{equation}
-D_t\gamma' = -(\sin\theta)\theta' E_1 + (\cos\theta)\nabla_{\gamma'} E_1 + (\cos\theta)\theta' E_2 + (\sin\theta)\nabla_{\gamma'} E_2
-= \theta' N + (\cos\theta)\nabla_{\gamma'} E_1 + (\sin\theta)\nabla_{\gamma'} E_2.
-\tag{9.8}
-\end{equation}
-
-Next we analyze the covariant derivatives of $E_1$ and $E_2$. Because $(E_1, E_2)$ is an
-orthonormal frame, for every vector $v$ we have
-\begin{align*}
-0 &= \nabla_v|E_1|^2 = 2\langle \nabla_v E_1, E_1 \rangle,\\
-0 &= \nabla_v|E_2|^2 = 2\langle \nabla_v E_2, E_2 \rangle,\\
-0 &= \nabla_v\langle E_1, E_2 \rangle = \langle \nabla_v E_1, E_2 \rangle + \langle E_1, \nabla_v E_2 \rangle.
-\end{align*}
-
-The first two equations show that $\nabla_v E_1$ is a multiple of $E_2$ and $\nabla_v E_2$ is a multiple
-of $E_1$. Define a 1-form $\omega$ by
+For the oriented orthonormal frame $(E_1,E_2)$ used above,
 \[
-\omega(v) = \langle E_1, \nabla_v E_2 \rangle = -\langle \nabla_v E_1, E_2 \rangle.
+\gamma'=\cos\theta E_1+\sin\theta E_2,
+\qquad
+N=-\sin\theta E_1+\cos\theta E_2.
 \]
-
-It follows that the covariant derivatives of the basis vectors are given by
+Differentiation along each smooth edge gives
+\begin{equation}
+D_t\gamma'=\theta'N+(\cos\theta)\nabla_{\gamma'}E_1
++(\sin\theta)\nabla_{\gamma'}E_2. \tag{9.8}
+\end{equation}
+Define the connection $1$-form
+\[
+\omega(v)=\langle E_1,\nabla_vE_2\rangle
+=-\langle\nabla_vE_1,E_2\rangle.
+\]
+Metric compatibility yields
 \begin{align}
-\nabla_v E_1 &= -\omega(v) E_2;\\
-\nabla_v E_2 &= \omega(v) E_1.
+\nabla_vE_1&=-\omega(v)E_2,\\
+\nabla_vE_2&=\omega(v)E_1.
 \label{eq:covariant-frame-derivatives}
 \tag{9.9}
 \end{align}
-
-Thus the 1-form $\omega$ completely determines the connection in $U$. (In fact, when the
-connection is expressed in terms of the local frame $(E_1, E_2)$ as in Problem 4-14, this
-computation shows that the connection 1-forms are just $\omega_2^1 = -\omega_1^2 = \omega$, $\omega_1^1 =
-\omega_2^2 = 0$; but it is simpler in this case just to derive the result directly as we have
-done.)
-
-Using (9.8) and (9.9), we can compute
-\begin{align*}
-\kappa_N &= \langle D_t \gamma', N \rangle \\
-&= \langle \theta' N, N \rangle + \cos \theta \langle \nabla_{\gamma'} E_1, N \rangle + \sin \theta \langle \nabla_{\gamma'} E_2, N \rangle \\
-&= \theta' - \cos \theta \langle \omega(\gamma') E_2, N \rangle + \sin \theta \langle \omega(\gamma') E_1, N \rangle \\
-&= \theta' - \cos^2 \theta\, \omega(\gamma') - \sin^2 \theta\, \omega(\gamma') \\
-&= \theta' - \omega(\gamma').
-\end{align*}
-
-Therefore, (9.7) becomes
-\begin{align*}
-2\pi &= \sum_{i=1}^{k} \varepsilon_i + \sum_{i=1}^{k} \int_{a_{i-1}}^{a_i} \kappa_N(t)\, dt + \sum_{i=1}^{k} \int_{a_{i-1}}^{a_i} \omega(\gamma'(t))\, dt \\
-&= \sum_{i=1}^{k} \varepsilon_i + \int_\gamma \kappa_N \, ds + \int_\gamma \omega.
-\end{align*}
-
-The theorem will therefore be proved if we can show that
+Substituting these identities into (9.8) gives
+\[
+\kappa_N=\langle D_t\gamma',N\rangle
+=\theta'-\omega(\gamma').
+\]
+Equation (9.7) becomes
+\[
+2\pi=\sum_{i=1}^k\varepsilon_i
++\int_\gamma\kappa_N\,ds+\int_\gamma\omega.
+\]
+It remains to prove
 \begin{equation}
-\int_\gamma \omega = \int_\Omega K\, dA. \tag{9.10}
+\int_\gamma\omega=\int_\Omega K\,dA. \tag{9.10}
 \end{equation}
 
-Because $\Omega$ is a smooth manifold with corners (see [LeeSM, pp.~415--419]), we can apply Stokes's theorem and conclude that the left-hand side of (9.10) is equal to $\int_\Omega d\omega$. The last step of the proof is to show that $d\omega = K\, dA$. This follows from the general formula relating the curvature tensor and the connection 1-forms given in Problem 7-5; but in the case of two dimensions we can give an easy direct proof. Since $(E_1, E_2)$ is an oriented orthonormal frame, it follows from Proposition 2.41 that $dA(E_1, E_2) = 1$. Using (9.9), we compute
+The closure $\overline\Omega$ is a smooth manifold with corners, so Stokes's
+theorem identifies the left side with $\int_\Omega d\omega$.  Since
+$dA(E_1,E_2)=1$, the curvature convention and (9.9) give
 \begin{align*}
-K &= K\, dA(E_1, E_2) = Rm(E_1, E_2, E_2, E_1) \\
-&= \langle \nabla_{E_1} \nabla_{E_2} E_2 - \nabla_{E_2} \nabla_{E_1} E_2 - \nabla_{[E_1,E_2]} E_2, E_1 \rangle \\
-&= \langle \nabla_{E_1} (\omega(E_2)E_1) - \nabla_{E_2} (\omega(E_1)E_1) - \omega([E_1, E_2])E_1, E_1 \rangle \\
-&= \langle E_1(\omega(E_2))E_1 + \omega(E_2)\nabla_{E_1} E_1 - E_2(\omega(E_1))E_1 - \omega(E_1)\nabla_{E_2} E_1 - \omega([E_1, E_2])E_1, E_1 \rangle \\
-&= E_1(\omega(E_2)) - E_2(\omega(E_1)) - \omega([E_1, E_2]) \\
-&= d\omega(E_1, E_2).
+K
+&=\mathrm{Rm}(E_1,E_2,E_2,E_1)\\
+&=\left\langle
+\nabla_{E_1}\nabla_{E_2}E_2
+-\nabla_{E_2}\nabla_{E_1}E_2
+-\nabla_{[E_1,E_2]}E_2,E_1\right\rangle\\
+&=E_1(\omega(E_2))-E_2(\omega(E_1))-\omega([E_1,E_2])\\
+&=d\omega(E_1,E_2).
 \end{align*}
-
-This completes the proof.
+Thus $d\omega=K\,dA$, proving (9.10) and (9.6).
 \end{proof}
-
-The three local-to-global theorems of plane geometry stated in Chapter 1 follow from the Gauss--Bonnet formula as easy corollaries.
 
 \begin{corollary}[Angle-Sum Theorem]
 \label{cor:angle-sum-theorem}
 \dcref{ch9:9.4}
 \uses{thm:gauss-bonnet-formula}
-The sum of the interior angles of a Euclidean triangle is $\pi$.
+The interior angles of a Euclidean triangle sum to $\pi$.
 \end{corollary}
 
 \begin{corollary}[Circumference Theorem]
 \label{cor:circumference-theorem}
 \dcref{ch9:9.5}
 \uses{thm:gauss-bonnet-formula}
-The circumference of a Euclidean circle of radius $R$ is $2\pi R$.
+A Euclidean circle of radius $R$ has circumference $2\pi R$.
 \end{corollary}
-
-% [FIGURE 9.14: Valid and invalid intersections of triangles in a triangulation]
 
 \begin{corollary}[Total Curvature Theorem]
 \label{cor:total-curvature-theorem}
 \dcref{ch9:9.6}
 \uses{thm:gauss-bonnet-formula}
-If $\gamma : [a,b] \to \mathbb{R}^2$ is a smooth, unit-speed, simple closed curve such that $\gamma'(a) = \gamma'(b)$, and $N$ is the inward-pointing normal, then
+If $\gamma:[a,b]\to\mathbb R^2$ is smooth, unit speed, simple, and closed,
+$\gamma'(a)=\gamma'(b)$, and $N$ is its inward normal, then
 \[
-\int_a^b \kappa_N(t) \, dt = 2\pi.
+\int_a^b\kappa_N(t)\,dt=2\pi.
 \]
 \end{corollary}
-
 \section{The Gauss--Bonnet Theorem}
 
-It is now a relatively easy matter to ``globalize'' the Gauss--Bonnet formula to obtain the Gauss--Bonnet theorem. The link between the local and global results is provided by \emph{triangulations}, so we begin by discussing this construction borrowed from algebraic topology.
-
-Let $M$ be a smooth, compact 2-manifold. A \emph{curved triangle} in $M$ is a curved polygon with exactly three edges and three vertices. A \emph{smooth triangulation} of $M$ is a finite collection of curved triangles with disjoint interiors such that the union of the triangles with their interiors is $M$, and the intersection of any pair of triangles (if not empty) is either a single vertex of each or a single edge of each (Fig.~9.15). Every smooth, compact surface possesses a smooth triangulation. In fact, it was proved by Tibor Radó [Rad25] in 1925 that every compact \emph{topological} 2-manifold possesses a triangulation (without the assumption of smoothness of the edges, of course), in which every edge belongs to exactly two triangles. There is a proof for the smooth case that is not terribly hard, based on choosing geodesic triangles contained in convex geodesic balls (see Problem~9-5).
-
-If $M$ is a triangulated 2-manifold, the \textbf{Euler characteristic} of $M$ (with respect to the given triangulation) is defined to be
+A \emph{curved triangle} in a smooth compact surface is a curved polygon with
+three edges and three vertices. A \emph{smooth triangulation} is a finite
+collection of curved triangles whose interiors are pairwise disjoint, whose
+closures cover the surface, and such that two distinct triangles intersect, if
+at all, in one common vertex or one common edge. Every smooth compact surface
+admits such a triangulation. For a triangulated surface, define
 \[
-\chi(M) = V - E + F,
+\chi(M)=V-E+F,
 \]
-where $V$ is the number of vertices in the triangulation, $E$ is the number of edges, and $F$ is the number of faces (the interiors of the triangles). It is an important result of algebraic topology that the Euler characteristic is in fact a topological invariant, and is independent of the choice of triangulation (see [LeeTM, Cor. 10.25]), but we do not need that result here.
+where $V,E,F$ are its numbers of vertices, edges, and faces. This number is
+independent of the triangulation.
 
 \begin{theorem}[The Gauss--Bonnet Theorem]
 \label{thm:gauss-bonnet-theorem}
 \dcref{ch9:9.7}
 \uses{thm:gauss-bonnet-formula}
-If $(M, g)$ is a smoothly triangulated compact Riemannian 2-manifold, then
+If $(M,g)$ is a smoothly triangulated compact Riemannian $2$-manifold without
+boundary, then
 \[
-\int_M K \, dA = 2\pi \chi(M),
+\int_MK\,dA=2\pi\chi(M),
 \]
-where $K$ is the Gaussian curvature of $g$ and $dA$ is its Riemannian density.
+where $K$ is the Gaussian curvature and $dA$ is the Riemannian density.
 \end{theorem}
 
 \begin{proof}
-We may as well assume that $M$ is connected, because if not we can prove the theorem for each connected component and add up the results.
-
-First consider the case in which $M$ is orientable. In this case, we can choose an orientation for $M$, and then $\int_M K \, dA$ gives the same result whether we interpret $dA$ as the Riemannian density or as the Riemannian volume form, so we will use the latter interpretation for the proof. Let $\{\Omega_i : i = 1, \ldots, F\}$ denote the faces of the triangulation, and for each $i$, let $\{\gamma_{ij} : j = 1,2,3\}$ be the edges of $\Omega_i$ and $\{\theta_{ij} : j = 1,2,3\}$ its interior angles. Since each exterior angle is $\pi$ minus the corresponding interior angle, applying the Gauss--Bonnet formula to each triangle and summing over $i$ gives
+\sketch It suffices to treat each connected component. First suppose $M$ is
+connected and oriented, and orient every face boundary by the induced boundary
+orientation. Write the faces as $\Omega_i$, their edges as $\gamma_{ij}$, and
+their interior angles as $\theta_{ij}$, with
+$1\leq i\leq F$ and $1\leq j\leq3$. Summing the Gauss--Bonnet formula over all
+faces gives
 \begin{equation}
-\sum_{i=1}^{F} \int_{\Omega_i} K \, dA + \sum_{i=1}^{F} \sum_{j=1}^{3} \int_{\gamma_{ij}} \kappa_N \, ds + \sum_{i=1}^{F} \sum_{j=1}^{3} (\pi - \theta_{ij}) = \sum_{i=1}^{F} 2\pi. \tag{9.11}
+\sum_{i=1}^F\int_{\Omega_i}K\,dA
++\sum_{i=1}^F\sum_{j=1}^3\int_{\gamma_{ij}}\kappa_N\,ds
++\sum_{i=1}^F\sum_{j=1}^3(\pi-\theta_{ij})
+=2\pi F. \tag{9.11}
 \end{equation}
-
-Note that each edge integral appears exactly twice in the above sum, with opposite orientations, so the integrals of $\kappa_N$ all cancel out. Thus (9.11) becomes
+Every edge occurs twice with opposite boundary orientations, so the geodesic
+curvature integrals cancel. Hence
 \begin{equation}
-\int_M K \, dA + 3\pi F - \sum_{i=1}^{F} \sum_{j=1}^{3} \theta_{ij} = 2\pi F. \tag{9.12}
+\int_MK\,dA+3\pi F-
+\sum_{i=1}^F\sum_{j=1}^3\theta_{ij}=2\pi F. \tag{9.12}
 \end{equation}
-
-Note also that each interior angle $\theta_{ij}$ appears exactly once. At each vertex, the angles that touch that vertex must have interior measures that add up to $2\pi$ (Fig. 9.16); thus the angle sum can be rearranged to give exactly $2\pi V$. Equation (9.12) thus can be written
+The incident angles at each vertex sum to $2\pi$, so the double angle sum is
+$2\pi V$, and therefore
 \begin{equation}
-\int_M K \, dA = 2\pi V - \pi F. \tag{9.13}
+\int_MK\,dA=2\pi V-\pi F. \tag{9.13}
 \end{equation}
-
-Finally, since each edge appears in exactly two triangles, and each triangle has exactly three edges, the total number of edges counted with multiplicity is $2E = 3F$, where we count each edge once for each triangle in which it appears. This means that $F = 2E - 2F$, so (9.13) finally becomes
+Counting face-edge incidences gives $3F=2E$, and consequently
 \[
-\int_M K \, dA = 2\pi V - 2\pi E + 2\pi F = 2\pi \chi(M).
+2\pi V-\pi F
+=2\pi V-2\pi E+2\pi F
+=2\pi\chi(M).
 \]
 
-% [FIGURE 9.16: Interior angles at a vertex with solid and dashed lines radiating from a point on a circle, illustrating how angles at a vertex add up to 2 \pi ]
-
-Now suppose $M$ is nonorientable. Then Proposition B.18 shows that there is an orientable connected smooth manifold $\tilde{M}$ that admits a 2-sheeted smooth covering $\pi : \tilde{M} \to M$, and Exercise A.62 shows that $\tilde{M}$ is compact. If we endow $\tilde{M}$ with the metric $\tilde{g} = \pi^* g$, then the Riemannian density of $\tilde{g}$ is given by $d\tilde{A} = \pi^* dA$, and its Gaussian curvature is $\tilde{K} = \pi^* K$, so $\pi^*(K\, dA) = \tilde{K}\, d\tilde{A}$. The result of Problem 2-14 shows that $\int_{\tilde{M}} \tilde{K}\, d\tilde{A} = 2 \int_M K\, dA$.
-
-To compare Euler characteristics, we will show that the given triangulation of $M$ ``lifts'' to a smooth triangulation of $\tilde{M}$. To see this, let $\gamma$ be any curved triangle in $M$ and let $\Omega$ be its interior. By definition, this means that there exists a smooth chart $(U, \varphi)$ whose domain contains $\bar{\Omega}$ and whose image is a disk $D \subset \mathbb{R}^2$ such that $\varphi(\bar{\Omega}) = \bar{\Omega}_0$, where $\Omega_0$ is the interior of a curved triangle $\gamma_0$ in $\mathbb{R}^2$. Then $\varphi^{-1}$ is an embedding of $D$ into $M$, which restricts to a diffeomorphism $F: \Omega_0 \to \bar{\Omega}$. Because $D$ is simply connected, it follows from Corollary A.57 that $\varphi^{-1}$ (and therefore also $F$) has a lift to $\tilde{M}$, which is smooth because $\pi$ is a local diffeomorphism; and because the covering is two-sheeted, there are exactly two such lifts $F_1, F_2$. Each lift is injective because $\pi \circ F_i = F$, which is injective, and their images are disjoint because if two lifts agree at a point, they must be identical. From this it is straightforward to verify that the lifted curved triangles form a triangulation of $\tilde{M}$ with twice as many vertices, edges, and faces as that of $M$, and thus $\chi(\tilde{M}) = 2\chi(M)$. Substituting these relations into the Gauss--Bonnet theorem for $\tilde{M}$ and dividing through by 2, we obtain the analogous relation for $M$.
+Now suppose $M$ is nonorientable. Let
+$\pi\colon\widetilde M\to M$ be its connected orientable two-sheeted cover.
+It is compact, and for $\widetilde g=\pi^*g$,
+\[
+\widetilde K=\pi^*K,
+\qquad d\widetilde A=\pi^*dA,
+\qquad
+\int_{\widetilde M}\widetilde K\,d\widetilde A
+=2\int_MK\,dA.
+\]
+The triangulation lifts to $\widetilde M$. Indeed, if $\Omega$ is the interior
+of a curved triangle, choose a disk chart whose domain contains
+$\overline\Omega$ and which identifies it with the closure
+$\overline\Omega_0$ of a plane curved triangle. The resulting embedding
+\[
+F\colon\overline\Omega_0\longrightarrow\overline\Omega
+\]
+has exactly two disjoint lifts because the disk is simply connected and the
+cover has two sheets. Applying this to every triangle gives a triangulation of
+$\widetilde M$ with
+\[
+\widetilde V=2V,
+\qquad \widetilde E=2E,
+\qquad \widetilde F=2F,
+\qquad \chi(\widetilde M)=2\chi(M).
+\]
+Apply the oriented case to $\widetilde M$ and divide by $2$.
 \end{proof}
 
-The significance of this theorem cannot be overstated. Together with the classification theorem for compact surfaces, it gives us very detailed information about the possible Gaussian curvatures for metrics on compact surfaces. The classification theorem [LeeTM, Thms. 6.15 and 10.22] says that every compact, connected, orientable 2-manifold $M$ is homeomorphic to a sphere or a connected sum of $n$ tori, and every nonorientable one is homeomorphic to a connected sum of $n$ copies of the real projective plane $\mathbb{RP}^2$; the number $n$ is called the \emph{genus} of $M$. (The sphere is said to have genus zero.) By constructing simple triangulations, one can show that the Euler characteristic of an orientable surface of genus $n$ is $2-2n$, and that of a nonorientable one is $2-n$. The following corollary follows immediately from the Gauss--Bonnet theorem.
+For a compact connected orientable surface of genus $n$,
+$\chi=2-2n$; for a compact connected nonorientable surface of genus $n$,
+$\chi=2-n$.
 
 \begin{corollary}
 \label{cor:gaussian-curvature-and-topology}
 \dcref{ch9:9.8}
 \uses{thm:gauss-bonnet-theorem}
-Let $(M,g)$ be a compact Riemannian $2$-manifold and let $K$ be its Gaussian curvature.
-
+Let $(M,g)$ be a compact Riemannian $2$-manifold and let $K$ be its Gaussian
+curvature.
 \begin{enumerate}
-\item[(a)] If $M$ is homeomorphic to the sphere or the projective plane, then $K > 0$ somewhere.
-\item[(b)] If $M$ is homeomorphic to the torus or the Klein bottle, then either $K \equiv 0$ or $K$ takes on both positive and negative values.
-\item[(c)] If $M$ is any other compact surface, then $K < 0$ somewhere.
+\item[(a)] If $M$ is homeomorphic to the sphere or projective plane, then
+$K>0$ somewhere.
+\item[(b)] If $M$ is homeomorphic to the torus or Klein bottle, then either
+$K\equiv0$ or $K$ takes both positive and negative values.
+\item[(c)] On every other compact surface, $K<0$ somewhere.
 \end{enumerate}
 \end{corollary}
-
-This corollary has a remarkable converse, proved in the mid-1970s by Jerry Kazdan and Frank Warner: If $K$ is any smooth function on a compact $2$-manifold $M$ satisfying the necessary sign condition of Corollary 9.8, then there exists a Riemannian metric on $M$ for which $K$ is the Gaussian curvature. The proof is a deep application of the theory of nonlinear partial differential equations. (See [Kaz85] for a nice expository account.)
-
-In Corollary 9.8 we assumed we knew the topology of $M$ and drew conclusions about the possible curvatures it could support. In the following corollary we reverse our point of view, and use assumptions about the curvature to draw conclusions about the topology of the manifold.
 
 \begin{corollary}
 \label{cor:curvature-determines-cover}
 \dcref{ch9:9.9}
 \uses{cor:gaussian-curvature-and-topology,exer:A.62,prop:fiber-cardinality-fundamental-group}
-Let $(M,g)$ be a compact Riemannian $2$-manifold and $K$ its Gaussian curvature.
-
+Let $(M,g)$ be a compact Riemannian $2$-manifold with Gaussian curvature $K$.
 \begin{enumerate}
-\item[(a)] If $K > 0$ everywhere on $M$, then the universal covering manifold of $M$ is homeomorphic to $S^2$, and $\pi_1(M)$ is either trivial or isomorphic to the two-element group $\mathbb{Z}/2$.
-\item[(b)] If $K \le 0$ everywhere on $M$, then the universal covering manifold of $M$ is homeomorphic to $\mathbb{R}^2$, and $\pi_1(M)$ is infinite.
+\item[(a)] If $K>0$ everywhere, then the universal covering manifold is
+homeomorphic to $S^2$, and $\pi_1(M)$ is trivial or isomorphic to
+$\mathbb Z/2$.
+\item[(b)] If $K\leq0$ everywhere, then the universal covering manifold is
+homeomorphic to $\mathbb R^2$, and $\pi_1(M)$ is infinite.
 \end{enumerate}
 \end{corollary}
 
 \begin{proof}
-Suppose first that $M$ has positive Gaussian curvature. From the Gauss--Bonnet theorem, $M$ has positive Euler characteristic. The classification theorem for compact surfaces shows that the only such surfaces are the sphere (with trivial fundamental group) and the projective plane (with fundamental group isomorphic to $\mathbb{Z}/2$), both of which are covered by the sphere.
+\sketch If $K>0$, Gauss--Bonnet gives $\chi(M)>0$. Classification of compact
+surfaces leaves only $S^2$ and $\mathbb{RP}^2$, whose universal cover is
+$S^2$ and whose fundamental groups are respectively trivial and
+$\mathbb Z/2$.
 
-On the other hand, suppose $M$ has nonpositive Gaussian curvature. Then its Euler characteristic is nonpositive, so it is either an orientable surface of genus $n \ge 1$ or a nonorientable one of genus $n \ge 2$. Thus the universal covering space of $M$ is $\mathbb{R}^2$ if $M$ is the torus or the Klein bottle, and $\mathbb{H}^2$ in all other cases (see [LeeTM, Thm.~12.29]), both of which are homeomorphic to $\mathbb{R}^2$. The fact that the universal covering space is noncompact implies that the universal covering map has infinitely many sheets by the result of Exercise A.62, and then Proposition A.61 shows that $\pi_1(M)$ is infinite.
+If $K\leq0$, then $\chi(M)\leq0$. Thus $M$ is orientable of genus at least
+$1$ or nonorientable of genus at least $2$. The universal cover is
+$\mathbb R^2$ for the torus and Klein bottle and $\mathbb H^2$ otherwise; in
+all cases it is homeomorphic to $\mathbb R^2$ and is noncompact. A finite-sheeted
+cover of compact $M$ would be compact, so the universal covering has infinitely
+many sheets. Its fiber cardinality equals $|\pi_1(M)|$, which is therefore
+infinite.
 \end{proof}
 
-Much of the effort in contemporary Riemannian geometry is aimed at generalizing the Gauss-Bonnet theorem and its topological consequences to higher dimensions. As we will see in the next few chapters, most of the interesting results have required the development of different methods.
-
-However, there is one rather direct generalization of the Gauss-Bonnet theorem that deserves mention. For a compact manifold $M$ of any dimension, the \textbf{Euler characteristic of $M$}, denoted by $\chi(M)$, can be defined analogously to that of a surface and is a topological invariant (see \cite[Thm. 13.36]{LeeTM}). It turns out that it is always zero for an odd-dimensional compact manifold, but it is a nontrivial invariant in each even-dimensional case.
-
-The \textbf{Chern--Gauss--Bonnet theorem} equates the Euler characteristic of an even-dimensional compact oriented Riemannian manifold to a certain curvature integral. Versions of this theorem were proved by Heinz Hopf in 1925 for an embedded Riemannian hypersurface in Euclidean space, and independently by Carl Allendoerfer and Werner Fenchel in 1940 for an embedded Riemannian submanifold of any Euclidean space (well before Nash's 1956 proof that every Riemannian manifold has such an embedding). Finally, an intrinsic proof for the general case was discovered by Shiing-Shen Chern in 1944 (see \cite[Vol. 5]{Spi79} for a complete discussion with references). The theorem asserts that for each $2n$-dimensional oriented inner product space $V$, there exists a basis-independent function
+For a compact manifold of any dimension, the Euler characteristic is a
+triangulation-independent topological invariant; it vanishes in odd dimensions
+and may be nonzero in even dimensions (see \cite[Thm. 13.36]{LeeTM}). For each
+oriented $2n$-dimensional inner product space $V$, the
+\emph{Chern--Gauss--Bonnet theorem} provides a basis-independent Pfaffian map
 \[
-\text{Pf}: \mathcal{R}(V^*) \to \Lambda^{2n}(V^*),
+\operatorname{Pf}\colon\mathcal R(V^*)\longrightarrow\Lambda^{2n}(V^*)
 \]
-called the \textbf{Pfaffian}, with the property that for every oriented compact Riemannian $2n$-manifold $M$,
+such that every oriented compact Riemannian $2n$-manifold satisfies
 \[
-\int_M \text{Pf}(Rm) = (2\pi)^n \chi(M).
+\int_M\operatorname{Pf}(\operatorname{Rm})=(2\pi)^n\chi(M).
 \]
-(Depending on how the Pfaffian is defined, you will see different choices of normalization constants on the right-hand side of this equation.) For example, in four dimensions, the theorem can be written in terms of familiar curvature quantities as follows:
+The normalization of $\operatorname{Pf}$ determines the constant on the right;
+see \cite[Vol. 5]{Spi79}. In dimension four, the convention used here gives
 \begin{equation}
-\int_M (|Rm|^2 - 4|Rc|^2 + S^2) \, dV_g = 32\pi^2 \chi(M).
+\int_M\left(
+|\operatorname{Rm}|^2-4|\operatorname{Rc}|^2+S^2
+\right)\,dV_g
+=32\pi^2\chi(M).
 \label{eq:chern-gauss-bonnet-4d}
 \tag{9.14}
 \end{equation}
 
-In a certain sense, this might be considered a very satisfactory generalization of Gauss--Bonnet. The only problem with this result is that the relationship between the Pfaffian and sectional curvatures is obscure in higher dimensions, so it is very hard to interpret the theorem geometrically. For example, after he proved the version of the theorem for Euclidean hypersurfaces, Hopf conjectured in the 1930s that every compact even-dimensional manifold that admits a metric with strictly positive sectional curvature must have positive Euler characteristic; to date, the conjecture is known to be true in dimensions 2 and 4, but it is still open in higher dimensions (see \cite[p. 320]{Pet16}).
-
+The Hopf conjecture asserts that a compact even-dimensional manifold admitting
+a metric of strictly positive sectional curvature has positive Euler
+characteristic. It holds in dimensions $2$ and $4$ and remains open in higher
+dimensions; see \cite[p. 320]{Pet16}.
 \section{Problems}
 
 \begin{exercise}[Geodesic polygons with nonpositive curvature]
 \label{prob:geodesic-polygons-negative-curvature}
 \dcref{ch9:9-1}
 \uses{thm:gauss-bonnet-formula}
-Let $(M, g)$ be an oriented Riemannian 2-manifold with nonpositive Gaussian curvature everywhere. Prove that there are no geodesic polygons with exactly 0, 1, or 2 ordinary vertices. Give examples of all three if the curvature hypothesis is not satisfied.
+
+Let $(M,g)$ be an oriented Riemannian $2$-manifold with Gaussian curvature
+$K\leq0$. Prove that no geodesic polygon has exactly $0$, $1$, or $2$
+ordinary vertices. When the curvature hypothesis is removed, construct an
+example for each of these three vertex counts.
 \end{exercise}
 
 \begin{exercise}[Angle excess formula]
 \label{prob:angle-excess-formula}
 \dcref{ch9:9-2}
 \uses{thm:gauss-bonnet-formula}
-Let $(M, g)$ be a Riemannian 2-manifold. If $\gamma$ is a geodesic polygon in $M$ with $n$ vertices, the \textbf{angle excess} of $\gamma$ is defined as
+
+For a geodesic polygon $\gamma$ with $n$ vertices and interior angles
+$\theta_1,\ldots,\theta_n$, define its \emph{angle excess} by
 \[
-E(\gamma) = \left(\sum_{i=1}^{n} \theta_i\right) - (n-2)\pi,
+E(\gamma)=\sum_{i=1}^n\theta_i-(n-2)\pi.
 \]
-where $\theta_1, \ldots, \theta_n$ are the interior angles of $\gamma$. Show that if $M$ has constant Gaussian curvature $K$, then every geodesic polygon has angle excess equal to $K$ times the area of the region bounded by the polygon.
+If $(M,g)$ has constant Gaussian curvature $K$, prove that every geodesic
+polygon satisfies
+\[
+E(\gamma)=K\,\operatorname{Area}(\Omega),
+\]
+where $\Omega$ is the region it bounds.
 \end{exercise}
 
 \begin{exercise}[Gauss--Bonnet formula on a sphere]
 \label{prob:gauss-bonnet-sphere}
 \dcref{ch9:9-3}
 \uses{thm:gauss-bonnet-formula}
-Given $h \in (-R, R)$, let $C_h$ be the circle in $S^2(R) \subseteq \mathbb{R}^3$ where $z = h$ (where we label the standard coordinates in $\mathbb{R}^3$ as $(x, y, z)$), and let $\Omega$ be the subset of $S^2(R)$ where $z > h$. Compute the signed curvature of $C_h$ and verify the Gauss--Bonnet formula in this case.
+
+For $h\in(-R,R)$, let
+\[
+C_h=S^2(R)\cap\{z=h\},
+\qquad
+\Omega=S^2(R)\cap\{z>h\}.
+\]
+Compute the signed geodesic curvature of $C_h$ and verify the Gauss--Bonnet
+formula for $\Omega$.
 \end{exercise}
 
 \begin{exercise}[Gauss--Bonnet theorem on the torus]
 \label{prob:gauss-bonnet-torus}
 \dcref{ch9:9-4}
 \uses{thm:gauss-bonnet-theorem}
-Let $T \subseteq \mathbb{R}^3$ be the torus of revolution obtained by revolving the circle $(r - 2)^2 + z^2 = 1$ around the $z$-axis (see p.\ 19). Compute the Gaussian curvature of $T$ and verify the Gauss--Bonnet theorem in this case.
+
+Let $T\subseteq\mathbb R^3$ be obtained by revolving
+$(r-2)^2+z^2=1$ about the $z$-axis. Compute its Gaussian curvature and verify
+the Gauss--Bonnet theorem directly.
 \end{exercise}
 
 \begin{exercise}[Smooth triangulation of 2-manifolds]
 \label{prob:triangulation-2manifold}
 \dcref{ch9:9-5}
-This problem outlines a proof that every compact smooth 2-manifold has a smooth triangulation.
+
+Prove that every compact smooth $2$-manifold has a smooth triangulation.
 \begin{enumerate}
-\item[(a)] Show that it suffices to prove that there exist finitely many convex geodesic polygons whose interiors cover $M$, and each of which lies in a uniformly normal convex geodesic ball. (A curved polygon is called convex if the union of the polygon and its interior is a geodesically convex subset of $M$.)
-\item[(b)] Using Theorem 6.17, show that there exist finitely many points $v_1, \ldots, v_k$ and a positive number $\varepsilon$ such that the geodesic balls $B_{3\varepsilon}(v_i)$ are geodesically convex and uniformly normal, and the balls $B_\varepsilon(v_i)$ cover $M$.
-\item[(c)] For each $i$, show that there is a convex geodesic polygon in $B_{3\varepsilon}(v_i)$ whose interior contains $B_\varepsilon(v_i)$. [Hint: Let the vertices be sufficiently nearby points on the circle of radius $2\varepsilon$ around $v_i$.]
-\item[(d)] Prove the result.
+\item[(a)] Reduce the result to finding finitely many convex geodesic polygons
+whose interiors cover $M$, each contained in a uniformly normal convex
+geodesic ball. Here a curved polygon is convex when its union with its
+interior is geodesically convex.
+\item[(b)] Using Theorem~6.17, find points $v_1,\ldots,v_k$ and
+$\varepsilon>0$ such that each $B_{3\varepsilon}(v_i)$ is uniformly normal
+and geodesically convex, while the balls $B_\varepsilon(v_i)$ cover $M$.
+\item[(c)] For every $i$, construct a convex geodesic polygon in
+$B_{3\varepsilon}(v_i)$ whose interior contains $B_\varepsilon(v_i)$.
+\emph{Hint.} Choose sufficiently close vertices on the circle of radius
+$2\varepsilon$ about $v_i$.
+\item[(d)] Complete the triangulation from these polygons.
 \end{enumerate}
-(Used on p.\ 276.)
 \end{exercise}
 
 \begin{exercise}[Embedded submanifold cannot be nonpositively curved]
 \label{prob:embedded-submanifold-positive-curvature}
 \dcref{ch9:9-6}
-Let $M \subseteq \mathbb{R}^3$ be a compact, embedded, 2-dimensional Riemannian submanifold. Show that $M$ cannot have $K \leq 0$ everywhere. [Hint: Look at a point where the distance from the origin takes a maximum.]
+
+Let $M\subseteq\mathbb R^3$ be a compact embedded Riemannian
+$2$-submanifold. Prove that its Gaussian curvature cannot satisfy
+$K\leq0$ everywhere. \emph{Hint.} Examine a point maximizing the distance
+from the origin.
 \end{exercise}
 
 \begin{exercise}
 \label{prob:similar-triangles-congruent}
 \dcref{ch9:9-7}
-Suppose $M$ is either the 2-sphere of radius $R$ or the hyperbolic plane of
-radius $R$ for some $R > 0$. Show that similar triangles in $M$ are congruent.
-More precisely, if $\gamma_1$ and $\gamma_2$ are geodesic triangles in $M$ such that corresponding side lengths are proportional and corresponding interior angles are
-equal, then there exists an isometry of $M$ taking $\gamma_1$ to $\gamma_2$.
+
+Let $M$ be either $S^2(R)$ or $\mathbb H^2(R)$, where $R>0$. Suppose two
+geodesic triangles have equal corresponding interior angles and proportional
+corresponding side lengths. Prove that an isometry of $M$ maps one triangle
+to the other.
 \end{exercise}
 
 \begin{exercise}
 \label{prob:compact-lie-groups-isomorphic}
 \dcref{ch9:9-8}
 \uses{prob:lie-group-bi-invariant-metric,thm:gauss-bonnet-theorem}
-Use the Gauss--Bonnet theorem to prove that every compact connected Lie
-group of dimension 2 is isomorphic to the direct product group $S^1 \times S^1$.
-[Hint: See Problem 8-17.]
+
+Use the Gauss--Bonnet theorem to prove that every compact connected
+$2$-dimensional Lie group is isomorphic to $S^1\times S^1$.
+\emph{Hint.} Use Problem~8-17.
 \end{exercise}
 
 \begin{exercise}
 \label{prob:ideal-triangles-hyperbolic}
 \dcref{ch9:9-9}
 \uses{thm:gauss-bonnet-formula}
-(a) Show that there is an upper bound for the areas of geodesic triangles in
-the hyperbolic plane $\mathbb{H}^2(R)$, and compute the least upper bound.
 
-(b) Two distinct maximal geodesics in the hyperbolic plane $\mathbb{H}^2$ are said to be
-\textit{asymptotically parallel} if they have unit-speed parametrizations $\gamma_1, \gamma_2:
-\mathbb{R} \to \mathbb{H}^2$ such that $d_g(\gamma_1(t), \gamma_2(t))$ remains bounded as $t \to +\infty$ or as
-$t \to -\infty$. An \textit{ideal triangle} in $\mathbb{H}^2$ is a region whose boundary consists of
-three distinct maximal geodesics, any two of which are asymptotically parallel to each other. Show that all ideal triangles have the same finite
-area, and compute it. Be careful to justify any limits.
+\begin{enumerate}
+\item[(a)] Find the least upper bound of the areas of geodesic triangles in
+$\mathbb H^2(R)$.
+\item[(b)] Distinct maximal geodesics in $\mathbb H^2$ are
+\emph{asymptotically parallel} if they admit unit-speed parametrizations
+$\gamma_1,\gamma_2:\mathbb R\to\mathbb H^2$ for which
+$d_g(\gamma_1(t),\gamma_2(t))$ remains bounded as $t\to+\infty$ or as
+$t\to-\infty$. An \emph{ideal triangle} is bounded by three distinct maximal
+geodesics that are pairwise asymptotically parallel. Prove that every ideal
+triangle has the same finite area, compute that area, and justify all limiting
+arguments.
+\end{enumerate}
 \end{exercise}
 
 \begin{exercise}[The Gauss--Bonnet theorem for surfaces with boundary]
 \label{prob:gauss-bonnet-with-boundary}
 \dcref{ch9:9-10}
 \uses{thm:gauss-bonnet-formula,thm:gauss-bonnet-theorem}
-Suppose $(M, g)$ is a compact Riemannian 2-manifold with boundary, endowed
-with a smooth triangulation such that the intersection of each curved triangle
-with $\partial M$, if not empty, is either a single vertex or a single edge. Then
+
+Let $(M,g)$ be a compact Riemannian $2$-manifold with boundary and a smooth
+triangulation such that each curved triangle meets $\partial M$ either in
+nothing, one vertex, or one edge. Prove
 \[
-\int_M K \, dA + \int_{\partial M} \kappa_N \, ds = 2\pi \chi(M),
+\int_MK\,dA+\int_{\partial M}\kappa_N\,ds=2\pi\chi(M),
 \]
-where $\kappa_N$ is the signed geodesic curvature of $\partial M$ with respect to the inward-pointing normal $N$.
+where $\kappa_N$ is the signed geodesic curvature of $\partial M$ with
+respect to the inward unit normal $N$.
 \end{exercise}
 
 \begin{exercise}
 \label{prob:cylinder-metric-gaussian-curvature}
 \dcref{ch9:9-11}
-Suppose $g$ is a Riemannian metric on the cylinder $S^1 \times [0,1]$ such that both
-boundary curves are totally geodesic. Prove that the Gaussian curvature of
-$g$ either is identically zero or attains both positive and negative values. Give
-examples of both possibilities.
+
+Let $g$ be a Riemannian metric on $S^1\times[0,1]$ for which both boundary
+curves are totally geodesic. Prove that its Gaussian curvature is either
+identically zero or assumes both positive and negative values. Construct
+examples of both alternatives.
 \end{exercise}
 
 \begin{exercise}
 \label{prob:plane-curve-classification}
 \dcref{ch9:9-12}
 \uses{thm:plane-curve-classification}
-Prove the plane curve classification theorem (Theorem 1.5). [Hint: Show that
-every smooth unit-speed plane curve $\gamma(t) = (x(t), y(t))$ satisfies the second-order ODE $\gamma''(t) = \kappa_N(t) N(t)$, where $N$ is the unit normal vector field given
-by $N(t) = (-y'(t), x'(t))$.] (Used on p. 4.)
+
+Prove the plane-curve classification theorem, Theorem~1.5.
+\emph{Hint.} Show that every smooth unit-speed plane curve
+$\gamma(t)=(x(t),y(t))$ satisfies
+\[
+\gamma''(t)=\kappa_N(t)N(t),
+\qquad
+N(t)=(-y'(t),x'(t)).
+\]
 \end{exercise}
 
 \begin{exercise}
 \label{prob:einstein-manifold-euler-characteristic}
 \dcref{ch9:9-13}
 \uses{eq:chern-gauss-bonnet-4d}
-Use the four-dimensional Chern--Gauss--Bonnet formula (9.14) to prove that
-a compact 4-dimensional Einstein manifold must have positive Euler characteristic unless it is flat.
+
+Use the four-dimensional Chern--Gauss--Bonnet formula (9.14) to prove that a
+compact $4$-dimensional Einstein manifold has positive Euler characteristic
+unless it is flat.
 \end{exercise}

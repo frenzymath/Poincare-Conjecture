@@ -1,17 +1,9 @@
 \chapter{Riemannian Metrics}
 \label{chap:pet-riemannian-metrics}
 
-Faithful transcription of Petersen, \emph{Riemannian Geometry} (GTM 171, 3rd ed.)~\cite{petersen2016},
-Chapter 1. The chapter introduces Riemannian manifolds and the basic maps between
-them (isometries, isometric immersions, Riemannian submersions), the volume form,
-the role of isometry groups and Lie groups in constructing Riemannian manifolds,
-local (coordinate and frame) representations of a metric — including the family of
-rotationally symmetric and doubly warped product metrics that produce the space
-forms and the Hopf fibrations — and the tensor-algebra conventions (type change,
-contraction, the Euclidean inner product of tensors) used throughout the book. Each
-numbered statement keeps Petersen's example/proposition number in the environment
-title; proofs keep his explicit cross-references so the dependency graph is
-recoverable from the text.
+The conventions and notation in this chapter follow \cite{petersen2016}. Unless
+stated otherwise, manifolds are smooth, Hausdorff, second countable, and
+connected; disconnected constraint sets are allowed when explicitly indicated.
 
 \section{Riemannian Manifolds and Maps}
 
@@ -19,32 +11,27 @@ recoverable from the text.
   \label{def:pet-ch1-riemannian-manifold}
   \lean{PetersenLib.RiemannianMetric}
   \leanok
-  A \emph{Riemannian manifold} $(M,g)$ consists of a $C^\infty$-manifold $M$
-  (Hausdorff and second countable) together with a Euclidean inner product $g_p$
-  (also written $g|_p$) on each tangent space $T_pM$, such that $p\mapsto g_p$
-  varies smoothly: for any two smooth vector fields $X,Y$ the function
-  $p\mapsto g_p(X|_p,Y|_p)$ is smooth. The subscript $p$ is usually suppressed, so
-  one writes $g(X,Y)$, understood pointwise; the metric is also denoted $g_M$ when
-  it needs to be tied to $M$. The tensor $g$ is the \emph{Riemannian metric}, or
-  simply the \emph{metric}. The manifold is generally assumed connected, with
-  occasional exceptions (level sets, submanifolds cut out by constraints). Since
-  all $n$-dimensional inner product spaces are isometric, every tangent space
-  $T_pM$ is isometric to $(\mathbb{R}^n,\text{can})$, so all Riemannian manifolds of a
-  given dimension share the same infinitesimal structure.
-  \source{petersen:page-0021}
+  A \emph{Riemannian metric} on a manifold $M$ is a family of inner products
+  $g_p$ on $T_pM$ such that $p\mapsto g_p(X_p,Y_p)$ is smooth for all smooth
+  vector fields $X,Y$. The pair $(M,g)$ is a \emph{Riemannian manifold}. We
+  write $g(X,Y)$ pointwise and use $g_M$ when the underlying manifold must be
+  explicit. If $\dim M=n$, every $(T_pM,g_p)$ is linearly isometric to
+  Euclidean $n$-space.
 \end{definition}
 
-\begin{example}[Example 1.1.1 — Euclidean space]
+The elementary models below fix the metric and map conventions used throughout.
+
+\begin{example}[Euclidean space]
   \label{ex:pet-ch1-euclidean-space}
+  \dcref{ch1:1.1.1}
   \lean{PetersenLib.euclideanMetric}
   \leanok
   \uses{def:pet-ch1-riemannian-manifold}
-  The simplest and most fundamental Riemannian manifold is Euclidean space
-  $(\mathbb{R}^n,g_{\mathbb{R}^n})$. The canonical Riemannian structure $g_{\mathbb{R}^n}$ is
-  defined via the tangent bundle identification $\mathbb{R}^n\times\mathbb{R}^n\simeq
-  T\mathbb{R}^n$, $(p,v)\mapsto\frac{d(p+tv)}{dt}(0)$, by
-  $g_{\mathbb{R}^n}((p,v),(p,w))=v\cdot w$.
-  \source{petersen:page-0021}
+  Under $T\mathbb{R}^n\simeq\mathbb{R}^n\times\mathbb{R}^n$, where
+  $(p,v)$ represents $\frac{d}{dt}(p+tv)|_{t=0}$, the canonical metric is
+  \[
+    g_{\mathbb{R}^n}((p,v),(p,w))=v\cdot w.
+  \]
 \end{example}
 
 \begin{definition}[Riemannian isometry]
@@ -52,543 +39,502 @@ recoverable from the text.
   \lean{PetersenLib.IsRiemannianIsometry}
   \leanok
   \uses{def:pet-ch1-riemannian-manifold}
-  A \emph{Riemannian isometry} between Riemannian manifolds $(M,g_M)$ and
-  $(N,g_N)$ is a diffeomorphism $F:M\to N$ such that $F^*g_N=g_M$, i.e.
-  $g_N(DF(v),DF(w))=g_M(v,w)$ for all $p\in M$ and $v,w\in T_pM$. In that case
-  $F^{-1}$ is also a Riemannian isometry.
-  \source{petersen:page-0021}
+  A diffeomorphism $F:(M,g_M)\to(N,g_N)$ is a \emph{Riemannian isometry} if
+  $F^*g_N=g_M$, equivalently
+  \[
+    g_N(DF_pv,DF_pw)=g_M(v,w)
+  \]
+  for every $p\in M$ and $v,w\in T_pM$. Its inverse is again a Riemannian
+  isometry.
 \end{definition}
 
-\begin{example}[Example 1.1.2 — inner product spaces]
+\begin{example}[Metrics on inner product spaces]
   \label{ex:pet-ch1-inner-product-space}
+  \dcref{ch1:1.1.2}
   \lean{PetersenLib.innerProductSpaceMetric,PetersenLib.linearIsometryEquiv_isRiemannianIsometry}
   \leanok
   \uses{def:pet-ch1-riemannian-manifold,def:pet-ch1-riemannian-isometry,ex:pet-ch1-euclidean-space}
-  Any finite-dimensional real vector space $V$ with an inner product becomes a
-  Riemannian manifold by declaring, as with Euclidean space,
-  $g((p,v),(p,w))=v\cdot w$. If $(V,g_V)$ and $(W,g_W)$ are such Riemannian
-  manifolds of the same dimension, then any linear isometry $F:V\to W$ is a
-  Riemannian isometry, so $(V,g_V)$ and $(W,g_W)$ are isometric. Thus
-  $(\mathbb{R}^n,g_{\mathbb{R}^n})$ is (up to isometry) the only $n$-dimensional
-  Riemannian manifold of this simple type.
-  \source{petersen:page-0022}
+  An inner product on a finite-dimensional real vector space $V$ defines the
+  constant metric $g((p,v),(p,w))=v\cdot w$. A linear isometry between two
+  such spaces of equal dimension is a Riemannian isometry. Consequently every
+  $n$-dimensional model of this form is isometric to
+  $(\mathbb{R}^n,g_{\mathbb{R}^n})$.
 \end{example}
 
-\begin{definition}[pullback metric, Riemannian immersion]
+\begin{definition}[Pullback metric and Riemannian immersion]
   \label{def:pet-ch1-pullback-metric}
   \lean{PetersenLib.pullbackMetric,PetersenLib.IsRiemannianImmersion}
   \leanok
   \uses{def:pet-ch1-riemannian-manifold}
-  Let $F:M\to N$ be an immersion (or embedding), with $(N,g_N)$ Riemannian. The
-  \emph{pullback metric} $g_M=F^*g_N$ on $M$ is $g_M(v,w)=g_N(DF(v),DF(w))$; it
-  is an inner product because $DF(v)=0$ only for $v=0$. A \emph{Riemannian
-  immersion} (or \emph{Riemannian embedding}) is an immersion (or embedding)
-  $F:M\to N$ with $g_M=F^*g_N$; such $F$ are also called \emph{isometric
-  immersions}, though — as the following remark shows — they are almost never
-  distance preserving.
-  \source{petersen:page-0022}
+  Let $F:M\to(N,g_N)$ be an immersion. Its \emph{pullback metric} is
+  \[
+    (F^*g_N)_p(v,w)=g_N(DF_pv,DF_pw).
+  \]
+  Injectivity of $DF_p$ makes this positive definite. If a metric $g_M$ is
+  already specified, $F$ is a \emph{Riemannian} or \emph{isometric immersion}
+  when $g_M=F^*g_N$; the analogous terminology applies to embeddings.
 \end{definition}
 
-\begin{example}[Example 1.1.3 — Euclidean sphere]
+\begin{example}[Canonical metric on a sphere]
   \label{ex:pet-ch1-sphere}
+  \dcref{ch1:1.1.3}
   \lean{PetersenLib.sphereMetric}
   \leanok
   \uses{def:pet-ch1-pullback-metric}
-  The Euclidean sphere of radius $R$ is $S^n(R)=\{x\in\mathbb{R}^{n+1}\mid|x|=R\}$. The
-  metric induced from the embedding $S^n(R)\hookrightarrow\mathbb{R}^{n+1}$ (via
-  \cref{def:pet-ch1-pullback-metric}) is the \emph{canonical metric} on $S^n(R)$.
-  The \emph{unit sphere}, or \emph{standard sphere}, is $S^n=S^n(1)\subset\mathbb{R}^{n+1}$
-  with the induced metric.
-  \source{petersen:page-0022}
+  For
+  $S^n(R)=\{x\in\mathbb{R}^{n+1}:|x|=R\}$, the inclusion into
+  $\mathbb{R}^{n+1}$ induces the canonical metric. The unit sphere
+  $S^n=S^n(1)$ with this metric is the standard sphere.
 \end{example}
 
-\begin{remark}[nonlinear isometric immersions]
+\begin{remark}[Nonlinear isometric immersions]
   \label{rem:pet-ch1-nonlinear-isometric-immersion}
   \lean{PetersenLib.curveIsometricEmbedding}
   \leanok
   \uses{def:pet-ch1-pullback-metric,ex:pet-ch1-euclidean-space}
-  If $k<n$, linear isometric immersions $(\mathbb{R}^k,g_{\mathbb{R}^k})\to(\mathbb{R}^n,g_{\mathbb{R}^n})$
-  exist but are not the only ones. Any unit-speed curve $c:\mathbb{R}\to\mathbb{R}^2$
-  (i.e.\ $|\dot c(t)|=1$ for all $t$) is itself an isometric immersion; e.g.\
-  $t\mapsto(\cos t,\sin t)$ is an isometric immersion and
-  $t\mapsto(\log(t+\sqrt{1+t^2}),\sqrt{1+t^2})$ an isometric embedding. Given such
-  a $c$, the map $F(x^1,\dots,x^k)=(c(x^1),x^2,\dots,x^k):\mathbb{R}^k\to\mathbb{R}^{k+1}$
-  is a nonlinear isometric immersion (or embedding), illustrating that a
-  Riemannian immersion need not be distance preserving.
-  \source{petersen:page-0023}
+  Every unit-speed curve $c:\mathbb{R}\to\mathbb{R}^2$ is an isometric
+  immersion. Thus
+  \[
+    F(x^1,\ldots,x^k)=(c(x^1),x^2,\ldots,x^k)
+      :\mathbb{R}^k\to\mathbb{R}^{k+1}
+  \]
+  is generally nonlinear and is an isometric immersion, or an embedding when
+  $c$ is embedded. For instance $c(t)=(\cos t,\sin t)$ is an immersion, while
+  $c(t)=(\log(t+\sqrt{1+t^2}),\sqrt{1+t^2})$ is an embedding. Hence an
+  isometric immersion need not preserve ambient endpoint distance.
 \end{remark}
+
+When $DF$ is surjective, the metric comparison is made on the horizontal
+subspace rather than on the entire tangent space.
 
 \begin{definition}[Riemannian submersion]
   \label{def:pet-ch1-riemannian-submersion}
   \lean{PetersenLib.IsRiemannianSubmersion}
   \leanok
   \uses{def:pet-ch1-riemannian-manifold}
-  A \emph{Riemannian submersion} $F:(M,g_M)\to(N,g_N)$ is a submersion such that
-  for each $p\in M$, $DF:\ker(DF)^\perp\to T_{F(p)}N$ is a linear isometry:
-  whenever $v,w\in T_pM$ are perpendicular to $\ker(DF:T_pM\to T_{F(p)}N)$, then
-  $g_M(v,w)=g_N(DF(v),DF(w))$. Equivalently, the adjoint
+  A submersion $F:(M,g_M)\to(N,g_N)$ is a \emph{Riemannian submersion} if
+  \[
+    DF_p:(\ker DF_p)^\perp\longrightarrow T_{F(p)}N
+  \]
+  is a linear isometry for every $p\in M$. Equivalently,
+  $g_M(v,w)=g_N(DF_pv,DF_pw)$ for horizontal $v,w$, or the adjoint
   $(DF_p)^*:T_{F(p)}N\to T_pM$ preserves inner products.
-  \source{petersen:page-0023,petersen:page-0024}
 \end{definition}
 
-\begin{example}[Example 1.1.4 — orthogonal projections]
+\begin{example}[Orthogonal projections]
   \label{ex:pet-ch1-orthogonal-projection}
+  \dcref{ch1:1.1.4}
   \lean{PetersenLib.orthogonalProjectionSubmersion}
   \leanok
   \uses{def:pet-ch1-riemannian-submersion}
-  Orthogonal projections $(\mathbb{R}^n,g_{\mathbb{R}^n})\to(\mathbb{R}^k,g_{\mathbb{R}^k})$, $k<n$, are
-  Riemannian submersions.
-  \source{petersen:page-0023}
+  Every orthogonal projection
+  $(\mathbb{R}^n,g_{\mathbb{R}^n})\to(\mathbb{R}^k,g_{\mathbb{R}^k})$, $k<n$,
+  is a Riemannian submersion.
 \end{example}
 
-\begin{example}[Example 1.1.5 — the Hopf fibration]
+\begin{example}[Hopf fibration]
   \label{ex:pet-ch1-hopf-fibration}
+  \dcref{ch1:1.1.5}
   \lean{PetersenLib.hopfMap}
   \leanok
   \uses{def:pet-ch1-riemannian-submersion,ex:pet-ch1-sphere}
-  The \emph{Hopf fibration} $S^3(1)\to S^2(1/2)$, viewing $S^3(1)\subset\mathbb{C}^2$
-  and $S^2(1/2)\subset\mathbb{R}\oplus\mathbb{C}$, is given (F.\ Wilhelm) by
+  With $S^3(1)\subset\mathbb{C}^2$ and
+  $S^2(1/2)\subset\mathbb{R}\oplus\mathbb{C}$, the map
   \[
-    H(z,w)=\Big(\tfrac12(|w|^2-|z|^2),\,z\bar w\Big).
+    H(z,w)=\Big(\tfrac12(|w|^2-|z|^2),z\bar w\Big)
   \]
-  It is a Riemannian submersion.
-  \source{petersen:page-0023,petersen:page-0024}
+  is a Riemannian submersion $S^3(1)\to S^2(1/2)$.
 \end{example}
 \begin{proof}
   \leanok
   \uses{ex:pet-ch1-hopf-fibration}
-  The fibre through $(z,w)$ is $\{(e^{i\theta}z,e^{i\theta}w)\}$, so $i(z,w)$ is
-  tangent to the fibre and the vectors $\lambda(-\bar w,\bar z)$, $\lambda\in\mathbb{C}$,
-  span the orthogonal complement. Since $H$ extends to $\mathbb{C}^2\to\mathbb{R}\oplus\mathbb{C}$,
-  restrict $H$ to the plane $(z,w)+\lambda(-\bar w,\bar z)$:
+  \sketch
+  The fibre through $(z,w)$ is
+  $\{(e^{i\theta}z,e^{i\theta}w)\}$, with tangent $i(z,w)$. Its orthogonal
+  complement is spanned over $\mathbb{R}$ by
+  $\lambda(-\bar w,\bar z)$, $\lambda\in\mathbb{C}$. Differentiating the
+  extension of $H$ along
+  $(z,w)+\lambda(-\bar w,\bar z)$ gives
   \[
-    H(z-\lambda\bar w,\,w+\lambda\bar z)
-    =\Big(\tfrac12(|w+\lambda\bar z|^2-|z-\lambda\bar w|^2),\,
-    (z-\lambda\bar w)(w+\lambda\bar z)\Big).
+    DH_{(z,w)}\big(\lambda(-\bar w,\bar z)\big)
+      =\big(2\operatorname{Re}(\bar\lambda zw),
+             -\lambda\bar w^2+\bar\lambda z^2\big).
   \]
-  Expanding in $\lambda,\bar\lambda$ and isolating the first-order terms gives
-  \[
-    DH|_{(z,w)}(\lambda(-\bar w,\bar z))=\big(2\operatorname{Re}(\bar\lambda zw),\,-\lambda\bar w^2+\bar\lambda z^2\big),
-  \]
-  which has the same length $|\lambda|$ as $\lambda(-\bar w,\bar z)$. Hence $DH$
-  restricted to the orthogonal complement of the fibre is a linear isometry, and
-  $H$ is a Riemannian submersion by \cref{def:pet-ch1-riemannian-submersion}.
+  This vector and $\lambda(-\bar w,\bar z)$ both have length $|\lambda|$.
+  Thus $DH$ is isometric on the horizontal subspace, as required by
+  \cref{def:pet-ch1-riemannian-submersion}.
 \end{proof}
 
-\begin{definition}[semi-/pseudo-Riemannian manifold; index]
+Positive definiteness can be weakened while retaining nondegeneracy.
+
+\begin{definition}[Pseudo-Riemannian metric and index]
   \label{def:pet-ch1-pseudo-riemannian}
   \lean{PetersenLib.PseudoRiemannianMetric,PetersenLib.pseudoRiemannianIndex}
   \leanok
   \uses{def:pet-ch1-riemannian-manifold}
-  A \emph{semi-} or \emph{pseudo-Riemannian} manifold is a manifold with a
-  smoothly varying symmetric bilinear form $g$ on each tangent space, assumed
-  \emph{nondegenerate}: for every nonzero $v\in T_pM$ there is $w\in T_pM$ with
-  $g(v,w)\ne0$. This generalizes a Riemannian metric, whose nondegeneracy follows
-  from $g(v,v)>0$ for $v\ne0$. Each tangent space splits $T_pM=P\oplus N$ with $g$
-  positive definite on $P$ and negative definite on $N$; the subspaces are not
-  unique but their dimensions are well defined, and by continuity of $g$ nearby
-  tangent spaces admit splittings of the same dimensions. The \emph{index} of a
-  connected pseudo-Riemannian manifold is $\dim N$.
-  \source{petersen:page-0024,petersen:page-0025}
+  A \emph{semi-Riemannian} or \emph{pseudo-Riemannian metric} is a smooth
+  symmetric bilinear form $g$ on the tangent spaces such that for each nonzero
+  $v$ some $w$ satisfies $g(v,w)\ne0$. Each $T_pM$ admits a splitting
+  $P\oplus N$ on which $g$ is respectively positive and negative definite.
+  Although $P,N$ are not canonical, their dimensions are locally constant;
+  on connected $M$, the \emph{index} is the common value $\dim N$.
 \end{definition}
 
-\begin{example}[Example 1.1.6 — Minkowski space]
+\begin{example}[Minkowski space]
   \label{ex:pet-ch1-minkowski}
+  \dcref{ch1:1.1.6}
   \lean{PetersenLib.minkowskiMetric}
   \leanok
   \uses{def:pet-ch1-pseudo-riemannian}
-  For $n=n_1+n_2$ write $\mathbb{R}^{n_1,n_2}=\mathbb{R}^{n_1}\times\mathbb{R}^{n_2}$ and split vectors
-  as $v=v_1+v_2$. The pseudo-Riemannian metric of index $n_2$
-  $g((p,v),(p,w))=v_1\cdot w_1-v_2\cdot w_2$ is natural on $\mathbb{R}^{n_1,n_2}$. When
-  $n_1=1$ or $n_2=1$ this is (a version of) Minkowski space, describing the
-  geometry of special-relativistic space-time.
-  \source{petersen:page-0025}
+  For $n=n_1+n_2$ and
+  $\mathbb{R}^{n_1,n_2}=\mathbb{R}^{n_1}\times\mathbb{R}^{n_2}$, define
+  \[
+    g((p,v),(p,w))=v_1\cdot w_1-v_2\cdot w_2.
+  \]
+  This metric has index $n_2$. The cases $n_1=1$ or $n_2=1$ are the usual
+  sign conventions for Minkowski space.
 \end{example}
 
-\begin{example}[Example 1.1.7 — hyperbolic space]
+\begin{example}[Hyperbolic space]
   \label{ex:pet-ch1-hyperbolic-space}
+  \dcref{ch1:1.1.7}
   \lean{PetersenLib.hyperbolicSpace}
   \leanok
   \uses{def:pet-ch1-pseudo-riemannian,ex:pet-ch1-minkowski,def:pet-ch1-pullback-metric}
-  The \emph{hyperbolic space} $H^n(R)\subset\mathbb{R}^{n,1}$ is the branch with
-  $x^{n+1}>0$ of the hyperboloid
-  $(x^1)^2+\dots+(x^n)^2-(x^{n+1})^2=-R^2$, with the metric induced from the
-  Minkowski metric on $\mathbb{R}^{n,1}$. This induced form is positive definite, hence a
-  genuine Riemannian metric on $H^n(R)$. When $R=1$ one writes $H^n$ and calls it
-  \emph{hyperbolic $n$-space}.
-  \source{petersen:page-0025,petersen:page-0026}
+  Hyperbolic space $H^n(R)$ is the component with $x^{n+1}>0$ of
+  \[
+    (x^1)^2+\cdots+(x^n)^2-(x^{n+1})^2=-R^2
+      \quad\text{in }\mathbb{R}^{n,1},
+  \]
+  equipped with the induced Minkowski form. This induced form is positive
+  definite. We write $H^n=H^n(1)$.
 \end{example}
 \begin{proof}
   \uses{ex:pet-ch1-hyperbolic-space}
   \leanok
-  A tangent vector $v=(v^1,\dots,v^{n+1})\in T_pH^n(R)$, $p\in H^n(R)$, is tangent
-  to the level set of $(x^1)^2+\dots+(x^n)^2-(x^{n+1})^2$, so
-  $v^1p^1+\dots+v^np^n-v^{n+1}p^{n+1}=0$, giving
-  $v^{n+1}=\big(\sum_iv^ip^i\big)/p^{n+1}$. Hence the induced (Minkowski) squared
-  norm is
+  \sketch
+  For $p\in H^n(R)$ and $v\in T_pH^n(R)$, differentiation of the level-set
+  equation yields
   \[
-    |v|^2=\sum_{i=1}^n(v^i)^2-(v^{n+1})^2
-    =\sum_{i=1}^n(v^i)^2-\Big(\frac{\sum_iv^ip^i}{p^{n+1}}\Big)^2.
+    v^{n+1}=\frac{\sum_{i=1}^n v^ip^i}{p^{n+1}}.
   \]
-  By Cauchy--Schwarz, $\big(\sum_iv^ip^i\big)^2\le\big(\sum_i(v^i)^2\big)\big(\sum_i(p^i)^2\big)$,
-  and since $p\in H^n(R)$ gives $\sum_i(p^i)^2/(p^{n+1})^2=1-(R/p^{n+1})^2$, one
-  obtains
+  Hence Cauchy--Schwarz and
+  $\sum_i(p^i)^2/(p^{n+1})^2=1-(R/p^{n+1})^2$ imply
   \[
-    |v|^2\ge\Big(\frac{R}{p^{n+1}}\Big)^2\sum_{i=1}^n(v^i)^2\ge0,
+    g(v,v)=\sum_i(v^i)^2-
+      \left(\frac{\sum_i v^ip^i}{p^{n+1}}\right)^2
+      \ge \left(\frac{R}{p^{n+1}}\right)^2\sum_i(v^i)^2.
   \]
-  with equality only for $v=0$ (since $p^{n+1}\ne0$ and the Cauchy--Schwarz
-  bound is strict unless $v^1,\dots,v^n$ is proportional to $p^1,\dots,p^n$, a
-  case excluded unless all $v^i=0$, forcing $v^{n+1}=0$ too). Thus the induced
-  form is positive definite.
+  Equality $g(v,v)=0$ therefore forces all components of $v$ to vanish.
 \end{proof}
 
 \section{The Volume Form}
 
-\begin{definition}[signed volume]
+Fixing an orientation turns the metric determinant into an alternating
+$n$-linear form.
+
+\begin{definition}[Signed volume]
   \label{def:pet-ch1-signed-volume}
   \lean{PetersenLib.signedVolume}
   \leanok
   \uses{def:pet-ch1-riemannian-manifold}
-  On an $n$-dimensional inner product space $(V,g)$ with positively oriented
-  orthonormal basis $e_1,\dots,e_n$, the \emph{signed volume} of $v_1,\dots,v_n\in V$
-  is
+  If $(V,g)$ is oriented and $e_1,\ldots,e_n$ is a positively oriented
+  orthonormal basis, define
   \[
-    \mathrm{vol}(v_1,\dots,v_n)=\det\big[g(v_i,e_j)\big]
-    =\det\big([v_1,\dots,v_n][e_1,\dots,e_n]^T\big)=\det[v_1,\dots,v_n].
+    \operatorname{vol}(v_1,\ldots,v_n)
+      =\det[g(v_i,e_j)]
+      =\det\big([v_1,\ldots,v_n][e_1,\ldots,e_n]^T\big).
   \]
-  \source{petersen:page-0026}
+  In the basis $e_i$, this is $\det[v_1,\ldots,v_n]$.
 \end{definition}
 
-\begin{proposition}[independence of orthonormal basis]
+\begin{proposition}[Independence of the orthonormal basis]
   \label{prop:pet-ch1-signed-volume-basis-independent}
   \lean{PetersenLib.signedVolume_orthonormal_basis_invariant}
   \leanok
   \uses{def:pet-ch1-signed-volume}
-  The value $\det[g(v_i,e_j)]$ in \cref{def:pet-ch1-signed-volume} is the same for
-  every positively oriented orthonormal basis $f_1,\dots,f_n$ of $(V,g)$.
-  \source{petersen:page-0026}
+  The value in \cref{def:pet-ch1-signed-volume} is independent of the chosen
+  positively oriented orthonormal basis.
 \end{proposition}
 \begin{proof}
   \uses{prop:pet-ch1-signed-volume-basis-independent}
   \leanok
-  Since $[e_1,\dots,e_n]^T=[f_1,\dots,f_n]^T[f_1,\dots,f_n][e_1,\dots,e_n]^T$ is a
-  factorization through the (orthogonal, determinant-$1$) change-of-basis matrix
-  from $f_\bullet$ to $e_\bullet$,
+  \sketch
+  For two such bases $e_i,f_i$, the change-of-basis matrix
+  $[f_1,\ldots,f_n][e_1,\ldots,e_n]^T$ is orthogonal with determinant $1$.
+  Multiplicativity of the determinant gives
   \[
-    \det\big[g(v_i,f_j)\big]
-    =\det\big([v_1,\dots,v_n][f_1,\dots,f_n]^T\big)
-    =\det\big([v_1,\dots,v_n][f_1,\dots,f_n]^T\big)\det\big([f_1,\dots,f_n][e_1,\dots,e_n]^T\big)
+    \det[g(v_i,f_j)]
+      =\det\big([v_1,\ldots,v_n][f_1,\ldots,f_n]^T\big)
+      =\det[g(v_i,e_j)].
   \]
-  \[
-    =\det\big([v_1,\dots,v_n][e_1,\dots,e_n]^T\big)=\det\big[g(v_i,e_j)\big],
-  \]
-  using that the determinant of the change-of-basis matrix between two positively
-  oriented orthonormal bases is $1$.
 \end{proof}
 
-\begin{definition}[volume form on an oriented manifold]
+\begin{definition}[Volume form on an oriented manifold]
   \label{def:pet-ch1-volume-form-oriented}
   \lean{PetersenLib.volumeForm}
   \leanok
   \uses{prop:pet-ch1-signed-volume-basis-independent}
-  On an oriented Riemannian $n$-manifold $(M,g)$ the \emph{volume form} is the
-  $n$-form
+  On an oriented Riemannian $n$-manifold, the \emph{volume form} is
   \[
-    \mathrm{vol}_g(v_1,\dots,v_n)=\mathrm{vol}(v_1,\dots,v_n)=\det\big[g(v_i,e_j)\big],
+    (\operatorname{vol}_g)_p(v_1,\ldots,v_n)=\det[g_p(v_i,e_j)],
   \]
-  where $e_1,\dots,e_n$ is any positively oriented orthonormal basis of
-  $T_pM$ (well defined by \cref{prop:pet-ch1-signed-volume-basis-independent}).
-  The notation $d\,\mathrm{vol}$ is also used, although $\mathrm{vol}$ need not be exact.
-  \source{petersen:page-0026,petersen:page-0027}
+  where $e_1,\ldots,e_n$ is any positively oriented orthonormal basis of
+  $T_pM$. It is also denoted $d\,\operatorname{vol}$, without asserting that
+  it is exact.
 \end{definition}
 
-\begin{definition}[local volume form]
+\begin{definition}[Local volume form]
   \label{def:pet-ch1-volume-form-local}
   \lean{PetersenLib.localVolumeForm}
   \leanok
   \uses{def:pet-ch1-volume-form-oriented}
-  Even when $M$ is not orientable, the volume form can be defined locally: choose
-  a local \emph{orthonormal frame} $E_1,\dots,E_n$ (vector fields on a common
-  domain $U\subset M$ forming a basis of $T_pM$ for all $p\in U$) and declare it
-  positive, then set $\mathrm{vol}(X_1,\dots,X_n)=\det[g(X_i,E_j)]$ for vector fields
-  $X_1,\dots,X_n$ on $U$.
-  \source{petersen:page-0027}
+  On a domain $U$ carrying an orthonormal frame $E_1,\ldots,E_n$, declare the
+  frame positive and set
+  \[
+    \operatorname{vol}(X_1,\ldots,X_n)=\det[g(X_i,E_j)].
+  \]
+  This defines a local volume form even when $M$ is not orientable.
 \end{definition}
 
-\begin{remark}[height times base]
+\begin{remark}[Projection identity for volume]
   \label{rem:pet-ch1-height-base}
   \lean{PetersenLib.volumeForm_projection}
   \leanok
   \uses{def:pet-ch1-volume-form-local}
-  Replacing $E_i$ by a general vector $X$ in \cref{def:pet-ch1-volume-form-local}
-  gives $\mathrm{vol}(E_1,\dots,X,\dots,E_n)=g(X,E_i)$, the projection of $X$ onto
-  $E_i$: the "height in the $i$th coordinate direction" times the unit base.
-  \source{petersen:page-0027}
+  For an oriented orthonormal frame and any vector $X$,
+  \[
+    \operatorname{vol}(E_1,\ldots,E_{i-1},X,E_{i+1},\ldots,E_n)
+      =g(X,E_i).
+  \]
 \end{remark}
 
-\begin{remark}[integration on Riemannian manifolds]
+\begin{remark}[Integration on Riemannian manifolds]
   \label{rem:pet-ch1-integration-riemannian}
   \lean{PetersenLib.integrateOnRiemannianManifold}
   \leanok
   \uses{def:pet-ch1-volume-form-local}
-  On an oriented manifold one integrates $n$-forms, so on an oriented Riemannian
-  manifold one integrates a function $f$ against the measure $\mu$ induced by the
-  volume form $\mathrm{vol}_g$, as $\int_M f\,\mathrm{d}\mu$. Every manifold has an
-  open dense $O\subset M$ on which $TO\cong O\times\mathbb{R}^n$ is trivial, hence
-  orientable, carrying an orthonormal frame; integrating over $O$ therefore lets
-  one integrate functions on any Riemannian manifold, orientable or not.
-  \source{petersen:page-0027}
+  On an oriented Riemannian manifold, $\operatorname{vol}_g$ induces a measure
+  $\mu$ and functions are integrated as $\int_M f\,d\mu$. For arbitrary $M$,
+  there is an open dense $O\subset M$ with
+  $TO\simeq O\times\mathbb{R}^n$; an orthonormal frame orients $O$, and
+  integration over $O$ defines integration on $M$ independently of global
+  orientability.
 \end{remark}
 
 \section{Groups and Riemannian Manifolds}
 
 \subsection{Isometry Groups}
 
-\begin{definition}[isometry group, isotropy group, homogeneous]
+\begin{definition}[Isometry group, isotropy, and homogeneity]
   \label{def:pet-ch1-isometry-group}
   \lean{PetersenLib.IsometryGroup,PetersenLib.IsotropyGroup,PetersenLib.IsHomogeneous}
   \leanok
   \uses{def:pet-ch1-riemannian-isometry}
-  For a Riemannian manifold $(M,g)$, $\mathrm{Iso}(M,g)$ (or $\mathrm{Iso}(M)$)
-  denotes the group of Riemannian isometries $F:(M,g)\to(M,g)$, and
-  $\mathrm{Iso}_p(M,g)$ the \emph{isotropy} (or \emph{stabilizer}) subgroup at
-  $p$: those $F\in\mathrm{Iso}(M,g)$ with $F(p)=p$. $(M,g)$ is \emph{homogeneous}
-  if $\mathrm{Iso}(M,g)$ acts transitively: for all $p,q\in M$ there is
-  $F\in\mathrm{Iso}(M,g)$ with $F(p)=q$.
-  \source{petersen:page-0027}
+  The isometry group of $(M,g)$ is $\operatorname{Iso}(M,g)$, abbreviated
+  $\operatorname{Iso}(M)$ when the metric is understood. The isotropy subgroup
+  at $p$ is
+  \[
+    \operatorname{Iso}_p(M,g)=\{F\in\operatorname{Iso}(M,g):F(p)=p\}.
+  \]
+  The manifold is \emph{homogeneous} if this group acts transitively on $M$.
 \end{definition}
 
-\begin{example}[Example 1.3.1 — isometries of Euclidean space]
+The basic constant-curvature models are homogeneous, with the following full
+isometry groups.
+
+\begin{example}[Isometries of Euclidean space]
   \label{ex:pet-ch1-isometry-group-euclidean}
+  \dcref{ch1:1.3.1}
   \lean{PetersenLib.isometryGroup_euclideanSpace}
   \leanok
   \uses{def:pet-ch1-isometry-group,def:pet-ch1-riemannian-isometry}
-  $\mathrm{Iso}(\mathbb{R}^n,g_{\mathrm{eu}})=\mathbb{R}^n\rtimes O(n)=\{F(x)=v+Ox\mid
-  v\in\mathbb{R}^n,\,O\in O(n)\}$, with $v,O$ uniquely determined by $F$. The isotropy
-  $\mathrm{Iso}_p$ is isomorphic to $O(n)$ for any $p$, and
-  $\mathbb{R}^n\simeq\mathrm{Iso}/\mathrm{Iso}_p$; in general every homogeneous space is a
-  quotient $M=\mathrm{Iso}/\mathrm{Iso}_p$.
-  \source{petersen:page-0028}
+  \[
+    \operatorname{Iso}(\mathbb{R}^n,g_{\mathrm{eu}})
+      =\mathbb{R}^n\rtimes O(n)
+      =\{x\mapsto v+Ox:v\in\mathbb{R}^n,\ O\in O(n)\},
+  \]
+  with unique $v,O$. For every $p$, the isotropy is isomorphic to $O(n)$ and
+  $\mathbb{R}^n\simeq\operatorname{Iso}/\operatorname{Iso}_p$. More generally,
+  a homogeneous manifold is the quotient of its isometry group by an isotropy
+  subgroup.
 \end{example}
 \begin{proof}
   \leanok
   \uses{ex:pet-ch1-isometry-group-euclidean,rem:pet-ch1-ex-17,rem:pet-ch1-ex-19}
-  Maps $x\mapsto v+Ox$ with $v\in\mathbb{R}^n$, $O\in O(n)$ are visibly isometries.
-  Conversely, let $F\in\mathrm{Iso}(\mathbb{R}^n,g_{\mathrm{eu}})$. (Petersen
-  derives the converse from the uniqueness principle for Riemannian
-  isometries, Prop.\ 5.6.2 of the source, outside this chapter; we argue
-  instead through arc length and the Mazur--Ulam theorem.) A Riemannian
-  isometry preserves the length of curves
-  (\cref{rem:pet-ch1-ex-17}). For $x,y\in\mathbb{R}^n$ the image under
-  $F$ of the straight segment from $x$ to $y$ is a smooth curve from $F(x)$
-  to $F(y)$ of length $|y-x|$, and every curve is at least as long as the
-  distance between its endpoints (\cref{rem:pet-ch1-ex-19}), so $|F(x)-F(y)|\le|x-y|$. Applying the
-  same argument to $F^{-1}$ gives the reverse inequality, so $F$ is a
-  surjective distance-preserving map of $\mathbb{R}^n$. By the Mazur--Ulam
-  theorem $F$ is affine, $F(x)=F(0)+O(x)$ with $O$ linear and
-  distance-preserving with $O(0)=0$, hence $O\in O(n)$; take $v=F(0)$.
+  \sketch
+  Affine orthogonal maps are isometries. Conversely, a Riemannian isometry $F$
+  preserves curve length by \cref{rem:pet-ch1-ex-17}. Applying
+  \cref{rem:pet-ch1-ex-19} to the image of the segment from $x$ to $y$ gives
+  $|F(x)-F(y)|\le |x-y|$; applying the same argument to $F^{-1}$ gives
+  equality. Mazur--Ulam then makes $F$ affine:
+  $F(x)=F(0)+Ox$ with $O\in O(n)$.
 \end{proof}
 
-\begin{example}[Example 1.3.2 — isometries of the sphere]
+\begin{example}[Isometries of the sphere]
   \label{ex:pet-ch1-isometry-group-sphere}
+  \dcref{ch1:1.3.2}
   \lean{PetersenLib.isometryGroup_sphere}
   \leanok
   \uses{def:pet-ch1-isometry-group,ex:pet-ch1-sphere}
-  $\mathrm{Iso}(S^n(R),g_{S^n(R)})=O(n+1)=\mathrm{Iso}_0(\mathbb{R}^{n+1},g_{\mathrm{eu}})$.
-  The isotropy groups are isomorphic to $O(n)$ (elements of $O(n+1)$ fixing a
-  line), so $S^n\simeq O(n+1)/O(n)$.
-  \source{petersen:page-0028}
+  \[
+    \operatorname{Iso}(S^n(R),g_{S^n(R)})=O(n+1)
+      =\operatorname{Iso}_0(\mathbb{R}^{n+1},g_{\mathrm{eu}}).
+  \]
+  Each isotropy subgroup is isomorphic to $O(n)$, and
+  $S^n\simeq O(n+1)/O(n)$.
 \end{example}
 \begin{proof}
   \uses{ex:pet-ch1-isometry-group-sphere,rem:pet-ch1-ex-20,rem:pet-ch1-ex-17}
   \leanok
-  Clearly $O(n+1)\subset\mathrm{Iso}(S^n(R),g_{S^n(R)})$. Conversely, let
-  $F\in\mathrm{Iso}(S^n(R),g_{S^n(R)})$. Petersen's text assembles the matrix
-  $O=\big[\tfrac1RF(Re_1)\ DF|_{e_1}(e_2)\ \cdots\ DF|_{e_1}(e_{n+1})\big]$ and
-  invokes the uniqueness principle (Prop.\ 5.6.2 of the source) to conclude
-  $F=O$; since that principle lies outside Chapter~1, we argue instead through
-  the length-minimization characterization of great circles
-  (Exercise~1.6.20). For $x,y\in S^n(R)$ with angle
-  $\theta=\arccos(\langle x,y\rangle/R^2)\in(0,\pi)$, the great circle from
-  $x$ to $y$ has induced length $R\theta$; since $F$ preserves induced arc
-  length (Exercise~1.6.17 and $F^*g=g$), its image is a curve from $F(x)$ to
-  $F(y)$ of the same length, and the lower bound of Exercise~1.6.20(4) gives
-  $R\,\arccos(\langle F(x),F(y)\rangle/R^2)\le R\theta$. Hence
-  $\langle x,y\rangle\le\langle F(x),F(y)\rangle$ (the degenerate cases
-  $\langle x,y\rangle=\pm R^2$ follow from Cauchy--Schwarz); applying the
-  same to $F^{-1}$ yields $\langle F(x),F(y)\rangle=\langle x,y\rangle$.
-  Now let $(e_i)$ be an orthonormal basis and define $O$ linearly by
-  $O(e_i)=\tfrac1R F(Re_i)$. By the preservation of inner products the family
-  $(O(e_i))$ is orthonormal, so $O\in O(n+1)$; and for every $x\in S^n(R)$,
-  $\langle O(e_i),F(x)\rangle=\tfrac1R\langle F(Re_i),F(x)\rangle
-  =\tfrac1R\langle Re_i,x\rangle=\langle O(e_i),O(x)\rangle$ for all $i$,
-  so $F(x)=O(x)$.
+  \sketch
+  Orthogonal maps restrict to sphere isometries. If $F$ is any sphere
+  isometry, it preserves curve length. For $x,y\in S^n(R)$, the minimizing
+  great-circle arc in \cref{rem:pet-ch1-ex-20} has length
+  $R\arccos(\langle x,y\rangle/R^2)$. Comparing its image under $F$ with the
+  minimizing arc between $F(x),F(y)$, and then applying the same comparison to
+  $F^{-1}$, yields
+  $\langle F(x),F(y)\rangle=\langle x,y\rangle$.
+  For an orthonormal basis $e_i$, define $Oe_i=R^{-1}F(Re_i)$. These images are
+  orthonormal, so $O\in O(n+1)$, and the preserved pairings imply $F(x)=Ox$
+  for every $x\in S^n(R)$.
 \end{proof}
 
-\begin{example}[Example 1.3.3 — isometries of hyperbolic space]
+\begin{example}[Isometries of hyperbolic space]
   \label{ex:pet-ch1-isometry-group-hyperbolic}
+  \dcref{ch1:1.3.3}
   \lean{PetersenLib.isometryGroup_hyperbolicSpace}
   \leanok
   \uses{def:pet-ch1-isometry-group,ex:pet-ch1-hyperbolic-space}
-  Let $O(n,1)=\{L:\mathbb{R}^{n,1}\to\mathbb{R}^{n,1}\mid g(Lv,Lv)=g(v,v)\}$ and
-  $O^+(n,1)\subset O(n,1)$ those $L$ preserving $x^{n+1}>0$ on timelike
-  vectors. A permutation $F$ of $H^n(R)$ is a Riemannian isometry of
-  $(H^n(R),g_{H^n(R)})$ if and only if it is the restriction to $H^n(R)$ of
-  an orthochronous transformation $L\in O^+(n,1)$, so $\mathrm{Iso}(H^n(R))$
-  is realized inside $O^+(n,1)$; the isotropy of $Re_{n+1}$ is identified with
-  $O(n)$, and $O^+(n,1)$ acts transitively on $H^n(R)$.
-  \source{petersen:page-0028,petersen:page-0029}
+  Let
+  $O(n,1)=\{L:g(Lv,Lv)=g(v,v)\}$ and let $O^+(n,1)$ be its subgroup preserving
+  the upper timelike cone. A bijection of $H^n(R)$ is a Riemannian isometry
+  exactly when it is the restriction of an element of $O^+(n,1)$. This group
+  acts transitively, the isotropy of $Re_{n+1}$ is $O(n)$, and
+  $\operatorname{Iso}(H^n(R))$ is realized by $O^+(n,1)$.
 \end{example}
 \begin{proof}
   \uses{ex:pet-ch1-isometry-group-hyperbolic,rem:pet-ch1-ex-21,rem:pet-ch1-ex-17}
   \leanok
-  If $L\in O^+(n,1)$, then $L$ preserves the defining equation
-  $g(x,x)=-R^2$ and the sheet condition $x^{n+1}>0$, so it restricts to a
-  bijection of $H^n(R)$, smooth in the global chart; since the metric of
-  $H^n(R)$ is induced from the Minkowski form, which (by polarization) $L$
-  preserves as a bilinear form, the restriction is a Riemannian isometry.
+  \sketch
+  An element of $O^+(n,1)$ preserves both $g(x,x)=-R^2$ and the upper sheet,
+  and its restriction preserves the induced metric.
 
-  Conversely let $F\in\mathrm{Iso}(H^n(R))$. Petersen's text assembles the
-  matrix with columns
-  $DF|_{e_{n+1}}(e_1),\dots,DF|_{e_{n+1}}(e_n),\tfrac1RF(Re_{n+1})$ and
-  invokes the uniqueness principle (Prop.~5.6.2 of the source) to conclude
-  that $F$ agrees with it; since that principle lies outside Chapter~1, we
-  argue instead through the length-minimization characterization of
-  hyperbolas (Exercise~1.6.21). For $x,y\in H^n(R)$ with
-  $\theta=\operatorname{arcosh}(-g(x,y)/R^2)>0$ the hyperbola
-  $s\mapsto x\cosh s+Rv\sinh s$, with $v$ the unit tangent at $x$ toward
-  $y$, reaches $y$ at $s=\theta$ and has induced length $R\theta$; since
-  $F$ preserves induced arc length (Exercise~1.6.17 and $F^*g=g$), its
-  image is a curve from $F(x)$ to $F(y)$ of the same length, and the lower
-  bound of Exercise~1.6.21(4) gives
-  $R\operatorname{arcosh}(-g(F(x),F(y))/R^2)\le R\theta$; as both pairings
-  satisfy $-g(\cdot,\cdot)/R^2\ge1$ and $\operatorname{arcosh}$ is monotone,
-  $-g(F(x),F(y))\le-g(x,y)$. Applying the same to $F^{-1}$ yields
-  $g(F(x),F(y))=g(x,y)$ for all $x,y\in H^n(R)$.
-
-  Now the $n+1$ points $W_0=(0,R)$ and $W_i=(R\sinh(1)\,e_i,R\cosh(1))$,
-  $i=1,\dots,n$, of $H^n(R)$ form a basis of $\mathbb{R}^{n,1}$: in a
-  vanishing linear combination the first components force the coefficients
-  of the $W_i$ (as $R\sinh1\neq0$ and the $e_i$ are independent), and the
-  last coordinate then forces that of $W_0$. Define $L$ linearly by
-  $L(W_k)=F(W_k)$. Since $F$ preserves pairings of hyperboloid points,
-  $g(Lv,Lw)=g(v,w)$ holds on basis pairs, hence for all $v,w$ by
-  bilinearity, so $L\in O(n,1)$. Moreover $L$ is injective — if $Lv=0$
-  then $g(v,\cdot)\equiv0$, while the Minkowski form is nondegenerate
-  ($g(v,(v_1,-v^{n+1}))=|v_1|^2+(v^{n+1})^2>0$ for $v\neq0$) — hence
-  bijective. For any $x\in H^n(R)$ and each $k$,
-  $g(F(x),LW_k)=g(F(x),F(W_k))=g(x,W_k)=g(Lx,LW_k)$; as $(LW_k)$ is again
-  a basis, nondegeneracy gives $F(x)=L(x)$, so $F$ is the restriction of
-  $L$. Finally $L$ is orthochronous: an upper timelike vector $v$ is a
-  positive multiple $v=c\,p$ of a point $p\in H^n(R)$ (with
-  $c=\sqrt{-g(v,v)}/R>0$), and $(Lv)^{n+1}=c\,(F(p))^{n+1}>0$.
+  Conversely, let $F\in\operatorname{Iso}(H^n(R))$. The minimizing hyperbola
+  of \cref{rem:pet-ch1-ex-21} from $x$ to $y$ has length
+  $R\operatorname{arcosh}(-g(x,y)/R^2)$. Length preservation and the inverse
+  comparison give $g(F(x),F(y))=g(x,y)$.
+  The points
+  \[
+    W_0=(0,R),\qquad
+    W_i=(R\sinh(1)e_i,R\cosh(1)),\quad 1\le i\le n,
+  \]
+  form a basis of $\mathbb{R}^{n,1}$. Extend $F(W_i)$ linearly to $L$.
+  Preservation of pairings on this basis gives $L\in O(n,1)$. For every
+  $x\in H^n(R)$, the equalities
+  $g(F(x),LW_i)=g(Lx,LW_i)$ for all $i$ imply $F(x)=Lx$ by nondegeneracy.
+  Finally every upper timelike vector is a positive multiple of a point of
+  $H^n(R)$, so $L$ preserves the upper cone and lies in $O^+(n,1)$.
 \end{proof}
 
 \subsection{Lie Groups}
 
-\begin{definition}[left-invariant metric]
+\begin{definition}[Left-invariant metric]
   \label{def:pet-ch1-left-invariant-metric}
   \lean{PetersenLib.leftInvariantMetric}
   \leanok
   \uses{def:pet-ch1-riemannian-isometry}
-  For a Lie group $G$, left translation trivializes $TG\simeq G\times T_eG$, so
-  any inner product on $T_eG$ induces a Riemannian metric on $G$ for which every
-  left translation $L_x$ is a Riemannian isometry — a \emph{left-invariant}
-  metric. Every Riemannian metric on $G$ for which all left translations are
-  isometries arises this way. Distinct inner products on $T_eG$ need not give
-  isometric metrics, so a Lie group need not carry a canonical metric.
-  \source{petersen:page-0029}
+  Left translation identifies $TG\simeq G\times T_eG$. Every inner product on
+  $T_eG$ therefore extends uniquely to a metric for which all left translations
+  are isometries; these are precisely the \emph{left-invariant metrics} on $G$.
+  Different inner products can produce nonisometric metrics.
 \end{definition}
 
-\begin{remark}[Riemannian submersions onto homogeneous quotients]
+\begin{remark}[Metrics on homogeneous quotients]
   \label{rem:pet-ch1-quotient-submersion}
   \lean{PetersenLib.homogeneousQuotientMetric}
   \leanok
   \uses{def:pet-ch1-riemannian-submersion,def:pet-ch1-left-invariant-metric}
-  If $H\subset G$ is a compact subgroup, $G/H=\{gH\}$ is a manifold. Given a
-  Riemannian metric on $G$ for which right translations by elements of $H$ act by
-  isometries, there is a unique Riemannian metric on $G/H$ making $G\to G/H$ a
-  Riemannian submersion; if the metric on $G$ is also left-invariant, $G$ acts by
-  isometries on $G/H$, making $G/H$ homogeneous.
-  (The Lean formalization proves the existence and uniqueness of the submersion
-  metric under a general isometric-action hypothesis; the concluding homogeneity
-  clause is not formalized separately.)
-  \source{petersen:page-0029}
+  Let $H\subset G$ be compact. If right translation by every $h\in H$ is an
+  isometry of a metric on $G$, there is a unique metric on $G/H$ for which
+  $G\to G/H$ is a Riemannian submersion. If the metric on $G$ is also
+  left-invariant, the induced left action of $G$ on $G/H$ is isometric and
+  transitive. The formalized quotient-metric result uses the more general
+  hypothesis of an isometric action; homogeneity is not separately formalized.
 \end{remark}
 
-\begin{example}[Example 1.3.4 — Fubini--Study metric]
+\begin{example}[Fubini--Study metric]
   \label{ex:pet-ch1-fubini-study}
+  \dcref{ch1:1.3.4}
   \lean{PetersenLib.fubiniStudyMetric,PetersenLib.ComplexProjectiveSpace,PetersenLib.projSphere,PetersenLib.chartCP,PetersenLib.fubiniStudyMetricComplexProjectiveSpace}
   \leanok
   \uses{rem:pet-ch1-quotient-submersion,ex:pet-ch1-sphere}
-  The circle $S^1=\{\lambda\in\mathbb{C}\mid|\lambda|=1\}$ acts by isometric complex
-  scalar multiplication on $S^{2n+1}(1)\subset\mathbb{C}^{n+1}$, with quotient
-  $S^{2n+1}/S^1=\mathbb{CP}^n$; the induced metric on $\mathbb{CP}^n$ making
-  $S^{2n+1}\to\mathbb{CP}^n$ a Riemannian submersion is the \emph{Fubini--Study metric}.
-  When $n=1$ this is the Hopf fibration $S^3(1)\to\mathbb{CP}^1=S^2(1/2)$.
-  \source{petersen:page-0029}
+  Scalar multiplication by $S^1\subset\mathbb{C}$ acts isometrically on
+  $S^{2n+1}(1)\subset\mathbb{C}^{n+1}$. The quotient
+  $S^{2n+1}/S^1=\mathbb{CP}^n$ carries the unique \emph{Fubini--Study metric}
+  making the quotient map a Riemannian submersion. For $n=1$ this is
+  $S^3(1)\to\mathbb{CP}^1=S^2(1/2)$.
 \end{example}
 
-\begin{example}[Example 1.3.5 — $SU(2)$ and the Berger spheres]
+\begin{example}[$SU(2)$ and Berger spheres]
   \label{ex:pet-ch1-su2-berger}
+  \dcref{ch1:1.3.5}
   \lean{PetersenLib.suTwoMetric,PetersenLib.bergerSphereMetric}
   \leanok
   \uses{def:pet-ch1-left-invariant-metric,ex:pet-ch1-sphere}
-  $SU(2)=\{A\in M_{2\times2}(\mathbb{C})\mid\det A=1,A^*=A^{-1}\}
-  =\{\begin{bsmallmatrix}z&w\\-\bar w&\bar z\end{bsmallmatrix}:|z|^2+|w|^2=1\}=S^3(1)$,
-  with Lie algebra $\mathfrak{su}(2)$ spanned by
-  $X_1=\mathrm{diag}(i,-i)$, $X_2=\begin{bsmallmatrix}0&1\\-1&0\end{bsmallmatrix}$,
-  $X_3=\begin{bsmallmatrix}0&i\\i&0\end{bsmallmatrix}$, viewed as left-invariant
-  vector fields. Declaring $X_1,X_2,X_3$ orthonormal gives a left-invariant
-  metric on $SU(2)$ isometric to $S^3(1)$. Declaring them orthogonal, with
-  $|X_1|=\varepsilon$ and $X_2,X_3$ unit, gives the \emph{Berger spheres}
-  $g_\varepsilon$ on $SU(2)=S^3$; scalar multiplication on $S^3\subset\mathbb{C}^2$
-  corresponds to left multiplication by $\mathrm{diag}(e^{i\theta},e^{-i\theta})$,
-  so $X_1$ is tangent to the Hopf circle action, and $g_\varepsilon$ is obtained
-  from the canonical metric by scaling along the Hopf fibre by $\varepsilon^2$.
-  \source{petersen:page-0029,petersen:page-0030}
+  There are identifications
+  \[
+    SU(2)=\left\{\begin{bsmallmatrix}z&w\\-\bar w&\bar z\end{bsmallmatrix}
+      :|z|^2+|w|^2=1\right\}=S^3(1).
+  \]
+  The Lie algebra has basis
+  \[
+    X_1=\operatorname{diag}(i,-i),\quad
+    X_2=\begin{bsmallmatrix}0&1\\-1&0\end{bsmallmatrix},\quad
+    X_3=\begin{bsmallmatrix}0&i\\i&0\end{bsmallmatrix}.
+  \]
+  Declaring this left-invariant frame orthonormal gives the round metric on
+  $S^3(1)$. Declaring it orthogonal with
+  $|X_1|=\varepsilon$ and $|X_2|=|X_3|=1$ gives the Berger metric
+  $g_\varepsilon$. Since $X_1$ is tangent to the Hopf circle action,
+  $g_\varepsilon$ scales the round metric by $\varepsilon^2$ along Hopf fibres.
 \end{example}
 
 \subsection{Covering Maps}
 
-\begin{remark}[covering-induced and quotient metrics]
+\begin{remark}[Metrics induced by coverings and quotients]
   \label{rem:pet-ch1-covering-metric}
   \lean{PetersenLib.coveringInducedMetric,PetersenLib.quotientMetric}
   \leanok
   \uses{def:pet-ch1-riemannian-submersion,def:pet-ch1-pullback-metric}
-  A covering map $F:M\to N$ is both an immersion and a submersion, so a
-  Riemannian metric on $N$ pulls back to $M$, making $F$ an isometric immersion
-  (\emph{Riemannian covering}); since $\dim M=\dim N$, $F$ is in fact a local
-  isometry. If $F$ is a normal covering with deck group $\Gamma$, then $\Gamma$
-  acts by isometries on the pullback metric. Conversely, if $M$ is Riemannian and
-  $\Gamma$ acts on $M$ by isometries with $N=M/\Gamma$, there is a unique
-  Riemannian metric on $N$ making the quotient map a local isometry.
-  \source{petersen:page-0030,petersen:page-0031}
+  A covering $F:M\to N$ is both an immersion and a submersion. Pulling back a
+  metric on $N$ makes $F$ a local isometry, and the deck group of a normal
+  covering acts isometrically. Conversely, if a group $\Gamma$ acts by
+  isometries on $M$ and $N=M/\Gamma$ is a covering quotient, then $N$ has a
+  unique metric making $M\to N$ a local isometry.
 \end{remark}
 
-\begin{example}[Example 1.3.6 — the flat torus]
+\begin{example}[Flat tori]
   \label{ex:pet-ch1-flat-torus}
+  \dcref{ch1:1.3.6}
   \lean{PetersenLib.flatTorus}
   \leanok
   \uses{rem:pet-ch1-covering-metric}
-  For the square lattice $\mathbb{Z}^2\subset\mathbb{R}^2$ the quotient is the flat torus
-  $T^2=S^1\times S^1$, carrying the product of the round circle metrics; it is flat
-  and, being a product of the abelian Lie group $S^1$ with itself, its metric is
-  bi-invariant. More generally, fixing any basis $v_1,v_2$ of $\mathbb{R}^2$,
-  $\mathbb{Z}^2$ acts by isometric translations $(n,m)\mapsto(x\mapsto x+nv_1+mv_2)$
-  and the quotient is a torus with a flat metric depending on
-  $|v_1|,|v_2|,\angle(v_1,v_2)$, so distinct choices need not be isometric.
-  \source{petersen:page-0031}
+  The quotient $\mathbb{R}^2/\mathbb{Z}^2$ is the flat square torus
+  $S^1\times S^1$ with its product metric, which is bi-invariant. More
+  generally, a basis $v_1,v_2$ defines the lattice action
+  $x\mapsto x+nv_1+mv_2$ and a flat quotient metric determined up to isometry
+  by $|v_1|$, $|v_2|$, and the angle between them.
 \end{example}
 
-\begin{example}[Example 1.3.7 — real projective space]
+\begin{example}[Real projective space]
   \label{ex:pet-ch1-real-projective-space}
+  \dcref{ch1:1.3.7}
   \lean{PetersenLib.realProjectiveSpaceCovering}
   \leanok
   \uses{rem:pet-ch1-covering-metric,ex:pet-ch1-sphere}
-  The involution $-I$ on $S^n(1)\subset\mathbb{R}^{n+1}$ is an isometry, inducing a
-  Riemannian covering $S^n\to\mathbb{RP}^n$.
-  \source{petersen:page-0031}
+  The antipodal isometry of $S^n(1)$ induces the Riemannian covering
+  $S^n\to\mathbb{RP}^n$.
 \end{example}
 
 \section{Local Representations of Metrics}
@@ -599,664 +545,738 @@ recoverable from the text.
   \label{conv:pet-ch1-einstein-summation}
   \lean{PetersenLib.einsteinSummationConvention}
   \leanok
-  For a vector space $V$ (such as a tangent space) basis vectors carry
-  subscripts, $e_1,\dots,e_n$, and coefficients carry superscripts, so
-  $v=\sum_iv^ie_i=v^ie_i$ (repeated sub/superscript pairs are summed). The dual
-  basis $e^i\in V^*=\mathrm{Hom}(V,\mathbb{R})$ satisfies $e^i(e_j)=\delta^i_j$, and
-  $v^i=e^i(v)$; dual bases thus also carry superscripts. A linear map
-  $L:V\to V$ has matrix $[L^i_j]$ determined by $L(e_i)=L^i_je_j$, i.e.
-  $L^i_j=e^i(L(e_j))$: superscripts index rows, subscripts columns. On a
-  manifold, coordinates $x^i$ carry superscripts, so coordinate vector fields
-  $\partial_i=\partial/\partial x^i$ carry subscripts and form a basis of $T_pM$,
-  while the dual $1$-forms $dx^i$, satisfying $dx^i(\partial_j)=\delta^i_j$, form
-  the dual basis of $T_p^*M$. For a curve $c(t)=(x^i(t))=x^i(t)e_i$ in
-  $\mathbb{R}^n$, the velocity $\dot c(t)=(\dot x^i(t))=\dot x^i(t)\partial_i$ is
-  coordinate-independent because $\dot x^i(t)=dx^i(\dot c(t))$ by the chain rule,
-  matching the definition of the components of a vector in a given basis.
-  \source{petersen:page-0031,petersen:page-0032,petersen:page-0033}
+  Basis vectors have lower indices and components have upper indices, with a
+  repeated upper-lower pair summed:
+  $v=v^ie_i$. The dual basis satisfies $e^i(e_j)=\delta^i_j$, so
+  $v^i=e^i(v)$. For a linear map $L$, write
+  $L(e_j)=L^i_j e_i$; upper indices enumerate rows and lower indices columns.
+  In coordinates $x^i$ on a manifold, the coordinate frame and coframe are
+  \[
+    \partial_i=\frac{\partial}{\partial x^i},\qquad
+    dx^i(\partial_j)=\delta^i_j.
+  \]
+  Thus a curve $c(t)=(x^i(t))$ has intrinsic velocity
+  $\dot c=\dot x^i\partial_i$, with $\dot x^i=dx^i(\dot c)$.
 \end{convention}
 
 \subsection{Coordinate Representations}
 
-\begin{definition}[coordinate representation of a metric]
+For $1$-forms, juxtaposition denotes the ordered tensor product:
+$\theta_1\theta_2(v,w)=\theta_1(v)\theta_2(w)$, which need not equal
+$\theta_2\theta_1$.
+
+\begin{definition}[Coordinate representation of a metric]
   \label{def:pet-ch1-coordinate-metric}
   \lean{PetersenLib.metricCoordinateComponents}
   \leanok
   \uses{def:pet-ch1-riemannian-manifold,conv:pet-ch1-einstein-summation}
-  On coordinates $x=(x^1,\dots,x^n)$ on $U\subset M$, $1$-forms multiply to
-  bilinear forms via $\theta_1\cdot\theta_2(v,w)=\theta_1(v)\theta_2(w)=
-  (\theta_1\otimes\theta_2)(v,w)$ (in general $\theta_1\cdot\theta_2\ne
-  \theta_2\cdot\theta_1$). A Riemannian metric $g$ is then
+  In coordinates $x=(x^1,\ldots,x^n)$, a Riemannian metric is
   \[
-    g=g(\partial_i,\partial_j)\,dx^i\cdot dx^j,
+    g=g_{ij}\,dx^i dx^j,
+    \qquad g_{ij}=g(\partial_i,\partial_j).
   \]
-  since $g(v,w)=g(dx^i(v)\partial_i,dx^j(w)\partial_j)=g(\partial_i,\partial_j)\,
-  dx^i(v)\,dx^j(w)$. The functions $g_{ij}:=g(\partial_i,\partial_j)=g_{ji}$ form a
-  positive-definite symmetric matrix parametrized over $U$: the \emph{local
-  representation} of $g$.
-  \source{petersen:page-0033}
+  The smooth matrix $(g_{ij})$ is symmetric and positive definite. This identity
+  follows by writing $v=dx^i(v)\partial_i$ and
+  $w=dx^j(w)\partial_j$.
 \end{definition}
 
-\begin{example}[Example 1.4.1 — canonical metric on $\mathbb{R}^n$]
+\begin{example}[Euclidean metric in Cartesian coordinates]
   \label{ex:pet-ch1-euclidean-coords}
+  \dcref{ch1:1.4.1}
   \lean{PetersenLib.euclideanMetricCoordinates}
   \leanok
   \uses{def:pet-ch1-coordinate-metric,ex:pet-ch1-euclidean-space}
-  In the identity chart, $g_{\mathbb{R}^n}=\delta_{ij}\,dx^i\,dx^j=\sum_{i=1}^n(dx^i)^2$.
-  \source{petersen:page-0033}
+  In the identity chart,
+  $g_{\mathbb{R}^n}=\delta_{ij}\,dx^i dx^j=\sum_{i=1}^n(dx^i)^2$.
 \end{example}
 
-\begin{example}[Example 1.4.2 — polar coordinates]
+\begin{example}[Euclidean metric in polar coordinates]
   \label{ex:pet-ch1-polar-coords}
+  \dcref{ch1:1.4.2}
   \lean{PetersenLib.polarCoordinateMetric}
   \leanok
   \uses{def:pet-ch1-coordinate-metric,ex:pet-ch1-euclidean-coords}
-  On $\mathbb{R}^2$ minus a half-line, in polar coordinates $(r,\theta)$ the canonical
-  metric is $g=dr^2+r^2\,d\theta^2$, i.e.\ $g_{rr}=1$, $g_{r\theta}=g_{\theta r}=0$,
+  On the complement of a half-line in $\mathbb{R}^2$, polar coordinates give
+  \[
+    g=dr^2+r^2d\theta^2.
+  \]
+  Thus $g_{rr}=1$, $g_{r\theta}=g_{\theta r}=0$, and
   $g_{\theta\theta}=r^2$.
-  \source{petersen:page-0034}
 \end{example}
 \begin{proof}
   \uses{ex:pet-ch1-polar-coords}
   \leanok
-  With $x=r\cos\theta$, $y=r\sin\theta$, $dx=\cos\theta\,dr-r\sin\theta\,d\theta$
-  and $dy=\sin\theta\,dr+r\cos\theta\,d\theta$, so
+  \sketch
+  From $x=r\cos\theta$ and $y=r\sin\theta$,
   \[
-    dx^2+dy^2=(\cos\theta\,dr-r\sin\theta\,d\theta)^2+(\sin\theta\,dr+r\cos\theta\,d\theta)^2
+    dx=\cos\theta\,dr-r\sin\theta\,d\theta,
+    \qquad
+    dy=\sin\theta\,dr+r\cos\theta\,d\theta.
   \]
-  \[
-    =(\cos^2\theta+\sin^2\theta)\,dr^2
-    +\big(r\cos\theta\sin\theta-r\cos\theta\sin\theta\big)(dr\,d\theta+d\theta\,dr)
-    +r^2(\sin^2\theta+\cos^2\theta)\,d\theta^2
-  \]
-  \[
-    =dr^2+r^2\,d\theta^2.\qedhere
-  \]
+  Expanding $dx^2+dy^2$ cancels the mixed terms and yields
+  $dr^2+r^2d\theta^2$.
 \end{proof}
 
 \subsection{Frame Representations}
 
-\begin{definition}[frame representation of a metric]
+\begin{definition}[Frame representation of a metric]
   \label{def:pet-ch1-frame-metric}
   \lean{PetersenLib.frameRepresentation}
   \leanok
   \uses{def:pet-ch1-riemannian-manifold}
-  A \emph{frame} $X_1,\dots,X_n$ on $U\subset M$ is a collection of $n=\dim M$
-  linearly independent vector fields on $U$; the \emph{coframe} $\sigma^1,\dots,
-  \sigma^n$ is the dual $1$-forms, $\sigma^i(X_j)=\delta^i_j$. The metric is then
-  represented as $g=g_{ij}\,\sigma^i\sigma^j=g(X_i,X_j)\,\sigma^i\sigma^j$.
-  \source{petersen:page-0034}
+  A \emph{frame} on $U\subset M$ is a family of pointwise linearly independent
+  vector fields $X_1,\ldots,X_n$. Its dual \emph{coframe}
+  $\sigma^1,\ldots,\sigma^n$ satisfies $\sigma^i(X_j)=\delta^i_j$, and
+  \[
+    g=g_{ij}\sigma^i\sigma^j,
+    \qquad g_{ij}=g(X_i,X_j).
+  \]
 \end{definition}
 
-\begin{example}[Example 1.4.3 — left-invariant metrics via a coframe]
+\begin{example}[Left-invariant coframe representation]
   \label{ex:pet-ch1-left-invariant-coframe}
+  \dcref{ch1:1.4.3}
   \lean{PetersenLib.leftInvariantCoframeMetric}
   \leanok
   \uses{def:pet-ch1-frame-metric,def:pet-ch1-left-invariant-metric,ex:pet-ch1-su2-berger}
-  Given a frame $X_1,\dots,X_n$ of left-invariant vector fields on a Lie group
-  $G$ with dual coframe $\sigma^1,\dots,\sigma^n$, a left-invariant metric $g$
-  depends only on its values on $T_eG$ and is $g=g_{ij}\sigma^i\sigma^j$ for a
-  positive-definite symmetric constant matrix $(g_{ij})$. If $X_i$ form an
-  orthonormal basis for $\mathfrak{g}$, $g=(\sigma^1)^2+\dots+(\sigma^n)^2$. The
-  Berger sphere is $g_\varepsilon=\varepsilon^2(\sigma^1)^2+(\sigma^2)^2+(\sigma^3)^2$.
-  \source{petersen:page-0034,petersen:page-0035}
+  For a left-invariant frame $X_i$ on a Lie group and its dual coframe
+  $\sigma^i$, every left-invariant metric has the form
+  $g=g_{ij}\sigma^i\sigma^j$ for a constant positive-definite symmetric matrix
+  $(g_{ij})$. If the $X_i$ are orthonormal, then
+  $g=\sum_i(\sigma^i)^2$. In particular, the Berger metrics are
+  \[
+    g_\varepsilon=\varepsilon^2(\sigma^1)^2
+      +(\sigma^2)^2+(\sigma^3)^2.
+  \]
 \end{example}
 
-\begin{example}[Example 1.4.4 — surfaces of revolution]
+\begin{example}[Metric on a surface of revolution]
   \label{ex:pet-ch1-surface-of-revolution}
+  \dcref{ch1:1.4.4}
   \lean{PetersenLib.surfaceOfRevolutionMetric}
   \leanok
   \uses{def:pet-ch1-frame-metric}
-  A surface of revolution has profile curve $c(t)=(r(t),0,z(t)):I\to\mathbb{R}^3$
-  ($r(t)>0$), revolved about the $z$-axis:
-  $f(t,\theta)=(r(t)\cos\theta,r(t)\sin\theta,z(t))$, with natural frame
-  $\partial_t,\partial_\theta$ and coframe $dt,d\theta$. The induced metric from
-  $dx^2+dy^2+dz^2$ is $g=(\dot r^2+\dot z^2)dt^2+r^2\,d\theta^2$; if $c$ is
-  parametrized by arc length ($\dot r^2+\dot z^2=1$), $g=dt^2+r^2\,d\theta^2$.
-  \source{petersen:page-0035}
+  Let $c(t)=(r(t),0,z(t))$, with $r(t)>0$, and revolve it about the $z$-axis:
+  \[
+    f(t,\theta)=(r(t)\cos\theta,r(t)\sin\theta,z(t)).
+  \]
+  The induced metric is
+  \[
+    g=(\dot r^2+\dot z^2)dt^2+r^2d\theta^2.
+  \]
+  When $c$ has unit speed, this becomes $dt^2+r^2d\theta^2$.
 \end{example}
 \begin{proof}
   \uses{ex:pet-ch1-surface-of-revolution}
   \leanok
-  $dx=\dot r\cos\theta\,dt-r\sin\theta\,d\theta$,
-  $dy=\dot r\sin\theta\,dt+r\cos\theta\,d\theta$, $dz=\dot z\,dt$, so
+  \sketch
+  Substitution into $dx^2+dy^2+dz^2$ gives
   \[
-    dx^2+dy^2+dz^2
-    =(\dot r\cos\theta\,dt-r\sin\theta\,d\theta)^2+(\dot r\sin\theta\,dt+r\cos\theta\,d\theta)^2+(\dot z\,dt)^2
+  \begin{aligned}
+    dx&=\dot r\cos\theta\,dt-r\sin\theta\,d\theta,\\
+    dy&=\dot r\sin\theta\,dt+r\cos\theta\,d\theta,\\
+    dz&=\dot z\,dt.
+  \end{aligned}
   \]
-  \[
-    =(\dot r^2+\dot z^2)\,dt^2+r^2\,d\theta^2,
-  \]
-  by the same cross-term cancellation as in \cref{ex:pet-ch1-polar-coords}.
+  The mixed terms cancel, leaving the displayed metric.
 \end{proof}
 
-\begin{remark}[rotationally symmetric metrics]
+\begin{remark}[Rotationally symmetric metrics]
   \label{rem:pet-ch1-rotationally-symmetric}
   \lean{PetersenLib.rotationallySymmetricMetric}
   \leanok
   \uses{ex:pet-ch1-surface-of-revolution}
-  On the abstract manifold $I\times S^1$, with frame $\partial_t,\partial_\theta$,
-  one defines \emph{rotationally symmetric} metrics $g=\eta^2(t)dt^2+\rho^2(t)d\theta^2$
-  ($\eta,\rho$ independent of $\theta$); a change of coordinates on $I$ generally
-  reduces to $\eta\equiv1$. Not every rotationally symmetric metric comes from a
-  surface of revolution: if $dt^2+r^2d\theta^2$ is such a surface then
-  $\dot z^2+\dot r^2=1$, so $|\dot r|\le1$.
-  \source{petersen:page-0036}
+  A rotationally symmetric metric on $I\times S^1$ is
+  $\eta^2(t)dt^2+\rho^2(t)d\theta^2$; a reparametrization of $I$ usually makes
+  $\eta=1$. Such a metric need not be induced by a surface of revolution:
+  an induced unit-speed profile requires $\dot z^2+\dot r^2=1$, hence
+  $|\dot r|\le1$.
 \end{remark}
 
-\begin{example}[Example 1.4.5 — the round sphere as a surface of revolution]
+\begin{example}[Round and hyperbolic surfaces of revolution]
   \label{ex:pet-ch1-sphere-revolution}
+  \dcref{ch1:1.4.5}
   \lean{PetersenLib.sphereAsSurfaceOfRevolution}
   \leanok
   \uses{rem:pet-ch1-rotationally-symmetric,ex:pet-ch1-sphere,ex:pet-ch1-hyperbolic-space}
-  $S^2(R)\subset\mathbb{R}^3$ is the surface of revolution of
-  $t\mapsto R(\sin(t/R),0,\cos(t/R))$, with metric
-  $dt^2+R^2\sin^2(t/R)\,d\theta^2$; since $R\sin(t/R)\to t$ as $R\to\infty$,
-  large spheres approximate Euclidean space. Formally replacing $R$ by $iR$
-  yields $dt^2+R^2\sinh^2(t/R)\,d\theta^2$, which coincides with the induced
-  metric on $H^2(R)$ (\cref{ex:pet-ch1-hyperbolic-space}) obtained by revolving
-  $t\mapsto R(\sinh(t/R),0,\cosh(t/R))$ around the $z$-axis in $\mathbb{R}^{2,1}$.
-  \source{petersen:page-0036}
+  Revolving $R(\sin(t/R),0,\cos(t/R))$ gives $S^2(R)$ with metric
+  \[
+    dt^2+R^2\sin^2(t/R)d\theta^2.
+  \]
+  The limit $R\sin(t/R)\to t$ recovers the Euclidean polar metric. Replacing
+  the trigonometric functions by their hyperbolic analogues gives
+  \[
+    dt^2+R^2\sinh^2(t/R)d\theta^2,
+  \]
+  the metric induced on $H^2(R)$ by revolving
+  $R(\sinh(t/R),0,\cosh(t/R))$ in $\mathbb{R}^{2,1}$.
 \end{example}
 
-\begin{definition}[the functions $\mathrm{sn}_k$, $\mathrm{cs}_k$]
+\begin{definition}[The functions $\mathrm{sn}_k$ and $\mathrm{cs}_k$]
   \label{def:pet-ch1-snk-csk}
   \lean{PetersenLib.snFunction,PetersenLib.csFunction}
   \leanok
   \uses{rem:pet-ch1-rotationally-symmetric}
-  Let $\mathrm{sn}_k(t)$ be the unique solution of $\ddot x+kx=0$, $x(0)=0$,
-  $\dot x(0)=1$, and $\mathrm{cs}_k(t)$ the unique solution of $\ddot x+kx=0$,
-  $x(0)=1$, $\dot x(0)=0$. They satisfy
-  $\dot{\mathrm{sn}}_k=\mathrm{cs}_k$, $\dot{\mathrm{cs}}_k=-k\,\mathrm{sn}_k$,
-  $\mathrm{cs}_k^2+k\,\mathrm{sn}_k^2=1$. The family
-  $dt^2+\mathrm{sn}_k^2(t)\,d\theta^2$ is $\mathbb{R}^2$ when $k=0$, $S^2(1/\sqrt k)$ when
-  $k>0$, and $H^2(1/\sqrt{-k})$ when $k<0$.
-  \source{petersen:page-0036,petersen:page-0037}
+  Define $\mathrm{sn}_k$ and $\mathrm{cs}_k$ as the solutions of
+  $\ddot x+kx=0$ with initial data
+  \[
+    \mathrm{sn}_k(0)=0,\quad \dot{\mathrm{sn}}_k(0)=1,
+    \qquad
+    \mathrm{cs}_k(0)=1,\quad \dot{\mathrm{cs}}_k(0)=0.
+  \]
+  Then
+  \[
+    \dot{\mathrm{sn}}_k=\mathrm{cs}_k,\qquad
+    \dot{\mathrm{cs}}_k=-k\,\mathrm{sn}_k,\qquad
+    \mathrm{cs}_k^2+k\,\mathrm{sn}_k^2=1.
+  \]
+  The metrics $dt^2+\mathrm{sn}_k^2(t)d\theta^2$ give
+  $\mathbb{R}^2$ for $k=0$, $S^2(1/\sqrt{k})$ for $k>0$, and
+  $H^2(1/\sqrt{-k})$ for $k<0$.
 \end{definition}
 
 \subsection{Polar Versus Cartesian Coordinates}
 
-\begin{definition}[higher-dimensional rotationally symmetric metric]
+\begin{definition}[Higher-dimensional rotational symmetry]
   \label{def:pet-ch1-rot-sym-general}
   \lean{PetersenLib.rotationallySymmetricMetricHighDim}
   \leanok
   \uses{rem:pet-ch1-rotationally-symmetric}
-  On $I\times S^{n-1}$, with $ds^2_{n-1}$ the canonical metric on
-  $S^{n-1}(1)\subset\mathbb{R}^n$, one considers \emph{rotationally symmetric metrics}
-  $dt^2+\rho^2(t)ds^2_{n-1}$ (a special class of \emph{warped products}), with
-  $\rho(0)=0$, $\rho(t)>0$ for $t>0$; the question is when such a metric extends
-  smoothly across the origin of $\mathbb{R}^n$.
-  \source{petersen:page-0037}
+  Let $ds_{n-1}^2$ be the round metric on $S^{n-1}(1)$. A rotationally
+  symmetric metric on $I\times S^{n-1}$ has the form
+  \[
+    dt^2+\rho^2(t)ds_{n-1}^2,
+  \]
+  with $\rho(0)=0$ and $\rho(t)>0$ for $t>0$. Such metrics are warped products;
+  their extension across $t=0$ is governed by the next criterion.
 \end{definition}
 
-\begin{lemma}[polar-coordinate change formula]
+\begin{lemma}[Polar-to-Cartesian metric formula]
   \label{lem:pet-ch1-polar-coordinate-change}
   \lean{PetersenLib.polarToCartesianFormula}
   \leanok
   \uses{def:pet-ch1-rot-sym-general}
-  Write $x=ts$, $x\in\mathbb{R}^n$, $t=|x|>0$, $s\in S^{n-1}(1)$, so
-  $\sum(s^i)^2=1$ and $\sum s^ids^i=0$. Then $\sum(dx^i)^2=dt^2+t^2ds_{n-1}^2$,
-  hence $dt=\tfrac1t\sum x^idx^i$ and $ds_{n-1}^2=\big(\sum(dx^i)^2-dt^2\big)/t^2$,
-  giving
+  Put $x=ts\in\mathbb{R}^n$, where $t=|x|>0$ and
+  $s\in S^{n-1}(1)$. Then
+  \[
+    \sum_i(dx^i)^2=dt^2+t^2ds_{n-1}^2,
+    \qquad dt=\frac1t\sum_i x^i dx^i,
+  \]
+  and consequently
   \[
     dt^2+\rho^2(t)ds_{n-1}^2
-    =\Big(\frac1{t^2}-\frac{\rho^2(t)}{t^4}\Big)\Big(\sum x^idx^i\Big)^2
-    +\frac{\rho^2(t)}{t^2}\sum(dx^i)^2.
+      =\left(\frac1{t^2}-\frac{\rho^2(t)}{t^4}\right)
+         \left(\sum_i x^i dx^i\right)^2
+       +\frac{\rho^2(t)}{t^2}\sum_i(dx^i)^2.
   \]
-  \source{petersen:page-0037,petersen:page-0038}
 \end{lemma}
 \begin{proof}
   \uses{lem:pet-ch1-polar-coordinate-change}
   \leanok
-  From $x^i=ts^i$, $dx^i=s^idt+tds^i$, so
-  $\sum(dx^i)^2=\sum(s^i)^2dt^2+t^2\sum(ds^i)^2+2t\,dt\sum s^ids^i
-  =dt^2+t^2ds_{n-1}^2$, using $\sum(s^i)^2=1$ and $\sum s^ids^i=0$. From
-  $t^2=\sum(x^i)^2$, $2t\,dt=2\sum x^idx^i$, giving $dt=\tfrac1t\sum x^idx^i$.
-  Solving $\sum(dx^i)^2=dt^2+t^2ds_{n-1}^2$ for $ds_{n-1}^2$ gives the stated
-  formula, and substituting into $dt^2+\rho^2(t)ds_{n-1}^2$ and regrouping the
-  $dt^2=\tfrac1{t^2}(\sum s^idx^i)^2$ term against the $\sum(dx^i)^2$ term yields
-  the claimed identity.
+  \sketch
+  Since $x^i=ts^i$,
+  $dx^i=s^i dt+t\,ds^i$. The identities
+  $\sum_i(s^i)^2=1$ and $\sum_i s^i ds^i=0$ give the first formula.
+  Differentiating $t^2=\sum_i(x^i)^2$ gives the second. Solving for
+  $ds_{n-1}^2$ and substituting proves the final identity.
 \end{proof}
 
-\begin{theorem}[smoothness at the origin]
+\begin{theorem}[Smoothness at the origin]
   \label{thm:pet-ch1-smoothness-criterion}
   \lean{PetersenLib.rotationallySymmetricSmoothnessCriterion}
   \leanok
   \uses{lem:pet-ch1-polar-coordinate-change}
-  In the notation of \cref{lem:pet-ch1-polar-coordinate-change}, with ambient
-  dimension $n\ge1$, the metric
-  $dt^2+\rho^2(t)ds_{n-1}^2$ extends to a smooth metric on $\mathbb{R}^n$ near the origin
-  $t=0$ if and only if $\rho(0)=0$, $\dot\rho(0)=1$, and all even-order
-  derivatives of $\rho$ vanish at $0$: $\rho^{(2l)}(0)=0$ for $l\ge1$.
-  \source{petersen:page-0038,petersen:page-0039}
+  For $n\ge1$, the metric
+  $dt^2+\rho^2(t)ds_{n-1}^2$ extends smoothly across $t=0$ to a metric near
+  the origin of $\mathbb{R}^n$ if and only if
+  \[
+    \rho(0)=0,
+    \qquad \dot\rho(0)=1,
+    \qquad \rho^{(2l)}(0)=0\quad(l\ge1).
+  \]
 \end{theorem}
 \begin{proof}
   \leanok
   \uses{thm:pet-ch1-smoothness-criterion}
-  By \cref{lem:pet-ch1-polar-coordinate-change} it suffices that
-  $F_1=\rho^2(t)/t^2$ and $F_2=1/t^2-\rho^2(t)/t^4$ extend smoothly in $x$
-  across the origin with $F_1(0)>0$. (Petersen argues by Taylor expansion
-  that both coefficients are approximable to any order by polynomials in
-  $t^2$; approximability alone does not give smoothness without uniform
-  control of the remainders, so we argue instead by Hadamard quotients and
-  Whitney's even-function theorem, following the same idea.)
-
-  Assume $\rho(0)=0$, $\dot\rho(0)=1$, $\rho^{(2l)}(0)=0$ for $l\ge1$. Split
-  $\rho=\rho_o+\rho_e$ into odd and even parts; the hypotheses say exactly
-  that every derivative of $\rho_e$ vanishes at $0$, i.e.\ $\rho_e$ is flat
-  at $0$. The Hadamard quotient $f\mapsto\big(t\mapsto\int_0^1\dot
-  f(ts)\,ds\big)$ preserves smoothness and flatness and exchanges parity,
-  and satisfies $f(t)=f(0)+t\int_0^1\dot f(ts)\,ds$. Applying it repeatedly
-  produces smooth functions $K$ (even, $K(0)=\dot\rho(0)=1$), $M$ (flat),
-  $H$ (even) and $X$ (flat) with
+  \sketch
+  By \cref{lem:pet-ch1-polar-coordinate-change}, smoothness is equivalent to
+  smooth radial extensions of
   \[
-    \rho(t)=t\,(K(t)+M(t)),\qquad 1-K^2(t)=t^2H(t),\qquad M(t)=t^2X(t),
+    F_1=\frac{\rho^2(t)}{t^2},
+    \qquad
+    F_2=\frac1{t^2}-\frac{\rho^2(t)}{t^4},
   \]
-  whence for $t\ne0$
+  with $F_1(0)>0$. Under the displayed derivative conditions, decompose
+  $\rho$ into odd and even parts. Its even part is flat at $0$. Repeated
+  Hadamard division gives smooth functions $K,M,H,X$, with $K,H$ even,
+  $K(0)=1$, and $M,X$ flat, such that
   \[
-    F_1=(K+M)^2,\qquad F_2=H-X\,(2K+M).
+    \rho=t(K+M),\qquad 1-K^2=t^2H,
+    \qquad M=t^2X.
   \]
-  The right-hand sides are globally defined smooth functions of $t$ of the
-  form (even)${}+{}$(flat). By Whitney's even-function theorem a smooth even
-  function of $t$ is a smooth function of $t^2$, and a smooth flat function
-  of $t$ is one as well; since $t^2=\sum(x^i)^2$ is smooth in $x$, both
-  coefficients extend smoothly across the origin, with
-  $F_1(0)=K(0)^2=1>0$.
+  Therefore $F_1=(K+M)^2$ and $F_2=H-X(2K+M)$ are each the sum of an even
+  smooth function and a flat function. Whitney's theorem for even functions
+  expresses both as smooth functions of $t^2=\sum_i(x^i)^2$, giving the
+  required Cartesian extensions and $F_1(0)=1$.
 
-  Conversely, suppose $F_1,F_2$ extend smoothly. From
-  $F_2=(1-F_1)/t^2$ we get $F_1=1-t^2F_2$, so $F_1(0)=1$ by continuity.
-  Restricting along a ray through a unit vector $e$, the function
-  $a(t)=F_1(te)$ is smooth near $0$, even (both signs of $t$ give
-  $\rho(|t|)^2/t^2$), and $a(0)=1$. Correcting $a$ outside a small interval
-  by an even cutoff makes it globally smooth, even and positive, so
-  $r(t)=t\sqrt{a(t)}$ is a globally smooth \emph{odd} function, and for
-  small $t>0$, $r(t)=t\sqrt{\rho(t)^2/t^2}=\rho(t)$ by positivity of
-  $\rho$. Two smooth functions agreeing on $(0,\delta)$ have equal
-  derivatives at $0$: hence $\rho(0)=r(0)=0$,
-  $\dot\rho(0)=\dot r(0)=\sqrt{a(0)}=1$, and every even-order derivative of
-  $\rho$ at $0$ vanishes because $r$ is odd.
+  Conversely, smoothness gives $F_1=1-t^2F_2$ and hence $F_1(0)=1$. On any
+  line through the origin, $a(t)=F_1(te)$ is smooth and even. Near $0$ the
+  odd smooth function $r(t)=t\sqrt{a(t)}$ agrees with $\rho(t)$ for $t>0$.
+  Their derivatives at $0$ coincide, so $\rho(0)=0$, $\dot\rho(0)=1$, and
+  all even derivatives of $\rho$ vanish.
 \end{proof}
 
-\begin{example}[Example 1.4.6 — space forms]
+\begin{example}[Space forms]
   \label{ex:pet-ch1-space-forms}
+  \dcref{ch1:1.4.6}
   \lean{PetersenLib.spaceForm,PetersenLib.spaceFormIsometry,PetersenLib.spaceFormIsometry_neg}
   \leanok
   \uses{thm:pet-ch1-smoothness-criterion,def:pet-ch1-snk-csk,ex:pet-ch1-sphere,ex:pet-ch1-hyperbolic-space}
-  The hypotheses of \cref{thm:pet-ch1-smoothness-criterion} hold for all metrics
-  $dt^2+\mathrm{sn}_k^2(t)ds_{n-1}^2$, $t\in[0,\infty)$ if $k\le0$ and
-  $t\in[0,\pi/\sqrt k]$ if $k>0$. The resulting Riemannian manifolds, the
-  \emph{space forms} $S^n_k$ of dimension $n$ and curvature $k$, are isometric to
-  $\mathbb{R}^n$ ($k=0$), $S^n(R)$ ($k=1/R^2$), or $H^n(R)$ ($k=-1/R^2$).
-  \source{petersen:page-0039,petersen:page-0040}
+  The metrics
+  $dt^2+\mathrm{sn}_k^2(t)ds_{n-1}^2$ satisfy
+  \cref{thm:pet-ch1-smoothness-criterion}. Their radial intervals are
+  $[0,\infty)$ for $k\le0$ and $[0,\pi/\sqrt{k}]$ for $k>0$. The resulting
+  space form $S_k^n$ is isometric to $\mathbb{R}^n$ if $k=0$, to $S^n(R)$ if
+  $k=1/R^2$, and to $H^n(R)$ if $k=-1/R^2$.
 \end{example}
 \begin{proof}
   \leanok
   \uses{ex:pet-ch1-space-forms}
-  For $k=1/R^2$: the map $G:S^{n-1}\times(0,R\pi)\to\mathbb{R}^{n+1}$,
-  $G(s,r)=R(s\sin(r/R),\cos(r/R))$, has image in $S^n(R)$. Writing
-  $x=Rs\sin(r/R)$, $t=R\cos(r/R)$, and using $\sum(s^i)^2=1$,
-  $\sum s^ids^i=0$,
+  \sketch
+  For $k=1/R^2$, the map
   \[
-    dt^2+\sum\delta_{ij}dx^idx^j
-    =\sin^2(r/R)\,dr^2+\cos^2(r/R)\,dr^2\sum(s^i)^2+R^2\sin^2(r/R)\sum(ds^i)^2
+    (s,r)\longmapsto R(s\sin(r/R),\cos(r/R))
   \]
+  takes $S^{n-1}\times(0,R\pi)$ into $S^n(R)$. Using
+  $\sum_i(s^i)^2=1$ and $\sum_i s^i ds^i=0$, its pullback metric is
   \[
-    \qquad+2R\cos(r/R)\sin(r/R)\,dr\sum s^ids^i
-    =dr^2+R^2\sin^2(r/R)\,ds_{n-1}^2,
+    dr^2+R^2\sin^2(r/R)ds_{n-1}^2
+      =dr^2+\mathrm{sn}_{1/R^2}^2(r)ds_{n-1}^2.
   \]
-  so $G$ pulls back the ambient metric on $\mathbb{R}^{n+1}$ to
-  $dr^2+R^2\sin^2(r/R)ds_{n-1}^2=dr^2+\mathrm{sn}_{1/R^2}^2(r)ds_{n-1}^2$, exhibiting
-  $S^n_{1/R^2}$ as isometric to $S^n(R)$. For $k=-1/R^2$: the analogous map
-  $(s,r)\mapsto(R\sinh(r/R)s,R\cosh(r/R))$ into $\mathbb{R}^{n,1}$ satisfies, with
-  $g_{\mathbb{R}^{n,1}}=\delta_{ij}dx^idx^j-dt^2$,
-  \[
-    -dt^2+\sum\delta_{ij}dx^idx^j
-    =-\sinh^2(r/R)dr^2+\cosh^2(r/R)dr^2\sum(s^i)^2+R^2\sinh^2(r/R)\sum(ds^i)^2
-  \]
-  \[
-    =dr^2+R^2\sinh^2(r/R)\,ds_{n-1}^2,
-  \]
-  by the same computation with $\cosh,\sinh$ in place of $\cos,\sin$; this
-  exhibits $S^n_{-1/R^2}$ as isometric to $H^n(R)\subset\mathbb{R}^{n,1}$
-  (\cref{ex:pet-ch1-hyperbolic-space}). The case $k=0$ is
-  \cref{ex:pet-ch1-euclidean-coords} in polar form.
+  For $k=-1/R^2$, the map
+  $(s,r)\mapsto(R\sinh(r/R)s,R\cosh(r/R))$ into $\mathbb{R}^{n,1}$ similarly
+  pulls the Minkowski form back to
+  $dr^2+R^2\sinh^2(r/R)ds_{n-1}^2$. The case $k=0$ is the Euclidean polar
+  metric of \cref{ex:pet-ch1-euclidean-coords}.
 \end{proof}
 
 \subsection{Doubly Warped Products}
 
-\begin{definition}[doubly warped product metric]
+\begin{definition}[Doubly warped product metric]
   \label{def:pet-ch1-doubly-warped}
   \lean{PetersenLib.doublyWarpedProductMetric}
   \leanok
   \uses{def:pet-ch1-rot-sym-general}
-  On $I\times S^p\times S^q$, a \emph{doubly warped product metric} is
-  $dt^2+\rho^2(t)ds_p^2+\phi^2(t)ds_q^2$. Nondegeneracy forces $\rho,\phi$ not to
-  vanish simultaneously; when $\rho(t)=0$, the smoothness analysis reduces to
-  \cref{thm:pet-ch1-smoothness-criterion} applied to $\rho$ (with $\phi$ as a
-  bystander factor).
-  \source{petersen:page-0041}
+  A doubly warped product metric on $I\times S^p\times S^q$ is
+  \[
+    dt^2+\rho^2(t)ds_p^2+\phi^2(t)ds_q^2.
+  \]
+  Nondegeneracy forbids simultaneous zeros of $\rho$ and $\phi$. At a zero of
+  one factor, smoothness reduces to the rotational criterion for that factor,
+  together with radial smoothness of the other coefficient.
 \end{definition}
 
-\begin{proposition}[Proposition 1.4.7 — smoothness at $t=0$]
+\begin{proposition}[Smoothness at $t=0$]
   \label{prop:pet-ch1-doubly-warped-smooth-zero}
+  \dcref{ch1:1.4.7}
   \lean{PetersenLib.doublyWarpedSmoothAtZero}
   \leanok
   \uses{def:pet-ch1-doubly-warped,thm:pet-ch1-smoothness-criterion}
-  If $\rho,\phi:(0,b)\to(0,\infty)$ are smooth (both warping functions of a
-  doubly warped metric are positive on the interior), the doubly warped
-  metric is smooth at $t=0$ iff $\rho(0)=0$, $\rho^{(\mathrm{even})}(0)=0$,
-  $\dot\rho(0)=1$, $\phi(0)>0$, and $\phi^{(\mathrm{odd})}(0)=0$; the topology
-  near $t=0$ is then $\mathbb{R}^{p+1}\times S^q$. (Positivity of $\phi$ near
-  $0$ is needed for the ``only if'' direction: the metric coefficient
-  $\phi^2$ determines $\phi$ only up to sign.)
-  \source{petersen:page-0041}
+  Let $\rho,\phi:(0,b)\to(0,\infty)$ be smooth. The metric extends smoothly
+  across $t=0$ if and only if
+  \[
+  \begin{gathered}
+    \rho(0)=0,\qquad \dot\rho(0)=1,
+    \qquad \rho^{(2l)}(0)=0\quad(l\ge1),\\
+    \phi(0)>0,
+    \qquad \phi^{(2l+1)}(0)=0\quad(l\ge0).
+  \end{gathered}
+  \]
+  The resulting local topology is $\mathbb{R}^{p+1}\times S^q$. Positivity of
+  $\phi$ near $0$ is needed in the reverse implication because the coefficient
+  $\phi^2$ alone does not determine its sign.
 \end{proposition}
 \begin{proof}
   \leanok
   \uses{prop:pet-ch1-doubly-warped-smooth-zero,thm:pet-ch1-smoothness-criterion}
-  In the Cartesian coordinates of \cref{thm:pet-ch1-smoothness-criterion} on
-  the blown-up factor $\mathbb{R}^{p+1}$, the metric near $t=0$ has the
-  rotationally symmetric part with coefficients
-  $F_1=\rho^2(t)/t^2$, $F_2=1/t^2-\rho^2(t)/t^4$, and the bystander part
-  $F_3\,g_{S^q}$ with $F_3=\phi^2(t)$, $t=|x|$. Smoothness of $F_1,F_2$ with
-  $F_1(0)>0$ is, by \cref{thm:pet-ch1-smoothness-criterion}, equivalent to
-  $\rho(0)=0$, $\dot\rho(0)=1$, $\rho^{(2l)}(0)=0$. It remains to show that
-  $F_3$ extends smoothly with $F_3(0)>0$ iff $\phi(0)>0$ and
-  $\phi^{(\mathrm{odd})}(0)=0$.
-
-  ($\Leftarrow$) Split $\phi=\phi_e+\phi_o$ into even and odd parts. All
-  derivatives of $\phi_o$ vanish at $0$: the even-order ones because $\phi_o$
-  is odd, the odd-order ones because those of $\phi$ (hypothesis) and of the
-  even function $\phi_e$ vanish. So $\phi_o$ is flat at $0$; by Whitney's
-  even-function theorem $\phi_e(t)=g(t^2)$ with $g$ smooth, and a flat
-  function of $t$ is a smooth function of $t^2$ as well. Since
-  $t^2=\sum(x^i)^2$ is smooth in $x$, $\phi(|x|)=\phi_e(|x|)+\phi_o(|x|)$ is
-  smooth, and $F_3=\phi(|x|)^2$ is smooth with $F_3(0)=\phi(0)^2>0$.
-
-  ($\Rightarrow$) Restrict along a ray through a unit vector $e$:
-  $c(t)=F_3(te)$ is smooth near $0$, even (both signs of $t$ give
-  $\phi(|t|)^2$), positive near $0$ by continuity from $c(0)=F_3(0)>0$, and
-  $c(t)=\phi(t)^2$ for small $t>0$. Correcting $c$ outside a small interval
-  by an even cutoff makes it globally smooth, even and positive, so
-  $\sqrt{c}$ is a globally smooth even function agreeing with $\phi$ near
-  $0^+$ (positivity of $\phi$ fixes the sign of the root). Two smooth
-  functions agreeing on an interval $(0,\delta)$ have equal derivatives at
-  $0$, so all odd derivatives of $\phi$ vanish at $0$ by evenness of
-  $\sqrt{c}$; moreover $\phi(0)^2=c(0)>0$ and $\phi(0)\ge0$ by
-  right-continuity and positivity of $\phi$, so $\phi(0)>0$.
+  \sketch
+  In Cartesian coordinates on the collapsing $\mathbb{R}^{p+1}$ factor, the
+  coefficients are
+  \[
+    F_1=\rho^2/t^2,\qquad F_2=1/t^2-\rho^2/t^4,
+    \qquad F_3=\phi^2.
+  \]
+  The first two extend precisely under the conditions on $\rho$, by
+  \cref{thm:pet-ch1-smoothness-criterion}. If the odd derivatives of $\phi$
+  vanish, its odd part is flat and Whitney's even-function theorem makes
+  $\phi(|x|)$, hence $F_3$, smooth in $x$, with positive value at the origin.
+  Conversely, restrict a smooth positive extension of $F_3$ to a line.
+  Its positive square root is smooth and even and agrees with $\phi$ on the
+  positive half-line. Thus $\phi(0)>0$ and every odd derivative vanishes.
 \end{proof}
 
-\begin{proposition}[Proposition 1.4.8 — smoothness at $t=b$]
+\begin{proposition}[Smoothness at $t=b$]
   \label{prop:pet-ch1-doubly-warped-smooth-b}
+  \dcref{ch1:1.4.8}
   \lean{PetersenLib.doublyWarpedSmoothAtB}
   \leanok
   \uses{def:pet-ch1-doubly-warped,thm:pet-ch1-smoothness-criterion}
-  If $\rho,\phi:(0,b)\to(0,\infty)$ are smooth, the doubly warped
-  metric is smooth at $t=b$ iff $\rho(b)=0$, $\rho^{(\mathrm{even})}(b)=0$,
-  $\dot\rho(b)=-1$, $\phi(b)>0$, and $\phi^{(\mathrm{odd})}(b)=0$; the
-  topology near $t=b$ is again $\mathbb{R}^{p+1}\times S^q$.
-  \source{petersen:page-0041}
+  For smooth positive $\rho,\phi:(0,b)\to(0,\infty)$, smooth extension across
+  $t=b$ is equivalent to
+  \[
+  \begin{gathered}
+    \rho(b)=0,\qquad \dot\rho(b)=-1,
+    \qquad \rho^{(2l)}(b)=0\quad(l\ge1),\\
+    \phi(b)>0,
+    \qquad \phi^{(2l+1)}(b)=0\quad(l\ge0).
+  \end{gathered}
+  \]
+  The local topology is $\mathbb{R}^{p+1}\times S^q$.
 \end{proposition}
 \begin{proof}
   \leanok
   \uses{prop:pet-ch1-doubly-warped-smooth-b,prop:pet-ch1-doubly-warped-smooth-zero}
-  In the reflected variable $s=b-t$ the metric near $t=b$ takes the form
-  treated in \cref{prop:pet-ch1-doubly-warped-smooth-zero}, with warping
-  functions $\rho(b-s),\phi(b-s)$, positive for $s\in(0,b)$. Under the
-  reflection $f\mapsto f(b-\cdot)$ a derivative of order $m$ picks up the
-  sign $(-1)^m$, so even-order derivatives at the endpoint are preserved and
-  odd-order ones change sign. The conditions of
-  \cref{prop:pet-ch1-doubly-warped-smooth-zero} at $s=0$ --- value $0$,
-  slope $+1$ and vanishing higher even-order derivatives for $\rho(b-\cdot)$;
-  positive value and vanishing odd-order derivatives for $\phi(b-\cdot)$ ---
-  therefore translate exactly to $\rho(b)=0$, $\dot\rho(b)=-1$,
-  $\rho^{(2l)}(b)=0$, $\phi(b)>0$, $\phi^{(\mathrm{odd})}(b)=0$.
+  \sketch
+  Apply \cref{prop:pet-ch1-doubly-warped-smooth-zero} to the reflected
+  coordinate $s=b-t$ and the functions $\rho(b-s),\phi(b-s)$. Reflection
+  preserves even derivatives and reverses the sign of odd derivatives, turning
+  the required initial slope $+1$ into $\dot\rho(b)=-1$.
 \end{proof}
 
-\begin{remark}[topology types of doubly warped products]
+\begin{remark}[Topology of doubly warped completions]
   \label{rem:pet-ch1-doubly-warped-topologies}
   \lean{PetersenLib.doublyWarpedTopologyTypes}
   \leanok
   \uses{prop:pet-ch1-doubly-warped-smooth-zero,prop:pet-ch1-doubly-warped-smooth-b}
-  If $\rho,\phi:[0,\infty)\to[0,\infty)$ are positive on $(0,\infty)$ and satisfy
-  \cref{prop:pet-ch1-doubly-warped-smooth-zero}, the metric is smooth on
-  $\mathbb{R}^{p+1}\times S^q$. If $\rho,\phi:[0,b]\to[0,\infty)$ are positive on $(0,b)$
-  and satisfy both \cref{prop:pet-ch1-doubly-warped-smooth-zero,prop:pet-ch1-doubly-warped-smooth-b},
-  the metric is smooth on $S^{p+1}\times S^q$. If instead the roles of $\rho,\phi$
-  are interchanged at $t=b$, the metric is smooth on $S^{p+q+1}$.
-  \source{petersen:page-0041}
+  If $\rho,\phi$ are positive on $(0,\infty)$ and satisfy the conditions of
+  \cref{prop:pet-ch1-doubly-warped-smooth-zero}, the completed topology is
+  $\mathbb{R}^{p+1}\times S^q$. On $[0,b]$, imposing the corresponding
+  conditions at both endpoints produces $S^{p+1}\times S^q$. If instead
+  $\rho$ collapses at one endpoint and $\phi$ at the other, the result is
+  $S^{p+q+1}$.
 \end{remark}
 
-\begin{example}[Example 1.4.9 — spheres as doubly warped products]
+\begin{example}[Sphere as a doubly warped product]
   \label{ex:pet-ch1-sphere-doubly-warped}
+  \dcref{ch1:1.4.9}
   \lean{PetersenLib.sphereAsDoublyWarpedProduct}
   \leanok
   \uses{rem:pet-ch1-doubly-warped-topologies,ex:pet-ch1-sphere}
-  $dt^2+\sin^2(t)ds_p^2+\cos^2(t)ds_q^2$, $t\in[0,\pi/2]$, is isometric to
-  $(S^{p+q+1}(1),g_{S^{p+q+1}})$.
-  \source{petersen:page-0041,petersen:page-0042}
+  On $[0,\pi/2]\times S^p\times S^q$, the metric
+  \[
+    dt^2+\sin^2(t)ds_p^2+\cos^2(t)ds_q^2
+  \]
+  extends to the round unit sphere $S^{p+q+1}(1)$.
 \end{example}
 \begin{proof}
   \leanok
   \uses{ex:pet-ch1-sphere-doubly-warped}
-  Map $(0,\pi/2)\times S^p\times S^q\to\mathbb{R}^{p+1}\times\mathbb{R}^{q+1}$ by
-  $(t,x,y)\mapsto(x\sin t,y\cos t)$, $|x|=|y|=1$: the image lies in the unit
-  sphere of $\mathbb{R}^{p+q+2}$, and a computation identical in structure to the one
-  in the proof of \cref{ex:pet-ch1-space-forms} (with $\rho=\sin$, $\phi=\cos$
-  playing the roles of the two warping functions on the two factors) shows the
-  pullback of the ambient Euclidean metric is
-  $dt^2+\sin^2(t)ds_p^2+\cos^2(t)ds_q^2$.
+  \sketch
+  The map
+  $(t,x,y)\mapsto(x\sin t,y\cos t)$ takes the interior into the unit sphere
+  of $\mathbb{R}^{p+1}\times\mathbb{R}^{q+1}$. Differentiation, using
+  $x\perp T_xS^p$ and $y\perp T_yS^q$, gives the stated pullback metric; the
+  endpoint criteria identify its smooth completion.
 \end{proof}
 
 \subsection{Hopf Fibrations}
 
-\begin{example}[Example 1.4.10 — the Hopf fibration revisited]
+The doubly warped coordinates make both the Hopf map and its higher-dimensional
+quotient metrics explicit.
+
+\begin{example}[Hopf fibration in warped coordinates]
   \label{ex:pet-ch1-hopf-revisited}
+  \dcref{ch1:1.4.10}
   \lean{PetersenLib.hopfFibrationRevisitedSphere,PetersenLib.pullbackForm_sphereThreeParam,PetersenLib.pullbackForm_sphereTwoParam,PetersenLib.hopfMap_sphereThreeParam,PetersenLib.hopfFibrationRevisited}
   \leanok
   \uses{ex:pet-ch1-hopf-fibration,ex:pet-ch1-sphere-doubly-warped,ex:pet-ch1-su2-berger}
-  On $S^3(1)$ write the metric as $dt^2+\sin^2(t)d\theta_1^2+\cos^2(t)d\theta_2^2$,
-  $t\in[0,\pi/2]$, via
-  $(t,e^{i\theta_1},e^{i\theta_2})\mapsto(\sin(t)e^{i\theta_1},\cos(t)e^{i\theta_2})
-  \in S^3(1)\subset\mathbb{C}^2$; the Hopf fibres are
-  $\theta\mapsto(t,e^{i(\theta_1+\theta)},e^{i(\theta_2+\theta)})$. On
-  $S^2(1/2)$ use $dr^2+\tfrac14\sin^2(2r)d\theta^2$ via
-  $(r,e^{i\theta})\mapsto(\tfrac12\cos(2r),\tfrac12\sin(2r)e^{i\theta})$. In
-  these coordinates the Hopf map is
-  $(t,e^{i\theta_1},e^{i\theta_2})\mapsto(t,e^{i(\theta_1-\theta_2)})$, agreeing
-  with Wilhelm's map (\cref{ex:pet-ch1-hopf-fibration}); it is a Riemannian
-  submersion, and composed with the identification
-  $(t,e^{i\theta_1},e^{i\theta_2})\mapsto\begin{bsmallmatrix}\cos(t)e^{i\theta_1}&\sin(t)e^{i\theta_2}\\-\sin(t)e^{-i\theta_2}&\cos(t)e^{-i\theta_1}\end{bsmallmatrix}$
-  gives an isometry $S^3(1)\to SU(2)$ with its left-invariant metric
-  (\cref{ex:pet-ch1-su2-berger}).
-  \source{petersen:page-0042,petersen:page-0043}
+  Parametrize $S^3(1)$ by
+  \[
+    (t,e^{i\theta_1},e^{i\theta_2})
+      \longmapsto(\sin t\,e^{i\theta_1},\cos t\,e^{i\theta_2}),
+  \]
+  with metric
+  $dt^2+\sin^2t\,d\theta_1^2+\cos^2t\,d\theta_2^2$. Parametrize
+  $S^2(1/2)$ by
+  \[
+    (r,e^{i\theta})\longmapsto
+      \big(\tfrac12\cos(2r),\tfrac12\sin(2r)e^{i\theta}\big),
+  \]
+  with metric $dr^2+\tfrac14\sin^2(2r)d\theta^2$. In these coordinates the
+  Hopf map is
+  \[
+    (t,e^{i\theta_1},e^{i\theta_2})
+      \longmapsto(t,e^{i(\theta_1-\theta_2)}),
+  \]
+  and its fibres add the same angle to $\theta_1,\theta_2$. It agrees with the
+  map in \cref{ex:pet-ch1-hopf-fibration} and is a Riemannian submersion.
+  Moreover,
+  \[
+    (t,e^{i\theta_1},e^{i\theta_2})\longmapsto
+    \begin{bsmallmatrix}
+      \cos t\,e^{i\theta_1}&\sin t\,e^{i\theta_2}\\
+      -\sin t\,e^{-i\theta_2}&\cos t\,e^{-i\theta_1}
+    \end{bsmallmatrix}
+  \]
+  is an isometry from $S^3(1)$ to $SU(2)$ with the metric of
+  \cref{ex:pet-ch1-su2-berger}.
 \end{example}
 \begin{proof}
   \uses{ex:pet-ch1-hopf-revisited}
   \leanok
-  On $S^3(1)$, $\partial_{\theta_1}+\partial_{\theta_2}$ is tangent to the Hopf
-  fibre, $\partial_t$ and
-  $u:=\big(\cos^2(t)\partial_{\theta_1}-\sin^2(t)\partial_{\theta_2}\big)/(\cos t\sin t)$
-  are two further orthogonal unit vectors; on $S^2(1/2)$,
-  $\partial_r,\ (2/\sin(2r))\partial_\theta$ is an orthonormal frame. Since the
-  Hopf map sends $(t,\theta_1,\theta_2)\mapsto(r,\theta)=(t,\theta_1-\theta_2)$
-  in these coordinates, $\partial_t\mapsto\partial_r$ and
-  $u\mapsto\big(\cos^2(t)+\sin^2(t)\big)\partial_\theta/(\cos t\sin t)
-  =(2/\sin(2r))\partial_\theta$, matching the two target basis vectors exactly;
-  this shows the map is a linear isometry on the orthogonal complement of the
-  fibre, i.e.\ a Riemannian submersion by \cref{def:pet-ch1-riemannian-submersion}.
+  \sketch
+  The vertical vector is $\partial_{\theta_1}+\partial_{\theta_2}$. An
+  orthonormal horizontal frame is
+  \[
+    \partial_t,\qquad
+    u=\frac{\cos^2t\,\partial_{\theta_1}
+              -\sin^2t\,\partial_{\theta_2}}{\cos t\sin t}.
+  \]
+  The target frame is
+  $\partial_r,(2/\sin(2r))\partial_\theta$. The differential sends the first
+  source vector to $\partial_r$ and $u$ to
+  $(2/\sin(2r))\partial_\theta$, proving horizontal isometry.
 \end{proof}
 
-\begin{example}[Example 1.4.11 — the general submersion $I\times S^1\times S^1\to I\times S^1$]
+\begin{example}[A general doubly warped circle submersion]
   \label{ex:pet-ch1-hopf-general-submersion}
+  \dcref{ch1:1.4.11}
   \lean{PetersenLib.hopfFibrationGeneralSubmersion}
   \leanok
   \uses{def:pet-ch1-riemannian-submersion,def:pet-ch1-doubly-warped}
-  The map $(t,e^{i\theta_1},e^{i\theta_2})\mapsto(t,e^{i(\theta_1-\theta_2)})$,
-  $I\times S^1\times S^1\to I\times S^1$, is always a Riemannian submersion for
-  the doubly warped domain metric $dt^2+\rho^2(t)d\theta_1^2+\phi^2(t)d\theta_2^2$
-  and the rotationally symmetric target metric
-  $dr^2+\dfrac{(\rho(t)\phi(t))^2}{\rho^2(t)+\phi^2(t)}\,d\theta^2$.
-  \source{petersen:page-0043,petersen:page-0044}
+  The map
+  \[
+    (t,e^{i\theta_1},e^{i\theta_2})
+      \longmapsto(t,e^{i(\theta_1-\theta_2)})
+  \]
+  is a Riemannian submersion from
+  $dt^2+\rho^2d\theta_1^2+\phi^2d\theta_2^2$ to
+  \[
+    dr^2+\frac{(\rho\phi)^2}{\rho^2+\phi^2}d\theta^2.
+  \]
 \end{example}
 
-\begin{example}[Example 1.4.12 — higher-dimensional Hopf submersion]
+\begin{example}[Higher-dimensional Hopf quotient]
   \label{ex:pet-ch1-hopf-higher-dim}
+  \dcref{ch1:1.4.12}
   \lean{PetersenLib.hopfFibrationHigherDimSphere}
   \leanok
   \uses{ex:pet-ch1-hopf-general-submersion}
-  On $I\times S^{2n+1}\times S^1$ with doubly warped metric
-  $dt^2+\rho^2(t)ds_{2n+1}^2+\phi^2(t)d\theta^2$, split
-  $ds_{2n+1}^2=h+g$ into the component $h$ along the Hopf fibre and the
-  orthogonal component $g$ (via the $ds_{2n+1}^2$-orthogonal projection $\mathrm{pr}$
-  onto the Hopf distribution: $h(v,w)=ds_{2n+1}^2(\mathrm{pr}(v),\mathrm{pr}(w))$,
-  $g(v,w)=ds_{2n+1}^2(v-\mathrm{pr}(v),w-\mathrm{pr}(w))$). The unit circle acts
-  isometrically and freely by simultaneous complex scalar multiplication on
-  $S^{2n+1}\times S^1$; the quotient map onto
-  $I\times((S^{2n+1}\times S^1)/S^1)=I\times S^{2n+1}$ is a Riemannian submersion
-  for the target metric
-  $dt^2+\rho^2(t)g+\dfrac{(\rho(t)\phi(t))^2}{\rho^2(t)+\phi^2(t)}h$.
-  \source{petersen:page-0044}
+  Decompose the round metric on $S^{2n+1}$ as $ds_{2n+1}^2=h+g$, where $h$
+  is its restriction to the Hopf distribution and $g$ to the orthogonal
+  complement. Equivalently, for the orthogonal projection $\operatorname{pr}$
+  onto the Hopf distribution,
+  \[
+  \begin{aligned}
+    h(v,w)&=ds_{2n+1}^2(\operatorname{pr}v,\operatorname{pr}w),\\
+    g(v,w)&=ds_{2n+1}^2(v-\operatorname{pr}v,w-\operatorname{pr}w).
+  \end{aligned}
+  \]
+  Simultaneous scalar multiplication gives a free isometric $S^1$-action on
+  $S^{2n+1}\times S^1$. The quotient map
+  \[
+    I\times S^{2n+1}\times S^1
+      \longrightarrow I\times (S^{2n+1}\times S^1)/S^1
+      \simeq I\times S^{2n+1}
+  \]
+  is a Riemannian submersion from
+  $dt^2+\rho^2(h+g)+\phi^2d\theta^2$ to
+  \[
+    dt^2+\rho^2g+\frac{(\rho\phi)^2}{\rho^2+\phi^2}h.
+  \]
 \end{example}
 
-\begin{example}[Example 1.4.13 — the case $n=1$]
+\begin{example}[$S^3\simeq SU(2)$ coframe form]
   \label{ex:pet-ch1-hopf-su2-coframe}
+  \dcref{ch1:1.4.13}
   \lean{PetersenLib.hopfFibrationSUTwoCoframeSphere,PetersenLib.suTwoCoframe,PetersenLib.sphereMetricUnit_eq_sum_suTwoCoframe,PetersenLib.hopfComplement_eq_suTwoCoframe,PetersenLib.hopfQuotientForm_eq_suTwoCoframe}
   \leanok
   \uses{ex:pet-ch1-hopf-higher-dim,ex:pet-ch1-su2-berger}
-  For $n=1$, using the coframe $\sigma^1,\sigma^2,\sigma^3$ from
-  $S^3\simeq SU(2)$ (\cref{ex:pet-ch1-su2-berger}), the splitting
-  $ds^2_{S^3}=h+g$ of \cref{ex:pet-ch1-hopf-higher-dim} reads
-  $ds^2_{S^3}=(\sigma^1)^2+(\sigma^2)^2+(\sigma^3)^2$, $h=(\sigma^1)^2$,
-  $g=(\sigma^2)^2+(\sigma^3)^2$, and the Riemannian submersion becomes
+  For $n=1$, the coframe of \cref{ex:pet-ch1-su2-berger} satisfies
   \[
-    \Big(I\times S^3\times S^1,\ dt^2+\rho^2(t)\big((\sigma^1)^2+(\sigma^2)^2+(\sigma^3)^2\big)+\phi^2(t)d\theta^2\Big)
+    ds_{S^3}^2=(\sigma^1)^2+(\sigma^2)^2+(\sigma^3)^2,
+    \qquad h=(\sigma^1)^2,
+    \qquad g=(\sigma^2)^2+(\sigma^3)^2.
   \]
+  Hence the submersion of \cref{ex:pet-ch1-hopf-higher-dim} is
   \[
-    \longrightarrow
-    \Big(I\times S^3,\ dt^2+\rho^2(t)\big((\sigma^2)^2+(\sigma^3)^2\big)+\tfrac{(\rho(t)\phi(t))^2}{\rho^2(t)+\phi^2(t)}(\sigma^1)^2\Big).
+  \begin{aligned}
+   &\left(I\times S^3\times S^1,
+     dt^2+\rho^2\big((\sigma^1)^2+(\sigma^2)^2+(\sigma^3)^2\big)
+       +\phi^2d\theta^2\right)\\
+   &\quad\longrightarrow
+    \left(I\times S^3,
+     dt^2+\rho^2\big((\sigma^2)^2+(\sigma^3)^2\big)
+       +\frac{(\rho\phi)^2}{\rho^2+\phi^2}(\sigma^1)^2\right).
+  \end{aligned}
   \]
-  \source{petersen:page-0045}
 \end{example}
 
-\begin{example}[Example 1.4.14 — the generalized Hopf fibration]
+\begin{example}[Generalized Hopf fibration]
   \label{ex:pet-ch1-generalized-hopf}
+  \dcref{ch1:1.4.14}
   \lean{PetersenLib.generalizedHopfFibrationSphere,PetersenLib.generalizedHopfFibrationComplexProjective,PetersenLib.genHopfBase,PetersenLib.snocLpEquiv}
   \leanok
   \uses{ex:pet-ch1-hopf-higher-dim,ex:pet-ch1-fubini-study}
-  Taking $\rho=\sin(t)$, $\phi=\cos(t)$, $t\in I=[0,\pi/2]$ in
-  \cref{ex:pet-ch1-hopf-higher-dim} recovers the generalized Hopf fibration
-  $S^{2n+3}\to\mathbb{CP}^{n+1}$ of \cref{ex:pet-ch1-fubini-study}, with the
-  Fubini--Study metric represented as $dt^2+\sin^2(t)\big(g+\cos^2(t)h\big)$.
-  \source{petersen:page-0045}
+  In \cref{ex:pet-ch1-hopf-higher-dim}, set
+  $\rho(t)=\sin t$, $\phi(t)=\cos t$, and $0\le t\le\pi/2$. The completed
+  quotient is the generalized Hopf fibration
+  $S^{2n+3}\to\mathbb{CP}^{n+1}$, and the Fubini--Study metric is
+  \[
+    dt^2+\sin^2t\,(g+\cos^2t\,h).
+  \]
 \end{example}
 
 \section{Some Tensor Concepts}
 
 \subsection{Type Change}
 
-\begin{definition}[type change]
+The metric identifies vectors and covectors and thereby permits canonical
+changes of tensor variance.
+
+\begin{definition}[Type change]
   \label{def:pet-ch1-tensor-type-change}
   \lean{PetersenLib.tensorTypeChange}
   \leanok
   \uses{def:pet-ch1-riemannian-manifold}
-  For an $(s,t)$-tensor $T$, a section of
-  $TM^{\otimes s}\otimes(T^*M)^{\otimes t}$, a Riemannian metric $g$ gives a
-  natural isomorphism $TM\cong T^*M$, $v\mapsto(w\mapsto g(v,w))$, letting one
-  replace occurrences of $TM$ by $T^*M$ or vice versa and so view $T$ as an
-  $(s-k,t+k)$-tensor for any $k$ with $s-k,t+k\ge0$. Concretely, for a frame
-  $E_1,\dots,E_n$ with coframe $\sigma^1,\dots,\sigma^n$, writing
-  $T=T^{i_1\cdots i_s}_{j_1\cdots j_t}\,E_{i_1}\otimes\cdots\otimes E_{i_s}\otimes
-  \sigma^{j_1}\otimes\cdots\otimes\sigma^{j_t}$, the dual of $E_i$ is
-  $g(E_i,\cdot)=g_{ij}\sigma^j$ and the vector dual to $\sigma^j$ is $g^{ij}E_i$
-  (where $(g^{ij})$ is the inverse matrix of $(g_{ij})$), so type change replaces
-  each $E_i\leftrightarrow g_{ij}\sigma^j$ and $\sigma^j\leftrightarrow g^{ij}E_i$.
-  For an orthonormal frame $g_{ij}=\delta_{ij}$ and indices are simply raised or
-  lowered.
-  \source{petersen:page-0045,petersen:page-0046,petersen:page-0047}
+  An $(s,t)$-tensor is a section of
+  $TM^{\otimes s}\otimes(T^*M)^{\otimes t}$. The metric isomorphism
+  \[
+    TM\longrightarrow T^*M,
+    \qquad v\longmapsto g(v,\cdot),
+  \]
+  and its inverse convert it into an $(s-k,t+k)$-tensor for every integer $k$
+  such that both entries are nonnegative. For a frame $E_i$ with dual coframe
+  $\sigma^i$, let
+  $g_{ij}=g(E_i,E_j)$ and let $(g^{ij})=(g_{ij})^{-1}$. Type change replaces
+  \[
+    E_i\longleftrightarrow g_{ij}\sigma^j,
+    \qquad
+    \sigma^j\longleftrightarrow g^{ij}E_i.
+  \]
+  Thus indices are raised and lowered by $g^{ij}$ and $g_{ij}$; for an
+  orthonormal frame these matrices are $\delta_{ij}$.
 \end{definition}
 
-\begin{notation}[the Ricci tensor as tensors of different types]
+\begin{notation}[Variance conventions for the Ricci tensor]
   \label{def:pet-ch1-ricci-types}
   \lean{PetersenLib.ricciTensorTypes}
   \leanok
   \uses{def:pet-ch1-tensor-type-change}
-  As a $(1,1)$-tensor, $\mathrm{Ric}(E_i)=\mathrm{Ric}^j_iE_j$, i.e.\
-  $\mathrm{Ric}=\mathrm{Ric}^j_i\,E_i\otimes\sigma^j$. As a $(0,2)$-tensor,
-  $\mathrm{Ric}=\mathrm{Ric}_{jk}\,\sigma^j\otimes\sigma^k=g_{ji}\mathrm{Ric}^i_k\,
-  \sigma^j\otimes\sigma^k$. As a $(2,0)$-tensor,
-  $\mathrm{Ric}=\mathrm{Ric}^{ik}\,E_i\otimes E_k=g^{jl}\mathrm{Ric}^i_j\,E_i\otimes E_k$.
-  \source{petersen:page-0047}
+  As a $(1,1)$-tensor,
+  \[
+    \operatorname{Ric}(E_i)=\operatorname{Ric}^j_iE_j,
+    \qquad
+    \operatorname{Ric}=\operatorname{Ric}^j_iE_i\otimes\sigma^j.
+  \]
+  Its $(0,2)$ and $(2,0)$ forms are respectively
+  \[
+  \begin{aligned}
+    \operatorname{Ric}
+      &=\operatorname{Ric}_{jk}\sigma^j\otimes\sigma^k
+        =g_{ji}\operatorname{Ric}^i_k\sigma^j\otimes\sigma^k,\\
+    \operatorname{Ric}
+      &=\operatorname{Ric}^{ik}E_i\otimes E_k
+        =g^{jl}\operatorname{Ric}^i_jE_i\otimes E_k.
+  \end{aligned}
+  \]
 \end{notation}
 
-\begin{notation}[the curvature tensor as tensors of different types]
+\begin{notation}[Variance conventions for the curvature tensor]
   \label{def:pet-ch1-curvature-types}
   \lean{PetersenLib.curvatureTensorTypes,PetersenLib.curvatureTwoTwoTypes}
   \leanok
   \uses{def:pet-ch1-tensor-type-change}
-  The $(1,3)$-curvature tensor $R(X,Y)Z$ is written
-  $R=R^i_{jkl}\,E_i\otimes\sigma^j\otimes\sigma^l\otimes\sigma^k$. As a
-  $(0,4)$-tensor, $R=R_{ijkl}\,\sigma^i\otimes\sigma^j\otimes\sigma^k\otimes\sigma^l
-  =R^i_{jkl}g_{il}\cdot\sigma^i\otimes\sigma^j\otimes\sigma^k\otimes\sigma^l$ (with
-  the raised index $l$ placed last, by convention). Raising the last index of the
-  $(0,4)$-tensor produces the $(2,2)$-tensor
-  $R=R^{kl}_{ij}\,E_k\otimes E_l\otimes\sigma^i\otimes\sigma^j
-  =R^l_{ij}\,g^{sk}\cdots$, called the \emph{curvature operator}; raising a
-  different index gives a different $(2,2)$-tensor.
-  \source{petersen:page-0047,petersen:page-0048}
+  The $(1,3)$-curvature tensor is represented by
+  \[
+    R=R^i_{jkl}E_i\otimes\sigma^j\otimes\sigma^l\otimes\sigma^k.
+  \]
+  Lowering its vector index gives
+  \[
+    R=R_{ijkl}\sigma^i\otimes\sigma^j\otimes\sigma^k\otimes\sigma^l
+      =R^i_{jkl}g_{il}\cdot
+        \sigma^i\otimes\sigma^j\otimes\sigma^k\otimes\sigma^l,
+  \]
+  with the raised index $l$ conventionally placed last. Raising the last index
+  gives the $(2,2)$ curvature operator
+  \[
+    R=R^{kl}_{ij}E_k\otimes E_l\otimes\sigma^i\otimes\sigma^j
+      =R^l_{ij}g^{sk}\cdots.
+  \]
+  Raising another index produces a different $(2,2)$-tensor.
 \end{notation}
 
 \subsection{Contractions}
 
-\begin{definition}[contraction]
+\begin{definition}[Contraction]
   \label{def:pet-ch1-contraction}
   \lean{PetersenLib.tensorContraction}
   \leanok
   \uses{def:pet-ch1-tensor-type-change}
-  \emph{Contractions} are traces of tensors. For a $(1,1)$-tensor
-  $T=T^i_j\,E_i\otimes\sigma^j$, $C(T)=\mathrm{tr}\,T=T^i_i$; for $T=X\otimes\omega$
-  (a vector field tensored with a $1$-form), $C(X\otimes\omega)=\omega(X)$, and
-  contraction of a general tensor is a sum of such evaluations. For a $(0,2)$-tensor
-  $T$, first type-change to a $(1,1)$-tensor and then trace:
-  $C(T)=C(T_{ij}\sigma^i\otimes\sigma^j)=C(T_{ik}g^{kj}E_k\otimes\sigma^j)=T_{ik}g^{ki}$.
-  \source{petersen:page-0048}
+  A \emph{contraction} evaluates one vector-covector pair and sums. Thus
+  \[
+    C(T^i_jE_i\otimes\sigma^j)=T^i_i=\operatorname{tr}T,
+    \qquad C(X\otimes\omega)=\omega(X).
+  \]
+  A covariant tensor is first type-changed; for example,
+  \[
+    C(T_{ij}\sigma^i\otimes\sigma^j)=T_{ik}g^{ki}.
+  \]
+  Multiple contractions are defined by repeating this operation.
 \end{definition}
 
-\begin{remark}[the Ricci tensor as a contraction of curvature]
+\begin{remark}[Ricci tensor as a curvature contraction]
   \label{rem:pet-ch1-ricci-contraction}
   \lean{PetersenLib.ricciAsContraction}
   \leanok
   \uses{def:pet-ch1-contraction,def:pet-ch1-curvature-types,def:pet-ch1-ricci-types}
-  $\mathrm{Ric}=\mathrm{Ric}^i_j\,E_i\otimes\sigma^j=R^{ij}_{ik}\,E_i\otimes\sigma^j
-  =R^i_{iks}g^{sk}\,E_i\otimes\sigma^j$, equivalently as a $(0,2)$-tensor
-  $\mathrm{Ric}=\mathrm{Ric}_{ij}\,\sigma^i\otimes\sigma^j=g^{kl}R_{kijl}\,\sigma^i\otimes\sigma^j$;
-  after type change the two expressions agree.
-  \source{petersen:page-0048}
+  The Ricci tensor is the contraction
+  \[
+    \operatorname{Ric}
+      =\operatorname{Ric}^i_jE_i\otimes\sigma^j
+      =R^{ij}_{ik}E_i\otimes\sigma^j
+      =R^i_{iks}g^{sk}E_i\otimes\sigma^j.
+  \]
+  Equivalently, in covariant form,
+  \[
+    \operatorname{Ric}
+      =\operatorname{Ric}_{ij}\sigma^i\otimes\sigma^j
+      =g^{kl}R_{kijl}\sigma^i\otimes\sigma^j.
+  \]
+  Type change identifies these formulas.
 \end{remark}
 
-\begin{definition}[scalar curvature]
+\begin{definition}[Scalar curvature]
   \label{def:pet-ch1-scalar-curvature}
   \lean{PetersenLib.scalarCurvatureOfRicci}
   \leanok
   \uses{def:pet-ch1-contraction,def:pet-ch1-ricci-types}
   The \emph{scalar curvature} is the contraction of the Ricci tensor:
   \[
-    \mathrm{scal}=\mathrm{tr}(\mathrm{Ric})=\mathrm{Ric}^i_i=R^i_{iks}g^{sk}
-    =\mathrm{Ric}_{ik}g^{ki}=R_{ijkl}g^{ik}g^{jl}.
+    \operatorname{scal}
+      =\operatorname{tr}(\operatorname{Ric})
+      =\operatorname{Ric}^i_i
+      =R^i_{iks}g^{sk}
+      =\operatorname{Ric}_{ik}g^{ki}
+      =R_{ijkl}g^{ik}g^{jl}.
   \]
-  \source{petersen:page-0048,petersen:page-0049}
 \end{definition}
 
 \subsection{Inner Products of Tensors}
 
-\begin{definition}[operator norm and Euclidean norm]
+Two norms on linear maps will be distinguished.
+
+\begin{definition}[Operator norm]
   \label{def:pet-ch1-operator-norm}
   \lean{PetersenLib.operatorNorm}
   \leanok
-  For a linear map $L:V\to W$ between normed spaces, the \emph{operator norm} is
-  $\|L\|=\sup_{|v|=1}|Lv|$. If $L:V\to V$ is self-adjoint with eigenvalues
-  $\lambda_1\le\dots\le\lambda_n$ (with multiplicity), $\|L\|=\max\{|\lambda_1|,|\lambda_n|\}$.
-  \source{petersen:page-0049}
+  For a linear map $L:V\to W$ between normed spaces,
+  \[
+    \|L\|=\sup_{|v|=1}|Lv|.
+  \]
+  If $L:V\to V$ is self-adjoint with eigenvalues
+  $\lambda_1\le\cdots\le\lambda_n$, then
+  $\|L\|=\max\{|\lambda_1|,|\lambda_n|\}$.
 \end{definition}
 
 \begin{definition}[Euclidean norm and trace inner product]
@@ -1264,13 +1284,20 @@ recoverable from the text.
   \lean{PetersenLib.euclideanNormLinearMap,PetersenLib.traceInnerProduct}
   \leanok
   \uses{def:pet-ch1-contraction}
-  The \emph{Euclidean norm} of $L:V\to W$ is
-  $|L|=\sqrt{\mathrm{tr}(L^*\circ L)}=\sqrt{\mathrm{tr}(L\circ L^*)}$, where
-  $L^*:W\to V$ is the adjoint; for self-adjoint $L:V\to V$ with eigenvalues
-  $\lambda_i$, $|L|=\sqrt{\sum_i\lambda_i^2}$. It comes from the inner product
-  $\langle L_1,L_2\rangle=\mathrm{tr}(L_1\circ L_2^*)=\mathrm{tr}(L_2\circ L_1^*)$.
-  This Euclidean norm, not the operator norm, is used throughout.
-  \source{petersen:page-0049}
+  For $L:V\to W$, define
+  \[
+    |L|=\sqrt{\operatorname{tr}(L^*L)}
+      =\sqrt{\operatorname{tr}(LL^*)}.
+  \]
+  It is induced by
+  \[
+    \langle L_1,L_2\rangle
+      =\operatorname{tr}(L_1L_2^*)
+      =\operatorname{tr}(L_2L_1^*).
+  \]
+  For self-adjoint $L$ with eigenvalues $\lambda_i$,
+  $|L|=(\sum_i\lambda_i^2)^{1/2}$. Unless specified otherwise, tensor norms
+  below use this Euclidean norm rather than the operator norm.
 \end{definition}
 
 \begin{proposition}[Euclidean norm of a $(1,1)$-tensor]
@@ -1278,22 +1305,26 @@ recoverable from the text.
   \lean{PetersenLib.euclideanNormOneOneTensor}
   \leanok
   \uses{def:pet-ch1-euclidean-norm,def:pet-ch1-tensor-type-change}
-  For $T=T^i_j\,E_i\otimes\sigma^j$, viewed as a linear map $TM\to TM$,
-  $|T|^2=T^j_iT^k_ig^{jl}g_{ki}$; for an orthonormal frame,
-  $|T|^2=T^i_jT^j_i$.
-  \source{petersen:page-0049,petersen:page-0050}
+  For $T=T^i_jE_i\otimes\sigma^j$, regarded as a map $TM\to TM$,
+  \[
+    |T|^2=T^j_iT^k_i g^{jl}g_{ki}.
+  \]
+  In an orthonormal frame this is $|T|^2=T^i_jT^j_i$.
 \end{proposition}
 \begin{proof}
   \uses{prop:pet-ch1-norm-11-tensor}
   \leanok
-  The dual map $T^*:T^*M\to T^*M$ is $T^*=T^j_i\,\sigma^i\otimes E_j$; type
-  changing back to $TM\to TM$ via
-  \cref{def:pet-ch1-tensor-type-change} gives
-  $T^*=T^k_ig^{jl}g_{ki}\,E_j\otimes\sigma^i$. By
-  \cref{def:pet-ch1-euclidean-norm}, $|T|^2=\mathrm{tr}(T\circ T^*)$, which in
-  these components is $T^i_jT^k_ig^{jl}g_{ki}$ (contracting the free indices of
-  $T$ against $T^*$ as in \cref{def:pet-ch1-contraction}); when the frame is
-  orthonormal $g_{ij}=g^{ij}=\delta_{ij}$ and this collapses to $T^i_jT^j_i$.
+  \sketch
+  Before type change, the dual map is
+  $T^*=T^j_i\sigma^i\otimes E_j$. Raising and lowering its indices gives
+  \[
+    T^*=T^k_i g^{jl}g_{ki}E_j\otimes\sigma^i.
+  \]
+  Contracting $T\circ T^*$ as in
+  \cref{def:pet-ch1-euclidean-norm} and
+  \cref{def:pet-ch1-contraction} yield
+  $T^i_jT^k_i g^{jl}g_{ki}$, and $g_{ij}=g^{ij}=\delta_{ij}$ gives the stated
+  orthonormal expression.
 \end{proof}
 
 \begin{proposition}[Euclidean norm of a $(0,2)$-tensor]
@@ -1301,22 +1332,25 @@ recoverable from the text.
   \lean{PetersenLib.euclideanNormZeroTwoTensor}
   \leanok
   \uses{prop:pet-ch1-norm-11-tensor}
-  For $T=T_{ij}\,\sigma^i\otimes\sigma^j$, after type-changing to a $(1,1)$-tensor
-  and applying \cref{prop:pet-ch1-norm-11-tensor}, $|T|^2=T_{ij}T^{ij}$.
-  \source{petersen:page-0050}
+  If $T=T_{ij}\sigma^i\otimes\sigma^j$, then after changing one index and
+  applying \cref{prop:pet-ch1-norm-11-tensor},
+  \[
+    |T|^2=T_{ij}T^{ij}.
+  \]
 \end{proposition}
 
-\begin{definition}[pointwise inner product of tensors]
+\begin{definition}[Pointwise inner product of tensors]
   \label{def:pet-ch1-pointwise-tensor-inner}
   \lean{PetersenLib.pointwiseTensorInnerProduct}
   \leanok
   \uses{def:pet-ch1-euclidean-norm}
-  For $(s,t)$-tensors, declare that if $E_i$ is an orthonormal frame with dual
-  coframe $\sigma^i$, the tensors $E_{i_1}\otimes\cdots\otimes E_{i_s}\otimes
-  \sigma^{j_1}\otimes\cdots\otimes\sigma^{j_t}$ form an orthonormal basis; this
-  determines the \emph{pointwise inner product} of two $(s,t)$-tensors,
-  generalizing $g(X,Y)$ for vector fields.
-  \source{petersen:page-0050}
+  Given an orthonormal frame $E_i$ and its dual coframe $\sigma^i$, declare
+  \[
+    E_{i_1}\otimes\cdots\otimes E_{i_s}\otimes
+    \sigma^{j_1}\otimes\cdots\otimes\sigma^{j_t}
+  \]
+  to be an orthonormal basis of the $(s,t)$-tensors. This determines their
+  pointwise inner product and extends $g(X,Y)$ for vector fields.
 \end{definition}
 
 \begin{definition}[$L^2$ inner product of tensors]
@@ -1324,503 +1358,604 @@ recoverable from the text.
   \lean{PetersenLib.l2TensorInnerProduct}
   \leanok
   \uses{def:pet-ch1-pointwise-tensor-inner,def:pet-ch1-volume-form-oriented}
-  Integrating the pointwise inner product of two compactly supported tensors of
-  the same type against the volume form gives an inner product on the space of
-  such tensors: $(T_1,T_2)=\int_Mg(T_1,T_2)\,\mathrm{vol}$.
-  \source{petersen:page-0050}
+  For compactly supported tensors $T_1,T_2$ of the same type, define
+  \[
+    (T_1,T_2)_{L^2}=\int_M g(T_1,T_2)\,\operatorname{vol}.
+  \]
+  This is an inner product on the space of compactly supported tensors of that
+  type.
 \end{definition}
 
 \subsection{Positional Notation}
 
-\begin{remark}[positional index notation]
+\begin{remark}[Positional index notation]
   \label{rem:pet-ch1-positional-notation}
   \lean{PetersenLib.positionalTensorNotation}
   \leanok
   \uses{def:pet-ch1-tensor-type-change,prop:pet-ch1-norm-11-tensor}
-  The frame notation for a section of $TM\otimes T^*M$ and one of
-  $T^*M\otimes TM$ can look identical, causing confusion when computing
-  Euclidean norms — $\sigma\otimes E$ and $E\otimes\sigma$ differ only in
-  ordering, not in the map they represent, yet either could be read as a map
-  $TM\to TM$. Writing indices positionally, e.g.\ a section
-  $T$ of $T^*M\otimes TM\otimes T^*M$ as $T={T_i}^j{}_k\,\sigma^i\otimes
-  E_j\otimes\sigma^k$, keeps the ordering unambiguous: the standard
-  $(1,1)$-tensor is $T=T^i_j\,E_i\otimes\sigma^j$, while its adjoint (before type
-  change), a section of $T^*M\otimes TM$, is
-  $T^*=T^l_k\,\sigma^k\otimes E_l=T^l_jg_{kl}g^{ij}\,\sigma^k\otimes E_l$,
-  recovering $|T|^2=T^i_jT^j_i$ as in \cref{prop:pet-ch1-norm-11-tensor}. This
-  notation is not used consistently in the literature and is often replaced by
-  invariant (coordinate-free) notation, but frame or coordinate computations
-  remain necessary in both abstract and concrete settings.
-  \source{petersen:page-0050,petersen:page-0051}
+  Index position records tensor-factor order. For example, a section of
+  $T^*M\otimes TM\otimes T^*M$ is written
+  \[
+    T={T_i}^j{}_k\,\sigma^i\otimes E_j\otimes\sigma^k.
+  \]
+  This distinguishes $E\otimes\sigma$ from $\sigma\otimes E$. In particular,
+  \[
+  \begin{aligned}
+    T&=T^i_jE_i\otimes\sigma^j,\\
+    T^*&=T^l_k\sigma^k\otimes E_l
+       =T^l_jg_{kl}g^{ij}\sigma^k\otimes E_l,
+  \end{aligned}
+  \]
+  which recovers $|T|^2=T^i_jT^j_i$ in an orthonormal frame. Positional
+  notation is not universal, so invariant notation is used whenever it
+  removes ambiguity.
 \end{remark}
 
 \section{Exercises}
 
-\begin{remark}[Exercise 1.6.1 — Cartesian product metrics]
+\begin{remark}[Cartesian product metrics]
   \label{rem:pet-ch1-ex-1}
+  \dcref{ch1:1.6.1}
   \lean{PetersenLib.exercise1_6_1}
   \leanok
   \uses{def:pet-ch1-riemannian-manifold,ex:pet-ch1-flat-torus}
-  On $M\times N$ with product metric $g=g_M+g_N$: (1) show
-  $(\mathbb{R}^n,g_{\mathbb{R}^n})=(\mathbb{R},dt^2)\times\cdots\times(\mathbb{R},dt^2)$ ($n$ factors);
-  (2) show the flat square torus is
-  $T^2=\mathbb{R}^2/\mathbb{Z}^2=\big(S^1,(1/2\pi)^2d\theta^2\big)\times\big(S^1,(1/2\pi)^2d\theta^2\big)$;
-  (3) show $F(\theta_1,\theta_2)=\tfrac1{2\pi}(\cos\theta_1,\sin\theta_1,\cos\theta_2,\sin\theta_2)$
-  is a Riemannian embedding $T^2\to\mathbb{R}^4$.
-  \source{petersen:page-0051,petersen:page-0052}
+  Equip $M\times N$ with $g_M+g_N$. Then:
+  \begin{enumerate}
+    \item $(\mathbb{R}^n,g_{\mathbb{R}^n})$ is the product of $n$ copies of
+      $(\mathbb{R},dt^2)$;
+    \item the square flat torus is
+      \[
+        \mathbb{R}^2/\mathbb{Z}^2
+          =\big(S^1,(1/2\pi)^2d\theta^2\big)
+             \times\big(S^1,(1/2\pi)^2d\theta^2\big);
+      \]
+    \item
+      $F(\theta_1,\theta_2)=\frac1{2\pi}
+        (\cos\theta_1,\sin\theta_1,\cos\theta_2,\sin\theta_2)$
+      is a Riemannian embedding $T^2\to\mathbb{R}^4$.
+  \end{enumerate}
 \end{remark}
 
-\begin{remark}[Exercise 1.6.2 — quotient metric for an isometric action]
+\begin{remark}[Quotient metric for an isometric action]
   \label{rem:pet-ch1-ex-2}
+  \dcref{ch1:1.6.2}
   \lean{PetersenLib.exercise1_6_2}
   \leanok
   \uses{def:pet-ch1-riemannian-submersion}
-  If a group $G$ acts isometrically on $(M,g)$ so that $M/G$ is a manifold and
-  the quotient map a submersion, show there is a unique Riemannian metric on
-  $M/G$ making the quotient map a Riemannian submersion.
-  \source{petersen:page-0052}
+  Suppose a group $G$ acts isometrically on $(M,g)$, the orbit space $M/G$ is
+  a manifold, and the quotient map is a submersion. Then $M/G$ has a unique
+  Riemannian metric making the quotient map a Riemannian submersion.
 \end{remark}
 
-\begin{remark}[Exercise 1.6.3 — volume of a finite cover]
+\begin{remark}[Volume of a finite Riemannian cover]
   \label{rem:pet-ch1-ex-3}
+  \dcref{ch1:1.6.3}
   \lean{PetersenLib.exercise1_6_3}
   \leanok
   \uses{rem:pet-ch1-covering-metric,def:pet-ch1-volume-form-oriented}
-  For a Riemannian $k$-fold covering map $M\to N$ ($k\ge1$, $N$ second
-  countable, Riemannian measures Borel), show
-  $\mathrm{vol}\,M=k\cdot\mathrm{vol}\,N$.
-  \source{petersen:page-0052}
+  If $M\to N$ is a Riemannian $k$-fold covering, with $k\ge1$, $N$ second
+  countable, and the Riemannian measures Borel, then
+  \[
+    \operatorname{vol}M=k\operatorname{vol}N.
+  \]
 \end{remark}
 \begin{proof}
   \leanok
   \uses{rem:pet-ch1-ex-3}
-  Each point of $N$ has an evenly covered open neighbourhood; by second
-  countability (Lindel\"of) countably many such sets $U_0,U_1,\dots$ cover
-  $N$, and disjointification $B_i=U_i\setminus(U_0\cup\dots\cup U_{i-1})$
-  turns them into countably many disjoint Borel pieces, each still inside an
-  evenly covered set. Over a piece $B\subseteq U$ the trivialization
-  $F^{-1}(U)\cong U\times F^{-1}(y)$ splits $F^{-1}(B)$ into $k$ disjoint
-  sheets, each open in $F^{-1}(U)$ intersected with the Borel set
-  $F^{-1}(B)$, on each of which $F$ is injective with image exactly $B$;
-  since the covering is a local isometry, $F$ is measure preserving on each
-  sheet, so $\mathrm{vol}\,F^{-1}(B)=k\cdot\mathrm{vol}\,B$. Summing over
-  the pieces by countable additivity gives
-  $\mathrm{vol}\,M=k\cdot\mathrm{vol}\,N$. (For $k=0$ the hypothesis
-  ``$\#F^{-1}(y)=0$'' would also admit infinite fibers, e.g.
-  $\mathbb{R}\to S^1$, for which the statement fails; hence $k\ge1$.)
+  \sketch
+  A countable evenly covered open cover exists by second countability.
+  Disjointify it into Borel sets
+  $B_i=U_i\setminus\bigcup_{j<i}U_j$. Over each $B_i$, the inverse image is
+  the disjoint union of $k$ sheets, and the covering is measure preserving on
+  each sheet because it is a local isometry. Hence
+  $\operatorname{vol}F^{-1}(B_i)=k\operatorname{vol}B_i$; countable
+  additivity proves the formula. The condition $k\ge1$ excludes the vacuous
+  zero-cardinality interpretation that can also admit infinite fibres.
 \end{proof}
 
-\begin{remark}[Exercise 1.6.4 — volume form of a warped product]
+\begin{remark}[Volume form of a warped product]
   \label{rem:pet-ch1-ex-4}
+  \dcref{ch1:1.6.4}
   \lean{PetersenLib.exercise1_6_4}
   \leanok
   \uses{def:pet-ch1-doubly-warped,def:pet-ch1-volume-form-local}
-  Show the volume form of $dr^2+\rho^2(r)g_N$ on $I\times N$ is
-  $\rho^{n-1}\,dr\wedge\mathrm{vol}_N$.
-  \source{petersen:page-0052}
+  For the metric $dr^2+\rho^2(r)g_N$ on $I\times N$, the volume form is
+  \[
+    \rho^{n-1}\,dr\wedge\operatorname{vol}_N.
+  \]
 \end{remark}
 
-\begin{remark}[Exercise 1.6.5 — dual frame and the volume form]
+\begin{remark}[Dual frame and volume form]
   \label{rem:pet-ch1-ex-5}
+  \dcref{ch1:1.6.5}
   \lean{PetersenLib.exercise1_6_5}
   \leanok
   \uses{def:pet-ch1-volume-form-local}
-  For an orthonormal frame $E_1,\dots,E_n$, show the dual coframe is
-  $\sigma^i(X)=g(E_i,X)$ and $\mathrm{vol}=\pm\sigma^1\wedge\cdots\wedge\sigma^n$.
-  \source{petersen:page-0052}
+  If $E_1,\ldots,E_n$ is orthonormal, then its dual coframe is
+  $\sigma^i(X)=g(E_i,X)$ and
+  \[
+    \operatorname{vol}=\pm\sigma^1\wedge\cdots\wedge\sigma^n,
+  \]
+  with sign determined by orientation.
 \end{remark}
 
-\begin{remark}[Exercise 1.6.6 — volume form in local coordinates]
+\begin{remark}[Volume form in coordinates]
   \label{rem:pet-ch1-ex-6}
+  \dcref{ch1:1.6.6}
   \lean{PetersenLib.exercise1_6_6}
   \leanok
   \uses{def:pet-ch1-volume-form-local,def:pet-ch1-coordinate-metric}
-  Show that in local coordinates $x^1,\dots,x^n$,
-  $\mathrm{vol}=\pm\sqrt{\det[g_{ij}]}\,dx^1\wedge\cdots\wedge dx^n$.
-  \source{petersen:page-0052}
+  In coordinates $x^1,\ldots,x^n$,
+  \[
+    \operatorname{vol}
+      =\pm\sqrt{\det[g_{ij}]}\,dx^1\wedge\cdots\wedge dx^n.
+  \]
 \end{remark}
 
-\begin{remark}[Exercise 1.6.7 — paper models of warped products]
+\begin{remark}[Conical warped metrics]
   \label{rem:pet-ch1-ex-7}
+  \dcref{ch1:1.6.7}
   \lean{PetersenLib.exercise1_6_7}
   \leanok
   \uses{rem:pet-ch1-rotationally-symmetric}
-  Construct paper models of $dt^2+a^2t^2d\theta^2$: for $a=1$ this is the
-  Euclidean plane, for $a<1$ a cone; describe the case $a>1$.
-  \source{petersen:page-0052}
+  Determine the geometric models of
+  $dt^2+a^2t^2d\theta^2$: $a=1$ gives the Euclidean plane and $a<1$ a cone;
+  describe the case $a>1$.
 \end{remark}
 
-\begin{remark}[Exercise 1.6.8 — smoothness for radius $R$]
+\begin{remark}[Smoothness with a radius-$R$ sphere factor]
   \label{rem:pet-ch1-ex-8}
+  \dcref{ch1:1.6.8}
   \lean{PetersenLib.exercise1_6_8}
   \leanok
   \uses{thm:pet-ch1-smoothness-criterion}
-  For $dr^2+\rho^2(r)g_{S^{n-1}(R)}$ with $\rho(0)=0$, show smoothness at $r=0$
-  requires $\dot\rho(0)=1/R$ and $\rho^{(2k)}(0)=0$.
-  \source{petersen:page-0052}
+  For
+  $dr^2+\rho^2(r)g_{S^{n-1}(R)}$ with $\rho(0)=0$, smoothness at the origin
+  requires
+  \[
+    \dot\rho(0)=1/R,
+    \qquad \rho^{(2k)}(0)=0\quad(k\ge1).
+  \]
 \end{remark}
 
-\begin{remark}[Exercise 1.6.9 — $\mathrm{Iso}(\mathbb{R}^n)$ as a matrix group]
+\begin{remark}[Euclidean isometries as a matrix group]
   \label{rem:pet-ch1-ex-9}
+  \dcref{ch1:1.6.9}
   \lean{PetersenLib.exercise1_6_9}
   \leanok
   \uses{def:pet-ch1-isometry-group,ex:pet-ch1-isometry-group-euclidean}
-  Viewing $\mathbb{R}^n$ as the hyperplane $x^{n+1}=R$ in $\mathbb{R}^{n+1}$, show
-  $\mathrm{Iso}(\mathbb{R}^n)$ is identified with matrices
-  $\begin{bsmallmatrix}O&v\\0&1\end{bsmallmatrix}$, $v\in\mathbb{R}^n$, $O\in O(n)$, and
-  that these are exactly the linear maps preserving $x^{n+1}=R$ and the
-  degenerate form $x^1y^1+\dots+x^ny^n$.
-  \source{petersen:page-0052}
+  Identify $\mathbb{R}^n$ with the hyperplane $x^{n+1}=R$ in
+  $\mathbb{R}^{n+1}$. Then $\operatorname{Iso}(\mathbb{R}^n)$ is represented by
+  \[
+    \begin{bsmallmatrix}O&v\\0&1\end{bsmallmatrix},
+    \qquad O\in O(n),\quad v\in\mathbb{R}^n,
+  \]
+  and these are precisely the linear maps preserving that hyperplane and the
+  degenerate form $x^1y^1+\cdots+x^ny^n$.
 \end{remark}
 
-\begin{remark}[Exercise 1.6.10 — Sylvester basis for a nondegenerate form]
+\begin{remark}[Sylvester basis and trace]
   \label{rem:pet-ch1-ex-10}
+  \dcref{ch1:1.6.10}
   \lean{PetersenLib.exercise1_6_10}
   \leanok
   \uses{def:pet-ch1-pseudo-riemannian}
-  For $V$ with a symmetric nondegenerate bilinear form $g$ of index $p$: (1) show
-  there is a basis $e_1,\dots,e_n$ with $g(e_i,e_j)=0$ ($i\ne j$),
-  $g(e_i,e_i)=1$ for $i\le n-p$, $g(e_i,e_i)=-1$ for $i>n-p$, so $V\cong\mathbb{R}^{p,q}$;
-  (2) show $v=\sum_{i\le n-p}g(v,e_i)e_i-\sum_{i>n-p}g(v,e_i)e_i$; (3) for
-  $L:V\to V$ linear, show
-  $\mathrm{tr}(L)=\sum_ig(L(e_i),e_i)/g(e_i,e_i)$.
-  \source{petersen:page-0052,petersen:page-0053}
+  Let $g$ be a symmetric nondegenerate form of index $p$ on $V$. There is a
+  basis $e_1,\ldots,e_n$ with pairwise orthogonal elements satisfying
+  $g(e_i,e_i)=1$ for $i\le n-p$ and $g(e_i,e_i)=-1$ for $i>n-p$. In this basis,
+  \[
+    v=\sum_{i\le n-p}g(v,e_i)e_i-
+      \sum_{i>n-p}g(v,e_i)e_i,
+  \]
+  and every linear map $L:V\to V$ satisfies
+  \[
+    \operatorname{tr}L
+      =\sum_i\frac{g(L(e_i),e_i)}{g(e_i,e_i)}.
+  \]
+  Thus $(V,g)$ is linearly isometric to the corresponding $\mathbb{R}^{p,q}$.
 \end{remark}
 
-\begin{remark}[Exercise 1.6.11 — type change as contraction with $g^{-1}$]
+\begin{remark}[Type change by metric contraction]
   \label{rem:pet-ch1-ex-11}
+  \dcref{ch1:1.6.11}
   \lean{PetersenLib.exercise1_6_11}
   \leanok
   \uses{def:pet-ch1-tensor-type-change,def:pet-ch1-contraction}
-  With $g^{-1}$ the $(2,0)$-tensor inner product on $T^*M$, show type change of a
-  tensor is a contraction of its tensor product with $g$ or $g^{-1}$.
-  \source{petersen:page-0053}
+  Let $g^{-1}$ be the $(2,0)$ inner-product tensor on $T^*M$. Changing the type
+  of a tensor is equivalent to tensoring with $g$ or $g^{-1}$ and contracting
+  the appropriate pair of indices.
 \end{remark}
 
-\begin{remark}[Exercise 1.6.12 — norm via an orthonormal basis]
+\begin{remark}[Tensor norm from an orthonormal basis]
   \label{rem:pet-ch1-ex-12}
+  \dcref{ch1:1.6.12}
   \lean{PetersenLib.exercise1_6_12}
   \leanok
   \uses{def:pet-ch1-euclidean-norm}
-  For a $(1,1)$-tensor $T$ and orthonormal basis $E_i$, show
-  $|T|^2=\sum_i|T(E_i)|^2$.
-  \source{petersen:page-0053}
+  For a $(1,1)$-tensor $T$ and an orthonormal basis $E_i$,
+  \[
+    |T|^2=\sum_i|T(E_i)|^2.
+  \]
 \end{remark}
 
-\begin{remark}[Exercise 1.6.13 — orthogonality of symmetric and skew tensors]
+\begin{remark}[Orthogonality of symmetric and skew tensors]
   \label{rem:pet-ch1-ex-13}
+  \dcref{ch1:1.6.13}
   \lean{PetersenLib.exercise1_6_13}
   \leanok
   \uses{def:pet-ch1-pointwise-tensor-inner}
-  For $(1,1)$-tensors $S,T$ with $S$ symmetric and $T$ skew-symmetric, show
+  If $(1,1)$-tensors $S,T$ are respectively symmetric and skew-symmetric, then
   $g(S,T)=0$.
-  \source{petersen:page-0053}
 \end{remark}
 
-\begin{remark}[Exercise 1.6.14 — inner product via type change and contraction]
+\begin{remark}[Tensor inner product by contraction]
   \label{rem:pet-ch1-ex-14}
+  \dcref{ch1:1.6.14}
   \lean{PetersenLib.exercise1_6_14}
   \leanok
   \uses{def:pet-ch1-pointwise-tensor-inner,def:pet-ch1-tensor-type-change,def:pet-ch1-contraction}
-  Show the inner product of two tensors of the same type can be described as
-  (possibly several) type changes of one tensor followed by (possibly several)
-  contractions.
-  \source{petersen:page-0053}
+  The inner product of two tensors of the same type is obtained by changing
+  enough indices of one tensor and then contracting every remaining matched
+  pair.
 \end{remark}
 
-\begin{remark}[Exercise 1.6.15 — the quotient map $\mathbb{F}^{n+1}-\{0\}\to\mathbb{FP}^n$]
+\begin{remark}[Projective quotient away from the origin]
   \label{rem:pet-ch1-ex-15}
+  \dcref{ch1:1.6.15}
   \lean{PetersenLib.exercise1_6_15}
   \leanok
   \uses{def:pet-ch1-riemannian-submersion,ex:pet-ch1-fubini-study}
-  For $F(x)=\mathrm{span}_{\mathbb{F}}\{x\}$, $\mathbb{F}=\mathbb{R},\mathbb{C}$, with $\mathbb{FP}^n$ metrized so
-  that $F$ restricted to the unit sphere is a Riemannian submersion: (1) show $F$
-  is a submersion ($F$ factors as the Hopf submersion after the radial
-  projection $x\mapsto x/|x|$, both of which have surjective differentials);
-  (2) show $F$ is not a Riemannian submersion for the standard
-  metric on $\mathbb{F}^{n+1}-\{0\}$ (by scale invariance, horizontal vectors at $x$
-  and $2x$ would both map isometrically, forcing them to vanish); (3) determine
-  whether some metric on $\mathbb{F}^{n+1}-\{0\}$ makes $F$ a Riemannian submersion —
-  yes: the cylinder metric $dr^2+g_{S^n}$, i.e.\ $g_x(u,v)=\langle u_r,v_r\rangle
-  +|x|^{-2}\langle u_T,v_T\rangle$ in the radial/tangential decomposition, whose
-  horizontal vectors at $x$ are the Euclidean-horizontal ones scaled by $|x|$.
-  (The Lean formalization proves part~(2) for every $\mathbb{F}$, $n$ and target
-  metric via the scale-invariance obstruction, and parts~(1),(3) for the
-  representative case $\mathbb{F}=\mathbb{C}$, $n=1$ — the Hopf submersion
-  $S^3\to\mathbb{CP}^1=S^2(1/2)$.)
-  \source{petersen:page-0053}
+  Let $\mathbb{F}=\mathbb{R}$ or $\mathbb{C}$ and
+  $F:\mathbb{F}^{n+1}\setminus\{0\}\to\mathbb{FP}^n$ send $x$ to its
+  $\mathbb{F}$-span. Give $\mathbb{FP}^n$ the metric for which the restriction
+  of $F$ to the unit sphere is a Riemannian submersion. Then:
+  \begin{enumerate}
+    \item $F$ is a submersion, since it factors as radial projection followed
+      by the Hopf quotient;
+    \item $F$ is not a Riemannian submersion for the standard metric on
+      $\mathbb{F}^{n+1}\setminus\{0\}$, because scale invariance makes
+      horizontal vectors at $x$ and $2x$ incompatible with simultaneous
+      isometry;
+    \item the cylinder metric
+      $dr^2+g_{S^n}$ does make $F$ a Riemannian submersion. In radial-tangential
+      components it is
+      \[
+        g_x(u,v)=\langle u_r,v_r\rangle
+          +|x|^{-2}\langle u_T,v_T\rangle.
+      \]
+  \end{enumerate}
+  The formalization proves the obstruction in part (2) for all
+  $\mathbb{F},n$ and target metrics, and proves parts (1) and (3) for
+  $\mathbb{F}=\mathbb{C}$, $n=1$, namely
+  $S^3\to\mathbb{CP}^1=S^2(1/2)$.
 \end{remark}
 
-\begin{remark}[Exercise 1.6.16 — arc length]
+\begin{remark}[Arc length]
   \label{rem:pet-ch1-ex-16}
+  \dcref{ch1:1.6.16}
   \lean{PetersenLib.exercise1_6_16}
   \leanok
   \uses{def:pet-ch1-riemannian-manifold}
-  For $c:[a,b]\to(M,g)$, $L(c)=\int_{[a,b]}|\dot c|\,dt$: (1) show $L(c)$ is
-  independent of parametrization; (2) show any curve of nowhere-vanishing speed
-  reparametrizes to unit speed; (3) show arc length extends to absolutely
-  continuous curves, and that absolute continuity is well defined for curves in
-  manifolds.
-  (The Lean formalization covers parts~(1),(2); part~(3) is not formalized, as
-  Mathlib has no theory of absolutely continuous curves in manifolds to state it
-  against.)
-  \source{petersen:page-0053,petersen:page-0054}
+  For a curve $c:[a,b]\to(M,g)$, define
+  \[
+    L(c)=\int_a^b|\dot c(t)|\,dt.
+  \]
+  This length is invariant under reparametrization, every curve with
+  nowhere-vanishing speed admits a unit-speed parametrization, and the
+  definition extends to absolutely continuous manifold-valued curves.
+  The formalization includes the first two assertions; the third is omitted
+  because Mathlib has no corresponding theory of absolutely continuous curves
+  in manifolds.
 \end{remark}
 
-\begin{remark}[Exercise 1.6.17 — arc length under Riemannian immersions]
+\begin{remark}[Length preservation by Riemannian immersions]
   \label{rem:pet-ch1-ex-17}
+  \dcref{ch1:1.6.17}
   \lean{PetersenLib.exercise1_6_17}
   \leanok
   \uses{rem:pet-ch1-ex-16,def:pet-ch1-pullback-metric}
-  Show arc length is preserved by Riemannian immersions.
-  \source{petersen:page-0054}
+  Every Riemannian immersion preserves the length of curves.
 \end{remark}
 
-\begin{remark}[Exercise 1.6.18 — length under a Riemannian submersion]
+\begin{remark}[Length contraction by Riemannian submersions]
   \label{rem:pet-ch1-ex-18}
+  \dcref{ch1:1.6.18}
   \lean{PetersenLib.exercise1_6_18}
   \leanok
   \uses{rem:pet-ch1-ex-16,def:pet-ch1-riemannian-submersion}
-  For a Riemannian submersion $F:(M,g_M)\to(N,g_N)$ and $c:[a,b]\to M$, show
-  $L(F\circ c)\le L(c)$, with equality iff $\dot c(t)\perp\ker DF_{c(t)}$ for all
-  $t$.
-  \source{petersen:page-0054}
+  If $F:(M,g_M)\to(N,g_N)$ is a Riemannian submersion and
+  $c:[a,b]\to M$, then
+  \[
+    L(F\circ c)\le L(c).
+  \]
+  Equality holds exactly when
+  $\dot c(t)\perp\ker DF_{c(t)}$ for all $t$.
 \end{remark}
 
-\begin{remark}[Exercise 1.6.19 — straight lines minimize in $\mathbb{R}^n$]
+\begin{remark}[Euclidean length minimization]
   \label{rem:pet-ch1-ex-19}
+  \dcref{ch1:1.6.19}
   \lean{PetersenLib.exercise1_6_19}
   \leanok
   \uses{rem:pet-ch1-ex-16,ex:pet-ch1-euclidean-space}
-  Show directly that any curve between two points of Euclidean space is at least
-  as long as the Euclidean distance between them, with equality only for a
-  curve lying on the connecting segment. Hint: for an appropriate unit vector
-  $v$, compare the length of $v\cdot c(t)$ to the length of $c$.
-  \source{petersen:page-0054}
+  Every curve between two points of Euclidean space has length at least the
+  Euclidean distance between them. Equality is possible only when its image
+  lies in the connecting segment. This follows by projecting the curve onto
+  the unit vector parallel to that segment.
 \end{remark}
+
+The next algebraic obstruction supplies the flat-immersion conclusions used in
+the spherical and hyperbolic exercises without importing the geodesic theory of
+later chapters.
 
 \begin{proposition}[No flat isometric immersion into an umbilic hypersurface]
   \label{prop:pet-ch1-no-flat-immersion}
   \lean{PetersenLib.no_isometricImmersion_flat_to_umbilic}
   \leanok
   \uses{def:pet-ch1-riemannian-manifold,def:pet-ch1-pullback-metric}
-  Let $\beta$ be a symmetric bilinear form on an $(n+1)$-dimensional real
-  vector space $E$, let $c\ne0$, and let $n\ge2$. Then there is no
-  $C^\infty$ map $G:U\to E$, $U\subset\mathbb{R}^n$ open and nonempty, with
+  Let $\beta$ be a symmetric bilinear form on a real vector space $E$ of
+  dimension $n+1$, where $n\ge2$, and let $c\ne0$. No smooth map
+  $G:U\to E$ from a nonempty open $U\subset\mathbb{R}^n$ can satisfy
   \[
-    \beta(G,G)=c,\qquad \beta(\partial_iG,\partial_jG)=\delta_{ij}
-    \quad\text{on }U .
+    \beta(G,G)=c,
+    \qquad
+    \beta(\partial_iG,\partial_jG)=\delta_{ij}
+    \quad\text{on }U.
   \]
-  In words: an open piece of flat $\mathbb{R}^n$ admits no isometric
-  immersion into the level set $\{\beta(\cdot,\cdot)=c\}$ of $\beta$, of which
-  $S^n\subset\mathbb{R}^{n+1}$ ($\beta=\langle\cdot,\cdot\rangle$, $c=1$) and
-  $H^n\subset\mathbb{R}^{n,1}$ ($\beta=\eta$, $c=-1$) are the two instances.
+  In particular, no open Euclidean domain admits an isometric immersion into
+  either $S^n\subset\mathbb{R}^{n+1}$ or
+  $H^n\subset\mathbb{R}^{n,1}$.
 \end{proposition}
 
 \begin{proof}
   \leanok
-  Differentiating $\beta(G,G)=c$ gives $\beta(\partial_iG,G)=0$: every first
-  derivative is $\beta$-orthogonal to the normal $G$. Differentiating that
-  relation again gives
+  \sketch
+  Differentiating the two hypotheses gives
   \[
-    \beta(\partial_i\partial_jG,G)=-\beta(\partial_jG,\partial_iG)=-\delta_{ij}.
+    \beta(\partial_iG,G)=0,
+    \qquad
+    \beta(\partial_i\partial_jG,G)=-\delta_{ij}.
   \]
-  Next put $A_{ij,k}:=\beta(\partial_i\partial_jG,\partial_kG)$. Differentiating
-  $\beta(\partial_jG,\partial_kG)=\delta_{jk}$ in the direction $i$ gives
-  $A_{ij,k}=-A_{ik,j}$, while equality of mixed partials gives
-  $A_{ij,k}=A_{ji,k}$. Chaining the two,
-  \[
-    A_{ij,k}=-A_{ik,j}=-A_{ki,j}=A_{kj,i}=A_{jk,i}=-A_{ji,k}=-A_{ij,k},
-  \]
-  so $A_{ij,k}=0$: the second derivatives are $\beta$-orthogonal to all
-  tangent directions.
+  Set $A_{ij,k}=\beta(\partial_i\partial_jG,\partial_kG)$. Metric
+  differentiation gives $A_{ij,k}=-A_{ik,j}$, while equality of mixed partials
+  gives $A_{ij,k}=A_{ji,k}$. Cycling these symmetries yields
+  $A_{ij,k}=-A_{ij,k}$, hence $A_{ij,k}=0$.
 
-  The $n+1$ vectors $\partial_1G,\dots,\partial_nG,G$ are $\beta$-orthogonal
-  with $\beta$-squares $1,\dots,1,c$, all nonzero, hence linearly independent,
-  hence a basis of $E$ (this is where $\dim E=n+1$ is used). Expanding
-  $\partial_i\partial_jG$ in that basis, the two displays above compute all its
-  coefficients:
+  The vectors $\partial_1G,\ldots,\partial_nG,G$ are $\beta$-orthogonal with
+  nonzero squared lengths $1,\ldots,1,c$, so they form a basis of $E$.
+  The preceding pairings therefore determine
   \[
-    \partial_i\partial_jG=-\frac{\delta_{ij}}{c}\,G .
+    \partial_i\partial_jG=-\frac{\delta_{ij}}cG.
   \]
-  Finally fix two distinct indices $1,2$ (here $n\ge2$ enters) and consider
-  $\Phi:=\partial_2G$. By the last display $\partial_v\Phi=-c^{-1}\langle
-  e_2,v\rangle\,G$, so differentiating once more,
-  \[
-    \partial_w\partial_v\Phi=-c^{-1}\langle e_2,v\rangle\,\partial_wG .
-  \]
-  Symmetry of this second derivative in $(v,w)$, evaluated at $v=e_2$, $w=e_1$,
-  yields $-c^{-1}\partial_1G=0$, whence $\partial_1G=0$ since $c\ne0$. But
-  $\beta(\partial_1G,\partial_1G)=1\ne0$, a contradiction.
+  For distinct indices $1,2$, put $\Phi=\partial_2G$. Symmetry of
+  $\partial_w\partial_v\Phi$ in $v,w$, evaluated at $v=e_2,w=e_1$, forces
+  $-c^{-1}\partial_1G=0$, contradicting
+  $\beta(\partial_1G,\partial_1G)=1$.
 \end{proof}
 
-\begin{remark}[Exercise 1.6.20 — great circles minimize on the sphere]
+\begin{remark}[Great-circle length minimization]
   \label{rem:pet-ch1-ex-20}
+  \dcref{ch1:1.6.20}
   \lean{PetersenLib.exercise1_6_20}
   \leanok
   \uses{ex:pet-ch1-sphere,rem:pet-ch1-ex-16,prop:pet-ch1-no-flat-immersion}
-  For $p,q\in S^n\subset\mathbb{R}^{n+1}$, $v\in T_pS^n$ unit: (1) show $p\cos t+v\sin t$
-  is a unit-speed curve through $p$ with velocity $v$ at $t=0$; (2) show
-  $F(r,v)=p\cos r+v\sin r$, $r\in[0,\pi]$, $v\perp p$, $|v|=1$, is a
-  diffeomorphism $(0,\pi)\times S^{n-1}\to S^n-\{\pm p\}$; (3) for the radial
-  field $\partial_r=F_*(\partial_r)$ and $q=F(r_0,v_0)$, show
-  $\partial_r|_q=\big(-p+(p\cdot q)q\big)/\sqrt{1-(p\cdot q)^2}=-p\sin r_0+v_0\cos r_0$;
-  (4) show any curve from $p$ to $q$ is longer than $r_0$ unless it lies on the
-  great circle, using $\dot c\cdot\partial_r=dr/dt$; (5) conclude there is no
-  Riemannian immersion of an open $U\subset\mathbb{R}^n$ into $S^n$, using that
-  equilateral spherical triangles bounded by great-circle arcs always have
-  angles $>\pi/3$. (Part (5) is formalized through
-  Proposition~\ref{prop:pet-ch1-no-flat-immersion} rather than through the
-  angle comparison suggested here: the latter needs the image of a straight
-  segment under a local isometry to be a great-circle arc, i.e.\ a geodesic of
-  the target, which is a fact of Chapter~5.)
-  \source{petersen:page-0054}
+  Fix $p,q\in S^n\subset\mathbb{R}^{n+1}$ and a unit
+  $v\in T_pS^n$. Then:
+  \begin{enumerate}
+    \item $p\cos t+v\sin t$ is unit speed with initial data $(p,v)$;
+    \item
+      $F(r,v)=p\cos r+v\sin r$ is a diffeomorphism
+      $(0,\pi)\times S^{n-1}\to S^n\setminus\{\pm p\}$;
+    \item if $q=F(r_0,v_0)$, its radial field satisfies
+      \[
+        \partial_r|_q
+          =\frac{-p+(p\cdot q)q}{\sqrt{1-(p\cdot q)^2}}
+          =-p\sin r_0+v_0\cos r_0;
+      \]
+    \item integrating $\dot c\cdot\partial_r=dr/dt$ shows that a curve from
+      $p$ to $q$ has length at least $r_0$, with equality only along the
+      great circle;
+    \item no open $U\subset\mathbb{R}^n$ admits a Riemannian immersion into
+      $S^n$; the source derives this from the fact that equilateral spherical
+      triangles have angles greater than $\pi/3$.
+  \end{enumerate}
+  The formalization proves the last assertion through
+  \cref{prop:pet-ch1-no-flat-immersion}, avoiding the later result that local
+  isometries map line segments to target geodesics.
 \end{remark}
 
-\begin{remark}[Exercise 1.6.21 — hyperbolas minimize on hyperbolic space]
+\begin{remark}[Hyperbolic length minimization]
   \label{rem:pet-ch1-ex-21}
+  \dcref{ch1:1.6.21}
   \lean{PetersenLib.exercise1_6_21}
   \leanok
   \uses{ex:pet-ch1-hyperbolic-space,rem:pet-ch1-ex-16,prop:pet-ch1-no-flat-immersion}
-  For $p,q\in H^n\subset\mathbb{R}^{n,1}$, $v\in T_pH^n$ unit ($|p|^2=|q|^2=-1$,
-  $|v|^2=1$, $p\cdot v=0$): (1) show $p\cosh t+v\sinh t$ is a unit-speed curve
-  through $p$ with velocity $v$; (2) show $F(r,v)=p\cosh r+v\sinh r$, $r\ge0$,
-  $v\cdot p=0$, $|v|^2=1$, is a diffeomorphism $(0,\infty)\times S^{n-1}\to H^n-\{p\}$;
-  (3) for $\partial_r=F_*(\partial_r)$ and $q=F(r_0,v_0)$, show
-  $\partial_r|_q=\big(-p-(q\cdot p)q\big)/\sqrt{-1+(q\cdot p)^2}=p\sinh r_0+v_0\cosh r_0$;
-  (4) show any curve from $p$ to $q$ is longer than $r_0$ unless it lies on the
-  hyperbola; (5) conclude there is no Riemannian immersion of an open
-  $U\subset\mathbb{R}^n$ into $H^n$, using that equilateral hyperbolic triangles
-  bounded by hyperbola arcs always have angles $<\pi/3$. (As for
-  Exercise~1.6.20, part (5) is formalized through
-  Proposition~\ref{prop:pet-ch1-no-flat-immersion}, with $\beta=\eta$ and
-  $c=-1$: the sign of the ambient form is irrelevant to the obstruction, so
-  $H^n$ is as rigid as $S^n$ against flat immersions.)
-  \source{petersen:page-0054,petersen:page-0055}
+  Fix $p,q\in H^n\subset\mathbb{R}^{n,1}$ and a unit
+  $v\in T_pH^n$, so $g(p,p)=g(q,q)=-1$, $g(v,v)=1$, and $g(p,v)=0$. Then:
+  \begin{enumerate}
+    \item $p\cosh t+v\sinh t$ is unit speed with initial data $(p,v)$;
+    \item
+      $F(r,v)=p\cosh r+v\sinh r$ is a diffeomorphism
+      $(0,\infty)\times S^{n-1}\to H^n\setminus\{p\}$;
+    \item if $q=F(r_0,v_0)$, then
+      \[
+        \partial_r|_q
+          =\frac{-p-(q\cdot p)q}{\sqrt{-1+(q\cdot p)^2}}
+          =p\sinh r_0+v_0\cosh r_0;
+      \]
+    \item every curve from $p$ to $q$ has length at least $r_0$, with equality
+      only along the corresponding hyperbola;
+    \item no open $U\subset\mathbb{R}^n$ admits a Riemannian immersion into
+      $H^n$; the source uses equilateral hyperbolic triangles, whose angles are
+      less than $\pi/3$.
+  \end{enumerate}
+  The formalization obtains the final assertion from
+  \cref{prop:pet-ch1-no-flat-immersion} with $\beta$ equal to the Minkowski
+  form and $c=-1$.
 \end{remark}
 
-\begin{remark}[Exercise 1.6.22 (F. Wilhelm) — the quaternionic Hopf fibrations]
+\begin{remark}[Quaternionic Hopf fibrations]
   \label{rem:pet-ch1-ex-22}
+  \dcref{ch1:1.6.22}
   \lean{PetersenLib.exercise1_6_22}
   \leanok
   \uses{ex:pet-ch1-hopf-fibration}
-  Writing quaternions $q=a+bi+cj+dk=z+wj$: (1) show $\mathbb{H}$ is realized as the
-  matrix algebra $q=\begin{bsmallmatrix}z&w\\-\bar w&\bar z\end{bsmallmatrix}$ with
-  $i,j,k$ the indicated matrices, giving $\mathbb{R}$-bilinear associative
-  multiplication; (2) for $\bar q=a-bi-cj-dk$, show
-  $a^2+b^2+c^2+d^2=|q|^2=q\bar q=\bar qq=|z|^2+|w|^2=\det\begin{bsmallmatrix}z&w\\-\bar w&\bar z\end{bsmallmatrix}$,
-  $|pq|=|p||q|$, and $\overline{pq}=\bar q\bar p$; (3) for
-  $H^l(p,q)=\big(\tfrac12(|p|^2-|q|^2),\bar pq\big)$ and
-  $H^r(p,q)=\big(\tfrac12(|p|^2-|q|^2),p\bar q\big)$, show both map
-  $S^7(1)\subset\mathbb{H}^2$ to $S^4(1/2)\subset\mathbb{R}\oplus\mathbb{H}$; (4) show the fibres of
-  $H^l$ are the orbits of left multiplication by unit quaternions on $\mathbb{H}^2$;
-  (5) show the fibres of $H^r$ are the orbits of right multiplication by unit
-  quaternions; (6) show both $H^l,H^r:S^7(1)\to S^4(1/2)$ are Riemannian
-  submersions.
-  \source{petersen:page-0055,petersen:page-0056}
+  Write $q=a+bi+cj+dk=z+wj$ and identify
+  \[
+    q\longleftrightarrow
+      \begin{bsmallmatrix}z&w\\-\bar w&\bar z\end{bsmallmatrix}.
+  \]
+  This gives the associative real-bilinear quaternion product. With
+  $\bar q=a-bi-cj-dk$,
+  \[
+    |q|^2=q\bar q=\bar qq=|z|^2+|w|^2
+      =\det\begin{bsmallmatrix}z&w\\-\bar w&\bar z\end{bsmallmatrix},
+  \]
+  $|pq|=|p||q|$, and $\overline{pq}=\bar q\bar p$. Define
+  \[
+  \begin{aligned}
+    H^l(p,q)&=\big(\tfrac12(|p|^2-|q|^2),\bar p q\big),\\
+    H^r(p,q)&=\big(\tfrac12(|p|^2-|q|^2),p\bar q\big).
+  \end{aligned}
+  \]
+  Both maps send $S^7(1)\subset\mathbb{H}^2$ to
+  $S^4(1/2)\subset\mathbb{R}\oplus\mathbb{H}$. The fibres of $H^l$ and
+  $H^r$ are respectively the left and right diagonal orbits of unit
+  quaternions, and both maps are Riemannian submersions.
 \end{remark}
 
-\begin{remark}[Exercise 1.6.23 — Euler-number vector bundles over $S^2$]
+\begin{remark}[Euler-number bundles over $S^2$]
   \label{rem:pet-ch1-ex-23}
+  \dcref{ch1:1.6.23}
   \lean{PetersenLib.exercise1_6_23}
   \leanok
   \uses{ex:pet-ch1-hopf-su2-coframe,thm:pet-ch1-smoothness-criterion}
-  For the Riemannian submersion of \cref{ex:pet-ch1-hopf-su2-coframe} with
-  $\rho,\phi>0$ on $(0,\infty)$, set $f=\rho$ and
-  $h=(\rho(t)\phi(t))^2/(\rho^2(t)+\phi^2(t))$, and assume $f(0)>0$,
-  $f^{(\mathrm{odd})}(0)=0$, $h(0)=0$, $h'(0)=k$, $h^{(\mathrm{even})}(0)=0$ for a
-  positive integer $k$. Show this yields a smooth metric on the vector bundle
-  over $S^2$ with Euler number $\pm k$ (away from the zero section this bundle
-  is $(0,\infty)\times S^3/\mathbb{Z}_k$, realized as a submersion of $S^3\times\mathbb{R}^2$;
-  $k=2$ gives $TS^2$, $k=1$ gives $\mathbb{RP}^2-\{\mathrm{pt}\}$).
-  (The Lean formalization establishes the analytic content — that the metric is a
-  Riemannian submersion staying positive and closing smoothly at the origin under
-  the stated derivative conditions; the topological identification of the bundle,
-  its Euler number $\pm k$, and the $TS^2$/$\mathbb{RP}^2-\{\mathrm{pt}\}$ cases
-  have no counterpart in Mathlib and are recorded here in prose only.)
-  \source{petersen:page-0056,petersen:page-0057}
+  In the submersion of \cref{ex:pet-ch1-hopf-su2-coframe}, assume
+  $\rho,\phi>0$ on $(0,\infty)$ and set
+  \[
+    f=\rho,
+    \qquad
+    h=\frac{(\rho\phi)^2}{\rho^2+\phi^2}.
+  \]
+  If
+  \[
+    f(0)>0,
+    \quad f^{(2l+1)}(0)=0\ (l\ge0),
+    \quad h(0)=0,
+    \quad h'(0)=k,
+    \quad h^{(2l)}(0)=0\ (l\ge1)
+  \]
+  for a positive integer $k$, the quotient metric extends smoothly to the
+  vector bundle over $S^2$ with Euler number $\pm k$. Away from the zero
+  section it is $(0,\infty)\times S^3/\mathbb{Z}_k$, obtained as a quotient of
+  $S^3\times\mathbb{R}^2$. For $k=2$ this is $TS^2$; the source describes the
+  $k=1$ case as looking like $\mathbb{CP}^2\setminus\{\mathrm{pt}\}$.
+  The formalization covers positivity,
+  the Riemannian submersion, and analytic closing at the origin; it does not
+  identify the bundle topology, Euler number, or these two special cases.
 \end{remark}
 
-\begin{remark}[Exercise 1.6.24 — bi-invariant metrics on compact Lie groups]
+\begin{remark}[Bi-invariant metrics on compact Lie groups]
   \label{rem:pet-ch1-ex-24}
+  \dcref{ch1:1.6.24}
   \lean{PetersenLib.exercise1_6_24}
   \leanok
   \uses{def:pet-ch1-left-invariant-metric,def:pet-ch1-volume-form-local}
-  Let $G$ be a compact Lie group. (1) Show $G$ admits a bi-invariant metric, by
-  averaging a left-invariant metric $g_l$ over right translations against the
-  left-invariant volume form:
-  $g(v,w)=\big(\int_G\mathrm{vol}\big)^{-1}\int_Gg_l(DR_x(v),DR_x(w))\,\mathrm{vol}$;
-  (2) show conjugation $\mathrm{Ad}_h(x)=hxh^{-1}$ is a Riemannian isometry for
-  any bi-invariant metric, so its differential $\mathrm{Ad}_h:\mathfrak g\to\mathfrak g$
-  at $e$ is a linear isometry; (3) deduce that
-  $\mathrm{ad}_U:\mathfrak g\to\mathfrak g$, $\mathrm{ad}_UX=[U,X]$, is skew-symmetric:
-  $g([U,X],Y)=-g(X,[U,Y])$.
-  \source{petersen:page-0057}
+  Let $G$ be compact and $g_l$ left-invariant. Averaging over right
+  translations gives the bi-invariant metric
+  \[
+    g(v,w)=\left(\int_G\operatorname{vol}\right)^{-1}
+      \int_G g_l(DR_xv,DR_xw)\,\operatorname{vol}.
+  \]
+  For any bi-invariant metric, conjugation by $h\in G$ is an isometry, so
+  $\operatorname{Ad}_h:\mathfrak g\to\mathfrak g$ is a linear isometry.
+  Differentiating this invariance gives
+  \[
+    g([U,X],Y)=-g(X,[U,Y]),
+  \]
+  so $\operatorname{ad}_U$ is skew-symmetric.
 \end{remark}
 
-\begin{remark}[Exercise 1.6.25 — characterization of bi-invariant pseudo-metrics]
+\begin{remark}[Characterization of bi-invariant pseudo-metrics]
   \label{rem:pet-ch1-ex-25}
+  \dcref{ch1:1.6.25}
   \lean{PetersenLib.exercise1_6_25}
   \leanok
   \uses{def:pet-ch1-pseudo-riemannian,def:pet-ch1-left-invariant-metric}
-  For a Lie group $G$ with Lie algebra $\mathfrak g$, show a nondegenerate,
-  symmetric, bilinear form $(X,Y)$ on $\mathfrak g$ defines a bi-invariant
-  pseudo-Riemannian metric iff $(X,Y)=(\mathrm{Ad}_hX,\mathrm{Ad}_hY)$ for all
-  $h\in G$.
-  \source{petersen:page-0057}
+  A nondegenerate symmetric bilinear form $(\cdot,\cdot)$ on the Lie algebra
+  $\mathfrak g$ defines a bi-invariant pseudo-Riemannian metric on $G$ if and
+  only if
+  \[
+    (X,Y)=(\operatorname{Ad}_hX,\operatorname{Ad}_hY)
+    \quad\text{for every }h\in G.
+  \]
 \end{remark}
 
-\begin{remark}[Exercise 1.6.26 — averaging to a $G$-invariant metric]
+\begin{remark}[Averaging to an invariant metric]
   \label{rem:pet-ch1-ex-26}
+  \dcref{ch1:1.6.26}
   \lean{PetersenLib.exercise1_6_26}
   \leanok
   \uses{def:pet-ch1-riemannian-manifold}
-  For a compact Lie group $G$ acting smoothly on a manifold $M$, show $M$ admits a
-  Riemannian metric for which $G$ acts by isometries. Hint: first show any manifold admits
-  a Riemannian metric (via a partition of unity), then average it against the normalised
-  Haar measure of $G$. Smoothness of the averaged section in the base point follows from
-  differentiation under the integral sign: on each chart the coordinate entries are scalar
-  parametric integrals over the compact $G$, whose all-order $x$-derivatives are jointly
-  continuous, hence $C^\infty$.
-  \source{petersen:page-0058}
+  If a compact Lie group $G$ acts smoothly on $M$, then $M$ admits a metric
+  for which the action is isometric. Start with a metric constructed by a
+  partition of unity and average it against normalized Haar measure.
+  In local coordinates, all derivatives of the averaged coefficients may be
+  passed under the integral because the differentiated integrands are jointly
+  continuous on the compact group; hence the averaged metric is smooth.
 \end{remark}
 
-\begin{remark}[Exercise 1.6.27 — the Killing form]
+\begin{remark}[Killing form]
   \label{rem:pet-ch1-ex-27}
+  \dcref{ch1:1.6.27}
   \lean{PetersenLib.exercise1_6_27}
   \leanok
   \uses{def:pet-ch1-left-invariant-metric}
-  For a Lie group $G$ with Killing form $B(X,Y)=\mathrm{tr}(\mathrm{ad}_X\circ\mathrm{ad}_Y)$
-  on $\mathfrak g$: (1) show $B$ is symmetric and bilinear; (2) if $G$ admits a
-  bi-invariant metric, show $B(X,X)\le0$; (3) show
-  $B(\mathrm{ad}_ZX,Y)=-B(X,\mathrm{ad}_ZY)$; (4) for $G$ connected, show
-  $B(\mathrm{Ad}_hX,\mathrm{Ad}_hY)=B(X,Y)$ by showing
-  $t\mapsto B(\mathrm{Ad}_{\exp(tZ)}X,\mathrm{Ad}_{\exp(tZ)}Y)$ is constant. When
-  $\mathfrak g$ is semisimple, $B$ is nondegenerate and (with a sign, $-B$, when
-  $G$ is also compact) gives a bi-invariant pseudo-/Riemannian metric.
-  \source{petersen:page-0058}
+  The Killing form on $\mathfrak g$ is
+  \[
+    B(X,Y)=\operatorname{tr}(\operatorname{ad}_X\circ\operatorname{ad}_Y).
+  \]
+  It is symmetric and bilinear. If $G$ admits a bi-invariant metric, then
+  $B(X,X)\le0$, and
+  \[
+    B(\operatorname{ad}_ZX,Y)=-B(X,\operatorname{ad}_ZY).
+  \]
+  For connected $G$, the function
+  $t\mapsto B(\operatorname{Ad}_{\exp(tZ)}X,
+              \operatorname{Ad}_{\exp(tZ)}Y)$ is constant, so $B$ is
+  $\operatorname{Ad}$-invariant. When $\mathfrak g$ is semisimple, $B$ is
+  nondegenerate and defines a bi-invariant pseudo-Riemannian metric; if $G$ is
+  also compact, $-B$ is Riemannian.
 \end{remark}
 
-\begin{remark}[Exercise 1.6.28 — $\mathrm{SL}(n,\mathbb{R})$]
+\begin{remark}[Bi-invariant pseudo-metric on $\mathrm{SL}(n,\mathbb{R})$]
   \label{rem:pet-ch1-ex-28}
+  \dcref{ch1:1.6.28}
   \lean{PetersenLib.exercise1_6_28}
   \leanok
   \uses{def:pet-ch1-pseudo-riemannian,def:pet-ch1-left-invariant-metric}
-  For $\mathrm{SL}(n,\mathbb{R})$ with Lie algebra $\mathfrak{sl}(n,\mathbb{R})$ (trace-zero
-  matrices), show the symmetric bilinear form $(X,Y)=\mathrm{tr}(XY)$ is
-  nondegenerate and $\mathrm{Ad}_h$-invariant, hence defines a bi-invariant
-  pseudo-Riemannian metric on $\mathrm{SL}(n,\mathbb{R})$.
-  \source{petersen:page-0058}
+  On the trace-zero Lie algebra $\mathfrak{sl}(n,\mathbb{R})$, the form
+  \[
+    (X,Y)=\operatorname{tr}(XY)
+  \]
+  is symmetric, nondegenerate, and $\operatorname{Ad}$-invariant. It therefore
+  defines a bi-invariant pseudo-Riemannian metric on
+  $\operatorname{SL}(n,\mathbb{R})$.
 \end{remark}
 
-\begin{remark}[Exercise 1.6.29 — a group with no bi-invariant pseudo-metric]
+\begin{remark}[A group without a bi-invariant pseudo-metric]
   \label{rem:pet-ch1-ex-29}
+  \dcref{ch1:1.6.29}
   \lean{PetersenLib.exercise1_6_29}
   \leanok
   \uses{def:pet-ch1-pseudo-riemannian,def:pet-ch1-left-invariant-metric}
-  Show the matrices $\mathrm{diag}(a^{-1},ab,1)$-type
-  $\begin{bsmallmatrix}a^{-1}&0&0\\0&ab&\ast\\0&0&1\end{bsmallmatrix}$, $a>0$,
-  $b\in\mathbb{R}$, define a $2$-dimensional Lie group admitting no bi-invariant
+  The matrices of $\operatorname{diag}(a^{-1},ab,1)$-type
+  \[
+    \begin{bsmallmatrix}
+      a^{-1}&0&0\\0&ab&\ast\\0&0&1
+    \end{bsmallmatrix},
+    \qquad a>0,\quad b\in\mathbb{R},
+  \]
+  form a two-dimensional Lie group that admits no bi-invariant
   pseudo-Riemannian metric.
-  \source{petersen:page-0058}
 \end{remark}

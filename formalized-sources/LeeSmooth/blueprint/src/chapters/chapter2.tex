@@ -1,5 +1,5 @@
 % Chapter 2: Smooth Maps
-% Lee, *Introduction to Smooth Manifolds* (2nd ed., GTM 218).
+% Lee, Introduction to Smooth Manifolds (2nd ed., GTM 218).
 % Generated from the section extraction; nodes carry only Lean that is
 % verified sorry-free. See ../../UPSTREAM_LEAN_AUDIT.md.
 
@@ -10,44 +10,39 @@
 \label{rem:2-8-extra-1}
 \lean{ContMDiffMap}
 \mathlibok
-Although the terms function and map are technically synonymous, in studying smooth manifolds it is often convenient to make a slight distinction between them. Throughout this book we generally reserve the term function for a map whose codomain is $\mathbb{R}$ (a real-valued function) or ${\mathbb{R}}^{k}$ for some $k > 1$ (a vector-valued function). Either of the words map or mapping can mean any type of map, such as a map between arbitrary manifolds.
+The term \emph{function} denotes a real- or vector-valued map, while \emph{map} may have arbitrary codomain.
 \end{remark}
 
 \begin{notation}
 \label{not:2-8-extra-3}
 \lean{C}
 \mathlibok
-The most important special case is that of smooth real-valued functions $f : M \rightarrow \; \mathbb{R}$ ; the set of all such functions is denoted by ${C}^{\infty }\left( M\right)$ . Because sums and constant multiples of smooth functions are smooth, ${C}^{\infty }\left( M\right)$ is a vector space over $\mathbb{R}$ .
+For a smooth manifold $M$, write $C^\infty(M)$ for the real-valued smooth
+functions on $M$; with pointwise operations it is a commutative associative
+$\mathbb R$-algebra.
 \end{notation}
 
-\begin{exercise}
-\label{exer:2-1}
-\lean{ContMDiffMap.coe_mul}
-\mathlibok
-\dcref{ch2:2.1}
-Let $M$ be a smooth manifold with or without boundary. Show that pointwise multiplication turns ${C}^{\infty }\left( M\right)$ into a commutative ring and a commutative and associative algebra over $\mathbb{R}$ . (See Appendix B, p. 624, for the definition of an algebra.)
-\end{exercise}
 
-\begin{exercise}
+\begin{lemma}[Smooth Coordinate Representations]
 \label{exer:2-3}
 \lean{smooth_chart_representation_of_contMDiff}
 \leanok
 \dcref{ch2:2.3}
-Let $M$ be a smooth manifold with or without boundary, and suppose $f : M \rightarrow  {\mathbb{R}}^{k}$ is a smooth function. Show that $f \circ  {\varphi }^{-1} : \varphi \left( U\right)  \rightarrow  {\mathbb{R}}^{k}$ is smooth for every smooth chart $\left( {U,\varphi }\right)$ for $M$ .
-\end{exercise}
+If $f:M\to\mathbb R^k$ is smooth and $(U,\varphi)$ is any smooth chart, then $f\circ\varphi^{-1}:\varphi(U)\to\mathbb R^k$ is smooth.
+\end{lemma}
 
 \begin{definition}
 \label{def:2-8-extra-4}
 \lean{writtenInExtChartAt}
 \mathlibok
-Given a function $f : M \rightarrow  {\mathbb{R}}^{k}$ and a chart $\left( {U,\varphi }\right)$ for $M$ , the function $\widehat{f} : \varphi \left( U\right)  \rightarrow  {\mathbb{R}}^{k}$ defined by $\widehat{f}\left( x\right)  = f \circ  {\varphi }^{-1}\left( x\right)$ is called the coordinate representation of $f$ . By definition, $f$ is smooth if and only if its coordinate representation is smooth in some smooth chart around each point. By the preceding exercise, smooth functions have smooth coordinate representations in every smooth chart.
+For $f:M\to\mathbb R^k$ and a chart $(U,\varphi)$, its coordinate representation is $\widehat f=f\circ\varphi^{-1}:\varphi(U)\to\mathbb R^k$. The function $f$ is smooth exactly when these representations are smooth in a chart around every point; by Lemma~\ref{exer:2-3}, smoothness then holds in every smooth chart.
 \end{definition}
 
 \begin{definition}
 \label{def:2-8-extra-5}
 \lean{ContMDiff}
 \mathlibok
-The definition of smooth functions generalizes easily to maps between manifolds. Let $M, N$ be smooth manifolds, and let $F : M \rightarrow  N$ be any map. We say that $F$ is a smooth map if for every $p \in  M$ , there exist smooth charts $\left( {U,\varphi }\right)$ containing $p$ and $\left( {V,\psi }\right)$ containing $F\left( p\right)$ such that $F\left( U\right)  \subseteq  V$ and the composite map $\psi  \circ  F \circ \; {\varphi }^{-1}$ is smooth from $\varphi \left( U\right)$ to $\psi \left( V\right)$ (Fig. 2.2). If $M$ and $N$ are smooth manifolds with boundary, smoothness of $F$ is defined in exactly the same way, with the usual understanding that a map whose domain is a subset of ${\mathbb{H}}^{n}$ is smooth if it admits an extension to a smooth map in a neighborhood of each point, and a map whose codomain is a subset of ${\mathbb{H}}^{n}$ is smooth if it is smooth as a map into ${\mathbb{R}}^{n}$ . Note that our previous definition of smoothness of real-valued or vector-valued functions can be viewed as a special case of this one, by taking $N = V = {\mathbb{R}}^{k}$ and $\psi  = \operatorname{Id} : {\mathbb{R}}^{k} \rightarrow  {\mathbb{R}}^{k}$ .
+For smooth manifolds $M,N$, a map $F:M\to N$ is smooth if for every $p\in M$ there are smooth charts $(U,\varphi)$ about $p$ and $(V,\psi)$ about $F(p)$ with $F(U)\subseteq V$ such that $\psi\circ F\circ\varphi^{-1}:\varphi(U)\to\psi(V)$ is smooth. For manifolds with boundary, maps from subsets of $\mathbb H^n$ are smooth when locally extendible to smooth maps, and maps into subsets of $\mathbb H^n$ are smooth as maps into $\mathbb R^n$. The function definition is the case $N=\mathbb R^k$ with $\psi=\operatorname{Id}$.
 \end{definition}
 
 \begin{proposition}
@@ -59,13 +54,11 @@ Every smooth map is continuous.
 \end{proposition}
 
 \begin{proof}
-Suppose $M$ and $N$ are smooth manifolds with or without boundary, and $F : M \rightarrow  N$ is smooth. Given $p \in  M$ , smoothness of $F$ means there are smooth charts $\left( {U,\varphi }\right)$ containing $p$ and $\left( {V,\psi }\right)$ containing $F\left( p\right)$ , such that $F\left( U\right)  \subseteq  V$ and $\psi  \circ  F \circ  {\varphi }^{-1} : \varphi \left( U\right)  \rightarrow  \psi \left( V\right)$ is smooth, hence continuous. Since $\varphi  : U \rightarrow  \varphi \left( U\right)$ and $\psi  : V \rightarrow  \psi \left( V\right)$ are homeomorphisms, this implies in turn that
-
+\sketch For a smooth $F:M\to N$ and each $p$, choose charts as in the definition. The local expression
 \[
-{\left. F\right| }_{U} = {\psi }^{-1} \circ  \left( {\psi  \circ  F \circ  {\varphi }^{-1}}\right)  \circ  \varphi  : U \rightarrow  V,
+F|_U=\psi^{-1}\circ(\psi\circ F\circ\varphi^{-1})\circ\varphi
 \]
-
-which is a composition of continuous maps. Since $F$ is continuous in a neighborhood of each point, it is continuous on $M$ .
+is continuous, hence $F$ is continuous on $M$.
 \end{proof}
 
 \begin{proposition}[Equivalent Characterizations of Smoothness]
@@ -73,11 +66,11 @@ which is a composition of continuous maps. Since $F$ is continuous in a neighbor
 \lean{contMDiff_iff}
 \mathlibok
 \dcref{ch2:2.5}
-Suppose $M$ and $N$ are smooth manifolds with or without boundary, and $F : M \rightarrow  N$ is a map. Then $F$ is smooth if and only if either of the following conditions is satisfied:
+For a map $F:M\to N$ between smooth manifolds (with or without boundary), $F$ is smooth if and only if either:
 
-(a) For every $p \in  M$ , there exist smooth charts $\left( {U,\varphi }\right)$ containing $p$ and $\left( {V,\psi }\right)$ containing $F\left( p\right)$ such that $U \cap  {F}^{-1}\left( V\right)$ is open in $M$ and the composite map $\psi  \circ  F \circ  {\varphi }^{-1}$ is smooth from $\varphi \left( {U \cap  {F}^{-1}\left( V\right) }\right)$ to $\psi \left( V\right)$ .
+(a) For every $p\in M$ there are smooth charts $(U,\varphi)$ about $p$ and $(V,\psi)$ about $F(p)$ such that $U\cap F^{-1}(V)$ is open and $\psi\circ F\circ\varphi^{-1}$ is smooth on $\varphi(U\cap F^{-1}(V))$; or
 
-(b) $F$ is continuous and there exist smooth atlases $\left\{  \left( {{U}_{\alpha },{\varphi }_{\alpha }}\right) \right\}$ and $\left\{  \left( {{V}_{\beta },{\psi }_{\beta }}\right) \right\}$ for $M$ and $N$ , respectively, such that for each $\alpha$ and $\beta ,{\psi }_{\beta } \circ  F \circ  {\varphi }_{\alpha }^{-1}$ is a smooth map from ${\varphi }_{\alpha }\left( {{U}_{\alpha } \cap  {F}^{-1}\left( {V}_{\beta }\right) }\right)$ to ${\psi }_{\beta }\left( {V}_{\beta }\right)$ .
+(b) $F$ is continuous and there are smooth atlases $\{(U_\alpha,\varphi_\alpha)\}$ and $\{(V_\beta,\psi_\beta)\}$ for $M,N$ such that every $\psi_\beta\circ F\circ\varphi_\alpha^{-1}$ is smooth on $\varphi_\alpha(U_\alpha\cap F^{-1}(V_\beta))$.
 \end{proposition}
 
 \begin{proposition}[Smoothness Is Local]
@@ -85,22 +78,9 @@ Suppose $M$ and $N$ are smooth manifolds with or without boundary, and $F : M \r
 \lean{contMDiff_of_locally_contMDiffOn}
 \mathlibok
 \dcref{ch2:2.6}
-Let $M$ and $N$ be smooth manifolds with or without boundary, and let $F : M \rightarrow  N$ be a map.
-
-(a) If every point $p \in  M$ has a neighborhood $U$ such that the restriction ${\left. F\right| }_{U}$ is smooth, then $F$ is smooth.
-
-(b) Conversely, if $F$ is smooth, then its restriction to every open subset is smooth.
+For a map $F:M\to N$ between smooth manifolds, if every $p\in M$ has a neighborhood on which $F$ is smooth, then $F$ is smooth. Conversely, the restriction of a smooth map to every open subset is smooth.
 \end{proposition}
 
-\begin{exercise}
-\label{exer:2-7}
-\lean{ContMDiff.contMDiffOn}
-\mathlibok
-\dcref{ch2:2.7}
-\begin{itemize}
-\item Exercise 2.7. Prove the preceding two propositions.
-\end{itemize}
-\end{exercise}
 
 \begin{corollary}[Gluing Lemma for Smooth Maps]
 \label{cor:2-8}
@@ -108,23 +88,23 @@ Let $M$ and $N$ be smooth manifolds with or without boundary, and let $F : M \ri
 \leanok
 \uses{prop:2-6}
 \dcref{ch2:2.8}
-Let $M$ and $N$ be smooth manifolds with or without boundary, and let ${\left\{  {U}_{\alpha }\right\}  }_{\alpha  \in  A}$ be an open cover of $M$ . Suppose that for each $\alpha  \in  A$ , we are given a smooth map ${F}_{\alpha } : {U}_{\alpha } \rightarrow  N$ such that the maps agree on overlaps: ${\left. {F}_{\alpha }\right| }_{{U}_{\alpha } \cap  {U}_{\beta }} = {\left. {F}_{\beta }\right| }_{{U}_{\alpha } \cap  {U}_{\beta }}$ for all $\alpha$ and $\beta$ . Then there exists a unique smooth map $F : M \rightarrow  N$ such that ${\left. F\right| }_{{U}_{\alpha }} = {F}_{\alpha }$ for each $\alpha  \in  A$ .
+If $\{U_\alpha\}_{\alpha\in A}$ is an open cover of $M$ and smooth maps $F_\alpha:U_\alpha\to N$ agree on every overlap, there is a unique smooth $F:M\to N$ with $F|_{U_\alpha}=F_\alpha$.
 \end{corollary}
 
 \begin{definition}
 \label{def:2-8-extra-6}
 \lean{extended_coordinate_representation_mapsTo}
 \leanok
-If $F : M \rightarrow  N$ is a smooth map, and $\left( {U,\varphi }\right)$ and $\left( {V,\psi }\right)$ are any smooth charts for $M$ and $N$ , respectively, we call $\widehat{F} = \psi  \circ  F \circ  {\varphi }^{-1}$ the coordinate representation of $F$ with respect to the given coordinates. It maps the set $\varphi \left( {U \cap  {F}^{-1}\left( V\right) }\right)$ to $\psi \left( V\right)$ .
+For a smooth $F:M\to N$ and smooth charts $(U,\varphi)$, $(V,\psi)$, define $\widehat F=\psi\circ F\circ\varphi^{-1}$. It maps $\varphi(U\cap F^{-1}(V))$ into $\psi(V)$.
 \end{definition}
 
-\begin{exercise}
+\begin{lemma}[Chart Independence of Smooth Coordinate Representations]
 \label{exer:2-9}
 \lean{contDiffOn_coord_repr_of_contMDiff}
 \leanok
 \dcref{ch2:2.9}
-Suppose $F : M \rightarrow  N$ is a smooth map between smooth manifolds with or without boundary. Show that the coordinate representation of $F$ with respect to every pair of smooth charts for $M$ and $N$ is smooth.
-\end{exercise}
+The coordinate representation of a smooth map with respect to every pair of smooth charts is smooth.
+\end{lemma}
 
 \begin{proposition}
 \label{prop:2-10}
@@ -132,54 +112,38 @@ Suppose $F : M \rightarrow  N$ is a smooth map between smooth manifolds with or 
 \mathlibok
 \uses{exer:2-9}
 \dcref{ch2:2.10}
-Let $M, N$ , and $P$ be smooth manifolds with or without boundary.
-
-(a) Every constant map $c : M \rightarrow  N$ is smooth.
-
-(b) The identity map of $M$ is smooth.
-
-(c) If $U \subseteq  M$ is an open submanifold with or without boundary, then the inclusion map $U \hookrightarrow  M$ is smooth.
-
-(d) If $F : M \rightarrow  N$ and $G : N \rightarrow  P$ are smooth, then so is $G \circ  F : M \rightarrow  P$ .
+For smooth manifolds $M,N,P$: every constant map $M\to N$, the identity of $M$, and the inclusion of an open submanifold $U\hookrightarrow M$ are smooth; if $F:M\to N$ and $G:N\to P$ are smooth, then $G\circ F$ is smooth.
 \end{proposition}
 
 \begin{proof}
-We prove (d) and leave the rest as exercises. Let $F : M \rightarrow  N$ and $G : N \rightarrow \; P$ be smooth maps, and let $p \in  M$ . By definition of smoothness of $G$ , there exist smooth charts $\left( {V,\theta }\right)$ containing $F\left( p\right)$ and $\left( {W,\psi }\right)$ containing $G\left( {F\left( p\right) }\right)$ such that $G\left( V\right)  \subseteq  W$ and $\psi  \circ  G \circ  {\theta }^{-1} : \theta \left( V\right)  \rightarrow  \psi \left( W\right)$ is smooth. Since $F$ is continuous, ${F}^{-1}\left( V\right)$ is a neighborhood of $p$ in $M$ , so there is a smooth chart $\left( {U,\varphi }\right)$ for $M$ such that $p \in  U \subseteq  {F}^{-1}\left( V\right)$ (Fig. 2.3). By Exercise 2.9, $\theta  \circ  F \circ  {\varphi }^{-1}$ is smooth from $\varphi \left( U\right)$ to $\theta \left( V\right)$ . Then we have $G \circ  F\left( U\right)  \subseteq  G\left( V\right)  \subseteq  W$ , and $\psi  \circ  \left( {G \circ  F}\right)  \circ  {\varphi }^{-1} = \; \left( {\psi  \circ  G \circ  {\theta }^{-1}}\right)  \circ  \left( {\theta  \circ  F \circ  {\varphi }^{-1}}\right)  : \varphi \left( U\right)  \rightarrow  \psi \left( W\right)$ is smooth because it is a composition of smooth maps between subsets of Euclidean spaces.
+\sketch Parts (a)--(c) have constant, identity, or coordinate-inclusion representations. For (d), choose a chart $(V,\theta)$ around $F(p)$ on which $G$ has image in a chart $(W,\psi)$, then choose $(U,\varphi)$ with $U\subseteq F^{-1}(V)$. The identity
+\[
+\psi\circ(G\circ F)\circ\varphi^{-1}=(\psi\circ G\circ\theta^{-1})\circ(\theta\circ F\circ\varphi^{-1})
+\]
+is a composition of smooth Euclidean maps.
 \end{proof}
 
-\begin{exercise}
-\label{exer:2-11}
-\lean{contMDiff_subtype_val}
-\mathlibok
-\dcref{ch2:2.11}
-\begin{itemize}
-\item Exercise 2.11. Prove parts (a)-(c) of the preceding proposition.
-\end{itemize}
-\end{exercise}
 
 \begin{proposition}
 \label{prop:2-12}
 \lean{contMDiff_pi_iff}
 \leanok
-\uses{prob:2-2}
 \dcref{ch2:2.12}
-Suppose ${M}_{1},\ldots ,{M}_{k}$ and $N$ are smooth manifolds with or without boundary, such that at most one of ${M}_{1},\ldots ,{M}_{k}$ has nonempty boundary. For each $i$ , let ${\pi }_{i} : {M}_{1} \times  \cdots  \times  {M}_{k} \rightarrow  {M}_{i}$ denote the projection onto the ${M}_{i}$ factor. A map $F : N \rightarrow  {M}_{1} \times  \cdots  \times  {M}_{k}$ is smooth if and only if each of the component maps ${F}_{i} = {\pi }_{i} \circ  F : N \rightarrow  {M}_{i}$ is smooth.
+Let $M_1,\ldots,M_k,N$ be smooth manifolds with or without boundary, with at most one $M_i$ having nonempty boundary. For projections $\pi_i:M_1\times\cdots\times M_k\to M_i$, a map $F:N\to M_1\times\cdots\times M_k$ is smooth if and only if each $F_i=\pi_i\circ F$ is smooth.
 \end{proposition}
 
 \begin{proof}
 \leanok
-Problem 2-2.
+\sketch In product charts, the coordinate representation of $F$ is the tuple
+of the coordinate representations of the $F_i$. Such a Euclidean map is smooth
+if and only if each component is smooth.
 \end{proof}
 
 \begin{remark}
 \label{rem:2-8-extra-7}
 \lean{OpenPartialHomeomorph}
 \mathlibok
-Although most of our efforts in this book are devoted to the study of smooth manifolds and smooth maps, we also need to work with topological manifolds and continuous maps on occasion. For the sake of consistency, we adopt the following conventions: without further qualification, the words "function" and "map" are to be understood purely in the set-theoretic sense, and carry no assumptions of continuity or smoothness. Most other objects we study, however, will be understood to carry some minimal topological structure by default. Unless otherwise specified, a "manifold" or "manifold with boundary" is always to be understood as a topological one, and a "coordinate chart" is to be understood in the topological sense, as a homeomorphism from an open subset of the manifold to an open subset of ${\mathbb{R}}^{n}$ or ${\mathbb{H}}^{n}$ . If we wish to restrict attention to smooth manifolds or smooth coordinate charts, we will say so. Similarly, our default assumptions for many other specific types of geometric objects and the maps between them will be continuity at most; smoothness will not be assumed unless explicitly specified. The only exceptions will be a few concepts that require smoothness for their very definitions.
-
-This convention requires a certain discipline, in that we have to remember to state the smoothness hypothesis whenever it is needed; but its advantage is that it frees us (for the most part) from having to remember which types of maps are assumed to be smooth and which are not.
-
-On the other hand, because the definition of a smooth map requires smooth structures in the domain and codomain, if we say " $F : M \rightarrow  N$ is a smooth map" without specifying what $M$ and $N$ are, it should always be understood that they are smooth manifolds with or without boundaries.
+Unless specified otherwise, a function or map is set-theoretic, a manifold is topological, and a coordinate chart is a homeomorphism to an open subset of $\mathbb R^n$ or $\mathbb H^n$. Continuity or smoothness is imposed only when stated; saying that $F:M\to N$ is smooth implicitly gives smooth structures on $M$ and $N$.
 \end{remark}
 
 \begin{example}
@@ -188,39 +152,28 @@ On the other hand, because the definition of a smooth map requires smooth struct
 \leanok
 \uses{ex:1-33,ex:1-8,prob:1-8,prop:2-12}
 \dcref{ch2:2.13}
-(a) Any map from a zero-dimensional manifold into a smooth manifold with or without boundary is automatically smooth, because each coordinate representation is constant.
+(a) Every map from a zero-dimensional manifold is smooth.
 
-(b) If the circle ${\mathbb{S}}^{1}$ is given its standard smooth structure, the map $\varepsilon  : \mathbb{R} \rightarrow  {\mathbb{S}}^{1}$ defined by $\varepsilon \left( t\right)  = {e}^{2\pi it}$ is smooth, because with respect to any angle coordinate $\theta$ for ${\mathbb{S}}^{1}$ (see Problem 1-8) it has a coordinate representation of the form $\widehat{\varepsilon }\left( t\right)  = {2\pi t} + c$ for some constant $c$ , as you can check.
+(b) For the standard circle, $\varepsilon:\mathbb R\to\mathbb S^1$, $\varepsilon(t)=e^{2\pi it}$, has angle-coordinate representation $2\pi t+c$ and is smooth.
 
-(c) The map ${\varepsilon }^{n} : {\mathbb{R}}^{n} \rightarrow  {\mathbb{T}}^{n}$ defined by ${\varepsilon }^{n}\left( {{x}^{1},\ldots ,{x}^{n}}\right)  = \left( {{e}^{{2\pi i}{x}^{1}},\ldots ,{e}^{{2\pi i}{x}^{n}}}\right)$ is smooth by Proposition 2.12.
+(c) The map $\varepsilon^n:\mathbb R^n\to\mathbb T^n$, $\varepsilon^n(x^1,\ldots,x^n)=(e^{2\pi ix^1},\ldots,e^{2\pi ix^n})$, is smooth by Proposition~\ref{prop:2-12}.
 
-(d) Now consider the $n$ -sphere ${\mathbb{S}}^{n}$ with its standard smooth structure. The inclusion map $\iota  : {\mathbb{S}}^{n} \hookrightarrow  {\mathbb{R}}^{n + 1}$ is certainly continuous, because it is the inclusion map of a topological subspace. It is a smooth map because its coordinate representation with respect to any of the graph coordinates of Example 1.31 is
-
+(d) The inclusion $\iota:\mathbb S^n\hookrightarrow\mathbb R^{n+1}$ has graph-coordinate representation
 \[
-\widehat{\iota }\left( {{u}^{1},\ldots ,{u}^{n}}\right)  = \iota  \circ  {\left( {\varphi }_{i}^{ \pm  }\right) }^{-1}\left( {{u}^{1},\ldots ,{u}^{n}}\right)
+(u^1,\ldots,u^n)\longmapsto(u^1,\ldots,u^{i-1},\pm\sqrt{1-|u|^2},u^i,\ldots,u^n),
 \]
+which is smooth for $|u|^2<1$.
 
+(e) The quotient map $\pi:\mathbb R^{n+1}\setminus\{0\}\to\mathbb{RP}^n$ has, on the $i$th projective chart, representation
 \[
-= \left( {{u}^{1},\ldots ,{u}^{i - 1}, \pm  \sqrt{1 - {\left| u\right| }^{2}},{u}^{i},\ldots ,{u}^{n}}\right) ,
+(x^1,\ldots,x^{n+1})\longmapsto(x^1/x^i,\ldots,x^{i-1}/x^i,x^{i+1}/x^i,\ldots,x^{n+1}/x^i),
 \]
+so it is smooth.
 
-which is smooth on its domain (the set where ${\left| u\right| }^{2} < 1$ ).
+(f) The restriction $q=\pi\circ\iota:\mathbb S^n\to\mathbb{RP}^n$ is smooth.
 
-(e) The quotient map $\pi  : {\mathbb{R}}^{n + 1} \smallsetminus  \{ 0\}  \rightarrow  {\mathbb{{RP}}}^{n}$ used to define ${\mathbb{{RP}}}^{n}$ is smooth, because its coordinate representation in terms of any of the coordinates for ${\mathbb{{RP}}}^{n}$ constructed in Example 1.33 and standard coordinates on ${\mathbb{R}}^{n + 1} \smallsetminus  \{ 0\}$ is
-
-\[
-\widehat{\pi }\left( {{x}^{1},\ldots ,{x}^{n + 1}}\right)  = {\varphi }_{i} \circ  \pi \left( {{x}^{1},\ldots ,{x}^{n + 1}}\right)  = {\varphi }_{i}\left\lbrack  {{x}^{1},\ldots ,{x}^{n + 1}}\right\rbrack
-\]
-
-\[
-= \left( {\frac{{x}^{1}}{{x}^{i}},\ldots ,\frac{{x}^{i - 1}}{{x}^{i}},\frac{{x}^{i + 1}}{{x}^{i}},\ldots ,\frac{{x}^{n + 1}}{{x}^{i}}}\right) .
-\]
-
-(f) Define $q : {\mathbb{S}}^{n} \rightarrow  {\mathbb{{RP}}}^{n}$ as the restriction of $\pi  : {\mathbb{R}}^{n + 1} \smallsetminus  \{ 0\}  \rightarrow  {\mathbb{{RP}}}^{n}$ to ${\mathbb{S}}^{n} \subseteq \; {\mathbb{R}}^{n + 1} \smallsetminus  \{ 0\}$ . It is a smooth map, because it is the composition $q = \pi  \circ  \iota$ of the maps in the preceding two examples.
-
-(g) If ${M}_{1},\ldots ,{M}_{k}$ are smooth manifolds, then each projection map ${\pi }_{i} : {M}_{1} \times  \cdots  \times \; {M}_{k} \rightarrow  {M}_{i}$ is smooth, because its coordinate representation with respect to any of the product charts of Example 1.8 is just a coordinate projection.
+(g) Each product projection $\pi_i:M_1\times\cdots\times M_k\to M_i$ is smooth.
 \end{example}
-
 
 \section{Diffeomorphisms}
 
@@ -228,7 +181,7 @@ which is smooth on its domain (the set where ${\left| u\right| }^{2} < 1$ ).
 \label{def:2-9-extra-1}
 \lean{M}
 \mathlibok
-If $M$ and $N$ are smooth manifolds with or without boundary, a diffeomorphism from $M$ to $N$ is a smooth bijective map $F : M \rightarrow  N$ that has a smooth inverse. We say that $M$ and $N$ are diffeomorphic if there exists a diffeomorphism between them. Sometimes this is symbolized by $M \approx  N$ .
+For smooth manifolds $M,N$, a diffeomorphism is a smooth bijection $F:M\to N$ whose inverse is smooth. The manifolds are diffeomorphic, written $M\approx N$, when such a map exists.
 \end{definition}
 
 \begin{example}
@@ -236,15 +189,15 @@ If $M$ and $N$ are smooth manifolds with or without boundary, a diffeomorphism f
 \lean{smoothChartDiffeomorph}
 \leanok
 \dcref{ch2:2.14}
-(a) Consider the maps $F : {\mathbb{B}}^{n} \rightarrow  {\mathbb{R}}^{n}$ and $G : {\mathbb{R}}^{n} \rightarrow  {\mathbb{B}}^{n}$ given by
-
+(a) The maps
 \[
-F\left( x\right)  = \frac{x}{\sqrt{1 - {\left| x\right| }^{2}}},\;G\left( y\right)  = \frac{y}{\sqrt{1 + {\left| y\right| }^{2}}}. \tag{2.1}
+F(x)=\frac{x}{\sqrt{1-|x|^2}}:\mathbb B^n\to\mathbb R^n,
+\qquad G(y)=\frac{y}{\sqrt{1+|y|^2}}:\mathbb R^n\to\mathbb B^n
+\tag{2.1}
 \]
+are smooth inverses, so $\mathbb B^n\approx\mathbb R^n$.
 
-These maps are smooth, and it is straightforward to compute that they are inverses of each other. Thus they are both diffeomorphisms, and therefore ${\mathbb{B}}^{n}$ is diffeomorphic to ${\mathbb{R}}^{n}$ .
-
-(b) If $M$ is any smooth manifold and $\left( {U,\varphi }\right)$ is a smooth coordinate chart on $M$ , then $\varphi  : U \rightarrow  \varphi \left( U\right)  \subseteq  {\mathbb{R}}^{n}$ is a diffeomorphism. (In fact, it has an identity map as a coordinate representation.)
+(b) Every smooth chart $\varphi:U\to\varphi(U)\subseteq\mathbb R^n$ is a diffeomorphism.
 \end{example}
 
 \begin{theorem}[Diffeomorphism Invariance of Dimension]
@@ -252,14 +205,13 @@ These maps are smooth, and it is straightforward to compute that they are invers
 \lean{diffeomorphic_dimension_eq}
 \leanok
 \dcref{ch2:2.17}
-A nonempty smooth manifold of dimension $m$ cannot be diffeomorphic to an $n$ -dimensional smooth manifold unless $m = n$ .
+Nonempty smooth manifolds of dimensions $m$ and $n$ can be diffeomorphic only when $m=n$.
 \end{theorem}
 
 \begin{proof}
 \leanok
-Suppose $M$ is a nonempty smooth $m$ -manifold, $N$ is a nonempty smooth $n$ - manifold, and $F : M \rightarrow  N$ is a diffeomorphism. Choose any point $p \in  M$ , and let $\left( {U,\varphi }\right)$ and $\left( {V,\psi }\right)$ be smooth coordinate charts containing $p$ and $F\left( p\right)$ , respectively. Then (the restriction of) $\widehat{F} = \psi  \circ  F \circ  {\varphi }^{-1}$ is a diffeomorphism from an open subset of ${\mathbb{R}}^{m}$ to an open subset of ${\mathbb{R}}^{n}$ , so it follows from Proposition C. 4 that $m = n$ .
+\sketch A diffeomorphism restricts in local charts to a diffeomorphism between open subsets of $\mathbb R^m$ and $\mathbb R^n$. Invariance of Euclidean dimension (Proposition C.4) gives $m=n$.
 \end{proof}
-
 
 \section{Partitions of Unity}
 
@@ -268,57 +220,19 @@ Suppose $M$ is a nonempty smooth $m$ -manifold, $N$ is a nonempty smooth $n$ - m
 \lean{expNegInvGlue.contDiff}
 \mathlibok
 \dcref{ch2:2.20}
-The function $f : \mathbb{R} \rightarrow  \mathbb{R}$ defined by
-
+The function
 \[
-f\left( t\right)  = \left\{  \begin{array}{ll} {e}^{-1/t}, & t > 0, \\  0, & t \leq  0, \end{array}\right.
+f(t)=\begin{cases}e^{-1/t},&t>0,\\0,&t\leq0\end{cases}
 \]
-
-is smooth.
+is smooth on $\mathbb R$.
 \end{lemma}
 
 \begin{proof}
-The function in question is pictured in Fig. 2.4. It is smooth on $\mathbb{R} \smallsetminus  \{ 0\}$ by composition, so we need only show $f$ has continuous derivatives of all orders at the origin. Because existence of the $\left( {k + 1}\right)$ st derivative implies continuity of the $k$ th, it suffices to show that each such derivative exists. We begin by noting that $f$ is continuous at 0 because $\mathop{\lim }\limits_{{t \searrow  0}}{e}^{-1/t} = 0$ . In fact, a standard application of l’Hôpital’s rule and induction shows that for any integer $k \geq  0$ ,
-
+\sketch For every integer $k\geq0$, $\lim_{t\searrow0}e^{-1/t}/t^k=0$. Inductively, for $t>0$,
 \[
-\mathop{\lim }\limits_{{t \searrow  0}}\frac{{e}^{-1/t}}{{t}^{k}} = \mathop{\lim }\limits_{{t \searrow  0}}\frac{{t}^{-k}}{{e}^{1/t}} = 0. \tag{2.2}
+f^{(k)}(t)=p_k(t)\frac{e^{-1/t}}{t^{2k}},
 \]
-
-We show by induction that for $t > 0$ , the $k$ th derivative of $f$ is of the form
-
-\[
-{f}^{\left( k\right) }\left( t\right)  = {p}_{k}\left( t\right) \frac{{e}^{-1/t}}{{t}^{2k}} \tag{2.3}
-\]
-
-for some polynomial ${p}_{k}$ of degree at most $k$ . This is clearly true (with ${p}_{0}\left( t\right)  = 1$ ) for $k = 0$ , so suppose it is true for some $k \geq  0$ . By the product rule,
-
-\[
-{f}^{\left( k + 1\right) }\left( t\right)  = {p}_{k}^{\prime }\left( t\right) \frac{{e}^{-1/t}}{{t}^{2k}} + {p}_{k}\left( t\right) \frac{{t}^{-2}{e}^{-1/t}}{{t}^{2k}} - {2k}{p}_{k}\left( t\right) \frac{{e}^{-1/t}}{{t}^{{2k} + 1}}
-\]
-
-\[
-= \left( {{t}^{2}{p}_{k}^{\prime }\left( t\right)  + {p}_{k}\left( t\right)  - {2kt}{p}_{k}\left( t\right) }\right) \frac{{e}^{-1/t}}{{t}^{2\left( {k + 1}\right) }},
-\]
-
-which is of the required form.
-
-Finally, we prove by induction that ${f}^{\left( k\right) }\left( 0\right)  = 0$ for each integer $k \geq  0$ . For $k = 0$ this is true by definition, so assume that it is true for some $k \geq  0$ . To prove that ${f}^{\left( k + 1\right) }\left( 0\right)$ exists, it suffices to show that ${f}^{\left( k\right) }$ has one-sided derivatives from both sides at $t = 0$ and that they are equal. Clearly, the derivative from the left is zero.
-
-![56_245_191_506_337_0.jpg](images/56_245_191_506_337_0.jpg)
-
-Fig. 2.4 $f\left( t\right)  = {e}^{-1/t}$
-
-![56_818_191_454_336_0.jpg](images/56_818_191_454_336_0.jpg)
-
-Fig. 2.5 A cutoff function
-
-Using (2.3) and (2.2) again, we find that the derivative of ${f}^{\left( k\right) }$ from the right at $t = 0$ is equal to
-
-\[
-\mathop{\lim }\limits_{{t \searrow  0}}\frac{{p}_{k}\left( t\right) \frac{{e}^{-1/t}}{{t}^{2k}} - 0}{t} = \mathop{\lim }\limits_{{t \searrow  0}}{p}_{k}\left( t\right) \frac{{e}^{-1/t}}{{t}^{{2k} + 1}} = {p}_{k}\left( 0\right) \mathop{\lim }\limits_{{t \searrow  0}}\frac{{e}^{-1/t}}{{t}^{{2k} + 1}} = 0.
-\]
-
-Thus ${f}^{\left( k + 1\right) }\left( 0\right)  = 0$ .
+where $p_k$ is a polynomial of degree at most $k$; differentiating gives the same form with $p_{k+1}(t)=t^2p_k'(t)+p_k(t)-2ktp_k(t)$. The displayed limit shows every one-sided derivative at $0$ exists and equals $0$, so all derivatives are continuous there.
 \end{proof}
 
 \begin{lemma}
@@ -327,18 +241,16 @@ Thus ${f}^{\left( k + 1\right) }\left( 0\right)  = 0$ .
 \leanok
 \uses{lem:2-20}
 \dcref{ch2:2.21}
-Given any real numbers ${r}_{1}$ and ${r}_{2}$ such that ${r}_{1} < {r}_{2}$ , there exists a smooth function $h : \mathbb{R} \rightarrow  \mathbb{R}$ such that $h\left( t\right)  \equiv  1$ for $t \leq  {r}_{1},0 < h\left( t\right)  < 1$ for ${r}_{1} < \; t < {r}_{2}$ , and $h\left( t\right)  \equiv  0$ for $t \geq  {r}_{2}$ .
+For $r_1<r_2$, there is a smooth $h:\mathbb R\to\mathbb R$ with $h=1$ on $(-\infty,r_1]$, $0<h<1$ on $(r_1,r_2)$, and $h=0$ on $[r_2,\infty)$.
 \end{lemma}
 
 \begin{proof}
 \leanok
-Let $f$ be the function of the previous lemma, and set
-
+\sketch With $f$ from Lemma~\ref{lem:2-20}, set
 \[
-h\left( t\right)  = \frac{f\left( {{r}_{2} - t}\right) }{f\left( {{r}_{2} - t}\right)  + f\left( {t - {r}_{1}}\right) }.
+h(t)=\frac{f(r_2-t)}{f(r_2-t)+f(t-r_1)}.
 \]
-
-(See Fig. 2.5.) Note that the denominator is positive for all $t$ , because at least one of the expressions ${r}_{2} - t$ and $t - {r}_{1}$ is always positive. The desired properties of $h$ follow easily from those of $f$ .
+The denominator is positive and the stated values follow from the support properties of $f$.
 \end{proof}
 
 \begin{definition}
@@ -346,7 +258,7 @@ h\left( t\right)  = \frac{f\left( {{r}_{2} - t}\right) }{f\left( {{r}_{2} - t}\r
 \lean{exists_one_zero_smooth_cutoff}
 \leanok
 \uses{lem:2-21}
-A function with the properties of $h$ in the preceding lemma is usually called a cutoff function.
+A function with the properties of Lemma~\ref{lem:2-21} is a cutoff function.
 \end{definition}
 
 \begin{lemma}
@@ -355,12 +267,12 @@ A function with the properties of $h$ in the preceding lemma is usually called a
 \leanok
 \uses{lem:2-21}
 \dcref{ch2:2.22}
-Given any positive real numbers ${r}_{1} < {r}_{2}$ , there is a smooth function $H : {\mathbb{R}}^{n} \rightarrow  \mathbb{R}$ such that $H \equiv  1$ on ${\bar{B}}_{{r}_{1}}\left( 0\right) ,0 < H\left( x\right)  < 1$ for all $x \in  {B}_{{r}_{2}}\left( 0\right)  \smallsetminus  {\bar{B}}_{{r}_{1}}\left( 0\right)$ , and $H \equiv  0$ on ${\mathbb{R}}^{n} \smallsetminus  {B}_{{r}_{2}}\left( 0\right)$ .
+For $0<r_1<r_2$, there is smooth $H:\mathbb R^n\to\mathbb R$ with $H=1$ on $\overline B_{r_1}(0)$, $0<H<1$ on $B_{r_2}(0)\setminus\overline B_{r_1}(0)$, and $H=0$ outside $B_{r_2}(0)$.
 \end{lemma}
 
 \begin{proof}
 \leanok
-Just set $H\left( x\right)  = h\left( \left| x\right| \right)$ , where $h$ is the function of the preceding lemma. Clearly, $H$ is smooth on ${\mathbb{R}}^{n} \smallsetminus  \{ 0\}$ , because it is a composition of smooth functions there. Since it is identically equal to 1 on ${B}_{{r}_{1}}\left( 0\right)$ , it is smooth there too.
+\sketch Set $H(x)=h(|x|)$ for the cutoff $h$ of Lemma~\ref{lem:2-21}. It is smooth away from $0$ and constant near $0$.
 \end{proof}
 
 \begin{definition}
@@ -368,37 +280,29 @@ Just set $H\left( x\right)  = h\left( \left| x\right| \right)$ , where $h$ is th
 \lean{SmoothBumpFunction}
 \mathlibok
 \uses{lem:2-22}
-The function $H$ constructed in this lemma is an example of a smooth bump function, a smooth real-valued function that is equal to 1 on a specified set and is zero outside a specified neighborhood of that set. Later in this chapter, we will generalize this notion to manifolds.
+A smooth bump function is a smooth real-valued function equal to $1$ on a specified set and zero outside a specified neighborhood; Lemma~\ref{lem:2-22} supplies such functions on Euclidean balls.
 \end{definition}
 
 \begin{definition}
 \label{def:2-10-extra-3}
 \lean{HasCompactSupport.of_compactSpace}
 \mathlibok
-If $f$ is any real-valued or vector-valued function on a topological space $M$ , the support of $f$ , denoted by supp $f$ , is the closure of the set of points where $f$ is nonzero:
-
+For a real- or vector-valued function $f$ on $M$, define
 \[
-\text{ supp }f = \overline{\left\{  p \in  M : f\left( p\right)  \neq  0\right\}  }\text{ . }
+\operatorname{supp}f=\overline{\{p\in M:f(p)\neq0\}}.
 \]
-
-(For example, if $H$ is the function constructed in the preceding lemma, then supp $H = {\bar{B}}_{{r}_{2}}\left( 0\right)$ .) If supp $f$ is contained in some set $U \subseteq  M$ , we say that $f$ is supported in $\mathbf{U}$ . A function $f$ is said to be compactly supported if supp $f$ is a compact set. Clearly, every function on a compact space is compactly supported.
+The function is supported in $U$ when this support lies in $U$, and compactly supported when the support is compact. Every function on a compact space is compactly supported.
 \end{definition}
 
 \begin{definition}
 \label{def:2-10-extra-4}
 \lean{SmoothPartitionOfUnity.IsSubordinate}
 \mathlibok
-The next construction is the most important application of paracompactness. Suppose $M$ is a topological space, and let $\mathcal{X} = {\left( {X}_{\alpha }\right) }_{\alpha  \in  A}$ be an arbitrary open cover of $M$ , indexed by a set $A$ . A partition of unity subordinate to $\mathbf{x}$ is an indexed family ${\left( {\psi }_{\alpha }\right) }_{\alpha  \in  A}$ of continuous functions ${\psi }_{\alpha } : M \rightarrow  \mathbb{R}$ with the following properties:
-
-(i) $0 \leq  {\psi }_{\alpha }\left( x\right)  \leq  1$ for all $\alpha  \in  A$ and all $x \in  M$ .
-
-(ii) supp ${\psi }_{\alpha } \subseteq  {X}_{\alpha }$ for each $\alpha  \in  A$ .
-
-(iii) The family of supports (supp ${\psi }_{\alpha }{)}_{\alpha  \in  A}$ is locally finite, meaning that every point has a neighborhood that intersects supp ${\psi }_{\alpha }$ for only finitely many values of $\alpha$ .
-
-(iv) $\mathop{\sum }\limits_{{\alpha  \in  A}}{\psi }_{\alpha }\left( x\right)  = 1$ for all $x \in  M$ .
-
-Because of the local finiteness condition (iii), the sum in (iv) actually has only finitely many nonzero terms in a neighborhood of each point, so there is no issue of convergence. If $M$ is a smooth manifold with or without boundary, a smooth partition of unity is one for which each of the functions ${\psi }_{\alpha }$ is smooth.
+For an open cover $\mathcal X=(X_\alpha)_{\alpha\in A}$ of a topological space $M$, a partition of unity subordinate to $\mathcal X$ is a family of continuous functions $\psi_\alpha:M\to\mathbb R$ satisfying
+\[
+0\leq\psi_\alpha\leq1,\qquad \operatorname{supp}\psi_\alpha\subseteq X_\alpha,
+\]
+with locally finite supports and $\sum_{\alpha\in A}\psi_\alpha(x)=1$ for every $x$. Local finiteness makes the sum locally finite. It is smooth when every $\psi_\alpha$ is smooth.
 \end{definition}
 
 \begin{theorem}[Existence of Partitions of Unity]
@@ -407,44 +311,23 @@ Because of the local finiteness condition (iii), the sum in (iv) actually has on
 \mathlibok
 \uses{lem:1-13,lem:2-22,prop:1-19}
 \dcref{ch2:2.23}
-Suppose $M$ is a smooth manifold with or without boundary, and $\mathcal{X} = {\left( {X}_{\alpha }\right) }_{\alpha  \in  A}$ is any indexed open cover of $M$ . Then there exists a smooth partition of unity subordinate to $\mathcal{X}$ .
+Every indexed open cover of a smooth manifold (with or without boundary) admits a smooth subordinate partition of unity.
 \end{theorem}
 
 \begin{proof}
-For simplicity, suppose for this proof that $M$ is a smooth manifold without boundary; the general case is left as an exercise. Each set ${X}_{\alpha }$ is a smooth manifold in its own right, and thus has a basis ${\mathcal{B}}_{\alpha }$ of regular coordinate balls by Proposition 1.19, and it is easy to check that $\mathcal{B} = \mathop{\bigcup }\limits_{\alpha }{\mathcal{B}}_{\alpha }$ is a basis for the topology of $M$ . It follows from Theorem 1.15 that $\mathcal{X}$ has a countable, locally finite refinement $\left\{  {B}_{i}\right\}$ consisting of elements of $\mathcal{B}$ . By Lemma 1.13(a), the cover $\left\{  {\bar{B}}_{i}\right\}$ is also locally finite.
-
-For each $i$ , the fact that ${B}_{i}$ is a regular coordinate ball in some ${X}_{\alpha }$ guarantees that there is a coordinate ball ${B}_{i}^{\prime } \subseteq  {X}_{\alpha }$ such that ${B}_{i}^{\prime } \supseteq  {\bar{B}}_{i}$ , and a smooth coordinate map ${\varphi }_{i} : {B}_{i}^{\prime } \rightarrow  {\mathbb{R}}^{n}$ such that ${\varphi }_{i}\left( {\bar{B}}_{i}\right)  = {\bar{B}}_{{r}_{i}}\left( 0\right)$ and ${\varphi }_{i}\left( {B}_{i}^{\prime }\right)  = {B}_{{r}_{i}^{\prime }}\left( 0\right)$ for some ${r}_{i} < {r}_{i}^{\prime }$ . For each $i$ , define a function ${f}_{i} : M \rightarrow  \mathbb{R}$ by
-
-\[
-{f}_{i} = \left\{  \begin{array}{ll} {H}_{i} \circ  {\varphi }_{i} & \text{ on }{B}_{i}^{\prime }, \\  0 & \text{ on }M \smallsetminus  {\bar{B}}_{i}, \end{array}\right.
-\]
-
-where ${H}_{i} : {\mathbb{R}}^{n} \rightarrow  \mathbb{R}$ is a smooth function that is positive in ${B}_{{r}_{i}}\left( 0\right)$ and zero elsewhere, as in Lemma 2.22. On the set ${B}_{i}^{\prime } \smallsetminus  {\bar{B}}_{i}$ where the two definitions overlap, both definitions yield the zero function, so ${f}_{i}$ is well defined and smooth, and supp ${f}_{i} = {\bar{B}}_{i}$ .
-
-Define $f : M \rightarrow  \mathbb{R}$ by $f\left( x\right)  = \mathop{\sum }\limits_{i}{f}_{i}\left( x\right)$ . Because of the local finiteness of the cover $\left\{  {\bar{B}}_{i}\right\}$ , this sum has only finitely many nonzero terms in a neighborhood of each point and thus defines a smooth function. Because each ${f}_{i}$ is nonnegative everywhere and positive on ${B}_{i}$ , and every point of $M$ is in some ${B}_{i}$ , it follows that $f\left( x\right)  > 0$ everywhere on $M$ . Thus, the functions ${g}_{i} : M \rightarrow  \mathbb{R}$ defined by ${g}_{i}\left( x\right)  = {f}_{i}\left( x\right) /f\left( x\right)$ are also smooth. It is immediate from the definition that $0 \leq  {g}_{i} \leq  1$ and $\mathop{\sum }\limits_{i}{g}_{i} \equiv  1$ .
-
-Finally, we need to reindex our functions so that they are indexed by the same set $A$ as our open cover. Because the cover $\left\{  {B}_{i}^{\prime }\right\}$ is a refinement of $\mathcal{X}$ , for each $i$ we can choose some index $a\left( i\right)  \in  A$ such that ${B}_{i}^{\prime } \subseteq  {X}_{a\left( i\right) }$ . For each $\alpha  \in  A$ , define ${\psi }_{\alpha } : M \rightarrow  \mathbb{R}$ by
-
-\[
-{\psi }_{\alpha } = \mathop{\sum }\limits_{{i : a\left( i\right)  = \alpha }}{g}_{i}
-\]
-
-If there are no indices $i$ for which $a\left( i\right)  = \alpha$ , then this sum should be interpreted as the zero function. It follows from Lemma 1.13(b) that
-
-\[
-\operatorname{supp}{\psi }_{\alpha } = \overline{\mathop{\bigcup }\limits_{{i : a\left( i\right)  = \alpha }}{B}_{i}} = \mathop{\bigcup }\limits_{{i : a\left( i\right)  = \alpha }}{\bar{B}}_{i} \subseteq  {X}_{\alpha }.
-\]
-
-Each ${\psi }_{\alpha }$ is a smooth function that satisfies $0 \leq  {\psi }_{\alpha } \leq  1$ . Moreover, the family of supports (supp ${\psi }_{\alpha }{)}_{\alpha  \in  A}$ is still locally finite, and $\mathop{\sum }\limits_{\alpha }{\psi }_{\alpha } \equiv  \mathop{\sum }\limits_{i}{g}_{i} \equiv  1$ , so this is the desired partition of unity.
+\sketch For the boundaryless case, refine the cover by a countable locally
+finite family of regular coordinate balls $B_i$ whose closures remain locally
+finite. Choose enlarged coordinate balls $B_i'\subseteq X_{a(i)}$ and charts
+$\varphi_i:B_i'\to B_{r_i'}(0)$ taking $\overline B_i$ to
+$\overline B_{r_i}(0)$, where $r_i<r_i'$. Lemma~\ref{lem:2-22} gives $H_i$ positive on
+$B_{r_i}(0)$ and zero outside it. Thus $H_i\circ\varphi_i$ on $B_i'$ extends
+smoothly by zero outside $\overline B_i$ to a function $f_i$ supported on
+$\overline B_i$. Then $f=\sum_i f_i$ is smooth and positive. The normalized
+functions $g_i=f_i/f$ satisfy $\sum_i g_i=1$. Reindex by
+$\psi_\alpha=\sum_{a(i)=\alpha}g_i$; local finiteness gives smoothness,
+support in $X_\alpha$, and $\sum_\alpha\psi_\alpha=1$. The boundary case is
+analogous using half-ball charts.
 \end{proof}
-
-\begin{exercise}
-\label{exer:2-24}
-\lean{SmoothPartitionOfUnity.exists_isSubordinate}
-\mathlibok
-\dcref{ch2:2.24}
-Show how the preceding proof needs to be modified for the case in which $M$ has nonempty boundary.
-\end{exercise}
 
 
 \section{Applications of Partitions of Unity}
@@ -453,20 +336,21 @@ Show how the preceding proof needs to be modified for the case in which $M$ has 
 \label{def:2-11-extra-1}
 \lean{Set.EqOn}
 \mathlibok
-As our first application of partitions of unity, we extend the notion of bump functions to arbitrary closed subsets of manifolds. If $M$ is a topological space, $A \subseteq  M$ is a closed subset, and $U \subseteq  M$ is an open subset containing $A$ , a continuous function $\psi  : M \rightarrow  \mathbb{R}$ is called a bump function for $A$ supported in $U$ if $0 \leq  \psi  \leq  1$ on $M$ , $\psi  \equiv  1$ on $A$ , and supp $\psi  \subseteq  U$ .
+If $A$ is closed in a topological space $M$ and $U$ is open with $A\subseteq U$, a bump function for $A$ supported in $U$ is a continuous $\psi:M\to\mathbb R$ with $0\leq\psi\leq1$, $\psi|_A\equiv1$, and $\operatorname{supp}\psi\subseteq U$.
 \end{definition}
 
 \begin{proposition}[Existence of Smooth Bump Functions]
 \label{prop:2-25}
+
 \lean{exists_smooth_bump_function_for}
 \leanok
 \dcref{ch2:2.25}
-Let $M$ be a smooth manifold with or without boundary. For any closed subset $A \subseteq  M$ and any open subset $U$ containing $A$ , there exists a smooth bump function for $A$ supported in $U$ .
+For every closed $A$ in a smooth manifold $M$ and every open $U\supseteq A$, there is a smooth bump function for $A$ supported in $U$.
 \end{proposition}
 
 \begin{proof}
 \leanok
-Let ${U}_{0} = U$ and ${U}_{1} = M \smallsetminus  A$ , and let $\left\{  {{\psi }_{0},{\psi }_{1}}\right\}$ be a smooth partition of unity subordinate to the open cover $\left\{  {{U}_{0},{U}_{1}}\right\}$ . Because ${\psi }_{1} \equiv  0$ on $A$ and thus ${\psi }_{0} = \; \mathop{\sum }\limits_{i}{\psi }_{i} = 1$ there, the function ${\psi }_{0}$ has the required properties.
+\sketch Apply Theorem~\ref{thm:2-23} to $\{U,M\setminus A\}$, obtaining $\psi_0,\psi_1$. Since $\psi_1$ vanishes on $A$, $\psi_0=1$ on $A$ and has support in $U$.
 \end{proof}
 
 \begin{proposition}[Existence of Smooth Exhaustion Functions]
@@ -474,26 +358,12 @@ Let ${U}_{0} = U$ and ${U}_{1} = M \smallsetminus  A$ , and let $\left\{  {{\psi
 \lean{exists_positive_smooth_exhaustion_function}
 \leanok
 \dcref{ch2:2.28}
-Every smooth manifold with or without boundary admits a smooth positive exhaustion function.
+Every smooth manifold with or without boundary admits a positive smooth exhaustion function.
 \end{proposition}
 
 \begin{proof}
 \leanok
-Let $M$ be a smooth manifold with or without boundary, let ${\left\{  {V}_{j}\right\}  }_{j = 1}^{\infty }$ be any countable open cover of $M$ by precompact open subsets, and let $\left\{  {\psi }_{j}\right\}$ be a smooth partition of unity subordinate to this cover. Define $f \in  {C}^{\infty }\left( M\right)$ by
-
-\[
-f\left( p\right)  = \mathop{\sum }\limits_{{j = 1}}^{\infty }j{\psi }_{j}\left( p\right) .
-\]
-
-Then $f$ is smooth because only finitely many terms are nonzero in a neighborhood of any point, and positive because $f\left( p\right)  \geq  \mathop{\sum }\limits_{j}{\psi }_{j}\left( p\right)  = 1$ .
-
-To see that $f$ is an exhaustion function, let $c \in  \mathbb{R}$ be arbitrary, and choose a positive integer $N > c$ . If $p \notin  \mathop{\bigcup }\limits_{{j = 1}}^{N}{\bar{V}}_{j}$ , then ${\psi }_{j}\left( p\right)  = 0$ for $1 \leq  j \leq  N$ , so
-
-\[
-f\left( p\right)  = \mathop{\sum }\limits_{{j = N + 1}}^{\infty }j{\psi }_{j}\left( p\right)  \geq  \mathop{\sum }\limits_{{j = N + 1}}^{\infty }N{\psi }_{j}\left( p\right)  = N\mathop{\sum }\limits_{{j = 1}}^{\infty }{\psi }_{j}\left( p\right)  = N > c.
-\]
-
-Equivalently, if $f\left( p\right)  \leq  c$ , then $p \in  \mathop{\bigcup }\limits_{{j = 1}}^{N}{\bar{V}}_{j}$ . Thus ${f}^{-1}\left( {( - \infty , c\rbrack }\right)$ is a closed subset of the compact set $\mathop{\bigcup }\limits_{{j = 1}}^{N}{\bar{V}}_{j}$ and is therefore compact.
+\sketch Choose a countable cover by precompact open sets $V_j$ and a subordinate partition $\psi_j$. Set $f=\sum_{j\geq1}j\psi_j$. Local finiteness gives smoothness and $f\geq1$. For $N>c$, outside $\bigcup_{j=1}^N\overline V_j$ one has $f\geq N>c$; hence $f^{-1}(( -\infty,c])$ is closed in a finite union of compact closures and is compact.
 \end{proof}
 
 \begin{theorem}[Level Sets of Smooth Functions]
@@ -501,121 +371,14 @@ Equivalently, if $f\left( p\right)  \leq  c$ , then $p \in  \mathop{\bigcup }\li
 \lean{exists_nonneg_smooth_zero_set_eq_of_isClosed}
 \leanok
 \dcref{ch2:2.29}
-Let $M$ be a smooth manifold. If $K$ is any closed subset of $M$ , there is a smooth nonnegative function $f : M \rightarrow  \mathbb{R}$ such that ${f}^{-1}\left( 0\right)  = K$ .
+For every closed subset $K$ of a smooth manifold $M$, there is a smooth nonnegative $f:M\to\mathbb R$ with $f^{-1}(0)=K$.
 \end{theorem}
 
 \begin{proof}
 \leanok
-We begin with the special case in which $M = {\mathbb{R}}^{n}$ and $K \subseteq  {\mathbb{R}}^{n}$ is a closed subset. For each $x \in  M \smallsetminus  K$ , there is a positive number $r \leq  1$ such that ${B}_{r}\left( x\right)  \subseteq \; M \smallsetminus  K$ . By Proposition A. ${16}, M \smallsetminus  K$ is the union of countably many such balls ${\left\{  {B}_{{r}_{i}}\left( {x}_{i}\right) \right\}  }_{i = 1}^{\infty }$ .
-
-Let $h : {\mathbb{R}}^{n} \rightarrow  \mathbb{R}$ be a smooth bump function that is equal to 1 on ${\bar{B}}_{1/2}\left( 0\right)$ and supported in ${B}_{1}\left( 0\right)$ . For each positive integer $i$ , let ${C}_{i} \geq  1$ be a constant that bounds the absolute values of $h$ and all of its partial derivatives up through order $i$ . Define $f : {\mathbb{R}}^{n} \rightarrow  \mathbb{R}$ by
-
+\sketch In $\mathbb R^n$, cover $\mathbb R^n\setminus K$ by countably many balls $B_{r_i}(x_i)$ with $r_i\leq1$. Let $h$ be a smooth bump equal to $1$ on $\overline B_{1/2}(0)$ and supported in $B_1(0)$. Choose $C_i\geq1$ bounding $h$ and its derivatives through order $i$, and define
 \[
-f\left( x\right)  = \mathop{\sum }\limits_{{i = 1}}^{\infty }\frac{{\left( {r}_{i}\right) }^{i}}{{2}^{i}{C}_{i}}h\left( \frac{x - {x}_{i}}{{r}_{i}}\right) .
+f(x)=\sum_{i=1}^\infty\frac{r_i^i}{2^iC_i}h\!\left(\frac{x-x_i}{r_i}\right).
 \]
-
-The terms of the series are bounded in absolute value by those of the convergent series $\mathop{\sum }\limits_{i}1/{2}^{i}$ , so the entire series converges uniformly to a continuous function by the Weierstrass $M$ -test. Because the $i$ th term is positive exactly when $x \in  {B}_{{r}_{i}}\left( {x}_{i}\right)$ , it follows that $f$ is zero in $K$ and positive elsewhere.
-
-It remains only to show that $f$ is smooth. We have already shown that it is continuous, so suppose $k \geq  1$ and assume by induction that all partial derivatives of $f$ of order less than $k$ exist and are continuous. By the chain rule and induction, every $k$ th partial derivative of the $i$ th term in the series can be written in the form
-
-\[
-\frac{{\left( {r}_{i}\right) }^{i - k}}{{2}^{i}{C}_{i}}{D}_{k}h\left( \frac{x - {x}_{i}}{{r}_{i}}\right) ,
-\]
-
-where ${D}_{k}h$ is some $k$ th partial derivative of $h$ . By our choices of ${r}_{i}$ and ${C}_{i}$ , as soon as $i \geq  k$ , each of these terms is bounded in absolute value by $1/{2}^{i}$ , so the differentiated series also converges uniformly to a continuous function. It then follows from Theorem C.31 that the $k$ th partial derivatives of $f$ exist and are continuous. This completes the induction, and shows that $f$ is smooth.
-
-Now let $M$ be an arbitrary smooth manifold, and $K \subseteq  M$ be any closed subset. Let $\left\{  {B}_{\alpha }\right\}$ be an open cover of $M$ by smooth coordinate balls, and let $\left\{  {\psi }_{\alpha }\right\}$ be a subordinate partition of unity. Since each ${B}_{\alpha }$ is diffeomorphic to ${\mathbb{R}}^{n}$ , the preceding argument shows that for each $\alpha$ there is a smooth nonnegative function ${f}_{\alpha } : {B}_{\alpha } \rightarrow  \mathbb{R}$ such that ${f}_{\alpha }^{-1}\left( 0\right)  = {B}_{\alpha } \cap  K$ . The function $f = \mathop{\sum }\limits_{\alpha }{\psi }_{\alpha }{f}_{\alpha }$ does the trick.
+The series and each differentiated series converge uniformly by the $M$-test (the $i$th derivative terms are bounded by $2^{-i}$ for $i\geq k$), so $f$ is smooth, vanishes on $K$, and is positive off $K$. For general $M$, choose a coordinate-ball cover and subordinate partition $\psi_\alpha$; on each ball construct $f_\alpha\geq0$ with zero set $K\cap B_\alpha$, and use $f=\sum_\alpha\psi_\alpha f_\alpha$.
 \end{proof}
-
-
-\section{Problems}
-
-\begin{exercise}
-\label{prob:2-1}
-\lean{realHeavisideStep_not_smooth}
-\leanok
-2-1. Define $f : \mathbb{R} \rightarrow  \mathbb{R}$ by
-
-\[
-f\left( x\right)  = \left\{  \begin{array}{ll} 1, & x \geq  0 \\  0, & x < 0 \end{array}\right.
-\]
-
-Show that for every $x \in  \mathbb{R}$ , there are smooth coordinate charts $\left( {U,\varphi }\right)$ containing $x$ and $\left( {V,\psi }\right)$ containing $f\left( x\right)$ such that $\psi  \circ  f \circ  {\varphi }^{-1}$ is smooth as a map from $\varphi \left( {U \cap  {f}^{-1}\left( V\right) }\right)$ to $\psi \left( V\right)$ , but $f$ is not smooth in the sense we have defined in this chapter.
-\end{exercise}
-
-\begin{exercise}
-\label{prob:2-2}
-\lean{contMDiff_pi_iff}
-\leanok
-\uses{prop:2-12}
-2-2. Prove Proposition 2.12 (smoothness of maps into product manifolds).
-\end{exercise}
-
-\begin{exercise}
-\label{prob:2-3}
-\lean{hopf_map_smooth}
-\leanok
-2-3. For each of the following maps between spheres, compute sufficiently many coordinate representations to prove that it is smooth.
-
-(a) ${p}_{n} : {\mathbb{S}}^{1} \rightarrow  {\mathbb{S}}^{1}$ is the nth power map for $n \in  \mathbb{Z}$ , given in complex notation by ${p}_{n}\left( z\right)  = {z}^{n}$ .
-
-(b) $\alpha  : {\mathbb{S}}^{n} \rightarrow  {\mathbb{S}}^{n}$ is the antipodal map $\alpha \left( x\right)  =  - x$ .
-
-(c) $F : {\mathbb{S}}^{3} \rightarrow  {\mathbb{S}}^{2}$ is given by $F\left( {w, z}\right)  = \left( {z\bar{w} + w\bar{z},{iw}\bar{z} - {iz}\bar{w}, z\bar{z} - w\bar{w}}\right)$ , where we think of ${\mathbb{S}}^{3}$ as the subset $\left\{  {\left( {w, z}\right)  : {\left| w\right| }^{2} + {\left| z\right| }^{2} = 1}\right\}$ of ${\mathbb{C}}^{2}$ .
-\end{exercise}
-
-\begin{exercise}
-\label{prob:2-4}
-\lean{closedUnitBall_exists_smoothManifoldWithBoundary}
-\leanok
-2-4. Show that the inclusion map ${\overline{\mathbb{B}}}^{n} \hookrightarrow  {\mathbb{R}}^{n}$ is smooth when ${\overline{\mathbb{B}}}^{n}$ is regarded as a smooth manifold with boundary.
-\end{exercise}
-
-\begin{exercise}
-\label{prob:2-6}
-\lean{contMDiff_homogeneousProjectivizationMap}
-\leanok
-2-6. Let $P : {\mathbb{R}}^{n + 1} \smallsetminus  \{ 0\}  \rightarrow  {\mathbb{R}}^{k + 1} \smallsetminus  \{ 0\}$ be a smooth function, and suppose that for some $d \in  \mathbb{Z}, P\left( {\lambda x}\right)  = {\lambda }^{d}P\left( x\right)$ for all $\lambda  \in  \mathbb{R} \smallsetminus  \{ 0\}$ and $x \in  {\mathbb{R}}^{n + 1} \smallsetminus  \{ 0\}$ . (Such a function is said to be homogeneous of degree $\mathbf{d}$ .) Show that the map $\widetilde{P} : {\mathbb{{RP}}}^{n} \rightarrow  {\mathbb{{RP}}}^{k}$ defined by $\widetilde{P}\left( \left\lbrack  x\right\rbrack  \right)  = \left\lbrack  {P\left( x\right) }\right\rbrack$ is well defined and smooth.
-\end{exercise}
-
-\begin{exercise}
-\label{prob:2-7}
-\lean{smooth_functions_not_finiteDimensional}
-\leanok
-2-7. Let $M$ be a nonempty smooth $n$ -manifold with or without boundary, and suppose $n \geq  1$ . Show that the vector space ${C}^{\infty }\left( M\right)$ is infinite-dimensional. [Hint: show that if ${f}_{1},\ldots ,{f}_{k}$ are elements of ${C}^{\infty }\left( M\right)$ with nonempty disjoint supports, then they are linearly independent.]
-\end{exercise}
-
-\begin{exercise}
-\label{prob:2-8}
-\lean{complexProjectiveAffineDiffeomorph}
-\leanok
-\uses{prob:1-9}
-2-8. Define $F : {\mathbb{R}}^{n} \rightarrow  {\mathbb{{RP}}}^{n}$ by $F\left( {{x}^{1},\ldots ,{x}^{n}}\right)  = \left\lbrack  {{x}^{1},\ldots ,{x}^{n},1}\right\rbrack$ . Show that $F$ is a diffeomorphism onto a dense open subset of ${\mathbb{{RP}}}^{n}$ . Do the same for $G : {\mathbb{C}}^{n} \rightarrow  {\mathbb{{CP}}}^{n}$ defined by $G\left( {{z}^{1},\ldots ,{z}^{n}}\right)  = \left\lbrack  {{z}^{1},\ldots ,{z}^{n},1}\right\rbrack$ (see Problem 1-9).
-\end{exercise}
-
-\begin{exercise}
-\label{prob:2-9}
-\lean{exists_unique_smooth_complexProjectiveLine_polynomial_extension}
-\leanok
-\uses{prob:2-8}
-2-9. Given a polynomial $p$ in one variable with complex coefficients, not identically zero, show that there is a unique smooth map $\widetilde{p} : {\mathbb{{CP}}}^{1} \rightarrow  {\mathbb{{CP}}}^{1}$ that makes the following diagram commute, where ${\mathbb{{CP}}}^{1}$ is 1-dimensional complex projective space and $G : \mathbb{C} \rightarrow  {\mathbb{{CP}}}^{1}$ is the map of Problem 2-8:
-
-![63_708_297_231_215_0.jpg](images/63_708_297_231_215_0.jpg)
-
-(Used on p. 465.)
-\end{exercise}
-
-\begin{exercise}
-\label{prob:2-13}
-\lean{paracompactSpace_of_hasSubordinatePartitionOfUnity}
-\leanok
-2-13. Suppose $M$ is a topological space with the property that for every indexed open cover $\mathcal{X}$ of $M$ , there exists a partition of unity subordinate to $\mathcal{X}$ . Show that $M$ is paracompact.
-\end{exercise}
-
-\begin{exercise}
-\label{prob:2-14}
-\lean{exists_contMDiff_zero_iff_one_iff_of_isClosed}
-\mathlibok
-2-14. Suppose $A$ and $B$ are disjoint closed subsets of a smooth manifold $M$ . Show that there exists $f \in  {C}^{\infty }\left( M\right)$ such that $0 \leq  f\left( x\right)  \leq  1$ for all $x \in  M$ , ${f}^{-1}\left( 0\right)  = A$ , and ${f}^{-1}\left( 1\right)  = B$ .
-\end{exercise}
-

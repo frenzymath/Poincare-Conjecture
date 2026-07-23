@@ -1,29 +1,22 @@
 % Chapter 7: Lie Groups
-% Lee, *Introduction to Smooth Manifolds* (2nd ed., GTM 218).
+% Lee, \emph{Introduction to Smooth Manifolds} (2nd ed., GTM 218).
 % Generated from the section extraction; nodes carry only Lean that is
 % verified sorry-free. See ../../UPSTREAM_LEAN_AUDIT.md.
-
-
-\section{Basic Definitions}
 
 \begin{definition}
 \label{def:7-46-extra-1}
 \lean{LieGroup}
 \mathlibok
-A Lie group is a smooth manifold $G$ (without boundary) that is also a group in the algebraic sense, with the property that the multiplication map $m : G \times  G \rightarrow  G$ and inversion map $i : G \rightarrow  G$ , given by
-
-\[
-m\left( {g, h}\right)  = {gh},\;i\left( g\right)  = {g}^{-1},
-\]
-
-are both smooth. A Lie group is, in particular, a topological group (a topological space with a group structure such that the multiplication and inversion maps are continuous).
+A Lie group is a boundaryless smooth manifold $G$ with a group structure for which multiplication $m:G\times G\to G$, $m(g,h)=gh$, and inversion $i:G\to G$, $i(g)=g^{-1}$, are smooth. Hence every Lie group is a topological group.
 \end{definition}
 
 \begin{notation}
 \label{not:7-46-extra-2}
 \lean{LieAddGroup}
 \mathlibok
-The group operation in an arbitrary Lie group is denoted by juxtaposition, except in certain abelian groups such as ${\mathbb{R}}^{n}$ in which the operation is usually written additively. It is traditional to denote the identity element of an arbitrary Lie group by the symbol $e$ (for German Einselement,"unit element"), and we follow this convention, except in specific examples in which there are more common notations (such as ${I}_{n}$ for the identity matrix in a matrix group, or 0 for the identity element in ${\mathbb{R}}^{n}$ ).
+Products in a Lie group are written multiplicatively, with identity $e$;
+additive notation and $0$ are used for abelian examples such as $\mathbb R^n$,
+and $I_n$ denotes the identity matrix.
 \end{notation}
 
 \begin{proposition}
@@ -31,60 +24,60 @@ The group operation in an arbitrary Lie group is denoted by juxtaposition, excep
 \lean{lieGroup_of_contMDiff_mul_inv}
 \leanok
 \dcref{ch7:7.1}
-If $G$ is a smooth manifold with a group structure such that the map $G \times  G \rightarrow  G$ given by $\left( {g, h}\right)  \mapsto  g{h}^{-1}$ is smooth, then $G$ is a Lie group.
+If a smooth manifold $G$ has a group structure and $(g,h)\mapsto gh^{-1}$ is smooth, then $G$ is a Lie group.
 \end{proposition}
 
-\begin{exercise}
-\label{exer:7-2}
-\lean{lieGroup_of_contMDiff_mul_inv}
-\leanok
-\uses{prop:7-1}
-\dcref{ch7:7.2}
-\begin{itemize}
-\item Exercise 7.2. Prove Proposition 7.1.
-\end{itemize}
-\end{exercise}
 
 \begin{example}[Lie Groups]
 \label{ex:7-3}
 \lean{ContinuousLinearEquiv.unitsEquiv}
 \mathlibok
 \dcref{ch7:7.3}
-Each of the following manifolds is a Lie group with the indicated group operation.
+The following are Lie groups.
 
-(a) The general linear group $\mathrm{{GL}}\left( {n,\mathbb{R}}\right)$ is the set of invertible $n \times  n$ matrices with real entries. It is a group under matrix multiplication, and it is an open sub-manifold of the vector space $\mathrm{M}\left( {n,\mathbb{R}}\right)$ , as we observed in Example 1.27. Multiplication is smooth because the matrix entries of a product matrix ${AB}$ are polynomials in the entries of $A$ and $B$ . Inversion is smooth by Cramer’s rule.
+(a) $\mathrm{GL}(n,\mathbb R)$, the invertible real matrices, is open in
+$\mathrm M(n,\mathbb R)$; multiplication is polynomial in the entries and
+inversion is smooth by Cramer's rule.
 
-(b) Let ${\mathrm{{GL}}}^{ + }\left( {n,\mathbb{R}}\right)$ denote the subset of $\mathrm{{GL}}\left( {n,\mathbb{R}}\right)$ consisting of matrices with positive determinant. Because $\det \left( {AB}\right)  = \left( {\det A}\right) \left( {\det B}\right)$ and $\det \left( {A}^{-1}\right)  = \; 1/\det A$ , it is a subgroup of $\operatorname{GL}\left( {n,\mathbb{R}}\right)$ ; and because it is the preimage of $\left( {0,\infty }\right)$ under the continuous determinant function, it is an open subset of $\mathrm{{GL}}\left( {n,\mathbb{R}}\right)$ and therefore an ${n}^{2}$ -dimensional manifold. The group operations are the restrictions of those of $\mathrm{{GL}}\left( {n,\mathbb{R}}\right)$ , so they are smooth. Thus ${\mathrm{{GL}}}^{ + }\left( {n,\mathbb{R}}\right)$ is a Lie group.
+(b) The positive-determinant subgroup $\mathrm{GL}^{+}(n,\mathbb R)$ is open
+in $\mathrm{GL}(n,\mathbb R)$ and has dimension $n^2$.
 
-(c) Suppose $G$ is an arbitrary Lie group and $H \subseteq  G$ is an open subgroup (a subgroup that is also an open subset). By the same argument as in part (b), $H$ is a Lie group with the inherited group structure and smooth manifold structure.
+(c) Every open subgroup of a Lie group, with its inherited structure, is a Lie
+group.
 
-(d) The complex general linear group $\mathrm{{GL}}\left( {n,\mathbb{C}}\right)$ is the group of invertible complex $n \times  n$ matrices under matrix multiplication. It is an open submanifold of $\mathrm{M}\left( {n,\mathbb{C}}\right)$ and thus a $2{n}^{2}$ -dimensional smooth manifold, and it is a Lie group because matrix products and inverses are smooth functions of the real and imaginary parts of the matrix entries.
+(d) $\mathrm{GL}(n,\mathbb C)$ is open in $\mathrm M(n,\mathbb C)$, has real
+dimension $2n^2$, and its operations are smooth in the real and imaginary
+parts of the entries.
 
-(e) If $V$ is any real or complex vector space, $\mathrm{{GL}}\left( V\right)$ denotes the set of invertible linear maps from $V$ to itself. It is a group under composition. If $V$ has finite dimension $n$ , any basis for $V$ determines an isomorphism of $\mathrm{{GL}}\left( V\right)$ with $\mathrm{{GL}}\left( {n,\mathbb{R}}\right)$ or $\mathrm{{GL}}\left( {n,\mathbb{C}}\right)$ , so $\mathrm{{GL}}\left( V\right)$ is a Lie group. The transition map between any two such isomorphisms is given by a map of the form $A \mapsto  {BA}{B}^{-1}$ (where $B$ is the transition matrix between the two bases), which is smooth. Thus, the smooth manifold structure on $\mathrm{{GL}}\left( V\right)$ is independent of the choice of basis.
+(e) For a finite-dimensional real or complex vector space $V$,
+$\mathrm{GL}(V)$ is a Lie group. A basis identifies it with
+$\mathrm{GL}(n,\mathbb R)$ or $\mathrm{GL}(n,\mathbb C)$, and a change of
+basis acts by the smooth map $A\mapsto BAB^{-1}$.
 
-(f) The real number field $\mathbb{R}$ and Euclidean space ${\mathbb{R}}^{n}$ are Lie groups under addition, because the coordinates of $x - y$ are smooth (linear!) functions of $\left( {x, y}\right)$ .
+(f) $\mathbb R$ and $\mathbb R^n$ are additive Lie groups.
 
-(g) Similarly, $\mathbb{C}$ and ${\mathbb{C}}^{n}$ are Lie groups under addition.
+(g) $\mathbb C$ and $\mathbb C^n$ are additive Lie groups.
 
-(h) The set ${\mathbb{R}}^{ * }$ of nonzero real numbers is a 1-dimensional Lie group under multiplication. (In fact, it is exactly $\mathrm{{GL}}\left( {1,\mathbb{R}}\right)$ if we identify a $1 \times  1$ matrix with the corresponding real number.) The subset ${\mathbb{R}}^{ + }$ of positive real numbers is an open subgroup, and is thus itself a 1-dimensional Lie group.
+(h) $\mathbb R^{*}$ is a one-dimensional multiplicative Lie group, with open
+subgroup $\mathbb R^{+}$.
 
-(i) The set ${\mathbb{C}}^{ * }$ of nonzero complex numbers is a 2-dimensional Lie group under complex multiplication, which can be identified with $\mathrm{{GL}}\left( {1,\mathbb{C}}\right)$ .
+(i) $\mathbb C^{*}$ is a two-dimensional multiplicative Lie group.
 
-(j) The circle ${\mathbb{S}}^{1} \subseteq  {\mathbb{C}}^{ * }$ is a smooth manifold and a group under complex multiplication. With appropriate angle functions as local coordinates on open subsets of ${\mathbb{S}}^{1}$ (see Problem 1-8), multiplication and inversion have the smooth coordinate expressions $\left( {{\theta }_{1},{\theta }_{2}}\right)  \mapsto  {\theta }_{1} + {\theta }_{2}$ and $\theta  \mapsto   - \theta$ , and therefore ${\mathbb{S}}^{1}$ is a Lie group, called the circle group.
+(j) $\mathbb S^1\subset\mathbb C^{*}$ is a Lie group under multiplication; in
+angle coordinates its operations are
+$(\theta_1,\theta_2)\mapsto\theta_1+\theta_2$ and $\theta\mapsto-\theta$.
 
-(k) Given Lie groups ${G}_{1},\ldots ,{G}_{k}$ , their direct product is the product manifold ${G}_{1} \times  \cdots  \times  {G}_{k}$ with the group structure given by componentwise multiplication:
-
+(k) Products of Lie groups are Lie groups under componentwise multiplication:
 \[
-\left( {{g}_{1},\ldots ,{g}_{k}}\right) \left( {{g}_{1}^{\prime },\ldots ,{g}_{k}^{\prime }}\right)  = \left( {{g}_{1}{g}_{1}^{\prime },\ldots ,{g}_{k}{g}_{k}^{\prime }}\right) .
+(g_1,\ldots,g_k)(g'_1,\ldots,g'_k)
+=(g_1g'_1,\ldots,g_kg'_k).
 \]
 
-It is a Lie group, as you can easily check.
+(l) $\mathbb T^n=(\mathbb S^1)^n$ is an $n$-dimensional abelian Lie group.
 
-(l) The $n$ -torus ${\mathbb{T}}^{n} = {\mathbb{S}}^{1} \times  \cdots  \times  {\mathbb{S}}^{1}$ is an $n$ -dimensional abelian Lie group.
-
-(m) Any group with the discrete topology is a topological group, called a discrete group. If in addition the group is finite or countably infinite, then it is a zero-dimensional Lie group, called a discrete Lie group.
+(m) A finite or countably infinite group with the discrete topology is a
+zero-dimensional Lie group.
 \end{example}
-
 
 \section{Lie Group Homomorphisms}
 
@@ -92,7 +85,7 @@ It is a Lie group, as you can easily check.
 \label{def:7-47-extra-1}
 \lean{LieGroupIsomorphism}
 \leanok
-If $G$ and $H$ are Lie groups, a Lie group homomorphism from $G$ to $H$ is a smooth map $F : G \rightarrow  H$ that is also a group homomorphism. It is called a Lie group isomorphism if it is also a diffeomorphism, which implies that it has an inverse that is also a Lie group homomorphism. In this case we say that $G$ and $H$ are isomorphic Lie groups.
+A Lie group homomorphism $F:G\to H$ is a smooth group homomorphism. It is a Lie group isomorphism when it is a diffeomorphism (then $F^{-1}$ is also a homomorphism).
 \end{definition}
 
 \begin{example}
@@ -100,44 +93,35 @@ If $G$ and $H$ are Lie groups, a Lie group homomorphism from $G$ to $H$ is a smo
 \lean{Circle.toUnits}
 \mathlibok
 \dcref{ch7:7.4}
-(a) The inclusion map ${\mathbb{S}}^{1} \hookrightarrow  {\mathbb{C}}^{ * }$ is a Lie group homomorphism.
+(a) The inclusion $\mathbb S^1\hookrightarrow\mathbb C^*$ is a Lie group homomorphism.
 
-(b) Considering $\mathbb{R}$ as a Lie group under addition, and ${\mathbb{R}}^{ * }$ as a Lie group under multiplication, the map exp: $\mathbb{R} \rightarrow  {\mathbb{R}}^{ * }$ given by $\exp \left( t\right)  = {e}^{t}$ is smooth, and is a Lie group homomorphism because ${e}^{\left( s + t\right) } = {e}^{s}{e}^{t}$ . The image of exp is the open subgroup ${\mathbb{R}}^{ + }$ consisting of positive real numbers, and exp: $\mathbb{R} \rightarrow  {\mathbb{R}}^{ + }$ is a Lie group isomorphism with inverse $\log  : {\mathbb{R}}^{ + } \rightarrow  \mathbb{R}$ .
+(b) $\exp:\mathbb R\to\mathbb R^*$, $t\mapsto e^t$, is a Lie group
+homomorphism with image $\mathbb R^+$ and restricts to a Lie group isomorphism
+$\mathbb R\cong\mathbb R^+$ with inverse $\log$.
 
-(c) Similarly, $\exp  : \mathbb{C} \rightarrow  {\mathbb{C}}^{ * }$ given by $\exp \left( z\right)  = {e}^{z}$ is a Lie group homomorphism. It is surjective but not injective, because its kernel consists of the complex numbers of the form ${2\pi ik}$ , where $k$ is an integer.
+(c) $\exp:\mathbb C\to\mathbb C^*$ is a surjective Lie group homomorphism with
+kernel $2\pi i\mathbb Z$.
 
-(d) The map $\varepsilon  : \mathbb{R} \rightarrow  {\mathbb{S}}^{1}$ defined by $\varepsilon \left( t\right)  = {e}^{2\pi it}$ is a Lie group homomorphism whose kernel is the set $\mathbb{Z}$ of integers. Similarly, the map ${\varepsilon }^{n} : {\mathbb{R}}^{n} \rightarrow  {\mathbb{T}}^{n}$ defined by ${\varepsilon }^{n}\left( {{x}^{1},\ldots ,{x}^{n}}\right)  = \left( {{e}^{{2\pi i}{x}^{1}},\ldots ,{e}^{{2\pi i}{x}^{n}}}\right)$ is a Lie group homomorphism whose kernel is ${\mathbb{Z}}^{n}$ .
+(d) $\varepsilon:\mathbb R\to\mathbb S^1$, $t\mapsto e^{2\pi it}$, is a Lie
+group homomorphism with kernel $\mathbb Z$; componentwise,
+$\varepsilon^n:\mathbb R^n\to\mathbb T^n$ is a Lie group homomorphism with
+kernel $\mathbb Z^n$.
 
-(e) The determinant function det: $\mathrm{{GL}}\left( {n,\mathbb{R}}\right)  \rightarrow  {\mathbb{R}}^{ * }$ is smooth because $\det A$ is a polynomial in the matrix entries of $A$ . It is a Lie group homomorphism because $\det \left( {AB}\right)  = \left( {\det A}\right) \left( {\det B}\right)$ . Similarly, det: $\mathrm{{GL}}\left( {n,\mathbb{C}}\right)  \rightarrow  {\mathbb{C}}^{ * }$ is a Lie group homomorphism.
+(e) Determinants $\mathrm{GL}(n,\mathbb R)\to\mathbb R^*$ and $\mathrm{GL}(n,\mathbb C)\to\mathbb C^*$ are smooth homomorphisms.
 
-(f) If $G$ is a Lie group and $g \in  G$ , conjugation by $g$ is the map ${C}_{g} : G \rightarrow  G$ given by ${C}_{g}\left( h\right)  = {gh}{g}^{-1}$ . Because group multiplication and inversion are smooth, ${C}_{g}$ is smooth, and a simple computation shows that it is a group homomorphism. In fact, it is an isomorphism, because it has ${C}_{{g}^{-1}}$ as an inverse. A subgroup $H \subseteq  G$ is said to be normal if ${C}_{g}\left( H\right)  = H$ for every $g \in  G$ .
+(f) Conjugation $C_g(h)=ghg^{-1}$ is a Lie group automorphism with inverse $C_{g^{-1}}$. A subgroup $H$ is normal exactly when $C_g(H)=H$ for every $g$.
 \end{example}
-
 
 \section{The Universal Covering Group}
 
-\begin{exercise}
-\label{exer:7-8}
-\lean{mul_inv_cancel}
-\mathlibok
-\dcref{ch7:7.8}
-Complete the proof of the preceding theorem by showing that ${x}^{-1}x = x{x}^{-1} = \widetilde{e}.$
-\end{exercise}
 
 \begin{theorem}[Uniqueness of the Universal Covering Group]
 \label{thm:7-9}
 \lean{exists_lieGroupIsomorphism_of_universal_covering_group}
 \leanok
-\uses{prob:7-5}
 \dcref{ch7:7.9}
-For any connected Lie group $G$ , the universal covering group is unique in the following sense: if $\widetilde{G}$ and ${\widetilde{G}}^{\prime }$ are simply connected Lie groups that admit smooth covering maps $\pi  : \widetilde{G} \rightarrow  G$ and ${\pi }^{\prime } : {\widetilde{G}}^{\prime } \rightarrow  G$ that are also Lie group homomorphisms, then there exists a Lie group isomorphism $\Phi  : \widetilde{G} \rightarrow  {\widetilde{G}}^{\prime }$ such that ${\pi }^{\prime } \circ  \Phi  = \pi$ .
+For a connected Lie group $G$, if simply connected Lie groups $\widetilde G$ and $\widetilde G'$ admit smooth covering homomorphisms $\pi:\widetilde G\to G$ and $\pi':\widetilde G'\to G$, then there is a Lie group isomorphism $\Phi:\widetilde G\to\widetilde G'$ satisfying $\pi'\circ\Phi=\pi$.
 \end{theorem}
-
-\begin{proof}
-\leanok
-See Problem 7-5.
-\end{proof}
-
 
 \section{Lie Subgroups}
 
@@ -145,7 +129,7 @@ See Problem 7-5.
 \label{def:7-49-extra-1}
 \lean{LieSubgroup}
 \leanok
-Suppose $G$ is a Lie group. A Lie subgroup of $\mathbf{G}$ is a subgroup of $G$ endowed with a topology and smooth structure making it into a Lie group and an immersed submanifold of $G$ . The following proposition shows that embedded subgroups are automatically Lie subgroups.
+A Lie subgroup of a Lie group $G$ is a subgroup with a Lie-group structure whose inclusion in $G$ is an immersion.
 \end{definition}
 
 \begin{proposition}
@@ -154,28 +138,29 @@ Suppose $G$ is a Lie group. A Lie subgroup of $\mathbf{G}$ is a subgroup of $G$ 
 \leanok
 \uses{cor:5-30}
 \dcref{ch7:7.11}
-Let $G$ be a Lie group, and suppose $H \subseteq  G$ is a subgroup that is also an embedded submanifold. Then $H$ is a Lie subgroup.
+An embedded submanifold $H\subseteq G$ that is a subgroup is a Lie subgroup.
 \end{proposition}
 
 \begin{proof}
 \leanok
-We need only check that multiplication $H \times  H \rightarrow  H$ and inversion $H \rightarrow  H$ are smooth maps. Because multiplication is a smooth map from $G \times  G$ into $G$ , its restriction is clearly smooth from $H \times  H$ into $G$ (this is true even if $H$ is merely immersed). Because $H$ is a subgroup, multiplication takes $H \times  H$ into $H$ , and since $H$ is embedded, this is a smooth map into $H$ by Corollary 5.30. A similar argument applies to inversion. This proves that $H$ is a Lie subgroup.
+\sketch Restrict multiplication and inversion on $G$ to $H$. Their images lie in $H$ by the subgroup property, and the embedded-submanifold smoothness criterion (Corollary~\ref{cor:5-30}) makes the restricted maps smooth into $H$.
 \end{proof}
 
 \begin{definition}
 \label{def:7-49-extra-2}
 \lean{subgroupGeneratedBy}
 \leanok
-If $G$ is a group and $S \subseteq  G$ , the subgroup generated by $S$ is the smallest subgroup containing $S$ (i.e., the intersection of all subgroups containing $S$ ).
+For a group $G$ and $S\subseteq G$, the subgroup generated by $S$ is the intersection of all subgroups containing $S$.
 \end{definition}
 
-\begin{exercise}
+\begin{lemma}[Words in a Generated Subgroup]
 \label{exer:7-13}
 \lean{subgroup_closure_eq_subgroup_word_set}
 \leanok
 \dcref{ch7:7.13}
-Given a group $G$ and a subset $S \subseteq  G$ , show that the subgroup generated by $S$ is equal to the set of all elements of $G$ that can be expressed as finite products of elements of $S$ and their inverses.
-\end{exercise}
+The subgroup generated by $S$ consists exactly of finite products of elements
+of $S$ and their inverses.
+\end{lemma}
 
 \begin{proposition}
 \label{prop:7-14}
@@ -183,41 +168,19 @@ Given a group $G$ and a subset $S \subseteq  G$ , show that the subgroup generat
 \leanok
 \uses{exer:7-13}
 \dcref{ch7:7.14}
-Suppose $G$ is a Lie group, and $W \subseteq  G$ is any neighborhood of the identity.
-
-(a) $W$ generates an open subgroup of $G$ .
-
-(b) If $W$ is connected, it generates a connected open subgroup of $G$ .
-
-(c) If $G$ is connected, then $W$ generates $G$ .
+For a Lie group $G$ and identity neighborhood $W$, the subgroup generated by $W$ is open; if $W$ is connected it is connected; and if $G$ is connected it equals $G$.
 \end{proposition}
 
 \begin{proof}
 \leanok
-Let $W \subseteq  G$ be any neighborhood of the identity, and let $H$ be the subgroup generated by $W$ . As a matter of notation, if $A$ and $B$ are subsets of $G$ , let us write
-
-\[
-{AB} = \{ {ab} : a \in  A, b \in  B\} ,\;{A}^{-1} = \left\{  {{a}^{-1} : a \in  A}\right\}  . \tag{7.5}
-\]
-
-For each positive integer $k$ , let ${W}_{k}$ denote the set of all elements of $G$ that can be expressed as products of $k$ or fewer elements of $W \cup  {W}^{-1}$ . By Exercise 7.13, $H$ is the union of all the sets ${W}_{k}$ as $k$ ranges over the positive integers. Now, ${W}^{-1}$ is open because it is the image of $W$ under the inversion map, which is a diffeomorphism. Thus, ${W}_{1} = W \cup  {W}^{-1}$ is open, and for each $k > 1$ we have
-
-\[
-{W}_{k} = {W}_{1}{W}_{k - 1} = \mathop{\bigcup }\limits_{{g \in  {W}_{1}}}{L}_{g}\left( {W}_{k - 1}\right) .
-\]
-
-Because each ${L}_{g}$ is a diffeomorphism, it follows by induction that each ${W}_{k}$ is open, and thus $H$ is open.
-
-Next suppose $W$ is connected. Then ${W}^{-1}$ is also connected because it is a diffeomorphic image of $W$ , and ${W}_{1} = W \cup  {W}^{-1}$ is connected because it is a union of connected sets with the identity in common. Therefore, ${W}_{2} = m\left( {{W}_{1} \times  {W}_{1}}\right)$ is connected because it is the image of a connected space under the continuous multiplication map $m$ , and it follows by induction that ${W}_{k} = m\left( {{W}_{1} \times  {W}_{k - 1}}\right)$ is connected for each $k$ . Thus, $H = \mathop{\bigcup }\limits_{k}{W}_{k}$ is connected because it is a union of connected subsets with the identity in common.
-
-Finally, assume $G$ is connected. Since $H$ is an open subgroup, it is also closed by Lemma 7.12, and it is not empty because it contains the identity. Thus $H = G$ .
+\sketch Let $H=\langle W\rangle$ and $W_k$ be products of at most $k$ elements of $W\cup W^{-1}$. Since inversion and left translations are diffeomorphisms, induction gives that every $W_k$ and hence $H=\bigcup_kW_k$ is open. If $W$ is connected, then $W\cup W^{-1}$ and all products $W_k$ are connected, so $H$ is connected. An open subgroup is closed; therefore a connected $G$ has $H=G$.
 \end{proof}
 
 \begin{definition}
 \label{def:7-49-extra-3}
 \lean{connectedComponentOfOne_coe}
 \leanok
-If $G$ is a Lie group, the connected component of $G$ containing the identity is called the identity component of $G$ .
+The identity component of a Lie group is the connected component containing its identity.
 \end{definition}
 
 \begin{example}
@@ -226,21 +189,25 @@ If $G$ is a Lie group, the connected component of $G$ containing the identity is
 \leanok
 \uses{ex:7-3}
 \dcref{ch7:7.18}
-(a) The subgroup ${\mathrm{{GL}}}^{ + }\left( {n,\mathbb{R}}\right)  \subseteq  \mathrm{{GL}}\left( {n,\mathbb{R}}\right)$ described in Example 7.3(b) is an open subgroup and thus an embedded Lie subgroup.
+(a) $\mathrm{GL}^{+}(n,\mathbb R)$ is an open embedded Lie subgroup of
+$\mathrm{GL}(n,\mathbb R)$.
 
-(b) The circle ${\mathbb{S}}^{1}$ is an embedded Lie subgroup of ${\mathbb{C}}^{ * }$ because it is a subgroup and an embedded submanifold.
+(b) $\mathbb S^1$ is an embedded Lie subgroup of $\mathbb C^*$.
 
-(c) The set $\operatorname{SL}\left( {n,\mathbb{R}}\right)$ of $n \times  n$ real matrices with determinant equal to 1 is called the special linear group of degree $n$ . Because $\operatorname{SL}\left( {n,\mathbb{R}}\right)$ is the kernel of the Lie group homomorphism det: $\operatorname{GL}\left( {n,\mathbb{R}}\right)  \rightarrow  {\mathbb{R}}^{ * }$ , it is a properly embedded Lie subgroup. Because the determinant function is surjective, it is a smooth submersion by the global rank theorem, so $\operatorname{SL}\left( {n,\mathbb{R}}\right)$ has dimension ${n}^{2} - 1$ .
+(c) $\mathrm{SL}(n,\mathbb R)
+=\ker(\det:\mathrm{GL}(n,\mathbb R)\to\mathbb R^*)$ is properly embedded of
+dimension $n^2-1$, since determinant is a surjective submersion.
 
-(d) Let $n$ be a positive integer, and define a map $\beta  : \mathrm{{GL}}\left( {n,\mathbb{C}}\right)  \rightarrow  \mathrm{{GL}}\left( {{2n},\mathbb{R}}\right)$ by replacing each complex matrix entry $a + {ib}$ with the $2 \times  2$ block $\left( \begin{array}{rr} a &  - b \\  b & a \end{array}\right)$ :
+(d) Replacing each $a+ib$ by
+$\left(\begin{smallmatrix}a&-b\\b&a\end{smallmatrix}\right)$ defines an
+injective Lie group homomorphism
+$\beta:\mathrm{GL}(n,\mathbb C)\to\mathrm{GL}(2n,\mathbb R)$ with properly
+embedded image.
 
-![172_379_972_826_286_0.jpg](images/172_379_972_826_286_0.jpg)
-
-It is straightforward to verify that $\beta$ is an injective Lie group homomorphism whose image is a properly embedded Lie subgroup of $\mathrm{{GL}}\left( {{2n},\mathbb{R}}\right)$ . Thus, $\mathrm{{GL}}\left( {n,\mathbb{C}}\right)$ is isomorphic to this Lie subgroup of $\mathrm{{GL}}\left( {{2n},\mathbb{R}}\right)$ . (You can check that $\beta$ arises naturally from the identification of $\left( {{x}^{1} + i{y}^{1},\ldots ,{x}^{n} + i{y}^{n}}\right)  \in  {\mathbb{C}}^{n}$ with $\left( {{x}^{1},{y}^{1},\ldots ,{x}^{n},{y}^{n}}\right)  \in  {\mathbb{R}}^{2n}$ .)
-
-(e) The subgroup $\operatorname{SL}\left( {n,\mathbb{C}}\right)  \subseteq  \operatorname{GL}\left( {n,\mathbb{C}}\right)$ consisting of complex matrices of determinant 1 is called the complex special linear group of degree $n$ . It is the kernel of the Lie group homomorphism det: $\operatorname{GL}\left( {n,\mathbb{C}}\right)  \rightarrow  {\mathbb{C}}^{ * }$ . This homomorphism is surjective, so it is a smooth submersion by the global rank theorem. Therefore, $\mathrm{{SL}}\left( {n,\mathbb{C}}\right)  = \operatorname{Ker}\left( \text{ det }\right)$ is a properly embedded Lie subgroup whose codimension is equal to $\dim {\mathbb{C}}^{ * } = 2$ and whose dimension is therefore $2{n}^{2} - 2$ .
+(e) $\mathrm{SL}(n,\mathbb C)
+=\ker(\det:\mathrm{GL}(n,\mathbb C)\to\mathbb C^*)$ is properly embedded of
+codimension $2$ and dimension $2n^2-2$.
 \end{example}
-
 
 \section{Group Actions and Equivariant Maps}
 
@@ -249,32 +216,27 @@ It is straightforward to verify that $\beta$ is an injective Lie group homomorph
 \lean{Example_7_22}
 \leanok
 \dcref{ch7:7.22}
-(a) If $G$ is any Lie group and $M$ is any smooth manifold, the trivial action of $G$ on $M$ is defined by $g \cdot  p = p$ for all $g \in  G$ and $p \in  M$ . It is a smooth action, for which each orbit is a single point and each isotropy group is all of $G$ .
+(a) The trivial action $g\cdot p=p$ of any Lie group $G$ on a manifold $M$ has point orbits and isotropy group $G$.
 
-(b) The natural action of $\mathbf{{GL}}\left( {n,\mathbb{R}}\right)$ on ${\mathbb{R}}^{n}$ is the left action given by matrix multiplication: $\left( {A, x}\right)  \mapsto  {Ax}$ , considering $x \in  {\mathbb{R}}^{n}$ as a column matrix. This is an action because ${I}_{n}x = x$ and matrix multiplication is associative: $\left( {AB}\right) x = \; A\left( {Bx}\right)$ . It is smooth because the components of ${Ax}$ depend polynomially on the matrix entries of $A$ and the components of $x$ . Because any nonzero vector can be taken to any other by some invertible linear transformation, there are exactly two orbits: $\{ 0\}$ and ${\mathbb{R}}^{n} \smallsetminus  \{ 0\}$ .
+(b) $\mathrm{GL}(n,\mathbb R)$ acts smoothly on $\mathbb R^n$ by $(A,x)\mapsto Ax$; its orbits are $\{0\}$ and $\mathbb R^n\setminus\{0\}$.
 
-(c) Every Lie group $G$ acts smoothly on itself by left translation. Given any two points ${g}_{1},{g}_{2} \in  G$ , there is a unique left translation of $G$ taking ${g}_{1}$ to ${g}_{2}$ , namely left translation by ${g}_{2}{g}_{1}^{-1}$ ; thus the action is both free and transitive. More generally, if $H$ is a Lie subgroup of $G$ , then the restriction of the multiplication map to $H \times  G \rightarrow  G$ defines a smooth and free (but generally not transitive) left action of $H$ on $G$ . Similar observations apply to right translations.
+(c) Left translation makes every Lie group act smoothly, freely, and transitively on itself. Restriction gives a smooth free action of any Lie subgroup $H$ on $G$; right translations are analogous.
 
-(d) Every Lie group acts smoothly on itself by conjugation: $g \cdot  h = {gh}{g}^{-1}$ .
+(d) Conjugation gives the smooth action $g\cdot h=ghg^{-1}$.
 
-(e) An action of a discrete group $\Gamma$ on a manifold $M$ is smooth if and only if for each $g \in  \Gamma$ , the map $p \mapsto  g \cdot  p$ is a smooth map from $M$ to itself. Thus, for example, ${\mathbb{Z}}^{n}$ acts smoothly and freely on ${\mathbb{R}}^{n}$ by left translation:
-
-\[
-\left( {{m}^{1},\ldots ,{m}^{n}}\right)  \cdot  \left( {{x}^{1},\ldots ,{x}^{n}}\right)  = \left( {{m}^{1} + {x}^{1},\ldots ,{m}^{n} + {x}^{n}}\right) .
-\]
-
-‖
+(e) For a discrete group $\Gamma$, an action on $M$ is smooth exactly when each map $p\mapsto g\cdot p$ is smooth. In particular, $\mathbb Z^n$ acts smoothly and freely on $\mathbb R^n$ by translation.
 \end{example}
 
 \begin{definition}
 \label{def:7-50-extra-2}
 \lean{coveringAutomorphismGroup}
 \leanok
-Another important class of Lie group actions arises from covering maps. Suppose $E$ and $M$ are topological spaces, and $\pi  : E \rightarrow  M$ is a (topological) covering map. An automorphism of $\pi$ (also called a deck transformation or covering transformation) is a homeomorphism $\varphi  : E \rightarrow  E$ such that $\pi  \circ  \varphi  = \pi$ :(7.8)
-
-![177_644_1475_247_163_0.jpg](images/177_644_1475_247_163_0.jpg)
-
-The set ${\operatorname{Aut}}_{\pi }\left( E\right)$ of all automorphisms of $\pi$ , called the automorphism group of $\pi$ , is a group under composition, acting on $E$ on the left. It can be shown that ${\operatorname{Aut}}_{\pi }\left( E\right)$ acts transitively on each fiber of $\pi$ if and only if $\pi$ is a normal covering map, which means that ${\pi }_{ * }\left( {{\pi }_{1}\left( {E, q}\right) }\right)$ is a normal subgroup of ${\pi }_{1}\left( {M,\pi \left( q\right) }\right)$ for every $q \in  E$ (see, for example, [LeeTM, Cor. 12.5]).
+For a covering map $\pi:E\to M$, a covering (deck) transformation is a
+homeomorphism $\varphi:E\to E$ with $\pi\circ\varphi=\pi$. These transformations
+form the group $\operatorname{Aut}_\pi(E)$ under composition and act on $E$ by
+$\varphi\cdot q=\varphi(q)$. The action is transitive on each fiber exactly
+when $\pi_*(\pi_1(E,q))\triangleleft\pi_1(M,\pi(q))$ for every $q$ (the
+normal-covering condition).
 \end{definition}
 
 \begin{proposition}
@@ -282,54 +244,28 @@ The set ${\operatorname{Aut}}_{\pi }\left( E\right)$ of all automorphisms of $\p
 \lean{coveringAutomorphismGroup_isFree}
 \leanok
 \dcref{ch7:7.23}
-Suppose $E$ and $M$ are smooth manifolds with or without boundary, and $\pi  : E \rightarrow  M$ is a smooth covering map. With the discrete topology, the automorphism group ${\operatorname{Aut}}_{\pi }\left( E\right)$ is a zero-dimensional Lie group acting smoothly and freely on $E$ .
+If $\pi:E\to M$ is a smooth covering of smooth manifolds with or without
+boundary, then $\operatorname{Aut}_\pi(E)$ with the discrete topology is a
+zero-dimensional Lie group acting smoothly and freely on $E$.
 \end{proposition}
 
 \begin{proof}
 \leanok
-Suppose $\varphi  \in  {\operatorname{Aut}}_{\pi }\left( E\right)$ is an automorphism that fixes a point $p \in  E$ . Simply by rotating diagram (7.8), we can consider $\varphi$ as a lift of $\pi$ :
-
-![178_669_290_191_197_0.jpg](images/178_669_290_191_197_0.jpg)
-
-Since the identity map of $E$ is another such lift that agrees with $\varphi$ at $p$ , the unique lifting property of covering maps (Proposition A.77(a)) guarantees that $\varphi  = {\operatorname{Id}}_{E}$ . Thus, the action of ${\operatorname{Aut}}_{\pi }\left( E\right)$ is free.
-
-To show that ${\operatorname{Aut}}_{\pi }\left( E\right)$ is a Lie group, we need only verify that it is countable. Let $q \in  E$ be arbitrary, let $p = \pi \left( q\right)  \in  M$ , and let $U \subseteq  M$ be an evenly covered neighborhood of $p$ . Because $E$ is second-countable, ${\pi }^{-1}\left( U\right)$ has countably many components, and because each component contains exactly one point of ${\pi }^{-1}\left( p\right)$ , it follows that ${\pi }^{-1}\left( p\right)$ is countable. Let ${\theta }^{\left( q\right) } : {\operatorname{Aut}}_{\pi }\left( E\right)  \rightarrow  E$ be the map ${\theta }^{\left( q\right) }\left( \varphi \right)  = \; \varphi \left( q\right)$ . Then ${\theta }^{\left( q\right) }$ maps ${\operatorname{Aut}}_{\pi }\left( E\right)$ into ${\pi }^{-1}\left( p\right)$ , and the fact that the action is free implies that it is injective; thus ${\operatorname{Aut}}_{\pi }\left( E\right)$ is countable.
-
-Smoothness of the action follows from Theorem 4.29.
+\sketch A deck transformation fixing a point agrees there with the identity lift of $\pi$, so uniqueness of lifts makes it the identity; the action is free. For an evenly covered neighborhood $U$ of $\pi(q)$, second countability makes the fiber $\pi^{-1}(\pi(q))$ countable. The injective evaluation map $\varphi\mapsto\varphi(q)$ embeds $\operatorname{Aut}_\pi(E)$ in this fiber, so the group is countable and hence a discrete zero-dimensional Lie group. Smoothness of the action follows from Theorem~4.29.
 \end{proof}
 
 \begin{definition}
 \label{def:7-50-extra-3}
 \lean{MulActionHom}
 \mathlibok
-For some manifolds with group actions, there is an easily verified sufficient condition for a smooth map to have constant rank. Suppose $G$ is a Lie group, and $M$ and $N$ are both smooth manifolds endowed with smooth left or right $G$ -actions. A map $F : M \rightarrow  N$ is said to be equivariant with respect to the given $G$ -actions if for each $g \in  G$ ,
-
-\[
-F\left( {g \cdot  p}\right)  = g \cdot  F\left( p\right) \;\text{ (for left actions), }
-\]
-
-\[
-F\left( {p \cdot  g}\right)  = F\left( p\right)  \cdot  g\;\text{ (for right actions). }
-\]
-
-Equivalently, if $\theta$ and $\varphi$ are the given actions on $M$ and $N$ , respectively, $F$ is equi-variant if the following diagram commutes for each $g \in  G$ :
-
-![178_644_1533_244_224_0.jpg](images/178_644_1533_244_224_0.jpg)
-
-This condition is also expressed by saying that $F$ intertwines $\theta$ and $\varphi$ .
+Given smooth left (respectively right) $G$-actions on $M$ and $N$, a map $F:M\to N$ is equivariant when $F(g\cdot p)=g\cdot F(p)$ (respectively $F(p\cdot g)=F(p)\cdot g$) for every $g$. Equivalently, it intertwines the two actions.
 \end{definition}
 
 \begin{definition}
 \label{def:7-50-extra-4}
 \lean{orbit_map}
 \leanok
-Here is an important application of the equivariant rank theorem. Suppose $G$ is a Lie group, $M$ is a smooth manifold, and $\theta  : G \times  M \rightarrow  M$ is a smooth left action. (The definitions for right actions are analogous.) For each $p \in  M$ , define a map ${\theta }^{\left( p\right) } : G \rightarrow  M$ by
-
-\[
-{\theta }^{\left( p\right) }\left( g\right)  = g \cdot  p. \tag{7.9}
-\]
-
-This is often called the orbit map, because its image is the orbit $G \cdot  p$ . In addition, the preimage ${\left( {\theta }^{\left( p\right) }\right) }^{-1}\left( p\right)$ is the isotropy group ${G}_{p}$ .
+For a smooth left action $\theta:G\times M\to M$ and $p\in M$, the orbit map is $\theta^{(p)}:G\to M$, $\theta^{(p)}(g)=g\cdot p$. Its image is $G\cdot p$ and $(\theta^{(p)})^{-1}(p)$ is the isotropy group $G_p$.
 \end{definition}
 
 \begin{example}[The Orthogonal Group]
@@ -337,35 +273,7 @@ This is often called the orbit map, because its image is the orbit $G \cdot  p$ 
 \lean{isCompact_orthogonalGroup}
 \leanok
 \dcref{ch7:7.27}
-A real $n \times  n$ matrix $A$ is said to be orthogonal if as a linear map $A : {\mathbb{R}}^{n} \rightarrow  {\mathbb{R}}^{n}$ it preserves the Euclidean dot product:
-
-\[
-\left( {Ax}\right)  \cdot  \left( {Ay}\right)  = x \cdot  y\;\text{ for all }x, y \in  {\mathbb{R}}^{n}.
-\]
-
-The set $\mathrm{O}\left( n\right)$ of all orthogonal $n \times  n$ matrices is a subgroup of $\mathrm{{GL}}\left( {n,\mathbb{R}}\right)$ , called the orthogonal group of degree $n$ . It is easy to check that a matrix $A$ is orthogonal if and only if it takes the standard basis of ${\mathbb{R}}^{n}$ to an orthonormal basis, which is equivalent to the columns of $A$ being orthonormal. Since the $\left( {i, j}\right)$ -entry of the matrix ${A}^{T}A$ (where ${A}^{T}$ represents the transpose of $A$ ) is the dot product of the $i$ th and $j$ th columns of $A$ , this condition is also equivalent to the requirement that ${A}^{T}A = {I}_{n}$ .
-
-Define a smooth map $\Phi  : \mathrm{{GL}}\left( {n,\mathbb{R}}\right)  \rightarrow  \mathrm{M}\left( {n,\mathbb{R}}\right)$ by $\Phi \left( A\right)  = {A}^{T}A$ . Then $\mathrm{O}\left( n\right)$ is equal to the level set ${\Phi }^{-1}\left( {I}_{n}\right)$ . To show that $\Phi$ has constant rank and therefore that $\mathrm{O}\left( n\right)$ is an embedded Lie subgroup, we show that $\Phi$ is equivariant with respect to suitable right actions of $\mathrm{{GL}}\left( {n,\mathbb{R}}\right)$ . Let $\mathrm{{GL}}\left( {n,\mathbb{R}}\right)$ act on itself by right multiplication, and define a right action of $\mathrm{{GL}}\left( {n,\mathbb{R}}\right)$ on $\mathrm{M}\left( {n,\mathbb{R}}\right)$ by
-
-\[
-X \cdot  B = {B}^{T}{XB}\;\text{ for }X \in  \mathrm{M}\left( {n,\mathbb{R}}\right) , B \in  \mathrm{{GL}}\left( {n,\mathbb{R}}\right) .
-\]
-
-It is easy to check that this is a smooth action, and $\Phi$ is equivariant because
-
-\[
-\Phi \left( {AB}\right)  = {\left( AB\right) }^{T}\left( {AB}\right)  = {B}^{T}{A}^{T}{AB} = {B}^{T}\Phi \left( A\right) B = \Phi \left( A\right)  \cdot  B.
-\]
-
-Thus, $\mathrm{O}\left( n\right)$ is a properly embedded Lie subgroup of $\mathrm{{GL}}\left( {n,\mathbb{R}}\right)$ . It is compact because it is closed and bounded in $\mathrm{M}\left( {n,\mathbb{R}}\right)  \cong  {\mathbb{R}}^{{n}^{2}}$ : closed because it is a level set of $\Phi$ , and bounded because every $A \in  \mathrm{O}\left( n\right)$ has columns of norm 1, and therefore satisfies $\left| A\right|  = \sqrt{n}$
-
-To determine the dimension of $\mathrm{O}\left( n\right)$ , we need to compute the rank of $\Phi$ . Because the rank is constant, it suffices to compute it at the identity ${I}_{n} \in  \mathrm{{GL}}\left( {n,\mathbb{R}}\right)$ . Thus for any $B \in  {T}_{{I}_{n}}\mathrm{{GL}}\left( {n,\mathbb{R}}\right)  = \mathrm{M}\left( {n,\mathbb{R}}\right)$ , let $\gamma  : \left( {-\varepsilon ,\varepsilon }\right)  \rightarrow  \mathrm{{GL}}\left( {n,\mathbb{R}}\right)$ be the curve $\gamma \left( t\right)  = \; {I}_{n} + {tB}$ , and compute
-
-\[
-d{\Phi }_{{I}_{n}}\left( B\right)  = {\left. \frac{d}{dt}\right| }_{t = 0}\Phi  \circ  \gamma \left( t\right)  = {\left. \frac{d}{dt}\right| }_{t = 0}{\left( {I}_{n} + tB\right) }^{T}\left( {{I}_{n} + {tB}}\right)  = {B}^{T} + B.
-\]
-
-From this formula, it is evident that the image of $d{\Phi }_{{I}_{n}}$ is contained in the vector space of symmetric matrices. Conversely, if $B \in  \mathrm{M}\left( {n,\mathbb{R}}\right)$ is an arbitrary symmetric $n \times  n$ matrix, then $d{\Phi }_{{I}_{n}}\left( {\frac{1}{2}B}\right)  = B$ . It follows that the image of $d{\Phi }_{{I}_{n}}$ is exactly the space of symmetric matrices. This is a linear subspace of $\mathrm{M}\left( {n,\mathbb{R}}\right)$ of dimension $n\left( {n + 1}\right) /2$ , because each symmetric matrix is uniquely determined by its values on and above the main diagonal. It follows that $\mathrm{O}\left( n\right)$ is an embedded Lie subgroup of dimension ${n}^{2} - n\left( {n + 1}\right) /2 = n\left( {n - 1}\right) /2$ .
+The orthogonal group $\mathrm O(n)=\{A\in\mathrm{GL}(n,\mathbb R):A^TA=I_n\}$ consists of matrices preserving the Euclidean inner product. The map $\Phi(A)=A^TA$ is equivariant for right multiplication on $\mathrm{GL}(n,\mathbb R)$ and $X\cdot B=B^TXB$ on matrices, so $\mathrm O(n)=\Phi^{-1}(I_n)$ is a properly embedded Lie subgroup. At $I_n$, $d\Phi_{I_n}(B)=B^T+B$, whose image is the space of symmetric matrices of dimension $n(n+1)/2$; hence $\dim\mathrm O(n)=n(n-1)/2$. Every $A\in\mathrm O(n)$ has orthonormal columns and Frobenius norm $\lvert A\rvert=\sqrt n$, so the subgroup is compact as closed and bounded.
 \end{example}
 
 \begin{example}[The Unitary Group]
@@ -373,7 +281,7 @@ From this formula, it is evident that the image of $d{\Phi }_{{I}_{n}}$ is conta
 \lean{Matrix.conjTranspose_mul}
 \mathlibok
 \dcref{ch7:7.29}
-For any complex matrix $A$ , the adjoint of $A$ is the matrix ${A}^{ * }$ formed by conjugating the entries of $A$ and taking the transpose: ${A}^{ * } = {\bar{A}}^{T}$ . Observe that ${\left( AB\right) }^{ * } = {\left( \bar{A}\bar{B}\right) }^{T} = {\bar{B}}^{T}{\bar{A}}^{T} = {B}^{ * }{A}^{ * }$ . For any positive integer $n$ , the unitary group of degree $\mathbf{n}$ is the subgroup $\mathrm{U}\left( n\right)  \subseteq  \mathrm{{GL}}\left( {n,\mathbb{C}}\right)$ consisting of complex $n \times  n$ matrices whose columns form an orthonormal basis for ${\mathbb{C}}^{n}$ with respect to the Hermitian dot product $z \cdot  w = \mathop{\sum }\limits_{i}{z}^{i}\overline{{w}^{i}}$ . It is straightforward to check that $\mathrm{U}\left( n\right)$ consists of those matrices $A$ such that ${A}^{ * }A = {I}_{n}$ . Problem 7-13 shows that it is a properly embedded Lie subgroup of $\mathrm{{GL}}\left( {n,\mathbb{C}}\right)$ of dimension ${n}^{2}$ .
+For a complex matrix $A$, write $A^*=\overline A^T$, so $(AB)^*=B^*A^*$. With Hermitian product $z\cdot w=\sum_i z^i\overline{w^i}$, the unitary group $\mathrm U(n)=\{A\in\mathrm{GL}(n,\mathbb C):A^*A=I_n\}$ consists of matrices with orthonormal columns and is a properly embedded Lie subgroup of dimension $n^2$.
 \end{example}
 
 \begin{example}[The Special Unitary Group]
@@ -381,9 +289,8 @@ For any complex matrix $A$ , the adjoint of $A$ is the matrix ${A}^{ * }$ formed
 \lean{Matrix.specialUnitaryGroup}
 \mathlibok
 \dcref{ch7:7.30}
-The group $\mathrm{{SU}}\left( n\right)  = \mathrm{U}\left( n\right)  \cap \; \mathrm{{SL}}\left( {n,\mathbb{C}}\right)$ is called the complex special unitary group of degree $n$ . Problem 7-14 shows that it is a properly embedded $\left( {{n}^{2} - 1}\right)$ -dimensional Lie subgroup of $\mathrm{U}\left( n\right)$ . Since the composition of smooth embeddings $\mathrm{{SU}}\left( n\right)  \hookrightarrow  \mathrm{U}\left( n\right)  \hookrightarrow  \mathrm{{GL}}\left( {n,\mathbb{C}}\right)$ is again a smooth embedding, this implies that $\mathrm{{SU}}\left( n\right)$ is also embedded in $\mathrm{{GL}}\left( {n,\mathbb{C}}\right)$ . $\;\parallel$
+$\mathrm{SU}(n)=\mathrm U(n)\cap\mathrm{SL}(n,\mathbb C)$ is a properly embedded Lie subgroup of $\mathrm U(n)$ of dimension $n^2-1$, and hence is embedded in $\mathrm{GL}(n,\mathbb C)$.
 \end{example}
-
 
 \section{Semidirect Products}
 
@@ -391,35 +298,32 @@ The group $\mathrm{{SU}}\left( n\right)  = \mathrm{U}\left( n\right)  \cap \; \m
 \label{def:7-51-extra-1}
 \lean{semidirectProductGroup_mul_eq}
 \leanok
-Group actions give us a powerful new way to construct Lie groups. Suppose $H$ and $N$ are Lie groups, and $\theta  : H \times  N \rightarrow  N$ is a smooth left action of $H$ on $N$ . It is said to be an action by automorphisms if for each $h \in  H$ , the map ${\theta }_{h} : N \rightarrow  N$ is a group automorphism of $N$ (i.e., an isomorphism from $N$ to itself). Given such an action, we define a new Lie group $N{ \rtimes  }_{\theta }H$ , called a semidirect product of $H$ and $N$ , as follows. As a smooth manifold, $N{ \rtimes  }_{\theta }H$ is just the Cartesian product $N \times  H$ ; but the group multiplication is defined by
-
+Let $H,N$ be Lie groups and let $\theta:H\times N\to N$ be a smooth action by automorphisms. The semidirect product $N\rtimes_\theta H$ is the manifold $N\times H$ with
 \[
-\left( {n, h}\right) \left( {{n}^{\prime },{h}^{\prime }}\right)  = \left( {n{\theta }_{h}\left( {n}^{\prime }\right) , h{h}^{\prime }}\right) . \tag{7.10}
+(n,h)(n',h')=\bigl(n\theta_h(n'),hh'\bigr).
 \]
-
-Sometimes, if the action of $H$ on $N$ is understood or irrelevant, the semidirect product is denoted simply by $N \rtimes  H$ .
 \end{definition}
 
-\begin{exercise}
+\begin{proposition}[Semidirect Products Are Lie Groups]
 \label{exer:7-31}
 \lean{semidirectProductLieGroup}
 \leanok
 \dcref{ch7:7.31}
-Verify that (7.10) does indeed define a Lie group structure on the manifold $N \times  H$ , with $\left( {e, e}\right)$ as identity and ${\left( n, h\right) }^{-1} = \left( {{\theta }_{{h}^{-1}}\left( {n}^{-1}\right) ,{h}^{-1}}\right)$ .
-\end{exercise}
+The multiplication in Definition~\ref{def:7-51-extra-1} defines a Lie group
+with identity $(e,e)$ and inverse
+$(n,h)^{-1}=(\theta_{h^{-1}}(n^{-1}),h^{-1})$.
+\end{proposition}
 
 \begin{example}[The Euclidean Group]
 \label{ex:7-32}
 \lean{euclidean_group_affine_equiv}
 \leanok
 \dcref{ch7:7.32}
-If we consider ${\mathbb{R}}^{n}$ as a Lie group under addition, then the natural action of $\mathrm{O}\left( n\right)$ on ${\mathbb{R}}^{n}$ is an action by automorphisms. The resulting semidirect product $\mathrm{E}\left( n\right)  = {\mathbb{R}}^{n} \rtimes  \mathrm{O}\left( n\right)$ is called the Euclidean group; its multiplication is given by $\left( {b, A}\right) \left( {{b}^{\prime },{A}^{\prime }}\right)  = \left( {b + A{b}^{\prime }, A{A}^{\prime }}\right)$ . It acts on ${\mathbb{R}}^{n}$ via
-
+The Euclidean group is $\mathrm E(n)=\mathbb R^n\rtimes\mathrm O(n)$ with
 \[
-\left( {b, A}\right)  \cdot  x = b + {Ax}.
+(b,A)(b',A')=(b+Ab',AA'),\qquad (b,A)\cdot x=b+Ax.
 \]
-
-This action preserves lines, distances, and angle measures, and thus all of the relationships of Euclidean geometry.
+This action preserves lines, distances, and angles.
 \end{example}
 
 \begin{proposition}[Properties of Semidirect Products]
@@ -427,25 +331,12 @@ This action preserves lines, distances, and angle measures, and thus all of the 
 \lean{proposition_7_33_tildeN_mul_tildeH}
 \leanok
 \dcref{ch7:7.33}
-Suppose $N$ and $H$ are Lie groups, and $\theta$ is a smooth action of $H$ on $N$ by automorphisms. Let $G = N{ \rtimes  }_{\theta }H$ .
-
-(a) The subsets $\widetilde{N} = N \times  \{ e\}$ and $\widetilde{H} = \{ e\}  \times  H$ are closed Lie subgroups of $G$ isomorphic to $N$ and $H$ , respectively.
-
-(b) $\widetilde{N}$ is a normal subgroup of $\widetilde{G}$ .
-
-(c) $\widetilde{N} \cap  \widetilde{H} = \{ \left( {e, e}\right) \}$ and $\widetilde{N}\widetilde{H} = G$ .
+For $G=N\rtimes_\theta H$ as in Definition~\ref{def:7-51-extra-1},
+$\widetilde N=N\times\{e\}$ and $\widetilde H=\{e\}\times H$ are closed Lie
+subgroups isomorphic to $N$ and $H$; $\widetilde N$ is normal in $G$,
+$\widetilde N\cap\widetilde H=\{(e,e)\}$, and
+$\widetilde N\widetilde H=G$.
 \end{proposition}
-
-\begin{exercise}
-\label{exer:7-34}
-\lean{proposition_7_33_tildeN_mul_tildeH}
-\leanok
-\uses{prop:7-33}
-\dcref{ch7:7.34}
-\begin{itemize}
-\item Exercise 7.34. Prove the preceding proposition.
-\end{itemize}
-\end{exercise}
 
 
 \section{Representations}
@@ -454,20 +345,14 @@ Suppose $N$ and $H$ are Lie groups, and $\theta$ is a smooth action of $H$ on $N
 \label{def:7-52-extra-1}
 \lean{LieGroupRepresentation.isFaithful_iff_injective}
 \leanok
-Most of the Lie groups we have seen so far can be realized as Lie subgroups of $\mathrm{{GL}}\left( {n,\mathbb{R}}\right)$ or $\mathrm{{GL}}\left( {n,\mathbb{C}}\right)$ . It is natural to ask whether all Lie groups are of this form. The key to studying this question is the theory of group representations.
-
-Recall that if $V$ is a finite-dimensional real or complex vector space, $\mathrm{{GL}}\left( V\right)$ denotes the group of invertible linear transformations of $V$ , which is a Lie group isomorphic to $\mathrm{{GL}}\left( {n,\mathbb{R}}\right)$ or $\mathrm{{GL}}\left( {n,\mathbb{C}}\right)$ for $n = \dim V$ . If $G$ is a Lie group, a (finite-dimensional) representation of $\mathbf{G}$ is a Lie group homomorphism from $G$ to $\mathrm{{GL}}\left( V\right)$ for some $V$ . (Although it is useful for many applications to consider also the case in which $V$ is infinite-dimensional, in this book we consider only finite-dimensional representations.)
-
-If a representation $\rho  : G \rightarrow  \mathrm{{GL}}\left( V\right)$ is injective, it is said to be faithful. In that case, it follows from Proposition 7.17 that the image of $\rho$ is a Lie subgroup of $\mathrm{{GL}}\left( V\right)$ , and $\rho$ gives a Lie group isomorphism between $G$ and $\rho \left( G\right)  \subseteq  \mathrm{{GL}}\left( V\right)  \cong \; \mathrm{{GL}}\left( {n,\mathbb{R}}\right)$ or $\mathrm{{GL}}\left( {n,\mathbb{C}}\right)$ . Thus, a Lie group admits a faithful representation if and only if it is isomorphic to a Lie subgroup of $\mathrm{{GL}}\left( {n,\mathbb{R}}\right)$ or $\mathrm{{GL}}\left( {n,\mathbb{C}}\right)$ for some $n$ . Not every Lie group admits such a representation. We do not yet have the technology to construct a counterexample, but Problem 21-26 asks you to prove that the universal covering group of $\mathrm{{SL}}\left( {2,\mathbb{R}}\right)$ has no faithful representation and therefore is not isomorphic to any matrix group.
-
-Representation theory is a vast subject, with applications to fields as diverse as differential geometry, differential equations, harmonic analysis, number theory, quantum physics, and engineering; we can do no more than touch on it here.
+A finite-dimensional representation of a Lie group $G$ on a real or complex vector space $V$ is a Lie group homomorphism $\rho:G\to\mathrm{GL}(V)$. It is faithful when injective. A faithful representation identifies $G$ with a Lie subgroup of some $\mathrm{GL}(n,\mathbb R)$ or $\mathrm{GL}(n,\mathbb C)$; not every Lie group has one (the universal cover of $\mathrm{SL}(2,\mathbb R)$ is a stated counterexample).
 \end{definition}
 
 \begin{definition}
 \label{def:7-52-extra-2}
 \lean{IsLinearAction}
 \leanok
-There is a close connection between representations and group actions. Let $G$ be a Lie group and $V$ be a finite-dimensional vector space. An action of $G$ on $V$ is said to be a linear action if for each $g \in  G$ , the map from $V$ to itself given by $x \mapsto  g \cdot  x$ is linear. For example, if $\rho  : G \rightarrow  \mathrm{{GL}}\left( V\right)$ is a representation of $G$ , there is an associated smooth linear action of $G$ on $V$ given by $g \cdot  x = \rho \left( g\right) x$ . The next proposition shows that every linear action is of this type.
+A smooth action of $G$ on a finite-dimensional vector space $V$ is linear if each map $x\mapsto g\cdot x$ is linear. A representation $\rho$ induces the linear action $g\cdot x=\rho(g)x$.
 \end{definition}
 
 \begin{proposition}
@@ -475,193 +360,10 @@ There is a close connection between representations and group actions. Let $G$ b
 \lean{isLinearAction_iff_exists_lieGroupRepresentation}
 \leanok
 \dcref{ch7:7.37}
-Let $G$ be a Lie group and $V$ be a finite-dimensional vector space. A smooth left action of $G$ on $V$ is linear if and only if it is of the form $g \cdot  x = \rho \left( g\right) x$ for some representation $\rho$ of $G$ .
+A smooth left action of a Lie group $G$ on a finite-dimensional vector space $V$ is linear if and only if $g\cdot x=\rho(g)x$ for a representation $\rho:G\to\mathrm{GL}(V)$.
 \end{proposition}
 
 \begin{proof}
 \leanok
-Every action induced by a representation is evidently linear. To prove the converse, assume that we are given a linear action of $G$ on $V$ . The hypothesis implies that for each $g \in  G$ there is a linear map $\rho \left( g\right)  \in  \mathrm{{GL}}\left( V\right)$ such that $g \cdot  x = \rho \left( g\right) x$ for all $x \in  V$ . The fact that the action satisfies (7.6) translates to $\rho \left( {{g}_{1}{g}_{2}}\right)  = \rho \left( {g}_{1}\right) \rho \left( {g}_{2}\right)$ , so $\rho  : G \rightarrow  \mathrm{{GL}}\left( V\right)$ is a group homomorphism. Thus, to show that it is a Lie group representation, we need only show that it is smooth. Choose a basis $\left( {E}_{i}\right)$ for $V$ , and for each $i$ let ${\pi }^{i} : V \rightarrow  \mathbb{R}$ be the projection onto the $i$ th coordinate with respect to this basis: ${\pi }^{i}\left( {{x}^{j}{E}_{j}}\right)  = {x}^{i}$ . If we let ${\rho }_{j}^{i}\left( g\right)$ denote the matrix entries of $\rho \left( g\right)$ with respect to this basis, it follows that ${\rho }_{j}^{i}\left( g\right)  = {\pi }^{i}\left( {g \cdot  {E}_{i}}\right)$ , so each function ${\rho }_{j}^{i}$ is a composition of smooth functions. Because the matrix entries form global smooth coordinates for $\mathrm{{GL}}\left( V\right)$ , this implies that $\rho$ is smooth.
+\sketch A linear action defines invertible linear maps $\rho(g)$ and the action law gives $\rho(g_1g_2)=\rho(g_1)\rho(g_2)$. In a basis $(E_j)$ with coordinate projections $\pi^i$, each matrix coefficient is $\rho^i_j(g)=\pi^i(g\cdot E_j)$, hence smooth; therefore $\rho$ is a Lie group homomorphism. The converse is immediate.
 \end{proof}
-
-
-\section{Problems}
-
-\begin{exercise}
-\label{prob:7-2}
-\lean{mfderiv_inv_at_one_apply}
-\leanok
-\uses{prop:3-14}
-7-2. Let $G$ be a Lie group.
-
-(a) Let $m : G \times  G \rightarrow  G$ denote the multiplication map. Using Proposition 3.14 to identify ${T}_{\left( e, e\right) }\left( {G \times  G}\right)$ with ${T}_{e}G \oplus  {T}_{e}G$ , show that the differential $d{m}_{\left( e, e\right) } : {T}_{e}G \oplus  {T}_{e}G \rightarrow  {T}_{e}G$ is given by
-
-\[
-d{m}_{\left( e, e\right) }\left( {X, Y}\right)  = X + Y
-\]
-
-[Hint: compute $d{m}_{\left( e, e\right) }\left( {X,0}\right)$ and $d{m}_{\left( e, e\right) }\left( {0, Y}\right)$ separately.]
-
-(b) Let $i : G \rightarrow  G$ denote the inversion map. Show that $d{i}_{e} : {T}_{e}G \rightarrow  {T}_{e}G$ is given by $d{i}_{e}\left( X\right)  =  - X$ .
-
-(Used on pp. 203, 522.)
-\end{exercise}
-
-\begin{exercise}
-\label{prob:7-3}
-\lean{lieGroup_of_contMDiff_mul}
-\leanok
-7-3. Our definition of Lie groups includes the requirement that both the multiplication map and the inversion map are smooth. Show that smoothness of the inversion map is redundant: if $G$ is a smooth manifold with a group structure such that the multiplication map $m : G \times  G \rightarrow  G$ is smooth, then $G$ is a Lie group. [Hint: show that the map $F : G \times  G \rightarrow  G \times  G$ defined by $F\left( {g, h}\right)  = \left( {g,{gh}}\right)$ is a bijective local diffeomorphism.]
-\end{exercise}
-
-\begin{exercise}
-\label{prob:7-4}
-\lean{generalLinear_det_fderiv_apply}
-\leanok
-\uses{cor:3-25}
-7-4. Let det: $\operatorname{GL}\left( {n,\mathbb{R}}\right)  \rightarrow  \mathbb{R}$ denote the determinant function. Use Corollary 3.25 to compute the differential of det, as follows.
-
-(a) For any $A \in  \mathbf{M}\left( {n,\mathbb{R}}\right)$ , show that
-
-\[
-{\left. \frac{d}{dt}\right| }_{t = 0}\det \left( {{I}_{n} + {tA}}\right)  = \operatorname{tr}A
-\]
-
-where $\operatorname{tr}\left( {A}_{j}^{i}\right)  = \mathop{\sum }\limits_{i}{A}_{i}^{i}$ is the trace of $A$ . [Hint: the defining equation (B.3) expresses $\det \left( {{I}_{n} + {tA}}\right)$ as a polynomial in $t$ . What is the linear term?]
-
-(b) For $X \in  \mathrm{{GL}}\left( {n,\mathbb{R}}\right)$ and $B \in  {T}_{X}\mathrm{{GL}}\left( {n,\mathbb{R}}\right)  \cong  \mathrm{M}\left( {n,\mathbb{R}}\right)$ , show that
-
-\[
-d{\left( \det \right) }_{X}\left( B\right)  = \left( {\det X}\right) \operatorname{tr}\left( {{X}^{-1}B}\right) . \tag{7.11}
-\]
-
-[Hint: $\det \left( {X + {tB}}\right)  = \det \left( X\right) \det \left( {{I}_{n} + t{X}^{-1}B}\right)$ .]
-
-(Used on p. 203.)
-\end{exercise}
-
-\begin{exercise}
-\label{prob:7-5}
-\lean{exists_lieGroupIsomorphism_of_universal_covering_group}
-\leanok
-\uses{thm:7-9}
-7-5. Prove Theorem 7.9 (uniqueness of the universal covering group).
-\end{exercise}
-
-\begin{exercise}
-\label{prob:7-6}
-\lean{exists_nhds_one_subset_mul_inv_mem}
-\leanok
-7-6. Suppose $G$ is a Lie group and $U$ is any neighborhood of the identity. Show that there exists a neighborhood $V$ of the identity such that $V \subseteq  U$ and $g{h}^{-1} \in  U$ whenever $g, h \in  V$ . (Used on pp. 159,556.)
-\end{exercise}
-
-\begin{exercise}
-\label{prob:7-8}
-\lean{continuous_action_on_discrete_is_trivial}
-\leanok
-7-8. Suppose a connected topological group $G$ acts continuously on a discrete space $K$ . Show that the action is trivial. (Used on p. 562.)
-\end{exercise}
-
-\begin{exercise}
-\label{prob:7-9}
-\lean{real_projective_generalLinear_isPretransitive}
-\leanok
-7-9. Show that the formula
-
-\[
-A \cdot  \left\lbrack  x\right\rbrack   = \left\lbrack  {Ax}\right\rbrack
-\]
-
-defines a smooth, transitive left action of $\mathrm{{GL}}\left( {n + 1,\mathbb{R}}\right)$ on ${\mathbb{{RP}}}^{n}$ .
-\end{exercise}
-
-\begin{exercise}
-\label{prob:7-11}
-\lean{hopf_action_isFree}
-\leanok
-7-11. Considering ${\mathbb{S}}^{{2n} + 1}$ as the unit sphere in ${\mathbb{C}}^{n + 1}$ , define an action of ${\mathbb{S}}^{1}$ on ${\mathbb{S}}^{{2n} + 1}$ , called the Hopf action, by
-
-\[
-z \cdot  \left( {{w}^{1},\ldots ,{w}^{n + 1}}\right)  = \left( {z{w}^{1},\ldots , z{w}^{n + 1}}\right) .
-\]
-
-Show that this action is smooth and its orbits are disjoint unit circles in ${\mathbb{C}}^{n + 1}$ whose union is ${\mathbb{S}}^{{2n} + 1}$ . (Used on p. 560.)
-\end{exercise}
-
-\begin{exercise}
-\label{prob:7-12}
-\lean{ContMDiffMonoidMorphism.toMulActionHom}
-\leanok
-7-12. Use the equivariant rank theorem to give another proof of Theorem 7.5 by showing that every Lie group homomorphism $F : G \rightarrow  H$ is equivariant with respect to suitable smooth $G$ -actions on $G$ and $H$ .
-\end{exercise}
-
-\begin{exercise}
-\label{prob:7-17}
-\lean{problem_7_17}
-\leanok
-7-17. Determine which of the following Lie groups are compact:
-
-\[
-\mathrm{{GL}}\left( {n,\mathbb{R}}\right) ,\mathrm{{SL}}\left( {n,\mathbb{R}}\right) ,\mathrm{{GL}}\left( {n,\mathbb{C}}\right) ,\mathrm{{SL}}\left( {n,\mathbb{C}}\right) ,\mathrm{U}\left( n\right) ,\mathrm{{SU}}\left( n\right) \text{ . }
-\]
-\end{exercise}
-
-\begin{exercise}
-\label{prob:7-22}
-\lean{quaternion_inv_eq_norm_sq_smul_star}
-\leanok
-7-22. Let $\mathbb{H} = \mathbb{C} \times  \mathbb{C}$ (considered as a real vector space), and define a bilinear product $\mathbb{H} \times  \mathbb{H} \rightarrow  \mathbb{H}$ by
-
-\[
-\left( {a, b}\right) \left( {c, d}\right)  = \left( {{ac} - d\bar{b},\bar{a}d + {cb}}\right) ,\;\text{ for }a, b, c, d \in  \mathbb{C}.
-\]
-
-With this product, $\mathbb{H}$ is a 4-dimensional algebra over $\mathbb{R}$ , called the algebra of quaternions. For each $p = \left( {a, b}\right)  \in  \mathbb{H}$ , define ${p}^{ * } = \left( {\bar{a}, - b}\right)$ . It is useful to work with the basis $\left( {\mathbb{1},\mathbb{i},\mathbb{j},\mathbb{k}}\right)$ for $\mathbb{H}$ defined by
-
-\[
-\mathbb{1} = \left( {1,0}\right) ,\;\mathbb{i} = \left( {i,0}\right) ,\;\mathbb{j} = \left( {0,1}\right) ,\;\mathbb{k} = \left( {0, - i}\right) .
-\]
-
-It is straightforward to verify that this basis satisfies
-
-\[
-{\widehat{\mathbb{i}}}^{2} = {\widehat{\mathbb{j}}}^{2} = {\mathbb{k}}^{2} =  - \mathbb{1},\;\mathbb{1}q = q\mathbb{1} = q\;\text{ for all }q \in  \mathbb{H},
-\]
-
-\[
-\dot{\mathbb{i}}\widehat{j} =  - \widehat{\mathbb{j}}\widehat{i} = \mathbb{k},\;\dot{\mathbb{j}}\mathbb{k} =  - \mathbb{k}\widehat{j} = \widehat{\mathbb{i}},\;\mathbb{k}\widehat{\mathbb{i}} =  - \widehat{\mathbb{i}}\mathbb{k} = \widehat{\mathbb{j}},
-\]
-
-\[
-{\mathbb{1}}^{ * } = \mathbb{1},\;{\dot{\mathbb{i}}}^{ * } =  - \dot{\mathbb{i}},\;{\dot{\mathbb{j}}}^{ * } =  - \dot{\mathbb{j}},\;{\mathbb{k}}^{ * } =  - \mathbb{k}.
-\]
-
-A quaternion $p$ is said to be real if ${p}^{ * } = p$ , and imaginary if ${p}^{ * } =  - p$ . Real quaternions can be identified with real numbers via the correspondence $x \leftrightarrow  x\mathbb{1}.$
-
-(a) Show that quaternionic multiplication is associative but not commutative.
-
-(b) Show that ${\left( pq\right) }^{ * } = {q}^{ * }{p}^{ * }$ for all $p, q \in  \mathbb{H}$ .
-
-(c) Show that $\langle p, q\rangle  = \frac{1}{2}\left( {{p}^{ * }q + {q}^{ * }p}\right)$ is an inner product on $\mathbb{H}$ , whose associated norm satisfies $\left| {pq}\right|  = \left| p\right| \left| q\right|$ .
-
-(d) Show that every nonzero quaternion has a two-sided multiplicative inverse given by ${p}^{-1} = {\left| p\right| }^{-2}{p}^{ * }$ .
-
-(e) Show that the set ${\mathbb{H}}^{ * }$ of nonzero quaternions is a Lie group under quaternionic multiplication.
-
-(Used on pp. 200, 200, 562.)
-\end{exercise}
-
-\begin{exercise}
-\label{prob:7-23}
-\lean{quaternionSphereContinuousMulEquivSpecialUnitary}
-\leanok
-\uses{prob:7-22}
-7-23. Let ${\mathbb{H}}^{ * }$ be the Lie group of nonzero quaternions (Problem 7-22), and let $\mathcal{S} \subseteq  {\mathbb{H}}^{ * }$ be the set of unit quaternions. Show that $\mathcal{S}$ is a properly embedded Lie subgroup of ${\mathbb{H}}^{ * }$ , isomorphic to $\mathrm{{SU}}\left( 2\right)$ . (Used on pp. 200,562.)
-\end{exercise}
-
-\begin{exercise}
-\label{prob:7-24}
-\lean{tau_d_n_representation_faithful}
-\leanok
-7-24. Prove that each of the maps ${\tau }_{d}^{n} : \mathrm{{GL}}\left( {n,\mathbb{R}}\right)  \rightarrow  \mathrm{{GL}}\left( {\mathcal{P}}_{d}^{n}\right)$ described in Example ${7.36}\left( \mathrm{\;g}\right)$ is a faithful representation of $\mathrm{{GL}}\left( {n,\mathbb{R}}\right)$ .
-\end{exercise}
-

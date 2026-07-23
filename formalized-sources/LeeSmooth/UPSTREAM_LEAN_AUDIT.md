@@ -213,8 +213,7 @@ axiom check, per defect 2.
 - **Blueprint scope**: per project decision, the blueprint carries only items
   whose Lean is verified; sorried and non-compiling items are omitted rather
   than marked `\notready`. Of 599 book items, **310 are carried** (231 `\leanok`,
-  79 `\mathlibok`) and **289 omitted**. Every omitted item is listed in
-  `blueprint/OMITTED.md` so the gap is recorded rather than silently dropped.
+  79 `\mathlibok`) and **289 omitted**.
 - **Known conservatism**: 117 of those 289 are omitted only because their module
   imports a sorried module, not because their own result is unproved. A
   per-declaration axiom check would likely restore a large share of them. Lemma

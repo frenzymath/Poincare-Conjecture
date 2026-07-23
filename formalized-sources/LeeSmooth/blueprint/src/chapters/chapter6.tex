@@ -1,5 +1,5 @@
 % Chapter 6: Sard's Theorem
-% Lee, *Introduction to Smooth Manifolds* (2nd ed., GTM 218).
+% Lee, Introduction to Smooth Manifolds (2nd ed., GTM 218).
 % Generated from the section extraction; nodes carry only Lean that is
 % verified sorry-free. See ../../UPSTREAM_LEAN_AUDIT.md.
 
@@ -10,32 +10,41 @@
 \label{def:6-38-extra-1}
 \lean{NullMeasurableSet.of_null}
 \mathlibok
-Recall what it means for a set $A \subseteq  {\mathbb{R}}^{n}$ to have measure zero (see Appendix C): for any $\delta  > 0, A$ can be covered by a countable collection of open rectangles, the sum of whose volumes is less than $\delta$ (Fig. 6.1).
+A set $A \subseteq \mathbb{R}^n$ has measure zero if, for every $\delta>0$, there is a countable collection of open rectangles covering $A$ whose volumes sum to less than $\delta$.
 \end{definition}
 
-\begin{exercise}
+\begin{lemma}[Equivalent Null-Cover Formulations]
 \label{exer:6-1}
 \lean{volume_eq_zero_iff_forall_pos_exists_open_cube_cover}
 \leanok
 \dcref{ch6:6.1}
-Show that open rectangles can be replaced by open balls or open cubes in the definition of subsets of measure zero. [Hint: for cubes, first show that every open rectangle $R \subseteq  {\mathbb{R}}^{n}$ can be covered by finitely many open cubes, the sum of whose volumes is no more than ${2}^{n}$ times the volume of $R$ . For balls, Fig. 6.2 suggests the main idea.]
-\end{exercise}
+The definition of measure zero is unchanged if open rectangles are replaced
+by open balls or by open cubes. Every open rectangle
+$R\subseteq\mathbb R^n$ has a finite open-cube cover of total volume at most
+$2^n$ times the volume of $R$.
+\end{lemma}
 
 \begin{lemma}
 \label{lem:6-2}
 \lean{volume_eq_zero_of_isCompact_of_forall_first_coordinate_slice_volume_eq_zero}
 \leanok
+\uses{exer:6-1}
 \dcref{ch6:6.2}
-Suppose $A \subseteq  {\mathbb{R}}^{n}$ is a compact subset whose intersection with $\{ c\}  \times  {\mathbb{R}}^{n - 1}$ has $\left( {n - 1}\right)$ -dimensional measure zero for every $c \in  \mathbb{R}$ . Then $A$ has n-dimensional measure zero.
+Let $A \subseteq \mathbb{R}^n$ be compact. If
+$A \cap (\{c\}\times\mathbb{R}^{n-1})$ has $(n-1)$-dimensional measure zero for every $c\in\mathbb{R}$, then $A$ has $n$-dimensional measure zero.
 \end{lemma}
 
 \begin{proof}
 \leanok
-Choose an interval $\left\lbrack  {a, b}\right\rbrack   \subseteq  \mathbb{R}$ such that $A \subseteq  \left\lbrack  {a, b}\right\rbrack   \times  {\mathbb{R}}^{n - 1}$ . For each $c \in \; \left\lbrack  {a, b}\right\rbrack$ , let ${A}_{c} \subseteq  {\mathbb{R}}^{n - 1}$ denote the compact subset $\left\{  {x \in  {\mathbb{R}}^{n - 1} : \left( {c, x}\right)  \in  A}\right\}$ .
-
-Let $\delta  > 0$ be given. Our hypothesis implies that for each $c \in  \left\lbrack  {a, b}\right\rbrack$ , the set ${A}_{c}$ is covered by finitely many $\left( {n - 1}\right)$ -dimensional open cubes ${C}_{1},\ldots ,{C}_{k}$ with total volume less than $\delta$ . Let ${U}_{c}$ be the open subset ${C}_{1} \cup  \cdots  \cup  {C}_{k} \subseteq  {\mathbb{R}}^{n - 1}$ . Because $A$ is compact, there must be an open interval ${J}_{c}$ containing $c$ such that the intersection of $A$ with ${J}_{c} \times  {\mathbb{R}}^{n - 1}$ is contained in ${J}_{c} \times  {U}_{c}$ , for otherwise there would be a sequence of points $\left( {{c}_{i},{x}_{i}}\right)  \in  A$ such that ${c}_{i} \rightarrow  c$ and ${x}_{i} \notin  {U}_{c}$ ; but then passing to a convergent subsequence we obtain ${x}_{i} \rightarrow  x \in  {A}_{c} \smallsetminus  {U}_{c}$ , which contradicts the fact that ${A}_{c} \subseteq  {U}_{c}$ .
-
-The intervals $\left\{  {{J}_{c} : c \in  \left\lbrack  {a, b}\right\rbrack  }\right\}$ form an open cover of $\left\lbrack  {a, b}\right\rbrack$ , so there are finitely many numbers ${c}_{1} < \cdots  < {c}_{m}$ such that the intervals ${J}_{{c}_{1}},\ldots ,{J}_{{c}_{m}}$ cover $\left\lbrack  {a, b}\right\rbrack$ . By shrinking the intervals ${J}_{{c}_{i}}$ where they overlap if necessary, we can arrange that the combined lengths of ${J}_{{c}_{1}},\ldots ,{J}_{{c}_{m}}$ add up to no more than $2\left| {b - a}\right|$ . It follows that $A$ is contained in $\left( {{J}_{{c}_{1}} \times  {U}_{{c}_{1}}}\right)  \cup  \cdots  \cup  \left( {{J}_{{c}_{m}} \times  {U}_{{c}_{m}}}\right)$ , which is a union of finitely many open rectangles with combined volume less than ${2\delta }\left| {b - a}\right|$ . Since this can be made as small as desired, it follows that $A$ has $n$ -dimensional measure zero.
+\sketch Choose $[a,b]$ with $A\subseteq [a,b]\times\mathbb{R}^{n-1}$ and set
+\[
+A_c=\{x\in\mathbb{R}^{n-1}:(c,x)\in A\}.
+\]
+For $\delta>0$, cover each compact null set $A_c$ by finitely many open cubes with total volume less than $\delta$, and denote their union by $U_c$. Compactness of $A$ gives an interval $J_c$ about $c$ such that
+\[
+A\cap(J_c\times\mathbb{R}^{n-1})\subseteq J_c\times U_c;
+\]
+otherwise a convergent sequence in $A$ would yield a point of $A_c\setminus U_c$. Choose finitely many $J_{c_i}$ covering $[a,b]$ and shrink overlaps so that their total length is at most $2|b-a|$. The corresponding rectangles cover $A$ and have total volume less than $2\delta|b-a|$. Letting $\delta$ tend to zero proves the claim.
 \end{proof}
 
 \begin{proposition}
@@ -44,14 +53,12 @@ The intervals $\left\{  {{J}_{c} : c \in  \left\lbrack  {a, b}\right\rbrack  }\r
 \leanok
 \uses{lem:6-2}
 \dcref{ch6:6.3}
-Suppose $A$ is an open or closed subset of ${\mathbb{R}}^{n - 1}$ or ${\mathbb{H}}^{n - 1}$ , and $f : A \rightarrow  \mathbb{R}$ is a continuous function. Then the graph of $f$ has measure zero in ${\mathbb{R}}^{n}$ .
+If $A$ is an open or closed subset of $\mathbb{R}^{n-1}$ or $\mathbb{H}^{n-1}$ and $f:A\to\mathbb{R}$ is continuous, then the graph of $f$ has measure zero in $\mathbb{R}^n$.
 \end{proposition}
 
 \begin{proof}
 \leanok
-First assume $A$ is compact. We prove the theorem in this case by induction on $n$ . When $n = 1$ , it is trivial because the graph of $f$ is at most a single point. To prove the inductive step, we appeal to Lemma 6.2. For each $c \in  \mathbb{R}$ , the intersection of the graph of $f$ with $\{ c\}  \times  {\mathbb{R}}^{n - 1}$ is just the graph of the restriction of $f$ to $\left\{  {x \in  A : {x}^{1} = c}\right\}$ , which is in turn the graph of a continuous function of $n - 2$ variables. It follows by induction that each such graph has $\left( {n - 1}\right)$ -dimensional measure zero, and thus by Lemma 6.2, the graph of $f$ itself has $n$ -dimensional measure zero.
-
-If $A$ is noncompact, it is a countable union of compact subsets by Proposition A.60, so the graph of $f$ is a countable union of sets of measure zero.
+\sketch For compact $A$, argue by induction on $n$. The case $n=1$ is a set with at most one point. For each $c\in\mathbb{R}$, the slice of the graph in $\{c\}\times\mathbb{R}^{n-1}$ is the graph of a continuous function of $n-2$ variables, hence is null by induction. Lemma~\ref{lem:6-2} makes the entire graph null. In general, Proposition A.60 expresses $A$ as a countable union of compact sets, so its graph is a countable union of null sets.
 \end{proof}
 
 \begin{corollary}
@@ -60,19 +67,19 @@ If $A$ is noncompact, it is a countable union of compact subsets by Proposition 
 \leanok
 \uses{prop:6-3}
 \dcref{ch6:6.4}
-Every proper affine subspace of ${\mathbb{R}}^{n}$ has measure zero in ${\mathbb{R}}^{n}$ .
+Every proper affine subspace of $\mathbb{R}^n$ has measure zero in $\mathbb{R}^n$.
 \end{corollary}
 
 \begin{proof}
 \leanok
-Let $S \subseteq  {\mathbb{R}}^{n}$ be a proper affine subspace. Suppose first that $\dim S = n - 1$ . Then there is at least one coordinate axis, say the ${x}^{i}$ -axis, that is not parallel to $S$ , and in that case $S$ is the graph of an affine function of the form ${x}^{i} = F\left( {{x}^{1},\ldots ,{x}^{i - 1},{x}^{i + 1},\ldots ,{x}^{n}}\right)$ , so it has measure zero by Proposition 6.3. If $\dim S < n - 1$ , then $S$ is contained in some affine subspace of dimension $n - 1$ , so it follows from Proposition C.18(b) that $S$ has measure zero.
+\sketch If $\dim S=n-1$, choose a coordinate axis not parallel to $S$. Then $S$ is the graph of an affine function in the remaining coordinates and is null by Proposition~\ref{prop:6-3}. If $\dim S<n-1$, embed $S$ in an affine hyperplane and apply Proposition C.18(b).
 \end{proof}
 
 \begin{definition}
 \label{def:6-38-extra-2}
 \lean{has_measure_zero_in_manifold}
 \leanok
-If $M$ is a smooth $n$ -manifold with or without boundary, we say that a subset $A \subseteq  M$ has measure zero in $\mathbf{M}$ if for every smooth chart $\left( {U,\varphi }\right)$ for $M$ , the subset $\varphi \left( {A \cap  U}\right)  \subseteq  {\mathbb{R}}^{n}$ has $n$ -dimensional measure zero. The following lemma shows that we need only check this condition for a single collection of smooth charts whose domains cover $A$ .
+Let $M$ be a smooth $n$-manifold with or without boundary. A subset $A\subseteq M$ has measure zero in $M$ if $\varphi(A\cap U)$ has $n$-dimensional measure zero in $\mathbb{R}^n$ for every smooth chart $(U,\varphi)$ of $M$.
 \end{definition}
 
 \begin{lemma}
@@ -80,39 +87,40 @@ If $M$ is a smooth $n$ -manifold with or without boundary, we say that a subset 
 \lean{has_measure_zero_in_manifold_of_chart_cover}
 \leanok
 \dcref{ch6:6.6}
-Let $M$ be a smooth $n$ -manifold with or without boundary and $A \subseteq  M$ . Suppose that for some collection $\left\{  \left( {{U}_{\alpha },{\varphi }_{\alpha }}\right) \right\}$ of smooth charts whose domains cover $A,{\varphi }_{\alpha }\left( {A \cap  {U}_{\alpha }}\right)$ has measure zero in ${\mathbb{R}}^{n}$ for each $\alpha$ . Then $A$ has measure zero in $M$ .
+Let $M$ be a smooth $n$-manifold with or without boundary and $A\subseteq M$. Suppose a collection of smooth charts $\{(U_\alpha,\varphi_\alpha)\}$ covers $A$ and each $\varphi_\alpha(A\cap U_\alpha)$ has measure zero in $\mathbb{R}^n$. Then $A$ has measure zero in $M$.
 \end{lemma}
 
 \begin{proof}
 \leanok
-Let $\left( {V,\psi }\right)$ be an arbitrary smooth chart. We need to show that $\psi \left( {A \cap  V}\right)$ has measure zero. Some countable collection of the ${U}_{\alpha }$ ’s covers $A \cap  V$ . For each such ${U}_{\alpha }$ , we have
-
+\sketch Fix a smooth chart $(V,\psi)$. A countable subcollection of the $U_\alpha$ covers $A\cap V$. For every chart in this subcollection,
 \[
-\psi \left( {A \cap  V \cap  {U}_{\alpha }}\right)  = \left( {\psi  \circ  {\varphi }_{\alpha }^{-1}}\right)  \circ  {\varphi }_{\alpha }\left( {A \cap  V \cap  {U}_{\alpha }}\right) .
+\psi(A\cap V\cap U_\alpha)
+=(\psi\circ\varphi_\alpha^{-1})
+\bigl(\varphi_\alpha(A\cap V\cap U_\alpha)\bigr).
 \]
-
-(See Fig. 6.4.)Now, ${\varphi }_{\alpha }\left( {A \cap  V \cap  {U}_{\alpha }}\right)$ is a subset of ${\varphi }_{\alpha }\left( {A \cap  {U}_{\alpha }}\right)$ , which has measure zero in ${\mathbb{R}}^{n}$ by hypothesis. By Proposition 6.5 applied to $\psi  \circ  {\varphi }_{\alpha }^{-1}$ , therefore, $\psi \left( {A \cap  V \cap  {U}_{\alpha }}\right)$ has measure zero. Since $\psi \left( {A \cap  V}\right)$ is the union of countably many such sets, it too has measure zero.
+The inner set is null by the hypothesis, and Proposition 6.5 shows that its image under the smooth transition map is null. Their countable union is $\psi(A\cap V)$, so this set is null.
 \end{proof}
 
-\begin{exercise}
+\begin{proposition}[Countable Stability of Null Sets]
 \label{exer:6-7}
 \lean{has_measure_zero_in_manifold_iUnion}
 \leanok
 \dcref{ch6:6.7}
-Let $M$ be a smooth manifold with or without boundary. Show that a countable union of sets of measure zero in $M$ has measure zero.
-\end{exercise}
+A countable union of measure-zero subsets of a smooth manifold, with or
+without boundary, has measure zero.
+\end{proposition}
 
 \begin{proposition}
 \label{prop:6-8}
 \lean{has_measure_zero_in_manifold}
 \leanok
 \dcref{ch6:6.8}
-Suppose $M$ is a smooth manifold with or without boundary and $A \subseteq  M$ has measure zero in $M$ . Then $M \smallsetminus  A$ is dense in $M$ .
+If $A$ has measure zero in a smooth manifold $M$ with or without boundary, then $M\setminus A$ is dense in $M$.
 \end{proposition}
 
 \begin{proof}
 \leanok
-If $M \smallsetminus  A$ is not dense, then $A$ contains a nonempty open subset of $M$ , which implies that there is a smooth chart $\left( {V,\psi }\right)$ such that $\psi \left( {A \cap  V}\right)$ contains a nonempty open subset of ${\mathbb{R}}^{n}$ (where $n = \dim M$ ). Because $\psi \left( {A \cap  V}\right)$ has measure zero in ${\mathbb{R}}^{n}$ , this contradicts Corollary C.25.
+\sketch Otherwise $A$ contains a nonempty open subset of $M$. In some smooth chart $(V,\psi)$, the null set $\psi(A\cap V)\subseteq\mathbb{R}^{\dim M}$ would then contain a nonempty open set, contradicting Corollary C.25.
 \end{proof}
 
 \begin{theorem}
@@ -120,12 +128,18 @@ If $M \smallsetminus  A$ is not dense, then $A$ contains a nonempty open subset 
 \lean{has_measure_zero_in_manifold}
 \leanok
 \dcref{ch6:6.9}
-Suppose $M$ and $N$ are smooth $n$ -manifolds with or without boundary, $F : M \rightarrow  N$ is a smooth map, and $A \subseteq  M$ is a subset of measure zero. Then $F\left( A\right)$ has measure zero in $N$ .
+Let $M$ and $N$ be smooth $n$-manifolds with or without boundary. If $F:M\to N$ is smooth and $A\subseteq M$ has measure zero, then $F(A)$ has measure zero in $N$.
 \end{theorem}
 
 \begin{proof}
 \leanok
-Let $\left\{  \left( {{U}_{i},{\varphi }_{i}}\right) \right\}$ be a countable cover of $M$ by smooth charts. We need to show that for each smooth chart $\left( {V,\psi }\right)$ for $N$ , the set $\psi \left( {F\left( A\right)  \cap  V}\right)$ has measure zero in ${\mathbb{R}}^{n}$ . Note that this set is the union of countably many subsets of the form $\psi  \circ  F \circ  {\varphi }_{i}^{-1}\left( {{\varphi }_{i}\left( {A \cap  {U}_{i} \cap  {F}^{-1}\left( V\right) }\right) }\right)$ , each of which has measure zero by the result of Proposition 6.5.
+\sketch Cover $M$ by countably many smooth charts $(U_i,\varphi_i)$. For each smooth chart $(V,\psi)$ of $N$,
+\[
+\psi(F(A)\cap V)
+=\bigcup_i(\psi\circ F\circ\varphi_i^{-1})
+\bigl(\varphi_i(A\cap U_i\cap F^{-1}(V))\bigr).
+\]
+Every set on the right is null by Proposition 6.5, and a countable union of null sets is null.
 \end{proof}
 
 
@@ -135,7 +149,11 @@ Let $\left\{  \left( {{U}_{i},{\varphi }_{i}}\right) \right\}$ be a countable co
 \label{def:6-41-extra-1}
 \lean{delta_close}
 \leanok
-If $\delta  : M \rightarrow  \mathbb{R}$ is a positive continuous function, we say that two functions $F,\widetilde{F} : M \rightarrow  {\mathbb{R}}^{k}$ are $\delta$ -close if $\left| {F\left( x\right)  - \widetilde{F}\left( x\right) }\right|  < \; \delta \left( x\right)$ for all $x \in  M$ .
+For a positive continuous function $\delta:M\to\mathbb{R}$, maps $F,\widetilde F:M\to\mathbb{R}^k$ are $\delta$-close if
+\[
+|F(x)-\widetilde F(x)|<\delta(x)
+\qquad\text{for every }x\in M.
+\]
 \end{definition}
 
 \begin{corollary}
@@ -143,12 +161,20 @@ If $\delta  : M \rightarrow  \mathbb{R}$ is a positive continuous function, we s
 \lean{Manifold.exists_positive_smooth_lt}
 \leanok
 \dcref{ch6:6.22}
-If $M$ is a smooth manifold with or without boundary and $\delta  : M \rightarrow \; \mathbb{R}$ is a positive continuous function, there is a smooth function $e : M \rightarrow  \mathbb{R}$ such that $0 < e\left( x\right)  < \delta \left( x\right)$ for all $x \in  M$ .
+If $M$ is a smooth manifold with or without boundary and $\delta:M\to\mathbb{R}$ is positive and continuous, then there is a smooth function $e:M\to\mathbb{R}$ such that
+\[
+0<e(x)<\delta(x)
+\qquad\text{for every }x\in M.
+\]
 \end{corollary}
 
 \begin{proof}
 \leanok
-Use the Whitney approximation theorem to construct a smooth function $e : M \rightarrow  \mathbb{R}$ that satisfies $\left| {e\left( x\right)  - \frac{1}{2}\delta \left( x\right) }\right|  < \frac{1}{2}\delta \left( x\right)$ for all $x \in  M$ .
+\sketch Apply the Whitney approximation theorem to $\delta/2$ to obtain a smooth $e$ satisfying
+\[
+|e(x)-\delta(x)/2|<\delta(x)/2
+\]
+for every $x\in M$.
 \end{proof}
 
 
@@ -158,20 +184,23 @@ Use the Whitney approximation theorem to construct a smooth function $e : M \rig
 \label{def:6-42-extra-1}
 \lean{normal_bundle}
 \leanok
-For each $x \in  {\mathbb{R}}^{n}$ , the tangent space ${T}_{x}{\mathbb{R}}^{n}$ is canonically identified with ${\mathbb{R}}^{n}$ itself, and the tangent bundle $T{\mathbb{R}}^{n}$ is canonically diffeomorphic to ${\mathbb{R}}^{n} \times  {\mathbb{R}}^{n}$ . By virtue of this identification, each tangent space ${T}_{x}{\mathbb{R}}^{n}$ inherits a Euclidean dot product. Suppose $M \subseteq  {\mathbb{R}}^{n}$ is an embedded $m$ -dimensional submanifold. For each $x \in  M$ , we define the normal space to $M$ at $x$ to be the $\left( {n - m}\right)$ -dimensional subspace ${N}_{x}M \subseteq  {T}_{x}{\mathbb{R}}^{n}$ consisting of all vectors that are orthogonal to ${T}_{x}M$ with respect to the Euclidean dot product. The normal bundle of $M$ , denoted by ${NM}$ , is the subset of $T{\mathbb{R}}^{n} \approx  {\mathbb{R}}^{n} \times  {\mathbb{R}}^{n}$ consisting of vectors that are normal to $M$ :
-
+Use the canonical identifications $T_x\mathbb{R}^n\cong\mathbb{R}^n$ and $T\mathbb{R}^n\cong\mathbb{R}^n\times\mathbb{R}^n$, with their Euclidean inner products. If $M\subseteq\mathbb{R}^n$ is an embedded $m$-submanifold, its normal space at $x\in M$ is the $(n-m)$-dimensional subspace
 \[
-{NM} = \left\{  {\left( {x, v}\right)  \in  {\mathbb{R}}^{n} \times  {\mathbb{R}}^{n} : x \in  M, v \in  {N}_{x}M}\right\}  .
+N_xM=(T_xM)^\perp\subseteq T_x\mathbb{R}^n.
 \]
-
-There is a natural projection ${\pi }_{NM} : {NM} \rightarrow  M$ defined as the restriction to ${NM}$ of $\pi  : T{\mathbb{R}}^{n} \rightarrow  {\mathbb{R}}^{n}.$
+Its normal bundle and projection are
+\[
+NM=\{(x,v)\in\mathbb{R}^n\times\mathbb{R}^n:x\in M,\ v\in N_xM\},
+\qquad
+\pi_{NM}=\pi|_{NM}:NM\to M.
+\]
 \end{definition}
 
 \begin{definition}
 \label{def:6-42-extra-3}
 \lean{TopologicalRetraction}
 \leanok
-A retraction of a topological space $X$ onto a subspace $M \subseteq  X$ is a continuous map $r : X \rightarrow  M$ such that ${\left. r\right| }_{M}$ is the identity map of $M$ .
+A retraction of a topological space $X$ onto $M\subseteq X$ is a continuous map $r:X\to M$ such that $r|_M=\id_M$.
 \end{definition}
 
 
@@ -181,7 +210,7 @@ A retraction of a topological space $X$ onto a subspace $M \subseteq  X$ is a co
 \label{def:6-43-extra-1}
 \lean{ContMDiffMap.SmoothlyHomotopic}
 \leanok
-If $N$ and $M$ are two smooth manifolds with or without boundary, a homotopy $H : N \times  I \rightarrow  M$ is called a smooth homotopy if it is also a smooth map, in the sense that it extends to a smooth map on some neighborhood of $N \times  I$ in $N \times  \mathbb{R}$ . Two maps are said to be smoothly homotopic if there is a smooth homotopy between them.
+For smooth manifolds $N$ and $M$ with or without boundary, a homotopy $H:N\times I\to M$ is smooth if it extends smoothly to a neighborhood of $N\times I$ in $N\times\mathbb{R}$. Two maps are smoothly homotopic if they are joined by such a homotopy.
 \end{definition}
 
 \begin{lemma}
@@ -189,18 +218,20 @@ If $N$ and $M$ are two smooth manifolds with or without boundary, a homotopy $H 
 \lean{ContMDiffMap.SmoothlyHomotopic.equivalence}
 \leanok
 \dcref{ch6:6.28}
-If $N$ and $M$ are smooth manifolds with or without boundary, smooth homotopy is an equivalence relation on the set of all smooth maps from $N$ to $M$ .
+Smooth homotopy is an equivalence relation on the smooth maps between any smooth manifolds $N$ and $M$ with or without boundary.
 \end{lemma}
 
 \begin{proof}
 \leanok
-Reflexivity and symmetry are proved just as for ordinary homotopy. To prove transitivity, suppose $F, G, K : N \rightarrow  M$ are smooth maps, and ${H}_{1},{H}_{2} : N \times  I \rightarrow  M$ are smooth homotopies from $F$ to $G$ and $G$ to $K$ , respectively. Let $\varphi  : \left\lbrack  {0,1}\right\rbrack   \rightarrow  \left\lbrack  {0,2}\right\rbrack$ be a smooth map such that $0 \leq  \varphi \left( t\right)  \leq  1$ for $t \in  \left\lbrack  {0,\frac{1}{2}}\right\rbrack  ,1 \leq  \varphi \left( t\right)  \leq  2$ for $t \in  \left\lbrack  {\frac{1}{2},1}\right\rbrack$ , $\varphi \left( 0\right)  = 0,\varphi \left( 1\right)  = 2$ , and $\varphi \left( t\right)  \equiv  1$ for $t$ in a neighborhood of $\frac{1}{2}$ (see Fig. 6.9).Define $H : N \times  I \rightarrow  M$ by
+\sketch Reflexivity and symmetry follow from constant homotopies and reversal of the interval. For transitivity, let $H_1$ join $F$ to $G$ and $H_2$ join $G$ to $K$. Choose a smooth $\varphi:[0,1]\to[0,2]$ such that $\varphi(0)=0$, $\varphi(1)=2$, $\varphi([0,1/2])\subseteq[0,1]$, $\varphi([1/2,1])\subseteq[1,2]$, and $\varphi=1$ near $1/2$. Define
 
 \[
-H\left( {x, t}\right)  = \left\{  \begin{array}{ll} {H}_{1}\left( {x,\varphi \left( t\right) }\right) , & t \in  \left\lbrack  {0,\frac{1}{2}}\right\rbrack  , \\  {H}_{2}\left( {x,\varphi \left( t\right)  - 1}\right) , & t \in  \left\lbrack  {\frac{1}{2},1}\right\rbrack  . \end{array}\right.
+H(x,t)=\begin{cases}
+H_1(x,\varphi(t)),&0\leq t\leq \tfrac12,\\
+H_2(x,\varphi(t)-1),&\tfrac12\leq t\leq1.
+\end{cases}
 \]
-
-Then it is easy to check that $H$ is a smooth homotopy from $F$ to $K$ .
+Because both pieces equal $G$ near $t=1/2$, they glue smoothly; thus $H$ joins $F$ to $K$.
 \end{proof}
 
 
@@ -210,7 +241,12 @@ Then it is easy to check that $H$ is a smooth homotopy from $F$ to $K$ .
 \label{def:6-44-extra-2}
 \lean{IsSmoothFamily}
 \leanok
-Suppose $N, M$ , and $S$ are smooth manifolds, and for each $s \in  S$ we are given a map ${F}_{s} : N \rightarrow  M$ . The collection $\left\{  {{F}_{s} : s \in  S}\right\}$ is called a smooth family of maps if the map $F : M \times  S \rightarrow  N$ defined by $F\left( {x, s}\right)  = {F}_{s}\left( x\right)$ is smooth. You should think of such a family as a higher-dimensional analogue of a homotopy. The next proposition shows how such families are related to ordinary homotopies.
+Let $N$, $M$, and $S$ be smooth manifolds. A family of maps $\{F_s:N\to M\}_{s\in S}$ is smooth if the associated map
+\[
+F:N\times S\to M,
+\qquad F(x,s)=F_s(x),
+\]
+is smooth.
 \end{definition}
 
 \begin{proposition}
@@ -218,29 +254,21 @@ Suppose $N, M$ , and $S$ are smooth manifolds, and for each $s \in  S$ we are gi
 \lean{chartedSpace_locPathConnectedSpace}
 \leanok
 \dcref{ch6:6.34}
-If $\left\{  {{F}_{s} : s \in  S}\right\}$ is a smooth family of maps from $N$ to $M$ and $S$ is connected, then for any ${s}_{1},{s}_{2} \in  S$ , the maps ${F}_{{s}_{1}},{F}_{{s}_{2}} : N \rightarrow  M$ are homotopic.
+Let $\{F_s:N\to M\}_{s\in S}$ be a smooth family with $S$ connected. Then $F_{s_1}$ and $F_{s_2}$ are homotopic for every $s_1,s_2\in S$.
 \end{proposition}
 
 \begin{proof}
 \leanok
-Because $S$ is connected, it is path-connected. If $\gamma  : \left\lbrack  {0,1}\right\rbrack   \rightarrow  S$ is any path from ${s}_{1}$ to ${s}_{2}$ , then $H\left( {x, s}\right)  = F\left( {x,\gamma \left( s\right) }\right)$ is a homotopy from ${F}_{{s}_{1}}$ to ${F}_{{s}_{2}}$ .
+\sketch A connected smooth manifold is path-connected. For a path $\gamma:[0,1]\to S$ from $s_1$ to $s_2$, the map
+\[
+H(x,t)=F(x,\gamma(t))
+\]
+is a homotopy from $F_{s_1}$ to $F_{s_2}$.
 \end{proof}
 
 \begin{definition}
 \label{def:6-44-extra-3}
 \lean{has_measure_zero_in_manifold}
 \leanok
-If $S$ is a smooth manifold and $B \subseteq  S$ is a subset whose complement has measure zero in $S$ , we say that $B$ contains almost every element of $S$ .
+A subset $B$ of a smooth manifold $S$ contains almost every element of $S$ if $S\setminus B$ has measure zero in $S$.
 \end{definition}
-
-
-\section{Problems}
-
-\begin{exercise}
-\label{prob:6-3}
-\lean{Manifold.exists_smooth_zero_on_and_positive_off_lt_of_isClosed}
-\leanok
-\uses{cor:6-22}
-6-3. Let $M$ be a smooth manifold, let $B \subseteq  M$ be a closed subset, and let $\delta  : M \rightarrow \; \mathbb{R}$ be a positive continuous function. Show that there is a smooth function $\widetilde{\delta } : M \rightarrow  \mathbb{R}$ that is zero on $B$ , positive on $M \smallsetminus  B$ , and satisfies $\widetilde{\delta }\left( x\right)  < \delta \left( x\right)$ everywhere. [Hint: consider $f/\left( {f + 1}\right)$ , where $f$ is a smooth nonnegative function that vanishes exactly on $B$ , and use Corollary 6.22.]
-\end{exercise}
-

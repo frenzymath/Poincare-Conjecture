@@ -11,24 +11,6 @@
 \newcommand{\Cov}{\operatorname{Cov}}
 \newcommand{\dGH}{d_{G\text{-}H}}
 
-Faithful transcription of Petersen, \emph{Riemannian Geometry} (GTM 171, 3rd
-ed.), Chapter 11. The chapter opens with a motivational overview (no numbered
-statements) of convergence notions for Riemannian manifolds, then develops:
-the Hausdorff and Gromov--Hausdorff distances on compact or proper metric
-spaces and the resulting metric space $(\mathcal{M},\dGH)$ of compact metric
-spaces, together with pointed convergence, convergence of maps, and Gromov's
-precompactness criteria (\S11.1); the Hölder spaces $C^{m,\alpha}$ and the
-Schauder elliptic estimates used to construct harmonic coordinates (\S11.2);
-the $C^{m,\alpha}$ and harmonic norms of a pointed Riemannian manifold, the
-induced notion of pointed $C^{m,\alpha}$ convergence, and Cheeger's
-Fundamental Theorem of Convergence Theory together with its finiteness
-corollaries (\S11.3); and the geometric applications of the theory —
-Anderson's harmonic-coordinate control of the metric by Ricci curvature, the
-Convergence Theorem of Riemannian Geometry, Cheeger's injectivity-radius
-lemma, and the Ricci/sectional curvature pinching theorems (\S11.4) — closing
-with Petersen's bibliographic remarks on further study of convergence and
-collapsing (\S11.5) and his exercise set (\S11.6).
-
 \section{Gromov-Hausdorff Convergence}
 
 \subsection{Hausdorff Versus Gromov Convergence}
@@ -36,7 +18,7 @@ collapsing (\S11.5) and his exercise set (\S11.6).
 \begin{definition}[Hausdorff distance]
   \label{def:pet-ch11-hausdorff-distance}
   \lean{PetersenLib.hausdorffDistance}
-  For a metric space $(X,|\cdot|)$ and $A,B\subset X$, set
+  Given a metric space $(X,|\cdot|)$ and subsets $A,B\subset X$, define
   $d(A,B)=\inf\{|ab|\mid a\in A,\,b\in B\}$,
   $B(A,\varepsilon)=\{x\in X\mid|xA|<\varepsilon\}$ (writing $|xA|=d(\{x\},A)$),
   and define the \emph{Hausdorff distance}
@@ -47,25 +29,23 @@ collapsing (\S11.5) and his exercise set (\S11.6).
   $d_H(A,B)$ is small exactly when every point of $A$ is close to a point of
   $B$ and vice versa. The Hausdorff distance defines a metric on the compact
   subsets of $X$, and this collection is compact when $X$ is compact.
-  \source{petersen:page-0409}
 \end{definition}
 
 \begin{convention}[compact and proper metric spaces]
   \label{conv:pet-ch11-compact-proper-spaces}
   \lean{PetersenLib.ProperMetricSpace}
-  Throughout, only compact or \emph{proper} metric spaces are considered:
+  We restrict to compact or \emph{proper} metric spaces:
   spaces whose distance function is proper, i.e.\ all closed balls are
   compact. Proper metric spaces are automatically separable, complete, and
   locally compact.
-  \source{petersen:page-0409}
 \end{convention}
 
 \begin{definition}[admissible metric, Gromov--Hausdorff distance]
   \label{def:pet-ch11-gromov-hausdorff-distance}
   \lean{PetersenLib.admissibleMetric,PetersenLib.gromovHausdorffDistance}
   \uses{def:pet-ch11-hausdorff-distance}
-  For metric spaces $X,Y$, an \emph{admissible metric} on the disjoint union
-  $X\cup Y$ is a metric that extends the given metrics on $X$ and on $Y$. The
+  For two metric spaces $X,Y$, call a metric on the disjoint union
+  \emph{admissible} when it extends the given metrics on $X$ and on $Y$. The
   \emph{Gromov--Hausdorff distance} is
   \[
     \dGH(X,Y)=\inf\{d_H(X,Y)\mid\text{admissible metrics on }X\cup Y\}:
@@ -74,190 +54,140 @@ collapsing (\S11.5) and his exercise set (\S11.6).
   and $Y$ as Hausdorff-close as possible — equivalently, one tries to define
   distances between points of $X$ and $Y$ without violating the triangle
   inequality.
-  \source{petersen:page-0409}
 \end{definition}
 
-\begin{example}[Example 11.1.1 — distance to a point]
+\begin{example}[distance to a point]
   \label{ex:pet-ch11-gh-distance-radius}
+  \dcref{ch11:11.1.1}
   \lean{PetersenLib.ghDistance_le_radius}
   \uses{def:pet-ch11-gromov-hausdorff-distance}
-  If $Y$ is a one-point space, then
+  When $Y$ consists of one point,
   $\dGH(X,Y)\le\operatorname{rad}X=\inf_{y}\sup_{x\in X}|xy|$, the radius of
   the smallest ball covering $X$.
-  \source{petersen:page-0409}
 \end{example}
 
-\begin{example}[Example 11.1.2 — diameter bound]
+\begin{example}[diameter bound]
   \label{ex:pet-ch11-gh-distance-diameter-bound}
+  \dcref{ch11:11.1.2}
   \lean{PetersenLib.ghDistance_le_halfDiam}
   \uses{def:pet-ch11-gromov-hausdorff-distance}
-  If $\diam X,\diam Y\le D$, using $|xy|=D/2$ for all $x\in X$, $y\in Y$ as an
-  admissible metric on $X\cup Y$ shows $\dGH(X,Y)\le D/2$.
-  \source{petersen:page-0409}
+  If both diameters are at most $D$, assign cross-distance $D/2$ to every
+  pair in $X\times Y$; this admissible metric gives $\dGH(X,Y)\le D/2$.
 \end{example}
 
-\begin{proposition}[Prop.\ 11.1.3 — distance zero implies isometric]
+\begin{proposition}[distance zero implies isometric]
   \label{prop:pet-ch11-gh-distance-zero-isometric}
+  \dcref{ch11:11.1.3}
   \lean{PetersenLib.ghDistance_eq_zero_iff_isometric}
   \uses{def:pet-ch11-gromov-hausdorff-distance}
-  If $X$ and $Y$ are compact metric spaces with $\dGH(X,Y)=0$, then $X$ and
-  $Y$ are isometric.
-  \source{petersen:page-0410}
+  Compact metric spaces at zero Gromov--Hausdorff distance are isometric:
+  $\dGH(X,Y)=0$ implies that $X$ and $Y$ are isometric.
 \end{proposition}
 \begin{proof}
   \uses{prop:pet-ch11-gh-distance-zero-isometric}
-  Choose metrics $|\cdot|_i$ on $X\cup Y$ with Hausdorff distance between $X$
-  and $Y$ $<i^{-1}$. Then find (possibly discontinuous) maps
-  $I_i:X\to Y$ with $|xI_i(x)|_i\le i^{-1}$ and $J_i:Y\to X$ with
-  $|yJ_i(y)|_i\le i^{-1}$. The triangle inequality and the fact that
-  $|\cdot|_i$ restricted to $X$ (resp.\ $Y$) is the given metric yield
+  \sketch
+  Choose admissible metrics with \(d_H(X,Y)<i^{-1}\), and maps \(I_i:X\to Y\), \(J_i:Y\to X\) moving each point by at most \(i^{-1}\). Then
   \[
-    |I_i(x_1)I_i(x_2)|\le2i^{-1}+|x_1x_2|,\qquad
-    |J_i(y_1)J_i(y_2)|\le2i^{-1}+|y_1y_2|,
+    |I_i(x_1)I_i(x_2)|\le |x_1x_2|+2i^{-1},\quad
+    |J_i(y_1)J_i(y_2)|\le |y_1y_2|+2i^{-1},
   \]
-  \[
-    |xJ_i\circ I_i(x)|\le2i^{-1},\qquad |yI_i\circ J_i(y)|\le2i^{-1}.
-  \]
-  Construct $I:X\to Y$, $J:Y\to X$ as limits of the $I_i,J_i$ as in the proof
-  of the Arzelà--Ascoli lemma: for each $x$ the sequence $(I_i(x))$ has an
-  accumulation point since $Y$ is compact; fixing a countable dense
-  $A\subset X$, a diagonal argument gives a subsequence $I_{i_j}$ with
-  $I_{i_j}(a)\to I(a)$ for all $a\in A$. The first inequality shows $I$ is
-  distance decreasing on $A$, hence uniformly continuous, and extends
-  uniquely to a distance-decreasing map $I:X\to Y$; likewise for $J:Y\to X$.
-  The last two inequalities pass to the limit to show $I,J$ are mutual
-  inverses, so both are isometries.
+  while \(J_iI_i\) and \(I_iJ_i\) move points by at most \(2i^{-1}\). Compactness and diagonal subsequences on countable dense sets give distance-nonincreasing limits \(I\) and \(J\). The last estimates make them inverse, hence isometries.
 \end{proof}
+
 
 \begin{remark}[$(\mathcal{M},\dGH)$ as a metric space]
   \label{rem:pet-ch11-gh-pseudo-metric-quotient}
   \lean{PetersenLib.compactMetricSpaceQuotient}
   \uses{prop:pet-ch11-gh-distance-zero-isometric}
-  Symmetry and the triangle inequality for $\dGH$ are straightforward, so
-  $\dGH$ is a pseudo-metric on the collection $\mathcal{M}$ of compact metric
+  Symmetry and the triangle inequality make $\dGH$ a pseudometric on the
+  collection $\mathcal{M}$ of compact metric
   spaces; by \cref{prop:pet-ch11-gh-distance-zero-isometric} the equivalence
   classes (up to isometry) form a genuine metric space $(\mathcal{M},\dGH)$.
-  \source{petersen:page-0410}
 \end{remark}
 
-\begin{example}[Example 11.1.4 — $\varepsilon$-dense finite approximation]
+\begin{example}[$\varepsilon$-dense finite approximation]
   \label{ex:pet-ch11-epsilon-dense-approximation}
+  \dcref{ch11:11.1.4}
   \lean{PetersenLib.epsilonDense,PetersenLib.ghDistance_le_epsilon_of_epsilonDense}
   \uses{def:pet-ch11-gromov-hausdorff-distance,def:pet-ch11-hausdorff-distance}
-  Let $X$ be compact and $A\subset X$ finite with $d_H(A,X)\le\varepsilon$
-  (metric on $A$ induced from $X$); such $A$ is \emph{$\varepsilon$-dense} in
+  For compact $X$ and finite $A\subset X$ with $d_H(A,X)\le\varepsilon$
+  (using the induced metric on $A$), call $A$ \emph{$\varepsilon$-dense} in
   $X$. Then $\dGH(X,A)\le\varepsilon$; since $X$ is compact, finite
   $\varepsilon$-dense subsets exist for every $\varepsilon>0$.
-  \source{petersen:page-0410,petersen:page-0411}
 \end{example}
 \begin{proof}
   \uses{ex:pet-ch11-epsilon-dense-approximation}
-  For small $\delta>0$ put $|xa|_{X\cup A}=\delta+|xa|_X$ for $x\in X$,
-  $a\in A$; this is an admissible metric on $X\cup A$ for which
-  $d_H(X,A)<\varepsilon+\delta$ (using $d_H(A,X)\le\varepsilon$), so
-  $\dGH(X,A)<\varepsilon+\delta$. Letting $\delta\to0$ gives the estimate.
+  \sketch
+  For \(\delta>0\), define the cross-distance on \(X\sqcup A\) by
+  \(|xa|=\delta+|xa|_X\). This admissible metric has
+  \(d_H(X,A)<\varepsilon+\delta\); let \(\delta\downarrow0\).
 \end{proof}
 
-\begin{example}[Example 11.1.5 — correspondences bound $\dGH$ by $3\varepsilon$]
+
+\begin{example}[correspondences bound $\dGH$ by $3\varepsilon$]
   \label{ex:pet-ch11-finite-approximation-3eps}
+  \dcref{ch11:11.1.5}
   \lean{PetersenLib.ghDistance_le_threeEpsilon_of_correspondence}
   \uses{ex:pet-ch11-epsilon-dense-approximation}
-  Suppose $A=\{x_1,\dots,x_k\}\subset X$, $B=\{y_1,\dots,y_k\}\subset Y$ are
-  $\varepsilon$-dense subsets with
+  Take finite sets
+  $A=\{x_1,\dots,x_k\}\subset X$ and $B=\{y_1,\dots,y_k\}\subset Y$ that are
+  $\varepsilon$-dense and satisfy
   $\big||x_ix_j|-|y_iy_j|\big|\le\varepsilon$ for $1\le i,j\le k$. Then
   $\dGH(X,Y)\le3\varepsilon$.
-  \source{petersen:page-0411,petersen:page-0412}
 \end{example}
 \begin{proof}
   \uses{ex:pet-ch11-finite-approximation-3eps}
-  By \cref{ex:pet-ch11-epsilon-dense-approximation} and the triangle
-  inequality it suffices to show $\dGH(A,B)\le\varepsilon$, i.e.\ to exhibit a
-  metric on $A\cup B$ making $A,B$ $\varepsilon$-Hausdorff close. Define
-  $|x_iy_i|=\varepsilon$ and
-  $|x_iy_j|=\min_k\{|x_ix_k|+\varepsilon+|y_jy_k|\}$; this extends the given
-  metrics on $A,B$, identifies no points across $A,B$, and is symmetric. For
-  the triangle inequality it suffices to check
-  $|x_iy_j|\le|x_iz|+|y_jz|$ and $|x_ix_j|\le|y_kx_i|+|y_kx_j|$ (the case
-  $|y_iy_j|\le|x_ky_i|+|x_ky_j|$ is symmetric). For the first, take
-  $z=x_k$ and choose $l$ with
-  $|y_jx_k|=\varepsilon+|y_jy_l|+|x_lx_k|$; then
+  \sketch
+  By \cref{ex:pet-ch11-epsilon-dense-approximation}, it remains to compare
+  the finite approximations. On \(A\sqcup B\), set
   \[
-    |x_ix_k|+|y_jx_k|=|x_ix_k|+\varepsilon+|y_jy_l|+|x_lx_k|
-    \ge|x_iy_l|+\varepsilon+|y_jy_l|\ge|x_iy_j|.
+    |x_i y_j|=\min_k\bigl(|x_i x_k|+\varepsilon+|y_jy_k|\bigr).
   \]
-  For the second, choose $l,m$ with
-  $|y_kx_i|=|y_ky_l|+\varepsilon+|x_lx_i|$ and
-  $|y_kx_j|=|y_ky_m|+\varepsilon+|x_mx_j|$; the correspondence hypothesis
-  $\big||x_ix_j|-|y_iy_j|\big|\le\varepsilon$ then gives
-  \[
-    |y_kx_i|+|y_kx_j|
-    =|y_ky_l|+\varepsilon+|x_lx_i|+|y_ky_m|+\varepsilon+|x_mx_j|
-    \ge|x_kx_l|+|x_lx_i|+|x_kx_m|+|x_mx_j|\ge|x_ix_j|,
-  \]
-  using the triangle inequality in $X$ twice on the last step.
+  The correspondence bound supplies the mixed triangle inequalities, so this is admissible and makes paired points at most \(\varepsilon\) apart. Thus \(\dGH(A,B)\le\varepsilon\). Since \(A\) and \(B\) are each \(\varepsilon\)-close to the ambient space, the triangle inequality gives \(\dGH(X,Y)\le3\varepsilon\).
 \end{proof}
 
-\begin{example}[Example 11.1.6 — lens spaces collapse to $S^2(1/2)$]
+
+\begin{example}[lens spaces collapse to $S^2(1/2)$]
   \label{ex:pet-ch11-lens-spaces-limit}
+  \dcref{ch11:11.1.6}
   \lean{PetersenLib.lensSpace_ghConverges_toSphere}
   \uses{ex:pet-ch11-finite-approximation-3eps}
-  Let $M_k=S^3/\mathbb{Z}_k$ with the metric induced from $S^3(1)$. The
+  Equip $M_k=S^3/\mathbb{Z}_k$ with the metric induced by $S^3(1)$. The
   Riemannian submersion $M_k\to S^2(1/2)$ has fibres of diameter
   $2\pi/k\to0$; using \cref{ex:pet-ch11-finite-approximation-3eps} it follows
   that $M_k\to S^2(1/2)$ in the Gromov--Hausdorff topology.
-  \source{petersen:page-0412}
 \end{example}
 
-\begin{example}[Example 11.1.7 — Berger spheres collapse to $S^2(1/2)$]
+\begin{example}[Berger spheres collapse to $S^2(1/2)$]
   \label{ex:pet-ch11-berger-spheres-limit}
+  \dcref{ch11:11.1.7}
   \lean{PetersenLib.bergerSphere_ghConverges_toSphere}
   \uses{ex:pet-ch11-lens-spaces-limit}
-  Likewise the Berger metrics $(S^3,g_\varepsilon)\to S^2(1/2)$ as
+  The Berger family also satisfies $(S^3,g_\varepsilon)\to S^2(1/2)$ as
   $\varepsilon\to0$. In both examples the volume goes to zero while the
   curvatures and diameters stay uniformly bounded; in the Berger case the
   manifolds are even simply connected, yet the topology changes drastically —
   in the lens-space case the fundamental groups of the sequence elements are
   even mutually different.
-  \source{petersen:page-0412}
 \end{example}
 
-\begin{proposition}[Prop.\ 11.1.8 — $(\mathcal{M},\dGH)$ separable and complete]
+\begin{proposition}[$(\mathcal{M},\dGH)$ separable and complete]
   \label{prop:pet-ch11-gh-space-separable-complete}
+  \dcref{ch11:11.1.8}
   \lean{PetersenLib.gromovHausdorffSpace_separable_complete}
   \uses{rem:pet-ch11-gh-pseudo-metric-quotient}
-  The metric space $(\mathcal{M},\dGH)$ is separable and complete.
-  \source{petersen:page-0412,petersen:page-0413}
+  The quotient metric space $(\mathcal{M},\dGH)$ is both separable and
+  complete.
 \end{proposition}
 \begin{proof}
   \uses{prop:pet-ch11-gh-space-separable-complete}
-  \emph{Separability.} Finite metric spaces are dense in $\mathcal{M}$ by
-  \cref{ex:pet-ch11-epsilon-dense-approximation}, so it suffices to note that
-  the countable collection of finite metric spaces all of whose pairwise
-  distances are rational is dense as well.
-
-  \emph{Completeness.} Let $\{X_n\}$ be Cauchy; it suffices to produce a
-  convergent subsequence. Choose $\{X_i\}$ with
-  $\dGH(X_i,X_{i+1})<2^{-i}$ and metrics $|\cdot|_{i,i+1}$ on $X_i\cup X_{i+1}$
-  making them $2^{-i}$-Hausdorff close. Define $|\cdot|_{i,i+j}$ on
-  $X_i\cup X_{i+j}$ by
-  \[
-    |x_i\,x_{i+j}|_{i,i+j}
-    =\min_{\{x_{i+k}\in X_{i+k}\}}\Big\{\sum_{k=0}^{j-1}|x_{i+k}x_{i+k+1}|\Big\},
-  \]
-  giving a metric on $Y=\bigcup_iX_i$ with $d_H(X_i,X_{i+j})\le2^{-i+1}$. Let
-  \[
-    \hat X=\big\{\{x_i\}\mid x_i\in X_i,\ |x_iy_j|\to0\text{ as }i,j\to\infty\big\},
-  \]
-  with pseudo-metric $|\{x_i\}\{y_i\}|=\lim_i|x_iy_i|$; the quotient by
-  $\{x_i\}\sim\{y_i\}\iff|\{x_i\}\{y_i\}|=0$ is a metric space $X$. Extend the
-  metric on $Y$ to $X\cup Y$ by
-  $|x\,\{x_i\}|=\lim_i|x_ix_i|$. Since $d_H(X_i,X_{i+1})\le2^{-i}$, for any
-  $x_i\in X_i$ one can build $\{x_{i+j}\}\in\hat X$ with $x_{i+0}=x_i$ and
-  $|x_{i+j}x_{i+j+1}|\le2^{-j}$, so $|x_i\{x_{i+j}\}|\le2^{-i+1}$: every
-  $X_i$ is $2^{-i+1}$-close to $X$. Conversely any sequence $\{x_i\}$ is
-  equivalent to one $\{y_i\}$ with $|y_k\{y_i\}|\le2^{-k+1}$, so $X$ is
-  $2^{-i+1}$-close to $X_i$. Hence $X_i\to X$ in $\dGH$.
+  \sketch
+  Finite metric spaces are dense by
+  \cref{ex:pet-ch11-epsilon-dense-approximation}, and perturbing their
+  distance matrices to rational ones gives a countable dense family. For completeness, take a subsequence with
+  \(\dGH(X_i,X_{i+1})<2^{-i}\), choose corresponding admissible metrics, and glue them along the chain. The completion of the resulting union contains compact closures \(Y_i\) isometric to \(X_i\), with \(d_H(Y_i,Y_{i+1})<2^{-i}\). These closures converge in Hausdorff distance to a compact set \(Y\), hence \(X_i\to Y\) in \(\dGH\).
 \end{proof}
+
 
 \subsection{Pointed Convergence}
 
@@ -265,28 +195,26 @@ collapsing (\S11.5) and his exercise set (\S11.6).
   \label{def:pet-ch11-pointed-gh-distance}
   \lean{PetersenLib.pointedGromovHausdorffDistance}
   \uses{def:pet-ch11-gromov-hausdorff-distance,def:pet-ch11-hausdorff-distance}
-  For pointed metric spaces $(X,x)$, $(Y,y)$, the \emph{pointed
-  Gromov--Hausdorff distance} is
+  For pointed metric spaces $(X,x)$ and $(Y,y)$, define their \emph{pointed
+  Gromov--Hausdorff distance} by
   \[
     \dGH\big((X,x),(Y,y)\big)=\inf\{d_H(X,Y)+|xy|\},
   \]
   the infimum over admissible metrics on $X\cup Y$ of the Hausdorff distance
   plus the distance between the marked points.
-  \source{petersen:page-0414}
 \end{definition}
 
 \begin{definition}[pointed Gromov--Hausdorff topology]
   \label{def:pet-ch11-pointed-gh-topology}
   \lean{PetersenLib.PointedGromovHausdorffConvergence}
   \uses{def:pet-ch11-pointed-gh-distance}
-  On the collection $\mathcal{M}_*=\{(X,x,|\cdot|)\}$ of proper pointed
+  For $\mathcal{M}_*=\{(X,x,|\cdot|)\}$, the collection of proper pointed
   metric spaces, $(X_i,x_i,|\cdot|_i)\to(X,x,|\cdot|)$ in the \emph{pointed
   Gromov--Hausdorff topology} if for every $R$ there is a sequence $R_i\to R$
   such that the closed balls
   $\big(\overline{B}(x_i,R_i),x_i,|\cdot|_i\big)\to\big(\overline{B}(x,R),x,|\cdot|\big)$
   converge in the pointed Gromov--Hausdorff metric of
   \cref{def:pet-ch11-pointed-gh-distance}.
-  \source{petersen:page-0414}
 \end{definition}
 
 \subsection{Convergence of Maps}
@@ -295,196 +223,187 @@ collapsing (\S11.5) and his exercise set (\S11.6).
   \label{def:pet-ch11-convergence-of-maps}
   \lean{PetersenLib.MapsConvergeTo}
   \uses{def:pet-ch11-pointed-gh-topology}
-  Given $f_k:X_k\to Y_k$ with $X_k\to X$ and $Y_k\to Y$ (Gromov--Hausdorff),
+  For maps $f_k:X_k\to Y_k$ with $X_k\to X$ and $Y_k\to Y$ in the
+  Gromov--Hausdorff sense,
   $f_k$ \emph{converges} to $f:X\to Y$ if for every sequence $x_k\in X_k$
   with $x_k\to x\in X$ one has $f_k(x_k)\to f(x)$. This depends on the choice
   of Hausdorff-convergent ambient metrics. It is a strong notion: if
   $X_k=X$, $Y_k=Y$, $f_k=f$ for all $k$, then $f$ converges to itself only if
   $f$ is continuous.
-  \source{petersen:page-0414}
 \end{definition}
 
 \begin{remark}[convergence of maps as an extension problem]
   \label{rem:pet-ch11-map-convergence-as-extension}
   \lean{PetersenLib.mapConvergence_iff_continuousExtension}
   \uses{def:pet-ch11-convergence-of-maps}
-  Convergence of maps preserves being distance preserving or a submetry. A
+  This convergence preserves distance preservation and the submetry property. A
   sequence $f_k:X_k\to Y_k$ can be regarded as one continuous map
   $F:\bigcup_iX_i\to Y\cup\bigcup_iY_i$; the sequence converges iff $F$ has a
   continuous extension $X\cup\bigcup_iX_i\to Y\cup\bigcup_iY_i$ restricting to
   the limit map on $X$. When the $X_i$ are compact this is equivalent to $F$
   being uniformly continuous.
-  \source{petersen:page-0415}
 \end{remark}
 
 \begin{definition}[equicontinuous family]
   \label{def:pet-ch11-equicontinuous-family}
   \lean{PetersenLib.EquicontinuousFamily}
   \uses{def:pet-ch11-convergence-of-maps}
-  A family $f_k:X_k\to Y_k$ is \emph{equicontinuous} if for every
+  Call a family $f_k:X_k\to Y_k$ \emph{equicontinuous} when, for every
   $\varepsilon>0$ and $x_k\in X_k$ there is $\delta>0$ with
   $f_k(B(x_k,\delta))\subset B(f_k(x_k),\varepsilon)$ for all $k$. Uniformly
   Lipschitz families are equicontinuous.
-  \source{petersen:page-0415}
 \end{definition}
 
-\begin{lemma}[Lemma 11.1.9 — Gromov--Hausdorff Arzelà--Ascoli]
+\begin{lemma}[Gromov--Hausdorff Arzelà--Ascoli]
   \label{lem:pet-ch11-arzela-ascoli-gh}
+  \dcref{ch11:11.1.9}
   \lean{PetersenLib.arzelaAscoli_gromovHausdorff}
   \uses{def:pet-ch11-equicontinuous-family}
-  An equicontinuous family $f_k:X_k\to Y_k$, with $X_k\to X$ and $Y_k\to Y$
+  Every equicontinuous family $f_k:X_k\to Y_k$ with $X_k\to X$ and $Y_k\to Y$
   in the (pointed) Gromov--Hausdorff topology, has a convergent subsequence.
   In the pointed case, one also assumes each $f_k$ preserves the base point.
-  \source{petersen:page-0415}
 \end{lemma}
 \begin{proof}
   \uses{lem:pet-ch11-arzela-ascoli-gh}
-  Choose dense subsets $A_i=\{a_1^i,a_2^i,\dots\}\subset X_i$ with
-  $a_j^i\to a_j\in X$ as $i\to\infty$, so $A=\{a_j\}\subset X$ is dense. A
-  diagonal argument, using equicontinuity, produces a subsequence of the
-  $f_k$ converging on the sequences $a_j^i$; equicontinuity then upgrades
-  this to convergence of the maps in the sense of
-  \cref{def:pet-ch11-convergence-of-maps}.
+  \sketch
+  Choose dense sets \(A_i=\{a_j^i\}\subset X_i\) with \(a_j^i\to a_j\) and \(\{a_j\}\) dense in \(X\). Compactness of \(Y\) and a diagonal subsequence give limits of \(f_i(a_j^i)\) for every \(j\). Equicontinuity extends these values uniquely to a continuous \(f:X\to Y\) and yields convergence in the sense of \cref{def:pet-ch11-convergence-of-maps}.
 \end{proof}
+
 
 \subsection{Compactness of Classes of Metric Spaces}
 
 \begin{definition}[capacity and covering functions]
   \label{def:pet-ch11-capacity-covering-functions}
   \lean{PetersenLib.capacityFunction,PetersenLib.coveringFunction}
-  For a compact metric space $X$, let
-  $\Cap(\varepsilon)=\Cap_X(\varepsilon)$ be the maximum number of disjoint
+  For compact $X$, write
+  $\Cap(\varepsilon)=\Cap_X(\varepsilon)$ is the maximum number of disjoint
   $\varepsilon/2$-balls in $X$, and $\Cov(\varepsilon)=\Cov_X(\varepsilon)$
   the minimum number of $\varepsilon$-balls needed to cover $X$.
-  \source{petersen:page-0416}
 \end{definition}
 
 \begin{lemma}[covering is bounded by capacity]
   \label{lem:pet-ch11-cov-le-cap}
   \lean{PetersenLib.coveringFunction_le_capacityFunction}
   \uses{def:pet-ch11-capacity-covering-functions}
+  The covering and capacity numbers satisfy
   $\Cov(\varepsilon)\le\Cap(\varepsilon)$.
-  \source{petersen:page-0416}
 \end{lemma}
 \begin{proof}
   \uses{lem:pet-ch11-cov-le-cap}
-  Select a maximal disjoint family $B(x_i,\varepsilon/2)$ and consider the
-  balls $B(x_i,\varepsilon)$. If these do not cover $X$, some
-  $x\in X-\bigcup B(x_i,\varepsilon)$ gives $B(x,\varepsilon/2)$ disjoint from
-  every $B(x_i,\varepsilon/2)$, contradicting maximality of the disjoint
-  family; hence the $B(x_i,\varepsilon)$ cover $X$, and there are
-  $\Cap(\varepsilon)$ of them.
+  \sketch
+  Take a maximal disjoint family of \(\varepsilon/2\)-balls. Maximality forces
+  the concentric \(\varepsilon\)-balls to cover \(X\), so their number gives
+  \(\Cov_X(\varepsilon)\le\Cap_X(\varepsilon)\).
 \end{proof}
+
 
 \begin{lemma}[covering/capacity under Gromov--Hausdorff proximity]
   \label{lem:pet-ch11-gh-close-cov-cap-comparison}
   \lean{PetersenLib.coveringFunction_capacityFunction_ghClose}
   \uses{def:pet-ch11-capacity-covering-functions,def:pet-ch11-gromov-hausdorff-distance}
-  If $\dGH(X,Y)<\delta$, then
+  Whenever $\dGH(X,Y)<\delta$, one has
   $\Cov_X(\varepsilon+2\delta)\le\Cov_Y(\varepsilon)$ and
   $\Cap_X(\varepsilon)\ge\Cap_Y(\varepsilon+2\delta)$.
-  \source{petersen:page-0416}
 \end{lemma}
 \begin{proof}
   \uses{lem:pet-ch11-gh-close-cov-cap-comparison}
-  Fix an admissible metric on $X\cup Y$ realizing $d_H(X,Y)<\delta$. A
-  $\Cov_Y(\varepsilon)$-cover of $Y$ by $\varepsilon$-balls pulls back, via
-  the triangle inequality in the admissible metric, to a cover of $X$ by
-  $(\varepsilon+2\delta)$-balls, giving the first inequality; a disjoint
-  family of $(\varepsilon+2\delta)$-balls in $Y$ likewise gives, by the same
-  triangle-inequality argument, a disjoint family of $\varepsilon$-balls in
-  $X$, giving the second.
+  \sketch
+  Realize \(d_H(X,Y)<\delta\) in an admissible metric. Replacing each center
+  of an \(\varepsilon\)-cover of \(Y\) by a point of \(X\) within \(\delta\)
+  gives an \((\varepsilon+2\delta)\)-cover of \(X\). Likewise, centers of
+  disjoint \((\varepsilon+2\delta)/2\)-balls in \(Y\) map to centers of
+  disjoint \(\varepsilon/2\)-balls in \(X\), proving the capacity inequality.
 \end{proof}
 
-\begin{proposition}[Prop.\ 11.1.10 (Gromov, 1980) — precompactness criterion]
+
+\begin{proposition}[precompactness criterion]
   \label{prop:pet-ch11-gromov-precompactness-criterion}
+  \dcref{ch11:11.1.10}
   \lean{PetersenLib.gromovPrecompactnessCriterion}
   \uses{lem:pet-ch11-cov-le-cap,lem:pet-ch11-gh-close-cov-cap-comparison}
-  For $\mathcal{C}\subset(\mathcal{M},\dGH)$ with all diameters $\le D<\infty$,
-  the following are equivalent: (1) $\mathcal{C}$ is precompact; (2) there is
+  Let $\mathcal{C}\subset(\mathcal{M},\dGH)$ have diameters bounded by
+  $D<\infty$. The following are equivalent: (1) $\mathcal{C}$ is precompact;
+  (2) there is
   $N_1:(0,\infty)\to(0,\infty)$ with $\Cap_X(\varepsilon)\le N_1(\varepsilon)$
   for all $X\in\mathcal{C}$; (3) there is $N_2:(0,\infty)\to(0,\infty)$ with
   $\Cov_X(\varepsilon)\le N_2(\varepsilon)$ for all $X\in\mathcal{C}$.
-  \source{petersen:page-0416,petersen:page-0417}
 \end{proposition}
 \begin{proof}
   \uses{prop:pet-ch11-gromov-precompactness-criterion}
-  (1)$\Rightarrow$(2): precompactness gives $X_1,\dots,X_k\in\mathcal{C}$ with
-  $\dGH(X,X_i)<\varepsilon/4$ for some $i$, for every $X\in\mathcal{C}$; by
-  \cref{lem:pet-ch11-gh-close-cov-cap-comparison},
-  $\Cap_X(\varepsilon)\le\Cap_{X_i}(\varepsilon/2)\le\max_i\Cap_{X_i}(\varepsilon/2)$.
-  (2)$\Rightarrow$(3): take $N_2=N_1$ and use
-  \cref{lem:pet-ch11-cov-le-cap}. (3)$\Rightarrow$(1): it suffices to show
-  $\mathcal{C}$ is totally bounded. Since
-  $\Cov_X(\varepsilon/2)\le N(\varepsilon/2)$, every $X\in\mathcal{C}$ is
-  $\varepsilon/2$-close to a finite subset of at most $N(\varepsilon/2)$
-  points, giving a finite metric space with distance matrix
-  $(d_{ij})\in[0,D]^{N(\varepsilon/2)\times N(\varepsilon/2)}$; a finite
-  $\varepsilon/2$-net in this compact space of matrices produces finitely
-  many finite metric spaces such that every such matrix is within
-  $\varepsilon/2$ of one of them (entrywise), and hence every $X\in\mathcal{C}$
-  is within $\varepsilon$ of one of the finitely many chosen spaces.
+  \sketch
+  A finite \(\varepsilon/4\)-net for a precompact class and
+  \cref{lem:pet-ch11-gh-close-cov-cap-comparison} give uniform capacity
+  bounds; \cref{lem:pet-ch11-cov-le-cap} then gives uniform covering bounds.
+  Conversely, approximate each \(X\) by an \(\varepsilon/2\)-dense finite set
+  of uniformly bounded cardinality. Its distance matrix lies in a bounded
+  finite-dimensional cube, which has a finite \(\varepsilon/2\)-net; the
+  correspondence estimate supplies a finite \(3\varepsilon\)-net for the class.
 \end{proof}
 
-\begin{corollary}[Cor.\ 11.1.11 — pointed precompactness]
+
+\begin{corollary}[pointed precompactness]
   \label{cor:pet-ch11-pointed-precompactness-criterion}
+  \dcref{ch11:11.1.11}
   \lean{PetersenLib.pointedPrecompactnessCriterion}
   \uses{prop:pet-ch11-gromov-precompactness-criterion,def:pet-ch11-pointed-gh-topology}
-  $\mathcal{C}\subset\mathcal{M}_*$ is precompact iff for each $R>0$ the
+  A class $\mathcal{C}\subset\mathcal{M}_*$ is precompact exactly when, for
+  every $R>0$, the
   collection $\{\overline{B}(x,R)\mid(X,x)\in\mathcal{C}\}\subset(\mathcal{M},\dGH)$
   is precompact.
-  \source{petersen:page-0417}
 \end{corollary}
 
 \begin{definition}[metric doubling condition]
   \label{def:pet-ch11-metric-doubling-condition}
   \lean{PetersenLib.MetricDoublingCondition}
-  $X$ satisfies the \emph{metric doubling condition} with constant $C$ if
+  Say that $X$ has the \emph{metric doubling condition} with constant $C$ when
   every ball $B(p,R)$ can be covered by at most $C$ balls of radius $R/2$.
-  \source{petersen:page-0417}
 \end{definition}
 
-\begin{proposition}[Prop.\ 11.1.12 — doubling implies precompact]
+\begin{proposition}[doubling implies precompact]
   \label{prop:pet-ch11-doubling-implies-precompact}
+  \dcref{ch11:11.1.12}
   \lean{PetersenLib.doublingCondition_implies_precompact}
   \uses{def:pet-ch11-metric-doubling-condition,prop:pet-ch11-gromov-precompactness-criterion}
-  If every $X\in\mathcal{C}\subset(\mathcal{M},\dGH)$ satisfies the metric
-  doubling condition with constant $C<\infty$ and $\diam X\le D<\infty$, then
+  A family $\mathcal{C}\subset(\mathcal{M},\dGH)$ with a common doubling
+  constant $C<\infty$ and $\diam X\le D<\infty$ for every member, then
   $\mathcal{C}$ is precompact.
-  \source{petersen:page-0417}
 \end{proposition}
 \begin{proof}
   \uses{prop:pet-ch11-doubling-implies-precompact}
-  Iterating the doubling condition, every $X\in\mathcal{C}$ is covered by at
-  most $C^N$ balls of radius $2^{-N}D$, hence by at most $C^N$ balls of any
-  radius $\varepsilon\in[2^{-N}D,2^{-N+1}D]$. This gives the required bound
-  $\Cov_X(\varepsilon)\le N_2(\varepsilon)$, and
+  \sketch
+  Iterating the doubling hypothesis covers every \(X\) by at most \(C^N\)
+  balls of radius \(2^{-N}D\). Choosing \(N\) from \(\varepsilon\) yields a
+  uniform covering function, so
   \cref{prop:pet-ch11-gromov-precompactness-criterion} applies.
 \end{proof}
 
-\begin{corollary}[Cor.\ 11.1.13 — Ricci/diameter precompactness]
+
+\begin{corollary}[Ricci/diameter precompactness]
   \label{cor:pet-ch11-ricci-diam-precompactness}
+  \dcref{ch11:11.1.13}
   \lean{PetersenLib.riccciBounded_precompact}
   \uses{prop:pet-ch11-doubling-implies-precompact,cor:pet-ch11-pointed-precompactness-criterion}
-  For $n\ge2$, $k\in\mathbb{R}$, $D>0$: (1) the class of closed Riemannian
-  $n$-manifolds with $\Ric\ge(n-1)k$, $\diam\le D$ is precompact; (2) the
+  For $n\ge2$, $k\in\mathbb{R}$, and $D>0$, the following classes are
+  precompact: (1) closed Riemannian
+  $n$-manifolds with $\Ric\ge(n-1)k$, $\diam\le D$; (2) the
   class of pointed complete Riemannian $n$-manifolds with $\Ric\ge(n-1)k$ is
   precompact.
-  \source{petersen:page-0417}
 \end{corollary}
 \begin{proof}
   \uses{cor:pet-ch11-ricci-diam-precompactness}
-  It suffices to prove (2). Fix $R>0$; disjoint balls
-  $B(x_1,\varepsilon),\dots,B(x_N,\varepsilon)\subset\overline{B}(x,R)$ have,
-  taking $B(x_i,\varepsilon)$ of minimal volume,
+  \sketch
+  If \(N\) disjoint \(\varepsilon\)-balls lie in \(\overline B(x,R)\), choose one of minimal volume. Relative volume comparison gives
   \[
-    N\le\frac{\vol B(x,R)}{\vol B(x_i,\varepsilon)}\le\frac{v(n,k,2R)}{v(n,k,\varepsilon)}
+    N\le \frac{\vol B(x,R)}{\vol B(x_i,\varepsilon)}
+      \le \frac{v(n,k,2R)}{v(n,k,\varepsilon)}.
   \]
-  by relative volume comparison, giving a bound on the number of disjoint
-  $\varepsilon$-balls in $\overline{B}(x,R)$ independent of the manifold, so
-  \cref{cor:pet-ch11-pointed-precompactness-criterion} applies via
-  \cref{prop:pet-ch11-doubling-implies-precompact}-style capacity control.
+  This uniform local capacity bound and
+  \cref{cor:pet-ch11-pointed-precompactness-criterion} prove pointed
+  precompactness. Equivalently, one may use the doubling control in
+  \cref{prop:pet-ch11-doubling-implies-precompact}; a diameter bound makes the
+  convergence global.
 \end{proof}
+
 
 \section{Hölder Spaces and Schauder Estimates}
 
@@ -493,8 +412,8 @@ collapsing (\S11.5) and his exercise set (\S11.6).
 \begin{definition}[$C^0$ and $C^m$ norms]
   \label{def:pet-ch11-cm-norm}
   \lean{PetersenLib.cZeroNorm,PetersenLib.cmNorm}
-  For a bounded domain $\Omega\subset\mathbb{R}^n$, the bounded continuous
-  functions $u:\Omega\to\mathbb{R}^k$ form $C^0(\Omega,\mathbb{R}^k)$ with sup-norm
+  On a bounded domain $\Omega\subset\mathbb{R}^n$, let
+  $C^0(\Omega,\mathbb{R}^k)$ be the bounded continuous maps with sup-norm
   $\|u\|_{C^0}=\sup_{x\in\Omega}|u(x)|$, a Banach space. Using multi-index
   notation $\partial^Iu=\partial_1^{i_1}\cdots\partial_n^{i_n}u$ for
   $I=(i_1,\dots,i_n)$, $|I|=i_1+\dots+i_n$, define $C^m(\Omega,\mathbb{R}^k)$ as
@@ -505,72 +424,54 @@ collapsing (\S11.5) and his exercise set (\S11.6).
   This makes $C^m(\Omega,\mathbb{R}^k)$ a Banach space, but the inclusions
   $C^m\subset C^{m-1}$ are not closed subspaces (e.g.\ $f(x)=|x|$ lies in the
   $C^0([-1,1],\mathbb{R})$-closure of $C^1([-1,1],\mathbb{R})$).
-  \source{petersen:page-0418,petersen:page-0419}
 \end{definition}
 
 \begin{definition}[Hölder pseudo-norm]
   \label{def:pet-ch11-holder-pseudonorm}
   \lean{PetersenLib.holderPseudonorm}
   \uses{def:pet-ch11-cm-norm}
-  For $\alpha\in(0,1]$ and $u:\Omega\to\mathbb{R}^k$, the \emph{$C^\alpha$
-  pseudo-norm} is
+  Given $\alpha\in(0,1]$ and $u:\Omega\to\mathbb{R}^k$, set the
+  \emph{$C^\alpha$ pseudo-norm}
+  given by
   \[
     \|u\|_\alpha=\sup_{x,y\in\Omega}\frac{|u(x)-u(y)|}{|x-y|^\alpha}.
   \]
   When $\alpha=1$ this is the best Lipschitz constant for $u$.
-  \source{petersen:page-0419}
 \end{definition}
 
 \begin{definition}[Hölder space $C^{m,\alpha}$]
   \label{def:pet-ch11-holder-space}
   \lean{PetersenLib.holderSpace}
   \uses{def:pet-ch11-cm-norm,def:pet-ch11-holder-pseudonorm}
-  The \emph{Hölder space} $C^{m,\alpha}(\Omega,\mathbb{R}^k)$ consists of the
+  Define the \emph{Hölder space} $C^{m,\alpha}(\Omega,\mathbb{R}^k)$ as those
   $u\in C^m(\Omega,\mathbb{R}^k)$ whose $m$th-order partial derivatives all have
   finite $C^\alpha$ pseudo-norm, with norm
   \[
     \|u\|_{C^{m,\alpha}}=\|u\|_{C^m}+\sum_{|I|=m}\|\partial^Iu\|_\alpha.
   \]
   If the domain needs to be specified, one writes $\|u\|_{C^{m,\alpha},\Omega}$.
-  \source{petersen:page-0419}
 \end{definition}
 
-\begin{lemma}[Lemma 11.2.1 — Hölder spaces are Banach, compactly nested]
+\begin{lemma}[Hölder spaces are Banach, compactly nested]
   \label{lem:pet-ch11-holder-space-banach-compact-inclusion}
+  \dcref{ch11:11.2.1}
   \lean{PetersenLib.holderSpace_banach,PetersenLib.holderSpace_inclusion_compact}
   \uses{def:pet-ch11-holder-space}
-  $C^{m,\alpha}(\Omega,\mathbb{R}^k)$ is a Banach space, and for $\beta<\alpha$ the
-  inclusion $C^{m,\alpha}(\Omega,\mathbb{R}^k)\subset C^{m,\beta}(\Omega,\mathbb{R}^k)$ is
+  The space $C^{m,\alpha}(\Omega,\mathbb{R}^k)$ is Banach, and for
+  $\beta<\alpha$ its inclusion
+  $C^{m,\alpha}(\Omega,\mathbb{R}^k)\subset C^{m,\beta}(\Omega,\mathbb{R}^k)$ is
   always compact (maps closed bounded sets to compact sets).
-  \source{petersen:page-0419,petersen:page-0420}
 \end{lemma}
 \begin{proof}
   \uses{lem:pet-ch11-holder-space-banach-compact-inclusion}
-  It suffices to treat $m=0$; the general case follows immediately.
-
-  \emph{Banach.} Let $\{u_i\}$ be Cauchy in $C^\alpha(\Omega,\mathbb{R}^k)$; it is
-  Cauchy in $C^0$, so $u_i\to u\in C^0$ uniformly. For fixed $x\ne y$,
-  $\frac{|u_i(x)-u_i(y)|}{|x-y|^\alpha}\to\frac{|u(x)-u(y)|}{|x-y|^\alpha}$;
-  the left side is uniformly bounded, so the limit is too, giving
-  $u\in C^\alpha$. Given $\varepsilon>0$ and $N$ with, for $i,j\ge N$,
-  $x\ne y$,
+  \sketch
+  It suffices to take \(m=0\). A \(C^\alpha\)-Cauchy sequence converges uniformly; passing to the limit in the Hölder quotients proves convergence in \(C^\alpha\). A bounded \(C^\alpha\) set is equicontinuous, hence relatively compact in \(C^0\) by Arzelà--Ascoli. The interpolation inequality
   \[
-    \frac{|(u_i(x)-u_j(x))-(u_i(y)-u_j(y))|}{|x-y|^\alpha}\le\varepsilon,
+    [u]_\beta\le [u]_\alpha^{\beta/\alpha}(2\|u\|_{C^0})^{1-\beta/\alpha}
   \]
-  letting $j\to\infty$ gives the same bound with $u_j$ replaced by $u$, so
-  $u_i\to u$ in $C^\alpha$.
-
-  \emph{Compact inclusion.} A bounded sequence in $C^\alpha(\Omega,\mathbb{R}^k)$
-  is equicontinuous, so by Arzelà--Ascoli the inclusion
-  $C^\alpha(\Omega,\mathbb{R}^k)\subset C^0(\Omega,\mathbb{R}^k)$ is compact. Using
-  \[
-    \frac{|u(x)-u(y)|}{|x-y|^\beta}
-    =\Big(\frac{|u(x)-u(y)|}{|x-y|^\alpha}\Big)^{\beta/\alpha}\cdot|u(x)-u(y)|^{1-\beta/\alpha}
-  \]
-  gives $\|u\|_\beta\le(\|u\|_\alpha)^{\beta/\alpha}\cdot(2\|u\|_{C^0})^{1-\beta/\alpha}$,
-  so a sequence convergent in $C^0$ and bounded in $C^\alpha$ also converges
-  in $C^\beta$ for any $\beta<\alpha\le1$.
+  upgrades \(C^0\)-convergence to \(C^\beta\)-convergence for \(\beta<\alpha\); apply this to derivatives for general \(m\).
 \end{proof}
+
 
 \subsection{Elliptic Estimates}
 
@@ -578,19 +479,20 @@ collapsing (\S11.5) and his exercise set (\S11.6).
   \label{def:pet-ch11-elliptic-operator}
   \lean{PetersenLib.EllipticOperator}
   \uses{def:pet-ch11-holder-pseudonorm}
-  An operator $Lu=a^{ij}\partial_i\partial_ju+b^i\partial_iu$ ($a^{ij}=a^{ji}$)
-  is \emph{elliptic} when $(a^{ij})$ is positive definite. Throughout, all
+  For $Lu=a^{ij}\partial_i\partial_ju+b^i\partial_iu$ with $a^{ij}=a^{ji}$,
+  call $L$ \emph{elliptic} when $(a^{ij})$ is positive definite. Assume
   eigenvalues of $(a^{ij})$ lie in $[\lambda,\lambda^{-1}]$, $\lambda>0$, and
   $\|a^{ij}\|_\alpha\le\lambda^{-1}$, $\|b^i\|_\alpha\le\lambda^{-1}$.
-  \source{petersen:page-0420,petersen:page-0421}
 \end{definition}
 
-\begin{theorem}[Thm.\ 11.2.2 — Schauder estimates]
+\begin{theorem}[Schauder estimates]
   \label{thm:pet-ch11-schauder-estimates}
+  \dcref{ch11:11.2.2}
   \lean{PetersenLib.schauderEstimates}
   \uses{def:pet-ch11-elliptic-operator,def:pet-ch11-holder-space}
-  Let $\Omega\subset\mathbb{R}^n$ have diameter $\le D$ and $K\subset\Omega$ with
-  $d(K,\partial\Omega)\ge\delta$. For $\alpha\in(0,1)$ there is
+  Let $\Omega\subset\mathbb{R}^n$ have diameter $\le D$, and let
+  $K\subset\Omega$ satisfy $d(K,\partial\Omega)\ge\delta$. For
+  $\alpha\in(0,1)$ there is
   $C=C(n,\alpha,\lambda,\delta,D)$ with
   \[
     \|u\|_{C^{2,\alpha},K}\le C\big(\|Lu\|_{C^0,\Omega}+\|u\|_{C^0,\Omega}\big),
@@ -602,14 +504,14 @@ collapsing (\S11.5) and his exercise set (\S11.6).
   \[
     \|u\|_{C^{2,\alpha},\Omega}\le C\big(\|Lu\|_{C^0,\Omega}+\|\varphi\|_{C^{2,\alpha},\partial\Omega}\big).
   \]
-  \source{petersen:page-0421}
 \end{theorem}
 
 \begin{remark}[divergence form and the Laplace--Beltrami operator]
   \label{rem:pet-ch11-divergence-form-laplace-beltrami}
   \lean{PetersenLib.divergenceFormOperator,PetersenLib.laplaceBeltrami}
   \uses{def:pet-ch11-elliptic-operator}
-  One proves \cref{thm:pet-ch11-schauder-estimates} first for $Lu=\Delta u=\delta^{ij}\partial_i\partial_ju$,
+  The estimates in \cref{thm:pet-ch11-schauder-estimates} start with
+  $Lu=\Delta u=\delta^{ij}\partial_i\partial_ju$,
   then, via a linear change of coordinates, for constant-coefficient
   operators $Lu=a^{ij}\partial_i\partial_ju$; Schauder's trick is that the
   hypotheses on $a^{ij}$ make it locally almost constant, and a partition of
@@ -624,84 +526,72 @@ collapsing (\S11.5) and his exercise set (\S11.6).
     Lu=\Delta_gu=\frac1{\sqrt{\det g_{ij}}}\partial_i\big(\sqrt{\det g_{ij}}\,g^{ij}\partial_ju\big),
   \]
   so $\int v\,Lu\,\vol=\int v\,\partial_i\big(\sqrt{\det g_{ij}}\,g^{ij}\partial_ju\big)$.
-  \source{petersen:page-0421,petersen:page-0422}
 \end{remark}
 
-\begin{corollary}[Cor.\ 11.2.3 — higher-order Schauder estimates]
+\begin{corollary}[higher-order Schauder estimates]
   \label{cor:pet-ch11-higher-schauder-estimates}
+  \dcref{ch11:11.2.3}
   \lean{PetersenLib.schauderEstimates_higherOrder}
   \uses{thm:pet-ch11-schauder-estimates}
-  If also $\|a^{ij}\|_{C^{m,\alpha}},\|b^i\|_{C^{m,\alpha}}\le\lambda^{-1}$,
-  there is $C=C(n,m,\alpha,\lambda,\delta,D)$ with
+  When $\|a^{ij}\|_{C^{m,\alpha}},\|b^i\|_{C^{m,\alpha}}\le\lambda^{-1}$,
+  one has $C=C(n,m,\alpha,\lambda,\delta,D)$ with
   \[
     \|u\|_{C^{m+2,\alpha},K}\le C\big(\|Lu\|_{C^{m,\alpha},\Omega}+\|u\|_{C^0,\Omega}\big),
   \]
   and on a domain with smooth boundary,
   $\|u\|_{C^{m+2,\alpha},\Omega}\le C\big(\|Lu\|_{C^{m,\alpha},\Omega}+\|\varphi\|_{C^{m+2,\alpha},\partial\Omega}\big)$.
-  \source{petersen:page-0422}
 \end{corollary}
 
-\begin{theorem}[Thm.\ 11.2.4 — Dirichlet problem]
+\begin{theorem}[Dirichlet problem]
   \label{thm:pet-ch11-dirichlet-problem-unique-solution}
+  \dcref{ch11:11.2.4}
   \lean{PetersenLib.dirichletProblem_existsUnique}
   \uses{thm:pet-ch11-schauder-estimates}
-  If $\Omega\subset\mathbb{R}^n$ is a bounded domain with smooth boundary, the
-  Dirichlet problem $Lu=f$, $u|_{\partial\Omega}=\varphi$ always has a unique
+  On a bounded smooth domain $\Omega\subset\mathbb{R}^n$, the problem
+  $Lu=f$, $u|_{\partial\Omega}=\varphi$ has a unique
   solution $u\in C^{2,\alpha}(\Omega)$ when $f\in C^\alpha(\Omega)$,
   $\varphi\in C^{2,\alpha}(\partial\Omega)$.
-  \source{petersen:page-0422}
 \end{theorem}
 \begin{proof}
   \uses{thm:pet-ch11-dirichlet-problem-unique-solution}
-  Uniqueness is an immediate consequence of the maximum principle: if $Lu_1=Lu_2=f$
-  with $u_1=u_2=\varphi$ on $\partial\Omega$, then $w=u_1-u_2$ solves
-  $Lw=0$ with $w=0$ on $\partial\Omega$, and the maximum principle for the
-  elliptic operator $L$ forces $w\equiv0$ on $\Omega$, i.e.\ $u_1=u_2$.
+  \sketch
+  The Schauder theory supplies a solution. If \(u_1,u_2\) solve the same data, \(w=u_1-u_2\) satisfies \(Lw=0\) and vanishes on \(\partial\Omega\); the maximum principle gives \(w=0\).
 \end{proof}
+
 
 \subsection{Harmonic Coordinates}
 
-\begin{lemma}[Lemma 11.2.5 — existence of harmonic coordinates]
+\begin{lemma}[existence of harmonic coordinates]
   \label{lem:pet-ch11-harmonic-coordinates-exist}
+  \dcref{ch11:11.2.5}
   \lean{PetersenLib.harmonicCoordinates_exist}
   \uses{thm:pet-ch11-schauder-estimates,rem:pet-ch11-divergence-form-laplace-beltrami}
-  If $(M,g)$ is an $n$-dimensional Riemannian manifold and $p\in M$, there is
-  a neighborhood $U\ni p$ carrying a \emph{harmonic coordinate system}
+  Every point $p$ of an $n$-dimensional Riemannian manifold has a neighborhood
+  $U$ with a \emph{harmonic coordinate system}
   $x=(x^1,\dots,x^n):U\to\mathbb{R}^n$, i.e.\ each $x^i$ is harmonic for
   $\Delta_g$.
-  \source{petersen:page-0422,petersen:page-0423}
 \end{lemma}
 \begin{proof}
   \uses{lem:pet-ch11-harmonic-coordinates-exist}
-  Choose coordinates $y=(y^1,\dots,y^n)$ near $p$ with $y(p)=0$, identifying
-  $M$ locally with an open subset of $\mathbb{R}^n$ and $p=0$; write
-  $g_{ij}=g(\partial_i,\partial_j)$ in these Cartesian coordinates. Seek
-  $y\mapsto x$ with $\Delta x^k=0$ for all $k$. Fix a small ball
-  $B(0,\varepsilon)$ and solve the Dirichlet problem $\Delta x^k=0$,
-  $x^k=y^k$ on $\partial B(0,\varepsilon)$
-  (\cref{thm:pet-ch11-dirichlet-problem-unique-solution}), giving $n$
-  harmonic functions. By \cref{thm:pet-ch11-schauder-estimates},
+  \sketch
+  Start with normal coordinates \(y\) on a small Euclidean ball and solve
+  \(\Delta_gx^k=0\) with \(x^k=y^k\) on the boundary by
+  \cref{thm:pet-ch11-dirichlet-problem-unique-solution}. The divergence form
+  in \cref{rem:pet-ch11-divergence-form-laplace-beltrami} and the estimates
+  of \cref{thm:pet-ch11-schauder-estimates} give
   \[
-    \|x-y\|_{C^{2,\alpha},B(0,\varepsilon)}
-    \le C\big(\|\Delta(x-y)\|_{C^0,B(0,\varepsilon)}+\|x-y\|_{C^{2,\alpha},\partial B(0,\varepsilon)}\big)
-    =C\|\Delta y\|_{C^\alpha,B(0,\varepsilon)},
+    \|x-y\|_{C^{2,\alpha}}\le C\|\Delta_gy\|_{C^\alpha}.
   \]
-  using $\Delta x=0$ and $x=y$ on $\partial B(0,\varepsilon)$. Choosing $y$ to
-  be exponential (normal) coordinates gives $\partial_kg_{ij}(0)=0$, so the
-  formula for $\Delta_g$ in \cref{rem:pet-ch11-divergence-form-laplace-beltrami}
-  gives $\Delta y(0)=0$, and the constant $C$ depends only on an upper bound
-  for $\diam B(0,\varepsilon)$ besides $\alpha,n,\lambda$; hence
-  $\|\Delta y\|_{C^\alpha,B(0,\varepsilon)}\to0$ and
-  $\|x-y\|_{C^{2,\alpha},B(0,\varepsilon)}\to0$ as $\varepsilon\to0$. Thus for
-  small $\varepsilon$, $Dx$ is close to $Dy$, which is invertible since $y$ is
-  a coordinate system; hence $x$ is a coordinate system too.
+  In normal coordinates \(\Delta_gy(0)=0\), so the right side tends to zero with the radius. Thus \(Dx\) remains invertible and \(x\) is a harmonic coordinate system.
 \end{proof}
 
-\begin{lemma}[Lemma 11.2.6 — Laplacian and Ricci curvature in harmonic coordinates]
+
+\begin{lemma}[Laplacian and Ricci curvature in harmonic coordinates]
   \label{lem:pet-ch11-laplacian-ricci-harmonic-coords}
+  \dcref{ch11:11.2.6}
   \lean{PetersenLib.laplacian_eq_gijPartial_harmonic,PetersenLib.ricci_harmonicCoords_formula}
   \uses{lem:pet-ch11-harmonic-coordinates-exist}
-  On a harmonic coordinate system $x:U\to\mathbb{R}^n$ for $(M,g)$,
+  In harmonic coordinates $x:U\to\mathbb{R}^n$ for $(M,g)$,
   \begin{equation}
     \Delta u=\frac1{\sqrt{\det g_{ij}}}\partial_i\big(\sqrt{\det g_{ij}}\,g^{ij}\partial_ju\big)=g^{ij}\partial_i\partial_ju,
   \end{equation}
@@ -711,45 +601,21 @@ collapsing (\S11.5) and his exercise set (\S11.6).
   where $Q$ is a universal rational expression, polynomial in $g$ and
   quadratic in $\partial g$ in the numerator, with denominator a power of
   $\sqrt{\det g_{ij}}$.
-  \source{petersen:page-0423,petersen:page-0424,petersen:page-0425}
 \end{lemma}
 \begin{proof}
   \uses{lem:pet-ch11-laplacian-ricci-harmonic-coords}
-  \emph{(1)} Since $x^k$ is harmonic,
+  \sketch
+  Harmonicity of \(x^k\) makes
+  \(\partial_i(\sqrt{\det g}\,g^{ik})=0\), so the divergence formula reduces to
+  \(\Delta u=g^{ij}\partial_i\partial_ju\). Substituting the Christoffel symbols into the Ricci formula and using these identities gives
   \[
-    0=\Delta x^k=g^{ij}\partial_i\partial_jx^k
-    +\frac1{\sqrt{\det g_{ij}}}\partial_i\big(\sqrt{\det g_{ij}}\,g^{ij}\big)\partial_jx^k
-    =\frac1{\sqrt{\det g_{ij}}}\partial_i\big(\sqrt{\det g_{ij}}\,g^{ik}\big),
+    \tfrac12\Delta g_{ij}+Q(g,\partial g)=-\Ric_{ij},
   \]
-  using $\partial_i\partial_jx^k=0$ and $\partial_jx^k=\delta_j^k$ in these
-  coordinates. Hence in
-  $\Delta u=g^{ij}\partial_i\partial_ju+\frac1{\sqrt{\det g_{ij}}}\partial_i(\sqrt{\det g_{ij}}\,g^{ij})\partial_ju$
-  the second term vanishes, giving $\Delta u=g^{ij}\partial_i\partial_ju$.
-
-  \emph{(2)} For harmonic $u$ the Bochner formula gives
-  $\Delta(\tfrac12|\nabla u|^2)=|\Hess u|^2+\Ric(\nabla u,\nabla u)$, where
-  $|\Hess u|^2$ depends only on the metric and its first derivatives.
-  Applying this to $u=x^k$ and using $g(\nabla x^i,\nabla x^j)=g^{ij}$
-  (since $\nabla x^k=g^{ik}\partial_i$) gives
-  \[
-    \tfrac12\Delta g^{ij}-g(\Hess x^i,\Hess x^j)=\Ric(\nabla x^i,\nabla x^j)
-  \]
-  after polarizing the quadratic identity
-  $\tfrac12\Delta g(\nabla x^k,\nabla x^k)-|\Hess x^k|^2=\Ric(\nabla x^k,\nabla x^k)$.
-  Differentiating the matrix identity $[g_{ik}][g^{kj}]=[\delta_i^j]$ twice
-  gives
-  \[
-    0=[\Delta g_{ik}][g^{kj}]+2[\nabla g_{ik}]\cdot[\nabla g^{kj}]+[g_{ik}][\Delta g^{kj}],
-  \]
-  and substituting the formula for $\Delta g^{kj}$ from the previous display
-  and solving for $[\Delta g_{ij}]$ yields
-  \[
-    \tfrac12\Delta g_{ij}+Q_{ij}(g,\partial g)=-\Ric_{ij},\qquad
-    Q_{ij}=-2\sum_{k,l}g(\nabla g_{ik},\nabla g^{kl})g_{lj}-2\sum_{k,l}g_{ik}\,g(\Hess x^k,\Hess x^l)\,g_{lj},
-  \]
-  which is polynomial in $g$, quadratic in $\partial g$, and rational with
-  denominator a power of $\sqrt{\det g_{ij}}$ (via $g^{ij}$), as claimed.
+  where \(Q\) has the stated universal rational form. For a harmonic function, the Bochner identity
+  \(\Delta(\tfrac12|\nabla u|^2)=|\Hess u|^2+\Ric(\nabla u,\nabla u)\)
+  supplies the auxiliary estimates used in the coordinate calculation.
 \end{proof}
+
 
 \begin{remark}[Einstein metrics in harmonic coordinates are smooth]
   \label{rem:pet-ch11-einstein-harmonic-regularity-bootstrap}
@@ -764,7 +630,6 @@ collapsing (\S11.5) and his exercise set (\S11.6).
   gives $g_{ij}\in C^{2,\beta}$; bootstrapping shows $g_{ij}\in C^\infty$
   (in fact real-analytic). Hence any metric that is, in harmonic coordinates,
   a weak solution of the Einstein equation is automatically smooth.
-  \source{petersen:page-0425,petersen:page-0426}
 \end{remark}
 
 \section{Norms and Convergence of Manifolds}
@@ -775,15 +640,14 @@ collapsing (\S11.5) and his exercise set (\S11.6).
   \label{def:pet-ch11-cmalpha-norm-pointed}
   \lean{PetersenLib.pointedNorm}
   \uses{def:pet-ch11-holder-space}
-  For a pointed Riemannian $n$-manifold $(M,g,p)$, say
-  $\|(M,g,p)\|_{C^{m,\alpha},r}\le Q$ if there is a $C^{m+1,\alpha}$ chart
-  $\varphi:(B(0,r),0)\subset\mathbb{R}^n\to(U,p)\subset M$ such that
+  Define $\|(M,g,p)\|_{C^{m,\alpha},r}\le Q$ when a $C^{m+1,\alpha}$ chart
+  exists from $\varphi:(B(0,r),0)\subset\mathbb{R}^n\to(U,p)\subset M$ such
+  that
   \begin{align}
     \text{(n1)}\quad&|D\varphi|\le e^Q\text{ on }B(0,r),\ |D\varphi^{-1}|\le e^Q\text{ on }U,
     \text{ equivalently }e^{-2Q}\delta_{kl}v^kv^l\le g_{kl}v^kv^l\le e^{2Q}\delta_{kl}v^kv^l\ \forall v\in\mathbb{R}^n,\\
     \text{(n2)}\quad&r^{|I|+\alpha}\|\partial^Ig_{ij}\|_\alpha\le Q\text{ for all multi-indices }I,\ 0\le|I|\le m.
   \end{align}
-  \source{petersen:page-0426,petersen:page-0427}
 \end{definition}
 
 \begin{definition}[global $C^{m,\alpha}$ norm of a manifold]
@@ -800,17 +664,16 @@ collapsing (\S11.5) and his exercise set (\S11.6).
   constructions (e.g.\ exponential maps) may then be ill-defined if $m\le1$.
   The pointed norm is always finite, but the global norm need not be finite
   on any scale when $M$ is noncompact.
-  \source{petersen:page-0427}
 \end{definition}
 
-\begin{example}[Example 11.3.1 — flat manifolds have norm zero]
+\begin{example}[flat manifolds have norm zero]
   \label{ex:pet-ch11-flat-manifold-norm-zero}
+  \dcref{ch11:11.3.1}
   \lean{PetersenLib.flatManifold_norm_zero}
   \uses{def:pet-ch11-cmalpha-norm-global}
-  If $(M,g)$ is a complete flat manifold then $\|(M,g)\|_{C^{m,\alpha},r}=0$
+  A complete flat manifold satisfies $\|(M,g)\|_{C^{m,\alpha},r}=0$
   for all $r\le\inj(M,g)$; in particular
   $\|(\mathbb{R}^n,g_{\mathrm{eu}})\|_{C^{m,\alpha},r}=0$ for all $r$.
-  \source{petersen:page-0427}
 \end{example}
 
 \subsection{Convergence of Riemannian Manifolds}
@@ -818,47 +681,44 @@ collapsing (\S11.5) and his exercise set (\S11.6).
 \begin{definition}[$C^{m,\alpha}$ convergence of tensors on a compact subset]
   \label{def:pet-ch11-tensor-convergence-compact-subset}
   \lean{PetersenLib.tensorConverges_onCompactSubset}
-  Fix a closed manifold $M$, or a precompact subset $A\subset M$. A sequence
+  On a fixed closed manifold $M$ (or precompact $A\subset M$), a sequence
   of functions on $A$ \emph{converges in $C^{m,\alpha}$} if it converges in
   the charts of some fixed finite covering of coordinate patches that are
   uniformly bi-Lipschitz; this is independent of the covering. A sequence of
   tensors converges in $C^{m,\alpha}$ if its components converge in these
   patches, giving a notion of convergence of Riemannian metrics on compact
   subsets of a fixed manifold.
-  \source{petersen:page-0427}
 \end{definition}
 
 \begin{definition}[pointed $C^{m,\alpha}$ convergence of manifolds]
   \label{def:pet-ch11-pointed-cmalpha-convergence}
   \lean{PetersenLib.PointedCmAlphaConvergence}
   \uses{def:pet-ch11-tensor-convergence-compact-subset,def:pet-ch11-cmalpha-norm-pointed}
-  A sequence of pointed complete Riemannian manifolds converges in the
+  We say pointed complete Riemannian manifolds converge in the
   \emph{pointed $C^{m,\alpha}$ topology}, $(M_i,g_i,p_i)\to(M,g,p)$, if for
   every $R>0$ there is a domain $\Omega\supset B(p,R)\subset M$ and
   embeddings $F_i:\Omega\to M_i$ for large $i$ with $F_i(p)=p_i$,
   $F_i(\Omega)\supset B(p_i,R)$, and $F_i^*g_i\to g$ on $\Omega$ in the
   $C^{m,\alpha}$ topology.
-  \source{petersen:page-0427,petersen:page-0428}
 \end{definition}
 
 \begin{remark}[pointed $C^{m,\alpha}$ convergence implies GH convergence]
   \label{rem:pet-ch11-cmalpha-convergence-implies-gh}
   \lean{PetersenLib.cmAlphaConvergence_implies_ghConvergence}
   \uses{def:pet-ch11-pointed-cmalpha-convergence,def:pet-ch11-pointed-gh-topology}
-  Pointed $C^{m,\alpha}$ convergence implies pointed Gromov--Hausdorff
+  Pointed $C^{m,\alpha}$ convergence entails pointed Gromov--Hausdorff
   convergence. When all manifolds are closed with uniformly bounded
   diameter, the $F_i$ are diffeomorphisms, so one may speak of unpointed
   convergence, which forces all manifolds in the tail of the sequence to be
   diffeomorphic; classes of closed manifolds precompact in some $C^{m,\alpha}$
   topology contain at most finitely many diffeomorphism types.
-  \source{petersen:page-0428}
 \end{remark}
 
 \begin{remark}[pullback convergence versus classical convergence]
   \label{rem:pet-ch11-cmalpha-convergence-pullback-warning}
   \lean{PetersenLib.pullbackConvergence_not_classicalConvergence}
   \uses{def:pet-ch11-pointed-cmalpha-convergence}
-  Metrics $g_i=F_i^*g$ for diffeomorphisms $F_i$ of a fixed $M$ can converge
+  Pullbacks $g_i=F_i^*g$ by diffeomorphisms $F_i$ of a fixed $M$ may converge
   in the pointed $C^{m,\alpha}$ sense of
   \cref{def:pet-ch11-pointed-cmalpha-convergence} without converging in any
   fixed coordinate system: e.g., on $M=S^2$ with the standard metric $g$, let
@@ -868,16 +728,16 @@ collapsing (\S11.5) and his exercise set (\S11.6).
   the south pole, so $(S^2,F_i^*g)$ does not converge classically; but
   $(S^2,F_i^*g)$ is isometric to $(S^2,g)$ for every $i$, so as pointed
   Riemannian manifolds up to isometry the sequence is constant.
-  \source{petersen:page-0428}
 \end{remark}
 
 \subsection{Properties of the Norm}
 
-\begin{proposition}[Prop.\ 11.3.2 — elementary properties of the norm]
+\begin{proposition}[elementary properties of the norm]
   \label{prop:pet-ch11-norm-properties}
+  \dcref{ch11:11.3.2}
   \lean{PetersenLib.norm_scaling,PetersenLib.norm_monotone_continuous,PetersenLib.norm_continuous_underConvergence,PetersenLib.norm_ballContainment,PetersenLib.norm_chart_attained,PetersenLib.norm_sup_attained}
   \uses{def:pet-ch11-cmalpha-norm-pointed,def:pet-ch11-cmalpha-norm-global,def:pet-ch11-pointed-cmalpha-convergence}
-  Given $(M,g,p)$, $m\ge0$, $\alpha\in(0,1]$:
+  For $(M,g,p)$, $m\ge0$, and $\alpha\in(0,1]$, the norm has:
   \begin{enumerate}
   \item[(1)] $\|(M,g,p)\|_{C^{m,\alpha},r}=\|(M,\lambda^2g,p)\|_{C^{m,\alpha},\lambda r}$ for all $\lambda>0$.
   \item[(2)] $r\mapsto\|(M,g,p)\|_{C^{m,\alpha},r}$ is increasing, continuous, and $\to0$ as $r\to0$.
@@ -891,105 +751,46 @@ collapsing (\S11.5) and his exercise set (\S11.6).
     chart satisfying (n1), (n2) with this $Q$.
   \item[(6)] When $M$ is compact, the supremum $\|(M,g)\|_{C^{m,\alpha},r}=\sup_p\|(M,g,p)\|_{C^{m,\alpha},r}$ is a maximum.
   \end{enumerate}
-  \source{petersen:page-0428,petersen:page-0429,petersen:page-0430,petersen:page-0431}
 \end{proposition}
 \begin{proof}
   \uses{prop:pet-ch11-norm-properties}
-  \emph{(1)} Given a chart $\varphi:B(0,r)\to M$ for $g$, set
-  $\varphi^*(x)=\varphi(\lambda^{-1}x):B(0,\lambda r)\to M$; scaling the metric
-  by $\lambda^2$ leaves (n1), (n2) valid with the same $Q$.
-
-  \emph{(2)} Restricting a chart $\varphi:B(0,r)\to M$ to a smaller ball shows
-  $N(r):=\|(M,g,p)\|_{C^{m,\alpha},r}$ is increasing. Considering
-  $\varphi^*(x)=\varphi(\lambda^{-1}x):B(0,\lambda r)\to M$ without rescaling
-  $g$, one gets from $N(r)<Q$ that
-  $N(\lambda r)\le\max\{Q\pm|\log\lambda|,\,Q\lambda^2\}$. With $\lambda=r_i/r$,
-  $r_i\to r$, this gives $\limsup N(r_i)\le N(r)$; applying the same estimate
-  with $r,r_i$ interchanged gives $N(r)\le\liminf N(r_i)$, so $N$ is
-  continuous. For $N(r)\to0$ as $r\to0$: any chart around $p$ can, after a
-  linear change, be arranged so $g_{ij}(p)=\delta_{ij}$, hence
-  $|D\varphi|_p|=|D\varphi^{-1}|_p|=1$; using this chart on sufficiently
-  small balls gives $N(r)\to0$.
-
-  \emph{(3)} Fix $r>0$, $Q>\|(M,g,p)\|_{C^{m,\alpha},r}$, and a domain
-  $\Omega\supset B(p,e^Qr)$ with embeddings $F_i:\Omega\to M_i$,
-  $F_i^*g_i\to g$ in $C^{m,\alpha}$, $F_i(p)=p_i$, for large $i$. Given a
-  chart $\varphi:B(0,r)\to M$ satisfying (n1), (n2) for $Q$, the charts
-  $\varphi_i=F_i\circ\varphi:B(0,r)\to M_i$ satisfy (n1), (n2) for
-  $Q_i\to Q$, giving $\limsup\|(M_i,g_i,p_i)\|_{C^{m,\alpha},r}\le\|(M,g,p)\|_{C^{m,\alpha},r}$.
-  Conversely, if $Q>\|(M_i,g_i,p_i)\|_{C^{m,\alpha},r}$ for large $i$, a chart
-  $\varphi_i:B(0,r)\to M_i$ pulls back via $\varphi=F_i^{-1}\circ\varphi_i$ to
-  give $\|(M,g,p)\|_{C^{m,\alpha},r}\le Q_i$ with $Q_i$ close to $Q$, giving
-  $\liminf\|(M_i,g_i,p_i)\|_{C^{m,\alpha},r}\ge\|(M,g,p)\|_{C^{m,\alpha},r}$.
-  Combined, $\|(M_i,g_i,p_i)\|_{C^{m,\alpha},r}\to\|(M,g,p)\|_{C^{m,\alpha},r}$.
-  For uniformly bounded diameter, choose diffeomorphisms $F_i:M\to M_i$ for
-  large $i$ with $F_i^*g_i\to g$; for each $p\in M$, $p_i=F_i(p)$, the
-  pointed statement gives
-  $\liminf\|(M_i,g_i)\|_{C^{m,\alpha},r}\ge\sup_p\|(M,g,p)\|_{C^{m,\alpha},r}$
-  and, for $p_i\in M_i$, $p=F_i^{-1}(p_i)$,
-  $\limsup\|(M_i,g_i,p_i)\|_{C^{m,\alpha},r}\le\sup_p\|(M,g)\|_{C^{m,\alpha},r}$.
-
-  \emph{(4)} $|D\varphi|\le e^Q$ and convexity of $B(0,r)$ give the upper
-  bound directly. For the lower bound, if the segment from $\varphi(x_1)$ to
-  $\varphi(x_2)$ lies in $U$, then $|D\varphi^{-1}|\le e^Q$ gives
-  $|x_1-x_2|\le e^Q|\varphi(x_1)\varphi(x_2)|$. Otherwise, split a
-  minimizing segment $c:[0,1]\to M$ from $\varphi(x_1)$ to $\varphi(x_2)$
-  into $c|_{[0,t_1)}\subset U$ and $c|_{(t_2,1]}\subset U$ with
-  $c(t_i)\in\partial U$; then
-  \[
-    |\varphi(x_1)\varphi(x_2)|=L(c)\ge L(c|_{[0,t_1)})+L(c|_{(t_2,1]})
-    \ge e^{-Q}\big(L(\varphi^{-1}\circ c|_{[0,t_1)})+L(\varphi^{-1}\circ c|_{(t_2,1]})\big)
-    \ge e^{-Q}(2r-|x_1|-|x_2|),
-  \]
-  since $\varphi^{-1}\circ c(t)\to\partial B(0,r)$ as $t\to t_1,t_2$.
-
-  \emph{(5)} Given charts $\varphi_i:B(0,r)\to M$ satisfying (n1), (n2) with
-  $Q_i\to Q$, Arzelà--Ascoli produces a subsequence converging to a
-  $C^{m+1,\alpha}$ map $\varphi:B(0,r)\to M$; part (4) shows $\varphi$ is
-  injective, hence a homeomorphism onto its image, so a chart. Passing to a
-  further subsequence so that the metric coefficients converge shows
-  $\varphi$ satisfies (n1), (n2) for $Q$.
-
-  \emph{(6)} Part (3) shows $p\mapsto\|(M,g,p)\|_{C^{m,\alpha},r}$ is
-  continuous; compactness of $M$ then makes the supremum a maximum.
+  \sketch
+  Scaling a chart proves (1). Restriction to smaller balls gives monotonicity; rescaling the domain and comparing the defining bounds gives continuity and the limit \(0\) at the origin. Pullback along the embeddings in pointed convergence yields both semicontinuity inequalities in (3), and bounded diameter upgrades them to the global norm. The derivative bounds in (n1) give the upper distance estimate; a minimizing segment either remains in the chart or meets its boundary, giving the lower estimate in (4). Arzelà--Ascoli applied to minimizing charts proves attainment in (5), and continuity in the base point plus compactness proves (6).
 \end{proof}
 
-\begin{corollary}[Cor.\ 11.3.3 — ball containment in the chart domain]
+
+\begin{corollary}[ball containment in the chart domain]
   \label{cor:pet-ch11-norm-bound-ball-containment}
+  \dcref{ch11:11.3.3}
   \lean{PetersenLib.norm_ball_subset_chartDomain}
   \uses{prop:pet-ch11-norm-properties}
   If $\|(M,g,p)\|_{C^{m,\alpha},r}\le Q$, then $B(p,e^{-Q}r)\subset U$.
-  \source{petersen:page-0431}
 \end{corollary}
 \begin{proof}
   \uses{cor:pet-ch11-norm-bound-ball-containment}
-  Let $q\in\partial U$ be closest to $p$, so $B(p,|qp|)\subset U$, and let
-  $c:[0,|qp|]\to M$ be a minimizing segment from $p$ to $q$. Writing
-  $c(s)=\varphi(\bar c(s))$ for $s<|qp|$, with $|\bar c(t)|\to r$ as
-  $t\to|qp|$, part (4) of \cref{prop:pet-ch11-norm-properties} gives
+  \sketch
+  Let \(q\in\partial U\) minimize distance to \(p\). A minimizing segment from \(p\) to \(q\) has coordinate radius tending to \(r\); the lower distance bound in part (4) of \cref{prop:pet-ch11-norm-properties} therefore gives
   \[
-    |qp|\ge\lim_{s\to|qp|}|\varphi(\bar c(s))\varphi(0)|
-    \ge\lim_{s\to|qp|}e^{-Q}\min\{|\bar c(s)|,2r-|\bar c(s)|\}
-    =e^{-Q}r.
+    |pq|\ge e^{-Q}r.
   \]
+  Hence \(B(p,e^{-Q}r)\subset U\).
 \end{proof}
 
-\begin{corollary}[Cor.\ 11.3.4 — norm zero implies flat]
+
+\begin{corollary}[norm zero implies flat]
   \label{cor:pet-ch11-norm-zero-implies-flat}
+  \dcref{ch11:11.3.4}
   \lean{PetersenLib.norm_zero_implies_flat}
   \uses{prop:pet-ch11-norm-properties,cor:pet-ch11-norm-bound-ball-containment}
   If $\|(M,g,p)\|_{C^{m,\alpha},r}=0$ for some $r$, then $p$ has a flat
   neighborhood.
-  \source{petersen:page-0431}
 \end{corollary}
 \begin{proof}
   \uses{cor:pet-ch11-norm-zero-implies-flat}
-  By \cref{prop:pet-ch11-norm-properties}(5) there is a $C^{m+1,\alpha}$
-  chart $\varphi:B(0,r)\to U\supset B(p,e^{-Q}r)$ with $Q=0$, which is
-  therefore a $C^1$ Riemannian isometry between $B(0,r)\subset\mathbb{R}^n$ and
-  $U$; a $C^1$ Riemannian isometry is automatically a Riemannian isometry (a
-  fact proved elsewhere in the book), so $U$ is flat.
+  \sketch
+  Norm zero gives an attained chart with \(Q=0\) and, by the preceding corollary, a neighborhood containing \(B(p,r)\). Its metric coefficients equal \(\delta_{ij}\), so the chart is a local Euclidean isometry and the neighborhood is flat.
 \end{proof}
+
 
 \subsection{The Harmonic Norm}
 
@@ -1002,249 +803,139 @@ collapsing (\S11.5) and his exercise set (\S11.6).
   $\varphi^{-1}:U\to\mathbb{R}^n$ is additionally required to be harmonic for
   $g$, i.e.\ for each $j$,
   $\frac1{\sqrt{\det[g_{ij}]}}\partial_j\big(\sqrt{\det[g_{ij}]}\,g^{ij}\big)=0$.
-  \source{petersen:page-0431,petersen:page-0432}
 \end{definition}
 
-\begin{proposition}[Prop.\ 11.3.5 (Anderson, 1990) — harmonic-norm analogue]
+\begin{proposition}[harmonic-norm analogue]
   \label{prop:pet-ch11-harmonic-norm-properties}
+  \dcref{ch11:11.3.5}
   \lean{PetersenLib.harmonicNorm_properties}
   \uses{def:pet-ch11-harmonic-norm,prop:pet-ch11-norm-properties,lem:pet-ch11-harmonic-coordinates-exist}
   \cref{prop:pet-ch11-norm-properties} holds for the harmonic norm when
   $m\ge1$.
-  \source{petersen:page-0432}
 \end{proposition}
 \begin{proof}
   \uses{prop:pet-ch11-harmonic-norm-properties}
-  Only the necessary changes from the proof of
-  \cref{prop:pet-ch11-norm-properties} are indicated. For part (2), that the
-  norm goes to $0$ as $r\to0$: solving the Dirichlet problem as in
-  \cref{lem:pet-ch11-harmonic-coordinates-exist} produces coordinates around
-  every $p$ with $g_{ij}(p)=\delta_{ij}$, $\partial_kg_{ij}(p)=0$; when
-  $m\ge1$, any coordinate system around $p$ can be modified to have these
-  properties.
-
-  For part (3), the inequality
-  $\liminf\|(M_i,g_i,p_i)\|^{\mathrm{har}}_{C^{m,\alpha},r}\ge\|(M,g,p)\|^{\mathrm{har}}_{C^{m,\alpha},r}$:
-  given $Q>\liminf\|(M_i,g_i,p_i)\|^{\mathrm{har}}_{C^{m,\alpha},r}$, take
-  harmonic charts $\varphi_i:B(0,r)\to M_i$ for large $i$; after passing to a
-  subsequence, $\varphi_i$ converge (via $F_i^{-1}$) to a chart
-  $\varphi:B(0,r)\to M$, and since the metrics converge in $C^{m,\alpha}$ the
-  Laplacians of the inverse coordinate functions converge too, so $\varphi$
-  is harmonic, giving $\|(M,g,p)\|^{\mathrm{har}}_{C^{m,\alpha},r}\le Q$.
-
-  For the reverse inequality
-  $\limsup\|(M_i,g_i,p_i)\|^{\mathrm{har}}_{C^{m,\alpha},r}\le\|(M,g,p)\|^{\mathrm{har}}_{C^{m,\alpha},r}$:
-  fix $Q>\|(M,g,p)\|^{\mathrm{har}}_{C^{m,\alpha},r}$ and, by continuity of
-  the norm, $\varepsilon>0$ with $\|(M,g,p)\|^{\mathrm{har}}_{C^{m,\alpha},r+\varepsilon}<Q$.
-  Take a chart $\varphi:B(0,r+\varepsilon)\to U\subset M$ realizing this and set
-  $U_i=F_i(\varphi(B(0,r+\varepsilon/2)))\subset M_i$, a closed disc with
-  smooth boundary $\partial U_i=F_i(\varphi(\partial B(0,r+\varepsilon/2)))$.
-  Solve $\Delta_{g_i}\psi_i=0$ on $U_i$ with
-  $\psi_i=\varphi^{-1}\circ F_i^{-1}$ on $\partial U_i$; the inverse of
-  $\psi_i$, if it exists, is a coordinate chart $B(0,r)\to U_i$. Pulling
-  back everything to $B(0,r+\varepsilon/2)$ via $\varphi$, comparing
-  $\psi_i\circ F_i\circ\varphi$ with the identity $I$ (which agree on
-  $\partial B(0,r+\varepsilon/2)$), and using that $m\ge1$ gives a $C^\alpha$
-  bound on
-  $\frac1{\sqrt{\det[g_i]}}\partial_k(\sqrt{\det[g_i]}\,g_i^{kl})$, one gets
-  from \cref{cor:pet-ch11-higher-schauder-estimates} applied to $\Delta_{g_i}$
-  on a domain with smooth boundary,
-  \[
-    \|I-\psi_i\circ F_i\circ\varphi\|_{C^{m+1,\alpha}}
-    \le C\|\Delta_{g_i}(I-\psi_i\circ F_i\circ\varphi)\|_{C^{m-1,\alpha}}
-    =C\|\Delta_{g_i}I\|_{C^{m-1,\alpha}},
-  \]
-  and $\|\Delta_{g_i}I\|_{C^{m-1,\alpha}}\to\|\Delta_gI\|_{C^{m-1,\alpha}}=0$
-  since $F_i^*g_i\to g$ in $C^{m,\alpha}$ and $\varphi^{-1}$ is harmonic for
-  $g$. Hence $\|I-\psi_i\circ F_i\circ\varphi\|_{C^{m+1,\alpha}}\to0$,
-  $\psi_i$ becomes coordinates for large $i$, and these coordinates show
-  $\|(M_i,g_i,p_i)\|^{\mathrm{har}}_{C^{m,\alpha},r}<Q$ for large $i$.
+  \sketch
+  Repeat \cref{prop:pet-ch11-norm-properties}. The harmonic coordinates from
+  \cref{lem:pet-ch11-harmonic-coordinates-exist}, normalized by
+  \(g_{ij}(p)=\delta_{ij}\), \(\partial_kg_{ij}(p)=0\), give the small-scale
+  limit. Under convergence, harmonic charts converge to harmonic charts,
+  giving one semicontinuity inequality. For the reverse inequality, solve the
+  harmonic Dirichlet problem on a slightly larger limiting chart;
+  \cref{cor:pet-ch11-higher-schauder-estimates} makes the solutions converge
+  to the identity. Their inverses are admissible harmonic charts on the
+  approximating manifolds. The remaining properties follow as before.
 \end{proof}
 
-\subsection{Compact Classes of Riemannian Manifolds}
 
-This is the manifold analogue of the Arzelà--Ascoli lemma, essentially due to
-J.\ Cheeger. It is proved in three stages: precompactness of the class in the
-pointed Gromov--Hausdorff topology, the identification of the limit as a
-Riemannian manifold of the same norm-bounded class, and the promotion of
-Gromov--Hausdorff convergence to pointed $C^{m,\beta}$ convergence.
+\subsection{Compact Classes of Riemannian Manifolds}
 
 \begin{lemma}[Fundamental Theorem, part A — Gromov--Hausdorff precompactness]
   \label{lem:pet-ch11-fundamental-thm-precompact-gh}
   \lean{PetersenLib.fundamentalTheorem_ghPrecompact}
   \uses{def:pet-ch11-cmalpha-norm-pointed,cor:pet-ch11-ricci-diam-precompactness}
-  For $Q>0$, $n\ge2$, $m\ge0$, $\alpha\in(0,1]$, $r>0$, let
+  Fix $Q>0$, $n\ge2$, $m\ge0$, $\alpha\in(0,1]$, and $r>0$, and let
   $\mathcal{M}=\mathcal{M}^{m,\alpha}(n,Q,r)$ be the class of complete,
   pointed Riemannian $n$-manifolds $(M,g,p)$ with
   $\|(M,g)\|_{C^{m,\alpha},r}\le Q$. Then $\mathcal{M}$ is precompact in the
   pointed Gromov--Hausdorff topology.
-  \source{petersen:page-0434,petersen:page-0435}
 \end{lemma}
 \begin{proof}
   \uses{lem:pet-ch11-fundamental-thm-precompact-gh}
-  Fix $M\in\mathcal{M}$, equipped with charts around every point satisfying
-  (n1), (n2). Put $\delta=e^{-Q}r$. There is $N=N(n,Q)$ with $B(0,r)$
-  covered by $N$ balls of radius $e^{-Q}\delta/4$; since $\varphi:B(0,r)\to U$
-  is Lipschitz with constant $\le e^Q$, $U\supset B(p,\delta)$ is covered by
-  $N$ balls of radius $\delta/4$. Inductively, every ball
-  $B(x,\ell\delta/2)$ is covered by $\le N^\ell$ balls of radius $\delta/4$:
-  for $\ell=1$ this is the previous statement; if
-  $B(x,\ell\delta/2)\subset\bigcup_{i=1}^{N^\ell}B(x_i,\delta/4)$ then
-  $B(x,(\ell+1)\delta/2)\subset\bigcup B(x_i,\delta)$, and covering each
-  $B(x_i,\delta)$ by $\le N$ balls of radius $\delta/4$ gives $\le N^{\ell+1}$
-  balls covering $B(x,(\ell+1)\delta/2)$.
-
-  For precompactness it suffices, by
-  \cref{cor:pet-ch11-pointed-precompactness-criterion} and
-  \cref{prop:pet-ch11-gromov-precompactness-criterion}, to bound the number
-  of disjoint $\varepsilon$-balls in $B(p,R)$ for $\varepsilon<\delta$,
-  uniformly over $M\in\mathcal{M}$. Given disjoint
-  $B(x_1,\varepsilon),\dots,B(x_s,\varepsilon)\subset B(p,R)$, each
-  $B(x_i,\varepsilon)$ lies in a chart $\varphi:B(0,r)\to U_i$ whose preimage
-  contains an $e^{-Q}\varepsilon$-ball, so
-  $\vol B(x_i,\varepsilon)\ge e^{-nQ}\vol B(0,\varepsilon)$ (comparing to the
-  Euclidean ball via (n1)). Taking $B(x_i,\varepsilon)$ of minimal volume,
-  \[
-    V(R)\ge\vol B(p,R)\ge\sum_i\vol B(x_i,\varepsilon)\ge s\cdot e^{-nQ}\vol B(0,\varepsilon),
-  \]
-  where $V(R)=V(R,n,Q,r)$ bounds $\vol B(p,R)$ using the ball-covering
-  estimate above (each of the $\le N^\ell$ balls of radius $\delta/4$, with
-  $\ell\delta/2<R\le(\ell+1)\delta/2$, has volume bounded in terms of $n,Q,r$).
-  Hence $s\le C(\varepsilon)=V(R)\cdot e^{nQ}\cdot(\vol B(0,\varepsilon))^{-1}$,
-  a bound depending only on $\varepsilon,R,Q,r,n$, giving the required
-  capacity bound uniformly over $\mathcal{M}$.
+  \sketch
+  Put \(\delta=e^{-Q}r\). The chart bounds cover each \(\delta\)-ball by a
+  fixed number \(N(n,Q)\) of balls of radius \(\delta/4\); induction covers
+  \(B(p,R)\) by \(N^\ell\) such balls with \(\ell\delta/2\ge R\). Each
+  disjoint \(\varepsilon\)-ball has volume at least
+  \(e^{-nQ}\vol B(0,\varepsilon)\), while the preceding cover bounds
+  \(\vol B(p,R)\). Comparing total volume with the smallest disjoint ball
+  gives a uniform capacity bound. Applying
+  \cref{prop:pet-ch11-gromov-precompactness-criterion} on bounded balls and
+  then \cref{cor:pet-ch11-pointed-precompactness-criterion} proves pointed GH
+  precompactness.
 \end{proof}
+
 
 \begin{lemma}[Fundamental Theorem, part B — the limit is a norm-bounded manifold]
   \label{lem:pet-ch11-fundamental-thm-limit-is-manifold}
   \lean{PetersenLib.fundamentalTheorem_limitIsManifold}
   \uses{lem:pet-ch11-fundamental-thm-precompact-gh,prop:pet-ch11-norm-properties}
-  In the setting of \cref{lem:pet-ch11-fundamental-thm-precompact-gh}, if
+  For the class in \cref{lem:pet-ch11-fundamental-thm-precompact-gh}, if
   $(M_i,g_i,p_i)\in\mathcal{M}$ converge to $(X,|\cdot|,p)$ in the pointed
   Gromov--Hausdorff topology, then $X$ carries the structure of a $C^{m,\alpha}$
   Riemannian manifold with $\|(X,g)\|_{C^{m,\alpha},r}\le Q$, whose induced
   distance agrees with $|\cdot|$.
-  \source{petersen:page-0435}
 \end{lemma}
 \begin{proof}
   \uses{lem:pet-ch11-fundamental-thm-limit-is-manifold}
-  For $q\in X$ choose $q_i\to q$ and charts $\varphi_i:B(0,r)\to U_i\subset M_i$
-  with $q_i=\varphi_i(0)$, satisfying (n1), (n2). The $\varphi_i$ are
-  uniformly Lipschitz, so by Arzelà--Ascoli a subsequence converges to
-  $\varphi:B(0,r)\to U\subset X$; by part (4) of
-  \cref{prop:pet-ch11-norm-properties}, $\varphi$ is a homeomorphism onto its
-  image, making $X$ a topological manifold. Writing the metrics
-  $\varphi_i^*g_i$ in the fixed coordinates $B(0,r)$, another Arzelà--Ascoli
-  argument (using that all $\varphi_i^*g_i$ satisfy (n1), (n2)) gives
-  convergence in $C^m$ to a limit $g_*$ on $B(0,r)$ also satisfying (n1),
-  (n2); these possibly only Hölder-continuous local metrics define local
-  distances that agree with the restriction of $|\cdot|$ to $U$, since both
-  the Riemannian and metric structures converge to the same limit on
-  $B(0,r)$. Finally, for two overlapping charts $\varphi,\psi:B(0,r)\to X$,
-  the transition $\varphi^{-1}\circ\psi$ is locally Lipschitz for the
-  Euclidean metrics and distance preserving for the pulled-back metrics from
-  $X$; a distance-preserving map between $C^\alpha$ Riemannian metrics is
-  $C^{1,\alpha/2}$ (Calabi--Hartman), which is enough to give $X$ a
-  $C^{1}$ (in fact $C^{m,\alpha}$, via the limiting metric components)
-  differentiable structure compatible with these charts.
+  \sketch
+  Approximate each \(q\in X\) by \(q_i\) and choose uniformly controlled
+  charts \(\varphi_i\) centered at \(q_i\). Arzelà--Ascoli gives a limiting
+  chart \(\varphi\), and the distance bounds in
+  \cref{prop:pet-ch11-norm-properties} make it a homeomorphism onto its image.
+  The pulled-back metrics converge to \(g_*\) satisfying the same coefficient
+  bounds and inducing the limit distance. On overlaps, the limiting
+  distance-preserving transitions have the required regularity, producing a
+  \(C^{m,\alpha}\) Riemannian structure on \(X\).
 \end{proof}
 
-\begin{theorem}[Thm.\ 11.3.6 — Fundamental Theorem of Convergence Theory]
+
+\begin{theorem}[Fundamental Theorem of Convergence Theory]
   \label{thm:pet-ch11-fundamental-theorem-convergence}
+  \dcref{ch11:11.3.6}
   \lean{PetersenLib.fundamentalTheoremOfConvergenceTheory}
   \uses{lem:pet-ch11-fundamental-thm-precompact-gh,lem:pet-ch11-fundamental-thm-limit-is-manifold}
-  For $Q>0$, $n\ge2$, $m\ge0$, $\alpha\in(0,1]$, $r>0$, the class
+  Fix $Q>0$, $n\ge2$, $m\ge0$, $\alpha\in(0,1]$, and $r>0$. The class
   $\mathcal{M}^{m,\alpha}(n,Q,r)$ of complete pointed Riemannian $n$-manifolds
   $(M,g,p)$ with $\|(M,g)\|_{C^{m,\alpha},r}\le Q$ is compact in the pointed
   $C^{m,\beta}$ topology for all $\beta<\alpha$.
-  \source{petersen:page-0434,petersen:page-0435,petersen:page-0436,petersen:page-0437}
 \end{theorem}
 \begin{proof}
   \uses{thm:pet-ch11-fundamental-theorem-convergence}
-  By \cref{lem:pet-ch11-fundamental-thm-precompact-gh}, a sequence
-  $(M_i,g_i,p_i)\in\mathcal{M}$ Gromov--Hausdorff subconverges to some
-  $(X,|\cdot|,p)$, which by \cref{lem:pet-ch11-fundamental-thm-limit-is-manifold}
-  is a $C^{m,\alpha}$ Riemannian manifold in the same class. It remains to
-  upgrade this to pointed $C^{m,\beta}$ convergence. Equip $X$ with a
-  countable atlas $\varphi_s:B(0,r)\to U_s$ that are limits of charts
-  $\varphi_{is}:B(0,r)\to U_{is}\subset M_i$ forming atlases of the $M_i$,
-  with convergent transitions $\varphi_{is}^{-1}\circ\varphi_{jt}\to\varphi_s^{-1}\circ\varphi_t$
-  and convergent metric components. Set
-  $f_{is}=\varphi_{is}\circ\varphi_s^{-1}:U_s\to U_{is}$; then
-  $(f_{is})^*g_i|_{U_s}\to g|_{U_s}$ in $C^{m,\beta}$, and the $f_{is}$
-  ``converge to each other'' across overlapping charts in $C^{m+1,\beta}$.
-  Build maps $F_{i\ell}:\Omega_\ell=\bigcup_{s=1}^\ell U_s\to\Omega_{i\ell}=\bigcup_{s=1}^\ell U_{is}$
-  by induction on $\ell$: $F_{i1}=f_{i1}$; given $F_{i\ell}$, if
-  $U_{\ell+1}\cap\Omega_\ell=\emptyset$ set $F_{i,\ell+1}=f_{i,\ell+1}$ on
-  $U_{\ell+1}$ and $F_{i,\ell+1}=F_{i\ell}$ elsewhere; otherwise average, on
-  $U_{\ell+1}$, via a partition of unity $\mu_1,\mu_2$ for $U_{\ell+1},\Omega_\ell$:
-  \[
-    F_{i,\ell+1}(x)=\varphi_{i,\ell+1}\circ\big(\mu_1(x)\varphi_{i,\ell+1}^{-1}\circ f_{i,\ell+1}(x)
-    +\mu_2(x)\varphi_{i,\ell+1}^{-1}\circ F_{i\ell}(x)\big).
-  \]
-  In the coordinates $\varphi_{i,\ell+1}^{-1}\circ F_{i,\ell+1}\circ\varphi_{\ell+1}=\bar\mu_1F_1+\bar\mu_2F_2$,
-  and since $\bar\mu_1F_1+\bar\mu_2F_2-F_1=\bar\mu_2(F_2-F_1)$ on all of
-  $B(0,r)$ (the terms with $F_2$ undefined cancel against $\bar\mu_2=0$
-  there),
-  \[
-    \|\bar\mu_1F_1+\bar\mu_2F_2-F_1\|_{C^{m+1,\beta}}\le C(n,m)\|\bar\mu_2\|_{C^{m+1,\beta}}\|F_2-F_1\|_{C^{m+1,\beta}}\to0
-  \]
-  as $i\to\infty$, since $F_2=\varphi_{i,\ell+1}^{-1}\circ F_{i\ell}\circ\varphi_{\ell+1}$
-  and $F_1=\varphi_{i,\ell+1}^{-1}\circ f_{i,\ell+1}\circ\varphi_{\ell+1}$
-  both converge to the identity-type limit transitions by the inductive
-  hypothesis. Hence $F_{i,\ell+1}$ is $C^{m+1,\beta}$-close to $f_{is}$ for
-  $s=1,\dots,\ell+1$ as $i\to\infty$, and closeness to the coordinate charts
-  makes $F_{i\ell}$ an embedding on compact subsets of the domain. Letting
-  $\ell\to\infty$ (with $i$ depending on $\ell$) exhibits embeddings
-  $F_i:\Omega\to M_i$ realizing $(M_i,g_i,p_i)\to(X,g,p)$ in the pointed
-  $C^{m,\beta}$ topology for every $\beta<\alpha$.
+  \sketch
+  By \cref{lem:pet-ch11-fundamental-thm-precompact-gh}, pass to a pointed GH limit; \cref{lem:pet-ch11-fundamental-thm-limit-is-manifold} supplies its \(C^{m,\alpha}\) metric. Choose countable limiting atlases on the limit and the approximants. On each finite union, glue the local comparison maps by a partition of unity in a common chart; convergence of transition maps makes the result \(C^{m+1,\beta}\)-close to every local map. A diagonal exhaustion yields embeddings whose pulled-back metrics converge in \(C^{m,\beta}\), for every \(\beta<\alpha\).
 \end{proof}
 
-\begin{corollary}[Cor.\ 11.3.7 — diameter/volume bounds give finiteness]
+
+\begin{corollary}[diameter/volume bounds give finiteness]
   \label{cor:pet-ch11-fundamental-thm-diam-vol-bounded}
+  \dcref{ch11:11.3.7}
   \lean{PetersenLib.fundamentalTheorem_diamOrVolBounded_finiteDiffeoTypes}
   \uses{thm:pet-ch11-fundamental-theorem-convergence}
-  Subclasses of $\mathcal{M}^{m,\alpha}(n,Q,r)$ whose elements additionally
-  satisfy $\diam\le D$, respectively $\vol\le V$, are compact in the
+  Imposing either $\diam\le D$ or $\vol\le V$ on
+  $\mathcal{M}^{m,\alpha}(n,Q,r)$ gives subclasses whose elements satisfy
+  $\diam\le D$, respectively $\vol\le V$, and are compact in the
   $C^{m,\beta}$ topology (for $\beta<\alpha$); in particular each such
   subclass contains only finitely many diffeomorphism types.
-  \source{petersen:page-0437}
 \end{corollary}
 \begin{proof}
   \uses{cor:pet-ch11-fundamental-thm-diam-vol-bounded}
-  With notation as in the proof of
-  \cref{thm:pet-ch11-fundamental-theorem-convergence}: if $\diam(M,g,p)\le D$
-  then $M\subset B(p,k\delta/2)$ for $k=2D/\delta$, so each element of
-  $\mathcal{M}^{m,\alpha}(n,Q,r)$ is covered by $\le N^k$ charts, and
-  $C^{m,\beta}$ convergence is actually unpointed. If instead $\vol M\le V$,
-  part (A) of the fundamental theorem gives that there are never more than
-  $k=V\cdot e^{2nQ}\cdot(\vol B(0,\varepsilon))^{-1}$ disjoint
-  $\varepsilon$-balls, so $\diam\le2\varepsilon k$ and the diameter case
-  applies. Compactness in any $C^{m,\beta}$ topology implies only finitely
-  many diffeomorphism types can occur.
+  \sketch
+  In \cref{thm:pet-ch11-fundamental-theorem-convergence}, a diameter bound restricts the exhaustion to uniformly many controlled charts, so pointed convergence is unpointed. If \(\vol M\le V\), the local chart-volume lower bound gives a uniform bound
+  \[
+    V e^{2nQ}\bigl(\vol B(0,\varepsilon)\bigr)^{-1}
+  \]
+  on disjoint \(\varepsilon\)-balls, hence a diameter bound. Compactness then permits only finitely many diffeomorphism types.
 \end{proof}
 
-\begin{corollary}[Cor.\ 11.3.8 — compactness for the harmonic norm]
+
+\begin{corollary}[compactness for the harmonic norm]
   \label{cor:pet-ch11-harmonic-norm-class-compact}
+  \dcref{ch11:11.3.8}
   \lean{PetersenLib.harmonicNormClass_closed_compact}
   \uses{prop:pet-ch11-harmonic-norm-properties,thm:pet-ch11-fundamental-theorem-convergence}
-  For $Q>0$, $n\ge2$, $m\ge0$, $\alpha\in(0,1]$, $r>0$, the class of complete
+  Fix $Q>0$, $n\ge2$, $m\ge0$, $\alpha\in(0,1]$, and $r>0$. The class of complete
   pointed Riemannian $n$-manifolds $(M,g,p)$ with
   $\|(M,g)\|^{\mathrm{har}}_{C^{m,\alpha},r}\le Q$ is closed in the pointed
   $C^{m,\alpha}$ topology and compact in the pointed $C^{m,\beta}$ topology
   for all $\beta<\alpha$.
-  \source{petersen:page-0437}
 \end{corollary}
 \begin{proof}
   \uses{cor:pet-ch11-harmonic-norm-class-compact}
-  By \cref{prop:pet-ch11-harmonic-norm-properties} the harmonic norm behaves
-  like the ordinary norm under convergence, so
-  \cref{thm:pet-ch11-fundamental-theorem-convergence} applies to give
-  compactness; closedness follows because harmonic charts converge to
-  harmonic charts, as established in the proof of
-  \cref{prop:pet-ch11-harmonic-norm-properties}, so the limit space also has
-  harmonic norm $\le Q$.
+  \sketch
+  The convergence properties in \cref{prop:pet-ch11-harmonic-norm-properties} reduce compactness to \cref{thm:pet-ch11-fundamental-theorem-convergence}. Limits of harmonic charts remain harmonic, so the norm bound is closed.
 \end{proof}
+
 
 \subsection{Alternative Norms}
 
@@ -1252,8 +943,7 @@ Gromov--Hausdorff convergence to pointed $C^{m,\beta}$ convergence.
   \label{rem:pet-ch11-alternative-norm-conditions}
   \lean{PetersenLib.alternativeNormConditions}
   \uses{def:pet-ch11-cmalpha-norm-pointed}
-  The norm concept and its properties are unchanged if (n1), (n2) are
-  replaced by
+  Replacing (n1), (n2) by
   \[
     \text{(n1$'$)}\quad|D\varphi|,|D\varphi^{-1}|\le f_1(n,Q),\qquad
     \text{(n2$'$)}\quad r^{|I|+\alpha}\|\partial^Ig\|_\alpha\le f_2(n,Q),\ 0\le|I|\le m,
@@ -1261,14 +951,13 @@ Gromov--Hausdorff convergence to pointed $C^{m,\beta}$ convergence.
   for continuous $f_1,f_2$ with $f_1(n,0)=1$, $f_2(n,0)=0$: this preserves
   continuity of the norm in $r$, the Fundamental Theorem, and the
   characterization of flat manifolds and Euclidean space.
-  \source{petersen:page-0437}
 \end{remark}
 
 \begin{remark}[the $C^0$ norm and topological finiteness]
   \label{rem:pet-ch11-c0-norm-precompactness-only}
   \lean{PetersenLib.c0NormClass_precompact_gh_only}
   \uses{def:pet-ch11-cmalpha-norm-global,cor:pet-ch11-fundamental-thm-diam-vol-bounded}
-  Taking $m=\alpha=0$, (n2) no longer makes sense but a $C^0$-norm concept
+  At $m=\alpha=0$, condition (n2) is unavailable, but a $C^0$-norm notion
   survives. The class $\mathcal{M}^0(n,Q,r)$ is only precompact in the
   pointed Gromov--Hausdorff topology (the flat-manifold characterization
   still holds), and diameter- or volume-bounded subclasses are only
@@ -1280,18 +969,15 @@ Gromov--Hausdorff convergence to pointed $C^{m,\beta}$ convergence.
   embeddings can nonetheless be glued without much $C^0$ distortion, giving
   topological embeddings with converging pullback metrics; hence
   diameter- or volume-bounded classes contain only finitely many
-  homeomorphism types, matching the original form of Cheeger's finiteness
-  theorem (which considered diffeomorphism types under stronger coordinate
-  bounds).
-  \source{petersen:page-0438}
+  homeomorphism types.
 \end{remark}
 
 \begin{definition}[Reifenberg norm]
   \label{def:pet-ch11-reifenberg-norm}
   \lean{PetersenLib.reifenbergNorm}
   \uses{def:pet-ch11-gromov-hausdorff-distance}
-  For a metric space $(X,|\cdot|)$, the \emph{$n$-dimensional Reifenberg norm
-  at scale $r$} is
+  For a metric space $(X,|\cdot|)$, define the \emph{$n$-dimensional Reifenberg norm
+  at scale $r$} by
   \[
     \|(X,|\cdot|)\|^n_r=\frac1r\sup_{p\in X}\dGH\big(B(p,r),B(0,r)\big),
   \]
@@ -1299,41 +985,39 @@ Gromov--Hausdorff convergence to pointed $C^{m,\beta}$ convergence.
   merely because $r$ is small. If $(X_i,|\cdot|_i)\to(X,|\cdot|)$ in the
   Gromov--Hausdorff topology then $\|(X_i,|\cdot|_i)\|^n_r\to\|(X,|\cdot|)\|^n_r$
   for fixed $n,r$.
-  \source{petersen:page-0438}
 \end{definition}
 
 \begin{remark}[Reifenberg norm: vanishing and the Cheeger--Colding converse]
   \label{rem:pet-ch11-reifenberg-norm-properties}
   \lean{PetersenLib.reifenbergNorm_limit_zero,PetersenLib.cheegerColdingReifenbergConverse}
   \uses{def:pet-ch11-reifenberg-norm}
-  For an $n$-dimensional Riemannian manifold,
+  Every $n$-dimensional Riemannian manifold satisfies
   $\lim_{r\to0}\|(M,g)\|^n_r=0$. Cheeger and Colding proved a converse: there
   is $\varepsilon(n)>0$ such that if $\|(X,|\cdot|)\|^n_r\le\varepsilon(n)$
   for all small $r$, then $X$ is, in a weak sense, an $n$-dimensional
   Riemannian manifold; in particular, for small $r$, the $\alpha$-Hölder
   distance between $B(p,r)$ and $B(0,r)$ is then small.
-  \source{petersen:page-0438,petersen:page-0439}
 \end{remark}
 
 \begin{definition}[$\alpha$-Hölder distance]
   \label{def:pet-ch11-holder-distance}
   \lean{PetersenLib.holderDistance}
   \uses{def:pet-ch11-holder-pseudonorm}
-  The \emph{$\alpha$-Hölder distance} $d_\alpha(X,Y)$ between metric spaces is
+  For metric spaces $X,Y$, define their \emph{$\alpha$-Hölder distance}
+  $d_\alpha(X,Y)$ as
   the infimum, over homeomorphisms $F:X\to Y$, of
   \[
     \log\max\Big\{\sup_{x_1\ne x_2}\frac{|F(x_1)F(x_2)|}{|x_1x_2|^\alpha},\
     \sup_{y_1\ne y_2}\frac{|F^{-1}(y_1)F^{-1}(y_2)|}{|y_1y_2|^\alpha}\Big\}.
   \]
-  \source{petersen:page-0438,petersen:page-0439}
 \end{definition}
 
 \begin{remark}[Cheeger--Colding Hölder convergence and Colding's volume criterion]
   \label{rem:pet-ch11-cheeger-colding-holder-convergence}
   \lean{PetersenLib.cheegerColdingHolderConvergence,PetersenLib.coldingVolumeCriterion}
   \uses{def:pet-ch11-holder-distance,rem:pet-ch11-reifenberg-norm-properties}
-  Cheeger and Colding show that if $(M_i,g_i)\to(X,|\cdot|)$ in the
-  Gromov--Hausdorff topology with $\|(M_i,g_i)\|^n_r\le\varepsilon(n)$ for all
+  Under Gromov--Hausdorff convergence $(M_i,g_i)\to(X,|\cdot|)$, Cheeger and
+  Colding show that if $\|(M_i,g_i)\|^n_r\le\varepsilon(n)$ for all
   $i$ and small $r$, then $(M_i,g_i)\to(X,|\cdot|)$ in the Hölder distance,
   and in particular all $M_i$ are diffeomorphic to $X$ for large $i$.
   Colding earlier showed that for $(M,g)$ with $\Ric\ge(n-1)k$,
@@ -1341,590 +1025,433 @@ Gromov--Hausdorff convergence to pointed $C^{m,\beta}$ convergence.
   small $\delta$; relative volume comparison shows the volume condition for
   one $r$ persists for all smaller $r$, so smallness of the Reifenberg norm
   for all small $r$ follows from the volume condition at a single $r$.
-  \source{petersen:page-0439}
 \end{remark}
 
 \section{Geometric Applications}
 
-To obtain better control on the norms one uses harmonic coordinates on balls
-of an a priori size, controlled by curvature and injectivity-radius bounds;
-this section develops the resulting geometric applications, following
-Anderson's approach.
-
 \subsection{Ricci Curvature}
 
-\begin{lemma}[Lemma 11.4.1 (Anderson, 1990) — Ricci controls the harmonic $C^{1,\alpha}$ norm]
+\begin{lemma}[Ricci controls the harmonic $C^{1,\alpha}$ norm]
   \label{lem:pet-ch11-anderson-ricci-harmonic-c1alpha-bound}
+  \dcref{ch11:11.4.1}
   \lean{PetersenLib.andersonRicciHarmonicC1AlphaBound}
   \uses{def:pet-ch11-harmonic-norm,lem:pet-ch11-laplacian-ricci-harmonic-coords,thm:pet-ch11-schauder-estimates}
-  Suppose $(M,g)$ has $|\Ric|\le\Lambda$. For $r_1<r_2$,
+  If $|\Ric|\le\Lambda$ and $r_1<r_2$,
   $K\ge\|(M,g,p)\|^{\mathrm{har}}_{C^{1,r_2}}$, $\alpha\in(0,1)$ there is
   $C(n,\alpha,K,r_1,r_2,\Lambda)$ with
   $\|(M,g,p)\|^{\mathrm{har}}_{C^{1,\alpha},r_1}\le C$. If moreover $g$ is
   Einstein, $\Ric=kg$, then for each $m$ there is
   $C(n,\alpha,K,r_1,r_2,k,m)$ with
   $\|(M,g,p)\|^{\mathrm{har}}_{C^{m+1,\alpha},r_1}\le C$.
-  \source{petersen:page-0439,petersen:page-0440}
 \end{lemma}
 \begin{proof}
   \uses{lem:pet-ch11-anderson-ricci-harmonic-c1alpha-bound}
-  Work in fixed harmonic coordinates on $B(0,r_2)$, where
-  $\Delta=g^{ij}\partial_i\partial_j$. The bound
-  $\|(M,g,p)\|^{\mathrm{har}}_{C^{1,r_2}}\le K$ gives the ellipticity data
-  needed to apply \cref{thm:pet-ch11-schauder-estimates} to $\Delta g_{ij}$:
+  \sketch
+  In a controlled harmonic chart, apply \cref{thm:pet-ch11-schauder-estimates} to the metric equation from \cref{lem:pet-ch11-laplacian-ricci-harmonic-coords},
   \[
-    \|g_{ij}\|_{C^{1,\alpha},B(0,r_1)}\le C(n,\alpha,K,r_1,r_2)\big(\|\Delta g_{ij}\|_{C^0,B(0,r_2)}+\|g_{ij}\|_{C^0,B(0,r_2)}\big).
+    \Delta g_{ij}=-2\Ric_{ij}-2Q(g,\partial g).
   \]
-  By \cref{lem:pet-ch11-laplacian-ricci-harmonic-coords},
-  $\Delta g_{ij}=-2\Ric_{ij}-2Q(g,\partial g)$, so
-  $\|\Delta g_{ij}\|_{C^0,B(0,r_2)}\le2\Lambda\|g_{ij}\|_{C^0,B(0,r_2)}+\hat C\|g_{ij}\|_{C^1,B(0,r_2)}$
-  (bounding the quadratic-in-$\partial g$ term $Q$ using the $C^1$ bound from
-  $K$), giving
-  \[
-    \|g_{ij}\|_{C^{1,\alpha},B(0,r_1)}\le C(n,\alpha,K,r_1,r_2)(2\Lambda+\hat C+1)\|g_{ij}\|_{C^1,B(0,r_2)}.
-  \]
-  In the Einstein case $\Ric=kg$ gives a $C^{1,\alpha}$ bound on $\Ric$
-  itself (from the just-established $C^{1,\alpha}$ bound on $g$), so
-  $\Delta g_{ij}$ is bounded in $C^\alpha$, not merely $C^0$; applying
-  \cref{thm:pet-ch11-schauder-estimates} again gives a $C^{2,\alpha}$ bound
-  on $g_{ij}$, whence $\Delta g_{ij}$ is bounded in $C^{1,\alpha}$, giving a
-  $C^{3,\alpha}$ bound, and so on; iterating produces
-  $C^{m+1,\alpha}$ bounds for every $m$.
+  The \(C^1\) chart bound controls ellipticity and the quadratic term, while \(|\Ric|\le\Lambda\) controls the remainder, giving the \(C^{1,\alpha}\) estimate on the smaller ball. If \(\Ric=kg\), the right side gains the regularity of \(g\); iterated Schauder estimates yield every \(C^{m+1,\alpha}\) bound.
 \end{proof}
 
-\begin{corollary}[Cor.\ 11.4.2 — precompactness under bounded Ricci and harmonic norm]
+
+\begin{corollary}[precompactness under bounded Ricci and harmonic norm]
   \label{cor:pet-ch11-ricci-bounded-precompact-c1alpha}
+  \dcref{ch11:11.4.2}
   \lean{PetersenLib.ricciAndHarmonicNormBounded_precompact}
   \uses{lem:pet-ch11-anderson-ricci-harmonic-c1alpha-bound,thm:pet-ch11-fundamental-theorem-convergence}
-  For $n\ge2$, $Q,r,\Lambda\in(0,\infty)$, the class of Riemannian
+  With $n\ge2$ and $Q,r,\Lambda\in(0,\infty)$, the class of Riemannian
   $n$-manifolds with $\|(M,g)\|^{\mathrm{har}}_{C^{1,r}}\le Q$,
   $|\Ric|\le\Lambda$ is precompact in the pointed $C^{1,\alpha}$ topology for
   every $\alpha\in(0,1)$; the subclass of Einstein manifolds is compact in
   the $C^{m,\alpha}$ topology for every $m\ge1$, $\alpha\in(0,1)$.
-  \source{petersen:page-0441}
 \end{corollary}
 
-\begin{theorem}[Thm.\ 11.4.3 (Anderson, 1990) — injectivity radius controls the harmonic norm]
+\begin{theorem}[injectivity radius controls the harmonic norm]
   \label{thm:pet-ch11-anderson-injectivity-radius-controls-norm}
+  \dcref{ch11:11.4.3}
   \lean{PetersenLib.andersonInjectivityRadiusControlsNorm}
   \uses{lem:pet-ch11-anderson-ricci-harmonic-c1alpha-bound,thm:pet-ch11-fundamental-theorem-convergence,rem:pet-ch11-einstein-harmonic-regularity-bootstrap}
-  Given $n\ge2$, $\alpha\in(0,1)$, $\Lambda,R>0$, for each $Q>0$ there is
+  For $n\ge2$, $\alpha\in(0,1)$, and $\Lambda,R>0$, each $Q>0$ admits
   $r(n,\alpha,\Lambda,R)>0$ such that any compact Riemannian $n$-manifold
   $(M,g)$ with $|\Ric|\le\Lambda$, $\inj\ge R$ satisfies
   $\|(M,g)\|^{\mathrm{har}}_{C^{1,\alpha},r}\le Q$.
-  \source{petersen:page-0441}
 \end{theorem}
 \begin{proof}
   \uses{thm:pet-ch11-anderson-injectivity-radius-controls-norm}
-  Suppose not: there is $Q>0$ and, for each $i$, $(M_i,g_i)$ with
-  $|\Ric|\le\Lambda$, $\inj\ge R$, but
-  $\|(M_i,g_i)\|^{\mathrm{har}}_{C^{1,\alpha},r}>Q$ for all $r$. By continuity
-  and vanishing at $r\to0$ of the norm, choose $r_i\in(0,i^{-1})$ with
-  $\|(M_i,g_i)\|^{\mathrm{har}}_{C^{1,\alpha},r_i}=Q$. Rescale
-  $\tilde g_i=r_i^{-2}g_i$; then $|\Ric(\tilde g_i)|\le r_i\Lambda$,
-  $\inj(\tilde g_i)\ge r_i^{-1}R$, and
-  $\|(M_i,\tilde g_i)\|^{\mathrm{har}}_{C^{1,\alpha},1}=Q$. Choose
-  $p_i\in M_i$ with $\|(M_i,\tilde g_i,p_i)\|^{\mathrm{har}}_{C^{1,\alpha},1}\in[Q/2,Q]$.
-
-  By \cref{lem:pet-ch11-anderson-ricci-harmonic-c1alpha-bound}, bounded Ricci
-  curvature of $(M_i,\tilde g_i)$ bounds the $C^{1,\gamma}$ norm for
-  $\gamma\in(\alpha,1)$, so by
-  \cref{thm:pet-ch11-fundamental-theorem-convergence} a subsequence
-  $(M_i,\tilde g_i,p_i)\to(M,g,p)$ in the pointed $C^{1,\gamma}$ topology,
-  and continuity of the norm gives
-  $\|(M,g,p)\|^{\mathrm{har}}_{C^{1,\alpha},1}\in[Q/2,Q]$.
-
-  We claim $(M,g)=(\mathbb{R}^n,g_{\mathrm{eu}})$, contradicting the previous
-  display. In converging harmonic coordinates, the metric coefficients
-  satisfy $\tfrac12\Delta g_{kl}+Q(g,\partial g)=-\Ric_{kl}$
-  (\cref{lem:pet-ch11-laplacian-ricci-harmonic-coords}); since
-  $|\Ric(\tilde g_i)|\le r_i^{-2}\Lambda\cdot r_i^2=r_i\Lambda\to0$ (in the
-  rescaled harmonic coordinates the Ricci bound tends to $0$) and
-  $\tilde g_{i,kl}\to g_{kl}$ in $C^{1,\alpha}$, the limit satisfies
-  $\tfrac12\Delta g_{kl}+Q(g,\partial g)=0$ weakly, so by
-  \cref{rem:pet-ch11-einstein-harmonic-regularity-bootstrap} the limit is a
-  smooth Ricci-flat manifold. Since $\inj(M_i,\tilde g_i)\to\infty$ and the
-  metrics converge in $C^{1,\alpha}$, every finite-length geodesic in the
-  limit is a limit of segments in $(M_i,\tilde g_i)$ and hence is itself a
-  segment, giving $\inj(M,g)=\infty$; the splitting theorem then forces
-  $(M,g)$ to be Euclidean space.
+  \sketch
+  Otherwise choose scales \(r_i\downarrow0\) at which the harmonic norm equals a fixed \(Q\), and rescale by \(r_i^{-2}\). Then Ricci tends to zero, injectivity radius tends to infinity, and the unit-scale norm remains in \([Q/2,Q]\) at suitable base points. The estimate in \cref{lem:pet-ch11-anderson-ricci-harmonic-c1alpha-bound} and \cref{thm:pet-ch11-fundamental-theorem-convergence} give a \(C^{1,\gamma}\) limit. The equation in \cref{lem:pet-ch11-laplacian-ricci-harmonic-coords}, followed by the regularity in \cref{rem:pet-ch11-einstein-harmonic-regularity-bootstrap}, makes the limit smooth and Ricci flat. Infinite injectivity radius and splitting force it to be Euclidean, contradicting the nonzero limiting norm.
 \end{proof}
 
-\begin{corollary}[Cor.\ 11.4.4 (Anderson, 1990) — diffeomorphism finiteness under Ricci, diameter, injectivity bounds]
+
+\begin{corollary}[diffeomorphism finiteness under Ricci, diameter, injectivity bounds]
   \label{cor:pet-ch11-anderson-diffeo-finiteness-injectivity}
+  \dcref{ch11:11.4.4}
   \lean{PetersenLib.andersonDiffeoFinitenessInjectivity}
   \uses{thm:pet-ch11-anderson-injectivity-radius-controls-norm,cor:pet-ch11-fundamental-thm-diam-vol-bounded}
-  For $n\ge2$, $\Lambda,D,R>0$, the class of closed Riemannian $n$-manifolds
-  with $|\Ric|\le\Lambda$, $\diam\le D$, $\inj\ge R$ is precompact in the
+  Closed Riemannian $n$-manifolds with $n\ge2$ and
+  $\Lambda,D,R>0$ satisfying
+  $|\Ric|\le\Lambda$, $\diam\le D$, $\inj\ge R$ is precompact in the
   $C^{1,\alpha}$ topology for every $\alpha\in(0,1)$, and in particular
   contains only finitely many diffeomorphism types.
-  \source{petersen:page-0442,petersen:page-0443}
 \end{corollary}
 
 \subsection{Volume Pinching}
 
-\begin{lemma}[Lemma 11.4.5 (Anderson, 1990) — near-maximal volume growth forces Euclidean space]
+\begin{lemma}[near-maximal volume growth forces Euclidean space]
   \label{lem:pet-ch11-anderson-volume-pinching-euclidean}
+  \dcref{ch11:11.4.5}
   \lean{PetersenLib.andersonVolumePinchingEuclidean}
   \uses{thm:pet-ch11-fundamental-theorem-convergence,cor:pet-ch11-norm-zero-implies-flat}
-  For each $n\ge2$ there is $\varepsilon(n)>0$ such that any complete Ricci
+  For every $n\ge2$ one can choose $\varepsilon(n)>0$ so that a complete Ricci
   flat $(M,g)$ with $\vol B(p,r)\ge(1-\varepsilon)\omega_nr^n$ for some
   $p\in M$ and some $r$ is isometric to Euclidean space.
-  \source{petersen:page-0443,petersen:page-0444}
 \end{lemma}
 \begin{proof}
   \uses{lem:pet-ch11-anderson-volume-pinching-euclidean}
-  On any complete manifold with $\Ric\ge0$, relative volume comparison shows
-  $\vol B(p,r)\ge(1-\varepsilon)\omega_nr^n$ for a single $p,r$ is equivalent
-  (as $r$ varies, and over $p$) to
-  $\lim_{r\to\infty}\vol B(p,r)/\omega_nr^n\ge1-\varepsilon$, so the
-  hypothesis is independent of $p,r$ and is preserved under rescaling
-  $g\mapsto\lambda^2g$ (since $\Ric\ge0$ is scale invariant).
-
-  Suppose the lemma fails: for each $i$ there is Ricci-flat $(M_i,g_i)$ with
-  $\lim_{r\to\infty}\vol B(p_i,r)/\omega_nr^n\ge1-i^{-1}$ but
-  $\|(M_i,g_i)\|_{C^{1,\alpha},r}\ne0$ for all $r>0$. Rescaling, arrange
-  $(M_i,\bar g_i,q_i)$ Ricci flat with
-  $\lim_{r\to\infty}\vol B(q_i,r)/\omega_nr^n\ge1-i^{-1}$,
-  $\|(M_i,\bar g_i)\|_{C^{1,\alpha},1}\le1$, and
-  $\|(M_i,\bar g_i,q_i)\|_{C^{1,\alpha},1}\in[0.5,1]$. By
-  \cref{thm:pet-ch11-fundamental-theorem-convergence} a subsequence converges
-  in $C^{m,\alpha}$ to a Ricci-flat $(M,g,q)$; metric balls and volume forms
-  converge, so $\lim_{r\to\infty}\vol B(q,r)/\omega_nr^n=1$, i.e.\ the limit
-  has maximal volume growth for all balls, forcing $(M,g)$ to be Euclidean by
-  the equality case of relative volume comparison
-  (\cref{cor:pet-ch11-norm-zero-implies-flat} then applies once the norm is
-  known to vanish). This contradicts continuity of the norm in $C^{1,\alpha}$
-  (the norm of the limit would have to vanish, while
-  $\|(M_i,\bar g_i,q_i)\|_{C^{1,\alpha},1}\ge0.5$ persists in the limit).
+  \sketch
+  Bishop--Gromov monotonicity makes the asymptotic volume ratio independent of the base point and invariant under scaling. If no \(\varepsilon(n)\) worked, rescale counterexamples so their unit-scale norm lies in \([1/2,1]\). The compactness theorem \cref{thm:pet-ch11-fundamental-theorem-convergence} gives a Ricci-flat limit with Euclidean volume ratio \(1\). Equality in volume comparison makes every ball Euclidean, hence the limit norm vanishes by \cref{cor:pet-ch11-norm-zero-implies-flat}, contradicting continuity of the normalized norm.
 \end{proof}
 
-\begin{corollary}[Cor.\ 11.4.6 — volume-pinching precompactness]
+
+\begin{corollary}[volume-pinching precompactness]
   \label{cor:pet-ch11-volume-pinching-precompactness}
+  \dcref{ch11:11.4.6}
   \lean{PetersenLib.volumePinchingPrecompactness}
   \uses{lem:pet-ch11-anderson-volume-pinching-euclidean,thm:pet-ch11-fundamental-theorem-convergence}
-  For $n\ge2$, $-\infty<\lambda\le\Lambda<\infty$, $D,R\in(0,\infty)$, there
-  is $\delta=\delta(n,\lambda R^2)$ such that the class of closed Riemannian
+  Given $n\ge2$, $-\infty<\lambda\le\Lambda<\infty$, and $D,R>0$, choose
+  $\delta=\delta(n,\lambda R^2)$ so that the class of closed Riemannian
   $n$-manifolds with $(n-1)\Lambda\ge\Ric\ge(n-1)\lambda$, $\diam\le D$,
   $\vol B(p,R)\ge(1-\delta)v(n,\lambda,R)$ is precompact in the $C^{1,\alpha}$
   topology for every $\alpha\in(0,1)$, and in particular contains only
   finitely many diffeomorphism types.
-  \source{petersen:page-0444,petersen:page-0445}
 \end{corollary}
 \begin{proof}
   \uses{cor:pet-ch11-volume-pinching-precompactness}
-  As in the proof of \cref{thm:pet-ch11-anderson-injectivity-radius-controls-norm},
-  suppose $(M_i,\bar g_i,p_i)$, $\bar g_i=k_i^2g_i$, $k_i\to\infty$, lie in
-  the class. The volume hypothesis rescales to
+  \sketch
+  Use the blow-up normalization from \cref{thm:pet-ch11-anderson-injectivity-radius-controls-norm}. Under \(\bar g_i=k_i^2g_i\), relative volume comparison gives, for fixed \(r\),
   \[
-    \vol_{\bar g_i}B(p_i,Rk_i)=k_i^n\vol_{g_i}B(p_i,R)\ge k_i^n(1-\delta)v(n,\lambda,R)
-    =(1-\delta)v(n,\lambda k_i^{-2},Rk_i),
+    \vol_{\bar g_i}B(p_i,r)\ge(1-\delta)v(n,\lambda k_i^{-2},r)
+      \longrightarrow(1-\delta)\omega_nr^n .
   \]
-  and relative volume comparison then gives, for $r\le Rk_i$ and large $i$,
-  $\vol_{\bar g_i}B(p_i,r)\ge(1-\delta)v(n,\lambda k_i^{-2},r)\sim(1-\delta)\omega_nr^n$.
-  In the limit space (which exists by
-  \cref{thm:pet-ch11-fundamental-theorem-convergence} applied to the
-  precompact family obtained from bounded Ricci and diameter), this gives
-  $\vol B(p,r)\ge(1-\delta)\omega_nr^n$ for all $r$; the limit is also Ricci
-  flat (as $\lambda k_i^{-2}\to0$), so
-  \cref{lem:pet-ch11-anderson-volume-pinching-euclidean} makes it Euclidean,
-  contradicting continuity of the norm as before.
+  The compactness theorem \cref{thm:pet-ch11-fundamental-theorem-convergence} produces a Ricci-flat limit, which is Euclidean by \cref{lem:pet-ch11-anderson-volume-pinching-euclidean}. This contradicts the normalized nonzero harmonic norm and proves the required uniform control.
 \end{proof}
+
 
 \subsection{Sectional Curvature}
 
-\begin{theorem}[Thm.\ 11.4.7 — the Convergence Theorem of Riemannian Geometry]
+\begin{theorem}[the Convergence Theorem of Riemannian Geometry]
   \label{thm:pet-ch11-convergence-theorem-riemannian-geometry}
+  \dcref{ch11:11.4.7}
   \lean{PetersenLib.convergenceTheoremOfRiemannianGeometry}
   \uses{thm:pet-ch11-anderson-injectivity-radius-controls-norm}
-  Given $R,K>0$ there exist $Q,r>0$ such that any $(M,g)$ with $\inj\ge R$,
-  $|\sec|\le K$ has $\|(M,g)\|^{\mathrm{har}}_{C^{1,\alpha},r}\le Q$; in
+  For $R,K>0$, there are $Q,r>0$ such that every $(M,g)$ with $\inj\ge R$
+  and $|\sec|\le K$ satisfies
+  $\|(M,g)\|^{\mathrm{har}}_{C^{1,\alpha},r}\le Q$; in
   particular this class is compact in the pointed $C^{1,\alpha}$ topology for
   all $\alpha<1$.
-  \source{petersen:page-0445}
 \end{theorem}
 
-\begin{corollary}[Cor.\ 11.4.8 (Cheeger, 1967) — even-dimensional pinched curvature finiteness]
+\begin{corollary}[even-dimensional pinched curvature finiteness]
   \label{cor:pet-ch11-cheeger-even-dim-finiteness}
+  \dcref{ch11:11.4.8}
   \lean{PetersenLib.cheegerEvenDimFiniteness}
   \uses{thm:pet-ch11-convergence-theorem-riemannian-geometry}
-  For $n\ge1$, $k>0$, the class of Riemannian $2n$-manifolds with
+  For $n\ge1$ and $k>0$, the class of Riemannian $2n$-manifolds satisfying
   $k\le\sec\le1$ is compact in the $C^{1,\alpha}$ topology and hence contains
   only finitely many diffeomorphism types (using the diameter bound in
   positive curvature and Klingenberg's injectivity-radius estimate).
-  \source{petersen:page-0445}
 \end{corollary}
 
-\begin{lemma}[Lemma 11.4.9 (Cheeger, 1967) — volume lower bound controls injectivity radius]
+\begin{lemma}[volume lower bound controls injectivity radius]
   \label{lem:pet-ch11-cheeger-injectivity-radius-lemma}
+  \dcref{ch11:11.4.9}
   \lean{PetersenLib.cheegerInjectivityRadiusLemma}
   \uses{thm:pet-ch11-fundamental-theorem-convergence,cor:pet-ch11-norm-zero-implies-flat}
-  Given $n\ge2$, $v,K>0$, and a compact $n$-manifold $(M,g)$ with
+  If $n\ge2$, $v,K>0$, and compact $(M,g)$ obeys
   $|\sec|\le K$ and $\vol B(p,1)\ge v$ for all $p\in M$, then $\inj M\ge R$
   for $R=R(n,K,v)$.
-  \source{petersen:page-0446}
 \end{lemma}
 \begin{proof}
   \uses{lem:pet-ch11-cheeger-injectivity-radius-lemma}
-  Suppose not: $(M_i,g_i)$ satisfy the hypotheses with $\inj M_i\to0$. Choose
-  $p_i$ with $\inj_{p_i}=\inj(M_i,g_i)$ and rescale
-  $\bar g_i=(\inj M_i)^{-2}g_i$, so $\inj(M_i,\bar g_i)=1$ and
-  $|\sec(M_i,\bar g_i)|\le(\inj M_i)^2K=:K_i\to0$. By
-  \cref{thm:pet-ch11-fundamental-theorem-convergence}, a subsequence of
-  $(M_i,\bar g_i,p_i)$ converges in the pointed $C^{1,\alpha}$ topology to
-  $(M,g,p)$, flat since $\|(M,g)\|_{C^{1,\alpha},1}=0$.
-
-  First, $\inj(M)\le1$: the conjugate radius for $(M_i,\bar g_i)$ is
-  $\ge\pi/\sqrt{K_i}\to\infty$, so Klingenberg's estimate forces a geodesic
-  loop of length $2$ at $p_i$; convergence carries this loop to a geodesic
-  loop of length $2$ in $M$ based at $p$, so $\inj(M)\le1$.
-
-  Second, $(M,g)=(\mathbb{R}^n,g_{\mathrm{std}})$: relative volume comparison and
-  $\vol B(p_i,1)\ge v$ give $v'=v'(n,K,v)$ with
-  $\vol B(p_i,r)\ge v'r^n$ for $r\le1$; the rescaled manifolds satisfy this
-  for $r\le(\inj M_i)^{-1}$, and convergence gives $\vol B(p,r)\ge v'r^n$ for
-  all $r$. Since $(M,g)$ is flat, this volume growth forces it to be
-  Euclidean: if $M$ were a nontrivial quotient, the fundamental group would
-  act by fixed-point-free isometries (infinite order, since finite-order
-  isometries of Euclidean space are rotations about a fixed point), giving an
-  intermediate cover $\mathbb{R}^n\to\tilde M\to M$ with $\pi_1(\tilde M)=\mathbb{Z}$,
-  hence $\tilde M=\mathbb{R}^{n-1}\times S^1(R)$; then
-  $\lim_{r\to\infty}\vol B(p,r)/r^{n-1}<\infty$ for $p\in\tilde M$ (and hence
-  for $M$), contradicting $\vol B(p,r)\ge v'r^n$.
-
-  The two conclusions ($\inj M\le1$ and $M$ Euclidean, with
-  $\inj(\mathbb{R}^n,g_{\mathrm{std}})=\infty$) contradict each other.
+  \sketch
+  Rescale a sequence with \(\inj M_i\to0\) by \((\inj M_i)^{-2}\). The rescaled spaces have injectivity radius \(1\), curvature tending to zero, and by \cref{thm:pet-ch11-fundamental-theorem-convergence} converge to a flat pointed limit. Klingenberg gives length-\(2\) geodesic loops, so the limit has finite injectivity radius. The volume hypothesis and relative comparison yield Euclidean-order volume growth at every scale. A nontrivial complete flat quotient has at most \((n-1)\)-dimensional growth after passage to a cyclic cover, so the limit is \(\mathbb R^n\), whose injectivity radius is infinite: a contradiction.
 \end{proof}
 
-\begin{corollary}[Cor.\ 11.4.10 (Cheeger, 1967) — bounded curvature, diameter, volume finiteness]
+
+\begin{corollary}[bounded curvature, diameter, volume finiteness]
   \label{cor:pet-ch11-cheeger-diam-vol-finiteness}
+  \dcref{ch11:11.4.10}
   \lean{PetersenLib.cheegerDiamVolFiniteness}
   \uses{lem:pet-ch11-cheeger-injectivity-radius-lemma,thm:pet-ch11-convergence-theorem-riemannian-geometry}
-  For $n\ge2$, $K,D,v>0$, the class of closed Riemannian $n$-manifolds with
+  With $n\ge2$ and $K,D,v>0$, closed Riemannian $n$-manifolds satisfying
   $|\sec|\le K$, $\diam\le D$, $\vol\ge v$ is precompact in the $C^{1,\alpha}$
   topology for every $\alpha\in(0,1)$, and in particular contains only
   finitely many diffeomorphism types.
-  \source{petersen:page-0447}
 \end{corollary}
 
 \subsection{Lower Curvature Bounds}
 
-\begin{theorem}[Thm.\ 11.4.11 — lower sectional curvature and injectivity radius control the norm]
+\begin{theorem}[lower sectional curvature and injectivity radius control the norm]
   \label{thm:pet-ch11-lower-sec-bound-injectivity-norm-control}
+  \dcref{ch11:11.4.11}
   \lean{PetersenLib.lowerSecBoundInjectivityNormControl}
   \uses{def:pet-ch11-cmalpha-norm-pointed}
-  Given $R,k>0$ there exist $Q,r$ depending on $R,k$ such that any $(M,g)$
+  For $R,k>0$, there are $Q,r$ depending on $R,k$ such that every $(M,g)$
   with $\sec\ge-k^2$, $\inj\ge R$ satisfies $\|(M,g)\|_{C^{1,r}}\le Q$.
-  \source{petersen:page-0447}
 \end{theorem}
 \begin{proof}
   \uses{thm:pet-ch11-lower-sec-bound-injectivity-norm-control}
-  It suffices to bound the Hessian of distance functions $r(x)=|xp|$ on
-  $B(p,R)-\{p\}$. The Hessian comparison theorem gives
-  $\Hess r(x)\le k\coth(kr(x))g_r$. Conversely, for $r(x_0)<R$, $r(x)$ is
-  supported from below near $x_0$ by $f(x)=R-|xx_0'|$, where $x_0'=c(R)$ and
-  $c$ is the unit-speed minimizing geodesic from $p$ through $x_0$, giving
-  $\Hess r\ge\Hess f\ge-k\coth(k(R-r(x_0)))g_r$ at $x_0$. Hence
-  $|\Hess r|\le Q(k,R)$ on $B(x,r)$ whenever $|xp|\ge R/4$, $r\le R/4$.
-
-  Fix $p\in M$, an orthonormal basis $e_1,\dots,e_n$ of $T_pM$, and geodesics
-  $c_i$ with $c_i(0)=p$, $\dot c_i(0)=e_i$. Using
-  $r^i(x)=|xc_i(-R/2)|$ on $B(p,R/4)$, define
-  $\psi(x)=(r^1(x),\dots,r^n(x))-(r^1(p),\dots,r^n(p))$; then
-  $D\psi|_p(e_i)$ is the standard basis of $T_0\mathbb{R}^n$, so $\psi$ is a
-  chart near $p$ with $g_{ij}|_p=\delta_{ij}$. While $g_{ij}$ is not directly
-  defined on all of $B(p,R/4)$, the (globally defined) potential inverse
-  $g^{ij}=g(\nabla r^i,\nabla r^j)$ satisfies, by the Hessian estimate and
-  $|\nabla r^k|=1$, $|dg^{ij}|\le Q(n,k,R)$ on $B(p,R/4)$, hence
-  $\|g^{ij}-g^{ij}|_x\|<1/10$ for $x\in B(p,\delta(n,k,R))$. This shows
-  $g^{ij}$ has a well-defined inverse $g_{ij}$ on $B(p,\delta)$ with
-  $\|g_{ij}-g_{ij}|_x\|<1/9$ and $|dg_{ij}|\le C(n,k,R)$. By the inverse
-  function theorem, $\psi$ is injective on $B(p,\delta)$ with
-  $B(0,3/4)\subset\psi(B(p,\delta))$, and conditions (n1), (n2) hold with the
-  resulting $Q,r$.
+  \sketch
+  Hessian comparison and the lower support \(R-|x\,c(R)|\) give uniform two-sided Hessian bounds for distance functions away from their centers. Fixing an orthonormal basis at \(p\), use
+  \[
+    x\longmapsto\bigl(|x\,c_1(-R/2)|,\ldots,|x\,c_n(-R/2)|\bigr)
+  \]
+  as coordinates near \(p\). Their inverse metric coefficients are inner products of the corresponding unit gradients; the Hessian bounds control their first derivatives. On a uniform smaller ball the coefficient matrix stays invertible and satisfies (n1)--(n2), giving the asserted \(Q,r\).
 \end{proof}
 
-\begin{example}[Example 11.4.12 — optimality: only $C^{1,1}$ limits under lower curvature]
+
+\begin{example}[optimality: only $C^{1,1}$ limits under lower curvature]
   \label{ex:pet-ch11-optimality-lower-curvature-example}
+  \dcref{ch11:11.4.12}
   \lean{PetersenLib.optimalityLowerCurvatureExample}
   \uses{thm:pet-ch11-lower-sec-bound-injectivity-norm-control}
-  For $\varepsilon\to0$, rotationally symmetric metrics
-  $dr^2+\phi_\varepsilon^2(r)d\theta^2$ with $\phi_\varepsilon$ concave,
+  As $\varepsilon\to0$, consider rotationally symmetric metrics
+  $dr^2+\phi_\varepsilon^2(r)d\theta^2$ with $\phi_\varepsilon$ concave
   $\phi_\varepsilon(r)=r$ for $0\le r\le1-\varepsilon$ and
   $\phi_\varepsilon(r)=\tfrac34r$ for $r\ge1+\varepsilon$, have $\sec\ge0$,
   $\inj\ge1$, and converge to a $C^{1,1}$ manifold with $C^{0,1}$ metric
   $(M,g)$, for which $\|(M,g)\|_{C^{1,r}}<\infty$ for all $r$: limit spaces
   of sequences with $\inj\ge R$, $\sec\ge-k^2$ cannot in general be smoother
   than this.
-  \source{petersen:page-0448}
 \end{example}
 
-\begin{example}[Example 11.4.13 — a $C^{1,1}$ limit with two-sided curvature bound]
+\begin{example}[a $C^{1,1}$ limit with two-sided curvature bound]
   \label{ex:pet-ch11-c11-limit-example}
+  \dcref{ch11:11.4.13}
   \lean{PetersenLib.c11LimitExample}
   \uses{ex:pet-ch11-optimality-lower-curvature-example}
-  With $\psi_\varepsilon(r)=\sin r$ for $0\le r\le\pi/2-\varepsilon$ and
-  $\psi_\varepsilon(r)=1$ for $r\ge\pi/2$, the metrics
+  Take $\psi_\varepsilon(r)=\sin r$ for $0\le r\le\pi/2-\varepsilon$ and
+  $\psi_\varepsilon(r)=1$ for $r\ge\pi/2$; the metrics
   $dr^2+\psi_\varepsilon^2(r)d\theta^2$ satisfy $|\sec|\le4$, $\inj\ge1/4$; as
   $\varepsilon\to0$ they converge to a $C^{1,1}$ limit metric, though only
   $C^{1,\alpha}$ convergence for $\alpha<1$ has been established for such
   limits. Unlike the two-sided case, no injectivity-radius lower bound need
   hold under a one-sided curvature bound alone.
-  \source{petersen:page-0448}
 \end{example}
 
-\begin{remark}[Exercise 11.4.14]
+\begin{remark}[concave cone smoothing with collapsing injectivity radius]
   \label{rem:pet-ch11-exercise-11-4-14}
+  \dcref{ch11:11.4.14}
   \lean{PetersenLib.exercise_11_4_14}
   \uses{ex:pet-ch11-optimality-lower-curvature-example}
-  Given $a\in(0,1)$, $\varepsilon>0$, there is a smooth concave
+  For $a\in(0,1)$ and $\varepsilon>0$, choose a smooth concave
   $\rho_\varepsilon(r)$ with $\rho_\varepsilon(r)=r$ for $0\le r\le\varepsilon$
   and $\rho_\varepsilon(r)=ar$ for $r\ge2\varepsilon$. The surfaces
   $dr^2+\rho_\varepsilon^2(r)d\theta^2$ have $\sec\ge0$, $\inj\le5\varepsilon$,
   and the volume of any $R$-ball is always $\ge a\pi R^2$.
-  \source{petersen:page-0449}
 \end{remark}
 
-\begin{theorem}[Thm.\ 11.4.15 (Anderson--Cheeger, 1992) — Ricci lower bound with injectivity control]
+\begin{theorem}[Ricci lower bound with injectivity control]
   \label{thm:pet-ch11-anderson-cheeger-ricci-lower-bound-norm}
+  \dcref{ch11:11.4.15}
   \lean{PetersenLib.andersonCheegerRicciLowerBoundNorm}
   \uses{def:pet-ch11-harmonic-norm}
-  Given $R,k>0$, $\alpha\in(0,1)$, there exist $Q,r$ depending on $n,R,k$
+  For $R,k>0$ and $\alpha\in(0,1)$, there are suitable $Q,r$ depending on
+  $n,R,k$
   such that any $(M^n,g)$ with $\Ric\ge-(n-1)k^2$, $\inj\ge R$ satisfies
   $\|(M,g)\|^{\mathrm{har}}_{C^{\alpha},r}\le Q$.
-  \source{petersen:page-0449}
 \end{theorem}
 
 \subsection{Curvature Pinching}
 
-\begin{theorem}[Thm.\ 11.4.16 — Ricci pinching implies $C^{1,\alpha}$-closeness to Einstein]
+\begin{theorem}[Ricci pinching implies $C^{1,\alpha}$-closeness to Einstein]
   \label{thm:pet-ch11-ricci-pinching-einstein-closeness}
+  \dcref{ch11:11.4.16}
   \lean{PetersenLib.ricciPinchingEinsteinCloseness}
   \uses{cor:pet-ch11-anderson-diffeo-finiteness-injectivity,rem:pet-ch11-einstein-harmonic-regularity-bootstrap}
-  Given $n\ge2$, $R,D>0$, $\lambda\in\mathbb{R}$, there is
+  For $n\ge2$, $R,D>0$, and $\lambda\in\mathbb{R}$, there is
   $\varepsilon(n,\lambda,D,R)>0$ such that any closed Riemannian $n$-manifold
   $(M,g)$ with $\diam\le D$, $\inj\ge R$, $|\Ric-\lambda g|\le\varepsilon$ is
   $C^{1,\alpha}$ close to an Einstein metric with Einstein constant $\lambda$.
-  \source{petersen:page-0450}
 \end{theorem}
 \begin{proof}
   \uses{thm:pet-ch11-ricci-pinching-einstein-closeness}
-  By \cref{cor:pet-ch11-anderson-diffeo-finiteness-injectivity}, the class of
-  such $(M,g)$ (for any fixed $\varepsilon$) is precompact in $C^{1,\alpha}$.
-  If the theorem fails, there is a sequence $(M_i,g_i)\to(M,g)$ in
-  $C^{1,\alpha}$ with $(M_i,g_i)$ never $C^{1,\alpha}$-close to an Einstein
-  metric with constant $\lambda$, yet $|\Ric_{g_i}-\lambda g_i|\to0$. In
-  harmonic coordinates, the limit metric is then a weak solution of
-  $\tfrac12\Delta g+Q(g,\partial g)=-\lambda g$
-  (\cref{lem:pet-ch11-laplacian-ricci-harmonic-coords}), so by
-  \cref{rem:pet-ch11-einstein-harmonic-regularity-bootstrap} the limit is
-  smooth and Einstein with constant $\lambda$ — contradicting that the
-  $(M_i,g_i)$ were not close to such a metric.
+  \sketch
+  The class is \(C^{1,\alpha}\)-precompact by \cref{cor:pet-ch11-anderson-diffeo-finiteness-injectivity}. A counterexample sequence therefore converges to \(g\), and the harmonic-coordinate equation in \cref{lem:pet-ch11-laplacian-ricci-harmonic-coords} passes to the weak limit:
+  \[
+    \tfrac12\Delta g+Q(g,\partial g)=-\lambda g.
+  \]
+  The bootstrap in \cref{rem:pet-ch11-einstein-harmonic-regularity-bootstrap} makes \(g\) smooth and Einstein, contradicting the assumed failure of closeness.
 \end{proof}
+
 
 \begin{remark}[injectivity radius may be replaced by almost-maximal volume]
   \label{rem:pet-ch11-ricci-pinching-volume-alternative}
   \lean{PetersenLib.ricciPinchingVolumeAlternative}
   \uses{thm:pet-ch11-ricci-pinching-einstein-closeness,cor:pet-ch11-volume-pinching-precompactness}
-  Using \cref{cor:pet-ch11-volume-pinching-precompactness} in place of the
-  injectivity-radius precompactness in the proof of
+  Replacing the injectivity-radius argument by
+  \cref{cor:pet-ch11-volume-pinching-precompactness} in the
+  proof of
   \cref{thm:pet-ch11-ricci-pinching-einstein-closeness}, the injectivity
   radius hypothesis there may be replaced by an almost-maximal-volume
   hypothesis.
-  \source{petersen:page-0450}
 \end{remark}
 
-\begin{theorem}[Thm.\ 11.4.17 — sectional-curvature pinching implies closeness to constant curvature]
+\begin{theorem}[sectional-curvature pinching implies closeness to constant curvature]
   \label{thm:pet-ch11-sec-pinching-constant-curvature-closeness}
+  \dcref{ch11:11.4.17}
   \lean{PetersenLib.secPinchingConstantCurvatureCloseness}
   \uses{thm:pet-ch11-ricci-pinching-einstein-closeness,lem:pet-ch11-cheeger-injectivity-radius-lemma}
-  Given $n\ge2$, $v,D>0$, $\lambda\in\mathbb{R}$, there is
+  For $n\ge2$, $v,D>0$, and $\lambda\in\mathbb{R}$, there is
   $\varepsilon(n,\lambda,D,v)>0$ such that any closed Riemannian $n$-manifold
   $(M,g)$ with $\diam\le D$, $\vol\ge v$, $|\sec-\lambda|\le\varepsilon$ is
   $C^{1,\alpha}$ close to a metric of constant curvature $\lambda$.
-  \source{petersen:page-0450}
 \end{theorem}
 \begin{proof}
   \uses{thm:pet-ch11-sec-pinching-constant-curvature-closeness}
-  \cref{lem:pet-ch11-cheeger-injectivity-radius-lemma} gives a lower bound
-  for $\inj$ from the curvature and volume bounds, so
-  \cref{thm:pet-ch11-ricci-pinching-einstein-closeness} shows such metrics
-  are $C^{1,\alpha}$ close to Einstein metrics with $\Ric=(n-1)\lambda g$. It
-  remains to check that if $(M_i,g_i)\to(M,g)$ with
-  $|\sec_{g_i}-\lambda|\to0$ and $\Ric_{g_i}=(n-1)\lambda g_i$, then $(M,g)$
-  has constant curvature $\lambda$. Writing $g_i=dr^2+g_{r,i}$,
-  $g=dr^2+g_r$ in polar coordinates about $p_i\to p$, convergence in
-  $C^{1,\alpha}$ gives $g_{r,i}\to g_r$, and the Hessian comparison estimate
-  for the curvature-pinched distance function gives
+  \sketch
+  By \cref{lem:pet-ch11-cheeger-injectivity-radius-lemma}, curvature, diameter, and volume bounds give a uniform injectivity radius; \cref{thm:pet-ch11-ricci-pinching-einstein-closeness} then gives an Einstein limit with \(\Ric=(n-1)\lambda g\). In polar coordinates, Hessian comparison for \(\lambda-\varepsilon_i\le\sec_{g_i}\le\lambda+\varepsilon_i\) passes to
   \[
-    \frac{\mathrm{sn}_{\lambda+\varepsilon_i}'(r_i)}{\mathrm{sn}_{\lambda+\varepsilon_i}(r_i)}g_{r,i}
-    \le\Hess r_i\le\frac{\mathrm{sn}_{\lambda-\varepsilon_i}'(r_i)}{\mathrm{sn}_{\lambda-\varepsilon_i}(r_i)}g_{r,i}
+    \Hess r=\frac{\mathrm{sn}_{\lambda}^{\prime}(r)}{\mathrm{sn}_{\lambda}(r)}g_r.
   \]
-  with $\varepsilon_i\to0$; passing to the limit,
-  $\Hess r=\frac{\mathrm{sn}_\lambda'(r)}{\mathrm{sn}_\lambda(r)}g_r$, which
-  forces the limit metric to have constant curvature $\lambda$ (this
-  equality case is established elsewhere in the book).
+  The equality case forces constant sectional curvature \(\lambda\).
 \end{proof}
 
-\begin{corollary}[Cor.\ 11.4.18 — even-dimensional positive pinching without hypotheses]
+
+\begin{corollary}[even-dimensional positive pinching without hypotheses]
   \label{cor:pet-ch11-even-dim-positive-pinching}
+  \dcref{ch11:11.4.18}
   \lean{PetersenLib.evenDimPositivePinching}
   \uses{thm:pet-ch11-sec-pinching-constant-curvature-closeness}
-  Given $2n\ge2$, $\lambda>0$, there is $\varepsilon=\varepsilon(n,\lambda)>0$
+  In even dimension $2n\ge2$ and for $\lambda>0$, choose
+  $\varepsilon=\varepsilon(n,\lambda)>0$
   such that any closed Riemannian $2n$-manifold $(M,g)$ with
   $|\sec-\lambda|\le\varepsilon$ is $C^{1,\alpha}$ close to a metric of
   constant curvature $\lambda$ (in even dimensions, positive curvature alone
   bounds the diameter and, together with an upper curvature bound, the
   injectivity radius from below).
-  \source{petersen:page-0451}
 \end{corollary}
 
-\begin{corollary}[Cor.\ 11.4.19 — simply connected positive pinching]
+\begin{corollary}[simply connected positive pinching]
   \label{cor:pet-ch11-odd-dim-simply-connected-pinching}
+  \dcref{ch11:11.4.19}
   \lean{PetersenLib.oddDimSimplyConnectedPinching}
   \uses{cor:pet-ch11-even-dim-positive-pinching}
-  Given $n\ge2$, $\lambda>0$, there is $\varepsilon=\varepsilon(n,\lambda)>0$
+  For $n\ge2$ and $\lambda>0$, choose $\varepsilon=\varepsilon(n,\lambda)>0$
   such that any closed simply connected Riemannian $n$-manifold $(M,g)$ with
   $|\sec-\lambda|\le\varepsilon$ is $C^{1,\alpha}$ close to a metric of
   constant curvature $\lambda$.
-  \source{petersen:page-0451}
 \end{corollary}
-
-\section{Further Study}
-
-Petersen closes the chapter with bibliographic remarks (no numbered
-statements): Cheeger's original finiteness theorem and the $C^k$ convergence
-theory for manifolds trace to his thesis and its journal version, with the
-general pinching theorems also due to Cheeger; surveys by Anderson, Fukaya,
-Petersen, and Yamaguchi, and by Petersen on norms and convergence, are
-recommended for more on the theory and its applications, alongside the
-French-language text that first popularized the Gromov--Hausdorff distance
-and stronger convergence theorems (the present book states the Convergence
-Theorem of Riemannian Geometry, \cref{thm:pet-ch11-convergence-theorem-riemannian-geometry},
-in this form for the first time). S.\ Peters obtained an explicit estimate
-for the number of diffeomorphism classes in Cheeger's finiteness theorem,
-apparently the first place the modern statement of that theorem is proved.
-Beyond quarter-pinching in positive curvature (proved earlier in the book
-with purely topological conclusions), Ricci-flow techniques have since
-sharpened the picture — first for positive curvature operator, then for
-positive complex sectional curvature. In negative curvature, Heintze showed
-that complete manifolds with $-1\le\sec<0$ have a lower volume bound once the
-dimension is $\ge4$, making the volume hypothesis extraneous there, though
-the diameter bound remains essential (with known counterexamples otherwise).
-Near zero curvature, both the diameter and volume hypotheses are genuinely
-needed — quotients of the Heisenberg group give bounded-diameter, arbitrarily
-curvature-pinched examples admitting no flat metric — and Gromov classified
-all $n$-manifolds with $|\sec|\le\varepsilon(n)$, $\diam\le1$ for small
-$\varepsilon(n)$ as finitely covered by quotients of nilpotent Lie groups by
-discrete subgroups, a result with an independent Ricci-flow proof as well.
-\source{petersen:page-0451,petersen:page-0452}
 
 \section{Exercises}
 
-\begin{remark}[Exercise 11.6.1]
+\begin{remark}[low-dimensional Hausdorff approximations of a cube]
   \label{rem:pet-ch11-exercise-11-6-1}
+  \dcref{ch11:11.6.1}
   \lean{PetersenLib.exercise_11_6_1}
   \uses{def:pet-ch11-hausdorff-distance}
-  Find a sequence of $1$-dimensional metric spaces that Hausdorff converge to
-  the unit cube $[0,1]^3$ with the metric from the maximum norm on
+  Construct a sequence of $1$-dimensional metric spaces converging in Hausdorff
+  distance to the unit cube $[0,1]^3$ with the metric from the maximum norm on
   $\mathbb{R}^3$. Then find surfaces (jungle gyms) converging to the same
   space.
-  \source{petersen:page-0453}
 \end{remark}
 
-\begin{remark}[Exercise 11.6.2]
+\begin{remark}[\(\varepsilon\)-isometries control Gromov--Hausdorff distance]
   \label{rem:pet-ch11-exercise-11-6-2}
+  \dcref{ch11:11.6.2}
   \lean{PetersenLib.exercise_11_6_2}
   \uses{def:pet-ch11-gromov-hausdorff-distance}
-  If $F:X\to Y$ (not necessarily continuous) satisfies
+  Suppose a (not necessarily continuous) map $F:X\to Y$ satisfies
   $\big||x_1x_2|-|F(x_1)F(x_2)|\big|\le\varepsilon$ for all $x_1,x_2\in X$ and
   $F(X)\subset Y$ is $\varepsilon$-dense, show $\dGH(X,Y)<2\varepsilon$.
-  \source{petersen:page-0453}
 \end{remark}
 
-\begin{remark}[Exercise 11.6.3]
+\begin{remark}[injectivity radius gives local volume and precompactness]
   \label{rem:pet-ch11-exercise-11-6-3}
+  \dcref{ch11:11.6.3}
   \lean{PetersenLib.exercise_11_6_3}
   \uses{prop:pet-ch11-gromov-precompactness-criterion}
-  (Croke) There is a universal constant $c(n)$ such that any $n$-manifold
+  Croke's estimate gives a universal $c(n)$ for which every $n$-manifold
   with $\inj\ge R$ satisfies $\vol B(p,r)\ge c(n)r^n$ for $r\le R/e$; use this
   to show the class of $n$-manifolds with $\inj\ge R$, $\vol\le V$ is
   precompact in the Gromov--Hausdorff topology.
-  \source{petersen:page-0453}
 \end{remark}
 
-\begin{remark}[Exercise 11.6.4]
+\begin{remark}[bounded-overlap covers under a Ricci lower bound]
   \label{rem:pet-ch11-exercise-11-6-4}
+  \dcref{ch11:11.6.4}
   \lean{PetersenLib.exercise_11_6_4}
   \uses{cor:pet-ch11-ricci-diam-precompactness}
-  Let $(M,g)$ be complete with $\Ric\ge(n-1)k$. Show there is
+  For complete $(M,g)$ with $\Ric\ge(n-1)k$, establish a constant
   $C(n,k)$ such that for each $\varepsilon\in(0,1)$ there is a cover by balls
   $B(x_i,\varepsilon)$ such that no more than $C(n,k)$ of the balls
   $B(x_i,5\varepsilon)$ have nonempty pairwise intersection.
-  \source{petersen:page-0453}
 \end{remark}
 
-\begin{remark}[Exercise 11.6.5]
+\begin{remark}[Bochner formulas for symmetric covariant derivatives]
   \label{rem:pet-ch11-exercise-11-6-5}
+  \dcref{ch11:11.6.5}
   \lean{PetersenLib.exercise_11_6_5}
   \uses{lem:pet-ch11-laplacian-ricci-harmonic-coords}
-  Show there are Bochner formulas for $\Hess(\tfrac12g(X,Y))$ and
+  Derive Bochner formulas for $\Hess(\tfrac12g(X,Y))$ and
   $\Delta g(X,Y)$, for vector fields $X,Y$ with symmetric $\nabla X,\nabla Y$,
   and use these to prove the formulas of
   \cref{lem:pet-ch11-laplacian-ricci-harmonic-coords} relating Ricci
   curvature to the metric in harmonic coordinates.
-  \source{petersen:page-0453}
 \end{remark}
 
-\begin{remark}[Exercise 11.6.6]
+\begin{remark}[failure of a \(C^{1,\gamma}\) vector-field estimate]
   \label{rem:pet-ch11-exercise-11-6-6}
+  \dcref{ch11:11.6.6}
   \lean{PetersenLib.exercise_11_6_6}
   \uses{thm:pet-ch11-schauder-estimates}
-  Show that, in contrast to the elliptic estimates of
+  Demonstrate that, unlike the elliptic estimates of
   \cref{thm:pet-ch11-schauder-estimates}, it is not possible to find
   $C^{1,\gamma}$ bounds for a vector field $X$ in terms of $C^0$ bounds on
   $X$ and $\operatorname{div}X$.
-  \source{petersen:page-0453}
 \end{remark}
 
-\begin{remark}[Exercise 11.6.7]
+\begin{remark}[convergence of incomplete manifolds]
   \label{rem:pet-ch11-exercise-11-6-7}
+  \dcref{ch11:11.6.7}
   \lean{PetersenLib.exercise_11_6_7}
   \uses{def:pet-ch11-tensor-convergence-compact-subset,cor:pet-ch11-anderson-diffeo-finiteness-injectivity}
-  Define $C^{m,\alpha}$ convergence for incomplete manifolds, with the
-  boundary $\partial$ the points in the completion but not the manifold.
+  Extend the definition of $C^{m,\alpha}$ convergence to incomplete manifolds,
+  taking the boundary $\partial$ to be the points in the completion but not
+  the manifold.
   Show that the class of incomplete spaces with $|\Ric|\le\Lambda$ and
   $\inj(p)\ge\min\{R,R\cdot d(p,\partial)\}$, $R<1$, is precompact in the
   $C^{1,\alpha}$ topology.
-  \source{petersen:page-0453}
 \end{remark}
 
-\begin{remark}[Exercise 11.6.8]
+\begin{remark}[weighted norms and convergence]
   \label{rem:pet-ch11-exercise-11-6-8}
+  \dcref{ch11:11.6.8}
   \lean{PetersenLib.exercise_11_6_8}
   \uses{thm:pet-ch11-fundamental-theorem-convergence}
-  Define a \emph{weighted norm}: fix $\rho(R)>0$ and require that, in a
+  Introduce a \emph{weighted norm} by fixing $\rho(R)>0$ and requiring that, in a
   pointed manifold $(M,g,p)$, the points of $S(p,R)$ have norm $\le\rho(R)$.
   Prove the corresponding fundamental theorem.
-  \source{petersen:page-0453}
 \end{remark}
 
-\begin{remark}[Exercise 11.6.9]
+\begin{remark}[uniform small-scale norms on compact classes]
   \label{rem:pet-ch11-exercise-11-6-9}
+  \dcref{ch11:11.6.9}
   \lean{PetersenLib.exercise_11_6_9}
   \uses{def:pet-ch11-cmalpha-norm-global}
-  If $\mathcal{M}$ is a class of compact Riemannian $n$-manifolds compact in
+  For a class $\mathcal{M}$ of compact Riemannian $n$-manifolds compact in
   the $C^{m,\alpha}$ topology, show there is $f(r)\to0$ as $r\to0$, depending
   on $\mathcal{M}$, with $\|(M,g)\|_{C^{m,\alpha},r}\le f(r)$ for all
   $M\in\mathcal{M}$.
-  \source{petersen:page-0453}
 \end{remark}
 
-\begin{remark}[Exercise 11.6.10]
+\begin{remark}[local models under rescaling]
   \label{rem:pet-ch11-exercise-11-6-10}
+  \dcref{ch11:11.6.10}
   \lean{PetersenLib.exercise_11_6_10}
   \uses{def:pet-ch11-cmalpha-norm-global,thm:pet-ch11-fundamental-theorem-convergence}
-  The \emph{local models} of a class of Riemannian manifolds are the limits
+  Define the \emph{local models} of a Riemannian class to be limits
   obtained by rescaling elements of the class by constants $\to\infty$; e.g.\
   $|\sec|\le K$ rescales to $|\sec|\le\lambda^{-2}K\to0$, so the local models
   are the flat manifolds, and adding $\inj\ge R$ forces $\inj\to\infty$ under
@@ -1932,59 +1459,60 @@ discrete subgroups, a result with an independent Ricci-flow proof as well.
   spaces is compact in the $C^{m,\alpha}$ topology if every sequence in the
   class, rescaled by constants $\to\infty$, subconverges in $C^{m,\alpha}$ to
   Euclidean space.
-  \source{petersen:page-0454}
 \end{remark}
 
-\begin{remark}[Exercise 11.6.11]
+\begin{remark}[nonpositive smoothing of a conical metric]
   \label{rem:pet-ch11-exercise-11-6-11}
+  \dcref{ch11:11.6.11}
   \lean{PetersenLib.exercise_11_6_11}
   \uses{def:pet-ch11-gromov-hausdorff-distance}
-  For the singular metric $dt^2+(at)^2d\theta^2$, $a>1$, on $\mathbb{R}^2$, show
-  there is a sequence of rotationally symmetric metrics on $\mathbb{R}^2$ with
+  Starting with the singular metric $dt^2+(at)^2d\theta^2$, $a>1$, on
+  $\mathbb{R}^2$, construct a sequence of rotationally symmetric metrics on
+  $\mathbb{R}^2$ with
   $\sec\le0$, $\inj=\infty$ converging to it in the Gromov--Hausdorff
   topology.
-  \source{petersen:page-0454}
 \end{remark}
 
-\begin{remark}[Exercise 11.6.12]
+\begin{remark}[compactness from Ricci derivative bounds]
   \label{rem:pet-ch11-exercise-11-6-12}
+  \dcref{ch11:11.6.12}
   \lean{PetersenLib.exercise_11_6_12}
   \uses{thm:pet-ch11-fundamental-theorem-convergence}
-  Show that the class of spaces with $\inj\ge R$ and
+  Prove that the class of spaces satisfying $\inj\ge R$ and
   $|\nabla^k\Ric|\le\Lambda$ for $k=0,\dots,m$ is compact in the
   $C^{m+1,\alpha}$ topology.
-  \source{petersen:page-0454}
 \end{remark}
 
-\begin{remark}[Exercise 11.6.13]
+\begin{remark}[compactness from conjugate-radius control]
   \label{rem:pet-ch11-exercise-11-6-13}
+  \dcref{ch11:11.6.13}
   \lean{PetersenLib.exercise_11_6_13}
   \uses{lem:pet-ch11-cheeger-injectivity-radius-lemma}
-  (S.-h.\ Zhu) For the class of complete or compact $n$-manifolds with
+  For complete or compact $n$-manifolds with
   conjugate radius $\ge R$, $|\Ric|\le\Lambda$, $\vol B(p,1)\ge v$, use the
   techniques of \cref{lem:pet-ch11-cheeger-injectivity-radius-lemma} to show
   a lower injectivity-radius bound, hence compactness in $C^{1,\alpha}$.
-  \source{petersen:page-0454}
 \end{remark}
 
-\begin{remark}[Exercise 11.6.14]
+\begin{remark}[Eguchi--Hanson obstruction to Ricci compactness]
   \label{rem:pet-ch11-exercise-11-6-14}
+  \dcref{ch11:11.6.14}
   \lean{PetersenLib.exercise_11_6_14}
   \uses{rem:pet-ch11-exercise-11-6-13}
-  Using the Eguchi--Hanson metrics, show that no compactness result holds in
-  general for the class $|\Ric|\le\Lambda$, $\vol B(p,1)\ge v$ alone; either a
+  The Eguchi--Hanson metrics show that compactness fails in general for the
+  class $|\Ric|\le\Lambda$, $\vol B(p,1)\ge v$ alone; either a
   large lower volume bound (as before) or a lower conjugate-radius bound must
   be assumed.
-  \source{petersen:page-0454}
 \end{remark}
 
-\begin{remark}[Exercise 11.6.15]
+\begin{remark}[weak harmonic norms and compactness]
   \label{rem:pet-ch11-exercise-11-6-15}
+  \dcref{ch11:11.6.15}
   \lean{PetersenLib.exercise_11_6_15}
   \uses{def:pet-ch11-harmonic-norm}
-  The \emph{weak (harmonic) norm} $\|(M,g)\|^{\mathrm{weak}}_{C^{m,\alpha},r}$
-  is defined as in \cref{def:pet-ch11-harmonic-norm}, except the charts
-  $\varphi_s:B(0,r)\to U_s$ are only required to be immersions, so the
+  Define the \emph{weak (harmonic) norm} $\|(M,g)\|^{\mathrm{weak}}_{C^{m,\alpha},r}$
+  as in \cref{def:pet-ch11-harmonic-norm}, but require only that the charts
+  $\varphi_s:B(0,r)\to U_s$ are immersions, so the
   inverse is only locally defined but still makes sense to be harmonic.
   \begin{enumerate}
   \item Show that if $(M,g)$ has bounded sectional curvature, then for every
@@ -1994,5 +1522,4 @@ discrete subgroups, a result with an independent Ricci-flow proof as well.
     the Gromov--Hausdorff topology.
   \item Show $(M,g)$ is flat iff the weak norm vanishes on all scales.
   \end{enumerate}
-  \source{petersen:page-0454,petersen:page-0455}
 \end{remark}

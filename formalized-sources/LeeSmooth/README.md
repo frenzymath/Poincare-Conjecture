@@ -50,7 +50,6 @@ That means:
 > **The blueprint is not a faithful table of contents for Chapters 1–8.** It is
 > the subset that is actually proved. Absence of a node does **not** mean the
 > book lacks the result — it usually means the result is unproved upstream.
-> `blueprint/OMITTED.md` lists every omitted item so the gap is recorded.
 
 ## How node status is decided
 

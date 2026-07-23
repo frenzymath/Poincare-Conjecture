@@ -1,138 +1,122 @@
 \chapter{The Bochner Technique}
 \label{chap:pet-the-bochner-technique}
 
-Faithful transcription of Petersen, \emph{Riemannian Geometry} (GTM 171, 3rd ed.),
-Chapter 9. The Bochner technique starts from Bochner's observation that on a
-Riemannian manifold the Bochner--Weitzenb\"ock formula
-$\Delta\tfrac12|\nabla u|^2=|\operatorname{Hess}u|^2+\operatorname{Ric}(\nabla u,\nabla u)$
-for a harmonic function $u$ (generalizing Bernstein's Euclidean identity
-$\Delta\tfrac12|\nabla u|^2=|\operatorname{Hess}u|^2$) carries a curvature term, so that
-curvature bounds constrain harmonic functions and, via Hodge's theorem, harmonic
-forms and the topology they compute. The chapter develops Hodge theory for the
-de Rham complex, the classical Bochner vanishing and P.\ Li--Gallot estimation
-theorems for harmonic $1$-forms, the general Lichnerowicz-Laplacian framework
-(following an approach due to W.\ A.\ Poor for the Weitzenb\"ock formula on forms)
-and its Weitzenb\"ock curvature term, and applications to the curvature tensor,
-symmetric $(0,2)$-tensors, and manifolds with nonnegative curvature operator,
-using results from earlier sections on Sobolev constants and Moser iteration.
+The Bochner identities relate connection Laplacians to curvature terms.  This
+chapter records the resulting vanishing, dimension, and rigidity statements
+for forms and other natural tensor bundles.
 
 \section{Hodge Theory}
 
 \begin{definition}[de Rham complex and cohomology]
   \label{def:pet-ch9-de-rham-cohomology}
   \lean{PetersenLib.deRhamCohomology}
-  On a manifold $M$ the \emph{de Rham complex} is
+  For a manifold $M$, let $\Omega^k(M)$ denote its smooth $k$-forms and let
+  $d^k:\Omega^k(M)\to\Omega^{k+1}(M)$ be exterior differentiation.  The
+  resulting \emph{de Rham complex} is
   \[
     0\to\Omega^0(M)\xrightarrow{d^0}\Omega^1(M)\xrightarrow{d^1}\Omega^2(M)\to\cdots
     \xrightarrow{d^{n-1}}\Omega^n(M)\to0,
   \]
-  where $\Omega^k(M)$ is the space of $k$-forms on $M$ and $d^k:\Omega^k(M)\to
-  \Omega^{k+1}(M)$ is exterior differentiation. The \emph{de Rham cohomology
-  groups} $H^k(M)=\ker(d^k)/\operatorname{im}(d^{k-1})$ compute the real
-  cohomology of $M$; $H^0(M)\cong\mathbb{R}$ if $M$ is connected, and $H^n(M)\cong\mathbb{R}$
-  if $M$ is orientable and compact.
-  \source{petersen:page-0348}
+  Its cohomology groups are
+  $H^k(M)=\ker d^k/\operatorname{im}d^{k-1}$ and agree with the real
+  cohomology of $M$.  In particular, $H^0(M)\cong\mathbb R$ for connected
+  $M$, while $H^n(M)\cong\mathbb R$ when $M$ is compact and orientable.
 \end{definition}
 
 \begin{remark}[Poincaré duality pairing]
   \label{rem:pet-ch9-poincare-duality}
   \lean{PetersenLib.poincareDualityPairing}
   \uses{def:pet-ch9-de-rham-cohomology}
-  When $M$ is compact and oriented the wedge-and-integrate pairing
-  $\Omega^k(M)\times\Omega^{n-k}(M)\to\mathbb{R}$, $(\omega_1,\omega_2)\mapsto
-  \int_M\omega_1\wedge\omega_2$, induces a nondegenerate pairing on cohomology
-  $H^k(M)\times H^{n-k}(M)\to\mathbb{R}$. Hence $H^k(M)$ and $H^{n-k}(M)$ are dual to
-  each other and in particular have the same dimension.
-  \source{petersen:page-0348,petersen:page-0349}
+  On a compact oriented $n$-manifold, the map
+  \[
+    (\omega_1,\omega_2)\longmapsto\int_M\omega_1\wedge\omega_2
+  \]
+  descends from $\Omega^k(M)\times\Omega^{n-k}(M)$ to a nondegenerate pairing
+  $H^k(M)\times H^{n-k}(M)\to\mathbb R$.  Consequently these two cohomology
+  groups are dual and have equal dimension.
 \end{remark}
 
 \begin{definition}[codifferential and normalized tensor inner product]
   \label{def:pet-ch9-codifferential}
   \lean{PetersenLib.codifferential,PetersenLib.normalizedTensorInnerProduct}
   \uses{def:pet-ch9-de-rham-cohomology}
-  When $M$ carries a Riemannian metric $g$, the \emph{codifferential}
-  $\delta^k:\Omega^{k+1}(M)\to\Omega^k(M)$ is the adjoint $\nabla^*$ of $d^k$
-  characterized by
+  On a Riemannian manifold, the \emph{codifferential}
+  $\delta^k:\Omega^{k+1}(M)\to\Omega^k(M)$ is the adjoint $\nabla^*$ of $d^k$;
+  equivalently,
   \[
     \int_Mg(\delta^k\omega_1,\omega_2)\,\mathrm{vol}=\int_Mg(\omega_1,d^k\omega_2)\,\mathrm{vol}.
   \]
-  For tensors of a fixed type one uses the normalized inner product
-  $(T_1,T_2)=\tfrac1{\mathrm{vol}\,M}\int_Mg(T_1,T_2)\,\mathrm{vol}$; $\delta$ is also the
-  adjoint of $d$ with respect to this normalized pairing.
-  \source{petersen:page-0349}
+  For fixed-type tensors, use the normalized pairing
+  \[
+    (T_1,T_2)=\frac1{\operatorname{vol}M}
+      \int_M g(T_1,T_2)\,\mathrm{vol}.
+  \]
+  The operators $d$ and $\delta$ remain adjoint for this normalization.
 \end{definition}
 
 \begin{definition}[Hodge Laplacian]
   \label{def:pet-ch9-hodge-laplacian}
   \lean{PetersenLib.hodgeLaplacian}
   \uses{def:pet-ch9-codifferential}
-  The \emph{Laplacian on forms}, or \emph{Hodge Laplacian}, is
-  $\square:\Omega^k(M)\to\Omega^k(M)$, $\square\omega=(d\delta+\delta d)\omega$.
-  On functions $\square$ is the negative of the ordinary Laplacian $\Delta$,
-  hence the different symbol.
-  \source{petersen:page-0349}
+  Define the \emph{Hodge Laplacian} on $k$-forms by
+  \[
+    \square=d\delta+\delta d:\Omega^k(M)\longrightarrow\Omega^k(M).
+  \]
+  With the present signs, its restriction to functions equals $-\Delta$.
 \end{definition}
 
-\begin{lemma}[Lemma 9.1.1]
+\begin{lemma}[harmonic forms are closed and coclosed]
   \label{lem:pet-ch9-harmonic-iff-closed-coclosed}
+  \dcref{ch9:9.1.1}
   \lean{PetersenLib.hodgeLaplacian_eq_zero_iff}
   \uses{def:pet-ch9-hodge-laplacian}
-  $\square\omega=0$ if and only if $d\omega=0$ and $\delta\omega=0$. In
-  particular $\omega=0$ if $\square\omega=0$ and $\omega=d\theta$ for some
-  $\theta$.
-  \source{petersen:page-0349}
+  A form $\omega$ satisfies $\square\omega=0$ precisely when
+  $d\omega=\delta\omega=0$.  An exact form with this property is necessarily
+  zero.
 \end{lemma}
 \begin{proof}
   \uses{lem:pet-ch9-harmonic-iff-closed-coclosed}
-  Since $d$ and $\delta$ are adjoint,
+  \sketch
+  Adjointness gives
   \[
-    (\square\omega,\omega)=(d\delta\omega,\omega)+(\delta d\omega,\omega)
-    =(\delta\omega,\delta\omega)+(d\omega,d\omega).
+    (\square\omega,\omega)=\|\delta\omega\|_2^2+\|d\omega\|_2^2.
   \]
-  If $\square\omega=0$ this forces $(\delta\omega,\delta\omega)=(d\omega,d\omega)=0$,
-  so $\delta\omega=0$ and $d\omega=0$; the converse is immediate from the
-  definition of $\square$. If in addition $\omega=d\theta$, then $\delta\omega=0$
-  gives $\delta d\theta=0$, i.e.\ $\Delta\theta=0$ (using that $\delta d$ agrees
-  with $-\Delta$ on the relevant type), and hence
-  $(\omega,\omega)=(d\theta,\omega)=(\theta,\delta\omega)=0$, so $\omega=0$.
+  Thus a harmonic form is closed and coclosed, and the converse follows from
+  the definition of \(\square\).  If also \(\omega=d\theta\), then
+  \(\|\omega\|_2^2=(\theta,\delta\omega)=0\).
 \end{proof}
 
 \begin{definition}[Hodge cohomology]
   \label{def:pet-ch9-hodge-cohomology}
   \lean{PetersenLib.hodgeCohomology}
   \uses{def:pet-ch9-hodge-laplacian}
-  The \emph{Hodge cohomology} of $(M,g)$ is
-  $\mathcal{H}^k(M)=\{\omega\in\Omega^k(M)\mid\square\omega=0\}$, the space of
-  \emph{harmonic $k$-forms}.
-  \source{petersen:page-0350}
+  The space of harmonic $k$-forms, called the \emph{Hodge cohomology}, is
+  \[
+    \mathcal H^k(M)=\ker(\square|_{\Omega^k(M)})
+      =\{\omega\in\Omega^k(M):\square\omega=0\}.
+  \]
 \end{definition}
 
-\begin{theorem}[Hodge, 1935]
+\begin{theorem}[harmonic representatives for de Rham cohomology]
   \label{thm:pet-ch9-hodge-theorem}
   \lean{PetersenLib.hodgeCohomology_equiv_deRhamCohomology}
   \uses{def:pet-ch9-hodge-cohomology,lem:pet-ch9-harmonic-iff-closed-coclosed,def:pet-ch9-de-rham-cohomology}
-  On a closed oriented Riemannian manifold the natural inclusion
-  $\mathcal{H}^k(M)\to H^k(M)$ is an isomorphism.
-  \source{petersen:page-0350}
+  Every de Rham class on a closed oriented Riemannian manifold has exactly one
+  harmonic representative; equivalently,
+  $\mathcal H^k(M)\xrightarrow{\sim}H^k(M)$.
 \end{theorem}
 \begin{proof}
   \uses{thm:pet-ch9-hodge-theorem,rem:pet-ch9-exercise-9-6-4,rem:pet-ch9-exercise-9-6-5}
-  Well-definedness and injectivity of $\mathcal{H}^k(M)\to H^k(M)$ follow from
-  \cref{lem:pet-ch9-harmonic-iff-closed-coclosed}. Surjectivity is a standard
-  elliptic PDE fact; the spectral theory developed in
-  \cref{rem:pet-ch9-exercise-9-6-4,rem:pet-ch9-exercise-9-6-5} establishes part
-  of it in a more general context. The key point is that since $\square$ is
-  self-adjoint there is an orthogonal decomposition
-  \[
-    \Omega^k(M)=\operatorname{im}\square\oplus\ker\square
-    =\operatorname{im}\square\oplus\mathcal{H}^k(M).
-  \]
-  Given $\omega\in\Omega^k(M)$, write $\omega=d\delta\theta+\delta d\theta+\tilde\omega$
-  with $\square\tilde\omega=0$. If in addition $d\omega=0$, then
-  $\square(d\theta)=d\delta(d\theta)=0$; since $d\theta$ is harmonic,
-  $\delta(d\theta)=0$ as well by \cref{lem:pet-ch9-harmonic-iff-closed-coclosed}.
-  Hence $\omega=d(\delta\theta)+\tilde\omega$, so $\tilde\omega$ represents the
-  same cohomology class as $\omega$, proving surjectivity.
+  \sketch
+  The map is well defined and injective by
+  \cref{lem:pet-ch9-harmonic-iff-closed-coclosed}.  Elliptic spectral theory,
+  developed in \cref{rem:pet-ch9-exercise-9-6-4} and
+  \cref{rem:pet-ch9-exercise-9-6-5}, yields
+  \(\Omega^k=\operatorname{im}\square\oplus\ker\square\).  Write a closed form as
+  \(\omega=d\delta\theta+\delta d\theta+\widetilde\omega\), with
+  \(\square\widetilde\omega=0\).  Applying \(d\) shows \(d\theta\) is harmonic;
+  \cref{lem:pet-ch9-harmonic-iff-closed-coclosed} then eliminates
+  \(\delta d\theta\).  Hence \(\omega\) and \(\widetilde\omega\) are cohomologous.
 \end{proof}
 
 \section{1-Forms}
@@ -146,37 +130,40 @@ program is generalized to other forms and tensors in later sections.
 For a harmonic $1$-form $\theta$ on $(M,g)$ let $X$ be the dual vector field,
 $\theta(v)=g(X,v)$, and $f=\tfrac12|\theta|^2=\tfrac12|X|^2=\tfrac12\theta(X)$.
 
-\begin{proposition}[Proposition 9.2.1]
+\begin{proposition}[duality between closed forms and symmetric derivatives]
   \label{prop:pet-ch9-vector-field-1form-duality}
+  \dcref{ch9:9.2.1}
   \lean{PetersenLib.dualVectorField_symmetric_iff_closed}
   \uses{def:pet-ch9-de-rham-cohomology,def:pet-ch9-codifferential}
-  If $X$ and $\theta$ are related by $\theta(v)=g(v,X)$, then
+  Let $\theta=X^\flat$, so $\theta(v)=g(v,X)$.  Then
   \begin{enumerate}
-    \item $v\mapsto\nabla_vX$ is symmetric if and only if $d\theta=0$, and
-    \item $\operatorname{div}X=-\delta\theta$.
+    \item the endomorphism $v\mapsto\nabla_vX$ is self-adjoint exactly when
+      $\theta$ is closed;
+    \item $\delta\theta=-\operatorname{div}X$.
   \end{enumerate}
-  \source{petersen:page-0350,petersen:page-0351}
 \end{proposition}
 \begin{proof}
   \uses{prop:pet-ch9-vector-field-1form-duality}
-  Recall the identity $d\theta(V,W)+(\mathcal{L}_Xg)(V,W)=2g(\nabla_VX,W)$. Since
-  $\mathcal{L}_Xg$ is symmetric in $V,W$ and $d\theta$ is skew-symmetric, comparing
-  symmetric and skew-symmetric parts of $2g(\nabla_VX,W)$ shows $v\mapsto\nabla_vX$
-  is symmetric exactly when $d\theta=0$. The second identity,
-  $\operatorname{div}X=-\delta\theta$, is the $1$-form instance of the general duality
-  between divergence and codifferential (Petersen, Proposition 2.2.7).
+  \sketch
+  The identity
+  \(d\theta(V,W)+(\mathcal L_Xg)(V,W)=2g(\nabla_VX,W)\) separates the
+  alternating and symmetric parts of \(\nabla X\), proving the first claim.
+  Tracing the covariant derivative of the metric-dual relation gives
+  \(\delta\theta=-\operatorname{div}X\).
 \end{proof}
 
 Consequently, when $\theta$ is harmonic then $\operatorname{div}X=0$ and $\nabla X$ is a
 symmetric $(1,1)$-tensor; the Bochner formula for closed $1$-forms is stated
 below through the dual vector field.
 
-\begin{proposition}[Proposition 9.2.2]
+\begin{proposition}[Bochner formula for closed $1$-forms]
   \label{prop:pet-ch9-bochner-formula-1forms}
+  \dcref{ch9:9.2.2}
   \lean{PetersenLib.bochnerFormula_oneForm}
   \uses{prop:pet-ch9-vector-field-1form-duality}
-  Let $X$ be a vector field with $\nabla X$ symmetric (equivalently the dual
-  $1$-form is closed), $f=\tfrac12|X|^2$, and suppose $X=\nabla u$ near $p$. Then
+  Suppose $\nabla X$ is symmetric, or equivalently $X^\flat$ is closed.  Put
+  $f=\tfrac12|X|^2$ and choose a local potential $X=\nabla u$ near $p$.  At
+  $p$ one has
   \begin{enumerate}
     \item $\nabla f=\nabla_XX$.
     \item $\operatorname{Hess}f(V,V)=\operatorname{Hess}^2u(V,V)+(\nabla_X\operatorname{Hess}u)(V,V)+R(V,X,X,V)
@@ -184,294 +171,248 @@ below through the dual vector field.
     \item $\Delta f=|\operatorname{Hess}u|^2+D_X\Delta u+\operatorname{Ric}(X,X)
       =|\nabla X|^2+D_X\operatorname{div}X+\operatorname{Ric}(X,X)$.
   \end{enumerate}
-  \source{petersen:page-0351}
 \end{proposition}
 \begin{proof}
   \uses{prop:pet-ch9-bochner-formula-1forms}
-  For (1), $g(\nabla f,V)=D_V\tfrac12|X|^2=g(\nabla_VX,X)=g(\nabla_XX,V)$, using
-  symmetry of $\nabla X$ in the last step. Part (2) is theorem 3.2.2 of the
-  source applied to $u$. For (3), take traces in (2): as in the proof of
-  Petersen's proposition 8.2.1, the trace gives the first and third terms
-  directly; the second comes from commuting the trace with a covariant
-  derivative. At a point $p$, either $X|_p=0$ or one may choose an orthonormal
-  frame $E_i$ parallel along $X$ at $p$; in either case
-  \[
-    \sum_ig(\nabla^2_{E_i,X}X,E_i)=\sum_i(\nabla_X\operatorname{Hess}u)(E_i,E_i)
-    =D_X\sum_i\operatorname{Hess}u(E_i,E_i)=D_X\Delta u,
-  \]
-  which is the claimed second term.
+  \sketch
+  Symmetry of \(\nabla X\) gives
+  \(g(\nabla f,V)=g(\nabla_VX,X)=g(\nabla_XX,V)\).  Differentiate this identity
+  once more, commute the two covariant derivatives, and use
+  \(X=\nabla u\) to obtain the Hessian formula.  Tracing in a frame parallel
+  along \(X\) at the point of evaluation gives
+  \(\Delta f=|\nabla X|^2+D_X\operatorname{div}X+\operatorname{Ric}(X,X)\).
 \end{proof}
 
 \subsection{The Vanishing Theorem}
 
-\begin{theorem}[Theorem 9.2.3 (Bochner, 1948)]
+\begin{theorem}[Bochner vanishing for harmonic $1$-forms]
   \label{thm:pet-ch9-bochner-vanishing-1forms}
+  \dcref{ch9:9.2.3}
   \lean{PetersenLib.bochner_harmonicOneForm_parallel}
   \uses{prop:pet-ch9-bochner-formula-1forms}
-  If $(M,g)$ is compact and $\operatorname{Ric}\ge0$, then every harmonic $1$-form is
-  parallel.
-  \source{petersen:page-0352}
+  Every harmonic one-form on a compact Riemannian manifold with
+  $\operatorname{Ric}\ge0$ is parallel.
 \end{theorem}
 \begin{proof}
   \uses{thm:pet-ch9-bochner-vanishing-1forms}
-  Let $\omega$ be a harmonic $1$-form and $X$ its dual vector field. Since
-  $\omega$ is closed and coclosed, $\nabla X$ is symmetric and
-  $\operatorname{div}X=\Delta u=0$ (in the notation of
-  \cref{prop:pet-ch9-bochner-formula-1forms}), so part (3) of that proposition
-  gives
+  \sketch
+  For the dual field \(X\), harmonicity and
+  \cref{prop:pet-ch9-bochner-formula-1forms} give
   \[
-    \Delta\Big(\tfrac12|X|^2\Big)=|\nabla X|^2+\operatorname{Ric}(X,X)\ge0.
+    \Delta\tfrac12|X|^2=|\nabla X|^2+\operatorname{Ric}(X,X)\ge0.
   \]
-  On a compact manifold the maximum principle applied to the subharmonic
-  function $\tfrac12|X|^2$ forces it to be constant, and then equality
-  throughout forces $|\nabla X|=0$, i.e.\ $X$ (equivalently $\omega$) is
-  parallel.
+  Compactness and the maximum principle make \(|X|\) constant; both
+  nonnegative terms therefore vanish, so \(X\) and its dual form are parallel.
 \end{proof}
 
-\begin{corollary}[Corollary 9.2.4]
+\begin{corollary}[vanishing under pointwise positive Ricci curvature]
   \label{cor:pet-ch9-harmonic-1forms-vanish-positive-ricci}
+  \dcref{ch9:9.2.4}
   \lean{PetersenLib.harmonicOneForms_vanish_of_positiveRicci}
   \uses{thm:pet-ch9-bochner-vanishing-1forms}
-  If $(M,g)$ is as in \cref{thm:pet-ch9-bochner-vanishing-1forms} and moreover
-  $\operatorname{Ric}$ is positive at one point, then every harmonic $1$-form vanishes
-  identically.
-  \source{petersen:page-0352}
+  Under the assumptions of \cref{thm:pet-ch9-bochner-vanishing-1forms}, if
+  $\operatorname{Ric}$ is positive definite at some point, then
+  $\mathcal H^1(M)=0$.
 \end{corollary}
 \begin{proof}
   \uses{cor:pet-ch9-harmonic-1forms-vanish-positive-ricci}
-  By \cref{thm:pet-ch9-bochner-vanishing-1forms}, $\operatorname{Ric}(X,X)\equiv0$ for the
-  dual vector field $X$ of a harmonic $1$-form. If $\operatorname{Ric}$ is positive
-  definite at $p$, this forces $X|_p=0$; since $X$ is parallel, $X\equiv0$.
+  \sketch
+  By \cref{thm:pet-ch9-bochner-vanishing-1forms}, the dual field \(X\) is
+  parallel and \(\operatorname{Ric}(X,X)=0\).  Positive definiteness at one
+  point forces \(X\) to vanish there, hence everywhere.
 \end{proof}
 
-\begin{corollary}[Corollary 9.2.5]
+\begin{corollary}[first Betti bound and flat-torus rigidity]
   \label{cor:pet-ch9-betti1-bound-flat-torus}
+  \dcref{ch9:9.2.5}
   \lean{PetersenLib.firstBettiNumber_le_dim_iff_flatTorus}
   \uses{thm:pet-ch9-bochner-vanishing-1forms,def:pet-ch9-hodge-cohomology}
-  If $(M,g)$ is compact with $\operatorname{Ric}\ge0$, then $b_1(M)\le n=\dim M$, with
-  equality if and only if $(M,g)$ is a flat torus.
-  \source{petersen:page-0352}
+  For a compact $n$-manifold with nonnegative Ricci curvature,
+  \[
+    b_1(M)\le n.
+  \]
+  Equality holds precisely for flat tori.
 \end{corollary}
 \begin{proof}
   \uses{cor:pet-ch9-betti1-bound-flat-torus}
-  By Hodge theory $b_1(M)=\dim\mathcal{H}^1(M)$, and by
-  \cref{thm:pet-ch9-bochner-vanishing-1forms} every harmonic $1$-form is
-  parallel, so the evaluation map $\mathcal{H}^1(M)\to T_p^*M$ at any $p$ is
-  injective; hence $\dim\mathcal{H}^1(M)\le n$.
-
-  If equality holds, there are $n$ linearly independent parallel vector fields
-  $E_1,\dots,E_n$, forcing $(M,g)$ to be flat. The universal cover is then
-  $\mathbb{R}^n$ with $\pi_1(M)$ acting by isometries; pulling the $E_i$ back to
-  $\mathbb{R}^n$ gives constant vector fields, which may be taken to be the standard
-  coordinate fields $\partial_i$. Invariance of the $E_i$ under $\pi_1(M)$ means
-  that for every $F\in\pi_1(M)$, $DF(\partial_i|_p)=\partial_i|_{F(p)}$ for all $i$;
-  only translations fix every coordinate field, so $\pi_1(M)$ consists entirely
-  of translations. Thus $\pi_1(M)$ is finitely generated, abelian, and torsion
-  free, so $\Gamma:=\pi_1(M)\cong\mathbb{Z}^k$ for some $k$. If $k<n$, $\mathbb{Z}^k$
-  generates a proper subspace of translations and cannot act cocompactly on
-  $\mathbb{R}^n$; if $k>n$, $\mathbb{Z}^k$ cannot act discretely on $\mathbb{R}^n$. Hence $k=n$,
-  $\Gamma\cong\mathbb{Z}^n$ generates $\mathbb{R}^n$, and $M=\mathbb{R}^n/\Gamma$ is a flat torus.
-  Conversely a flat torus has $\mathbb{R}^n$ worth of parallel $1$-forms, so
-  $b_1=n$.
+  \sketch
+  Hodge theory and \cref{thm:pet-ch9-bochner-vanishing-1forms} identify
+  \(H^1(M)\) with a space of parallel forms.  Evaluation at one point is
+  injective, so \(b_1\le n\).  Equality supplies a global parallel frame and
+  forces flatness.  On the universal cover \(\mathbb R^n\), deck
+  transformations preserve that frame and are therefore translations;
+  compactness and discreteness make the translation group a full lattice
+  \(\mathbb Z^n\).  Conversely, a flat torus has \(n\) independent parallel
+  one-forms.
 \end{proof}
+
+Thus \cref{cor:pet-ch9-betti1-bound-flat-torus} obstructs nonnegative Ricci
+curvature whenever a closed $n$-manifold has first Betti number greater than
+$n$.
 
 \subsection{The Estimation Theorem}
 
-The goal is to generalize \cref{thm:pet-ch9-bochner-vanishing-1forms} to
-manifolds with a negative lower Ricci bound, following P.\ Li's technique as
-sharpened by Gallot, whose contribution included a suitable bound on Sobolev
-constants (Petersen, theorem 7.1.13).
+Under a negative Ricci lower bound, the Bochner inequality combines with a
+Sobolev estimate to control the dimension of the harmonic-form space.
 
-\begin{lemma}[Lemma 9.2.6 (P.\ Li)]
+\begin{lemma}[Li's dimension estimate]
   \label{lem:pet-ch9-li-dimension-estimate}
+  \dcref{ch9:9.2.6}
   \lean{PetersenLib.li_dimension_estimate}
-  Let $(M,g)$ be compact and $E\to M$ a vector bundle of fibre dimension $m$
-  with a smoothly varying fibre inner product. For $s\in\Gamma(E)$ set
-  $\|s\|_\infty=\max_{x\in M}|s(x)|$ and $\|s\|_p=\big(\tfrac1{\mathrm{vol}\,M}
-  \int_M|s|^p\,\mathrm{vol}\big)^{1/p}$. For a finite-dimensional $V\subset\Gamma(E)$
-  put $C(V)=\max_{s\in V\setminus\{0\}}\|s\|_\infty/\|s\|_2$. Then
-  $\dim V\le m\cdot C(V)$.
-  \source{petersen:page-0353,petersen:page-0354}
+  Let $E\to M$ be a rank-$m$ metric vector bundle over compact $(M,g)$.  For
+  $s\in\Gamma(E)$ define
+  \[
+    \|s\|_\infty=\max_M|s|,
+    \qquad
+    \|s\|_p=\left(\frac1{\operatorname{vol}M}
+      \int_M|s|^p\,\mathrm{vol}\right)^{1/p}.
+  \]
+  If $V\subset\Gamma(E)$ is finite dimensional and
+  \[
+    C(V)=\max_{0\ne s\in V}\frac{\|s\|_\infty}{\|s\|_2},
+  \]
+  then $\dim V\le mC(V)^2$.
 \end{lemma}
 \begin{proof}
   \uses{lem:pet-ch9-li-dimension-estimate}
-  $V$ carries the inner product $(s_1,s_2)=\tfrac1{\mathrm{vol}\,M}\int_M
-  \langle s_1,s_2\rangle\,\mathrm{vol}$ with $(s,s)=\|s\|_2^2$. Choose an orthonormal
-  basis $e_1,\dots,e_\ell$ of $V$ for this inner product and set
-  $f(x)=\sum_{i=1}^\ell|e_i(x)|^2$, a function independent of the choice of
-  orthonormal basis. Averaging term by term,
-  \[
-    \frac1{\mathrm{vol}\,M}\int_Mf\,\mathrm{vol}=\ell=\dim V.
-  \]
-  Let $x_0$ maximize $f$. The evaluation map $V\to E_{x_0}$ has rank $k\le m$
-  (its target has dimension $m$), so the orthonormal basis may be chosen so
-  that the last $\ell-k$ elements span its kernel, i.e.\ vanish at $x_0$; thus
-  $f(x_0)=\sum_{i=1}^k|e_i(x_0)|^2$. Since $\|e_i\|_2=1$ for each $i$,
-  $|e_i(x_0)|\le\|e_i\|_\infty\le C(V)\|e_i\|_2=C(V)$, and summing the $k$
-  nonvanishing terms gives $f(x_0)\le k\cdot C(V)\le m\cdot C(V)$. As the
-  average of $f$ is at most its maximum,
-  \[
-    \dim V=\ell\le f(x_0)\le m\cdot C(V).\qedhere
-  \]
+  \sketch
+  For an \(L^2\)-orthonormal basis \(e_1,\ldots,e_\ell\) of \(V\), put
+  \(F(x)=\sum_i|e_i(x)|^2\).  Its normalized integral is \(\ell\).  At a
+  maximum \(x_0\), choose the basis so that only the first
+  \(r=\operatorname{rank}(V\to E_{x_0})\le m\) elements are nonzero.  The
+  defining supremum estimate gives \(|e_i(x_0)|^2\le C(V)^2\) for each
+  nonzero term, and hence
+  \(\ell\le F(x_0)\le mC(V)^2\).
 \end{proof}
 
-\begin{theorem}[Theorem 9.2.7 (Moser iteration)]
+\begin{theorem}[Moser iteration supremum estimate]
   \label{thm:pet-ch9-moser-iteration}
+  \dcref{ch9:9.2.7}
   \lean{PetersenLib.moserIteration}
-  Let $(M,g)$ be compact and suppose $\|u\|_{2\nu}\le S\|\nabla u\|_2+\|u\|_2$
-  for all smooth $u$ on $M$, with $\nu>1$. If $f:M\to[0,\infty)$ is continuous,
-  smooth on $\{f>0\}$, and $\Delta f\ge-\lambda f$, then
+  Assume compact $(M,g)$ satisfies, for some $\nu>1$ and every smooth $u$,
+  \[
+    \|u\|_{2\nu}\le S\|\nabla u\|_2+\|u\|_2.
+  \]
+  If a continuous $f:M\to[0,\infty)$ is smooth where positive and obeys
+  $\Delta f\ge-\lambda f$, then
   \[
     \|f\|_\infty\le\exp\Big(\frac{S\sqrt{\lambda\nu}}{\sqrt{\nu-1}}\Big)\|f\|_2.
   \]
-  \source{petersen:page-0354,petersen:page-0355}
 \end{theorem}
 \begin{proof}
   \uses{thm:pet-ch9-moser-iteration}
-  Since $f$ is minimized (namely $=0$) on $\{f=0\}$, all its derivatives vanish
-  there, and $\Delta f\ge0$ there in both the barrier and distributional
-  sense; hence the differential inequality $\Delta f\ge-\lambda f$ holds
-  distributionally on all of $M$. Green's formula gives, for $q\ge1$,
+  \sketch
+  The differential inequality holds distributionally across \(\{f=0\}\).
+  Testing it against \(f^{2q-1}\), \(q\ge1\), gives
   \[
-    (f^{2q-1},\Delta f)=-(df^{2q-1},df)=-(2q-1)(f^{2q-2}df,df),
+    \|d(f^q)\|_2^2\le\frac{q^2\lambda}{2q-1}\|f^q\|_2^2.
   \]
-  so
+  Applying the Sobolev inequality to \(f^q\) yields
   \[
-    \|df^q\|_2^2=q^2(f^{2q-2}df,df)=-\frac{q^2}{2q-1}(f^{2q-1},\Delta f)
-    \le\frac{q^2\lambda}{2q-1}(f^{2q-1},f)=\frac{q^2\lambda}{2q-1}\|f^q\|_2^2.
+    \|f\|_{2q\nu}
+    \le\left(1+Sq\sqrt{\frac{\lambda}{2q-1}}\right)^{1/q}\|f\|_{2q}.
   \]
-  Applying the Sobolev inequality to $f^q$,
-  \[
-    \|f^q\|_{2\nu}\le S\|df^q\|_2+\|f^q\|_2
-    \le\Big(Sq\Big(\frac\lambda{2q-1}\Big)^{1/2}+1\Big)\|f^q\|_2,
-  \]
-  equivalently
-  \[
-    \|f\|_{2q\nu}\le\Big(Sq\Big(\frac\lambda{2q-1}\Big)^{1/2}+1\Big)^{1/q}\|f\|_{2q}.
-  \]
-  Setting $q=\nu^k$,
-  \[
-    \|f\|_{2\nu^{k+1}}\le\Big(S\nu^k\Big(\frac\lambda{2\nu^k-1}\Big)^{1/2}+1\Big)^{\nu^{-k}}\|f\|_{2\nu^k}.
-  \]
-  Iterating from $k=0$ to $\infty$,
-  \[
-    \|f\|_\infty\le\Big(\prod_{k=0}^\infty\Big(S\nu^k\Big(\frac\lambda{2\nu^k-1}\Big)^{1/2}+1\Big)^{\nu^{-k}}\Big)\|f\|_2.
-  \]
-  Taking logarithms and using $\log(1+x)\le x$,
-  \[
-    \sum_{k=0}^\infty\nu^{-k}\log\Big(S\nu^k\Big(\frac\lambda{2\nu^k-1}\Big)^{1/2}+1\Big)
-    \le S\sqrt\lambda\sum_{k=0}^\infty\Big(\frac1{2\nu^k-1}\Big)^{1/2}
-    \le S\sqrt\lambda\sum_{k=0}^\infty\Big(\frac1{\nu^k}\Big)^{1/2}
-    =\frac{S\sqrt{\lambda\nu}}{\sqrt{\nu-1}},
-  \]
-  which exponentiates to the claimed bound.
+  Iterate with \(q=\nu^k\).  Taking logarithms, using
+  \(\log(1+x)\le x\), and summing the resulting geometric series bounds the
+  product by
+  \(\exp(S\sqrt{\lambda\nu}/\sqrt{\nu-1})\), as claimed.
 \end{proof}
 
 \begin{lemma}[Kato's inequality]
   \label{lem:pet-ch9-kato-inequality}
   \lean{PetersenLib.katoInequality}
-  For a tensor field $T$ with $f=|T|$, smooth away from $\{T=0\}$, one has
-  $df\le|\nabla T|$ pointwise wherever $f$ is smooth.
-  \source{petersen:page-0356}
+  Let $f=|T|$ for a tensor field $T$.  At every point where $f$ is smooth,
+  \[
+    df\le|\nabla T|.
+  \]
 \end{lemma}
 \begin{proof}
   \uses{lem:pet-ch9-kato-inequality}
-  Where $f>0$, $2f\,df=df^2=2g(\nabla T,T)\le2|\nabla T|f$ by Cauchy--Schwarz,
-  and dividing by $2f$ gives $df\le|\nabla T|$.
+  \sketch
+  Where \(|T|>0\), differentiating \(|T|^2\) and applying Cauchy--Schwarz gives
+  \(2|T|\,d|T|=2g(\nabla T,T)\le2|\nabla T|\,|T|\).  Division by
+  \(2|T|\) proves the estimate.
 \end{proof}
 
-\begin{theorem}[Theorem 9.2.8 (Gromov, 1980 and Gallot, 1981)]
+\begin{theorem}[Gromov--Gallot first Betti estimate]
   \label{thm:pet-ch9-gromov-gallot-betti1-estimate}
+  \dcref{ch9:9.2.8}
   \lean{PetersenLib.gromovGallot_firstBettiNumber_estimate}
   \uses{lem:pet-ch9-li-dimension-estimate,thm:pet-ch9-moser-iteration,lem:pet-ch9-kato-inequality,def:pet-ch9-hodge-cohomology,prop:pet-ch9-bochner-formula-1forms}
-  If $M$ is a compact Riemannian $n$-manifold with $\operatorname{Ric}\ge(n-1)k$ and
-  $\operatorname{diam}(M)\le D$, there is a function $C(n,kD^2)$ with
-  $b_1(M)\le C(n,kD^2)$ and $\lim_{\varepsilon\to0}C(n,\varepsilon)=n$. In
-  particular there is $\varepsilon(n)>0$ so that $kD^2\ge-\varepsilon(n)$
-  implies $b_1(M)\le n$.
-  \source{petersen:page-0355,petersen:page-0356}
+  Let $M^n$ be compact with
+  $\operatorname{Ric}\ge(n-1)k$ and $\operatorname{diam}M\le D$.  There is a
+  bound depending only on $n$ and $kD^2$,
+  \[
+    b_1(M)\le C(n,kD^2),
+    \qquad \lim_{\varepsilon\to0}C(n,\varepsilon)=n.
+  \]
+  Hence some $\varepsilon(n)>0$ satisfies
+  $kD^2\ge-\varepsilon(n)\Longrightarrow b_1(M)\le n$.
 \end{theorem}
 \begin{proof}
   \uses{thm:pet-ch9-gromov-gallot-betti1-estimate}
-  By \cref{lem:pet-ch9-li-dimension-estimate} applied to
-  $V=\mathcal{H}^1(M)$ (fibre dimension $m=n$),
-  $\dim\mathcal{H}^1\le n\cdot C(\mathcal{H}^1)$, so it suffices to bound the
-  ratios $\|\omega\|_\infty/\|\omega\|_2$ for harmonic $1$-forms $\omega$. Let
-  $f=|\omega|$ and $X$ the vector field dual to $\omega$. By
-  \cref{lem:pet-ch9-kato-inequality}, $df\le|\nabla\omega|$. By the Bochner
-  formula (\cref{prop:pet-ch9-bochner-formula-1forms} applied with
-  $\operatorname{div}X=0$),
-  \[
-    |df|^2+f\Delta f=\tfrac12\Delta f^2=|\nabla\omega|^2+\operatorname{Ric}(X,X)
-    \ge|\nabla\omega|^2+(n-1)kf^2,
-  \]
-  and combining with Kato's inequality gives $\Delta f\ge(n-1)kf$. Theorem
-  \ref{thm:pet-ch9-moser-iteration} (applied with $\lambda=-(n-1)k$ when
-  $k\le0$) then yields
-  \[
-    \|f\|_\infty\le\exp\Big(\frac{S\sqrt{-(n-1)k\nu}}{\sqrt{\nu-1}}\Big)\|f\|_2,
-  \]
-  where $S=D\cdot C(n,kD^2)$ is the Sobolev constant of Petersen's theorem
-  7.1.13 and proposition 7.1.17. Since $\|\omega\|_\infty/\|\omega\|_2=
-  \|f\|_\infty/\|f\|_2$,
-  \[
-    \dim\mathcal{H}^1\le n\cdot C(\mathcal{H}^1)
-    \le n\cdot\exp\Big(\frac{S\sqrt{-(n-1)k\nu}}{\sqrt{\nu-1}}\Big),
-  \]
-  which is a function of $n$ and $kD^2$ alone, proving the theorem; as
-  $kD^2\to0$ the bound tends to $n$.
+  \sketch
+  For a harmonic one-form \(\omega\), set \(f=|\omega|\).  Kato's inequality
+  from \cref{lem:pet-ch9-kato-inequality} and the identity in
+  \cref{prop:pet-ch9-bochner-formula-1forms} imply
+  \(\Delta f\ge(n-1)kf\).  The Sobolev constant controlled by \(n,kD^2\),
+  together with \cref{thm:pet-ch9-moser-iteration}, bounds
+  \(\|\omega\|_\infty/\|\omega\|_2\) by a function tending to \(1\) as
+  \(kD^2\to0\).  Applying \cref{lem:pet-ch9-li-dimension-estimate} to
+  \(\mathcal H^1(M)\) gives the asserted bound and its limiting value \(n\).
 \end{proof}
 
 \section{Lichnerowicz Laplacians}
 
-A natural class of Laplacians is introduced, generalizing the Bochner
-technique used above for $1$-forms; §9.4 exhibits several natural examples,
-including the Hodge Laplacian.
+The connection and Lichnerowicz Laplacians extend the preceding argument to
+tensor bundles.
 
 \subsection{The Connection Laplacian}
 
 Fix a tensor bundle $E\to M$ of fibre dimension $m$ (e.g.\ $p$-forms,
 symmetric tensors, or curvature tensors).
 
-\begin{proposition}[Proposition 9.3.1]
+\begin{proposition}[maximum principle for the connection Laplacian]
   \label{prop:pet-ch9-vanishing-connection-laplacian}
+  \dcref{ch9:9.3.1}
   \lean{PetersenLib.vanishing_connectionLaplacian}
-  Let $(M,g)$ be Riemannian and $T\in\Gamma(E)$ with $g(\nabla^*\nabla T,T)\le0$.
-  If $|T|$ attains a maximum, then $T$ is parallel.
-  \source{petersen:page-0357}
+  Suppose a section $T\in\Gamma(E)$ over a Riemannian manifold satisfies
+  $g(\nabla^*\nabla T,T)\le0$ pointwise.  If the function $|T|$ has a global
+  maximum, then $\nabla T=0$.
 \end{proposition}
 \begin{proof}
   \uses{prop:pet-ch9-vanishing-connection-laplacian}
-  One has $\Delta\tfrac12|T|^2=|\nabla T|^2-g(\nabla^*\nabla T,T)\ge0$. If $|T|$
-  has a maximum, the maximum principle applied to $|T|^2$ shows it is
-  constant, forcing $|\nabla T|\equiv0$, i.e.\ $T$ is parallel.
+  \sketch
+  The tensor Bochner identity gives
+  \(\Delta\tfrac12|T|^2=|\nabla T|^2-g(\nabla^*\nabla T,T)\ge0\).
+  At a maximum of \(|T|\), the maximum principle forces this function to be
+  constant and hence \(\nabla T=0\).
 \end{proof}
 
-\begin{theorem}[Theorem 9.3.2 (Gallot, 1981)]
+\begin{theorem}[Gallot's connection-Laplacian estimate]
   \label{thm:pet-ch9-gallot-connection-laplacian-estimate}
+  \dcref{ch9:9.3.2}
   \lean{PetersenLib.gallot_connectionLaplacian_estimate}
   \uses{lem:pet-ch9-li-dimension-estimate,thm:pet-ch9-moser-iteration,lem:pet-ch9-kato-inequality}
-  Assume $(M,g)$ is compact and satisfies the hypothesis of
-  \cref{thm:pet-ch9-moser-iteration}. Let $V\subset\Gamma(E)$ be finite
-  dimensional. If $g(\nabla^*\nabla T,T)\le\lambda|T|^2$ for all $T\in V$, then
+  Let compact $(M,g)$ satisfy the Sobolev hypothesis in
+  \cref{thm:pet-ch9-moser-iteration}, and let $V\subset\Gamma(E)$ be finite
+  dimensional.  If every $T\in V$ obeys
+  $g(\nabla^*\nabla T,T)\le\lambda|T|^2$, then
   \[
-    \dim V\le m\cdot\exp\Big(\frac{S\sqrt\lambda}{\sqrt{\nu-1}}\Big).
+    \dim V\le
+    m\cdot\exp\Big(\frac{2S\sqrt{\lambda\nu}}{\sqrt{\nu-1}}\Big).
   \]
-  \source{petersen:page-0357}
 \end{theorem}
 \begin{proof}
   \uses{thm:pet-ch9-gallot-connection-laplacian-estimate}
-  As in \cref{thm:pet-ch9-gromov-gallot-betti1-estimate}, set $f=|T|$ for
-  $T\in V$. Instead of the $1$-form Bochner formula one uses
-  \[
-    |df|^2+f\Delta f=\tfrac12\Delta f^2=|\nabla T|^2-g(\nabla^*\nabla T,T)\ge0,
-  \]
-  together with $g(\nabla^*\nabla T,T)\le\lambda|T|^2$, to get $f\Delta f\ge
-  -\lambda f^2$; by \cref{lem:pet-ch9-kato-inequality}, $\Delta f\ge-\lambda f$.
-  Theorem \ref{thm:pet-ch9-moser-iteration} then gives $\|f\|_\infty\le
-  \exp(S\sqrt\lambda/\sqrt{\nu-1})\|f\|_2$ for every $T\in V$, so
-  $C(V)\le\exp(S\sqrt\lambda/\sqrt{\nu-1})$, and
-  \cref{lem:pet-ch9-li-dimension-estimate} finishes the proof.
+  \sketch
+  For \(f=|T|\), the tensor Bochner identity and
+  \cref{lem:pet-ch9-kato-inequality} give \(\Delta f\ge-\lambda f\).
+  The argument of \cref{thm:pet-ch9-gromov-gallot-betti1-estimate}, now using
+  \cref{thm:pet-ch9-moser-iteration}, bounds
+  \(C(V)\) by
+  \(\exp(S\sqrt{\lambda\nu}/\sqrt{\nu-1})\). Squaring this bound in
+  \cref{lem:pet-ch9-li-dimension-estimate} gives the conclusion.
 \end{proof}
 
 \subsection{The Weitzenböck Curvature}
@@ -479,27 +420,32 @@ symmetric tensors, or curvature tensors).
 \begin{definition}[Weitzenböck curvature operator]
   \label{def:pet-ch9-weitzenbock-curvature-operator}
   \lean{PetersenLib.weitzenbockCurvatureOperator}
-  For a $(0,k)$-tensor $T$ the \emph{Weitzenböck curvature} of $T$ is
+  Given a $(0,k)$-tensor $T$, define its \emph{Weitzenb\"ock curvature} by
   \[
     \operatorname{Ric}(T)(X_1,\dots,X_k)=\sum_j\big(R(e_j,X_i)T\big)(X_1,\dots,e_j,\dots,X_k)
   \]
-  (sum over $i$ implicit in the slot notation, and over an orthonormal frame
-  $e_j$). For a $1$-form $\omega$ dual to a vector field $X$, $\operatorname{Ric}(\omega)(X')
-  =\sum_j(R(e_j,X')\omega)(e_j)=-\omega\big(\sum_jR(e_j,X')e_j\big)=\omega(\operatorname{Ric}(X'))$,
-  recovering the ordinary Ricci tensor; the operator is often written $W$, but
-  $\operatorname{Ric}$ is used here to stress this compatibility.
-  \source{petersen:page-0357,petersen:page-0358}
+  where $e_j$ is orthonormal and the displayed slot entails summation over
+  $i$.  For $\omega=X^\flat$ this specializes to
+  \[
+    \operatorname{Ric}(\omega)(X')
+      =\sum_j(R(e_j,X')\omega)(e_j)
+      =-\omega\left(\sum_jR(e_j,X')e_j\right)
+      =\omega(\operatorname{Ric}(X')).
+  \]
+  Thus the notation agrees with the ordinary Ricci endomorphism on one-forms
+  (the same operator is also denoted $W$).
 \end{definition}
 
 \begin{definition}[Lichnerowicz Laplacian]
   \label{def:pet-ch9-lichnerowicz-laplacian}
   \lean{PetersenLib.lichnerowiczLaplacian}
   \uses{def:pet-ch9-weitzenbock-curvature-operator}
-  For a constant $c>0$, the \emph{Lichnerowicz Laplacian} on sections of $E$ is
-  $\Delta_LT=\nabla^*\nabla T+c\operatorname{Ric}(T)$. The Hodge Laplacian on forms is of
-  this type with $c=1$; symmetric $(0,2)$-tensors and the curvature tensor use
-  $c=\tfrac12$.
-  \source{petersen:page-0358}
+  For $c>0$, the \emph{Lichnerowicz Laplacian} on $E$ is
+  \[
+    \Delta_L=\nabla^*\nabla+c\operatorname{Ric}.
+  \]
+  Its Hodge-form instance has $c=1$; for symmetric $(0,2)$-tensors and for
+  the curvature tensor, take $c=\tfrac12$.
 \end{definition}
 
 The Bochner technique applies to $T$ with $\Delta_LT=0$: the maximum principle
@@ -515,200 +461,150 @@ manifest, and to identify natural Lichnerowicz Laplacians.
   \label{conv:pet-ch9-so-metric-convention}
   \lean{PetersenLib.soMetricConvention}
   \uses{def:pet-ch9-weitzenbock-curvature-operator}
-  For each $X,Y\in T_pM$ the map $R_{X,Y}:T_pM\to T_pM$ is skew-symmetric,
-  hence decomposes in an orthonormal basis $\Xi_\sigma$ of
-  $\mathfrak{so}(T_pM)$. Since an orthonormal $v,w$ give a unit bivector
-  $v\wedge w\in\Lambda^2T_pM$ while the corresponding rotation by $\pi/2$ has
-  Euclidean operator norm $\sqrt2$, $\mathfrak{so}(T_pM)$ is endowed with the
-  metric transported from $\Lambda^2T_pM$ under $v\wedge w\leftrightarrow$
-  (rotation by $\pi/2$ in $\operatorname{span}\{v,w\}$). With the curvature operator
-  $\mathfrak{R}$ on $\Lambda^2T_pM\cong\mathfrak{so}(T_pM)$ this gives
+  Identify $\Lambda^2T_pM$ isometrically with $\mathfrak{so}(T_pM)$ by sending
+  a unit bivector $v\wedge w$ to the quarter-turn in
+  $\operatorname{span}\{v,w\}$.  This uses the transported bivector metric,
+  rather than the Euclidean operator norm for which that quarter-turn has
+  length $\sqrt2$.  If $\Xi_\sigma$ is orthonormal for this metric and
+  $\mathfrak R$ is the curvature operator, then the skew map
+  $R_{X,Y}$ expands as
   \[
     R_{X,Y}=\sum_\sigma g(R_{X,Y},\Xi_\sigma)\Xi_\sigma
     =\sum_\sigma g(\mathfrak{R}(X\wedge Y),\Xi_\sigma)\Xi_\sigma
     =\sum_\sigma g(\mathfrak{R}(\Xi_\sigma),X\wedge Y)\Xi_\sigma
     =-\sum_\sigma g(R(\Xi_\sigma)X,Y)\Xi_\sigma.
   \]
-  \source{petersen:page-0359}
 \end{convention}
 
-\begin{lemma}[Lemma 9.3.3]
+\begin{lemma}[curvature-operator formula for Weitzenb\"ock curvature]
   \label{lem:pet-ch9-ric-curvature-operator-formula}
+  \dcref{ch9:9.3.3}
   \lean{PetersenLib.weitzenbock_eq_curvatureOperator_sum}
   \uses{conv:pet-ch9-so-metric-convention,def:pet-ch9-weitzenbock-curvature-operator,def:pet-ch9-lichnerowicz-laplacian}
-  For any $(0,k)$-tensor $T$,
+  Every $(0,k)$-tensor $T$ satisfies
   \[
     \operatorname{Ric}(T)=-\sum_\sigma R(\Xi_\sigma)(\Xi_\sigma T),\qquad
     \Delta_LT=\nabla^*\nabla T-c\sum_\sigma R(\Xi_\sigma)(\Xi_\sigma T).
   \]
-  Moreover $\operatorname{Ric}$ is self-adjoint.
-  \source{petersen:page-0359,petersen:page-0360}
+  The endomorphism $T\mapsto\operatorname{Ric}(T)$ is self-adjoint as well.
 \end{lemma}
 \begin{proof}
   \uses{lem:pet-ch9-ric-curvature-operator-formula}
-  Using \cref{conv:pet-ch9-so-metric-convention} to expand $R(e_j,X_i)$,
-  \begin{align*}
-    \operatorname{Ric}(T)(X_1,\dots,X_k)
-    &=\sum_j(R(e_j,X_i)T)(X_1,\dots,e_j,\dots,X_k)\\
-    &=-\sum_{\sigma,j}g(R(\Xi_\sigma)e_j,X_i)(\Xi_\sigma T)(X_1,\dots,e_j,\dots,X_k)\\
-    &=-\sum_\sigma(\Xi_\sigma T)\big(X_1,\dots,g(R(\Xi_\sigma)e_j,X_i)e_j,\dots,X_k\big)\\
-    &=\sum_\sigma(\Xi_\sigma T)(X_1,\dots,R(\Xi_\sigma)X_i,\dots,X_k)\\
-    &=-\sum_\sigma\big(R(\Xi_\sigma)(\Xi_\sigma T)\big)(X_1,\dots,X_i,\dots,X_k),
-  \end{align*}
-  where the fourth equality resums the $e_j$-expansion of $R(\Xi_\sigma)X_i$
-  back into the slot, and the fifth uses the definition of $R(\Xi_\sigma)$
-  acting on tensors by derivation through the slot $X_i$. Substituting into
-  $\Delta_LT=\nabla^*\nabla T+c\operatorname{Ric}(T)$ gives the stated formula for
-  $\Delta_L$.
-
-  For self-adjointness, choose the orthonormal basis $\Xi_\sigma$ to diagonalize
-  $\mathfrak{R}$, $\mathfrak{R}(\Xi_\sigma)=\lambda_\sigma\Xi_\sigma$. Then
+  \sketch
+  Expand each \(R(e_j,X_i)\) in the orthonormal basis
+  \(\Xi_\sigma\) using \cref{conv:pet-ch9-so-metric-convention}.  Resumming
+  the \(e_j\)-components in the \(i\)-th slot yields
+  \(\operatorname{Ric}(T)=-\sum_\sigma R(\Xi_\sigma)(\Xi_\sigma T)\), and
+  substitution gives the formula for \(\Delta_L\).  If
+  \(\mathfrak R(\Xi_\sigma)=\lambda_\sigma\Xi_\sigma\), skew-adjointness of
+  \(\Xi_\sigma\) gives
   \[
-    g(\operatorname{Ric}(T),S)=-\sum_\sigma g(R(\Xi_\sigma)(\Xi_\sigma T),S)
-    =-\sum_\sigma\lambda_\sigma g(\Xi_\sigma(\Xi_\sigma T),S)
-    =\sum_\sigma\lambda_\sigma g(\Xi_\sigma T,\Xi_\sigma S),
+    g(\operatorname{Ric}(T),S)
+      =\sum_\sigma\lambda_\sigma g(\Xi_\sigma T,\Xi_\sigma S),
   \]
-  using that $\Xi_\sigma$ acts skew-adjointly on tensors, and this final
-  expression is symmetric in $T,S$.
+  which is symmetric in \(T,S\).
 \end{proof}
 
-\begin{corollary}[Corollary 9.3.4]
+\begin{corollary}[Weitzenb\"ock lower bound]
   \label{cor:pet-ch9-ric-nonneg-curvature-operator}
+  \dcref{ch9:9.3.4}
   \lean{PetersenLib.weitzenbock_nonneg_of_curvatureOperator_nonneg}
   \uses{lem:pet-ch9-ric-curvature-operator-formula}
-  If $\mathfrak{R}\ge0$, then $g(\operatorname{Ric}(T),T)\ge0$ for every tensor $T$. More
-  generally, if $\mathfrak{R}\ge k$ with $k<0$, then $g(\operatorname{Ric}(T),T)\ge kC|T|^2$
-  for a constant $C>0$ depending only on the tensor type.
-  \source{petersen:page-0360}
+  Nonnegative curvature operator implies
+  $g(\operatorname{Ric}(T),T)\ge0$ for every tensor $T$.  More generally, from
+  $\mathfrak R\ge k$ with $k<0$ one obtains
+  \[
+    g(\operatorname{Ric}(T),T)\ge kC|T|^2,
+  \]
+  where $C>0$ depends only on the tensor type.
 \end{corollary}
 \begin{proof}
   \uses{cor:pet-ch9-ric-nonneg-curvature-operator}
-  With $\mathfrak{R}(\Xi_\sigma)=\lambda_\sigma\Xi_\sigma$ as in the proof of
-  \cref{lem:pet-ch9-ric-curvature-operator-formula},
+  \sketch
+  Diagonalizing \(\mathfrak R\) as in
+  \cref{lem:pet-ch9-ric-curvature-operator-formula} gives
   \[
-    g(\operatorname{Ric}(T),T)=\sum_\sigma\lambda_\sigma|\Xi_\sigma T|^2\ge k\sum_\sigma|\Xi_\sigma T|^2,
+    g(\operatorname{Ric}(T),T)=\sum_\sigma\lambda_\sigma|\Xi_\sigma T|^2.
   \]
-  which is $\ge0$ when $k=0$. There is a constant $C>0$, depending only on the
-  tensor type and $\dim M$, with $\sum_\sigma|\Xi_\sigma T|^2\le C|T|^2$; when
-  $k<0$ this yields $g(\operatorname{Ric}(T),T)\ge kC|T|^2$.
+  This is nonnegative when every \(\lambda_\sigma\ge0\).  If
+  \(\lambda_\sigma\ge k<0\), the tensor-type estimate
+  \(\sum_\sigma|\Xi_\sigma T|^2\le C|T|^2\) gives the stated lower bound.
 \end{proof}
 
-\begin{theorem}[Theorem 9.3.5]
+\begin{theorem}[dimension estimate for Lichnerowicz-harmonic tensors]
   \label{thm:pet-ch9-lichnerowicz-dimension-estimate}
+  \dcref{ch9:9.3.5}
   \lean{PetersenLib.lichnerowiczLaplacian_kernel_dimension_estimate}
   \uses{cor:pet-ch9-ric-nonneg-curvature-operator,thm:pet-ch9-gallot-connection-laplacian-estimate,prop:pet-ch9-vanishing-connection-laplacian}
-  If $\mathfrak{R}\ge k$ and $\operatorname{diam}(M)\le D$, the dimension of
-  $V=\{T\in\Gamma(E)\mid\Delta_LT=\nabla^*\nabla T+c\operatorname{Ric}(T)=0\}$ is bounded by
+  Suppose $\mathfrak R\ge k$ and $\operatorname{diam}M\le D$, and set
   \[
-    m\cdot\exp\Big(D\cdot C(n,kD^2)\frac{\sqrt{kcC\nu}}{\sqrt{\nu-1}}\Big),
+    V=\ker\Delta_L
+      =\{T\in\Gamma(E):\nabla^*\nabla T+c\operatorname{Ric}(T)=0\}.
   \]
-  and when $k=0$ every $T\in V$ is parallel.
-  \source{petersen:page-0360}
+  Then
+  \[
+    \dim V\le
+    m\cdot\exp\Big(2D\cdot C(n,kD^2)
+      \frac{\sqrt{-kcC\nu}}{\sqrt{\nu-1}}\Big).
+  \]
+  If $k=0$, all elements of $V$ are parallel.
 \end{theorem}
 
 \section{The Bochner Technique in General}
 
-Several natural Lichnerowicz Laplacians on Riemannian manifolds are exhibited.
-
 \subsection{Forms}
 
-\begin{theorem}[Theorem 9.4.1 (Weitzenböck, 1923)]
+\begin{theorem}[Weitzenb\"ock formula for the Hodge Laplacian]
   \label{thm:pet-ch9-weitzenbock-hodge-laplacian}
+  \dcref{ch9:9.4.1}
   \lean{PetersenLib.hodgeLaplacian_eq_lichnerowiczLaplacian}
   \uses{def:pet-ch9-hodge-laplacian,def:pet-ch9-weitzenbock-curvature-operator,def:pet-ch9-lichnerowicz-laplacian}
-  The Hodge Laplacian is the Lichnerowicz Laplacian with $c=1$:
+  On differential forms, the Lichnerowicz operator with coefficient one is
+  exactly the Hodge Laplacian:
   \[
     \square\omega=(d\delta+\delta d)\omega=\nabla^*\nabla\omega+\operatorname{Ric}(\omega).
   \]
-  \source{petersen:page-0361}
 \end{theorem}
 \begin{proof}
   \uses{thm:pet-ch9-weitzenbock-hodge-laplacian}
-  Following W.\ A.\ Poor's argument, write, for a $k$-form $\omega$ and an
-  orthonormal frame $E_j$,
-  \begin{align*}
-    \delta\omega(X_2,\dots,X_k)&=-\sum_i(\nabla_{E_i}\omega)(E_i,X_2,\dots,X_k),\\
-    d\omega(X_0,\dots,X_k)&=\sum_i(-1)^i(\nabla_{X_i}\omega)(X_0,\dots,\hat X_i,\dots,X_k).
-  \end{align*}
-  Substituting the first into $d$ and the second into $\delta$ (and
-  differentiating again) gives, after re-indexing the alternating sums,
-  \begin{align*}
-    d\delta\omega(X_1,\dots,X_k)
-    &=-\sum_i(-1)^{i+1}(\nabla^2_{X_i,E_j}\omega)(E_j,X_1,\dots,\hat X_i,\dots,X_k)\\
-    &=-\sum_{i,j}(\nabla^2_{X_i,E_j}\omega)(X_1,\dots,E_j,\dots,X_k),\\[4pt]
-    \delta d\omega(X_1,\dots,X_k)
-    &=-\sum_j(\nabla^2_{E_j,E_j}\omega)(X_1,\dots,X_k)
-      -\sum_i(-1)^i(\nabla^2_{E_j,X_i}\omega)(E_j,X_1,\dots,\hat X_i,\dots,X_k)\\
-    &=(\nabla^*\nabla\omega)(X_1,\dots,X_k)
-      +\sum_{i,j}(\nabla^2_{E_j,X_i}\omega)(X_1,\dots,E_j,\dots,X_k).
-  \end{align*}
-  Adding the two displays and using the second Bianchi/curvature commutation
-  identity $\nabla^2_{E_j,X_i}\omega-\nabla^2_{X_i,E_j}\omega=R(E_j,X_i)\omega$
-  slot by slot,
-  \[
-    \square\omega=\nabla^*\nabla\omega+\sum_{i,j}\big(R(E_j,X_i)\omega\big)(X_1,\dots,E_j,\dots,X_k)
-    =\nabla^*\nabla\omega+\operatorname{Ric}(\omega).\qedhere
-  \]
+  \sketch
+  In a normal orthonormal frame, expand
+  \(\delta\omega=-\sum_i i_{E_i}\nabla_{E_i}\omega\) and the alternating
+  formula for \(d\omega\).  In \(d\delta\omega+\delta d\omega\), the equal-order
+  terms combine to \(\nabla^*\nabla\omega\); commuting the remaining second
+  derivatives produces
+  \(\sum_{i,j}(R(E_j,X_i)\omega)(X_1,\ldots,E_j,\ldots,X_k)\), which is
+  \(\operatorname{Ric}(\omega)\).
 \end{proof}
 
 \subsection{The Curvature Tensor}
 
-\begin{theorem}[Theorem 9.4.2]
+\begin{theorem}[Lichnerowicz identity for the curvature tensor]
   \label{thm:pet-ch9-curvature-tensor-lichnerowicz}
+  \dcref{ch9:9.4.2}
   \lean{PetersenLib.curvatureTensor_lichnerowiczIdentity}
   \uses{def:pet-ch9-lichnerowicz-laplacian,def:pet-ch9-weitzenbock-curvature-operator}
-  The curvature tensor $R$ of a Riemannian manifold satisfies
+  For the curvature tensor, the Lichnerowicz operator with coefficient
+  $\tfrac12$ satisfies
   \begin{align*}
     (\nabla^*\nabla R)(X,Y,Z,W)+\tfrac12\operatorname{Ric}(R)(X,Y,Z,W)
     &=\tfrac12(\nabla_X\nabla^*R)(Y,Z,W)-\tfrac12(\nabla_Y\nabla^*R)(X,Z,W)\\
     &\quad+\tfrac12(\nabla_Z\nabla^*R)(W,X,Y)-\tfrac12(\nabla_W\nabla^*R)(Z,X,Y).
   \end{align*}
-  In particular $\Delta_LR=\nabla^*\nabla R+\tfrac12\operatorname{Ric}(R)$ vanishes whenever
-  $\nabla^*R=0$, i.e.\ $R$ is a Lichnerowicz-harmonic tensor ($c=\tfrac12$)
-  precisely when it is divergence free.
-  \source{petersen:page-0362,petersen:page-0363}
+  Thus the $c=\tfrac12$ Lichnerowicz Laplacian of $R$ vanishes whenever
+  $\nabla^*R=0$; curvature is Lichnerowicz-harmonic exactly in this
+  divergence-free case.
 \end{theorem}
 \begin{proof}
   \uses{thm:pet-ch9-curvature-tensor-lichnerowicz}
-  The second Bianchi identity is the key ingredient. Fix $p\in M$, let
-  $X,Y,Z,W$ be vector fields with $\nabla X=\nabla Y=\nabla Z=\nabla W=0$ at
-  $p$, and let $E_i$ be a normal frame at $p$. Then, evaluating at $p$,
-  \begin{align*}
-    (\nabla^*\nabla R)(X,Y,Z,W)
-    &=-\sum_i(\nabla^2_{E_i,E_i}R)(X,Y,Z,W)\\
-    &=\sum_i(\nabla^2_{E_i,X}R)(Y,E_i,Z,W)+(\nabla^2_{E_i,Y}R)(E_i,X,Z,W)\\
-    &=\sum_i(\nabla^2_{X,E_i}R)(Y,E_i,Z,W)+(\nabla^2_{Y,E_i}R)(E_i,X,Z,W)\\
-    &\quad+\sum_i\big(R(E_i,X)(R)\big)(Y,E_i,Z,W)+\big(R(E_i,Y)(R)\big)(E_i,X,Z,W)\\
-    &=(\nabla_X\nabla^*R)(Y,Z,W)-(\nabla_Y\nabla^*R)(X,Z,W)\\
-    &\quad-\sum_i\big(R(E_i,X)(R)\big)(E_i,Y,Z,W)+\big(R(E_i,Y)(R)\big)(X,E_i,Z,W),
-  \end{align*}
-  where the second line uses the second Bianchi identity to rewrite the
-  divergence of $R$ against $E_i$ in terms of derivatives of the entries $X,Y$
-  (which are parallel at $p$, so covariant derivatives of $R$ against them may
-  be pulled past the sum over $i$), the third line inserts the curvature
-  commutation $\nabla^2_{E_i,X}-\nabla^2_{X,E_i}=R(E_i,X)$ acting on $R$ (using
-  $\nabla X=0$ at $p$), and the fourth resums $\sum_i(\nabla^2_{X,E_i}R)(Y,E_i,Z,W)
-  =(\nabla_X\nabla^*R)(Y,Z,W)$ by definition of $\nabla^*R$. The last two terms
-  are half of $-\operatorname{Ric}(R)(X,Y,Z,W)$, i.e.
-  \[
-    -\sum_i\big(R(E_i,X)(R)\big)(E_i,Y,Z,W)+\big(R(E_i,Y)(R)\big)(X,E_i,Z,W)
-    =-\tfrac12\operatorname{Ric}(R)(X,Y,Z,W)+(\ast),
-  \]
-  where $(\ast)$ collects the analogous pair-symmetric terms with the roles of
-  $(X,Y)$ and $(Z,W)$ exchanged. Since $R(X,Y,Z,W)=R(Z,W,X,Y)$, the whole
-  computation applies equally with $(X,Y,Z,W)$ replaced by $(Z,W,X,Y)$, giving
-  the same left-hand side $(\nabla^*\nabla R)(X,Y,Z,W)$. Averaging the two
-  resulting expressions,
-  \begin{align*}
-    (\nabla^*\nabla R)(X,Y,Z,W)
-    &=\tfrac12\big((\nabla_X\nabla^*R)(Y,Z,W)-(\nabla_Y\nabla^*R)(X,Z,W)\big)\\
-    &\quad+\tfrac12\big((\nabla_Z\nabla^*R)(W,X,Y)-(\nabla_W\nabla^*R)(Z,X,Y)\big)
-      -\tfrac12\operatorname{Ric}(R)(X,Y,Z,W),
-  \end{align*}
-  which rearranges to the stated identity. Finally, the second Bianchi
-  identity shows the right-hand side vanishes identically once $\nabla^*R=0$
-  (no additional divergence-of-derivative terms survive, unlike the Hodge
-  Laplacian case), so $R$ divergence free implies $\Delta_LR=0$.
+  \sketch
+  Evaluate in a normal frame and apply the second Bianchi identity to the two
+  differentiated curvature slots.  Commuting the resulting second covariant
+  derivatives contributes the Weitzenb\"ock term.  Repeating the computation
+  after interchanging the pair \((X,Y)\) with \((Z,W)\), and averaging by the
+  pair symmetry of \(R\), gives exactly the four divergence derivatives on
+  the right and the coefficient \(\tfrac12\operatorname{Ric}(R)\).  If
+  \(\nabla^*R=0\), all four terms vanish.
 \end{proof}
 
 \subsection{Symmetric $(0,2)$-Tensors}
@@ -716,363 +612,276 @@ Several natural Lichnerowicz Laplacians on Riemannian manifolds are exhibited.
 \begin{definition}[the exterior derivative $d^\nabla h$ of a symmetric tensor]
   \label{def:pet-ch9-codazzi-exterior-derivative}
   \lean{PetersenLib.symmetricTensorExteriorDerivative}
-  For a symmetric $(0,2)$-tensor $h$ with associated $(1,1)$-tensor $H$
-  ($h(z,w)=g(H(z),w)$), recalling $(d^\nabla H)(X,Y)=(\nabla_XH)(Y)-(\nabla_YH)(X)$
-  for $(1,1)$-tensors, define
+  If $h(z,w)=g(H(z),w)$ is symmetric, then the connection exterior derivative
+  is defined by
   \[
     d^\nabla h(X,Y,Z)=(\nabla_Xh)(Y,Z)-(\nabla_Yh)(X,Z).
   \]
-  \source{petersen:page-0363}
 \end{definition}
 
 \begin{remark}[Codazzi identity for the Ricci tensor]
   \label{rem:pet-ch9-ricci-codazzi-identity}
   \lean{PetersenLib.ricciTensor_codazziIdentity}
   \uses{def:pet-ch9-codazzi-exterior-derivative}
-  For the second fundamental form $\mathrm{II}$ of an immersed hypersurface
-  $M^n\to\mathbb{R}^{n+1}$, the Codazzi--Mainardi equations read $d^\nabla\mathrm{II}=0$.
-  For the Ricci tensor, Petersen's exercise 3.4.8 gives
-  $(d^\nabla\operatorname{Ric})(X,Y,Z)=(\nabla^*R)(Z,X,Y)$; an analogous identity relates
-  the Schouten and Weyl tensors (Petersen, exercise 3.4.26).
-  \source{petersen:page-0363}
+  The second fundamental form of an immersed hypersurface
+  $M^n\to\mathbb R^{n+1}$ satisfies the Codazzi--Mainardi equation
+  $d^\nabla\mathrm{II}=0$. For the Ricci tensor,
+  \[
+    (d^\nabla\operatorname{Ric})(X,Y,Z)=(\nabla^*R)(Z,X,Y),
+  \]
+  and the Schouten--Weyl analogue is the corresponding identity from
+  Petersen, exercise 3.4.26.
 \end{remark}
 
-\begin{theorem}[Theorem 9.4.3]
+\begin{theorem}[Lichnerowicz identity for symmetric tensors]
   \label{thm:pet-ch9-symmetric-tensor-lichnerowicz-identity}
+  \dcref{ch9:9.4.3}
   \lean{PetersenLib.symmetricTensor_lichnerowiczIdentity}
   \uses{def:pet-ch9-codazzi-exterior-derivative,def:pet-ch9-weitzenbock-curvature-operator}
-  Any symmetric $(0,2)$-tensor $h$ on a Riemannian manifold satisfies
+  For every symmetric $(0,2)$-tensor $h$ and vector $X$,
   \[
     (\nabla_X\nabla^*h)(X)+(\nabla^*d^\nabla h)(X,X)
     =(\nabla^*\nabla h)(X,X)+\tfrac12(\operatorname{Ric}(h))(X,X).
   \]
-  \source{petersen:page-0364}
 \end{theorem}
 \begin{proof}
   \uses{thm:pet-ch9-symmetric-tensor-lichnerowicz-identity}
-  With respect to an orthonormal frame $E_i$ that is normal (parallel) at the
-  point of evaluation, the left-hand side terms are
-  \[
-    (\nabla_X\nabla^*h)(X)=-(\nabla^2_{E_i,E_i}h)(E_i,X)
-  \]
-  and, expanding $d^\nabla h$ and differentiating,
-  \[
-    (\nabla^*d^\nabla h)(X,X)=-(\nabla_{E_i}d^\nabla h)(E_i,X,X)
-    =-(\nabla^2_{E_i,E_i}h)(X,X)+(\nabla^2_{E_i,X}h)(E_i,X).
-  \]
-  Adding these,
-  \begin{align*}
-    (\nabla_X\nabla^*h)(X)+(\nabla^*d^\nabla h)(X,X)
-    &=(\nabla^*\nabla h)(X,X)+(\nabla^2_{E_i,X}h)(E_i,X)-(\nabla^2_{E_i,E_i}h)(E_i,X)\\
-    &=(\nabla^*\nabla h)(X,X)+\big(R(E_i,X)h\big)(E_i,X),
-  \end{align*}
-  using the curvature commutation $\nabla^2_{E_i,X}-\nabla^2_{X,E_i}=R(E_i,X)$
-  together with $(\nabla^2_{X,E_i}h)(E_i,X)-(\nabla^2_{E_i,E_i}h)(E_i,X)$ folding
-  into $(\nabla^*\nabla h)(X,X)$ after resumming over $i$. Since $h$ is
-  symmetric, $(R(E_i,X)h)(E_i,X)=\tfrac12(\operatorname{Ric}(h))(X,X)$ (the two terms of
-  the Weitzenböck sum coincide by symmetry of $h$ in its two slots), which
-  finishes the proof.
+  \sketch
+  At the evaluation point use a normal frame to expand
+  \(\nabla_X\nabla^*h\) and \(\nabla^*d^\nabla h\).  Their second-derivative
+  terms combine to \(\nabla^*\nabla h\); commuting the remaining derivatives
+  gives \((R(E_i,X)h)(E_i,X)\).  Symmetry of \(h\) identifies this contraction
+  with \(\tfrac12\operatorname{Ric}(h)(X,X)\).
 \end{proof}
 
 \begin{definition}[Codazzi and harmonic symmetric tensors]
   \label{def:pet-ch9-codazzi-harmonic-tensor}
   \lean{PetersenLib.IsCodazziTensor,PetersenLib.IsHarmonicSymmetricTensor}
   \uses{def:pet-ch9-codazzi-exterior-derivative}
-  A symmetric $(0,2)$-tensor $h$ is a \emph{Codazzi tensor} if $d^\nabla h=0$,
-  and \emph{harmonic} if in addition it is divergence free ($\nabla^*h=0$).
-  \source{petersen:page-0364}
+  Call a symmetric tensor $h$ \emph{Codazzi} when $d^\nabla h=0$; call it
+  \emph{harmonic} when it is Codazzi and also divergence free,
+  $\nabla^*h=0$.
 \end{definition}
 
-\begin{proposition}[Proposition 9.4.4]
+\begin{proposition}[harmonic tensors and constant trace]
   \label{prop:pet-ch9-harmonic-iff-codazzi-constant-trace}
+  \dcref{ch9:9.4.4}
   \lean{PetersenLib.harmonic_iff_codazzi_constantTrace}
   \uses{def:pet-ch9-codazzi-harmonic-tensor}
-  A symmetric $(0,2)$-tensor is harmonic if and only if it is a Codazzi tensor
-  of constant trace.
-  \source{petersen:page-0364}
+  For a symmetric $(0,2)$-tensor $h$,
+  \[
+    h\text{ is harmonic}\quad\Longleftrightarrow\quad
+    d^\nabla h=0\text{ and }\operatorname{tr}h\text{ is constant}.
+  \]
 \end{proposition}
 \begin{proof}
   \uses{prop:pet-ch9-harmonic-iff-codazzi-constant-trace}
-  For any symmetric $(0,2)$-tensor $h$, using a normal frame $E_i$,
-  \begin{align*}
-    (\nabla^*h)(X)&=-(\nabla_{E_i}h)(E_i,X)=-(\nabla_{E_i}h)(X,E_i)\\
-    &=-(\nabla_Xh)(E_i,E_i)+(d^\nabla h)(X,E_i,E_i)\\
-    &=-D_X(\operatorname{tr}h)+(d^\nabla h)(X,E_i,E_i).
-  \end{align*}
-  Hence for a Codazzi tensor ($d^\nabla h=0$), $\nabla^*h=0$ if and only if
-  $D_X(\operatorname{tr}h)=0$ for all $X$, i.e.\ $\operatorname{tr}h$ is constant.
+  \sketch
+  In a normal frame, symmetry of \(h\) gives
+  \[
+    (\nabla^*h)(X)=-D_X\operatorname{tr}h
+      +\sum_i(d^\nabla h)(X,E_i,E_i).
+  \]
+  For a Codazzi tensor the final sum vanishes, so divergence freedom is
+  equivalent to constancy of the trace.
 \end{proof}
 
-Constant mean curvature hypersurfaces therefore have harmonic second
-fundamental form, a fact exploited by both Lichnerowicz and Simons. For the
-Ricci tensor, being Codazzi already forces the curvature tensor to be
-harmonic, since $\operatorname{Ric}$ is Codazzi exactly when $\nabla^*R=0$
-(\cref{rem:pet-ch9-ricci-codazzi-identity}).
+In particular, a constant-mean-curvature hypersurface has harmonic second
+fundamental form.  By \cref{rem:pet-ch9-ricci-codazzi-identity}, a Codazzi Ricci
+tensor is equivalent to divergence-free curvature.
 
-\begin{corollary}[Corollary 9.4.5]
+\begin{corollary}[harmonic curvature and Codazzi Ricci tensor]
   \label{cor:pet-ch9-ricci-harmonic-iff-curvature-harmonic}
+  \dcref{ch9:9.4.5}
   \lean{PetersenLib.ricciTensor_harmonic_iff_curvatureTensor_harmonic}
   \uses{prop:pet-ch9-harmonic-iff-codazzi-constant-trace,rem:pet-ch9-ricci-codazzi-identity,thm:pet-ch9-curvature-tensor-lichnerowicz}
-  The Ricci tensor is harmonic if and only if the curvature tensor is
-  harmonic (i.e.\ $\nabla^*R=0$).
-  \source{petersen:page-0365}
+  The following conditions are equivalent: $\operatorname{Ric}$ is harmonic,
+  $\operatorname{Ric}$ is Codazzi with constant trace, and
+  $\nabla^*R=0$ (equivalently, $R$ is harmonic).
 \end{corollary}
 \begin{proof}
   \uses{cor:pet-ch9-ricci-harmonic-iff-curvature-harmonic}
-  By \cref{rem:pet-ch9-ricci-codazzi-identity}, $\operatorname{Ric}$ is a Codazzi tensor
-  exactly when $\nabla^*R=0$. The contracted second Bianchi identity
-  (Petersen, proposition 3.1.5) together with the computation in the proof of
-  \cref{prop:pet-ch9-harmonic-iff-codazzi-constant-trace} gives
-  \[
-    2D_X\operatorname{scal}=-(\nabla^*\operatorname{Ric})(X)=D_X(\operatorname{tr}\operatorname{Ric})=D_X(\operatorname{scal}),
-  \]
-  so $D_X\operatorname{scal}=0$: the scalar curvature is constant, hence
-  $\operatorname{Ric}$ is divergence free whenever it is Codazzi. Thus $\operatorname{Ric}$
-  is harmonic (Codazzi with constant trace, by
-  \cref{prop:pet-ch9-harmonic-iff-codazzi-constant-trace}) if and only if it is
-  Codazzi, i.e.\ if and only if $\nabla^*R=0$.
+  \sketch
+  The identity in \cref{rem:pet-ch9-ricci-codazzi-identity} equates
+  \(d^\nabla\operatorname{Ric}\) with the divergence of \(R\), while the
+  contracted Bianchi identity makes \(\nabla^*\operatorname{Ric}\) a constant
+  multiple of \(d\operatorname{scal}\).  Thus \(\operatorname{Ric}\) is
+  harmonic exactly when \(R\) is divergence free.  The constant-trace
+  characterization in \cref{prop:pet-ch9-harmonic-iff-codazzi-constant-trace}
+  yields the equivalent formulations.
 \end{proof}
 
 \subsection{Topological and Geometric Consequences}
 
-\begin{theorem}[Theorem 9.4.6 (D.\ Meyer, 1971, D.\ Meyer--Gallot, 1975, and Gallot, 1981)]
+\begin{theorem}[forms under a curvature-operator lower bound]
   \label{thm:pet-ch9-nonneg-curvature-operator-parallel-forms}
+  \dcref{ch9:9.4.6}
   \lean{PetersenLib.nonnegCurvatureOperator_harmonicForms_parallel}
   \uses{thm:pet-ch9-weitzenbock-hodge-laplacian,thm:pet-ch9-lichnerowicz-dimension-estimate,cor:pet-ch9-ric-nonneg-curvature-operator}
-  Let $(M,g)$ be a closed Riemannian $n$-manifold. If $\mathfrak{R}\ge0$, then
-  every harmonic form is parallel. If $\mathfrak{R}>0$, the only parallel
-  $l$-forms occur for $l=0,n$. Finally, if $\mathfrak{R}\ge k$ and
-  $\operatorname{diam}(M)\le D$,
+  Let $(M,g)$ be closed of dimension $n$.  Under $\mathfrak R\ge0$, every
+  harmonic form is parallel.  If $\mathfrak R>0$, a parallel $l$-form can be
+  nonzero only for $l=0$ or $l=n$.  For the lower bound $\mathfrak R\ge k$ and
+  diameter bound $D$,
   \[
-    b_l(M)\le\binom{n}{l}\exp\big(D\cdot C(n,kD^2)\sqrt{-kC}\big).
+    b_l(M)\le\binom{n}{l}
+      \exp\big(2D\cdot C(n,kD^2)\sqrt{-kC}\big).
   \]
-  \source{petersen:page-0365}
 \end{theorem}
 \begin{proof}
   \uses{thm:pet-ch9-nonneg-curvature-operator-parallel-forms}
-  The first statement follows immediately from
-  \cref{thm:pet-ch9-weitzenbock-hodge-laplacian,cor:pet-ch9-ric-nonneg-curvature-operator}:
-  when $\mathfrak{R}\ge0$, $g(\operatorname{Ric}(\omega),\omega)\ge0$ for every harmonic
-  form $\omega$, so $g(\nabla^*\nabla\omega,\omega)=-g(\operatorname{Ric}(\omega),\omega)\le0$
-  and \cref{prop:pet-ch9-vanishing-connection-laplacian} shows $\omega$ is
-  parallel (a harmonic form on a closed manifold has $|\omega|^2$ attaining a
-  maximum by compactness).
-
-  For the second statement, when $\mathfrak{R}>0$, the identity
-  \[
-    0=g(\operatorname{Ric}(\omega),\omega)=\sum_\sigma\lambda_\sigma|\Xi_\sigma\omega|^2
-  \]
-  (from the proof of \cref{cor:pet-ch9-ric-nonneg-curvature-operator}, all
-  $\lambda_\sigma>0$) forces $\Xi_\sigma\omega=0$ for every $\sigma$, and by
-  linearity $L\omega=0$ for every skew-symmetric $L$. If $0<m<n$ and $L$ is
-  chosen with $L(e_i)=0$ for $i<m$ and $L(e_m)=e_{m+1}$, then
-  \[
-    0=(L\omega)(e_1,\dots,e_m)=-\omega(e_1,\dots,e_{m-1},e_{m+1}),
-  \]
-  and since the orthonormal basis was arbitrary this forces $\omega=0$ unless
-  $l\in\{0,n\}$.
-
-  The last statement is the case $c=1$ of the general estimate
-  \cref{thm:pet-ch9-lichnerowicz-dimension-estimate} applied to the
-  Lichnerowicz Laplacian $\Delta_L=\square$ on $l$-forms, whose kernel is
-  $\mathcal{H}^l(M)$ of dimension $b_l(M)$, with fibre dimension
-  $m=\binom{n}{l}$.
+  \sketch
+  By \cref{thm:pet-ch9-weitzenbock-hodge-laplacian} and
+  \cref{cor:pet-ch9-ric-nonneg-curvature-operator}, a harmonic form satisfies
+  \(g(\nabla^*\nabla\omega,\omega)\le0\); compactness and
+  \cref{prop:pet-ch9-vanishing-connection-laplacian} make it parallel.  If
+  \(\mathfrak R>0\), the eigenbasis formula forces
+  \(L\omega=0\) for every skew endomorphism \(L\), which annihilates all
+  degrees except \(0\) and \(n\).  Finally apply
+  \cref{thm:pet-ch9-lichnerowicz-dimension-estimate} to the Hodge Laplacian on
+  \(l\)-forms, whose fibre rank is \(\binom nl\).
 \end{proof}
 
-The classification of manifolds with nonnegative curvature operator (Petersen,
-theorem 10.3.7) shows there are manifolds with positive or nonnegative
-sectional curvature admitting no metric with $\mathfrak{R}\ge0$: $S^2\times S^2$
-and $\mathbb{CP}^2$ have $\operatorname{Ric}>0$ but do not admit $\mathfrak{R}\ge0$ (H.\ Hopf's
-question for $S^2\times S^2$), and there is a simply connected manifold with
-$\operatorname{Ric}>0$ but no metric with $\sec\ge0$ (Chapter 12 of the source).
-
-\begin{example}[Example 9.4.7]
+\begin{example}[nonnegative sectional curvature on $\mathbb{CP}^2\#\mathbb{CP}^2$]
   \label{ex:pet-ch9-cp2-connect-sum-nonneg-curvature}
+  \dcref{ch9:9.4.7}
   \lean{PetersenLib.cp2ConnectSumCp2_nonnegSectionalCurvature}
   \uses{thm:pet-ch9-nonneg-curvature-operator-parallel-forms}
-  Let $S^1$ act on $S^3\subset\mathbb{C}^2$ by the Hopf action and on $S^2$ by
-  rotation through total angle $2\pi k$; the quotient of $S^2\times S^3$ by
-  the diagonal action is $S^2\times S^2$ if $k$ is even and
-  $\mathbb{CP}^2\#\mathbb{CP}^2$ if $k$ is odd, and by O'Neill's formula it carries
-  nonnegative sectional curvature in either case. By the classification of
-  manifolds with $\mathfrak{R}\ge0$ (Petersen, theorem 10.3.7), the only simply
-  connected manifolds with $\mathfrak{R}\ge0$ are (topologically) $S^2\times S^2$,
-  $S^4$, or $\mathbb{CP}^2$, so this $\mathfrak{R}\ge0$-classification is strictly
-  finer than the classification of $\sec\ge0$ manifolds; these examples were
-  originally due to Cheeger, via a different construction.
-  \source{petersen:page-0366}
+  Let $S^1$ act diagonally on $S^2\times S^3$, by rotation of total angle
+  $2\pi k$ on $S^2$ and by the Hopf action on
+  $S^3\subset\mathbb C^2$.  The quotient is $S^2\times S^2$ for even $k$ and
+  $\mathbb{CP}^2\#\mathbb{CP}^2$ for odd $k$; O'Neill's formula gives it
+  nonnegative sectional curvature.  Petersen's theorem 10.3.7 restricts the
+  simply connected topological $4$-manifolds with $\mathfrak R\ge0$ to
+  $S^2\times S^2$, $S^4$, and $\mathbb{CP}^2$.  Hence the odd quotient
+  distinguishes $\sec\ge0$ from $\mathfrak R\ge0$.
 \end{example}
 
-The Bochner technique for the Dirac operator's square,
-$\nabla^*\nabla+\tfrac14\operatorname{scal}$ (Lichnerowicz, also I.\ Singer), shows the
-$\hat A$-genus vanishes on spin manifolds with $\operatorname{scal}>0$; via
-generalizations, Gromov--Lawson showed every metric with $\operatorname{scal}\ge0$ on a
-torus is flat, generalizing \cref{cor:pet-ch9-betti1-bound-flat-torus}. There
-are still no known simply connected examples with $\operatorname{scal}>0$ but no metric
-with $\operatorname{Ric}>0$; however for closed $(M,g)$ and small $\varepsilon$,
-$(M\times S^2,g+\varepsilon g_{S^2})$ has $\operatorname{scal}>0$, so taking $M$ a surface
-with $b_1>4$ gives a non-simply-connected example with $\operatorname{scal}>0$ but
-$b_1(M\times S^2)>4$, which by \cref{cor:pet-ch9-betti1-bound-flat-torus}
-cannot support $\operatorname{Ric}\ge0$.
-
-\begin{theorem}[Theorem 9.4.8 (Tachibana, 1974)]
+\begin{theorem}[Tachibana rigidity]
   \label{thm:pet-ch9-tachibana-parallel-curvature}
+  \dcref{ch9:9.4.8}
   \lean{PetersenLib.tachibana_parallelCurvature}
   \uses{thm:pet-ch9-curvature-tensor-lichnerowicz,prop:pet-ch9-vanishing-connection-laplacian,conv:pet-ch9-so-metric-convention}
-  Let $(M,g)$ be closed. If $\mathfrak{R}\ge0$ and $\nabla^*R=0$, then $\nabla R=0$.
-  If moreover $\mathfrak{R}>0$, then $(M,g)$ has constant curvature.
-  \source{petersen:page-0367}
+  On a closed manifold, divergence-free curvature together with
+  $\mathfrak R\ge0$ implies $\nabla R=0$.  If the curvature operator is
+  positive, the metric has constant sectional curvature.
 \end{theorem}
 \begin{proof}
   \uses{thm:pet-ch9-tachibana-parallel-curvature}
-  By \cref{thm:pet-ch9-curvature-tensor-lichnerowicz}, $\nabla^*R=0$ gives
-  $\nabla^*\nabla R+\tfrac12\operatorname{Ric}(R)=0$. If $\mathfrak{R}\ge0$, then as in
-  \cref{cor:pet-ch9-ric-nonneg-curvature-operator}, $g(\operatorname{Ric}(R),R)\ge0$, so
-  $g(\nabla^*\nabla R,R)\le0$; since $M$ is closed, $|R|^2$ has a maximum, and
-  \cref{prop:pet-ch9-vanishing-connection-laplacian} gives $\nabla R=0$.
-
-  If moreover $\mathfrak{R}>0$, as in the proof of
-  \cref{thm:pet-ch9-nonneg-curvature-operator-parallel-forms} one gets $LR=0$
-  for every $L\in\mathfrak{so}(T_pM)$. To show the mixed curvatures
-  $R(x,v,w,z)$ vanish for $z$ perpendicular to $x,v,w$: choose $L$ with
-  $L(y)=0$ and $L(x)=z$; then
-  \[
-    0=LR(x,y,y,x)=-R(L(x),y,y,x)-R(x,y,y,L(x))=-2R(x,y,y,z).
-  \]
-  Polarizing in $y=v+w$ gives $R(x,v,w,z)=-R(x,w,v,z)$. The (first) Bianchi
-  identity then gives
-  \[
-    R(x,v,w,z)=R(w,x,z,v)-R(w,x,v,z)=-2R(w,x,v,z)=2R(x,w,v,z)=-2R(x,v,w,z),
-  \]
-  forcing $R(x,v,w,z)=0$. Consequently every bivector $x\wedge y$ is an
-  eigenvector of $\mathfrak{R}$ (all mixed curvatures with a fourth
-  perpendicular direction vanish, and $R(x,y,y,x)$ alone survives), which
-  forces $\mathfrak{R}=kI$ for a constant $k$, i.e.\ $(M,g)$ has constant
-  curvature.
+  \sketch
+  The curvature identity \cref{thm:pet-ch9-curvature-tensor-lichnerowicz}, the
+  lower bound in \cref{cor:pet-ch9-ric-nonneg-curvature-operator}, and
+  \cref{prop:pet-ch9-vanishing-connection-laplacian} imply \(\nabla R=0\).
+  Under \(\mathfrak R>0\), the argument from
+  \cref{thm:pet-ch9-nonneg-curvature-operator-parallel-forms} gives
+  \(LR=0\) for every \(L\in\mathfrak{so}(T_pM)\).  Choosing rotations that
+  exchange an arbitrary vector with an orthogonal one and polarizing shows
+  all mixed curvature components vanish.  Every decomposable bivector is
+  consequently an eigenvector of \(\mathfrak R\), forcing
+  \(\mathfrak R=kI\).
 \end{proof}
 
 \subsection{Simplification of $g(\operatorname{Ric}(T),T)$}
-
-An alternate method recovers the $1$-form formula and extends to general
-$(0,2)$-tensors, replacing the orthonormal basis $\Xi_\sigma$ by a single
-$\Lambda^2TM$-valued tensor built from $T$.
 
 \begin{definition}[$\Lambda^2TM$-valued tensor $\hat T$]
   \label{def:pet-ch9-tensor-lambda2-valued}
   \lean{PetersenLib.lambda2ValuedTensor}
   \uses{conv:pet-ch9-so-metric-convention}
-  A $(0,k)$-tensor $T$ determines $\hat T$, valued in $\Lambda^2TM\cong
-  \mathfrak{so}(TM)$, implicitly by
+  Associate to a $(0,k)$-tensor $T$ the
+  $\Lambda^2TM\cong\mathfrak{so}(TM)$-valued tensor $\hat T$ uniquely
+  characterized by
   \[
     g\big(L,\hat T(X_1,\dots,X_k)\big)=(LT)(X_1,\dots,X_k)\quad\text{for all }
     L\in\mathfrak{so}(TM).
   \]
-  \source{petersen:page-0368}
 \end{definition}
 
-\begin{lemma}[Lemma 9.4.9]
+\begin{lemma}[hat-tensor formula for Weitzenb\"ock curvature]
   \label{lem:pet-ch9-ric-curvature-operator-hat-formula}
+  \dcref{ch9:9.4.9}
   \lean{PetersenLib.weitzenbock_eq_curvatureOperator_hat}
   \uses{def:pet-ch9-tensor-lambda2-valued,def:pet-ch9-weitzenbock-curvature-operator,lem:pet-ch9-ric-curvature-operator-formula}
-  For all $(0,k)$-tensors $T,S$, $g(\operatorname{Ric}(T),S)=g(\mathfrak{R}(\hat T),\hat S)$.
-  \source{petersen:page-0368}
+  For any two $(0,k)$-tensors $T$ and $S$, contraction of their hat tensors
+  gives
+  \[
+    g(\operatorname{Ric}(T),S)=g(\mathfrak R(\hat T),\hat S).
+  \]
 \end{lemma}
 \begin{proof}
   \uses{lem:pet-ch9-ric-curvature-operator-hat-formula}
-  Using \cref{lem:pet-ch9-ric-curvature-operator-formula} and summing over a
-  multi-index $I=(i_1,\dots,i_k)$ and an orthonormal basis $\Xi_\sigma$ of
-  $\mathfrak{so}(T_pM)$,
-  \begin{align*}
-    g(\operatorname{Ric}(T),S)&=\sum_\sigma g(\Xi_\sigma T,R(\Xi_\sigma)S)\\
-    &=\sum_{\sigma,I}(\Xi_\sigma T)(e_I)\,(R(\Xi_\sigma)S)(e_I)\\
-    &=\sum_{\sigma,I}g\big(\Xi_\sigma,\hat T(e_I)\big)\,g\big(R(\Xi_\sigma),\hat S(e_I)\big)\\
-    &=\sum_I g\Big(\mathfrak{R}\big(\hat T(e_I)\big),\hat S(e_I)\Big)\\
-    &=g(\mathfrak{R}(\hat T),\hat S),
-  \end{align*}
-  where the third equality uses the defining identity of
-  $\hat T,\hat S$ from \cref{def:pet-ch9-tensor-lambda2-valued}, and the fourth
-  expands $R(\Xi_\sigma)=\sum_\tau g(\mathfrak{R}(\Xi_\sigma),\Xi_\tau)\Xi_\tau$ and
-  resums over $\sigma$ using that $\Xi_\sigma$ is an orthonormal basis. Taking
-  $S=T$ recovers self-adjointness of $\operatorname{Ric}$, now manifest since
-  $\mathfrak{R}$ is self-adjoint on $\Lambda^2TM$.
+  \sketch
+  In orthonormal bases \(e_I\) and \(\Xi_\sigma\), use
+  \cref{lem:pet-ch9-ric-curvature-operator-formula} and the definition in
+  \cref{def:pet-ch9-tensor-lambda2-valued} to write
+  \[
+    g(\operatorname{Ric}(T),S)
+      =\sum_{\sigma,I}g(\Xi_\sigma,\hat T(e_I))
+        g(R(\Xi_\sigma),\hat S(e_I)).
+  \]
+  Resumming the \(\Xi_\sigma\)-components is precisely
+  \(g(\mathfrak R(\hat T),\hat S)\).
 \end{proof}
 
-This reformulation of $g(\operatorname{Ric}(T),T)$ is again manifestly nonnegative when
-$\mathfrak{R}\ge0$, and it sometimes shows nonnegativity under weaker
-hypotheses, as worked out below for $1$-forms and symmetric $(0,2)$-tensors.
-
-\begin{proposition}[Proposition 9.4.10]
+\begin{proposition}[hat tensor of a $1$-form]
   \label{prop:pet-ch9-1form-hat-ricci}
+  \dcref{ch9:9.4.10}
   \lean{PetersenLib.oneForm_hat_ricci_identity}
   \uses{lem:pet-ch9-ric-curvature-operator-hat-formula,def:pet-ch9-tensor-lambda2-valued}
-  If $\omega$ is a $1$-form dual to the vector field $X$, then
-  $\hat\omega(Z)=X\wedge Z$ and $g(\mathfrak{R}(\hat\omega),\hat\omega)=\operatorname{Ric}(X,X)$.
-  \source{petersen:page-0368,petersen:page-0369}
+  For a one-form $\omega=X^\flat$,
+  \[
+    \hat\omega(Z)=X\wedge Z,
+    \qquad
+    g(\mathfrak R(\hat\omega),\hat\omega)=\operatorname{Ric}(X,X).
+  \]
 \end{proposition}
 \begin{proof}
   \uses{prop:pet-ch9-1form-hat-ricci}
-  For $L\in\mathfrak{so}(T_pM)$, $(L\omega)(Z)=-\omega(L(Z))=-g(X,L(Z))
-  =-g(L,Z\wedge X)=g(L,X\wedge Z)$, so by the defining property of
-  $\hat\omega$, $\hat\omega(Z)=X\wedge Z$. Then, using
-  \cref{lem:pet-ch9-ric-curvature-operator-hat-formula} with $S=T=\omega$ and
-  an orthonormal frame $E_i$,
-  \begin{align*}
-    g(\operatorname{Ric}(\omega),\omega)
-    &=g(\mathfrak{R}(\hat\omega),\hat\omega)
-    =\sum_ig\big(\hat\omega(E_i),\mathfrak{R}(\hat\omega(E_i))\big)\\
-    &=\sum_ig\big(\mathfrak{R}(E_i\wedge X),E_i\wedge X\big)
-    =\sum_iR(X,E_i,E_i,X)=\operatorname{Ric}(X,X).\qedhere
-  \end{align*}
+  \sketch
+  For skew \(L\),
+  \((L\omega)(Z)=-g(X,LZ)=g(L,X\wedge Z)\), hence
+  \(\hat\omega(Z)=X\wedge Z\).  Applying
+  \cref{lem:pet-ch9-ric-curvature-operator-hat-formula} and tracing over an
+  orthonormal frame gives
+  \(g(\mathfrak R(\hat\omega),\hat\omega)=
+    \sum_iR(X,E_i,E_i,X)=\operatorname{Ric}(X,X)\).
 \end{proof}
 
 \begin{remark}[$p$-form generalization]
   \label{rem:pet-ch9-pform-hat-formula}
   \lean{PetersenLib.pForm_hat_formula}
   \uses{def:pet-ch9-tensor-lambda2-valued,prop:pet-ch9-1form-hat-ricci}
-  More generally, if $\omega$ is a $p$-form and $\Omega$ is the
-  $(p-1)$-form-valued map with $g(\Omega(X_1,\dots,X_{p-1}),X_p)=
-  \omega(X_1,\dots,X_p)$, then
+  For a $p$-form $\omega$, define the vector-valued $(p-1)$-form $\Omega$ by
+  \(g(\Omega(X_1,\dots,X_{p-1}),X_p)=\omega(X_1,\dots,X_p)\).  Then
   \[
     \hat\omega(X_1,\dots,X_p)=\sum_{i=1}^p(-1)^{p-i}X_i\wedge
     \Omega(X_1,\dots,\hat X_i,\dots,X_p),
   \]
-  and $\hat\omega$ vanishes only where $\omega$ does.
-  \source{petersen:page-0369}
+  Moreover, $\hat\omega=0$ at a point only if $\omega=0$ there.
 \end{remark}
 
 Turning to $(0,2)$-tensors, let $h(z,w)=g(H(z),w)$ with adjoint $H^*$.
 
-\begin{proposition}[Proposition 9.4.11]
+\begin{proposition}[hat tensor of a $(0,2)$-tensor]
   \label{prop:pet-ch9-02tensor-hat-formula}
+  \dcref{ch9:9.4.11}
   \lean{PetersenLib.symmetricTensor_hat_formula}
   \uses{def:pet-ch9-tensor-lambda2-valued}
-  With $h,H,H^*$ as above, $\hat h(z,w)=H(z)\wedge w-z\wedge H^*(w)$, and
-  $\hat h=0$ if and only if $h=\lambda g$ for a scalar $\lambda$.
-  \source{petersen:page-0369,petersen:page-0370}
+  If $h(z,w)=g(H(z),w)$ and $H^*$ is the adjoint of $H$, then
+  \[
+    \hat h(z,w)=H(z)\wedge w-z\wedge H^*(w).
+  \]
+  The tensor $\hat h$ vanishes exactly when $h$ is a scalar multiple of $g$.
 \end{proposition}
 \begin{proof}
   \uses{prop:pet-ch9-02tensor-hat-formula}
-  For $L\in\mathfrak{so}(T_pM)$,
-  \begin{align*}
-    (Lh)(z,w)&=-h(L(z),w)-h(z,L(w))\\
-    &=-g(H(L(z)),w)-g(H(z),L(w))\\
-    &=-g(L(z),H^*(w))-g(L(w),H(z))\\
-    &=-g(L,z\wedge H^*(w))-g(L,w\wedge H(z))\\
-    &=g\big(L,H(z)\wedge w-z\wedge H^*(w)\big),
-  \end{align*}
-  which gives the stated formula for $\hat h$. If $h=\lambda g$ then
-  $H=H^*=\lambda I$, so $\hat h=0$. Conversely suppose $\hat h=0$; then for all
-  $z,w$,
-  \[
-    z\wedge H^*(H(w))=H(z)\wedge H(w)=-H(w)\wedge H(z)=-w\wedge H^*(H(z))
-    =H^*(H(z))\wedge w.
-  \]
-  This forces $H^*H=\lambda^2I$ and $H=\lambda I$ for a scalar $\lambda$: if
-  $H$ were not a multiple of the identity, choosing $z,w$ as distinct
-  eigenvectors (or a generic pair) of the self-adjoint $H^*H$ makes the two
-  bivectors $z\wedge H^*(H(w))$ and $H^*(H(z))\wedge w$ fail to coincide unless
-  $H^*H$ acts as a scalar and $H(z)$ is proportional to $z$ for every $z$,
-  i.e.\ $H=\lambda I$; then $H^*=\lambda I=H$, so $h=\lambda g$.
+  \sketch
+  For skew \(L\), expanding \((Lh)(z,w)\) and moving \(L\) through the metric
+  yields
+  \((Lh)(z,w)=g(L,H(z)\wedge w-z\wedge H^*(w))\), proving the formula.
+  Scalar multiples of \(g\) clearly have zero hat tensor.  Conversely,
+  \(\hat h=0\) implies
+  \(H(z)\wedge w=z\wedge H^*(w)\) for all \(z,w\); varying the pair forces
+  every vector to be an eigenvector of \(H\) with one common eigenvalue, so
+  \(H=\lambda I\).
 \end{proof}
 
 If $H$ is normal it diagonalizes over $T_pM\otimes\mathbb{C}$: say $H(z)=\lambda z$,
@@ -1086,416 +895,393 @@ $H(w)=\mu w$ for orthonormal $z,w\in T_pM\otimes\mathbb{C}$. Then
   \label{def:pet-ch9-complex-sectional-curvature}
   \lean{PetersenLib.complexSectionalCurvature}
   \uses{prop:pet-ch9-02tensor-hat-formula}
-  For $z,w\in T_pM\otimes\mathbb{C}$, the \emph{complex sectional curvature} is
-  $g(\mathfrak{R}(z\wedge w),\bar z\wedge\bar w)$.
-  \source{petersen:page-0370}
+  For complexified tangent vectors $z,w\in T_pM\otimes\mathbb C$, define the
+  \emph{complex sectional curvature} of their span to be
+  \[
+    g(\mathfrak R(z\wedge w),\bar z\wedge\bar w).
+  \]
 \end{definition}
 
 \begin{lemma}[real expansion of the complex sectional curvature]
   \label{lem:pet-ch9-complex-sectional-curvature-real-formula}
   \lean{PetersenLib.complexSectionalCurvature_realFormula}
   \uses{def:pet-ch9-complex-sectional-curvature}
-  Writing $z=x+iy$, $w=u+iv$ with $x,y,u,v\in T_pM$,
+  If $z=x+iy$ and $w=u+iv$, with $x,y,u,v\in T_pM$, then
   \begin{align*}
     g(\mathfrak{R}(z\wedge w),\bar z\wedge\bar w)
     &=R(x,u,u,x)+R(y,v,v,y)+R(x,v,v,x)+R(y,u,u,y)+2R(y,x,v,u).
   \end{align*}
-  In particular this quantity is nonnegative whenever $\mathfrak{R}\ge0$, so
-  nonnegative complex sectional curvature is a weaker hypothesis than
-  $\mathfrak{R}\ge0$ but a stronger one than nonnegative sectional curvature.
-  \source{petersen:page-0370,petersen:page-0371}
+  Thus $\mathfrak R\ge0$ implies nonnegative complex sectional curvature,
+  which in turn implies nonnegative real sectional curvature; neither
+  converse is asserted.
 \end{lemma}
 \begin{proof}
   \uses{lem:pet-ch9-complex-sectional-curvature-real-formula}
-  Expanding $z\wedge w=(x+iy)\wedge(u+iv)=(x\wedge u-y\wedge v)+i(x\wedge v+y\wedge u)$
-  and $\bar z\wedge\bar w=(x\wedge u-y\wedge v)-i(x\wedge v+y\wedge u)$, bilinearity
-  and $\mathbb{C}$-linearity of $\mathfrak{R}$ (extended complex-bilinearly) give
-  \begin{align*}
-    g(\mathfrak{R}(z\wedge w),\bar z\wedge\bar w)
-    &=g\big(\mathfrak{R}(x\wedge u-y\wedge v),x\wedge u-y\wedge v\big)
-      +g\big(\mathfrak{R}(x\wedge v+y\wedge u),x\wedge v+y\wedge u\big)\\
-    &=g(\mathfrak{R}(x\wedge u),x\wedge u)+g(\mathfrak{R}(y\wedge v),y\wedge v)
-      +g(\mathfrak{R}(x\wedge v),x\wedge v)+g(\mathfrak{R}(y\wedge u),y\wedge u)\\
-    &\quad-2g(\mathfrak{R}(x\wedge u),y\wedge v)+2g(\mathfrak{R}(x\wedge v),y\wedge u)\\
-    &=R(x,u,u,x)+R(y,v,v,y)+R(x,v,v,x)+R(y,u,u,y)\\
-    &\quad+2R(x,u,y,v)-2R(x,v,y,u)\\
-    &=R(x,u,u,x)+R(y,v,v,y)+R(x,v,v,x)+R(y,u,u,y)-2\big(R(v,y,x,u)+R(x,v,y,u)\big)\\
-    &=R(x,u,u,x)+R(y,v,v,y)+R(x,v,v,x)+R(y,u,u,y)+2R(y,x,v,u),
-  \end{align*}
-  where the last two lines use the first Bianchi identity to combine the two
-  mixed curvature terms into $2R(y,x,v,u)$. Setting $y=v=0$ this reads
-  $g(\mathfrak{R}(z\wedge w),\bar z\wedge\bar w)=R(x,u,u,x)$, the ordinary
-  sectional-curvature numerator, showing the first line already exhibits the
-  quantity as a nonnegative combination of sectional-curvature terms plus a
-  correction whenever $\mathfrak{R}\ge0$.
+  \sketch
+  Write
+  \(z\wedge w=(x\wedge u-y\wedge v)+i(x\wedge v+y\wedge u)\).
+  Complex-bilinear expansion against its conjugate produces the four real
+  sectional terms and two mixed terms.  The first Bianchi identity combines
+  the mixed terms into \(2R(y,x,v,u)\), giving the displayed formula.
 \end{proof}
 
 \begin{remark}[special cases of the complex sectional curvature]
   \label{rem:pet-ch9-complex-sectional-curvature-special-cases}
   \lean{PetersenLib.complexSectionalCurvature_specialCases}
   \uses{lem:pet-ch9-complex-sectional-curvature-real-formula}
-  Depending on $\dim_{\mathbb{R}}\operatorname{span}\{x,y,u,v\}$: if $y=v=0$ the complex
-  sectional curvature is the ordinary sectional curvature $R(x,u,u,x)$; if
-  $x,y,u,v$ are orthonormal it is called the \emph{isotropic curvature}; and if
-  $u=v$ it reduces to $2R(x,u,u,x)+2R(y,u,u,y)$, called the \emph{second Ricci
-  curvature} when $x,y,u$ are orthonormal.
-  \source{petersen:page-0371}
+  Three specializations of the preceding formula are used:
+  \begin{enumerate}
+    \item $y=v=0$ gives the ordinary sectional quantity $R(x,u,u,x)$;
+    \item orthonormal $x,y,u,v$ gives the \emph{isotropic curvature};
+    \item $u=v$ gives $2R(x,u,u,x)+2R(y,u,u,y)$, called the
+      \emph{second Ricci curvature} when $x,y,u$ are orthonormal.
+  \end{enumerate}
 \end{remark}
 
-\begin{proposition}[Proposition 9.4.12]
+\begin{proposition}[normal tensors and complex sectional curvature]
   \label{prop:pet-ch9-normal-tensor-nonneg-complex-sectional}
+  \dcref{ch9:9.4.12}
   \lean{PetersenLib.normalTensor_nonneg_of_complexSectionalCurvature_nonneg}
   \uses{prop:pet-ch9-02tensor-hat-formula,def:pet-ch9-complex-sectional-curvature}
-  Let $h$ be a $(0,2)$-tensor with $H$ normal. If all complex sectional
-  curvatures are nonnegative, then $g(\mathfrak{R}(\hat h),\hat h)\ge0$.
-  \source{petersen:page-0371}
+  If the endomorphism $H$ associated with a $(0,2)$-tensor $h$ is normal, then
+  nonnegative complex sectional curvature implies
+  $g(\mathfrak R(\hat h),\hat h)\ge0$.
 \end{proposition}
 \begin{proof}
   \uses{prop:pet-ch9-normal-tensor-nonneg-complex-sectional}
-  Since $H$ is normal it has a complex orthonormal eigenbasis $e_i$,
-  $H(e_i)=\lambda_ie_i$, $H^*(e_i)=\bar\lambda_ie_i$. By
+  \sketch
+  Choose a complex orthonormal eigenbasis \(H(e_i)=\lambda_ie_i\).  By
   \cref{prop:pet-ch9-02tensor-hat-formula},
-  \begin{align*}
-    g(\mathfrak{R}(\hat h),\hat h)
-    &=\sum_{i,j}g\big(\mathfrak{R}(\hat h(e_i,e_j)),\hat h(e_i,e_j)\big)\\
-    &=\sum_{i,j}g\big(\mathfrak{R}(H(e_i)\wedge e_j-e_i\wedge H^*(e_j)),
-       H(e_i)\wedge e_j-e_i\wedge H^*(e_j)\big)\\
-    &=\sum_{i,j}|\lambda_i-\bar\lambda_j|^2\,g\big(\mathfrak{R}(e_i\wedge e_j),\bar e_i\wedge\bar e_j\big),
-  \end{align*}
-  a nonnegative combination of complex sectional curvatures, hence
-  nonnegative. When $H$ is self-adjoint the $\lambda_i$ are real and only
-  ordinary (real) sectional curvatures appear; when $H$ is skew-adjoint its
-  nonzero eigenvalues are purely imaginary, so isotropic curvatures and (in
-  odd dimensions, from the zero eigenvalue) second Ricci curvatures appear
-  instead, with no real sectional curvature terms.
+  \[
+    g(\mathfrak R(\hat h),\hat h)
+      =\sum_{i,j}|\lambda_i-\bar\lambda_j|^2
+        g(\mathfrak R(e_i\wedge e_j),\bar e_i\wedge\bar e_j).
+  \]
+  Every summand is nonnegative under the stated hypothesis.
 \end{proof}
 
-\begin{proposition}[Proposition 9.4.13]
+\begin{proposition}[general tensors and complex sectional curvature]
   \label{prop:pet-ch9-general-tensor-nonneg-complex-sectional}
+  \dcref{ch9:9.4.13}
   \lean{PetersenLib.tensor_nonneg_of_complexSectionalCurvature_nonneg}
   \uses{prop:pet-ch9-normal-tensor-nonneg-complex-sectional}
-  $g(\mathfrak{R}(\hat h),\hat h)\ge0$ for every $(0,2)$-tensor $h$ on $T_pM$, as
-  soon as every complex sectional curvature on $T_pM$ is nonnegative.
-  \source{petersen:page-0372}
+  At a point with nonnegative complex sectional curvature,
+  \[
+    g(\mathfrak R(\hat h),\hat h)\ge0
+  \]
+  for every $(0,2)$-tensor $h$.
 \end{proposition}
 \begin{proof}
   \uses{prop:pet-ch9-general-tensor-nonneg-complex-sectional}
-  Write $h=h_s+h_a$ for the symmetric and skew-symmetric parts (both normal
-  operators). Bilinearity of $g(\mathfrak{R}(-),-)$ gives
+  \sketch
+  Decompose \(h=h_s+h_a\) into symmetric and alternating parts.  Both
+  associated operators are normal.  Symmetry of \(\hat h_s(e_i,e_j)\) and
+  antisymmetry of \(\hat h_a(e_i,e_j)\) make the mixed contraction vanish, so
   \[
-    g(\mathfrak{R}(\hat h),\hat h)=g(\mathfrak{R}(\hat h_s),\hat h_s)
-    +g(\mathfrak{R}(\hat h_a),\hat h_a)+2g(\mathfrak{R}(\hat h_s),\hat h_a),
+    g(\mathfrak R(\hat h),\hat h)
+      =g(\mathfrak R(\hat h_s),\hat h_s)
+       +g(\mathfrak R(\hat h_a),\hat h_a).
   \]
-  using symmetry of $g(\mathfrak{R}(-),-)$ for the cross term. But, using an
-  orthonormal frame $e_i$ and antisymmetry of $\hat h_a(e_i,e_j)$ in $i,j$
-  together with symmetry of $\hat h_s(e_i,e_j)$,
-  \[
-    g(\mathfrak{R}(\hat h_s),\hat h_a)=\sum_{i,j}g\big(\mathfrak{R}(\hat h_s(e_i,e_j)),\hat h_a(e_i,e_j)\big)
-    =-\sum_{i,j}g\big(\mathfrak{R}(\hat h_s(e_j,e_i)),\hat h_a(e_j,e_i)\big)
-    =-g(\mathfrak{R}(\hat h_s),\hat h_a),
-  \]
-  so this cross term vanishes. Hence
-  $g(\mathfrak{R}(\hat h),\hat h)=g(\mathfrak{R}(\hat h_s),\hat h_s)+g(\mathfrak{R}(\hat h_a),\hat h_a)$,
-  and each summand is nonnegative by
-  \cref{prop:pet-ch9-normal-tensor-nonneg-complex-sectional} applied to $h_s$
-  and to $h_a$ (both normal, since symmetric and skew-symmetric operators are
-  normal).
+  Each term is nonnegative by
+  \cref{prop:pet-ch9-normal-tensor-nonneg-complex-sectional}.
 \end{proof}
-
-\section{Further Study}
-
-For general and complete accounts of the Bochner technique and spin geometry,
-including a complete proof of the Hodge theorem
-(\cref{thm:pet-ch9-hodge-theorem}), the source recommends two texts (labelled
-[107] and [71] in its bibliography), with further treatments of the Hodge
-theorem in [65], [92], and [101]. For generalizations to manifolds with
-integral curvature bounds, extending the Betti-number estimates of
-\cref{thm:pet-ch9-gromov-gallot-betti1-estimate,thm:pet-ch9-nonneg-curvature-operator-parallel-forms},
-the source points to [46].
 
 \section{Exercises}
 
-\begin{remark}[Exercise 9.6.1]
+\begin{remark}[splitting of the universal cover]
   \label{rem:pet-ch9-exercise-9-6-1}
+  \dcref{ch9:9.6.1}
   \lean{PetersenLib.exercise9_6_1}
   \uses{cor:pet-ch9-betti1-bound-flat-torus,thm:pet-ch9-bochner-vanishing-1forms}
-  Suppose $(M^n,g)$ is compact with $b_1=k$. If $\operatorname{Ric}\ge0$, show that the
-  universal cover splits, $(\tilde M,g)=(N,h)\times(\mathbb{R}^k,g_{\mathbb{R}^k})$. Give an
-  example where $b_1<n$ and $(\tilde M,g)=(\mathbb{R}^n,g_{\mathbb{R}^n})$.
-  \source{petersen:page-0373}
+  Let compact $(M^n,g)$ have $b_1(M)=k$ and $\operatorname{Ric}\ge0$.  Prove
+  the product decomposition
+  \[
+    (\widetilde M,g)=(N,h)\times(\mathbb R^k,g_{\mathbb R^k}).
+  \]
+  Also construct a case with $b_1<n$ but
+  $(\widetilde M,g)=(\mathbb R^n,g_{\mathbb R^n})$.
 \end{remark}
 
-\begin{remark}[Exercise 9.6.2]
+\begin{remark}[frame identity for a symmetric derivative]
   \label{rem:pet-ch9-exercise-9-6-2}
+  \dcref{ch9:9.6.2}
   \lean{PetersenLib.exercise9_6_2}
   \uses{prop:pet-ch9-vector-field-1form-duality}
-  Show directly that if $E_i$ is an orthonormal frame and $v\mapsto\nabla_vX$
-  is symmetric, then $\sum_ig(\nabla_{E_i}X,\nabla_XE_i)=0$, without assuming
-  the $E_i$ are parallel along $X$.
-  \source{petersen:page-0373}
+  For an arbitrary orthonormal frame $E_i$, derive
+  \[
+    \sum_i g(\nabla_{E_i}X,\nabla_XE_i)=0
+  \]
+  directly from symmetry of $v\mapsto\nabla_vX$; no parallelism of $E_i$
+  along $X$ may be assumed.
 \end{remark}
 
-\begin{remark}[Exercise 9.6.3]
+\begin{remark}[orthogonality of images and kernels]
   \label{rem:pet-ch9-exercise-9-6-3}
+  \dcref{ch9:9.6.3}
   \lean{PetersenLib.exercise9_6_3}
   \uses{def:pet-ch9-codifferential}
-  Show that for an oriented Riemannian manifold,
-  $(\operatorname{im}d^{k-1})^\perp=\ker\delta^{k-1}$ and $\operatorname{im}d^{k-1}\subset
-  (\ker\delta^{k-1})^\perp$ in $\Omega^k(M)$.
-  \source{petersen:page-0373}
+  In $\Omega^k(M)$ for an oriented Riemannian manifold, establish
+  \[
+    (\operatorname{im}d^{k-1})^\perp=\ker\delta^{k-1},
+    \qquad
+    \operatorname{im}d^{k-1}\subset(\ker\delta^{k-1})^\perp.
+  \]
 \end{remark}
 
-\begin{remark}[Exercise 9.6.4]
+\begin{remark}[elliptic regularity for the connection Laplacian]
   \label{rem:pet-ch9-exercise-9-6-4}
+  \dcref{ch9:9.6.4}
   \lean{PetersenLib.exercise9_6_4}
   \uses{def:pet-ch9-lichnerowicz-laplacian}
-  Let $(M^n,g)$ be compact and $E\to M$ a tensor bundle. Let $W^{k,2}(E)$ be the
-  Hilbert space completion of $\Gamma(E)$ with square norm
-  $\sum_{i=0}^k\|\nabla^iT\|_2^2$, so that $T\in W^{1,2}(E)$ has an $L^2$
-  derivative $\nabla T$ satisfying $(\nabla T,\nabla S)=(T,\nabla^*\nabla S)$ for
-  all $S\in\Gamma(E)$; $\Gamma(E)\subset W^{k,2}(E)$ is dense, the Sobolev
-  inequality gives $\bigcap_kW^{k,2}(E)=\bigcap_kW^{k,p}(E)$ for all $p$, and
-  the techniques of section 7.1.5 show a tensor in $W^{1,p}$ is H\"older
-  continuous for $p>n$, so $\Gamma(E)=\bigcap_kW^{k,2}(E)$.
+  For compact $(M^n,g)$ and a tensor bundle $E$, let $W^{k,2}(E)$ be the
+  completion of $\Gamma(E)$ in the norm
+  $\sum_{i=0}^k\|\nabla^iT\|_2^2$.  Thus $W^{1,2}$ has a weak derivative with
+  $(\nabla T,\nabla S)=(T,\nabla^*\nabla S)$ for smooth $S$.  Smooth sections
+  are dense; Sobolev estimates identify $\bigcap_kW^{k,2}(E)$ with
+  $\bigcap_kW^{k,p}(E)$ for every $p$, and the section 7.1.5 regularity result
+  makes $W^{1,p}$ sections H\"older for $p>n$.  Consequently
+  $\Gamma(E)=\bigcap_kW^{k,2}(E)$.
   \begin{enumerate}
-    \item[(1)] Show that for all $T\in\Gamma(E)$ there is a commutation
-      relation $\nabla^*\nabla(\nabla^kT)-\nabla^k(\nabla^*\nabla T)
-      =\sum_{i=0}^kC_i^k(\nabla^{k-1}R\otimes\nabla^iT)$ for suitable
+    \item[(1)] Establish, for each smooth $T$, the commutator formula
+      $\nabla^*\nabla(\nabla^kT)-\nabla^k(\nabla^*\nabla T)
+      =\sum_{i=0}^kC_i^k(\nabla^{k-1}R\otimes\nabla^iT)$ with suitable
       contractions $C_i^k$.
-    \item[(2)] If $T\in W^{1,2}(E)$ and $T'\in W^{k,2}(E)$ satisfy
-      $(T',S)=(\nabla T,\nabla S)$ for all $S\in\Gamma(E)$ (i.e.\
-      $\nabla^*\nabla T=T'$ weakly), show $T\in W^{k+1,2}(E)$, by defining weak
-      derivatives $\nabla^{l+1}T$ inductively via
+    \item[(2)] Suppose $T\in W^{1,2}(E)$ and $T'\in W^{k,2}(E)$ satisfy
+      $(T',S)=(\nabla T,\nabla S)$ for every smooth $S$, i.e.
+      $\nabla^*\nabla T=T'$ weakly.  Prove $T\in W^{k+1,2}(E)$ by defining
+      weak derivatives inductively through
       $(\nabla^{l+1}T,\nabla^{l+1}S)=(\nabla^lT',\nabla^lS)
       +\sum_{i=0}^l(C_i^l(\nabla^{l-i}R\otimes\nabla^iT),\nabla^lS)$.
-    \item[(3)] Conclude that if $T'\in\Gamma(E)$, then $T\in\Gamma(E)$ and
-      $\nabla^*\nabla T=T'$.
+    \item[(3)] Deduce smoothness of $T$ and the strong equation
+      $\nabla^*\nabla T=T'$ whenever $T'$ is smooth.
   \end{enumerate}
-  \source{petersen:page-0373}
 \end{remark}
 
-\begin{remark}[Exercise 9.6.5]
+\begin{remark}[spectral theorem for a Lichnerowicz Laplacian]
   \label{rem:pet-ch9-exercise-9-6-5}
+  \dcref{ch9:9.6.5}
   \lean{PetersenLib.exercise9_6_5}
   \uses{def:pet-ch9-lichnerowicz-laplacian,rem:pet-ch9-exercise-9-6-4,cor:pet-ch9-ric-nonneg-curvature-operator}
-  Let $(M^n,g)$ be compact with $\operatorname{diam}M\le D$, $\operatorname{Ric}\ge k$, and $E\to M$ a
-  tensor bundle of fibre dimension $m$ with Lichnerowicz Laplacian $\Delta_L$.
-  Establish the spectral theorem for $\Delta_L$ and conclude the orthogonal
-  decomposition $\Gamma(E)=\ker\Delta_L\oplus\operatorname{im}\Delta_L$.
+  Let compact $(M^n,g)$ satisfy $\operatorname{diam}M\le D$ and
+  $\operatorname{Ric}\ge k$, and let the rank-$m$ tensor bundle $E$ carry
+  $\Delta_L$.  Prove the spectral theorem and the orthogonal splitting
+  $\Gamma(E)=\ker\Delta_L\oplus\operatorname{im}\Delta_L$ by establishing:
   \begin{enumerate}
-    \item[(1)] Using the completion $W^{1,2}(E)$ of Exercise 9.6.4, show that
-      $(\Delta_LT,S)=(\nabla T,\nabla S)+c(\operatorname{Ric}(T),S)$ is symmetric and
-      well-defined for $T,S\in W^{1,2}(E)$.
-    \item[(2)] Show $\inf_{T\in W^{1,2},\|T\|_2=1}(\Delta_LT,T)>cCk$ for $k\le0$,
-      with $C$ the constant of Corollary 9.3.4.
-    \item[(3)] Show a sequence $T_i\subset W^{1,2}(E)$ with $\|T_i\|_2=1$ and
-      $(\Delta_LT_i,T_i)$ bounded has an $L^2$-convergent subsequence that is
-      also weakly convergent in $W^{1,2}(E)$ (use theorem 7.1.18).
-    \item[(4)] For a closed $\Delta_L$-invariant subspace $V\subset W^{1,2}(E)$,
-      show the infimum $\lambda=\inf_{T\in V,\|T\|_2=1}(\Delta_LT,T)$ is
-      achieved by some $T\in V$, and using (1)–(3) of Exercise 9.6.4 that
-      $T\in\Gamma(E)$ and $\Delta_LT=\lambda T$.
-    \item[(5)] For a finite-dimensional $V\subset\Gamma(E)$ spanned by
-      eigentensors $\Delta_LT_i=\lambda_iT_i$, show
+    \item[(1)] On $W^{1,2}(E)$, prove that
+      $(\Delta_LT,S)=(\nabla T,\nabla S)+c(\operatorname{Ric}(T),S)$ is
+      well-defined and symmetric.
+    \item[(2)] For $k\le0$, prove
+      $\inf_{T\in W^{1,2},\|T\|_2=1}(\Delta_LT,T)>cCk$, with $C$ from
+      Corollary 9.3.4.
+    \item[(3)] Show that every unit sequence with bounded
+      $(\Delta_LT_i,T_i)$ has an $L^2$-convergent subsequence, weakly convergent
+      in $W^{1,2}(E)$ by theorem 7.1.18.
+    \item[(4)] For a closed $\Delta_L$-invariant
+      $V\subset W^{1,2}(E)$, show the Rayleigh infimum
+      $\lambda=\inf_{T\in V,\|T\|_2=1}(\Delta_LT,T)$ is attained, and use
+      parts (1)--(3) of Exercise 9.6.4 to obtain
+      $T\in\Gamma(E)$ with $\Delta_LT=\lambda T$.
+    \item[(5)] If finite-dimensional $V\subset\Gamma(E)$ is spanned by
+      eigentensors $\Delta_LT_i=\lambda_iT_i$, prove
       $\dim V\le mC(n,\max_i\lambda_i,c,D^2k)$.
-    \item[(6)] Show all eigenspaces of $\Delta_L$ are finite dimensional and
-      the eigenvalues form a discrete set $\lambda_1<\lambda_2<\cdots\to\infty$.
-    \item[(7)] Show the eigenspaces are orthogonal with dense direct sum in
-      $\Gamma(E)$.
-    \item[(8)] Show $\Gamma(E)=\ker\Delta_L\oplus\operatorname{im}\Delta_L$.
+    \item[(6)] Prove finite dimensionality of every eigenspace and discreteness
+      of the spectrum $\lambda_1<\lambda_2<\cdots\to\infty$.
+    \item[(7)] Prove orthogonality of distinct eigenspaces and density of their
+      direct sum in $\Gamma(E)$.
+    \item[(8)] Conclude $\Gamma(E)=\ker\Delta_L\oplus\operatorname{im}\Delta_L$.
   \end{enumerate}
-  \source{petersen:page-0373,petersen:page-0374}
 \end{remark}
 
-\begin{remark}[Exercise 9.6.6]
+\begin{remark}[Euclidean rigidity outside a compact set]
   \label{rem:pet-ch9-exercise-9-6-6}
+  \dcref{ch9:9.6.6}
   \lean{PetersenLib.exercise9_6_6}
   \uses{thm:pet-ch9-bochner-vanishing-1forms}
-  Let $(M,g)$ be $n$-dimensional and isometric to Euclidean space outside a
-  compact $K\subset M$, i.e.\ $M-K$ is isometric to $\mathbb{R}^n-C$ for compact
-  $C\subset\mathbb{R}^n$. If $\operatorname{Ric}_g\ge0$, show $M=\mathbb{R}^n$. (Hint: find a metric on
-  the $n$-torus isometric to a neighborhood of $K$ and otherwise flat, or show
-  a parallel $1$-form on $\mathbb{R}^n-C$ extends to a harmonic $1$-form on $M$ that
-  Bochner's formula forces to be parallel.)
-  \source{petersen:page-0374}
+  Suppose $M^n-K\cong\mathbb R^n-C$ isometrically for compact
+  $K\subset M$ and $C\subset\mathbb R^n$.  Prove that
+  $\operatorname{Ric}_g\ge0$ forces $(M,g)$ to be Euclidean.  One may either
+  embed a neighborhood of $K$ into a metric on $T^n$ that is flat elsewhere,
+  or extend parallel one-forms from $\mathbb R^n-C$ harmonically and apply
+  Bochner vanishing.
 \end{remark}
 
-\begin{remark}[Exercise 9.6.7]
+\begin{remark}[harmonic one-forms on Einstein manifolds]
   \label{rem:pet-ch9-exercise-9-6-7}
+  \dcref{ch9:9.6.7}
   \lean{PetersenLib.exercise9_6_7}
   \uses{def:pet-ch9-lichnerowicz-laplacian,thm:pet-ch9-weitzenbock-hodge-laplacian}
-  Let $(M,g)$ be Einstein. Show that all harmonic $1$-forms are eigenforms for
-  the connection Laplacian $\nabla^*\nabla$.
-  \source{petersen:page-0374}
+  Prove that on an Einstein manifold every harmonic one-form is an eigenform
+  of $\nabla^*\nabla$.
 \end{remark}
 
-\begin{remark}[Exercise 9.6.8]
+\begin{remark}[mixed Bochner formulas]
   \label{rem:pet-ch9-exercise-9-6-8}
+  \dcref{ch9:9.6.8}
   \lean{PetersenLib.exercise9_6_8}
   \uses{prop:pet-ch9-bochner-formula-1forms}
-  Given vector fields $X,Y$ on $(M,g)$ with $\nabla X,\nabla Y$ symmetric,
-  develop Bochner formulas for $\operatorname{Hess}\tfrac12g(X,Y)$ and
-  $\Delta\tfrac12g(X,Y)$.
-  \source{petersen:page-0374}
+  If both $\nabla X$ and $\nabla Y$ are symmetric, derive the polarized
+  Bochner identities for
+  $\operatorname{Hess}(g(X,Y)/2)$ and $\Delta(g(X,Y)/2)$.
 \end{remark}
 
-\begin{remark}[Exercise 9.6.9]
+\begin{remark}[tensor inner-product identities]
   \label{rem:pet-ch9-exercise-9-6-9}
+  \dcref{ch9:9.6.9}
   \lean{PetersenLib.exercise9_6_9}
   \uses{prop:pet-ch9-vanishing-connection-laplacian}
-  For tensors $s_1,s_2$ of the same type, show, in analogy with
-  $\Delta\tfrac12|s|^2=|\nabla s|^2-g(\nabla^*\nabla s,s)$, that
+  For same-type tensors $s_1,s_2$, polarize the identity
+  $\Delta\tfrac12|s|^2=|\nabla s|^2-g(\nabla^*\nabla s,s)$ to prove
   \[
     \Delta g(s_1,s_2)=2g(\nabla s_1,\nabla s_2)+g(\nabla^*\nabla s_1,s_2)
     +g(s_1,\nabla^*\nabla s_2).
   \]
-  Use this on forms to develop Bochner formulas for inner products of such
-  sections. More generally, for the $1$-form $\omega(v)=g(\nabla_vs_1,s_2)$
-  (representing half the differential of $g(s_1,s_2)$), show
+  Apply it to forms to obtain Bochner identities for their inner products.
+  Next set $\omega(v)=g(\nabla_vs_1,s_2)$, which represents half the
+  differential of $g(s_1,s_2)$, and verify
   \[
     -\delta\omega=g(\nabla s_1,\nabla s_2)-g(\nabla^*\nabla s_1,s_2),
   \]
   \[
     d\omega(X,Y)=g(R(X,Y)s_1,s_2)-g(\nabla_Xs_1,\nabla_Ys_2)+g(\nabla_Ys_1,\nabla_Xs_2).
   \]
-  \source{petersen:page-0374,petersen:page-0375}
 \end{remark}
 
-\begin{remark}[Exercise 9.6.10]
+\begin{remark}[skew endomorphisms acting on volume and curvature]
   \label{rem:pet-ch9-exercise-9-6-10}
+  \dcref{ch9:9.6.10}
   \lean{PetersenLib.exercise9_6_10}
   \uses{conv:pet-ch9-so-metric-convention}
-  Let $(M,g)$ be $n$-dimensional.
+  On an $n$-manifold, verify the following actions of an endomorphism $L$:
   \begin{enumerate}
-    \item[(1)] Show $L\omega=0$ if $L$ is skew-symmetric and $\omega$ is an
-      $n$-form.
-    \item[(2)] When $n=2$, show $LR=0$ for all skew-symmetric $L$.
-    \item[(3)] For general $L$, show $L\,\mathrm{vol}=\operatorname{tr}(L)\,\mathrm{vol}$.
+    \item[(1)] If $L$ is skew-symmetric, then $L\omega=0$ for every $n$-form.
+    \item[(2)] In dimension two, every skew-symmetric $L$ satisfies $LR=0$.
+    \item[(3)] Without a skew-symmetry assumption,
+      $L\,\mathrm{vol}=\operatorname{tr}(L)\,\mathrm{vol}$.
   \end{enumerate}
-  \source{petersen:page-0375}
 \end{remark}
 
-\begin{remark}[Exercise 9.6.11 (Simons)]
+\begin{remark}[Simons' estimates for Codazzi tensors]
   \label{rem:pet-ch9-exercise-9-6-11}
+  \dcref{ch9:9.6.11}
   \lean{PetersenLib.exercise9_6_11}
   \uses{def:pet-ch9-codazzi-harmonic-tensor,thm:pet-ch9-symmetric-tensor-lichnerowicz-identity,prop:pet-ch9-vanishing-connection-laplacian}
-  Let $(M,g)$ be compact with a symmetric Codazzi tensor $h$ of constant
-  trace.
+  Let $h$ be a constant-trace symmetric Codazzi tensor on compact $(M,g)$.
   \begin{enumerate}
-    \item[(1)] If $\sec\ge0$, show $\nabla h=0$.
-    \item[(2)] If $\sec>0$, show $h=c\cdot g$ for a constant $c$.
-    \item[(3)] If the Gauss equations $R(X,Y,Z,W)=h(X,W)h(Y,Z)-h(X,Z)h(Y,W)$
-      hold and $\operatorname{tr}h=0$, show
+    \item[(1)] Deduce $\nabla h=0$ from $\sec\ge0$.
+    \item[(2)] Under $\sec>0$, deduce $h=cg$ for a constant $c$.
+    \item[(3)] Assuming $\operatorname{tr}h=0$ and the Gauss equation
+      $R(X,Y,Z,W)=h(X,W)h(Y,Z)-h(X,Z)h(Y,W)$, prove
       $\Delta\tfrac12|h|^2\ge|\nabla h|^2-|h|^4$.
   \end{enumerate}
-  \source{petersen:page-0375}
 \end{remark}
 
-\begin{remark}[Exercise 9.6.12]
+\begin{remark}[constant-mean-curvature hypersphere rigidity]
   \label{rem:pet-ch9-exercise-9-6-12}
+  \dcref{ch9:9.6.12}
   \lean{PetersenLib.exercise9_6_12}
   \uses{def:pet-ch9-codazzi-exterior-derivative,rem:pet-ch9-exercise-9-6-11}
-  Let $(M^n,g)\hookrightarrow\mathbb{R}^{n+1}$ be an isometric immersion.
+  For an isometric immersion $(M^n,g)\hookrightarrow\mathbb R^{n+1}$:
   \begin{enumerate}
-    \item[(1)] Show the second fundamental form $\mathrm{II}$ is a Codazzi
-      tensor.
-    \item[(2)] Show Liebmann's theorem: if $(M,g)$ has constant mean curvature
-      and nonnegative second fundamental form, then $(M,g)$ is a constant
-      curvature sphere. (Wente exhibits immersed tori of constant mean
-      curvature, so some positivity hypothesis is necessary.)
+    \item[(1)] prove that the second fundamental form $\mathrm{II}$ is
+      Codazzi;
+    \item[(2)] prove Liebmann's theorem: constant mean curvature and
+      $\mathrm{II}\ge0$ imply that $(M,g)$ is a constant-curvature sphere.
+      The nonnegativity assumption cannot simply be omitted, since Wente's
+      immersed tori have constant mean curvature.
   \end{enumerate}
-  \source{petersen:page-0375,petersen:page-0376}
 \end{remark}
 
-\begin{remark}[Exercise 9.6.13 (Berger)]
+\begin{remark}[Berger's parallel-Ricci criterion]
   \label{rem:pet-ch9-exercise-9-6-13}
+  \dcref{ch9:9.6.13}
   \lean{PetersenLib.exercise9_6_13}
   \uses{cor:pet-ch9-ricci-harmonic-iff-curvature-harmonic,thm:pet-ch9-symmetric-tensor-lichnerowicz-identity}
-  Show that a compact manifold with harmonic curvature and nonnegative
-  sectional curvature has parallel Ricci curvature.
-  \source{petersen:page-0376}
+  Prove that $\nabla\operatorname{Ric}=0$ on every compact manifold satisfying
+  $\nabla^*R=0$ and $\sec\ge0$.
 \end{remark}
 
-\begin{remark}[Exercise 9.6.14]
+\begin{remark}[isometries and harmonic forms]
   \label{rem:pet-ch9-exercise-9-6-14}
+  \dcref{ch9:9.6.14}
   \lean{PetersenLib.exercise9_6_14}
   \uses{thm:pet-ch9-hodge-theorem,def:pet-ch9-hodge-cohomology}
-  Let $K$ be a Killing field on a closed $(M,g)$ and $\omega$ a harmonic form.
+  Fix a Killing field $K$ and a harmonic form $\omega$ on closed $(M,g)$.
   \begin{enumerate}
-    \item[(1)] Show $\mathcal{L}_K\omega=0$ (hint: show $\mathcal{L}_K\omega$
-      is also harmonic).
-    \item[(2)] Show $i_K\omega$ is closed but not necessarily harmonic.
-    \item[(3)] Show all harmonic forms are invariant under $\operatorname{Iso}_0(M)$.
-    \item[(4)] Give an example where a harmonic form is not invariant under
-      all of $\operatorname{Iso}(M)$.
+    \item[(1)] Prove $\mathcal L_K\omega=0$ by first showing that this Lie
+      derivative is harmonic.
+    \item[(2)] Prove $i_K\omega$ is closed, and show that it need not be
+      harmonic.
+    \item[(3)] Deduce invariance of every harmonic form under
+      $\operatorname{Iso}_0(M)$.
+    \item[(4)] Exhibit failure of invariance under the full group
+      $\operatorname{Iso}(M)$.
   \end{enumerate}
-  \source{petersen:page-0376}
 \end{remark}
 
-\begin{remark}[Exercise 9.6.15]
+\begin{remark}[nonexact powers of the K\"ahler form]
   \label{rem:pet-ch9-exercise-9-6-15}
+  \dcref{ch9:9.6.15}
   \lean{PetersenLib.exercise9_6_15}
   \uses{rem:pet-ch9-poincare-duality}
-  Let $(M,g)$ be a closed K\"ahler manifold with K\"ahler form $\omega$ (a
-  parallel nondegenerate $2$-form). Show $\omega^k=\omega\wedge\cdots\wedge
-  \omega$ ($k$ times) is closed but not exact, by showing
-  $\omega^{\dim M/2}$ is proportional to the volume form; conclude that no
-  even homology group vanishes.
-  \source{petersen:page-0376}
+  Let $\omega$ be the parallel nondegenerate K\"ahler form of a closed
+  K\"ahler manifold.  Prove that each wedge power
+  $\omega^k=\omega\wedge\cdots\wedge\omega$ is closed and nonexact.  Use that
+  $\omega^{\dim M/2}$ is proportional to the volume form, and conclude that
+  every even homology group is nonzero.
 \end{remark}
 
-\begin{remark}[Exercise 9.6.16]
+\begin{remark}[vector-bundle-valued differential forms]
   \label{rem:pet-ch9-exercise-9-6-16}
+  \dcref{ch9:9.6.16}
   \lean{PetersenLib.exercise9_6_16}
   \uses{def:pet-ch9-codazzi-exterior-derivative,def:pet-ch9-weitzenbock-curvature-operator}
-  Let $E\to M$ be a tensor bundle.
+  For a tensor bundle $E\to M$, set $\Omega^0(M,E)=\Gamma(E)$ and let
+  $\Omega^p(M,E)$ be the alternating $E$-valued $p$-forms.  Establish:
   \begin{enumerate}
-    \item[(1)] Let $\Omega^p(M,E)$ be the alternating $p$-linear maps
-      $TM\to E$ (so $\Omega^0(M,E)=\Gamma(E)$). Show $\Omega^*(M)$ acts
-      naturally on both sides of $\Omega^*(M,E)$ by wedge product.
-    \item[(2)] Show there is a natural wedge product
+    \item[(1)] the natural left and right wedge actions of $\Omega^*(M)$ on
+      $\Omega^*(M,E)$;
+    \item[(2)] the wedge product
       $\Omega^p(M,\operatorname{Hom}(E,E))\times\Omega^q(M,E)\to\Omega^{p+q}(M,E)$.
-    \item[(3)] Show there is a connection-dependent exterior derivative
-      $d^\nabla:\Omega^p(M,E)\to\Omega^{p+1}(M,E)$ satisfying the Leibniz rule
-      for the above wedge products, with $d^\nabla s=\nabla s$ for
-      $s\in\Gamma(E)$.
-    \item[(4)] Viewing $R(X,Y)s\in\Omega^2(M,\operatorname{Hom}(E,E))$, show
-      $(d^\nabla\circ d^\nabla)(s)=R\wedge s$ for $s\in\Omega^p(M,E)$, and that
-      the second Bianchi identity reads $d^\nabla R=0$.
+    \item[(3)] a connection-dependent differential
+      $d^\nabla:\Omega^p(M,E)\to\Omega^{p+1}(M,E)$ satisfying the Leibniz
+      rule and $d^\nabla s=\nabla s$ for $s\in\Gamma(E)$;
+    \item[(4)] with $R(X,Y)s$ viewed as an
+      $\operatorname{Hom}(E,E)$-valued two-form, the identities
+      $(d^\nabla)^2s=R\wedge s$ for $s\in\Omega^p(M,E)$ and
+      $d^\nabla R=0$ (the second Bianchi identity).
   \end{enumerate}
-  \source{petersen:page-0376}
 \end{remark}
 
-\begin{remark}[Exercise 9.6.17]
+\begin{remark}[Codazzi tensors with bundle values]
   \label{rem:pet-ch9-exercise-9-6-17}
+  \dcref{ch9:9.6.17}
   \lean{PetersenLib.exercise9_6_17}
   \uses{rem:pet-ch9-exercise-9-6-16,def:pet-ch9-codazzi-harmonic-tensor}
-  Let $E=TM$ in Exercise 9.6.16, so $\Omega^1(M,TM)=\operatorname{Hom}(TM,TM)$ consists of
-  all $(1,1)$-tensors.
+  Specialize Exercise 9.6.16 to $E=TM$, so that
+  $\Omega^1(M,TM)=\operatorname{Hom}(TM,TM)$.
   \begin{enumerate}
-    \item[(1)] Show $d^\nabla s=0$ if and only if $s$ is a Codazzi tensor.
-    \item[(2)] The chapter suggests that whenever $s\in\Omega^p(M,E)$ satisfies
-      $d^\nabla s=0$, there is a Bochner-type formula for $s$, and when $s$ is
-      also divergence free with some curvature nonnegative, $s$ should be
-      parallel. Develop such a theory in this generality.
-    \item[(3)] Show that for a vector field $X$, $\nabla X$ is Codazzi if and
-      only if $R(\cdot,\cdot)X=0$. Give an example where $\nabla X$ is Codazzi
-      but $X$ is not parallel. Can a Bochner-type formula be established for
-      exact tensors $\nabla X=d^\nabla X$ even when not closed?
+    \item[(1)] prove $d^\nabla s=0$ exactly for Codazzi tensors;
+    \item[(2)] develop, for $d^\nabla$-closed $s\in\Omega^p(M,E)$, a
+      Bochner identity and a parallelism theorem under divergence-free and
+      curvature-nonnegative hypotheses;
+    \item[(3)] show $\nabla X$ is Codazzi iff
+      $R(\cdot,\cdot)X=0$, give a nonparallel example, and determine whether
+      an analogous formula applies to the exact tensor $\nabla X=d^\nabla X$
+      without closedness.
   \end{enumerate}
-  \source{petersen:page-0377}
 \end{remark}
 
-\begin{remark}[Exercise 9.6.18 (Thomas)]
+\begin{remark}[Thomas' Gauss-to-Codazzi implication]
   \label{rem:pet-ch9-exercise-9-6-18}
+  \dcref{ch9:9.6.18}
   \lean{PetersenLib.exercise9_6_18}
   \uses{rem:pet-ch9-exercise-9-6-17,def:pet-ch9-codazzi-harmonic-tensor}
-  Show that in dimension $n\ge3$ the Gauss equations $\mathfrak{R}=S\wedge S$
-  imply the Codazzi equations $d^\nabla S=0$, provided $\det S\ne0$. (Hint: use
-  the second Bianchi identity, and study the linear map
-  $\operatorname{Hom}(\Lambda^2V,V)\to\operatorname{Hom}(\Lambda^3V,\Lambda^2V)$, $T\mapsto T\wedge S$,
-  for a linear map $S:V\to V$; this map is injective only when
-  $\operatorname{rank}S\ge4$.)
-  \source{petersen:page-0377}
+  In dimension $n\ge3$, prove that the Gauss relation
+  $\mathfrak R=S\wedge S$ forces $d^\nabla S=0$ when $\det S\ne0$.  Use the
+  second Bianchi identity and analyze
+  \[
+    T\longmapsto T\wedge S:
+    \operatorname{Hom}(\Lambda^2V,V)\to\operatorname{Hom}(\Lambda^3V,\Lambda^2V).
+  \]
+  This map is injective only for $\operatorname{rank}S\ge4$.
 \end{remark}
-

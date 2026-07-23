@@ -1,5 +1,5 @@
 % Chapter 3: Tangent Vectors
-% Lee, *Introduction to Smooth Manifolds* (2nd ed., GTM 218).
+% Lee, Introduction to Smooth Manifolds (2nd ed., GTM 218).
 % Generated from the section extraction; nodes carry only Lean that is
 % verified sorry-free. See ../../UPSTREAM_LEAN_AUDIT.md.
 
@@ -10,29 +10,33 @@
 \label{def:3-13-extra-1}
 \lean{geometric_tangent_space}
 \leanok
-Given a point $a \in  {\mathbb{R}}^{n}$ , let us define the geometric tangent space to ${\mathbb{R}}^{n}$ at $\mathbf{a}$ , denoted by ${\mathbb{R}}_{a}^{n}$ , to be the set $\{ a\}  \times  {\mathbb{R}}^{n} = \left\{  {\left( {a, v}\right)  : v \in  {\mathbb{R}}^{n}}\right\}$ . A geometric tangent vector in ${\mathbb{R}}^{n}$ is an element of ${\mathbb{R}}_{a}^{n}$ for some $a \in  {\mathbb{R}}^{n}$ . As a matter of notation, we abbreviate $\left( {a, v}\right)$ as ${v}_{a}$ (or sometimes ${\left. v\right| }_{a}$ if it is clearer, for example if $v$ itself has a subscript). We think of ${v}_{a}$ as the vector $v$ with its initial point at $a$ (Fig. 3.1).The set ${\mathbb{R}}_{a}^{n}$ is a real vector space under the natural operations
-
+For $a\in\mathbb{R}^n$, the geometric tangent space at $a$ is
 \[
-{v}_{a} + {w}_{a} = {\left( v + w\right) }_{a},\;c\left( {v}_{a}\right)  = {\left( cv\right) }_{a}.
+\mathbb{R}^n_a=\{a\}\times\mathbb{R}^n
+  =\{(a,v):v\in\mathbb{R}^n\}.
 \]
-
-The vectors ${\left. {e}_{i}\right| }_{a}, i = 1,\ldots , n$ , are a basis for ${\mathbb{R}}_{a}^{n}$ . In fact, as a vector space, ${\mathbb{R}}_{a}^{n}$ is essentially the same as ${\mathbb{R}}^{n}$ itself; the only reason we add the index $a$ is so that the geometric tangent spaces ${\mathbb{R}}_{a}^{n}$ and ${\mathbb{R}}_{b}^{n}$ at distinct points $a$ and $b$ will be disjoint sets.
+Write $(a,v)$ as $v_a$, or as $v|_a$ when needed. Its vector-space operations are
+\[
+v_a+w_a=(v+w)_a,\qquad c(v_a)=(cv)_a,
+\]
+and $(e_i|_a)_{i=1}^n$ is a basis. A geometric tangent vector is an element of
+some $\mathbb{R}^n_a$; the base-point index makes the spaces at distinct points
+disjoint.
 \end{definition}
 
 \begin{definition}
 \label{def:3-13-extra-2}
 \lean{PointDerivation}
 \mathlibok
-With this construction in mind, we make the following definition. If $a$ is a point of ${\mathbb{R}}^{n}$ , a map $w : {C}^{\infty }\left( {\mathbb{R}}^{n}\right)  \rightarrow  \mathbb{R}$ is called a derivation at a if it is linear over $\mathbb{R}$ and satisfies the following product rule:
-
+For $a\in\mathbb{R}^n$, a derivation at $a$ is an $\mathbb{R}$-linear map
+$w:C^\infty(\mathbb{R}^n)\to\mathbb{R}$ satisfying
 \[
-w\left( {fg}\right)  = f\left( a\right) {wg} + g\left( a\right) {wf}. \tag{3.3}
+w(fg)=f(a)w(g)+g(a)w(f). \tag{3.3}
 \]
-
-Let ${T}_{a}{\mathbb{R}}^{n}$ denote the set of all derivations of ${C}^{\infty }\left( {\mathbb{R}}^{n}\right)$ at $a$ . Clearly, ${T}_{a}{\mathbb{R}}^{n}$ is a vector space under the operations
-
+The vector space of such derivations is denoted $T_a\mathbb{R}^n$, with
+pointwise operations
 \[
-\left( {{w}_{1} + {w}_{2}}\right) f = {w}_{1}f + {w}_{2}f,\;\left( {cw}\right) f = c\left( {wf}\right) .
+(w_1+w_2)(f)=w_1(f)+w_2(f),qquad (cw)(f)=c\,w(f).
 \]
 \end{definition}
 
@@ -41,39 +45,35 @@ Let ${T}_{a}{\mathbb{R}}^{n}$ denote the set of all derivations of ${C}^{\infty 
 \lean{point_derivation_mul_eq_zero_of_vanish_at}
 \leanok
 \dcref{ch3:3.1}
-Suppose $a \in  {\mathbb{R}}^{n}, w \in  {T}_{a}{\mathbb{R}}^{n}$ , and $f, g \in \; {C}^{\infty }\left( {\mathbb{R}}^{n}\right)$ .
-
-(a) If $f$ is a constant function, then ${wf} = 0$ .
-
-(b) If $f\left( a\right)  = g\left( a\right)  = 0$ , then $w\left( {fg}\right)  = 0$ .
+Let $a\in\mathbb{R}^n$, $w\in T_a\mathbb{R}^n$, and
+$f,g\in C^\infty(\mathbb{R}^n)$. Then:
+\begin{enumerate}
+\item if $f$ is constant, then $w(f)=0$;
+\item if $f(a)=g(a)=0$, then $w(fg)=0$.
+\end{enumerate}
 \end{lemma}
 
 \begin{proof}
 \leanok
-It suffices to prove (a) for the constant function ${f}_{1}\left( x\right)  \equiv  1$ , for then $f\left( x\right)  \equiv  c$ implies ${wf} = w\left( {c{f}_{1}}\right)  = {cw}{f}_{1} = 0$ by linearity. For ${f}_{1}$ , the product rule gives
-
-\[
-w{f}_{1} = w\left( {{f}_{1}{f}_{1}}\right)  = {f}_{1}\left( a\right) w{f}_{1} + {f}_{1}\left( a\right) w{f}_{1} = {2w}{f}_{1},
-\]
-
-which implies that $w{f}_{1} = 0$ . Similarly,(b) also follows from the product rule:
-
-\[
-w\left( {fg}\right)  = f\left( a\right) {wg} + g\left( a\right) {wf} = 0 + 0 = 0.
-\]
+\sketch
+For the constant function $1$, the product rule gives
+$w(1)=w(1\cdot1)=2w(1)$, hence $w(1)=0$; linearity handles every constant.
+If $f(a)=g(a)=0$, (3.3) gives $w(fg)=0$ directly.
 \end{proof}
 
 \begin{definition}
 \label{def:3-13-extra-3}
 \lean{PointDerivation}
 \mathlibok
-Now we are in a position to define tangent vectors on manifolds and manifolds with boundary. The definition is the same in both cases. Let $M$ be a smooth manifold with or without boundary, and let $p$ be a point of $M$ . A linear map $v : {C}^{\infty }\left( M\right)  \rightarrow  \mathbb{R}$ is called a derivation at $p$ if it satisfies
-
+Let $M$ be a smooth manifold, possibly with boundary, and let $p\in M$. A
+derivation at $p$ is an $\mathbb{R}$-linear map
+$v:C^\infty(M)\to\mathbb{R}$ such that
 \[
-v\left( {fg}\right)  = f\left( p\right) {vg} + g\left( p\right) {vf}\;\text{ for all }f, g \in  {C}^{\infty }\left( M\right) . \tag{3.4}
+v(fg)=f(p)v(g)+g(p)v(f)qquad
+\text{for all }f,g\in C^\infty(M). \tag{3.4}
 \]
-
-The set of all derivations of ${C}^{\infty }\left( M\right)$ at $p$ , denoted by ${T}_{p}M$ , is a vector space called the tangent space to $M$ at $p$ . An element of ${T}_{p}M$ is called a tangent vector at $p$ .
+The vector space of derivations at $p$ is the tangent space $T_pM$; its
+elements are tangent vectors at $p$.
 \end{definition}
 
 \begin{lemma}[Properties of Tangent Vectors on Manifolds]
@@ -81,23 +81,14 @@ The set of all derivations of ${C}^{\infty }\left( M\right)$ at $p$ , denoted by
 \lean{tangent_vector_mul_eq_zero_of_vanish_at}
 \leanok
 \dcref{ch3:3.4}
-Suppose $M$ is a smooth manifold with or without boundary, $p \in  M, v \in  {T}_{p}M$ , and $f, g \in  {C}^{\infty }\left( M\right)$ .
-
-(a) If $f$ is a constant function, then ${vf} = 0$ .
-
-(b) If $f\left( p\right)  = g\left( p\right)  = 0$ , then $v\left( {fg}\right)  = 0$ .
+Let $M$ be a smooth manifold, possibly with boundary, let $p\in M$ and
+$v\in T_pM$, and let $f,g\in C^\infty(M)$. Then:
+\begin{enumerate}
+\item if $f$ is constant, then $v(f)=0$;
+\item if $f(p)=g(p)=0$, then $v(fg)=0$.
+\end{enumerate}
 \end{lemma}
 
-\begin{exercise}
-\label{exer:3-5}
-\lean{tangent_vector_mul_eq_zero_of_vanish_at}
-\leanok
-\uses{lem:3-4}
-\dcref{ch3:3.5}
-\begin{itemize}
-\item Exercise 3.5. Prove Lemma 3.4.
-\end{itemize}
-\end{exercise}
 
 
 \section{The Differential of a Smooth Map}
@@ -106,33 +97,18 @@ Suppose $M$ is a smooth manifold with or without boundary, $p \in  M, v \in  {T}
 \label{def:3-14-extra-1}
 \lean{mfderiv}
 \mathlibok
-To relate the abstract tangent spaces we have defined on manifolds to geometric tangent spaces in ${\mathbb{R}}^{n}$ , we have to explore the way smooth maps affect tangent vectors. In the case of a smooth map between Euclidean spaces, the total derivative of the map at a point (represented by its Jacobian matrix) is a linear map that represents the "best linear approximation" to the map near the given point. In the manifold case there is a similar linear map, but it makes no sense to talk about a linear map between manifolds. Instead, it will be a linear map between tangent spaces.
-
-If $M$ and $N$ are smooth manifolds with or without boundary and $F : M \rightarrow  N$ is a smooth map, for each $p \in  M$ we define a map
-
+For a smooth map $F:M\to N$ between smooth manifolds, possibly with boundary,
+and $p\in M$, the differential at $p$ is the linear map
 \[
-d{F}_{p} : {T}_{p}M \rightarrow  {T}_{F\left( p\right) }N
+dF_p:T_pM\longrightarrow T_{F(p)}N,
+\qquad dF_p(v)(f)=v(f\circ F).
 \]
-
-called the differential of $F$ at $p$ (Fig. 3.3), as follows. Given $v \in  {T}_{p}M$ , we let $d{F}_{p}\left( v\right)$ be the derivation at $F\left( p\right)$ that acts on $f \in  {C}^{\infty }\left( N\right)$ by the rule
-
+Indeed, for $f,g\in C^\infty(N)$,
 \[
-d{F}_{p}\left( v\right) \left( f\right)  = v\left( {f \circ  F}\right) .
+dF_p(v)(fg)
+=f(F(p))dF_p(v)(g)+g(F(p))dF_p(v)(f),
 \]
-
-Note that if $f \in  {C}^{\infty }\left( N\right)$ , then $f \circ  F \in  {C}^{\infty }\left( M\right)$ , so $v\left( {f \circ  F}\right)$ makes sense. The operator $d{F}_{p}\left( v\right)  : {C}^{\infty }\left( N\right)  \rightarrow  \mathbb{R}$ is linear because $v$ is, and is a derivation at $F\left( p\right)$ because for any $f, g \in  {C}^{\infty }\left( N\right)$ we have
-
-\[
-d{F}_{p}\left( v\right) \left( {fg}\right)  = v\left( {\left( {fg}\right)  \circ  F}\right)  = v\left( {\left( {f \circ  F}\right) \left( {g \circ  F}\right) }\right)
-\]
-
-\[
-= f \circ  F\left( p\right) v\left( {g \circ  F}\right)  + g \circ  F\left( p\right) v\left( {f \circ  F}\right)
-\]
-
-\[
-= f\left( {F\left( p\right) }\right) d{F}_{p}\left( v\right) \left( g\right)  + g\left( {F\left( p\right) }\right) d{F}_{p}\left( v\right) \left( f\right) .
-\]
+so $dF_p(v)$ is a derivation at $F(p)$.
 \end{definition}
 
 \begin{proposition}[Properties of Differentials]
@@ -140,25 +116,19 @@ d{F}_{p}\left( v\right) \left( {fg}\right)  = v\left( {\left( {fg}\right)  \circ
 \lean{diffeomorph_mfderiv_symm_eq_symm}
 \leanok
 \dcref{ch3:3.6}
-Let $M, N$ , and $P$ be smooth manifolds with or without boundary, let $F : M \rightarrow  N$ and $G : N \rightarrow  P$ be smooth maps, and let $p \in  M$ .
-
-(a) $d{F}_{p} : {T}_{p}M \rightarrow  {T}_{F\left( p\right) }N$ is linear.
-
-(b) $d{\left( G \circ  F\right) }_{p} = d{G}_{F\left( p\right) } \circ  d{F}_{p} : {T}_{p}M \rightarrow  {T}_{G \circ  F\left( p\right) }P$ .
-
-(c) $d{\left( {\operatorname{Id}}_{M}\right) }_{p} = {\operatorname{Id}}_{{T}_{p}M} : {T}_{p}M \rightarrow  {T}_{p}M$ .
-
-(d) If $F$ is a diffeomorphism, then $d{F}_{p} : {T}_{p}M \rightarrow  {T}_{F\left( p\right) }N$ is an isomorphism, and ${\left( d{F}_{p}\right) }^{-1} = d{\left( {F}^{-1}\right) }_{F\left( p\right) }.$
+Let $F:M\to N$ and $G:N\to P$ be smooth maps between smooth manifolds,
+possibly with boundary, and let $p\in M$.
+\begin{enumerate}
+\item $dF_p:T_pM\to T_{F(p)}N$ is linear.
+\item $d(G\circ F)_p=dG_{F(p)}\circ dF_p$.
+\item $d(\operatorname{Id}_M)_p=\operatorname{Id}_{T_pM}$.
+\item If $F$ is a diffeomorphism, then $dF_p$ is an isomorphism and
+\[
+(dF_p)^{-1}=d(F^{-1})_{F(p)}.
+\]
+\end{enumerate}
 \end{proposition}
 
-\begin{exercise}
-\label{exer:3-7}
-\lean{mfderiv}
-\mathlibok
-\uses{prop:3-6}
-\dcref{ch3:3.7}
-Prove Proposition 3.6.
-\end{exercise}
 
 \begin{proposition}
 \label{prop:3-8}
@@ -166,12 +136,17 @@ Prove Proposition 3.6.
 \leanok
 \uses{lem:3-4}
 \dcref{ch3:3.8}
-Let $M$ be a smooth manifold with or without boundary, $p \in  M$ , and $v \in  {T}_{p}M$ . If $f, g \in  {C}^{\infty }\left( M\right)$ agree on some neighborhood of $p$ , then ${vf} = {vg}$ .
+Let $M$ be a smooth manifold, possibly with boundary, $p\in M$, and
+$v\in T_pM$. If $f,g\in C^\infty(M)$ agree on a neighborhood of $p$, then
+$v(f)=v(g)$.
 \end{proposition}
 
 \begin{proof}
 \leanok
-Let $h = f - g$ , so that $h$ is a smooth function that vanishes in a neighborhood of $p$ . Let $\psi  \in  {C}^{\infty }\left( M\right)$ be a smooth bump function that is identically equal to 1 on the support of $h$ and is supported in $M \smallsetminus  \{ p\}$ . Because $\psi  \equiv  1$ where $h$ is nonzero, the product ${\psi h}$ is identically equal to $h$ . Since $h\left( p\right)  = \psi \left( p\right)  = 0$ , Lemma 3.4 implies that ${vh} = v\left( {\psi h}\right)  = 0$ . By linearity, this implies ${vf} = {vg}$ .
+\sketch
+Set $h=f-g$. Choose a smooth bump function $\psi$ supported in
+$M\smallsetminus\{p\}$ and equal to $1$ on $\operatorname{supp}h$. Then
+$h=\psi h$ and $h(p)=\psi(p)=0$. Lemma~\ref{lem:3-4} gives $v(h)=v(\psi h)=0$.
 \end{proof}
 
 \begin{proposition}[The Tangent Space to an Open Submanifold]
@@ -180,26 +155,27 @@ Let $h = f - g$ , so that $h$ is a smooth function that vanishes in a neighborho
 \leanok
 \uses{prop:3-8}
 \dcref{ch3:3.9}
-Let $M$ be a smooth manifold with or without boundary, let $U \subseteq  M$ be an open subset, and let $\iota  : U \hookrightarrow  M$ be the inclusion map. For every $p \in  U$ , the differential $d{\iota }_{p} : {T}_{p}U \rightarrow \; {T}_{p}M$ is an isomorphism.
+Let $U$ be an open subset of a smooth manifold $M$, possibly with boundary,
+and let $\iota:U\hookrightarrow M$ be inclusion. For every $p\in U$,
+\[
+d\iota_p:T_pU\longrightarrow T_pM
+\]
+is an isomorphism.
 \end{proposition}
 
 \begin{proof}
 \leanok
-To prove injectivity, suppose $v \in  {T}_{p}U$ and $d{\iota }_{p}\left( v\right)  = 0 \in  {T}_{p}M$ . Let $B$ be a neighborhood of $p$ such that $\bar{B} \subseteq  U$ . If $f \in  {C}^{\infty }\left( U\right)$ is arbitrary, the extension lemma for smooth functions guarantees that there exists $\widetilde{f} \in  {C}^{\infty }\left( M\right)$ such that $\widetilde{f} \equiv  f$ on $\bar{B}$ . Then since $f$ and ${\left. \widetilde{f}\right| }_{U}$ are smooth functions on $U$ that agree in a neighborhood of $p$ , Proposition 3.8 implies
-
+\sketch
+Choose a neighborhood $B$ of $p$ with $\overline B\subseteq U$. Every
+$f\in C^\infty(U)$ has a smooth extension $\widetilde f\in C^\infty(M)$ that
+agrees with $f$ on $\overline B$. If $d\iota_p(v)=0$, locality from
+Proposition~\ref{prop:3-8} yields
 \[
-{vf} = v\left( {\left. \widetilde{f}\right| }_{U}\right)  = v\left( {\widetilde{f} \circ  \iota }\right)  = {d\iota }{\left( v\right) }_{p}\widetilde{f} = 0.
+v(f)=v(\widetilde f|_U)=d\iota_p(v)(\widetilde f)=0,
 \]
-
-Since this holds for every $f \in  {C}^{\infty }\left( U\right)$ , it follows that $v = 0$ , so $d{\iota }_{p}$ is injective.
-
-On the other hand, to prove surjectivity, suppose $w \in  {T}_{p}M$ is arbitrary. Define an operator $v : {C}^{\infty }\left( U\right)  \rightarrow  \mathbb{R}$ by setting ${vf} = w\widetilde{f}$ , where $\widetilde{f}$ is any smooth function on all of $M$ that agrees with $f$ on $\bar{B}$ . By Proposition 3.8, ${vf}$ is independent of the choice of $\widetilde{f}$ , so $v$ is well defined, and it is easy to check that it is a derivation of ${C}^{\infty }\left( U\right)$ at $p$ . For any $g \in  {C}^{\infty }\left( M\right)$ ,
-
-\[
-d{\iota }_{p}\left( v\right) g = v\left( {g \circ  \iota }\right)  = w\left( \overset{\text{ ⏜ }}{g \circ  \iota }\right)  = {wg},
-\]
-
-where the last two equalities follow from the facts that $g \circ  \iota ,\widetilde{g \circ  \iota }$ , and $g$ all agree on $B$ . Therefore, $d{\iota }_{p}$ is also surjective.
+so $d\iota_p$ is injective. Conversely, for $w\in T_pM$ define
+$v(f)=w(\widetilde f)$. Proposition~\ref{prop:3-8} makes this independent of the chosen
+extension; it is a derivation and $d\iota_p(v)=w$.
 \end{proof}
 
 \begin{proposition}[Dimension of the Tangent Space]
@@ -208,12 +184,19 @@ where the last two equalities follow from the facts that $g \circ  \iota ,\widet
 \leanok
 \uses{prop:3-6,prop:3-9}
 \dcref{ch3:3.10}
-If $M$ is an $n$ -dimensional smooth manifold, then for each $p \in  M$ , the tangent space ${T}_{p}M$ is an $n$ -dimensional vector space.
+If $M$ is a smooth $n$-manifold, then $\dim T_pM=n$ for every $p\in M$.
 \end{proposition}
 
 \begin{proof}
 \leanok
-Given $p \in  M$ , let $\left( {U,\varphi }\right)$ be a smooth coordinate chart containing $p$ . Because $\varphi$ is a diffeomorphism from $U$ onto an open subset $\widehat{U} \subseteq  {\mathbb{R}}^{n}$ , it follows from Proposition 3.6(d) that $d{\varphi }_{p}$ is an isomorphism from ${T}_{p}U$ to ${T}_{\varphi \left( p\right) }\widehat{U}$ . Since Proposition 3.9 guarantees that ${T}_{p}M \cong  {T}_{p}U$ and ${T}_{\varphi \left( p\right) }\widehat{U} \cong  {T}_{\varphi \left( p\right) }{\mathbb{R}}^{n}$ , it follows that $\dim {T}_{p}M = \dim {T}_{\varphi \left( p\right) }{\mathbb{R}}^{n} = n$ .
+\sketch
+For a chart $\varphi:U\to\widehat U\subseteq\mathbb{R}^n$ containing $p$,
+Propositions~\ref{prop:3-6} and~\ref{prop:3-9} give
+\[
+T_pM\cong T_pU\cong T_{\varphi(p)}\widehat U
+\cong T_{\varphi(p)}\mathbb{R}^n.
+\]
+The last space has dimension $n$.
 \end{proof}
 
 \begin{lemma}
@@ -221,32 +204,25 @@ Given $p \in  M$ , let $\left( {U,\varphi }\right)$ be a smooth coordinate chart
 \lean{mfderiv_half_space_inclusion_isInvertible}
 \leanok
 \dcref{ch3:3.11}
-Let $\iota  : {\mathbb{H}}^{n} \hookrightarrow  {\mathbb{R}}^{n}$ denote the inclusion map. For any $a \in  \partial {\mathbb{H}}^{n}$ , the differential $d{\iota }_{a} : {T}_{a}{\mathbb{H}}^{n} \rightarrow  {T}_{a}{\mathbb{R}}^{n}$ is an isomorphism.
+For the inclusion $\iota:\mathbb{H}^n\hookrightarrow\mathbb{R}^n$ and every
+$a\in\partial\mathbb{H}^n$, the map
+$d\iota_a:T_a\mathbb{H}^n\to T_a\mathbb{R}^n$ is an isomorphism.
 \end{lemma}
 
 \begin{proof}
 \leanok
-Suppose $a \in  \partial {\mathbb{H}}^{n}$ . To show that $d{\iota }_{a}$ is injective, assume $d{\iota }_{a}\left( v\right)  = 0$ . Suppose $f : {\mathbb{H}}^{n} \rightarrow  \mathbb{R}$ is smooth, and let $\widetilde{f}$ be any extension of $f$ to a smooth function defined on all of ${\mathbb{R}}^{n}$ . (Such an extension exists by the extension lemma for smooth functions, Lemma 2.26.) Then $\widetilde{f} \circ  \iota  = f$ , so
-
+\sketch
+Every $f\in C^\infty(\mathbb{H}^n)$ admits a smooth extension
+$\widetilde f$ to $\mathbb{R}^n$. Thus $d\iota_a(v)=0$ implies
+$v(f)=d\iota_a(v)(\widetilde f)=0$, proving injectivity. Given
+$w\in T_a\mathbb{R}^n$, set $v(f)=w(\widetilde f)$. In standard coordinates,
+if $w=w^i\partial/\partial x^i|_a$, then
 \[
-{vf} = v\left( {\widetilde{f} \circ  \iota }\right)  = d{\iota }_{a}\left( v\right) \widetilde{f} = 0,
+v(f)=w^i\frac{\partial\widetilde f}{\partial x^i}(a).
 \]
-
-which implies that $d{\iota }_{a}$ is injective.
-
-To show surjectivity, let $w \in  {T}_{a}{\mathbb{R}}^{n}$ be arbitrary. Define $v \in  {T}_{a}{\mathbb{H}}^{n}$ by
-
-\[
-{vf} = w\widetilde{f},
-\]
-
-where $\widetilde{f}$ is any smooth extension of $f$ . Writing $w = {w}^{i}\partial /{\left. \partial {x}^{i}\right| }_{a}$ in terms of the standard basis for ${T}_{a}{\mathbb{R}}^{n}$ , this means that
-
-\[
-{vf} = {w}^{i}\frac{\partial \widetilde{f}}{\partial {x}^{i}}\left( a\right) .
-\]
-
-This is independent of the choice of $\widetilde{f}$ , because by continuity the derivatives of $\widetilde{f}$ at $a$ are determined by those of $f$ in ${\mathbb{H}}^{n}$ . It is easy to check that $v$ is a derivation at $a$ and that $w = d{\iota }_{a}\left( v\right)$ , so $d{\iota }_{a}$ is surjective.
+Continuity determines these derivatives from the restriction to
+$\mathbb{H}^n$, so $v$ is well defined, is a derivation, and satisfies
+$d\iota_a(v)=w$.
 \end{proof}
 
 \begin{proposition}[Dimension of Tangent Spaces on a Manifold with Boundary]
@@ -255,24 +231,33 @@ This is independent of the choice of $\widetilde{f}$ , because by continuity the
 \leanok
 \uses{lem:3-11,prop:3-6,prop:3-9}
 \dcref{ch3:3.12}
-Suppose $M$ is an $n$ -dimensional smooth manifold with boundary. For each $p \in  M$ , ${T}_{p}M$ is an $n$ -dimensional vector space.
+If $M$ is a smooth $n$-manifold with boundary, then $\dim T_pM=n$ for every
+$p\in M$.
 \end{proposition}
 
 \begin{proof}
 \leanok
-Let $p \in  M$ be arbitrary. If $p$ is an interior point, then because Int $M$ is an open submanifold of $M$ , Proposition 3.9 implies that ${T}_{p}\left( {\operatorname{Int}M}\right)  \cong  {T}_{p}M$ . Since Int $M$ is a smooth $n$ -manifold without boundary, its tangent spaces all have dimension $n$ .
-
-On the other hand, if $p \in  \partial M$ , let $\left( {U,\varphi }\right)$ be a smooth boundary chart containing $p$ , and let $\widehat{U} = \varphi \left( U\right)  \subseteq  {\mathbb{H}}^{n}$ . There are isomorphisms ${T}_{p}M \cong  {T}_{p}U$ (by Proposition 3.9); ${T}_{p}U \cong  {T}_{\varphi \left( p\right) }\widehat{U}$ (by Proposition 3.6(d), because $\varphi$ is a diffeomorphism); ${T}_{\varphi \left( p\right) }\widehat{U} \cong  {T}_{\varphi \left( p\right) }{\mathbb{H}}^{n}$ (by Proposition 3.9 again); and ${T}_{\varphi \left( p\right) }{\mathbb{H}}^{n} \cong  {T}_{\varphi \left( p\right) }{\mathbb{R}}^{n}$ (by Lemma 3.11). The result follows.
+\sketch
+At an interior point, apply Proposition~\ref{prop:3-9} to the open submanifold
+$\operatorname{Int}M$. At a boundary point, a boundary chart
+$\varphi:U\to\widehat U\subseteq\mathbb{H}^n$,
+Propositions~\ref{prop:3-6} and~\ref{prop:3-9}, and
+Lemma~\ref{lem:3-11} give
+\[
+T_pM\cong T_pU\cong T_{\varphi(p)}\widehat U
+\cong T_{\varphi(p)}\mathbb{H}^n
+\cong T_{\varphi(p)}\mathbb{R}^n.
+\]
 \end{proof}
 
 \begin{definition}
 \label{def:3-14-extra-2}
 \lean{lineDeriv}
 \mathlibok
-Suppose $V$ is a finite-dimensional vector space and $a \in  V$ . Just as we did earlier in the case of ${\mathbb{R}}^{n}$ , for any vector $v \in  V$ , we define a map ${\left. {D}_{v}\right| }_{a} : {C}^{\infty }\left( V\right)  \rightarrow  \mathbb{R}$ by
-
+For a finite-dimensional vector space $V$, $a\in V$, and $v\in V$, define
 \[
-{\left. {D}_{v}\right| }_{a}f = {\left. \frac{d}{dt}\right| }_{t = 0}f\left( {a + {tv}}\right) . \tag{3.5}
+D_v|_a(f)=\left.\frac{d}{dt}\right|_{t=0}f(a+tv),
+\qquad f\in C^\infty(V). \tag{3.5}
 \]
 \end{definition}
 
@@ -281,29 +266,24 @@ Suppose $V$ is a finite-dimensional vector space and $a \in  V$ . Just as we did
 \lean{mfderiv_vector_space_to_tangent_space}
 \leanok
 \dcref{ch3:3.13}
-Suppose $V$ is a finite-dimensional vector space with its standard smooth manifold structure. For each point $a \in  V$ , the map $v \mapsto  {\left. {D}_{v}\right| }_{a}$ defined by (3.5) is a canonical isomorphism from $V$ to ${T}_{a}V$ , such that for any linear map $L : V \rightarrow  W$ , the following diagram commutes:
-
+For a finite-dimensional vector space $V$ with its standard smooth structure
+and $a\in V$, the map $v\mapsto D_v|_a$ is a canonical isomorphism
+$V\to T_aV$. It is natural with respect to linear maps: if $L:V\to W$, then
 \[
-L|\xrightarrow[]{ \cong  }{T}_{a}V \tag{3.6}
+dL_a(D_v|_a)=D_{Lv}|_{L(a)}. \tag{3.6}
 \]
 \end{proposition}
 
 \begin{proof}
 \leanok
-Once we choose a basis for $V$ , we can use the same argument as in the proof of Proposition 3.2 to show that ${\left. {D}_{v}\right| }_{a}$ is indeed a derivation at $a$ , and that the map $v \mapsto  {\left. {D}_{v}\right| }_{a}$ is an isomorphism.
-
-Now suppose $L : V \rightarrow  W$ is a linear map. Because its components with respect to any choices of bases for $V$ and $W$ are linear functions of the coordinates, $L$ is smooth. Unwinding the definitions and using the linearity of $L$ , we compute
-
+\sketch
+After choosing a basis, the Euclidean-space argument shows that $D_v|_a$ is
+a derivation and that $v\mapsto D_v|_a$ is an isomorphism. For linear $L$,
 \[
-d{L}_{a}\left( {\left. {D}_{v}\right| }_{a}\right) f = {\left. {D}_{v}\right| }_{a}\left( {f \circ  L}\right)
-\]
-
-\[
-= {\left. \frac{d}{dt}\right| }_{t = 0}f\left( {L\left( {a + {tv}}\right) }\right)  = {\left. \frac{d}{dt}\right| }_{t = 0}f\left( {{La} + {tLv}}\right)
-\]
-
-\[
-= {\left. {D}_{Lv}\right| }_{La}f\text{ . }
+dL_a(D_v|_a)(f)
+=\left.\frac{d}{dt}\right|_{0}f(L(a+tv))
+=\left.\frac{d}{dt}\right|_{0}f(L(a)+tL(v))
+=D_{Lv}|_{L(a)}(f).
 \]
 \end{proof}
 
@@ -311,26 +291,26 @@ d{L}_{a}\left( {\left. {D}_{v}\right| }_{a}\right) f = {\left. {D}_{v}\right| }_
 \label{prop:3-14}
 \lean{tangentSpaceFiniteProductEquivDirectSum_apply}
 \leanok
-\uses{prob:3-2}
 \dcref{ch3:3.14}
-Let ${M}_{1},\ldots ,{M}_{k}$ be smooth manifolds, and for each $j$ , let ${\pi }_{j} : {M}_{1} \times  \cdots  \times  {M}_{k} \rightarrow  {M}_{j}$ be the projection onto the ${M}_{j}$ factor. For any point $p = \left( {{p}_{1},\ldots ,{p}_{k}}\right)  \in  {M}_{1} \times  \cdots  \times  {M}_{k}$ , the map
-
+Let $M_1,\ldots,M_k$ be smooth manifolds, let
+$\pi_j:M_1\times\cdots\times M_k\to M_j$ be projection, and write
+$p=(p_1,\ldots,p_k)$. The map
 \[
-\alpha  : {T}_{p}\left( {{M}_{1} \times  \cdots  \times  {M}_{k}}\right)  \rightarrow  {T}_{{p}_{1}}{M}_{1} \oplus  \cdots  \oplus  {T}_{{p}_{k}}{M}_{k}
+\alpha:T_p(M_1\times\cdots\times M_k)
+\longrightarrow T_{p_1}M_1\oplus\cdots\oplus T_{p_k}M_k,
 \]
-
-defined by
-
 \[
-\alpha \left( v\right)  = \left( {d{\left( {\pi }_{1}\right) }_{p}\left( v\right) ,\ldots , d{\left( {\pi }_{k}\right) }_{p}\left( v\right) }\right) \tag{3.7}
+\alpha(v)=(d(\pi_1)_p(v),\ldots,d(\pi_k)_p(v)) \tag{3.7}
 \]
-
-is an isomorphism. The same is true if one of the spaces ${M}_{i}$ is a smooth manifold with boundary.
+is an isomorphism. The conclusion remains valid when one factor is a smooth
+manifold with boundary.
 \end{proposition}
 
 \begin{proof}
 \leanok
-See Problem 3-2.
+\sketch In product charts, $\alpha$ sends a tangent vector to the blocks of its
+coordinate components. Concatenating arbitrary blocks from the factor tangent
+spaces defines the inverse linear map.
 \end{proof}
 
 
@@ -341,25 +321,26 @@ See Problem 3-2.
 \lean{mfderiv_chart_coordinate_vectors_basis}
 \leanok
 \uses{prop:3-6,prop:3-9}
-Our treatment of the tangent space to a manifold so far might seem hopelessly abstract. To bring it down to earth, we will show how to do computations with tangent vectors and differentials in local coordinates.
-
-First, suppose $M$ is a smooth manifold (without boundary), and let $\left( {U,\varphi }\right)$ be a smooth coordinate chart on $M$ . Then $\varphi$ is, in particular, a diffeomorphism from $U$ to an open subset $\widehat{U} \subseteq  {\mathbb{R}}^{n}$ . Combining Propositions 3.9 and 3.6(d), we see that $d{\varphi }_{p} : {T}_{p}M \rightarrow  {T}_{\varphi \left( p\right) }{\mathbb{R}}^{n}$ is an isomorphism.
-
-By Corollary 3.3, the derivations $\partial /{\left. \partial {x}^{1}\right| }_{\varphi \left( p\right) },\ldots ,\partial /{\left. \partial {x}^{n}\right| }_{\varphi \left( p\right) }$ form a basis for ${T}_{\varphi \left( p\right) }{\mathbb{R}}^{n}$ . Therefore, the preimages of these vectors under the isomorphism $d{\varphi }_{p}$ form a basis for ${T}_{p}M$ (Fig. 3.5). In keeping with our standard practice of treating coordinate maps as identifications whenever possible, we use the notation $\partial /{\left. \partial {x}^{i}\right| }_{p}$ for these vectors, characterized by either of the following expressions:
-
+Let $(U,\varphi)$ be a smooth chart on an $n$-manifold $M$, with coordinate
+functions $(x^i)$, and let $p\in U$. The coordinate vectors at $p$ are
 \[
-{\left. \frac{\partial }{\partial {x}^{i}}\right| }_{p} = {\left( d{\varphi }_{p}\right) }^{-1}\left( {\left. \frac{\partial }{\partial {x}^{i}}\right| }_{\varphi \left( p\right) }\right)  = d{\left( {\varphi }^{-1}\right) }_{\varphi \left( p\right) }\left( {\left. \frac{\partial }{\partial {x}^{i}}\right| }_{\varphi \left( p\right) }\right) . \tag{3.8}
+\left.\frac{\partial}{\partial x^i}\right|_p
+=(d\varphi_p)^{-1}
+ \left(\left.\frac{\partial}{\partial x^i}\right|_{\varphi(p)}\right)
+=d(\varphi^{-1})_{\varphi(p)}
+ \left(\left.\frac{\partial}{\partial x^i}\right|_{\varphi(p)}\right). \tag{3.8}
 \]
-
-Unwinding the definitions, we see that ${\left. \partial /\partial {x}^{i}\right| }_{p}$ acts on a function $f \in  {C}^{\infty }\left( U\right)$ by
-
+For $f\in C^\infty(U)$, $\widehat f=f\circ\varphi^{-1}$ and
+$\widehat p=\varphi(p)$, their action is
 \[
-{\left. \frac{\partial }{\partial {x}^{i}}\right| }_{p}f = {\left. \frac{\partial }{\partial {x}^{i}}\right| }_{\varphi \left( p\right) }\left( {f \circ  {\varphi }^{-1}}\right)  = \frac{\partial \widehat{f}}{\partial {x}^{i}}\left( \widehat{p}\right) ,
+\left.\frac{\partial}{\partial x^i}\right|_p(f)
+=\frac{\partial\widehat f}{\partial x^i}(\widehat p).
 \]
-
-where $\widehat{f} = f \circ  {\varphi }^{-1}$ is the coordinate representation of $f$ , and $\widehat{p} = \left( {{p}^{1},\ldots ,{p}^{n}}\right)  = \; \varphi \left( p\right)$ is the coordinate representation of $p$ . In other words, $\partial /{\left. \partial {x}^{i}\right| }_{p}$ is just the derivation that takes the $i$ th partial derivative of (the coordinate representation of) $f$ at (the coordinate representation of) $p$ . The vectors $\partial /{\left. \partial {x}^{i}\right| }_{p}$ are called the coordinate vectors at $p$ associated with the given coordinate system. In the special case of standard coordinates on ${\mathbb{R}}^{n}$ , the vectors $\partial /{\left. \partial {x}^{i}\right| }_{p}$ are literally the partial derivative operators.
-
-When $M$ is a smooth manifold with boundary and $p$ is an interior point, the discussion above applies verbatim. For $p \in  \partial M$ , the only change that needs to be made is to substitute ${\mathbb{H}}^{n}$ for ${\mathbb{R}}^{n}$ , with the understanding that the notation $\partial /{\left. \partial {x}^{i}\right| }_{\varphi \left( p\right) }$ can be used interchangeably to denote either an element of ${T}_{\varphi \left( p\right) }{\mathbb{R}}^{n}$ or an element of ${T}_{\varphi \left( p\right) }{\mathbb{H}}^{n}$ , in keeping with our convention of considering the isomorphism $d{\iota }_{\varphi \left( p\right) } : {T}_{\varphi \left( p\right) }{\mathbb{H}}^{n} \rightarrow  {T}_{\varphi \left( p\right) }{\mathbb{R}}^{n}$ as an identification. The $n$ th coordinate vector $\partial /{\left. \partial {x}^{n}\right| }_{p}$ should be interpreted as a one-sided derivative in this case.
+They form the coordinate basis associated with the chart. For a boundary
+chart, use the identification
+$T_{\varphi(p)}\mathbb{H}^n\cong T_{\varphi(p)}\mathbb{R}^n$ from the
+inclusion differential; at a boundary point the $n$th coordinate derivative
+is one-sided.
 \end{definition}
 
 \begin{proposition}
@@ -367,23 +348,29 @@ When $M$ is a smooth manifold with boundary and $p$ is an interior point, the di
 \lean{chart_coordinate_vectors_basis}
 \leanok
 \dcref{ch3:3.15}
-Let $M$ be a smooth $n$ -manifold with or without boundary, and let $p \in  M$ . Then ${T}_{p}M$ is an $n$ -dimensional vector space, and for any smooth chart $\left( {U,\left( {x}^{i}\right) }\right)$ containing $p$ , the coordinate vectors $\partial /{\left. \partial {x}^{1}\right| }_{p},\ldots ,\partial /{\left. \partial {x}^{n}\right| }_{p}$ form a basis for ${T}_{p}M$ .
+Let $M$ be a smooth $n$-manifold, possibly with boundary, and let $p\in M$.
+For every smooth chart $(U,(x^i))$ containing $p$, the vectors
+\[
+\left.\frac{\partial}{\partial x^1}\right|_p,\ldots,
+\left.\frac{\partial}{\partial x^n}\right|_p
+\]
+form a basis of the $n$-dimensional space $T_pM$.
 \end{proposition}
 
 \begin{definition}
 \label{def:3-15-extra-2}
 \lean{chart_coordinate_vectors_basis}
 \leanok
-Thus, a tangent vector $v \in  {T}_{p}M$ can be written uniquely as a linear combination
-
+Relative to a coordinate basis, every $v\in T_pM$ has a unique expression
 \[
-v = {\left. {v}^{i}\frac{\partial }{\partial {x}^{i}}\right| }_{p},
+v=\left.v^i\frac{\partial}{\partial x^i}\right|_p.
 \]
-
-where we use the summation convention as usual, with an upper index in the denominator being considered as a lower index, as explained on p. 52. The ordered basis $\left( {\left. \partial /\partial {x}^{i}\right| }_{p}\right)$ is called a coordinate basis for ${\mathbf{T}}_{p}\mathbf{M}$ , and the numbers $\left( {{v}^{1},\ldots ,{v}^{n}}\right)$ are called the components of $v$ with respect to the coordinate basis. If $v$ is known, its components can be computed easily from its action on the coordinate functions. For each $j$ , the components of $v$ are given by ${v}^{j} = v\left( {x}^{j}\right)$ (where we think of ${x}^{j}$ as a smooth real-valued function on $U$ ), because
-
+The scalars $(v^1,\ldots,v^n)$ are its components, with summation understood,
+and satisfy
 \[
-v\left( {x}^{j}\right)  = \left( {\left. {v}^{i}\frac{\partial }{\partial {x}^{i}}\right| }_{p}\right) \left( {x}^{j}\right)  = {v}^{i}\frac{\partial {x}^{j}}{\partial {x}^{i}}\left( p\right)  = {v}^{j}.
+v^j=v(x^j),
+\qquad
+v(x^j)=v^i\frac{\partial x^j}{\partial x^i}(p)=v^j.
 \]
 \end{definition}
 
@@ -391,99 +378,56 @@ v\left( {x}^{j}\right)  = \left( {\left. {v}^{i}\frac{\partial }{\partial {x}^{i
 \label{rem:3-15-extra-3}
 \lean{mfderiv_eq_fderiv}
 \mathlibok
-Next we explore how differentials look in coordinates. We begin by considering the special case of a smooth map $F : U \rightarrow  V$ , where $U \subseteq  {\mathbb{R}}^{n}$ and $V \subseteq  {\mathbb{R}}^{m}$ are open subsets of Euclidean spaces. For any $p \in  U$ , we will determine the matrix of $d{F}_{p} : {T}_{p}{\mathbb{R}}^{n} \rightarrow  {T}_{F\left( p\right) }{\mathbb{R}}^{m}$ in terms of the standard coordinate bases. Using $\left( {{x}^{1},\ldots ,{x}^{n}}\right)$ to denote the coordinates in the domain and $\left( {{y}^{1},\ldots ,{y}^{m}}\right)$ to denote those in the codomain, we use the chain rule to compute the action of $d{F}_{p}$ on a typical basis vector as follows:
-
+Let $F:U\to V$ be smooth, where $U\subseteq\mathbb{R}^n$ and
+$V\subseteq\mathbb{R}^m$ are open, with domain coordinates $(x^i)$ and
+codomain coordinates $(y^j)$. The chain rule gives
 \[
-d{F}_{p}\left( {\left. \frac{\partial }{\partial {x}^{i}}\right| }_{p}\right) f = {\left. \frac{\partial }{\partial {x}^{i}}\right| }_{p}\left( {f \circ  F}\right)  = \frac{\partial f}{\partial {y}^{j}}\left( {F\left( p\right) }\right) \frac{\partial {F}^{j}}{\partial {x}^{i}}\left( p\right)
+dF_p\left(\left.\frac{\partial}{\partial x^i}\right|_p\right)
+=\left.\frac{\partial F^j}{\partial x^i}(p)
+  \frac{\partial}{\partial y^j}\right|_{F(p)}. \tag{3.9}
 \]
+Thus the matrix of $dF_p$ in the standard coordinate bases is the Jacobian
+matrix $(\partial F^j/\partial x^i)(p)$, hence agrees with the total derivative
+$DF(p)$. The same holds for open subsets of half-spaces.
 
+More generally, for charts $(U,\varphi)$ at $p$ and $(V,\psi)$ at $F(p)$,
+put $\widehat F=\psi\circ F\circ\varphi^{-1}$ and
+$\widehat p=\varphi(p)$. Then
 \[
-= \left( {\frac{\partial {F}^{j}}{\partial {x}^{i}}\left( p\right) {\left. \frac{\partial }{\partial {y}^{j}}\right| }_{F\left( p\right) }}\right) f.
+dF_p\left(\left.\frac{\partial}{\partial x^i}\right|_p\right)
+=\left.\frac{\partial\widehat F^j}{\partial x^i}(\widehat p)
+  \frac{\partial}{\partial y^j}\right|_{F(p)}. \tag{3.10}
 \]
-
-![76_263_192_1006_530_0.jpg](images/76_263_192_1006_530_0.jpg)
-
-Fig. 3.6 The differential in coordinates
-
-Thus
-
-\[
-d{F}_{p}\left( {\left. \frac{\partial }{\partial {x}^{i}}\right| }_{p}\right)  = {\left. \frac{\partial {F}^{j}}{\partial {x}^{i}}\left( p\right) \frac{\partial }{\partial {y}^{j}}\right| }_{F\left( p\right) }. \tag{3.9}
-\]
-
-In other words, the matrix of $d{F}_{p}$ in terms of the coordinate bases is
-
-\[
-\left( \begin{matrix} \frac{\partial {F}^{1}}{\partial {x}^{1}}\left( p\right) & \cdots & \frac{\partial {F}^{1}}{\partial {x}^{n}}\left( p\right) \\  \vdots &  \ddots  & \vdots \\  \frac{\partial {F}^{m}}{\partial {x}^{1}}\left( p\right) & \cdots & \frac{\partial {F}^{m}}{\partial {x}^{n}}\left( p\right)  \end{matrix}\right) .
-\]
-
-(Recall that the columns of the matrix are the components of the images of the basis vectors.) This matrix is none other than the Jacobian matrix of $F$ at $p$ , which is the matrix representation of the total derivative ${DF}\left( p\right)  : {\mathbb{R}}^{n} \rightarrow  {\mathbb{R}}^{m}$ . Therefore, in this case, $d{F}_{p} : {T}_{p}{\mathbb{R}}^{n} \rightarrow  {T}_{F\left( p\right) }{\mathbb{R}}^{m}$ corresponds to the total derivative ${DF}\left( p\right)  : {\mathbb{R}}^{n} \rightarrow  {\mathbb{R}}^{m}$ , under our usual identification of Euclidean spaces with their tangent spaces. The same calculation applies if $U$ is an open subset of ${\mathbb{H}}^{n}$ and $V$ is an open subset of ${\mathbb{H}}^{m}$ .
-
-Now consider the more general case of a smooth map $F : M \rightarrow  N$ between smooth manifolds with or without boundary. Choosing smooth coordinate charts $\left( {U,\varphi }\right)$ for $M$ containing $p$ and $\left( {V,\psi }\right)$ for $N$ containing $F\left( p\right)$ , we obtain the coordinate representation $\widehat{F} = \psi  \circ  F \circ  {\varphi }^{-1} : \varphi \left( {U \cap  {F}^{-1}\left( V\right) }\right)  \rightarrow  \psi \left( V\right)$ (Fig. 3.6). Let $\widehat{p} = \varphi \left( p\right)$ denote the coordinate representation of $p$ . By the computation above, $d{\widehat{F}}_{\widehat{p}}$ is represented with respect to the standard coordinate bases by the Jacobian matrix of $\widehat{F}$ at $\widehat{p}$ . Using the fact that $F \circ  {\varphi }^{-1} = {\psi }^{-1} \circ  \widehat{F}$ , we compute
-
-\[
-d{F}_{p}\left( {\left. \frac{\partial }{\partial {x}^{i}}\right| }_{p}\right)  = d{F}_{p}\left( {d{\left( {\varphi }^{-1}\right) }_{\widehat{p}}\left( {\left. \frac{\partial }{\partial {x}^{i}}\right| }_{\widehat{p}}\right) }\right)  = d{\left( {\psi }^{-1}\right) }_{\widehat{F}\left( \widehat{p}\right) }\left( {d{\widehat{F}}_{\widehat{p}}\left( {\left. \frac{\partial }{\partial {x}^{i}}\right| }_{\widehat{p}}\right) }\right)
-\]
-
-\[
-= d{\left( {\psi }^{-1}\right) }_{\widehat{F}\left( \widehat{p}\right) }\left( {\left. \frac{\partial {\widehat{F}}^{j}}{\partial {x}^{i}}\left( \widehat{p}\right) \frac{\partial }{\partial {y}^{j}}\right| }_{\widehat{F}\left( \widehat{p}\right) }\right)
-\]
-
-\[
-= {\left. \frac{\partial {\widehat{F}}^{j}}{\partial {x}^{i}}\left( \widehat{p}\right) \frac{\partial }{\partial {y}^{j}}\right| }_{F\left( p\right) }. \tag{3.10}
-\]
-
-Thus, $d{F}_{p}$ is represented in coordinate bases by the Jacobian matrix of (the coordinate representative of) $F$ . In fact, the definition of the differential was cooked up precisely to give a coordinate-independent meaning to the Jacobian matrix.
-
-In the differential geometry literature, the differential is sometimes called the tangent map, the total derivative, or simply the derivative of $\mathbf{F}$ . Because it "pushes" tangent vectors forward from the domain manifold to the codomain, it is also called the (pointwise) pushforward. Different authors denote it by symbols such as
-
-\[
-{F}^{\prime }\left( p\right) ,\;{DF},\;{DF}\left( p\right) ,\;{F}_{ * },\;{TF},\;{T}_{p}F.
-\]
-
-We will stick with the notation $d{F}_{p}$ for the differential of a smooth map between manifolds, and reserve ${DF}\left( p\right)$ for the total derivative of a map between finite-dimensional vector spaces, which in the case of Euclidean spaces we identify with the Jacobian matrix of $F$ .
+Consequently, the coordinate matrix of $dF_p$ is the Jacobian of the
+coordinate representative of $F$. The notation $dF_p$ denotes this
+differential, while $DF(p)$ is reserved for the total derivative between
+finite-dimensional vector spaces; the differential is also called the tangent
+map or pointwise pushforward.
 \end{remark}
 
 \begin{remark}
 \label{rem:3-15-extra-4}
 \lean{tangentCoordChange_def}
 \mathlibok
-Suppose $\left( {U,\varphi }\right)$ and $\left( {V,\psi }\right)$ are two smooth charts on $M$ , and $p \in  U \cap  V$ . Let us denote the coordinate functions of $\varphi$ by $\left( {x}^{i}\right)$ and those of $\psi$ by $\left( {\widetilde{x}}^{i}\right)$ . Any tangent vector at $p$ can be represented with respect to either basis $\left( {\partial /{\left. \partial {x}^{i}\right| }_{p}}\right)$ or $\left( {\partial /{\left. \partial {\widetilde{x}}^{i}\right| }_{p}}\right)$ . How are the two representations related?
-
-In this situation, it is customary to write the transition map $\psi  \circ  {\varphi }^{-1} : \varphi \left( {U \cap  V}\right)  \rightarrow \; \psi \left( {U \cap  V}\right)$ in the following shorthand notation:
-
+Let $(U,\varphi)$ and $(V,\psi)$ be charts containing $p$, with coordinates
+$(x^i)$ and $(\widetilde x^i)$, and put $\widehat p=\varphi(p)$. For the
+transition map
 \[
-\psi  \circ  {\varphi }^{-1}\left( x\right)  = \left( {{\widetilde{x}}^{1}\left( x\right) ,\ldots ,{\widetilde{x}}^{n}\left( x\right) }\right) .
+\psi\circ\varphi^{-1}(x)
+=(\widetilde x^1(x),\ldots,\widetilde x^n(x)),
 \]
-
-Here we are indulging in a typical abuse of notation: in the expression ${\widetilde{x}}^{i}\left( x\right)$ , we think of ${\widetilde{x}}^{i}$ as a coordinate function (whose domain is an open subset of $M$ , identified with an open subset of ${\mathbb{R}}^{n}$ or ${\mathbb{H}}^{n}$ ); but we think of $x$ as representing a point (in this case, in $\varphi \left( {U \cap  V}\right)$ ). By (3.9), the differential $d{\left( \psi  \circ  {\varphi }^{-1}\right) }_{\varphi \left( p\right) }$ can be written
-
+the coordinate bases satisfy
 \[
-d{\left( \psi  \circ  {\varphi }^{-1}\right) }_{\varphi \left( p\right) }\left( {\left. \frac{\partial }{\partial {x}^{i}}\right| }_{\varphi \left( p\right) }\right)  = \frac{\partial {\widetilde{x}}^{j}}{\partial {x}^{i}}\left( {\varphi \left( p\right) }\right) {\left. \frac{\partial }{\partial {\widetilde{x}}^{j}}\right| }_{\psi \left( p\right) }.
+\left.\frac{\partial}{\partial x^i}\right|_p
+=\left.\frac{\partial\widetilde x^j}{\partial x^i}(\widehat p)
+  \frac{\partial}{\partial\widetilde x^j}\right|_p. \tag{3.11}
 \]
-
-(See Fig. 3.7.) Using the definition of coordinate vectors, we obtain
-
+Hence, if
+$v=v^i\partial/\partial x^i|_p
+=\widetilde v^j\partial/\partial\widetilde x^j|_p$, then
 \[
-{\left. \frac{\partial }{\partial {x}^{i}}\right| }_{p} = d{\left( {\varphi }^{-1}\right) }_{\varphi \left( p\right) }\left( {\left. \frac{\partial }{\partial {x}^{i}}\right| }_{\varphi \left( p\right) }\right)
-\]
-
-\[
-= d{\left( {\psi }^{-1}\right) }_{\psi \left( p\right) } \circ  d{\left( \psi  \circ  {\varphi }^{-1}\right) }_{\varphi \left( p\right) }\left( {\left. \frac{\partial }{\partial {x}^{i}}\right| }_{\varphi \left( p\right) }\right)
-\]
-
-\[
-= d{\left( {\psi }^{-1}\right) }_{\psi \left( p\right) }\left( {\left. \frac{\partial {\widetilde{x}}^{j}}{\partial {x}^{i}}\left( \varphi \left( p\right) \right) \frac{\partial }{\partial {\widetilde{x}}^{j}}\right| }_{\psi \left( p\right) }\right)  = {\left. \frac{\partial {\widetilde{x}}^{j}}{\partial {x}^{i}}\left( \widehat{p}\right) \frac{\partial }{\partial {\widetilde{x}}^{j}}\right| }_{p}, \tag{3.11}
-\]
-
-![78_315_189_895_650_0.jpg](images/78_315_189_895_650_0.jpg)
-
-Fig. 3.7 Change of coordinates
-
-where again we have written $\widehat{p} = \varphi \left( p\right)$ . (This formula is easy to remember, because it looks exactly the same as the chain rule for partial derivatives in ${\mathbb{R}}^{n}$ .) Applying this to the components of a vector $v = {v}^{i}\partial /{\left. \partial {x}^{i}\right| }_{p} = {\widetilde{v}}^{j}\partial /{\left. \partial {\widetilde{x}}^{j}\right| }_{p}$ , we find that the components of $v$ transform by the rule
-
-\[
-{\widetilde{v}}^{j} = \frac{\partial {\widetilde{x}}^{j}}{\partial {x}^{i}}\left( \widehat{p}\right) {v}^{i}. \tag{3.12}
+\widetilde v^j
+=\frac{\partial\widetilde x^j}{\partial x^i}(\widehat p)v^i. \tag{3.12}
 \]
 \end{remark}
 
@@ -492,26 +436,24 @@ where again we have written $\widehat{p} = \varphi \left( p\right)$ . (This form
 \lean{polar_vector_in_standard_coordinates}
 \leanok
 \dcref{ch3:3.16}
-The transition map between polar coordinates and standard coordinates in suitable open subsets of the plane is given by $\left( {x, y}\right)  = \left( {r\cos \theta , r\sin \theta }\right)$ . Let $p$ be the point in ${\mathbb{R}}^{2}$ whose polar coordinate representation is $\left( {r,\theta }\right)  = \left( {2,\pi /2}\right)$ , and let $v \in  {T}_{p}{\mathbb{R}}^{2}$ be the tangent vector whose polar coordinate representation is
-
+For $(x,y)=(r\cos\theta,r\sin\theta)$, let $p$ have polar coordinates
+$(2,\pi/2)$. At $p$,
 \[
-v = {\left. {\left. 3\frac{\partial }{\partial r}\right| }_{p} - \frac{\partial }{\partial \theta }\right| }_{p}.
+\left.\frac{\partial}{\partial r}\right|_p
+=\left.\frac{\partial}{\partial y}\right|_p,
+\qquad
+\left.\frac{\partial}{\partial\theta}\right|_p
+=-2\left.\frac{\partial}{\partial x}\right|_p.
 \]
-
-Applying (3.11) to the coordinate vectors, we find
-
+Therefore the vector
 \[
-{\left. \frac{\partial }{\partial r}\right| }_{p} = {\left. \cos \left( \frac{\pi }{2}\right) \frac{\partial }{\partial x}\right| }_{p} + {\left. \sin \left( \frac{\pi }{2}\right) \frac{\partial }{\partial y}\right| }_{p} = {\left. \frac{\partial }{\partial y}\right| }_{p},
+v=3\left.\frac{\partial}{\partial r}\right|_p
+-\left.\frac{\partial}{\partial\theta}\right|_p
 \]
-
+has standard-coordinate expression
 \[
-{\left. \frac{\partial }{\partial \theta }\right| }_{p} =  - 2\sin \left( \frac{\pi }{2}\right) {\left. \frac{\partial }{\partial x}\right| }_{p} + {\left. 2\cos \left( \frac{\pi }{2}\right) \frac{\partial }{\partial y}\right| }_{p} =  - {\left. 2\frac{\partial }{\partial x}\right| }_{p},
-\]
-
-and thus $v$ has the following coordinate representation in standard coordinates:
-
-\[
-v = {\left. {\left. 3\frac{\partial }{\partial y}\right| }_{p} + {\left. 2\frac{\partial }{\partial x}\right| }_{p}\right| }_{p}.
+v=2\left.\frac{\partial}{\partial x}\right|_p
++3\left.\frac{\partial}{\partial y}\right|_p.
 \]
 \end{example}
 
@@ -519,28 +461,12 @@ v = {\left. {\left. 3\frac{\partial }{\partial y}\right| }_{p} + {\left. 2\frac{
 \label{rem:3-15-extra-5}
 \lean{tangentMap_chart_symm}
 \mathlibok
-One important fact to bear in mind is that each coordinate vector $\partial /{\left. \partial {x}^{i}\right| }_{p}$ depends on the entire coordinate system, not just on the single coordinate function ${x}^{i}$ . Geometrically, this reflects the fact that $\partial /{\left. \partial {x}^{i}\right| }_{p}$ is the derivation obtained by differentiating with respect to ${x}^{i}$ while all the other coordinates are held constant. If the coordinate functions other than ${x}^{i}$ are changed, then the direction of this coordinate derivative can change. The next exercise illustrates how this can happen.
+The vector $\partial/\partial x^i|_p$ depends on the entire coordinate system,
+because its definition holds all other coordinates constant; changing those
+coordinates can change the vector even when the function $x^i$ itself is
+unchanged.
 \end{remark}
 
-\begin{exercise}
-\label{exer:3-17}
-\lean{cubicShear_symm_fderiv_apply_e1}
-\leanok
-\dcref{ch3:3.17}
-Let $\left( {x, y}\right)$ denote the standard coordinates on ${\mathbb{R}}^{2}$ . Verify that $\left( {\widetilde{x},\widetilde{y}}\right)$ are global smooth coordinates on ${\mathbb{R}}^{2}$ , where
-
-\[
-\widetilde{x} = x,\;\widetilde{y} = y + {x}^{3}.
-\]
-
-Let $p$ be the point $\left( {1,0}\right)  \in  {\mathbb{R}}^{2}$ (in standard coordinates), and show that
-
-\[
-{\left. \frac{\partial }{\partial x}\right| }_{p} \neq  {\left. \frac{\partial }{\partial \widetilde{x}}\right| }_{p}
-\]
-
-even though the coordinate functions $x$ and $\widetilde{x}$ are identically equal.
-\end{exercise}
 
 
 \section{The Tangent Bundle}
@@ -549,13 +475,16 @@ even though the coordinate functions $x$ and $\widetilde{x}$ are identically equ
 \label{def:3-16-extra-1}
 \lean{TangentBundle}
 \mathlibok
-Often it is useful to consider the set of all tangent vectors at all points of a manifold. Given a smooth manifold $M$ with or without boundary, we define the tangent bundle of $M$ , denoted by ${TM}$ , to be the disjoint union of the tangent spaces at all points of $M$ :
-
+For a smooth manifold $M$, possibly with boundary, its tangent bundle is
 \[
-{TM} = \mathop{\coprod }\limits_{{p \in  M}}{T}_{p}M
+TM=\coprod_{p\in M}T_pM.
 \]
-
-We usually write an element of this disjoint union as an ordered pair $\left( {p, v}\right)$ , with $p \in  M$ and $v \in  {T}_{p}M$ (instead of putting the point $p$ in the second position, as elements of a disjoint union are more commonly written). The tangent bundle comes equipped with a natural projection map $\pi  : {TM} \rightarrow  M$ , which sends each vector in ${T}_{p}M$ to the point $p$ at which it is tangent: $\pi \left( {p, v}\right)  = p$ . We will often commit the usual mild sin of identifying ${T}_{p}M$ with its image under the canonical injection $v \mapsto  \left( {p, v}\right)$ , and will use any of the notations $\left( {p, v}\right) ,{v}_{p}$ , and $v$ for a tangent vector in ${T}_{p}M$ , depending on how much emphasis we wish to give to the point $p$ .
+An element may be written $(p,v)$, $v_p$, or $v\in T_pM$. The bundle
+projection is
+\[
+\pi:TM\to M,qquad \pi(p,v)=p,
+\]
+and each $T_pM$ is identified with its canonical image in $TM$.
 \end{definition}
 
 \begin{proposition}
@@ -564,69 +493,71 @@ We usually write an element of this disjoint union as an ordered pair $\left( {p
 \mathlibok
 \uses{lem:1-35}
 \dcref{ch3:3.18}
-For any smooth $n$ -manifold $M$ , the tangent bundle ${TM}$ has a natural topology and smooth structure that make it into a ${2n}$ -dimensional smooth manifold. With respect to this structure, the projection $\pi  : {TM} \rightarrow  M$ is smooth.
+For a smooth $n$-manifold $M$, the set $TM$ has a natural topology and smooth
+structure making it a smooth $2n$-manifold, and $\pi:TM\to M$ is smooth.
 \end{proposition}
 
 \begin{proof}
-We begin by defining the maps that will become our smooth charts. Given any smooth chart $\left( {U,\varphi }\right)$ for $M$ , note that ${\pi }^{-1}\left( U\right)  \subseteq  {TM}$ is the set of all tangent vectors to $M$ at all points of $U$ . Let $\left( {{x}^{1},\ldots ,{x}^{n}}\right)$ denote the coordinate functions of $\varphi$ , and define a map $\widetilde{\varphi } : {\pi }^{-1}\left( U\right)  \rightarrow  {\mathbb{R}}^{2n}$ by
-
+\sketch
+For a chart $(U,\varphi)$ with coordinate functions $(x^i)$, define
 \[
-\widetilde{\varphi }\left( {\left. {v}^{i}\frac{\partial }{\partial {x}^{i}}\right| }_{p}\right)  = \left( {{x}^{1}\left( p\right) ,\ldots ,{x}^{n}\left( p\right) ,{v}^{1},\ldots ,{v}^{n}}\right) . \tag{3.13}
+\widetilde\varphi:\pi^{-1}(U)\to\varphi(U)\times\mathbb{R}^n,
+\qquad
+\widetilde\varphi
+\left(\left.v^i\frac{\partial}{\partial x^i}\right|_p\right)
+=(x^1(p),\ldots,x^n(p),v^1,\ldots,v^n). \tag{3.13}
 \]
-
-(See Fig. 3.8.) Its image set is $\varphi \left( U\right)  \times  {\mathbb{R}}^{n}$ , which is an open subset of ${\mathbb{R}}^{2n}$ . It is a bijection onto its image, because its inverse can be written explicitly as
-
+This is a bijection with inverse
 \[
-{\widetilde{\varphi }}^{-1}\left( {{x}^{1},\ldots ,{x}^{n},{v}^{1},\ldots ,{v}^{n}}\right)  = {\left. {v}^{i}\frac{\partial }{\partial {x}^{i}}\right| }_{{\varphi }^{-1}\left( x\right) }.
+(x^1,\ldots,x^n,v^1,\ldots,v^n)
+\longmapsto
+\left.v^i\frac{\partial}{\partial x^i}\right|_{\varphi^{-1}(x)}.
 \]
-
-Now suppose we are given two smooth charts $\left( {U,\varphi }\right)$ and $\left( {V,\psi }\right)$ for $M$ , and let $\left( {{\pi }^{-1}\left( U\right) ,\widetilde{\varphi }}\right) ,\left( {{\pi }^{-1}\left( V\right) ,\widetilde{\psi }}\right)$ be the corresponding charts on ${TM}$ . The sets
-
+On an overlap with coordinates $(\widetilde x^i)$, (3.12) gives the transition
+map
 \[
-\widetilde{\varphi }\left( {{\pi }^{-1}\left( U\right)  \cap  {\pi }^{-1}\left( V\right) }\right)  = \varphi \left( {U \cap  V}\right)  \times  {\mathbb{R}}^{n}\text{ and }
+(x,v)\longmapsto
+\left(\widetilde x(x),
+\frac{\partial\widetilde x^1}{\partial x^j}(x)v^j,\ldots,
+\frac{\partial\widetilde x^n}{\partial x^j}(x)v^j\right),
 \]
-
-\[
-\widetilde{\psi }\left( {{\pi }^{-1}\left( U\right)  \cap  {\pi }^{-1}\left( V\right) }\right)  = \psi \left( {U \cap  V}\right)  \times  {\mathbb{R}}^{n}
-\]
-
-are open in ${\mathbb{R}}^{2n}$ , and the transition map $\widetilde{\psi } \circ  {\widetilde{\varphi }}^{-1} : \varphi \left( {U \cap  V}\right)  \times  {\mathbb{R}}^{n} \rightarrow  \psi \left( {U \cap  V}\right)  \times \; {\mathbb{R}}^{n}$ can be written explicitly using (3.12) as
-
-\[
-\widetilde{\psi } \circ  {\widetilde{\varphi }}^{-1}\left( {{x}^{1},\ldots ,{x}^{n},{v}^{1},\ldots ,{v}^{n}}\right)
-\]
-
-\[
-= \left( {{\widetilde{x}}^{1}\left( x\right) ,\ldots ,{\widetilde{x}}^{n}\left( x\right) ,\frac{\partial {\widetilde{x}}^{1}}{\partial {x}^{j}}\left( x\right) {v}^{j},\ldots ,\frac{\partial {\widetilde{x}}^{n}}{\partial {x}^{j}}\left( x\right) {v}^{j}}\right) .
-\]
-
-This is clearly smooth.
-
-Choosing a countable cover $\left\{  {U}_{i}\right\}$ of $M$ by smooth coordinate domains, we obtain a countable cover of ${TM}$ by coordinate domains $\left\{  {{\pi }^{-1}\left( {U}_{i}\right) }\right\}$ satisfying conditions (i)-(iv) of the smooth manifold chart lemma (Lemma 1.35). To check the Hausdorff condition (v), just note that any two points in the same fiber of $\pi$ lie in one chart, while if $\left( {p, v}\right)$ and $\left( {q, w}\right)$ lie in different fibers, there exist disjoint smooth coordinate domains $U, V$ for $M$ such that $p \in  U$ and $q \in  V$ , and then ${\pi }^{-1}\left( U\right)$ and ${\pi }^{-1}\left( V\right)$ are disjoint coordinate neighborhoods containing $\left( {p, v}\right)$ and $\left( {q, w}\right)$ , respectively.
-
-To see that $\pi$ is smooth, note that with respect to charts $\left( {U,\varphi }\right)$ for $M$ and $\left( {{\pi }^{-1}\left( U\right) ,\widetilde{\varphi }}\right)$ for ${TM}$ , its coordinate representation is $\pi \left( {x, v}\right)  = x$ .
+which is smooth. A countable coordinate cover and the smooth manifold chart
+lemma produce the topology and smooth structure. Points in a common fiber lie
+in a common bundle chart; points over distinct base points are separated by
+inverse images of disjoint base charts, proving Hausdorffness. In these charts,
+$\pi(x,v)=x$, so $\pi$ is smooth.
 \end{proof}
 
 \begin{notation}
 \label{not:3-16-extra-2}
 \lean{chartAt}
 \mathlibok
-The coordinates $\left( {{x}^{i},{v}^{i}}\right)$ given by (3.13) are called natural coordinates on ${TM}$ .
+The coordinates $(x^i,v^i)$ in (3.13) are the natural coordinates on $TM$.
 \end{notation}
 
-\begin{exercise}
+\begin{proposition}[Tangent Bundles of Manifolds with Boundary]
 \label{exer:3-19}
 \lean{tangentBundleBoundaryChart_apply}
 \leanok
 \dcref{ch3:3.19}
-Suppose $M$ is a smooth manifold with boundary. Show that ${TM}$ has a natural topology and smooth structure making it into a smooth manifold with boundary, such that if $\left( {U,\left( {x}^{i}\right) }\right)$ is any smooth boundary chart for $M$ , then rearranging the coordinates in the natural chart $\left( {{\pi }^{-1}\left( U\right) ,\left( {{x}^{i},{v}^{i}}\right) }\right)$ for ${TM}$ yields a boundary chart $\left( {{\pi }^{-1}\left( U\right) ,\left( {{v}^{i},{x}^{i}}\right) }\right)$ .
-\end{exercise}
+If $M$ is a smooth manifold with boundary, its natural topology and smooth
+structure make $TM$ a smooth manifold with boundary. A boundary chart
+$(U,(x^i))$ on $M$ induces the boundary chart
+$(\pi^{-1}(U),(v^i,x^i))$ by reordering the natural coordinates
+$(x^i,v^i)$.
+\end{proposition}
 
 \begin{definition}
 \label{def:3-16-extra-3}
 \lean{tangentMap}
 \mathlibok
-By putting together the differentials of $F$ at all points of $M$ , we obtain a globally defined map between tangent bundles, called the global differential or global tangent map and denoted by ${dF} : {TM} \rightarrow  {TN}$ . This is just the map whose restriction to each tangent space ${T}_{p}M \subseteq  {TM}$ is $d{F}_{p}$ . When we apply the differential of $F$ to a specific vector $v \in  {T}_{p}M$ , we can write either $d{F}_{p}\left( v\right)$ or ${dF}\left( v\right)$ , depending on how much emphasis we wish to give to the point $p$ . The former notation is more informative, while the second is more concise.
+For a smooth map $F:M\to N$, the global differential, or global tangent map,
+is
+\[
+dF:TM\to TN,
+\qquad dF|_{T_pM}=dF_p.
+\]
+Thus $dF(v)=dF_p(v)$ for $v\in T_pM$.
 \end{definition}
 
 \begin{proposition}
@@ -634,24 +565,27 @@ By putting together the differentials of $F$ at all points of $M$ , we obtain a 
 \lean{fun}
 \mathlibok
 \dcref{ch3:3.21}
-If $F : M \rightarrow  N$ is a smooth map, then its global differential ${dF} : {TM} \rightarrow  {TN}$ is a smooth map.
+If $F:M\to N$ is smooth, then $dF:TM\to TN$ is smooth.
 \end{proposition}
 
 \begin{proof}
-From the local expression (3.9) for $d{F}_{p}$ in coordinates, it follows that ${dF}$ has the following coordinate representation in terms of natural coordinates for ${TM}$ and ${TN}$ :
-
+\sketch
+In natural coordinates, (3.9) gives
 \[
-{dF}\left( {{x}^{1},\ldots ,{x}^{n},{v}^{1},\ldots ,{v}^{n}}\right)  = \left( {{F}^{1}\left( x\right) ,\ldots ,{F}^{n}\left( x\right) ,\frac{\partial {F}^{1}}{\partial {x}^{i}}\left( x\right) {v}^{i},\ldots ,\frac{\partial {F}^{n}}{\partial {x}^{i}}\left( x\right) {v}^{i}}\right) .
+dF(x,v)=
+\left(F(x),
+\left(\frac{\partial F^\alpha}{\partial x^i}(x)v^i\right)_\alpha\right).
 \]
-
-This is smooth because $F$ is.
+This map is smooth because the coordinate functions of $F$ and their first
+partial derivatives are smooth.
 \end{proof}
 
 \begin{notation}
 \label{not:3-16-extra-4}
 \lean{diffeomorph_mfderiv_symm_eq_symm}
 \leanok
-Because of part (c) of this corollary, when $F$ is a diffeomorphism we can use the notation $d{F}^{-1}$ unambiguously to mean either ${\left( dF\right) }^{-1}$ or $d\left( {F}^{-1}\right)$ .
+For a diffeomorphism $F$, write $dF^{-1}$ for either $(dF)^{-1}$ or
+$d(F^{-1})$; these maps agree.
 \end{notation}
 
 
@@ -661,41 +595,26 @@ Because of part (c) of this corollary, when $F$ is a diffeomorphism we can use t
 \label{def:3-17-extra-1}
 \lean{curve_velocity}
 \leanok
-The velocity of a smooth parametrized curve in ${\mathbb{R}}^{n}$ is familiar from elementary calculus. It is just the vector whose components are the derivatives of the component functions of the curve. In this section we extend this notion to curves in manifolds.
-
-If $M$ is a manifold with or without boundary, we define a curve in $M$ to be a continuous map $\gamma  : J \rightarrow  M$ , where $J \subseteq  \mathbb{R}$ is an interval. (Most of the time, we will be interested in curves whose domains are open intervals, but for some purposes it is useful to allow $J$ to have one or two endpoints; the definitions all make sense with minor modifications in that case, either by considering $J$ as a manifold with boundary or by interpreting derivatives as one-sided derivatives.) Note that in this book the term curve always refers to a map from an interval into $M$ (a parametrized curve), not just a set of points in $M$ .
-
-![83_263_193_1006_255_0.jpg](images/83_263_193_1006_255_0.jpg)
-
-Fig. 3.9 The velocity of a curve
-
-Now let $M$ be a smooth manifold, still with or without boundary. Our definition of tangent spaces leads to a natural interpretation of velocity vectors: given a smooth curve $\gamma  : J \rightarrow  M$ and ${t}_{0} \in  J$ , we define the velocity of $\gamma$ at ${t}_{0}$ (Fig. 3.9), denoted by ${\gamma }^{\prime }\left( {t}_{0}\right)$ , to be the vector
-
+A curve in a manifold $M$, possibly with boundary, is a continuous map
+$\gamma:J\to M$ from an interval $J\subseteq\mathbb{R}$. Curves are
+parametrized. If $\gamma$ is smooth and $t_0\in J$, its velocity is
 \[
-{\gamma }^{\prime }\left( {t}_{0}\right)  = {d\gamma }\left( {\left. \frac{d}{dt}\right| }_{{t}_{0}}\right)  \in  {T}_{\gamma \left( {t}_{0}\right) }M,
+\gamma'(t_0)
+=d\gamma\left(\left.\frac{d}{dt}\right|_{t_0}\right)
+\in T_{\gamma(t_0)}M.
 \]
-
-where $d/{\left. dt\right| }_{{t}_{0}}$ is the standard coordinate basis vector in ${T}_{{t}_{0}}\mathbb{R}$ . (As in ordinary calculus, it is customary to use $d/{dt}$ instead of $\partial /\partial t$ when the manifold is 1- dimensional.) Other common notations for the velocity are
-
+It is also denoted $\dot\gamma(t_0)$ or $d\gamma/dt|_{t=t_0}$ and acts by
 \[
-\dot{\gamma }\left( {t}_{0}\right) ,\;\frac{d\gamma }{dt}\left( {t}_{0}\right) ,\;\text{ and }{\left. \;\frac{d\gamma }{dt}\right| }_{t = {t}_{0}}.
+\gamma'(t_0)(f)=\left.\frac{d}{dt}\right|_{t_0}(f\circ\gamma).
 \]
-
-This tangent vector acts on functions by
-
+At an endpoint of $J$, derivatives are one-sided, equivalently computed from
+a smooth local extension. In coordinates $(x^i)$, writing the coordinate
+functions of the curve as $\gamma^i$, one has
 \[
-{\gamma }^{\prime }\left( {t}_{0}\right) f = {d\gamma }\left( {\left. \frac{d}{dt}\right| }_{{t}_{0}}\right) f = {\left. \frac{d}{dt}\right| }_{{t}_{0}}\left( {f \circ  \gamma }\right)  = {\left( f \circ  \gamma \right) }^{\prime }\left( {t}_{0}\right) .
+\gamma'(t_0)
+=\left.\frac{d\gamma^i}{dt}(t_0)
+  \frac{\partial}{\partial x^i}\right|_{\gamma(t_0)}.
 \]
-
-In other words, ${\gamma }^{\prime }\left( {t}_{0}\right)$ is the derivation at $\gamma \left( {t}_{0}\right)$ obtained by taking the derivative of a function along $\gamma$ . (If ${t}_{0}$ is an endpoint of $J$ , this still holds, provided that we interpret the derivative with respect to $t$ as a one-sided derivative, or equivalently as the derivative of any smooth extension of $f \circ  \gamma$ to an open subset of $\mathbb{R}$ .)
-
-Now let $\left( {U,\varphi }\right)$ be a smooth chart with coordinate functions $\left( {x}^{i}\right)$ . If $\gamma \left( {t}_{0}\right)  \in  U$ , we can write the coordinate representation of $\gamma$ as $\gamma \left( t\right)  = \left( {{\gamma }^{1}\left( t\right) ,\ldots ,{\gamma }^{n}\left( t\right) }\right)$ , at least for $t$ sufficiently close to ${t}_{0}$ , and then the coordinate formula for the differential yields
-
-\[
-{\gamma }^{\prime }\left( {t}_{0}\right)  = {\left. \frac{d{\gamma }^{i}}{dt}\left( {t}_{0}\right) \frac{\partial }{\partial {x}^{i}}\right| }_{\gamma \left( {t}_{0}\right) }.
-\]
-
-This means that ${\gamma }^{\prime }\left( {t}_{0}\right)$ is given by essentially the same formula as it would be in Euclidean space: it is the tangent vector whose components in a coordinate basis are the derivatives of the component functions of $\gamma$ .
 \end{definition}
 
 \begin{proposition}
@@ -703,20 +622,23 @@ This means that ${\gamma }^{\prime }\left( {t}_{0}\right)$ is given by essential
 \lean{exists_smooth_curve_with_velocity_boundaryless}
 \leanok
 \dcref{ch3:3.23}
-Suppose $M$ is a smooth manifold with or without boundary and $p \in  M$ . Every $v \in  {T}_{p}M$ is the velocity of some smooth curve in $M$ .
+Let $M$ be a smooth manifold, possibly with boundary, and let $p\in M$. Every
+$v\in T_pM$ is the velocity of a smooth curve in $M$.
 \end{proposition}
 
 \begin{proof}
 \leanok
-First suppose that $p \in  \operatorname{Int}M$ (which includes the case $\partial M = \varnothing$ ). Let $\left( {U,\varphi }\right)$ be a smooth coordinate chart centered at $p$ , and write $v = {v}^{i}\partial /{\left. \partial {x}^{i}\right| }_{p}$ in terms of the coordinate basis. For sufficiently small $\varepsilon  > 0$ , let $\gamma  : \left( {-\varepsilon ,\varepsilon }\right)  \rightarrow  U$ be the curve whose coordinate representation is
-
+\sketch
+Choose coordinates centered at $p$ and write
+$v=v^i\partial/\partial x^i|_p$. For sufficiently small $\varepsilon>0$, use
+the coordinate curve
 \[
-\gamma \left( t\right)  = \left( {t{v}^{1},\ldots , t{v}^{n}}\right) . \tag{3.14}
+\gamma(t)=(tv^1,\ldots,tv^n). \tag{3.14}
 \]
-
-(Remember, this really means $\gamma \left( t\right)  = {\varphi }^{-1}\left( {t{v}^{1},\ldots , t{v}^{n}}\right)$ .) This is a smooth curve with $\gamma \left( 0\right)  = p$ , and the computation above shows that ${\gamma }^{\prime }\left( 0\right)  = {v}^{i}\partial /{\left. \partial {x}^{i}\right| }_{\gamma \left( 0\right) } = v$ .
-
-Now suppose $p \in  \partial M$ . Let $\left( {U,\varphi }\right)$ be a smooth boundary chart centered at $p$ , and write $v = {v}^{i}\partial /{\left. \partial {x}^{i}\right| }_{p}$ as before. We wish to let $\gamma$ be the curve whose coordinate representation is (3.14), but this formula represents a point of $M$ only when $t{v}^{n} \geq  0$ . We can accommodate this requirement by suitably restricting the domain of $\gamma$ : if ${v}^{n} = 0$ , we define $\gamma  : \left( {-\varepsilon ,\varepsilon }\right)  \rightarrow  U$ as before; if ${v}^{n} > 0$ , we let the domain be $\lbrack 0,\varepsilon )$ ; and if ${v}^{n} < 0$ , we let it be $( - \varepsilon ,0\rbrack$ . In each case, $\gamma$ is a smooth curve in $M$ with $\gamma \left( 0\right)  = p$ and ${\gamma }^{\prime }\left( 0\right)  = v$ .
+At an interior point its domain is $(-\varepsilon,\varepsilon)$. At a boundary
+point, take this domain when $v^n=0$, $[0,\varepsilon)$ when $v^n>0$, and
+$(-\varepsilon,0]$ when $v^n<0$. In every case $\gamma(0)=p$ and
+$\gamma'(0)=v$.
 \end{proof}
 
 \begin{proposition}[The Velocity of a Composite Curve]
@@ -724,19 +646,21 @@ Now suppose $p \in  \partial M$ . Let $\left( {U,\varphi }\right)$ be a smooth b
 \lean{composite_curve_velocity_of_contMDiff}
 \leanok
 \dcref{ch3:3.24}
-Let $F : M \rightarrow  N$ be a smooth map, and let $\gamma  : J \rightarrow  M$ be a smooth curve. For any ${t}_{0} \in  J$ , the velocity at $t = {t}_{0}$ of the composite curve $F \circ  \gamma  : J \rightarrow  N$ is given by
-
+Let $F:M\to N$ be smooth and $\gamma:J\to M$ a smooth curve. For every
+$t_0\in J$,
 \[
-{\left( F \circ  \gamma \right) }^{\prime }\left( {t}_{0}\right)  = {dF}\left( {{\gamma }^{\prime }\left( {t}_{0}\right) }\right) .
+(F\circ\gamma)'(t_0)=dF(\gamma'(t_0)).
 \]
 \end{proposition}
 
 \begin{proof}
 \leanok
-Just go back to the definition of the velocity of a curve:
-
+\sketch
+By the chain rule for differentials,
 \[
-{\left( F \circ  \gamma \right) }^{\prime }\left( {t}_{0}\right)  = d\left( {F \circ  \gamma }\right) \left( {\left. \frac{d}{dt}\right| }_{{t}_{0}}\right)  = {dF} \circ  {d\gamma }\left( {\left. \frac{d}{dt}\right| }_{{t}_{0}}\right)  = {dF}\left( {{\gamma }^{\prime }\left( {t}_{0}\right) }\right) .
+(F\circ\gamma)'(t_0)
+=d(F\circ\gamma)\left(\left.\frac{d}{dt}\right|_{t_0}\right)
+=dF\left(d\gamma\left(\left.\frac{d}{dt}\right|_{t_0}\right)\right).
 \]
 \end{proof}
 
@@ -746,13 +670,11 @@ Just go back to the definition of the velocity of a curve:
 \leanok
 \uses{prop:3-23,prop:3-24}
 \dcref{ch3:3.25}
-Suppose $F : M \rightarrow  N$ is a smooth map, $p \in  M$ , and $v \in  {T}_{p}M$ . Then
-
+Let $F:M\to N$ be smooth, $p\in M$, and $v\in T_pM$. For every smooth curve
+$\gamma:J\to M$ with $0\in J$, $\gamma(0)=p$, and $\gamma'(0)=v$,
 \[
-d{F}_{p}\left( v\right)  = {\left( F \circ  \gamma \right) }^{\prime }\left( 0\right)
+dF_p(v)=(F\circ\gamma)'(0).
 \]
-
-for any smooth curve $\gamma  : J \rightarrow  M$ such that $0 \in  J,\gamma \left( 0\right)  = p$ , and ${\gamma }^{\prime }\left( 0\right)  = v$ .
 \end{corollary}
 
 
@@ -762,28 +684,32 @@ for any smooth curve $\gamma  : J \rightarrow  M$ such that $0 \in  J,\gamma \le
 \label{def:3-18-extra-1}
 \lean{smoothSheafCommRing}
 \mathlibok
-A smooth function element on $M$ is an ordered pair $\left( {f, U}\right)$ , where $U$ is an open subset of $M$ and $f : U \rightarrow  \mathbb{R}$ is a smooth function. Given a point $p \in  M$ , let us define an equivalence relation on the set of all smooth function elements whose domains contain $p$ by setting $\left( {f, U}\right)  \sim  \left( {g, V}\right)$ if $f \equiv  g$ on some neighborhood of $p$ . The equivalence class of a function element $\left( {f, U}\right)$ is called the germ of $f$ at $p$ . The set of all germs of smooth functions at $p$ is denoted by ${C}_{p}^{\infty }\left( M\right)$ . It is a real vector space and an associative algebra under the operations
-
+A smooth function element on $M$ is a pair $(f,U)$ with $U\subseteq M$ open
+and $f:U\to\mathbb{R}$ smooth. For $p\in M$, restrict to function elements
+whose domains contain $p$, and declare
 \[
-c\left\lbrack  \left( {f, U}\right) \right\rbrack   = \left\lbrack  \left( {{cf}, U}\right) \right\rbrack  ,
+(f,U)\sim(g,V)
+\quad\Longleftrightarrow\quad
+f|_W=g|_W\text{ for some open neighborhood }W\subseteq U\cap V\text{ of }p.
 \]
-
+The equivalence class $[f]_p$ is the germ of $f$ at $p$, and the algebra of
+all such germs is denoted $C_p^\infty(M)$. Its operations are
 \[
-\left\lbrack  \left( {f, U}\right) \right\rbrack   + \left\lbrack  \left( {g, V}\right) \right\rbrack   = \left\lbrack  \left( {f + g, U \cap  V}\right) \right\rbrack  ,
+c[f]_p=[cf]_p,qquad [f]_p+[g]_p=[f+g]_p,
+\qquad [f]_p[g]_p=[fg]_p,
 \]
-
-\[
-\left\lbrack  \left( {f, U}\right) \right\rbrack  \left\lbrack  \left( {g, V}\right) \right\rbrack   = \left\lbrack  \left( {{fg}, U \cap  V}\right) \right\rbrack  .
-\]
-
-(The zero element of this algebra is the equivalence class of the zero function on $M$ .) Let us denote the germ at $p$ of the function element $\left( {f, U}\right)$ simply by ${\left\lbrack  f\right\rbrack  }_{p}$ ; there is no need to include the domain $U$ in the notation, because the same germ is represented by the restriction of $f$ to any neighborhood of $p$ . To say that two germs ${\left\lbrack  f\right\rbrack  }_{p}$ and ${\left\lbrack  g\right\rbrack  }_{p}$ are equal is simply to say that $f \equiv  g$ on some neighborhood of $p$ , however small.
+where the last two representatives are restricted to $U\cap V$. The zero
+element is the germ of the zero function.
 \end{definition}
 
 \begin{definition}
 \label{def:3-18-extra-4}
 \lean{IsCoordinateTangentVector}
 \leanok
-Yet another approach to defining the tangent space is based on the transformation rule (3.12) for the components of tangent vectors in coordinates. One defines a tangent vector at a point $p \in  M$ to be a rule that assigns an ordered $n$ -tuple $\left( {{v}^{1},\ldots ,{v}^{n}}\right)  \in  {\mathbb{R}}^{n}$ to each smooth coordinate chart containing $p$ , with the property that the $n$ -tuples assigned to overlapping charts transform according to (3.12). (This is, in fact, the oldest definition of all, and many physicists are still apt to think of tangent vectors this way.)
+Equivalently, a tangent vector at $p$ can be represented by an assignment of a
+tuple $(v^1,\ldots,v^n)\in\mathbb{R}^n$ to every smooth coordinate chart
+containing $p$, such that on overlaps the tuples obey the transformation law
+(3.12).
 \end{definition}
 
 
@@ -793,42 +719,33 @@ Yet another approach to defining the tangent space is based on the transformatio
 \label{def:3-19-extra-1}
 \lean{Category}
 \mathlibok
-A category C consists of the following things:
-
-\begin{itemize}
-\item a class $\mathrm{{Ob}}\left( \mathrm{C}\right)$ , whose elements are called objects of $\mathrm{C}$ ,
-\end{itemize}
-
-\begin{itemize}
-\item a class $\operatorname{Hom}\left( \mathrm{C}\right)$ , whose elements are called morphisms of $\mathbf{C}$ ,
-\end{itemize}
-
-\begin{itemize}
-\item for each morphism $f \in  \operatorname{Hom}\left( \mathrm{C}\right)$ , two objects $X, Y \in  \mathrm{{Ob}}\left( \mathrm{C}\right)$ called the source and target of $f$ , respectively,
-\end{itemize}
-
-\begin{itemize}
-\item for each triple $X, Y, Z \in  \mathrm{{Ob}}\left( \mathrm{C}\right)$ , a mapping called composition:
-\end{itemize}
-
+A category $\mathrm C$ consists of classes $\operatorname{Ob}(\mathrm C)$ and
+$\operatorname{Hom}(\mathrm C)$, source and target objects for each morphism,
+and composition maps
 \[
-{\operatorname{Hom}}_{\mathrm{C}}\left( {X, Y}\right)  \times  {\operatorname{Hom}}_{\mathrm{C}}\left( {Y, Z}\right)  \rightarrow  {\operatorname{Hom}}_{\mathrm{C}}\left( {X, Z}\right) ,
+\operatorname{Hom}_{\mathrm C}(X,Y)\times
+\operatorname{Hom}_{\mathrm C}(Y,Z)
+\longrightarrow\operatorname{Hom}_{\mathrm C}(X,Z),
+\qquad (f,g)\longmapsto g\circ f.
 \]
-
-written $\left( {f, g}\right)  \mapsto  g \circ  f$ , where ${\operatorname{Hom}}_{\mathrm{C}}\left( {X, Y}\right)$ denotes the class of all morphisms with source $X$ and target $Y$ .
-
-The morphisms are required to satisfy the following axioms:
-
-(i) ASSOCIATIVITY: $\left( {f \circ  g}\right)  \circ  h = f \circ  \left( {g \circ  h}\right)$ .
-
-(ii) EXISTENCE OF IDENTITIES: For each object $X \in  \mathrm{{Ob}}\left( \mathrm{C}\right)$ , there exists an identity morphism ${\operatorname{Id}}_{X} \in  {\operatorname{Hom}}_{\mathrm{C}}\left( {X, X}\right)$ , such that ${\operatorname{Id}}_{Y} \circ  f = f = f \circ  {\operatorname{Id}}_{X}$ for all $f \in  {\operatorname{Hom}}_{\mathrm{C}}\left( {X, Y}\right)$ .
+Composition is associative, and every object $X$ has an identity morphism
+$\operatorname{Id}_X$ satisfying
+\[
+\operatorname{Id}_Y\circ f=f=f\circ\operatorname{Id}_X
+\qquad(f\in\operatorname{Hom}_{\mathrm C}(X,Y)).
+\]
 \end{definition}
 
 \begin{definition}
 \label{def:3-19-extra-2}
 \lean{CategoryTheory.IsIso}
 \mathlibok
-A morphism $f \in  {\operatorname{Hom}}_{\mathrm{C}}\left( {X, Y}\right)$ is called an isomorphism in $\mathbf{C}$ if there exists a morphism $g \in  {\operatorname{Hom}}_{\mathrm{C}}\left( {Y, X}\right)$ such that $f \circ  g = {\operatorname{Id}}_{Y}$ and $g \circ  f = {\operatorname{Id}}_{X}$ .
+A morphism $f\in\operatorname{Hom}_{\mathrm C}(X,Y)$ is an isomorphism if
+there is $g\in\operatorname{Hom}_{\mathrm C}(Y,X)$ such that
+\[
+f\circ g=\operatorname{Id}_Y,
+\qquad g\circ f=\operatorname{Id}_X.
+\]
 \end{definition}
 
 \begin{example}[Categories]
@@ -836,123 +753,47 @@ A morphism $f \in  {\operatorname{Hom}}_{\mathrm{C}}\left( {X, Y}\right)$ is cal
 \lean{pointed_map_iff_exists_hom}
 \leanok
 \dcref{ch3:3.26}
-In most of the categories that one meets "in nature," the objects are sets with some extra structure, the morphisms are maps that preserve that structure, and the composition laws and identity morphisms are the obvious ones. Some of the categories of this type that appear in this book (implicitly or explicitly) are listed below. In each case, we describe the category by giving its objects and its morphisms.
+Examples of categories include sets and maps; topological spaces or
+manifolds and continuous maps; smooth manifolds, with or without boundary, and
+smooth maps; real or complex vector spaces and linear maps; groups or abelian
+groups and homomorphisms; and rings or commutative rings and homomorphisms.
 
-\begin{itemize}
-\item Set: sets and maps
-\end{itemize}
-
-\begin{itemize}
-\item Top: topological spaces and continuous maps
-\end{itemize}
-
-\begin{itemize}
-\item Man: topological manifolds and continuous maps
-\end{itemize}
-
-\begin{itemize}
-\item ${\mathrm{{Man}}}_{\mathrm{b}}$ : topological manifolds with boundary and continuous maps
-\end{itemize}
-
-\begin{itemize}
-\item Diff: smooth manifolds and smooth maps
-\end{itemize}
-
-\begin{itemize}
-\item Diff: smooth manifolds with boundary and smooth maps
-\end{itemize}
-
-\begin{itemize}
-\item ${\operatorname{Vec}}_{\mathbb{R}}$ : real vector spaces and real-linear maps
-\end{itemize}
-
-\begin{itemize}
-\item ${\mathrm{{Vec}}}_{\mathbb{C}}$ : complex vector spaces and complex-linear maps
-\end{itemize}
-
-\begin{itemize}
-\item Grp: groups and group homomorphisms
-\end{itemize}
-
-\begin{itemize}
-\item Ab: abelian groups and group homomorphisms
-\end{itemize}
-
-\begin{itemize}
-\item Rng: rings and ring homomorphisms
-\end{itemize}
-
-\begin{itemize}
-\item CRng: commutative rings and ring homomorphisms
-\end{itemize}
-
-There are also important categories whose objects are sets with distinguished base points, in addition to (possibly) other structures. A pointed set is an ordered pair $\left( {X, p}\right)$ , where $X$ is a set and $p$ is an element of $X$ . Other pointed objects such as pointed topological spaces or pointed smooth manifolds are defined similarly. If $\left( {X, p}\right)$ and $\left( {{X}^{\prime },{p}^{\prime }}\right)$ are pointed sets (or topological spaces, etc.), a map $F : X \rightarrow \; {X}^{\prime }$ is said to be a pointed map if $F\left( p\right)  = {p}^{\prime }$ ; in this case, we write $F : \left( {X, p}\right)  \rightarrow \; \left( {{X}^{\prime },{p}^{\prime }}\right)$ . Here are some important examples of categories of pointed objects.
-
-\begin{itemize}
-\item Set ${}_{ * }$ : pointed sets and pointed maps
-\end{itemize}
-
-\begin{itemize}
-\item ${\mathrm{{Top}}}_{ * }$ : pointed topological spaces and pointed continuous maps
-\end{itemize}
-
-\begin{itemize}
-\item ${\mathrm{{Man}}}_{ * }$ : pointed topological manifolds and pointed continuous maps
-\end{itemize}
-
-\begin{itemize}
-\item Diff- : pointed smooth manifolds and pointed smooth maps
-\end{itemize}
+A pointed object is a pair $(X,p)$ consisting of an object and a distinguished
+point. A morphism
+\[
+F:(X,p)\longrightarrow(X',p')
+\]
+is pointed when $F(p)=p'$. Pointed sets, topological spaces, topological
+manifolds, and smooth manifolds with their pointed maps form corresponding
+categories.
 \end{example}
 
 \begin{definition}
 \label{def:3-19-extra-3}
 \lean{LocallySmall}
 \mathlibok
-We use the word class instead of set for the collections of objects and morphisms in a category because in some categories they are "too large" to be considered sets. For example, in the category Set, Ob(Set) is the class of all sets; any attempt to treat it as a set in its own right leads to the well-known Russell paradox of set theory. (See [LeeTM, Appendix A] or almost any book on set theory for more.) Even though the classes of objects and morphisms might not constitute sets, we still use notations such as $X \in  \mathrm{{Ob}}\left( \mathrm{C}\right)$ and $f \in  \operatorname{Hom}\left( \mathrm{C}\right)$ to indicate that $X$ is an object and $f$ is a morphism in C. A category in which both $\mathrm{{Ob}}\left( \mathrm{C}\right)$ and $\operatorname{Hom}\left( \mathrm{C}\right)$ are sets is called a small category, and one in which each class of morphisms ${\operatorname{Hom}}_{\mathrm{C}}\left( {X, Y}\right)$ is a set is called locally small. All the categories listed above are locally small but not small.
+A category is small if both its object class and its morphism class are sets.
+It is locally small if $\operatorname{Hom}_{\mathrm C}(X,Y)$ is a set for every
+pair of objects $X,Y$. Each category in Example~\ref{ex:3-26} is locally small
+but not small.
 \end{definition}
 
 \begin{definition}
 \label{def:3-19-extra-4}
 \lean{CategoryTheory.Functor}
 \mathlibok
-If $\mathrm{C}$ and $\mathrm{D}$ are categories, a covariant functor from $\mathrm{C}$ to $\mathrm{D}$ is a rule $\mathcal{F}$ that assigns to each object $X \in  \mathrm{{Ob}}\left( \mathrm{C}\right)$ an object $\mathcal{F}\left( X\right)  \in  \mathrm{{Ob}}\left( \mathrm{D}\right)$ , and to each morphism $f \in  {\operatorname{Hom}}_{\mathrm{C}}\left( {X, Y}\right)$ a morphism $\mathcal{F}\left( f\right)  \in  {\operatorname{Hom}}_{\mathrm{D}}\left( {\mathcal{F}\left( X\right) ,\mathcal{F}\left( Y\right) }\right)$ , so that identities and composition are preserved:
-
+For categories $\mathrm C$ and $\mathrm D$, a covariant functor
+$\mathcal F:\mathrm C\to\mathrm D$ assigns an object $\mathcal F(X)$ to every
+object $X$ and a morphism
 \[
-\mathcal{F}\left( {\operatorname{Id}}_{X}\right)  = {\operatorname{Id}}_{\mathcal{F}\left( X\right) };\;\mathcal{F}\left( {g \circ  h}\right)  = \mathcal{F}\left( g\right)  \circ  \mathcal{F}\left( h\right) .
+\mathcal F(f)\in
+\operatorname{Hom}_{\mathrm D}(\mathcal F(X),\mathcal F(Y))
+\]
+to every $f\in\operatorname{Hom}_{\mathrm C}(X,Y)$, preserving identities and
+composition:
+\[
+\mathcal F(\operatorname{Id}_X)=\operatorname{Id}_{\mathcal F(X)},
+\qquad
+\mathcal F(g\circ h)=\mathcal F(g)\circ\mathcal F(h).
 \]
 \end{definition}
-
-\begin{exercise}
-\label{exer:3-27}
-\lean{Functor.map_isIso}
-\mathlibok
-\dcref{ch3:3.27}
-Show that any (covariant or contravariant) functor from C to D takes isomorphisms in C to isomorphisms in D.
-\end{exercise}
-
-
-\section{Problems}
-
-\begin{exercise}
-\label{prob:3-2}
-\lean{tangentSpaceProdEquiv}
-\leanok
-\uses{prop:3-14}
-3-2. Prove Proposition 3.14 (the tangent space to a product manifold).
-\end{exercise}
-
-\begin{exercise}
-\label{prob:3-4}
-\lean{tangentBundle_unitCircle_diffeomorph}
-\leanok
-3-4. Show that $T{\mathbb{S}}^{1}$ is diffeomorphic to ${\mathbb{S}}^{1} \times  \mathbb{R}$ .
-\end{exercise}
-
-\begin{exercise}
-\label{prob:3-5}
-\lean{not_exists_diffeomorph_maps_unitCircle_to_squareBoundary}
-\leanok
-3-5. Let ${\mathbb{S}}^{1} \subseteq  {\mathbb{R}}^{2}$ be the unit circle, and let $K \subseteq  {\mathbb{R}}^{2}$ be the boundary of the square of side 2 centered at the origin: $K = \left\{  {\left( {x, y}\right)  : \max \left( {\left| x\right| ,\left| y\right| }\right)  = 1}\right\}$ . Show that there is a homeomorphism $F : {\mathbb{R}}^{2} \rightarrow  {\mathbb{R}}^{2}$ such that $F\left( {\mathbb{S}}^{1}\right)  = K$ , but there is no diffeomorphism with the same property. [Hint: let $\gamma$ be a smooth curve whose image lies in ${\mathbb{S}}^{1}$ , and consider the action of ${dF}\left( {{\gamma }^{\prime }\left( t\right) }\right)$ on the coordinate functions $x$ and $y$ .] (Used on p. 123.)
-\end{exercise}
-

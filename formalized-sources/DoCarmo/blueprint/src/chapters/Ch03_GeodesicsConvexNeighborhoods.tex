@@ -1,43 +1,9 @@
 \chapter{Geodesics; Convex Neighborhoods}
 \label{chap:dc-geodesics-convex-neighborhoods}
 
-Faithful transcription of do Carmo, \emph{Riemannian Geometry}. Each numbered
-statement keeps do Carmo's number, kind and (name); proofs keep his explicit
-cross-references ("by \cref{lem:dc-ch3-3-4}", "from \cref{prop:dc-ch3-2-7}", "from \cref{prop:dc-ch0-5-4}") so the dependency graph is recoverable from the text.
-
-\section{Introduction}
-
-After fixing the basic terminology, we pass to the study of two fundamental
-concepts of Riemannian geometry: \emph{geodesics} and \emph{curvature}. This chapter
-introduces the notion of a geodesic as a curve with zero acceleration; the next
-chapter initiates the study of curvature.
-
-One objective of this chapter is to show that a geodesic minimizes arc length
-for points "sufficiently close" (in a sense made precise below); conversely, if
-a curve minimizes arc length between any two of its points, it is a geodesic.
-
-In §2 we introduce the tangent bundle $TM$ of a differentiable manifold $M$,
-which lets us reduce the local study of geodesics on $M$ to the study of the
-trajectories of a vector field — the \emph{geodesic field} — on $TM$. We then
-introduce the \emph{exponential map} of an open set in $TM$ to $M$, a way of
-"collecting" all the geodesics of $M$ into a single differentiable map. This
-permits, for example, an application of the inverse function theorem to show that
-any point of $M$ possesses a neighborhood $W$ such that any two points of $W$ can
-be joined by a unique geodesic that minimizes arc length (see \cref{thm:dc-ch3-3-7}).
-
-The concept of a geodesic as a curve minimizing distance between two nearby
-points is old. For surfaces in $\mathbb{R}^3$, geodesics are the curves $c(s)$
-($s$ arc length) whose acceleration $c''(s)$ in $\mathbb{R}^3$ is perpendicular
-to the surface (so the acceleration "from the viewpoint of the surface" is zero);
-this was apparently known for convex surfaces to Johann Bernoulli (1697), and the
-equations of geodesics for surfaces $f(x,y,z)=0$ were considered by Euler (1732).
-It was only with the work of Gauss [Ga] (1827) that the relationship between
-geodesics and the curvature of a surface was established (cf. Introduction to
-Chap. 1); this relationship is fundamental and reappears throughout the book.
-
 \section{The geodesic flow}
 
-In what follows, $M$ is a Riemannian manifold together with its Riemannian
+Throughout this chapter, $M$ is a Riemannian manifold with its Riemannian
 connection.
 
 \begin{definition}[geodesic]
@@ -48,8 +14,7 @@ connection.
   A parametrized curve $\gamma:I\to M$ is a \emph{geodesic at} $t_0\in I$ if
   $\frac{D}{dt}\left(\frac{d\gamma}{dt}\right)=0$ at the point $t_0$; if $\gamma$ is
   a geodesic at $t$ for all $t\in I$, then $\gamma$ is a \emph{geodesic}. If
-  $[a,b]\subset I$, the restriction of $\gamma$ to $[a,b]$ is a *geodesic segment
-  joining $\gamma(a)$ to $\gamma(b)$*. By abuse of language, the image $\gamma(I)$
+  $[a,b]\subset I$, the restriction of $\gamma$ to $[a,b]$ is a \emph{geodesic segment joining $\gamma(a)$ to $\gamma(b)$}. By abuse of language, the image $\gamma(I)$
   is also called a geodesic.
   
   If $\gamma$ is a geodesic then
@@ -77,12 +42,6 @@ connection.
   
   holds.
 
-  The public Lean predicate \texttt{IsGeodesicCurve} packages continuity
-  together with \texttt{IsGeodesic}, the moving-chart geodesic equation.  The
-  equation-only predicate is kept separate internally because its
-  junk-extended chart readings do not imply continuity by themselves.  The
-  current ODE bridge derives the $C^1$ regularity used for speed and length
-  arguments.  No separate $C^\infty$ regularity bootstrap is claimed here.
 \end{definition}
 
 \begin{lemma}[geodesics have constant speed]
@@ -108,9 +67,10 @@ connection.
   parameter.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   By metric compatibility in coordinate form
-  (\cref{lem:dc-ch2-3-2-coord}, do Carmo formula (3)),
+  (\cref{lem:dc-ch2-3-2-coord}),
   $$
   \frac{d}{ds}\big\langle u'(s),u'(s)\big\rangle
     =\Big\langle\tfrac{Du'}{ds},u'\Big\rangle+\Big\langle u',\tfrac{Du'}{ds}\Big\rangle,
@@ -130,10 +90,10 @@ connection.
   presentations of $T_{\gamma(\sigma)}M$. Hence the intrinsic squared speed
   agrees near $t$ with the chart expression above, so its derivative vanishes
   at $t$; a real function on a connected open set whose derivative vanishes
-  everywhere is constant. $\square$
+  everywhere is constant.
 \end{proof}
 
-\subsection{Tangent bundle (after 2.1)}
+\subsection{Tangent bundle}
 $TM$ is the set of pairs $(q,v)$, $q\in M$, $v\in T_qM$. If $(U,\mathbf{x})$ is a
 coordinate system on $M$, any $v\in T_qM$, $q\in\mathbf{x}(U)$, is
 $\sum_i y_i\frac{\partial}{\partial x_i}$, and $(x_1,\dots,x_n,y_1,\dots,y_n)$ are
@@ -208,6 +168,7 @@ system (1') on $TU$.
   \cref{thm:dc-ch3-2-2}.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   A curve $\alpha$ solves the ODE with initial value $x$ iff the Picard
   residual $G(x, \alpha) = \alpha - x - \int_0^t f(\alpha)$ vanishes, viewed as
@@ -237,7 +198,7 @@ system (1') on $TU$.
   $(1 - J \circ M) \circ D = \mathrm{const}$ is exactly the variational
   integral equation, solved by $D = (1 - J \circ M)^{-1} \circ \mathrm{const}$
   and determining $D$ uniquely; postcomposing with the bounded evaluation at a
-  fixed time $t$ gives the time-$t$ statement. $\square$
+  fixed time $t$ gives the time-$t$ statement.
 \end{proof}
 
 \begin{lemma}[the variational flow computes the derivative of the flow]
@@ -261,6 +222,7 @@ system (1') on $TU$.
   equation with initial condition $(x_0, W_0)$, for every $W_0 \in L(E,E)$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   Applying the second component of the extended integral equation to a fixed
   vector $v$, and commuting the (bounded linear) evaluation with the Volterra
@@ -275,7 +237,7 @@ system (1') on $TU$.
   extended field ($\hat f \circ \psi = \psi \circ \hat f$, by associativity of
   composition), with the constant embedding ($\psi(x_0, 1) = (x_0, W_0)$), and
   with the primitive; hence it maps zeros of the extended residual with initial
-  condition $(x_0, 1)$ to zeros with initial condition $(x_0, W_0)$. $\square$
+  condition $(x_0, 1)$ to zeros with initial condition $(x_0, W_0)$.
 \end{proof}
 
 \begin{lemma}[second-order dependence on the initial condition]
@@ -298,6 +260,7 @@ system (1') on $TU$.
   \cref{thm:dc-ch3-2-2}.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   The extended field $\hat f(z, W) = (f(z), f'(z) \circ W)$ is differentiable
   on $u \times L(E,E)$ with derivative
@@ -318,7 +281,7 @@ system (1') on $TU$.
   $E \times L(E,E)$) makes $\hat\sigma$ strictly differentiable at $(x_0, 1)$;
   composing with the affine embedding $x \mapsto (x, 1)$ and the bounded
   projection to the operator component yields the strict differentiability of
-  $\tau$ at $x_0$. $\square$
+  $\tau$ at $x_0$.
 \end{proof}
 
 \begin{theorem}[flow of a vector field]
@@ -352,11 +315,12 @@ system (1') on $TU$.
   $t\mapsto(\gamma(t),\gamma'(t))$, where $\gamma$ is a geodesic on $M$.
 \end{lemma}
 \begin{proof}
+  \sketch
   Uniqueness: in a coordinate system $(U,\mathbf{x})$ the trajectories of
   $G$ on $TU$ are $t\mapsto(\gamma(t),\gamma'(t))$ with $\gamma$ a geodesic, hence
   solutions of (1'); by uniqueness of trajectories of such a system, $G$ is unique
   if it exists. Existence: define $G$ locally by (1'); uniqueness shows $G$ is
-  well-defined on all of $TM$. $\square$
+  well-defined on all of $TM$.
 \end{proof}
 
 \begin{definition}[geodesic field / geodesic flow]
@@ -393,12 +357,13 @@ system (1') on $TU$.
   $\gamma$ is a geodesic through $p$ with initial velocity $v$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   Read the geodesic equation on $TM$ as the first-order system (1') for the
-  geodesic spray $G$. The chart-fixed spray is $C^\infty$ at $(p,v)$, so Mathlib's
+  geodesic spray $G$. The chart-fixed spray is $C^\infty$ at $(p,v)$, so the
   integral-curve existence theorem (Picard--Lindel\"of,
   \cref{lem:dc-ch3-2-2-pointwise}) produces a local integral curve $f$ of $G$ with
-  $f(0)=(p,v)$; its base projection $\gamma=\pi\circ f$ is the desired geodesic. $\square$
+  $f(0)=(p,v)$; its base projection $\gamma=\pi\circ f$ is the desired geodesic.
 \end{proof}
 
 \begin{lemma}[pointwise uniqueness of geodesics]
@@ -412,11 +377,12 @@ system (1') on $TU$.
   velocity), then $\gamma_1$ and $\gamma_2$ agree on a neighbourhood of $t_0$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   The lifts are integral curves of the same $C^\infty$ vector field $G$ on $TM$
   with the same value at $t_0$, so by uniqueness of integral curves
   (\cref{lem:dc-ch3-2-2-pointwise}, Gr\"onwall) they agree near $t_0$; projecting to $M$
-  gives $\gamma_1=\gamma_2$ near $t_0$. $\square$
+  gives $\gamma_1=\gamma_2$ near $t_0$.
 \end{proof}
 
 \begin{lemma}[a geodesic leaves its initial point with its initial velocity]
@@ -431,6 +397,7 @@ system (1') on $TU$.
   geodesic $\gamma(\cdot,p,v)$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   The velocity lift $f$ of the geodesic is an integral curve of the geodesic
   field with $f(0)=(p,v)$. Reading the integral-curve equation in the chart of
@@ -440,7 +407,7 @@ system (1') on $TU$.
   $x'(0)=w(0)=v$, since the trivialisation at $p$ is the identity on the fibre
   over $p$. For the canonical maximal geodesic, local uniqueness
   (\cref{lem:dc-ch3-2-5-unique}) propagated along the connected witness interval
-  identifies it with a single witness near $0$. $\square$
+  identifies it with a single witness near $0$.
 \end{proof}
 
 \begin{lemma}[a geodesic satisfies the geodesic equation at the initial time]
@@ -458,12 +425,13 @@ system (1') on $TU$.
   formulation back to the second-order equation at the initial time.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   With $(x,w)$ as in \cref{lem:dc-ch3-2-5-velocity}, the first-order system
   gives $x'=w$ near $0$ and $w'(0)=-\Gamma_p(w(0),w(0))(x(0))$; hence $x'$ is
   differentiable at $0$ with
   $x''(0)=w'(0)=-\Gamma_p(v,v)(x(0))$, which is the geodesic equation at $0$.
-  $\square$
+
 \end{proof}
 
 \begin{proposition}[local existence/uniqueness of geodesics]
@@ -493,6 +461,7 @@ system (1') on $TU$.
   $h'(t)=a\,\gamma'(at)$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   Read the geodesic equation in a chart at the moving foot $\gamma(at)$: with
   $u(s)=\mathbf{x}(\gamma(s))$ the chart representative, $h$ reads as $s\mapsto
@@ -503,7 +472,7 @@ system (1') on $TU$.
   h''(t)+\Gamma\big(h'(t),h'(t)\big)
     =a^2\Big(u''(at)+\Gamma\big(u'(at),u'(at)\big)\Big)=a^2\cdot 0=0,
   $$
-  so $h$ satisfies the geodesic equation at every $t$. $\square$
+  so $h$ satisfies the geodesic equation at every $t$.
 \end{proof}
 
 \begin{lemma}[homogeneity of a geodesic]
@@ -521,6 +490,7 @@ system (1') on $TU$.
   $$
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   Let $h:(-\frac{\delta}{a},\frac{\delta}{a})\to M$, $h(t)=\gamma(at,q,v)$.
   Then $h(0)=q$, $\frac{dh}{dt}(0)=av$, and by \cref{lem:dc-ch3-2-6-reparam}
@@ -531,23 +501,7 @@ system (1') on $TU$.
   $$
 
   So $h$ is a geodesic through $q$ with velocity $av$ at $t=0$; by uniqueness
-  $h(t)=\gamma(at,q,v)=\gamma(t,q,av)$. $\square$
-
-  In the formalization the three clauses of the statement are carried by three
-  theorems: the reparametrised curve $t\mapsto\gamma(at)$ of a geodesic with
-  initial data $(q,v)$ is a geodesic with initial data $(q,av)$ on the inversely
-  rescaled interval (\texttt{IsGeodesicOnWithInitial.fiberScale}); the maximal
-  interval of definition rescales exactly,
-  $I_{\max}(q,av)=\{t:at\in I_{\max}(q,v)\}$ for $a\neq0$
-  (\texttt{maximalGeodesicInterval\_fiberScale}); and the canonical maximal
-  geodesics satisfy $\gamma(t,q,av)=\gamma(at,q,v)$ on the maximal interval
-  (\texttt{maximalGeodesic\_fiberScale}), by local uniqueness
-  (\cref{lem:dc-ch3-2-5-unique}) propagated along the connected overlap of the
-  two witness intervals. The bundle-level mechanism is the degree-2 fibre
-  homogeneity of the geodesic spray: scaling velocity by $a$ scales the
-  spray's horizontal component by $a$ and its vertical component by $a^2$, so
-  the fibre-scaled, $a$-fold time-rescaled lift of an integral curve of the
-  spray is again an integral curve.
+  $h(t)=\gamma(at,q,v)=\gamma(t,q,av)$.
 \end{proof}
 
 \begin{lemma}[pointwise uniform interval of definition]
@@ -567,13 +521,14 @@ system (1') on $TU$.
   solutions on initial data.)
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   The maximal interval $I_{\max}(p,v)$ is open and contains $0$
   (\cref{lem:dc-ch3-2-5-exist}), so it contains some $(-\delta,\delta)$,
   $\delta>0$. By the homogeneity of geodesics (\cref{lem:dc-ch3-2-6}),
   $I_{\max}(p,\,c\,v)=\{t:\ c\,t\in I_{\max}(p,v)\}$; taking
   $c=\frac{\delta}{2T}$ sends $(-T,T)$ inside $(-\delta/2,\delta/2)\subset
-  I_{\max}(p,v)$, so $(-T,T)\subset I_{\max}(p,\,c\,v)$. $\square$
+  I_{\max}(p,v)$, so $(-T,T)\subset I_{\max}(p,\,c\,v)$.
 \end{proof}
 
 \begin{lemma}[uniform interval in the velocity]
@@ -593,6 +548,7 @@ system (1') on $TU$.
   \cref{prop:dc-ch3-2-7} at a fixed base point.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   Apply the Picard--Lindelöf local flow (\cref{lem:dc-ch3-2-2-flow}) to the
   coordinate spray $F(x, w) = (w, -\Gamma_p(w, w)(x))$, which is $C^\infty$ on
@@ -604,7 +560,7 @@ system (1') on $TU$.
   equation. Finally, the canonical maximal geodesic agrees with \emph{any}
   witness whose own foot stays in the chart: the clopen uniqueness propagation
   constrains only the given witness, so no chart-validity hypothesis about all
-  witnesses is required. $\square$
+  witnesses is required.
 \end{proof}
 
 \begin{lemma}[the geodesic local flow is $C^1$ in the initial condition]
@@ -629,6 +585,7 @@ system (1') on $TU$.
   of the $C^\infty$ family clause of \cref{prop:dc-ch3-2-7}.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   Trajectories starting in the flow ball are confined — by Lipschitz
   dependence on the initial condition together with constancy of the centre
@@ -644,7 +601,7 @@ system (1') on $TU$.
   values stay in the chart region where the spray is continuous), and
   $\sigma$ is Lipschitz — hence continuous — in the initial condition. The
   conclusion of that lemma is the claimed strict differentiability with the
-  variational characterization. $\square$
+  variational characterization.
 \end{proof}
 
 \begin{lemma}[the geodesic local flow is $C^2$ in the initial condition]
@@ -674,6 +631,7 @@ system (1') on $TU$.
   $C^\infty$ family clause of \cref{prop:dc-ch3-2-7}.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   As in \cref{lem:dc-ch3-2-7-c1flow}, trajectories from the flow ball are
   confined to a compact ball inside the chart region, on which the first and
@@ -715,7 +673,7 @@ system (1') on $TU$.
   $C + C_2 \|\tau(x_0)\| \le C + 2C_2$ (the block estimate
   $\|D\hat F(z, W)\| \le \|dF(z)\| + \|d^2F(z)\|\,\|W\|$), so
   $T\,(C + 2C_2) < 1$ makes its hypotheses hold, and the family
-  $x \mapsto \tau(x)$ is strictly differentiable at $x_0$. $\square$
+  $x \mapsto \tau(x)$ is strictly differentiable at $x_0$.
 \end{proof}
 
 \begin{proposition}[uniform interval of definition]
@@ -731,11 +689,12 @@ system (1') on $TU$.
   $|w|<\varepsilon$.
 \end{proposition}
 \begin{proof}
+  \sketch
   The geodesic $\gamma(t,q,v)$ of \cref{prop:dc-ch3-2-5} is defined for
   $|t|<\delta$ and $|v|<\varepsilon_1$. By the lemma of homogeneity (2.6),
   $\gamma(t,q,\frac{\delta v}{2})$ is defined for $|t|<2$. Taking
   $\varepsilon<\frac{\delta\varepsilon_1}{2}$, the geodesic $\gamma(t,q,w)$ is
-  defined for $|t|<2$ and $|w|<\varepsilon$. $\square$
+  defined for $|t|<2$ and $|w|<\varepsilon$.
 \end{proof}
 
 \begin{remark}[large velocity]
@@ -750,7 +709,7 @@ system (1') on $TU$.
   trades interval length against velocity in both directions.
 \end{remark}
 
-\subsection{Exponential map (after 2.8)}
+\subsection{Exponential map}
 \cref{prop:dc-ch3-2-7} lets us define the \emph{exponential map}. Let $p\in M$ and let
 $\mathcal{U}\subset TM$ be as in \cref{prop:dc-ch3-2-7}. The map $\exp:\mathcal{U}\to M$,
 
@@ -781,11 +740,6 @@ velocity $\frac{v}{|v|}$.
   domain is the set of $v\in T_pM$ whose maximal geodesic is defined at time
   $1$, which always contains $0$, and $\exp_p(0)=p$.
 
-  The Lean declarations attached to this definition use the intrinsic maximal
-  geodesic, so their domain is independent of any single coordinate chart.
-  The older declarations \texttt{expMap} and \texttt{expDomain} encode a
-  chart-fixed local flow; they may be used as a local representative only after
-  proving that the relevant geodesic remains in that chart.
 \end{definition}
 
 \begin{lemma}[the exponential map traces geodesic rays]
@@ -802,10 +756,11 @@ velocity $\frac{v}{|v|}$.
   $d(\exp_p)_0=\mathrm{id}$ in \cref{prop:dc-ch3-2-9}.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   For $t=0$ both sides are $p$. For $t\neq0$ this is the homogeneity
   $\gamma(1,p,t\,v)=\gamma(t\cdot 1,p,v)$ of \cref{lem:dc-ch3-2-6} evaluated at
-  time $1$. $\square$
+  time $1$.
 \end{proof}
 
 \begin{lemma}[$d(\exp_p)_0=\mathrm{id}$ along rays]
@@ -820,17 +775,17 @@ velocity $\frac{v}{|v|}$.
   d(\exp_p)_0(v)=\frac{d}{dt}\big(\exp_p(tv)\big)\Big|_{t=0}
     =\frac{d}{dt}\big(\gamma(t,p,v)\big)\Big|_{t=0}=v.
   $$
-  This is the derivative computation in the proof of \cref{prop:dc-ch3-2-9};
-  the remaining content of that proposition is the $C^\infty$ regularity of
-  $\exp_p$ near $0$ (smooth dependence on initial conditions) and the inverse
-  function theorem.
+  Together with smooth dependence on initial conditions and the inverse function
+  theorem, this derivative identity gives the local regularity and local
+  invertibility of $\exp_p$ near $0$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   By \cref{lem:dc-ch3-expmap-ray}, $\exp_p(t\,v)=\gamma(t,p,v)$ for $t$ in the
   maximal interval, hence for all $t$ near $0$; by
   \cref{lem:dc-ch3-2-5-velocity} the geodesic $\gamma(\cdot,p,v)$ has velocity
-  $v$ at $0$. $\square$
+  $v$ at $0$.
 \end{proof}
 
 \begin{lemma}[$\exp_p$ is strictly differentiable at $0$ with derivative the identity]
@@ -850,6 +805,7 @@ velocity $\frac{v}{|v|}$.
   the strict-derivative point.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   $C^1$ dependence on initial conditions at an equilibrium, on the Banach
   space $C([0,T], E \times E)$: the Picard integral equation
@@ -869,7 +825,7 @@ velocity $\frac{v}{|v|}$.
   and projecting to the base gives the strict derivative
   $d(\exp_p)_0 = \mathrm{id}$ of the chart reading, and the inverse function
   theorem for strictly differentiable maps yields the neighbourhood and
-  injectivity statements. $\square$
+  injectivity statements.
 \end{proof}
 
 \begin{lemma}[$\exp_p$ is strictly differentiable on a ball]
@@ -889,6 +845,7 @@ velocity $\frac{v}{|v|}$.
   $t \mapsto \exp_p(t\,v_0)$, not the identity.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   Let $Z$, $r$, $\varepsilon$, $T$ be as in \cref{lem:dc-ch3-2-7-c1flow} and
   put $\rho = rT$. For $\|w\| < \rho$, the homogeneity of geodesics
@@ -904,7 +861,7 @@ velocity $\frac{v}{|v|}$.
   in the initial condition of the flow family (\cref{lem:dc-ch3-2-7-c1flow})
   evaluated at the fixed time $T$, then with the (linear, bounded) projection
   to the base coordinate, yields the strict derivative of the chart reading
-  of $\exp_p$ at every $v_0 \in B_\rho(0)$. $\square$
+  of $\exp_p$ at every $v_0 \in B_\rho(0)$.
 \end{proof}
 
 \begin{lemma}[$\exp_p$ is $C^1$ near the origin]
@@ -922,6 +879,7 @@ velocity $\frac{v}{|v|}$.
   $C^1$ level.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   A map that is \emph{strictly} differentiable at every point of an open set
   automatically has a continuous derivative there: if $x, x'$ are close, the
@@ -936,7 +894,7 @@ velocity $\frac{v}{|v|}$.
   derivative together with differentiability is exactly the $C^1$
   characterization. Applying this to the chart reading of $\exp_p$ on
   $B_\rho(0)$, which is strictly differentiable at every point by
-  \cref{lem:dc-ch3-2-9-c1ball}, gives the claim. $\square$
+  \cref{lem:dc-ch3-2-9-c1ball}, gives the claim.
 \end{proof}
 
 \begin{lemma}[the derivative of $\exp_p$ is invertible near the origin]
@@ -952,6 +910,7 @@ velocity $\frac{v}{|v|}$.
   isomorphism of $T_pM$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   By \cref{lem:dc-ch3-2-9-c1ball} the chart reading $f$ of $\exp_p$ is strictly
   differentiable at every point of a ball $B_{\rho_0}(0)$, so its derivative
@@ -962,7 +921,7 @@ velocity $\frac{v}{|v|}$.
   $t = \mathrm{id} - df_{v_0}$, $\|t\| < 1$, the Neumann series
   $\sum_{n \ge 0} t^n$ converges in the Banach algebra of bounded endomorphisms
   of $T_pM$ and inverts $\mathrm{id} - t$; hence $df_{v_0}$ is a continuous
-  linear isomorphism. $\square$
+  linear isomorphism.
 \end{proof}
 
 \begin{lemma}[$\exp_p$ is a $C^1$ diffeomorphism near the origin]
@@ -981,6 +940,7 @@ velocity $\frac{v}{|v|}$.
   level.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   Let $f = \varphi_p \circ \exp_p$ be the chart reading of $\exp_p$, which is
   $C^1$ on a ball around the origin by \cref{lem:dc-ch3-2-9-c1}, with
@@ -996,7 +956,7 @@ velocity $\frac{v}{|v|}$.
   $\varphi_p$-preimage of $f(B_\varepsilon(0))$ — is open in $M$. Shrinking
   $\varepsilon$ so that $f(B_\varepsilon(0)) \subset V$ and so that the
   left-inverse identity $f^{-1}(f(w)) = w$ holds on $B_\varepsilon(0)$ gives
-  all the claims. $\square$
+  all the claims.
 \end{proof}
 
 \begin{lemma}[$\exp_p$ is $C^2$ on a ball]
@@ -1017,6 +977,7 @@ velocity $\frac{v}{|v|}$.
   on the ball.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   Let $Z$, $r$, $\varepsilon$, $T$, $\sigma$, $\tau$ be as in
   \cref{lem:dc-ch3-2-7-c2flow} and put $\rho = rT$. As in
@@ -1041,7 +1002,7 @@ velocity $\frac{v}{|v|}$.
   $w \mapsto \Phi(\tau(\iota(w)))$ is strictly differentiable, hence $C^1$,
   on $B_\rho(0)$ (strict differentiability at every point of an open set
   self-improves to $C^1$, as in \cref{lem:dc-ch3-2-9-c1}). A differentiable
-  map whose derivative map is $C^1$ on an open set is $C^2$ there. $\square$
+  map whose derivative map is $C^1$ on an open set is $C^2$ there.
 \end{proof}
 
 \begin{lemma}[$\exp_p$ is a $C^2$ diffeomorphism near the origin]
@@ -1060,6 +1021,7 @@ velocity $\frac{v}{|v|}$.
   \cref{lem:dc-ch3-4-1}.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   \uses{lem:dc-ch3-2-9-c2ball, lem:dc-ch3-2-9-invertible, lem:dc-ch3-2-9-c1diffeo}
   Take $\varepsilon$ below the radii of \cref{lem:dc-ch3-2-9-c2ball} ($f$ is
@@ -1074,7 +1036,7 @@ velocity $\frac{v}{|v|}$.
   $f(v_0)$; it agrees with $f^{-1}$ near $f(v_0)$, because both are left
   inverses of $f$ on a neighborhood of $v_0$ and $f$ maps neighborhoods of
   $v_0$ onto neighborhoods of $f(v_0)$. Hence $f^{-1}$ is $C^2$ at every
-  point of the open image. $\square$
+  point of the open image.
 \end{proof}
 
 \begin{proposition}[exp_q is a local diffeomorphism]
@@ -1087,6 +1049,7 @@ velocity $\frac{v}{|v|}$.
   $B_\varepsilon(0)$ onto an open subset of $M$.
 \end{proposition}
 \begin{proof}
+  \sketch
   Compute $d(\exp_q)_0$:
   
   $$
@@ -1094,20 +1057,7 @@ velocity $\frac{v}{|v|}$.
   $$
   
   Hence $d(\exp_q)_0=\mathrm{Id}$ on $T_qM$, and by the inverse function theorem
-  $\exp_q$ is a local diffeomorphism on a neighborhood of $0$. $\square$
-
-  In the formalization, the statement is complete at the $C^1$ level:
-  $d(\exp_q)_0 = \mathrm{id}$ as a strict Fréchet derivative with the
-  neighbourhood and injectivity consequences (\cref{lem:dc-ch3-2-9-strict}),
-  $\exp_q$ is $C^1$ on a ball with everywhere-invertible derivative
-  (\cref{lem:dc-ch3-2-9-c1}, \cref{lem:dc-ch3-2-9-invertible}), and $\exp_q$
-  is a $C^1$ diffeomorphism of a ball onto an open subset of $M$
-  (\cref{lem:dc-ch3-2-9-c1diffeo}); moreover $\exp_q$ is $C^2$ on a ball
-  (\cref{lem:dc-ch3-2-9-c2ball}, via the variational flow of
-  \cref{lem:dc-ch3-2-7-c2flow}) and a $C^2$ diffeomorphism with $C^2$ inverse
-  (\cref{lem:dc-ch3-2-9-c2diffeo}). The remaining gap to the full
-  ($C^\infty$) statement is the $C^k$, $k \ge 3$, dependence of the geodesic
-  flow on its initial condition (iterating the variational bootstrap).
+  $\exp_q$ is a local diffeomorphism on a neighborhood of $0$.
 \end{proof}
 
 \begin{example}[Euclidean space]
@@ -1124,8 +1074,8 @@ velocity $\frac{v}{|v|}$.
   \dcref{ch3:2.11}
   \uses{prop:dc-ch3-2-5}
   \notready
-  Let $M=S^n\subset\mathbb{R}^{n+1}$ be the unit sphere. As in Exercise 4(b) of
-  Chapter 2, the great circles parametrized by arc length are geodesics. All
+  Let $M=S^n\subset\mathbb{R}^{n+1}$ be the unit sphere. Great circles
+  parametrized by arc length are geodesics. All
   geodesics of $S^n$ are great circles parametrized proportionally to arc length:
   given $p\in S^n$ and a unit $v\in T_pS^n$, the intersection of $S^n$ with the
   plane through the origin, $p$, and $v$ is a great circle parametrizable as the
@@ -1146,7 +1096,7 @@ velocity $\frac{v}{|v|}$.
   A \emph{piecewise differentiable curve} is a continuous map $c:[a,b]\to M$ for which
   there is a partition $a=t_0<t_1<\dots<t_k=b$ such that each restriction
   $c|_{[t_i,t_{i+1}]}$ is differentiable; $c$ \emph{joins} $c(a)$ and $c(b)$. $c(t_i)$ is
-  a \emph{vertex} of $c$, and the *vertex angle at $c(t_i)$* is the angle between
+  a \emph{vertex} of $c$, and the \emph{vertex angle at $c(t_i)$} is the angle between
   $\lim_{t\to t_i^+}c'(t)$ and $\lim_{t\to t_i^-}c'(t)$. Parallel transport extends
   to such curves by transporting successively over each differentiable segment.
 \end{definition}
@@ -1189,6 +1139,7 @@ velocity $\frac{v}{|v|}$.
   $$
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   In a coordinate system $\mathbf{x}$ with
   $\mathbf{x}^{-1}\circ s(u,v)=(x^1(u,v),\dots,x^n(u,v))$,
@@ -1200,7 +1151,7 @@ velocity $\frac{v}{|v|}$.
   By symmetry of the connection,
   $\nabla_{\partial/\partial x^j}\frac{\partial}{\partial x^i}=\nabla_{\partial/\partial x^i}\frac{\partial}{\partial x^j}$,
   so computing $\frac{D}{\partial u}\frac{\partial s}{\partial v}$ gives the same
-  expression. $\square$
+  expression.
 \end{proof}
 
 \begin{lemma}[rays of the exponential chart reading are coordinate geodesics]
@@ -1221,6 +1172,7 @@ velocity $\frac{v}{|v|}$.
   so each ray $t \mapsto f(t\,u)$ is a coordinate geodesic.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   Let $Z$, $r$, $\varepsilon$, $T$ be the uniform local flow of the coordinate
   spray (\cref{lem:dc-ch3-2-7-c2flow}); put
@@ -1242,7 +1194,7 @@ velocity $\frac{v}{|v|}$.
   rule at points of the $C^2$ ball gives $(df)_{tu}(u) = T\,Z_2(tT)$; at
   $t = 0$ this is $u$, which proves (iii) after extending by homogeneity of
   both sides, and differentiating once more in $t$ through the flow ODE
-  $\dot Z_2 = -\Gamma(Z_2, Z_2)(Z_1)$ gives (iv). $\square$
+  $\dot Z_2 = -\Gamma(Z_2, Z_2)(Z_1)$ gives (iv).
 \end{proof}
 
 \begin{lemma}[Gauss surface computation]
@@ -1262,6 +1214,7 @@ velocity $\frac{v}{|v|}$.
   base points: $f$ is a radial isometry.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   Consider the parametrized surface (\cref{def:dc-ch3-3-3})
   $c(t,s) = f\big(t\,(v + s w)\big)$ on the open parameter set
@@ -1296,7 +1249,7 @@ velocity $\frac{v}{|v|}$.
   $\partial_s c(0, \cdot) = (df)_0(0 \cdot w) = 0$, so
   $h(1) = \langle v, w\rangle$. As
   $h(1) = \langle (df)_v(w), (df)_v(v)\rangle_{f(v)}$, symmetry of the
-  metric gives the claim. $\square$
+  metric gives the claim.
 \end{proof}
 
 \begin{lemma}[Gauss lemma on a ball]
@@ -1316,12 +1269,13 @@ velocity $\frac{v}{|v|}$.
   the radial geodesics.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   Apply the surface computation (\cref{lem:dc-ch3-3-5-surface}) to the chart
   reading $f = \varphi_p \circ \exp_p$, whose ball domain, $C^2$ regularity,
   value $f(0)=\varphi_p(p)$, derivative $(df)_0 = \mathrm{id}$, and
   ray-geodesic property are supplied by \cref{lem:dc-ch3-3-5-rayode}.
-  $\square$
+
 \end{proof}
 
 \begin{lemma}[radial lower bound]
@@ -1340,6 +1294,7 @@ velocity $\frac{v}{|v|}$.
   geodesics (\cref{prop:dc-ch3-3-6}).
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   For $v = 0$ both sides vanish (the right-hand side is nonnegative, the
   metric being positive semidefinite). For $v \ne 0$ put
@@ -1355,7 +1310,7 @@ velocity $\frac{v}{|v|}$.
   the cross term $2\lambda\,\langle (d\exp_p)_v(v), (d\exp_p)_v(\xi_N)\rangle
   = 2\lambda\,\langle v, \xi_N\rangle_p$ vanishing by orthogonality.
   Multiplying through by $\langle v,v\rangle_p > 0$ gives the claim.
-  $\square$
+
 \end{proof}
 
 \begin{lemma}[Gauss]
@@ -1373,6 +1328,7 @@ velocity $\frac{v}{|v|}$.
   $$
 \end{lemma}
 \begin{proof}
+  \sketch
   Write $w=w_T+w_N$, $w_T$ parallel to $v$, $w_N$ normal to $v$. Since
   $d\exp_p$ is linear and
   $\langle(d\exp_p)_v(v),(d\exp_p)_v(w_T)\rangle=\langle v,w_T\rangle$, it suffices
@@ -1391,20 +1347,10 @@ velocity $\frac{v}{|v|}$.
   
   so $\langle\frac{\partial f}{\partial s},\frac{\partial f}{\partial t}\rangle$ is
   independent of $t$. As $\lim_{t\to0}\frac{\partial f}{\partial s}(t,0)=\lim_{t\to0}(d\exp_p)_{tv}\,t w_N=0$,
-  the inner product is $0$, proving (2). $\square$
-
-  In the formalization, the statement is complete on a ball around the
-  origin (\cref{lem:dc-ch3-3-5-ball}, through the ray-geodesic package
-  \cref{lem:dc-ch3-3-5-rayode} and the surface computation
-  \cref{lem:dc-ch3-3-5-surface}), which is the form consumed by the normal-
-  and totally-normal-neighborhood results
-  (\cref{prop:dc-ch3-3-6}, \cref{thm:dc-ch3-3-7}). The remaining gap to the
-  statement at an arbitrary $v$ in the domain of $\exp_p$ is reading the
-  metric along geodesics that leave the chart at $p$ — the change-of-chart
-  law for the geodesic flow.
+  the inner product is $0$, proving (2).
 \end{proof}
 
-\subsection{Normal neighborhoods (after \cref{lem:dc-ch3-3-5})}
+\subsection{Normal neighborhoods}
 If $\exp_p$ is a diffeomorphism of a neighborhood $V\ni 0$ in $T_pM$ onto
 $U=\exp_p(V)$, then $U$ is a \emph{normal neighborhood} of $p$. If
 $\overline{B_\varepsilon(0)}\subset V$, then $\exp_p B_\varepsilon(0)=B_\varepsilon(p)$
@@ -1429,6 +1375,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   taken in the metric at the moving foot.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   For $\delta>0$ consider the smoothed radius
   $r_\delta(t)=\sqrt{\langle w(t),w(t)\rangle_p+\delta}$. The map
@@ -1446,14 +1393,14 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   the second step because $|\dot c|^2\ge 0$ (the metric is positive
   semidefinite at every point of the chart image). Taking square roots and
   dividing, $r_\delta'(t)\le|\dot c(t)|$ for \emph{every} $t\in[a,b]$ —
-  including the zeros of $w$, where do Carmo's radius $r$ has a corner but
+  including the zeros of $w$, where the radius $r$ has a corner but
   $r_\delta$ does not. All the data are continuous ($w$, $w'$, the Gram
   entries along $c$, and $(d\exp_p)$ on the ball by $C^1$ regularity,
   \cref{lem:dc-ch3-2-9-c1ball}), so by the fundamental theorem of calculus
   and monotonicity of the integral
   $$r_\delta(b)-r_\delta(a)=\int_a^b r_\delta'(t)\,dt
     \le\int_a^b\big|\dot c(t)\big|\,dt.$$
-  Letting $\delta\to0^+$ gives the claim. $\square$
+  Letting $\delta\to0^+$ gives the claim.
 \end{proof}
 
 \begin{lemma}[reach estimate: length dominates the radius reached]
@@ -1467,17 +1414,18 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   reaches at \emph{any} time:
   $$\sqrt{\langle w(t_1),w(t_1)\rangle_p}\;\le\;\int_a^b|\dot c(t)|\,dt
     \qquad(t_1\in[a,b]).$$
-  This is the inequality behind do Carmo's escape case in
+  This is the inequality behind the escape case in
   \cref{prop:dc-ch3-3-6}: a competitor leaving the normal ball of
   $g_p$-radius $\rho'$ reaches radius $\rho'$ at its first exit, so its
   length is at least $\rho'>\ell(\gamma)$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   Apply the smoothed-radius comparison (\cref{lem:dc-ch3-3-6-radius}) on
   $[a,t_1]$ and enlarge the integration interval: the speed integrand is
   pointwise nonnegative, so $\int_a^{t_1}\le\int_a^b$. With $w(a)=0$ the
-  radius gain is the radius reached. $\square$
+  radius gain is the radius reached.
 \end{proof}
 
 \begin{lemma}[radial geodesics have unit chart speed]
@@ -1492,10 +1440,11 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
     =\langle v,v\rangle_p.$$
   The radial geodesic $\gamma(t)=\exp_p(tv)$, $0\le t\le1$, therefore has
   constant speed $|v|_p$ and length
-  $\ell(\gamma)=\int_0^1|v|_p\,dt=|v|_p$ (do Carmo's normalized identity
+  $\ell(\gamma)=\int_0^1|v|_p\,dt=|v|_p$ (the normalized identity
   $|\partial f/\partial r|=1$).
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   For $t\ne0$ apply the Gauss identity (\cref{lem:dc-ch3-3-5-ball}) at the
   pair $(tv,v)$:
@@ -1506,7 +1455,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   $t\ne0$ gives the claim. At $t=0$ the ray package
   (\cref{lem:dc-ch3-3-5-rayode}) supplies $(d\exp_p)_0=\mathrm{id}$ and
   $\exp_p(0)=p$, so the left-hand side is $\langle v,v\rangle_p$ directly.
-  $\square$
+
 \end{proof}
 
 \begin{lemma}[radial geodesics minimize, polar form]
@@ -1525,6 +1474,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
     \;\le\;\int_0^1\sqrt{\langle\dot c,\dot c\rangle}\,dt=\ell(c).$$
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   By \cref{lem:dc-ch3-3-6-rayspeed}, $\ell(\gamma)=|v|_p$. By the radius
   comparison (\cref{lem:dc-ch3-3-6-radius}),
@@ -1548,6 +1498,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   lengths).
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   Put the competing curve in polar form: $w=\exp_p^{-1}\circ c$ through the
   local $C^1$ inverse of $\exp_p$ (\cref{lem:dc-ch3-2-9-c1diffeo}), so
@@ -1562,7 +1513,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   feet by $\exp_p(w(t))=c(t)$ and the velocities
   $(d\exp_p)_{w(t)}w'(t)=\frac{d}{dt}\varphi_p(c(t))$ by uniqueness of
   one-sided derivatives on $[0,1]$ (both compute the derivative of
-  $u=\varphi_p\circ c=f\circ w$ within $[0,1]$). $\square$
+  $u=\varphi_p\circ c=f\circ w$ within $[0,1]$).
 \end{proof}
 
 \begin{lemma}[radial geodesics minimize among piecewise competitors in a normal ball]
@@ -1589,6 +1540,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   the total length of $\exp_p\circ w$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   \uses{lem:dc-ch3-3-6-radius, lem:dc-ch3-3-6-rayspeed, lem:dc-ch3-2-9-c1diffeo, lem:dc-ch3-2-9-invertible}
   Each piece $[\tau_i,\tau_{i+1}]$ satisfies the single-piece smoothed-radius
@@ -1613,7 +1565,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   with continuous one-sided derivatives by the chain rule
   (\cref{lem:dc-ch3-2-9-invertible}), and the telescoped comparison with
   $w(0)=0$, $w(1)=v$ bounds the total length of $c$ below by
-  $|v|_p=\ell(\gamma)$ (\cref{lem:dc-ch3-3-6-rayspeed}). $\square$
+  $|v|_p=\ell(\gamma)$ (\cref{lem:dc-ch3-3-6-rayspeed}).
 \end{proof}
 
 \begin{lemma}[the competitor bound: piecewise curves, escape case included]
@@ -1631,7 +1583,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   \item every piecewise differentiable curve $\sigma$ from $p$ to
     $\exp_p(v)$ with $\|v\|<\varepsilon$ satisfies
     $\ell(\sigma)\ge|v|_p=\ell(\gamma)$, where $\gamma(t)=\exp_p(tv)$ is the
-    radial geodesic — do Carmo's inequality, with competitors allowed to
+    radial geodesic — the inequality, with competitors allowed to
     leave the normal ball;
   \item every piecewise differentiable curve from $p$ ending outside
     $\exp_p(B_r(0))$, $0<r\le\varepsilon$, has length at least $r/C$ (the
@@ -1639,6 +1591,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   \end{enumerate}
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   \uses{lem:dc-ch3-3-6-piecewise, lem:dc-ch3-2-9-c1diffeo}
   Fix a radius $r'$ so small that on the coordinate ball $B_{r'}(0)$ the
@@ -1675,7 +1628,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   lengths — is the manifold path length of $\sigma$ over $[0,1]$, by
   additivity of the length integral over a monotone partition; on each piece
   the intrinsic speed agrees with the chart-read speed used by the polar
-  comparison. $\square$
+  comparison.
 \end{proof}
 
 \begin{lemma}[equality forces radial velocity]
@@ -1696,6 +1649,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
     w(t),\qquad\langle w(t),w'(t)\rangle_p\ge0.$$
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   \uses{lem:dc-ch3-3-5-ball, lem:dc-ch3-3-6-radius, lem:dc-ch3-2-9-invertible}
   The radius comparison holds on every subinterval $[c,d]\subseteq[a,b]$
@@ -1723,7 +1677,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   every point of a small chart ball around $p$ (the Gram comparison
   $\|z\|^2\le c\,\langle z,z\rangle_y$ holds for all $y$ near the pole), so
   $(d\exp_p)_w(w_N')=0$, and $(d\exp_p)_w$ is invertible on the ball
-  (\cref{lem:dc-ch3-2-9-invertible}), so $w_N'=0$. $\square$
+  (\cref{lem:dc-ch3-2-9-invertible}), so $w_N'=0$.
 \end{proof}
 
 \begin{lemma}[equality case in polar form: the competitor runs along the ray]
@@ -1742,6 +1696,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   radius $|w(t)|_p$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   \uses{lem:dc-ch3-3-6-equality-radial}
   If $|w(1)|_p=0$ the monotone radius (its derivative is the nonnegative
@@ -1758,7 +1713,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   vanishing right derivative on $[t,1]$ is constant, so $\eta\equiv\eta(1)$
   on $(t_*,1]$, i.e.\ $w(t)=r(t)\,w(1)/r(1)$ there. On $[0,t_*]$ the
   monotone radius satisfies $0\le r(t)\le r(t_*)=0$, so $w(t)=0$ and the
-  identity holds with coefficient $0$. $\square$
+  identity holds with coefficient $0$.
 \end{proof}
 
 \begin{lemma}[confinement: a short curve from $p$ stays in the Gauss ball]
@@ -1775,6 +1730,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   to the Gauss ball.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   \uses{lem:dc-ch3-3-6-competitor}
   Truncate $\sigma$ at time $t$ and reparametrize the truncation to $[0,1]$
@@ -1786,7 +1742,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   The Gram comparison $\|z\|^2\le c\,\langle z,z\rangle_p$ places the
   sublevel set inside the norm ball of radius $\sqrt{c}\,\delta$, which is
   inside $B_{\rho'}(0)$ for $\delta=\rho''/(\sqrt{c}+1)$,
-  $\rho''=\min(\rho',\varepsilon)$. $\square$
+  $\rho''=\min(\rho',\varepsilon)$.
 \end{proof}
 
 \begin{lemma}[the equality case in the manifold: monotone reparametrization of the radial geodesic]
@@ -1803,14 +1759,13 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   $s:[0,1]\to[0,1]$ with $s(0)=0$, $s(1)=1$,
   $$\sigma(t)=\exp_p\big(s(t)\,v\big)\quad\text{and}\quad
     \ell\big(\sigma|_{[0,t]}\big)=s(t)\,|v|_p\quad\text{for all }t\in[0,1];$$
-  in particular $\sigma([0,1])=\exp_p([0,1]\cdot v)$ — do Carmo's
-  $c([0,1])=\gamma([0,1])$. By the confinement lemma
+  in particular $\sigma([0,1])=\exp_p([0,1]\cdot v)$. By the confinement lemma
   (\cref{lem:dc-ch3-3-6-confinement}) the stay-in-ball hypothesis is
   automatic: the statement holds for \emph{every} $C^1$ equality competitor
-  from $p$ to $\exp_p(v)$, with no assumption on where it travels
-  (\texttt{exists\_gauss\_equality\_manifold}).
+  from $p$ to $\exp_p(v)$, with no assumption on where it travels.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   \uses{lem:dc-ch3-3-6-equality-ray, lem:dc-ch3-3-6-equality-radial, lem:dc-ch3-2-9-c1diffeo, lem:dc-ch7-2-8-chart-length, lem:dc-ch3-3-6-confinement}
   Lift $\sigma$ through the $C^1$ local inverse of $\exp_p$
@@ -1828,7 +1783,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   identically $0$ and $s(t)=t$ works). The running-length identity
   $\ell(\sigma|_{[0,t]})=r(t)$ is the fundamental theorem of calculus for
   $r'=|\dot\sigma|$, and the image equality follows from the intermediate
-  value theorem applied to the continuous monotone radius. $\square$
+  value theorem applied to the continuous monotone radius.
 \end{proof}
 
 \begin{lemma}[an arclength-proportional minimizer is the radial geodesic]
@@ -1847,9 +1802,10 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   \cref{cor:dc-ch3-3-9}: the equality case of the minimizing property turns
   an arclength-proportional minimizer into a geodesic. By the confinement
   lemma (\cref{lem:dc-ch3-3-6-confinement}) the stay-in-ball hypothesis is
-  again automatic (\texttt{exists\_gauss\_equality\_geodesic}).
+  again automatic.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   \uses{lem:dc-ch3-3-6-equality-manifold, lem:dc-ch7-2-8-ray-geodesic, lem:dc-ch3-3-6-confinement}
   The running-length hypothesis at $t=1$ realizes the radial length, so
@@ -1861,7 +1817,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   transfers from the radial geodesic (\cref{lem:dc-ch7-2-8-ray-geodesic}) at
   every interior time by locality of the moving-foot equation, since
   $\sigma$ agrees with the ray on a neighborhood of each $t\in(0,1)$.
-  $\square$
+
 \end{proof}
 
 \begin{lemma}[equality case in polar form, piecewise: the competitor runs along the ray]
@@ -1889,6 +1845,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   \end{itemize}
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   \uses{lem:dc-ch3-3-6-equality-radial, lem:dc-ch3-3-6-equality-ray, lem:dc-ch3-3-6-radius}
   For the general interval: the argument of
@@ -1915,7 +1872,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
     =\frac{r(t)}{r(\tau_n)},$$
   the degenerate case $r(\tau_{i+1})=0$ being absorbed by monotonicity
   ($r(t)=0$ forces $w(t)=0$). No gluing of directions across the corners is
-  needed. $\square$
+  needed.
 \end{proof}
 
 \begin{lemma}[confinement, piecewise: a short piecewise curve from $p$ stays in the Gauss ball]
@@ -1932,6 +1889,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   piecewise equality analysis.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   \uses{lem:dc-ch3-3-6-competitor}
   Truncate $\sigma$ at time $t$ along the truncated partition
@@ -1944,7 +1902,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   escaped $\exp_p(B_{\rho''}(0))$ with $\rho''=\min(\rho',\varepsilon)$, the
   piecewise escape estimate of \cref{lem:dc-ch3-3-6-competitor} would force
   $\rho''/\sqrt{c}\le\ell(\sigma|_{[0,t]})<\delta=\rho''/\sqrt{c}$, a
-  contradiction. $\square$
+  contradiction.
 \end{proof}
 
 \begin{lemma}[the equality case in the manifold, piecewise competitors]
@@ -1962,13 +1920,13 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   $s:[0,1]\to[0,1]$ with $s(0)=0$, $s(1)=1$,
   $$\sigma(t)=\exp_p\big(s(t)\,v\big)\quad\text{and}\quad
     \ell\big(\sigma|_{[0,t]}\big)=s(t)\,|v|_p\quad\text{for all }t\in[0,1];$$
-  in particular $\sigma([0,1])=\exp_p([0,1]\cdot v)$ — do Carmo's
-  $c([0,1])=\gamma([0,1])$ in its literal regularity class. By the piecewise
+  in particular $\sigma([0,1])=\exp_p([0,1]\cdot v)$ in its literal regularity
+  class. By the piecewise
   confinement lemma (\cref{lem:dc-ch3-3-6-confinement-piecewise}) no
-  stay-in-ball hypothesis is needed
-  (\texttt{exists\_gauss\_equality\_manifold\_piecewise}).
+  stay-in-ball hypothesis is needed.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   \uses{lem:dc-ch3-3-6-equality-ray-piecewise, lem:dc-ch3-3-6-confinement-piecewise, lem:dc-ch3-2-9-c1diffeo, lem:dc-ch7-2-8-chart-length}
   As in the $C^1$ case (\cref{lem:dc-ch3-3-6-equality-manifold}), lift
@@ -1986,7 +1944,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   $\ell(\sigma|_{[0,t]})=r(t)$ telescopes over the truncated partition
   $\min(\tau_j,t)$, evaluating each truncated piece by the per-piece FTC
   clause; the image equality is the intermediate value theorem for the
-  continuous monotone radius. $\square$
+  continuous monotone radius.
 \end{proof}
 
 \begin{proposition}[geodesics locally minimize]
@@ -2002,6 +1960,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   $\gamma([0,1])=c([0,1])$.
 \end{proposition}
 \begin{proof}
+  \sketch
   \leanok
   \uses{lem:dc-ch3-3-6-competitor, lem:dc-ch3-3-6-equality-manifold-piecewise, lem:dc-ch3-3-6-piecewise, lem:dc-ch3-3-6-radius, lem:dc-ch3-3-6-rayspeed, lem:dc-ch3-3-6-equality-radial, lem:dc-ch3-3-6-equality-ray, lem:dc-ch3-3-6-equality-manifold, lem:dc-ch3-3-6-equality-geodesic, lem:dc-ch3-3-6-confinement, lem:dc-ch3-3-6-equality-ray-piecewise, lem:dc-ch3-3-6-confinement-piecewise}
   Suppose first $c([0,1])\subset B$. For $t\ne 0$ write uniquely
@@ -2023,49 +1982,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   then $|\frac{\partial f}{\partial t}|=0$ and $r'(t)>0$, so $c$ is a monotone
   reparametrization of $\gamma$ and $c([0,1])=\gamma([0,1])$. If $c([0,1])\not\subset B$,
   let $t_1$ be the first time $c(t_1)\in\partial B$; with $\rho$ the radius of $B$,
-  $\ell(c)\ge\ell_{[0,t_1]}(c)\ge\rho>\ell(\gamma)$. $\square$
-  
-  The proposition is not global: a sufficiently long geodesic arc can cease to
-  minimize (e.g. geodesics on the sphere past the antipode of $p$).
-
-  In the formalization, the inequality $\ell(\gamma)\le\ell(c)$ is complete
-  for piecewise differentiable competitors, including those leaving the
-  normal ball (\cref{lem:dc-ch3-3-6-competitor}, which handles the escape
-  case $c([0,1])\not\subset B$ by the first exit time; inside the ball the
-  statement is \cref{lem:dc-ch3-3-6-piecewise}, reducing to the polar form
-  via the local inverse of $\exp_p$; the analytic core is the smoothed-radius
-  comparison \cref{lem:dc-ch3-3-6-radius} plus the constant ray speed
-  \cref{lem:dc-ch3-3-6-rayspeed}). For the equality analysis
-  $\ell(c)=\ell(\gamma)\Rightarrow c([0,1])=\gamma([0,1])$, the polar form
-  is complete for differentiable competitors: equality forces the polar
-  lift to move radially outward at every time
-  (\cref{lem:dc-ch3-3-6-equality-radial}) and hence to trace the radial
-  segment $w(t)=(|w(t)|_p/|w(1)|_p)\,w(1)$
-  (\cref{lem:dc-ch3-3-6-equality-ray}). The transport of the polar
-  identity to do Carmo's manifold statement is also complete for $C^1$
-  competitors staying in the Gauss ball
-  (\cref{lem:dc-ch3-3-6-equality-manifold}): an equality competitor is a
-  monotone reparametrization of the radial geodesic, with the running-length
-  identity and the image equality $c([0,1])=\gamma([0,1])$; if moreover the
-  competitor is parametrized proportionally to arc length, it \emph{is} the
-  radial geodesic, satisfying the geodesic equation on the interior
-  (\cref{lem:dc-ch3-3-6-equality-geodesic}). The escape case of the
-  equality analysis is discharged by the confinement lemmas
-  (\cref{lem:dc-ch3-3-6-confinement},
-  \cref{lem:dc-ch3-3-6-confinement-piecewise}): equality competitors are
-  automatically confined to the Gauss ball, so the manifold equality
-  statements need no stay-in-ball hypothesis. The equality clause in do
-  Carmo's literal regularity class — piecewise-$C^1$ competitors, splitting
-  at the vertices — is \cref{lem:dc-ch3-3-6-equality-manifold-piecewise},
-  built on the piecewise polar ray identification
-  (\cref{lem:dc-ch3-3-6-equality-ray-piecewise}: per-piece equality by
-  telescoping, then a backward induction gluing the per-piece rays). Both
-  clauses of the proposition are therefore machine-checked
-  (\texttt{exists\_le\_pathELength\_piecewise} for the inequality including
-  the escape case, \texttt{exists\_gauss\_equality\_manifold\_piecewise}
-  for the equality clause), in the radial reading: the geodesic segment
-  from $p$ in the normal ball is the radial segment $t\mapsto\exp_p(tv)$ of
-  length $|v|_p$, its endpoint $\gamma(1)=\exp_p(v)$.
+  $\ell(c)\ge\ell_{[0,t_1]}(c)\ge\rho>\ell(\gamma)$.
 \end{proof}
 
 \begin{lemma}[geodesic segments of the chart flow, from any base point]
@@ -2103,6 +2020,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   near $p$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   Write $u(s)=Z(y,w/T)(sT)_1$ and $v(s)=Z(y,w/T)(sT)_2$ for the position and
   velocity components of the reparametrized flow line. By the chain rule
@@ -2121,7 +2039,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   (\cref{lem:dc-ch7-2-8-chart-independence}) $\gamma$ satisfies the geodesic
   equation read in the chart at $\gamma(s)$ as well. Continuity of $\gamma$
   follows since $u$ is differentiable and $\mathbf{x}^{-1}$ is continuous on the
-  chart image. $\square$
+  chart image.
 \end{proof}
 
 \begin{lemma}[interior chart velocity of the chart-flow segment]
@@ -2145,6 +2063,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   clause is \cref{lem:dc-ch3-3-7-descent}) and the interior deduction.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   Differentiate the position component $u(s)=Z(y,w/T)(sT)_1$ by the chain rule:
   the flow solves $z'(t)=\bigl(z_2(t),-\Gamma_p(z_2,z_2)(z_1)\bigr)$
@@ -2152,7 +2071,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   is its second component; the reparametrisation $t=sT$ multiplies the derivative
   by $T$, giving $u'(s)=T\,Z(y,w/T)(sT)_2$ on the whole open window where the flow
   derivative is interior to $[-\varepsilon,\varepsilon]$. This is the chart velocity
-  of $\gamma$ since $\mathbf{x}\circ\gamma=u$ on the chart-image window. $\square$
+  of $\gamma$ since $\mathbf{x}\circ\gamma=u$ on the chart-image window.
 \end{proof}
 
 \begin{lemma}[differential of the pair map]
@@ -2172,10 +2091,11 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   $$
   dG_{(\mathbf{x}(p),0)}(a,b)=(a,\;a+b),
   $$
-  do Carmo's block matrix $\begin{pmatrix}I & 0\\ I & I\end{pmatrix}$. In
+  the block matrix $\begin{pmatrix}I & 0\\ I & I\end{pmatrix}$. In
   particular the differential is an invertible linear map.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   The point $(\mathbf{x}(p),0)$ is an equilibrium of the geodesic spray
   $F(x,u)=(u,\,-\Gamma_p(u,u)(x))$, and $F$ is $C^1$ near it. By the
@@ -2195,7 +2115,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
     =\Bigl(a,\;\bigl[(a,b/T)+T\,A(a,b/T)\bigr]_1\Bigr)
     =\bigl(a,\;a+T\cdot b/T\bigr)=(a,\;a+b).
   $$
-  The inverse of the differential is $(a,c)\mapsto(a,c-a)$. $\square$
+  The inverse of the differential is $(a,c)\mapsto(a,c-a)$.
 \end{proof}
 
 \begin{lemma}[the pair map is $C^1$ on a ball]
@@ -2212,6 +2132,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   $\mathbf{x}^{-1}(y)$ is $C^1$ on the uniform velocity ball $|w|<Tr$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   By the $C^1$-dependence of the flow on its full initial condition, at an
   arbitrary admissible base solution (\cref{lem:dc-ch3-2-7-c1flow}), the map
@@ -2224,7 +2145,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   open set, and a map strictly differentiable at every point of an open set is
   $C^1$ there (as in \cref{lem:dc-ch3-2-9-c1}). The slice statement follows by
   composing with the affine embedding $w\mapsto(y,w)$, which maps the ball
-  $|w|<Tr$ into the admissible set. $\square$
+  $|w|<Tr$ into the admissible set.
 \end{proof}
 
 \begin{lemma}[the geodesic segment determines the pair map]
@@ -2246,6 +2167,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   common admissible set.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   \uses{lem:dc-ch3-3-7-descent, lem:dc-ch7-2-8-uniqueness}
   By \cref{lem:dc-ch3-3-7-descent} — whose proof gives the geodesic property
@@ -2258,7 +2180,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   (\cref{lem:dc-ch7-2-8-uniqueness}) they agree on the common open window,
   which contains $s=1$ since $T<\varepsilon$ and $T'<\varepsilon'$. Both
   endpoint readings lie in the chart image, where $\mathbf{x}^{-1}$ is
-  injective, so evaluating the identity at $s=1$ equates them. $\square$
+  injective, so evaluating the identity at $s=1$ equates them.
 \end{proof}
 
 \begin{lemma}[the derivative of the pair map is invertible near the zero section]
@@ -2277,6 +2199,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   every point of the ball $B((\mathbf{x}(p),0),\rho)$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   \uses{lem:dc-ch3-3-7-pairmap, lem:dc-ch3-3-7-c1pair, lem:dc-ch3-3-7-flow-agree}
   Take the flow package of \cref{lem:dc-ch3-3-7-c1pair}, so that $G$ is $C^1$
@@ -2291,7 +2214,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   $\|dG_x-S\|<(\|S^{-1}\|+1)^{-1}$ for $|x-(\mathbf{x}(p),0)|<\rho$; then
   $t:=S^{-1}\circ(S-dG_x)$ has $\|t\|\le\|S^{-1}\|\,\|S-dG_x\|<1$, the
   Neumann series inverts $1-t$, and $dG_x=S\circ(1-t)$ is invertible — as in
-  \cref{lem:dc-ch3-2-9-invertible}. $\square$
+  \cref{lem:dc-ch3-2-9-invertible}.
 \end{proof}
 
 \begin{theorem}[totally normal neighborhood]
@@ -2306,6 +2229,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   normal neighborhood of each of its points.
 \end{theorem}
 \begin{proof}
+  \sketch
   \leanok
   \uses{lem:dc-ch3-3-7-descent, lem:dc-ch3-3-7-descent-velocity, lem:dc-ch3-3-7-pairmap, lem:dc-ch3-3-7-c1pair, lem:dc-ch3-3-7-invertible}
   Let $\varepsilon$, $V$, $\mathcal{U}$ be as in \cref{prop:dc-ch3-2-7}, with
@@ -2321,51 +2245,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   $\mathcal{U}'=\{(q,v);\ q\in V',\ v\in T_qM,\ |v|<\delta\}$ diffeomorphically onto
   a neighborhood $W'$ of $(p,p)$. Choose $W\ni p$ with $W\times W\subset W'$. For
   $q\in W$ and $B_\delta(0)\subset T_qM$, $F(\{q\}\times B_\delta(0))\supset\{q\}\times W$,
-  so by definition of $F$, $\exp_q(B_\delta(0))\supset W$. $\square$
-
-  In detail, with velocities coordinatized in the single chart $\mathbf{x}$ at
-  $p$ (so that one ball $B_\delta$ serves every base point): the pair map in
-  chart coordinates is $G(y,w)=(y,\,Z(y,w/T)(T)_1)$ of
-  \cref{lem:dc-ch3-3-7-pairmap}; its differential at $(\mathbf{x}(p),0)$ is the
-  invertible shear $(a,b)\mapsto(a,a+b)$, so by the inverse function theorem $G$
-  is a homeomorphism of a neighborhood of $(\mathbf{x}(p),0)$ onto a
-  neighborhood of $(\mathbf{x}(p),\mathbf{x}(p))$. Pick a product ball
-  $B_1\times B_\delta$ inside that neighborhood, small enough that its points
-  are admissible flow initial conditions; the image $G(B_1\times B_\delta)$ is
-  a neighborhood of $(\mathbf{x}(p),\mathbf{x}(p))$ and hence contains a square
-  $\widetilde W\times\widetilde W$ with
-  $\widetilde W\subset B_1$. Set $W=\mathbf{x}^{-1}(\widetilde W)$. For
-  $q,m\in W$ the pair $(\mathbf{x}(q),\mathbf{x}(m))$ lies in
-  $G(B_1\times B_\delta)$, and any preimage has first coordinate
-  $\mathbf{x}(q)$; injectivity of $G$ on $B_1\times B_\delta$ therefore yields a
-  \emph{unique} $w$ with $|w|<\delta$ whose geodesic segment
-  (\cref{lem:dc-ch3-3-7-descent}) joins $q$ to $m$ — this is
-  $\exp_q(B_\delta)\supset W$ together with the injectivity of $\exp_q$ on
-  $B_\delta$, for every $q\in W$ simultaneously. The Lean statement
-  (\texttt{exists\_totallyNormal\_c1\_diffeo}) moreover exposes, for each such
-  joining segment, its $\mathbf{x}$-velocity \emph{at every interior time}
-  $s\in(0,1)$ — the datum $T\,Z(\cdot)(sT)_2$ of
-  \cref{lem:dc-ch3-3-7-descent-velocity} — so the convex-neighborhood interior
-  deduction \cref{lem:dc-ch3-4-2-interior} can read the joining geodesic's
-  velocity at each interior distance-critical time, not only at $s=0$.
-
-  The diffeomorphism clause, in detail: by \cref{lem:dc-ch3-3-7-invertible}
-  the pair map is $C^1$ with invertible differential at every point of a ball
-  around $(\mathbf{x}(p),0)$; shrinking $B_1\times B_\delta$ into that ball,
-  $G$ is injective on $B_1\times B_\delta$ (inverse function theorem at the
-  center), its image is open (invertible differential at every point), and
-  the two-sided inverse $G^{-1}$ is $C^1$ on the image (inverse function
-  theorem at each point, applied to the globally defined inverse of the
-  injective $G$). Since $\widetilde W\times\widetilde W\subseteq
-  G(B_1\times B_\delta)$, the joining parameter of the covering clause is
-  computed by the inverse: $w=G^{-1}(\mathbf{x}(q),\mathbf{x}(m))_2$, a $C^1$
-  function of the pair of endpoints — the differentiable dependence of
-  \cref{rem:dc-ch3-3-8}. Freezing the first coordinate $y=\mathbf{x}(q)$
-  exhibits each sliced exponential $w\mapsto\exp_q(w)$, $|w|<\delta$, as an
-  injective $C^1$ map (\cref{lem:dc-ch3-3-7-c1pair}) with open image and
-  $C^1$ inverse $z\mapsto G^{-1}(y,z)_2$ — "$\exp_q$ is a diffeomorphism on
-  $B_\delta(0)$", uniformly over $q\in W$, with "diffeomorphism" read as
-  $C^1$ diffeomorphism as in \cref{prop:dc-ch3-2-9}.
+  so by definition of $F$, $\exp_q(B_\delta(0))\supset W$.
 \end{proof}
 
 \begin{remark}[uniqueness and differentiable dependence]
@@ -2396,9 +2276,9 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   corner at $x$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
-  The engine is the \emph{chord upper bound}
-  (\texttt{exists\_edist\_expMap\_segment\_le}): for every $\theta>1$ there
+  The engine is the \emph{chord upper bound}: for every $\theta>1$ there
   is $\rho>0$ with $d(\exp_x v,\exp_x w)\le\theta\,|w-v|_x$ for
   $\|v\|,\|w\|<\rho$. Its witness is the exponential image
   $s\mapsto\exp_x\big(v+s\,(w-v)\big)$ of the straight segment: since
@@ -2416,7 +2296,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   $4\le|u_2-u_1|_x^2=2-2\langle u_1,u_2\rangle_x$, so
   $\langle u_1,u_2\rangle_x\le-1$, whence
   $|u_1+u_2|_x^2=2+2\langle u_1,u_2\rangle_x\le0$; positive definiteness of
-  $g_x$ gives $u_1+u_2=0$. $\square$
+  $g_x$ gives $u_1+u_2=0$.
 \end{proof}
 
 \begin{lemma}[anchored radial identification of a distance-realizing segment]
@@ -2436,6 +2316,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   normal ball at its own starting point.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   Choose $t_1\in(t_0,B]$ with $\ell\,(t_1-t_0)$ smaller than both the
   metric-ball threshold $\delta$ of the normal ball at $q$
@@ -2454,7 +2335,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   arclength-proportional hypothesis of the equality case
   \cref{lem:dc-ch3-3-6-equality-geodesic}, which yields
   $\sigma(s)=\exp_q(s\,v)$ on $[0,1]$; undoing the reparametrization gives
-  the claim. $\square$
+  the claim.
 \end{proof}
 
 \begin{lemma}[localization at moving centers: the two-sided corner argument]
@@ -2472,6 +2353,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   \cref{def:dc-ch3-2-1} at $u$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   Anchor \cref{lem:dc-ch3-3-9-anchored} at $q=\gamma(u)$ twice: applied to
   $\gamma|_{[u,B]}$ it exhibits a forward subsegment
@@ -2491,7 +2373,7 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   reparametrization preserves the geodesic equation
   (\cref{lem:dc-ch3-2-6-reparam}), and the geodesic equation at $u$ only
   depends on the curve near $u$, where $\gamma$ coincides with this ray.
-  $\square$
+
 \end{proof}
 
 \begin{corollary}[minimizing curve is a geodesic]
@@ -2506,43 +2388,14 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   geodesic; in particular it is regular.
 \end{corollary}
 \begin{proof}
+  \sketch
   \leanok
   For $t\in[a,b]$ let $W$ be a totally normal neighborhood of $\gamma(t)$
   and $I\subset[a,b]$ a closed interval with $t\in I$ and $\gamma(I)\subset W$.
   Then $\gamma_I$ joins two points of a normal ball; by the hypothesis and
   \cref{prop:dc-ch3-3-6}, $\ell(\gamma_I)$ equals the length of the radial geodesic joining
   them, so $\gamma_I$ coincides with that geodesic. As $\gamma_I$ is parametrized
-  proportionally to arc length it is a geodesic on $I$, hence at $t$. $\square$
-
-  In the formalization the localization does \emph{not} route through the
-  totally normal neighborhoods of \cref{thm:dc-ch3-3-7} (whose uniform
-  radius serves every center $q\in W$ at once); instead each interior time
-  is handled by the two-sided anchored argument
-  \cref{lem:dc-ch3-3-9-localization}, whose corner-rigidity step
-  \cref{lem:dc-ch3-3-9-corner} replaces do Carmo's appeal to the uniqueness
-  clause of \cref{thm:dc-ch3-3-7}. The minimizing hypothesis is expressed
-  metrically: under the standing identification of the ambient distance with
-  the Riemannian distance, ``$\ell(\gamma)\le$ every competitor'' says
-  exactly $d\big(\gamma(a),\gamma(b)\big)=\ell(\gamma)$, since $d$ is the
-  infimum of competitor lengths; the sub-segment length identities then
-  follow from the triangle inequality and the additivity of length — for
-  piecewise competitors the bound $d\le\ell$ telescopes across the vertices
-  (\texttt{edist\_le\_pathELength\_piecewise\_partition}, using
-  \cref{lem:dc-ch7-2-8-chart-length}). Machine-checked are: the $C^1$ case
-  (\texttt{isGeodesicOn\_of\_arclength\_edist}), the piecewise-$C^1$ case
-  including the geodesic equation \emph{at the partition vertices} — a
-  minimizing broken geodesic has no corner —
-  (\texttt{isGeodesicOn\_piecewise\_of\_arclength\_edist}), and do Carmo's
-  literal competitor-bound hypothesis form
-  (\texttt{isGeodesicOn\_piecewise\_of\_arclength\_forall\_le}). Sanctioned
-  reading: the geodesic equation is established at every \emph{interior}
-  time of $[a,b]$; at the endpoints the moving-chart equation constrains the
-  curve only through its values on a full neighborhood, which a curve
-  defined on $[a,b]$ does not carry (the same junk-tolerant convention as
-  \cref{lem:dc-ch3-3-6-equality-geodesic}). Regularity is immediate from the
-  local radial representation $\gamma(r)=\exp_q(\ell\,(r-u)\,u_2)$ with
-  $|u_2|_q=1$ produced by \cref{lem:dc-ch3-3-9-localization} — the chart
-  velocity at $u$ is $\ell\,u_2\ne0$ — and is not separately exported.
+  proportionally to arc length it is a geodesic on $I$, hence at $t$.
 \end{proof}
 
 \begin{example}[the Lobatchevski plane]
@@ -2562,8 +2415,8 @@ $B_\varepsilon(p)$ that begin at $p$ are the \emph{radial geodesics}.
   $$
   
   so $\gamma$ minimizes, and by \cref{cor:dc-ch3-3-9} its image is a geodesic. The
-  isometries $z\mapsto\frac{az+b}{cz+d}$, $z=x+iy$, $ad-bc=1$ (cf. Exercise 4 of
-  Chap. 1) carry the $y$-axis into upper semicircles or rays $x=x_0$, $y>0$, which
+  isometries $z\mapsto\frac{az+b}{cz+d}$, $z=x+iy$, $ad-bc=1$ carry the $y$-axis
+  into upper semicircles or rays $x=x_0$, $y>0$, which
   are therefore geodesics; these are all the geodesics, since through each $p\in G$
   and each direction there passes such a circle centered on the $x$-axis (a normal
   direction giving a vertical ray).
@@ -2596,6 +2449,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
     = \langle f'(t),h(t)\rangle_p + \langle f(t),h'(t)\rangle_p.$$
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   The form is the finite sum $\sum_{i,j}G_{ij}\,f^i(t)\,h^j(t)$ with constant
   coefficients $G_{ij}$ (the base point is fixed); each coordinate $f^i,h^j$ is a
@@ -2613,6 +2467,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   $$\frac{\partial F}{\partial t}=2\Big\langle\frac{\partial u}{\partial t},u\Big\rangle_p.$$
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   Apply \cref{lem:dc-ch3-4-1-leibniz} with $f=h=u$ and use the symmetry of
   $\langle\cdot,\cdot\rangle_p$.
@@ -2629,9 +2484,10 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   $$\frac{\partial^2 F}{\partial t^2}
     = 2\Big\langle\frac{\partial^2 u}{\partial t^2},u\Big\rangle_p
       + 2\Big|\frac{\partial u}{\partial t}\Big|_p^2,$$
-  do Carmo's displayed second time-derivative of $F=|u|_p^2$.
+  the displayed second time-derivative of $F=|u|_p^2$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   The field $s\mapsto 2\langle u'(s),u(s)\rangle_p$ is twice the bilinear pairing
   of $u'$ and $u$; differentiate it by \cref{lem:dc-ch3-4-1-leibniz} with
@@ -2651,6 +2507,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   is $tv$ itself, and $F(t)=|u(t)|_p^2=t^2|v|_p^2$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   This is the left-inverse clause of the $C^1$ diffeomorphism
   \cref{lem:dc-ch3-2-9-c1diffeo}, instantiated at $w=tv$.
@@ -2666,9 +2523,10 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   $u(t)=tv$ (\cref{lem:dc-ch3-4-1-radialcoord}), $u'=v$, $u''=0$, and by
   \cref{lem:dc-ch3-4-1-ddF}
   $$\frac{\partial^2 F}{\partial t^2}(0,p,v)=2|v|_p^2.$$
-  In particular for a unit $v$ this equals $2>0$, do Carmo's strict-minimum seed.
+  In particular for a unit $v$ this equals $2>0$, the strict-minimum seed.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   With $u(t)=tv$ the first-derivative field is
   $s\mapsto 2\langle v,sv\rangle_p=2s\,|v|_p^2$, whose derivative at $0$ is
@@ -2682,10 +2540,11 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   \leanok
   For $v\neq0$, $|v|_p^2=\langle v,v\rangle_p>0$. Hence the center Hessian
   $\frac{\partial^2 F}{\partial t^2}(0,p,v)=2|v|_p^2$
-  (\cref{lem:dc-ch3-4-1-hessian-center}) is strictly positive, giving do Carmo's
+  (\cref{lem:dc-ch3-4-1-hessian-center}) is strictly positive, giving the
   strict minimum of $F$ at $q=p$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   Positive-definiteness of the Riemannian metric $g$ at $p$, read in the chart
   at $p$.
@@ -2703,6 +2562,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   $B_r(p)$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   The second-derivative test: $F'(0)=0$ and $F''(0)>0$ give a local minimum of
   $F$ at $0$, so $F(t)\ge F(0)$ near $0$.
@@ -2719,11 +2579,12 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   $S_r(p)$ at $\gamma(0)$ keeps $|\exp_p^{-1}\gamma(t)|^2>r^2$ for $t\neq0$, i.e.
   stays \emph{strictly} outside the closed ball $\overline{B_r(p)}$ except at the
   point of tangency. This strengthens \cref{lem:dc-ch3-4-1-outside} and is the
-  separation do Carmo's convex-neighborhood argument \cref{prop:dc-ch3-4-2}
+  separation the convex-neighborhood argument \cref{prop:dc-ch3-4-2}
   consumes: it rules out the interior distance-maximum whose existence the
   proposition assumes for contradiction.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   By the sign form of the second-derivative test, $\operatorname{sign} F'(t)$
   agrees with $\operatorname{sign}(t)$ near $0$ (from $F'(0)=0$, $F''(0)>0$): $F'>0$
@@ -2748,6 +2609,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   and the Christoffel symbols are smooth, $G$ is jointly continuous in $(q,v)$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   The value $G(q,v)$ needs no time integration: the geodesic acceleration at $t=0$
   is $x''(0)=-\Gamma_a(w,w)$ directly from the geodesic ODE, so by the second-order
@@ -2771,6 +2633,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   for $v\neq0$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   $u(0,p,v)=\exp_p^{-1}(p)=0$ kills the first term. The derivative $D(\exp_p^{-1})_0$ is
   the inverse of $D(\varphi_p\circ\exp_p)_0$ (inverse function theorem), hence injective,
@@ -2790,6 +2653,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   velocity $v$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   $G(q,v)$ is jointly continuous (\cref{lem:dc-ch3-4-1-continuity}) and $G(p,v)>0$ for
   $v\neq0$ (\cref{lem:dc-ch3-4-1-poscenter}). Since the unit sphere of chart velocities
@@ -2809,6 +2673,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   \emph{nonzero} chart velocity $v$, removing the unit-speed restriction.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   Under $v\mapsto cv$ every building block of $G$ scales:
   $D(\exp_p^{-1})_a(cv)=c\,D(\exp_p^{-1})_a(v)$,
@@ -2834,10 +2699,11 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   $$\frac{\partial^2 F}{\partial t^2}(0)
     =2\big\langle D^2\mathrm{finv}(a)(w,w)+D\mathrm{finv}(a)(\xi),\ \mathrm{finv}(a)\big\rangle_p
       +2\,\big|D\mathrm{finv}(a)(w)\big|_p^2,$$
-  the do Carmo displayed derivatives of $F=|u|_p^2$ with the second-order chain rule
+  the displayed derivatives of $F=|u|_p^2$ follow from the second-order chain rule
   $u''(0)=D^2\mathrm{finv}(a)(w,w)+D\mathrm{finv}(a)(x''(0))$ made explicit.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   \uses{lem:dc-ch3-4-1-leibniz, lem:dc-ch3-4-1-dF, lem:dc-ch3-4-1-ddF}
   Near $0$, $u$ is differentiable with $u'(s)=D\mathrm{finv}(x(s))\big(x'(s)\big)$ (chain rule:
@@ -2847,7 +2713,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   against $x'$ at $0$ by the composition and bilinear-application rules gives
   $u''(0)=D^2\mathrm{finv}(a)(w,w)+D\mathrm{finv}(a)(x''(0))$, and \cref{lem:dc-ch3-4-1-ddF}
   turns $\partial^2 F/\partial t^2(0)=2\langle u''(0),u(0)\rangle_p+2|u'(0)|_p^2$ into the
-  second identity. $\square$
+  second identity.
 \end{proof}
 
 \begin{lemma}[the F-identity along the moving-base geodesic flow]
@@ -2864,9 +2730,10 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   $$\frac{\partial^2 F}{\partial t^2}(0,q,v)=G(q,v),$$
   the algebraic second-derivative form of \cref{lem:dc-ch3-4-1-continuity}. This is the
   identification of the abstract form $G$ with the genuine second time-derivative of $F$ along
-  the geodesic family — the assembly step of do Carmo's Lemma 4.1.
+  the geodesic family — the assembly step of the Lemma 4.1.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   \uses{lem:dc-ch3-4-1-fidentity, lem:dc-ch3-3-7-descent}
   The base descent (\cref{lem:dc-ch3-3-7-descent}) gives the chart reading with $x(0)=y$,
@@ -2874,7 +2741,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   form gives differentiability of $x$ on a neighborhood of $0$, and continuity of $x$ places
   $x(s)$ in the $C^2$ domain $S$ for $s$ near $0$. Applying the F-identity
   (\cref{lem:dc-ch3-4-1-fidentity}) with $a=y$ and $\xi=(\mathrm{spray}(y,w))_2$ yields exactly
-  the algebraic form $G(q,v)$ of \cref{lem:dc-ch3-4-1-continuity}. $\square$
+  the algebraic form $G(q,v)$ of \cref{lem:dc-ch3-4-1-continuity}.
 \end{proof}
 
 \begin{lemma}[geodesic tangent to a sphere stays outside]
@@ -2889,7 +2756,13 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   geodesic ball $B_r(p)$ in some neighborhood of $q$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
+  \uses{lem:dc-ch3-4-1-dF, lem:dc-ch3-4-1-ddF, lem:dc-ch3-4-1-hessian-center,
+    lem:dc-ch3-4-1-radialcoord, lem:dc-ch3-4-1-posdef, lem:dc-ch3-4-1-outside,
+    lem:dc-ch3-4-1-continuity, lem:dc-ch3-4-1-poscenter, lem:dc-ch3-4-1-posnbhd,
+    lem:dc-ch3-3-7-descent, lem:dc-ch3-4-1-homog, lem:dc-ch3-3-5-ball,
+    lem:dc-ch3-4-1-fidentity, lem:dc-ch3-4-1-flowreading}
   Let $W$ be a totally normal neighborhood of $p$; by the lemma of
   homogeneity restrict to unit-speed geodesics, so to the unit bundle
   $T_1W=\{(q,v);\ q\in W,\ v\in T_qM,\ |v|=1\}$. After shrinking $W$, assume that
@@ -2915,42 +2788,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   neighborhood $V\subset W$ of $p$ with $\frac{\partial^2 F}{\partial t^2}(0,q,v)>0$
   for all $q\in V$, $|v|=1$. Take $c>0$ with $\exp_p B_c(0)\subset V$: any geodesic
   in $B_c(p)$ tangent to $S_r(p)$, $r<c$, has a strict local minimum of $F$ at
-  $(0,q,v)$, so in a neighborhood of $q$ its points stay outside $B_r(p)$. $\square$
-
-  \uses{lem:dc-ch3-4-1-dF, lem:dc-ch3-4-1-ddF, lem:dc-ch3-4-1-hessian-center,
-    lem:dc-ch3-4-1-radialcoord, lem:dc-ch3-4-1-posdef, lem:dc-ch3-4-1-outside,
-    lem:dc-ch3-4-1-continuity, lem:dc-ch3-4-1-poscenter, lem:dc-ch3-4-1-posnbhd,
-    lem:dc-ch3-3-7-descent, lem:dc-ch3-4-1-homog, lem:dc-ch3-3-5-ball,
-    lem:dc-ch3-4-1-fidentity, lem:dc-ch3-4-1-flowreading}
-  In the formalization the fibrewise (fixed $(q,v)$) analytic kernel, the
-  joint-continuity step, and the two velocity-scaling/acceleration ingredients are
-  complete: the first and second time-derivatives of $F$
-  (\cref{lem:dc-ch3-4-1-dF}, \cref{lem:dc-ch3-4-1-ddF}), the normal coordinate
-  along the radial geodesic (\cref{lem:dc-ch3-4-1-radialcoord}), the center value
-  $\frac{\partial^2 F}{\partial t^2}(0,p,v)=2|v|^2$
-  (\cref{lem:dc-ch3-4-1-hessian-center}), the strict-minimum consequence
-  (\cref{lem:dc-ch3-4-1-outside}), the joint continuity
-  of $\frac{\partial^2 F}{\partial t^2}(0,q,v)$ in the moving base point $q$
-  (\cref{lem:dc-ch3-4-1-continuity}) with its strict positivity propagated to a
-  neighborhood $V$ of $p$ (\cref{lem:dc-ch3-4-1-posnbhd}), the fixed-chart geodesic
-  acceleration $x''(0)=-\Gamma_a(w,w)$ for the actual moving-base family of
-  \cref{thm:dc-ch3-3-7} (\cref{lem:dc-ch3-3-7-descent}), and the degree-2 homogeneity
-  of $G(q,v)$ in $v$ that upgrades the strict positivity from unit chart velocities to
-  \emph{all} nonzero $v$ (\cref{lem:dc-ch3-4-1-homog}). The key simplification is
-  that $\frac{\partial^2 F}{\partial t^2}(0,q,v)$ is an algebraic function of
-  $(\varphi_p(q),w)$ through the $C^2$ inverse $\exp_p^{-1}$ and the smooth spray
-  (the acceleration $x''(0)=-\Gamma_a(w,w)$ is read straight off the geodesic ODE), so
-  its continuity needs no joint-$C^2$-in-$(t,q,v)$ flow. The assembly is now complete:
-  the abstract second-order chain rule (\cref{lem:dc-ch3-4-1-fidentity}) identifies
-  $\frac{\partial^2 F}{\partial t^2}(0,q,v)$ along the geodesic family with the algebraic
-  form $G(q,v)$ (\cref{lem:dc-ch3-4-1-flowreading}, via the fibrewise reading
-  $u=\exp_p^{-1}\circ\gamma$ with inputs $x'(0)=w$ and $x''(0)=-\Gamma_a(w,w)$ from
-  \cref{lem:dc-ch3-3-7-descent}); combining the Gauss-lemma tangency
-  $\frac{\partial F}{\partial t}(0,q,v)=0$ with the strict positivity of $G$ on the
-  neighborhood $V$ (\cref{lem:dc-ch3-4-1-homog}) through the second-derivative test
-  (\cref{lem:dc-ch3-4-1-outside}) gives the strict minimum $F(0)\le F(s)$ near $s=0$: the
-  tangent geodesic stays outside $B_r(p)$, uniformly for base points reading into $V$
-  (\texttt{exists\_forall\_geodesic\_tangent\_stays\_outside\_ball}). $\square$
+  $(0,q,v)$, so in a neighborhood of $q$ its points stay outside $B_r(p)$.
 \end{proof}
 
 \begin{lemma}[strict form of Lemma 4.1: tangent geodesic stays \emph{strictly} outside]
@@ -2971,6 +2809,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   point. This is the form the convex-neighborhood proof \cref{prop:dc-ch3-4-2} consumes.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   \uses{lem:dc-ch3-4-1-flowreading, lem:dc-ch3-4-1-homog, lem:dc-ch3-4-1-strict-outside,
     lem:dc-ch3-4-1-posnbhd, lem:dc-ch3-3-7-descent}
@@ -2979,8 +2818,8 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   positivity of $G$ on $V$ for nonzero velocities (\cref{lem:dc-ch3-4-1-posnbhd},
   \cref{lem:dc-ch3-4-1-homog}), and the tangency $\partial F/\partial t(0)=0$ — but the
   final second-derivative test is the \emph{strict} one (\cref{lem:dc-ch3-4-1-strict-outside},
-  \texttt{eventually\_lt\_of\_deriv\_deriv\_pos}) in place of the non-strict
-  \cref{lem:dc-ch3-4-1-outside}, giving $F(0)<F(s)$ on the punctured neighborhood. $\square$
+  in place of the non-strict
+  \cref{lem:dc-ch3-4-1-outside}, giving $F(0)<F(s)$ on the punctured neighborhood.
 \end{proof}
 
 \begin{lemma}[intrinsic strict separation: an arbitrary geodesic tangent to a sphere stays strictly outside]
@@ -3003,16 +2842,17 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   then $F(0)<F(s)$ for every $s\neq0$ near $0$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   \uses{lem:dc-ch3-4-1-strict, lem:dc-ch3-2-5-unique}
-  Feed $\sigma$ into the \emph{readback} (\cref{lem:dc-ch3-2-5-unique} applied to flow lines,
-  \texttt{IsGeodesicOn.eq\_uniform\_flow\_readback}) for the strict lemma's own flow $Z$: since
+  Feed $\sigma$ into the \emph{readback} of \cref{lem:dc-ch3-2-5-unique} for the strict
+  lemma's own flow $Z$: since
   the readback consumes only the generic flow clauses of $Z$ (not a particular construction), it
   applies verbatim, and on the overlap window $\sigma(s)=\varphi_p^{-1}((Z(\varphi_p(\sigma 0),
   T^{-1}w)(sT))_1)$. Hence $F$ coincides near $0$ with the strict lemma's radial functional, so
   the tangency hypothesis and the strict separation $F(0)<F(s)$ transfer across the equality of
   functions (using $\varphi_p(\sigma s)$ equals the flow reading's chart position on the window).
-  $\square$
+
 \end{proof}
 
 \begin{lemma}[the radial distance has no interior local maximum along a geodesic]
@@ -3023,18 +2863,19 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   \leanok
   With the package of \cref{lem:dc-ch3-4-2-rebase}, for every admissible continuous intrinsic
   geodesic $\sigma$ the radial functional $F(s)=|\mathrm{finv}(\varphi_p(\sigma s))|_p^2$ has
-  \emph{no} local maximum at the base point $0$. This is the exclusion do Carmo's
+  \emph{no} local maximum at the base point $0$. This is the exclusion the
   convex-neighborhood contradiction rests on: at an interior point where the distance from $p$ to
   a joining geodesic attains a maximum, $F$ would have a local maximum, which this rules out.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   \uses{lem:dc-ch3-4-2-rebase}
   A local maximum of $F$ at $0$ forces $\partial F/\partial t(0)=0$ (Fermat's theorem,
-  \texttt{IsLocalMax.deriv\_eq\_zero}), whence \cref{lem:dc-ch3-4-2-rebase} gives the strict
+  ), whence \cref{lem:dc-ch3-4-2-rebase} gives the strict
   separation $F(0)<F(s)$ for every $s\neq0$ near $0$. But a local maximum also gives $F(s)\le F(0)$
   nearby; the two contradict on the (nonempty) punctured neighborhood $\mathbb R\setminus\{0\}$.
-  $\square$
+
 \end{proof}
 
 \begin{lemma}[metric--radial bridge: the radial functional is the squared distance]
@@ -3049,12 +2890,13 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   for every chart velocity $v$ with $\|v\|<\rho$,
   $$ \big(d(p,\exp_p v)\big)^2 = \big\langle \mathrm{finv}(\varphi_p(\exp_p v)),\,
      \mathrm{finv}(\varphi_p(\exp_p v))\big\rangle_p . $$
-  This is the identification $F=d^2$ that do Carmo's convex-neighborhood contradiction consumes:
+  This is the identification $F=d^2$ that the convex-neighborhood contradiction consumes:
   the chart radial functional $F(x)=\langle\exp_p^{-1}(x),\exp_p^{-1}(x)\rangle_p$ of
   \cref{lem:dc-ch3-4-2-nomax} equals the squared metric distance from $p$, so a maximum of
   $d(p,\cdot)$ along a geodesic is a maximum of $F$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   \uses{lem:dc-ch3-4-2-nomax, prop:dc-ch3-3-6}
   Rewrite $\mathrm{finv}(\varphi_p(\exp_p v))=v$ by the left inverse (valid for $\|v\|<\varepsilon_L$),
@@ -3062,7 +2904,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   realization $d(p,\exp_p v)=\sqrt{\langle v,v\rangle_p}$ (\cref{prop:dc-ch3-3-6}, the Gauss-lemma
   consequence for the normal ball) together with $\mathrm{edist}=\mathrm{ofReal}\circ\mathrm{dist}$ in
   the ambient metric space and the positive-semidefiniteness $\langle v,v\rangle_p\ge0$ of the chart
-  Gram form gives the identity on the overlap $\|v\|<\rho=\min(\varepsilon_e,\varepsilon_L)$. $\square$
+  Gram form gives the identity on the overlap $\|v\|<\rho=\min(\varepsilon_e,\varepsilon_L)$.
 \end{proof}
 
 \begin{lemma}[the radial functional is the squared distance on a geodesic ball]
@@ -3074,11 +2916,12 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   With the same data as \cref{lem:dc-ch3-4-2-bridge}, there is $\delta'>0$ such that on the whole
   metric ball $B_{\delta'}(p)$ the chart radial functional is the squared distance:
   $\big(d(p,x)\big)^2 = \langle \mathrm{finv}(\varphi_p x), \mathrm{finv}(\varphi_p x)\rangle_p$ for
-  every $x$ with $d(p,x)<\delta'$. This is the form do Carmo's max-distance contradiction consumes
+  every $x$ with $d(p,x)<\delta'$. This is the form the max-distance contradiction consumes
   directly: on a small geodesic ball around $p$, a local maximum of $d(p,\cdot)$ along a geodesic is
   a local maximum of $F$, which \cref{lem:dc-ch3-4-2-nomax} forbids.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   \uses{lem:dc-ch3-4-2-bridge, prop:dc-ch3-3-6}
   Every $x$ with $d(p,x)<\delta'$ lies in the normal $\varepsilon_e$-ball (the escape clause of the
@@ -3087,7 +2930,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   coordinate-norm bound $\|v\|^2\le c\,\langle v,v\rangle_p$ (positive-definiteness of the chart Gram
   form at $p$) forces $\|v\|<\min(\varepsilon_e,\varepsilon_L)$ once
   $\delta'\le\min(\delta_e,\min(\varepsilon_e,\varepsilon_L)/\sqrt c)$, so the left inverse gives
-  $\mathrm{finv}(\varphi_p x)=v$ and \cref{lem:dc-ch3-4-2-bridge} applies. $\square$
+  $\mathrm{finv}(\varphi_p x)=v$ and \cref{lem:dc-ch3-4-2-bridge} applies.
 \end{proof}
 
 \begin{lemma}[the max-distance interior deduction: convexity from no interior maximum]
@@ -3097,18 +2940,19 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   \leanok
   A continuous function $h$ on $[0,1]$ with $h(0)\le\beta$, $h(1)\le\beta$ and \emph{no} interior
   local maximum on $(0,1)$ stays \emph{strictly} below $\beta$ on the open interval: $h(s)<\beta$ for
-  every $s\in(0,1)$. This is do Carmo's convex-neighborhood contradiction stripped of the geometry:
+  every $s\in(0,1)$. This is the convex-neighborhood contradiction stripped of the geometry:
   with $h(s)=d(p,\gamma(s))$ the distance from $p$ to a joining geodesic, the maximum of $h$ over
   $[0,1]$ sits at an endpoint (an interior maximizer would be a local maximum, forbidden by
   \cref{lem:dc-ch3-4-2-nomax} through the bridge $F=d^2$ of \cref{lem:dc-ch3-4-2-bridge-ball}), hence
   is $\le\beta$, and no interior point can equal it.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   The maximum of $h$ over the compact $[0,1]$ is attained at some $s_0$; if $s_0$ were interior it
   would be a local maximum, contradicting the hypothesis, so $s_0\in\{0,1\}$ and $h(s_0)\le\beta$.
   If some interior $s$ had $h(s)=\beta$, then $\beta\le h(s)\le h(s_0)\le\beta$ forces $h(s)=h(s_0)$,
-  so $s$ is itself an interior maximizer — again a contradiction. Hence $h(s)<\beta$. $\square$
+  so $s$ is itself an interior maximizer — again a contradiction. Hence $h(s)<\beta$.
 \end{proof}
 
 \begin{definition}[strongly convex set]
@@ -3136,9 +2980,10 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   $\gamma(t)$), at the chart position $\varphi_\alpha(\gamma(t))$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   The intrinsic velocity is the tangent-coordinate-change readback of $\xi$, and the chart-Gram form
-  is the intrinsic inner product of the readbacks; composing the two identities gives the claim. $\square$
+  is the intrinsic inner product of the readbacks; composing the two identities gives the claim.
 \end{proof}
 
 \begin{lemma}[chart velocity bounded by the conserved speed]
@@ -3153,10 +2998,11 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   constant, so this bounds the chart velocity \emph{uniformly along the geodesic} by its initial speed.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   The uniform coordinate-norm bound $\|\xi\|^2\le c\,\langle\xi,\xi\rangle_{p,y}$ (positive-definiteness
   of the Gram form, spread over a neighborhood of $\varphi_p(p)$ by the tube lemma) combined with the
-  fixed-chart speed reading \cref{lem:dc-ch3-4-2-speedchart}. $\square$
+  fixed-chart speed reading \cref{lem:dc-ch3-4-2-speedchart}.
 \end{proof}
 
 \begin{lemma}[the inverse pair map fixes the center diagonal]
@@ -3167,17 +3013,18 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   \uses{thm:dc-ch3-3-7}
   The inverse pair map $\mathrm{Ginv}$ of \cref{thm:dc-ch3-3-7} fixes the center
   diagonal: $\mathrm{Ginv}(\varphi_p(p),\varphi_p(p))=(\varphi_p(p),0)$. This is
-  do Carmo's $\exp_p^{-1}(p)=0$ read in the chart at $p$ — the joining velocity
+  the $\exp_p^{-1}(p)=0$ read in the chart at $p$ — the joining velocity
   from $p$ to itself is zero.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   The pair map $G(y,w)=(y,(Z(y,w/T)T)_1)$ sends $(\varphi_p(p),0)$ to
   $(\varphi_p(p),\varphi_p(p))$, since the zero-velocity flow segment is the
   constant geodesic at $p$: $(Z(\varphi_p(p),0)T)_1=\varphi_p(p)$ (the center
   fixed point of the spray flow). As $(\varphi_p(p),0)$ lies in the product ball
   $B$ on which $\mathrm{Ginv}\circ G=\mathrm{id}$, applying the two-sided inverse
-  gives $\mathrm{Ginv}(\varphi_p(p),\varphi_p(p))=(\varphi_p(p),0)$. $\square$
+  gives $\mathrm{Ginv}(\varphi_p(p),\varphi_p(p))=(\varphi_p(p),0)$.
 \end{proof}
 
 \begin{lemma}[uniform smallness of a chart-pair functional near the center]
@@ -3193,6 +3040,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   $\|\Psi(\varphi_p(q_1),\varphi_p(q_2))\|<r$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   By continuity of $\Psi$ at the diagonal center and $\Psi=0$ there, the set
   $\{x:\|\Psi(x)\|<r\}$ is a neighborhood of $(\varphi_p(p),\varphi_p(p))$, hence
@@ -3202,7 +3050,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   of $p$ and contains $\overline{B_\beta(p)}$ for some $\beta>0$. For
   $q_1,q_2\in\overline{B_\beta(p)}$ both chart images lie in $B_\rho(\varphi_p(p))$,
   so the pair lies in the product ball and $\|\Psi(\varphi_p(q_1),\varphi_p(q_2))\|<r$.
-  $\square$
+
 \end{proof}
 
 \begin{lemma}[the joining velocity is uniformly small on a small ball]
@@ -3216,15 +3064,15 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   fixing the center diagonal (\cref{lem:dc-ch3-4-2-invdiagonal}): for every $r>0$
   there is $\beta>0$ with $\overline{B_\beta(p)}$ inside the chart source and, for all
   $q_1,q_2\in\overline{B_\beta(p)}$, the joining chart velocity
-  $v=(\mathrm{Ginv}(\varphi_p(q_1),\varphi_p(q_2)))_2$ obeys $\|v\|<r$. This is do
-  Carmo's ``$v\to0$ as the endpoints collapse onto $p$'', made uniform over the ball.
+  $v=(\mathrm{Ginv}(\varphi_p(q_1),\varphi_p(q_2)))_2$ obeys $\|v\|<r$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   Apply \cref{lem:dc-ch3-4-2-pairsmall} to $\Psi(x)=(\mathrm{Ginv}(x))_2$. This
   $\Psi$ is continuous at the center (restriction of the continuous $\mathrm{Ginv}$
   to the open $U$, followed by the second projection) and vanishes there by
-  \cref{lem:dc-ch3-4-2-invdiagonal}. $\square$
+  \cref{lem:dc-ch3-4-2-invdiagonal}.
 \end{proof}
 
 \begin{lemma}[the interior of a joining geodesic stays inside the ball]
@@ -3241,13 +3089,14 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   open arc stays strictly inside $B_\beta(p)$: $d(p,\gamma(t))<\beta$ for all $t\in(0,1)$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   The distance $h(t)=d(p,\gamma(t))$ is continuous on $[0,1]$ with $h(0),h(1)\le\beta$. If $h$ had an
   interior local maximum at $t_0$, re-base $\sigma(s)=\gamma(t_0+s)$ (an affine reparametrisation of a
   geodesic is a geodesic): the metric$\leftrightarrow$radial bridge $F=d^2$ of
   \cref{lem:dc-ch3-4-2-bridge-ball} turns the local maximum of $h$ into a local maximum of the chart
   radial functional at $0$, which \cref{lem:dc-ch3-4-2-nomax} forbids. So $h$ has no interior local
-  maximum, and \cref{lem:dc-ch3-4-2-maxdeduction} yields $h<\beta$ on $(0,1)$. $\square$
+  maximum, and \cref{lem:dc-ch3-4-2-maxdeduction} yields $h<\beta$ on $(0,1)$.
 \end{proof}
 
 \begin{lemma}[the chart Gram quadratic form is uniformly small near the center]
@@ -3260,11 +3109,12 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   chart vector $w$ with $\|w\|<\rho$, the chart-Gram value $\langle w,w\rangle_{p,y}<\eta$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   The functional $\Psi(y,w)=\langle w,w\rangle_{p,y}$ is jointly continuous (a finite sum of the
   continuous Gram components composed with the base, times the continuous chart coordinates of $w$)
   and vanishes at $(\varphi_p(p),0)$ (both vector slots are $0$), so $\{\Psi<\eta\}$ is a
-  neighborhood of the center and contains a product ball. $\square$
+  neighborhood of the center and contains a product ball.
 \end{proof}
 
 \begin{lemma}[interior arc in the ball from the minimizing property and conserved speed]
@@ -3282,6 +3132,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   $d(p,\gamma(t))<\beta$ for all $t\in(0,1)$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   This discharges the admissibility of \cref{lem:dc-ch3-4-2-interior} without any flow-continuity
   (tube) plumbing. \emph{Base confinement} $d(p,\gamma(t))\le3\beta$ follows from the triangle
@@ -3292,7 +3143,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   \cref{lem:dc-ch3-4-2-velbound} together with the chart-Gram smallness \cref{lem:dc-ch3-4-2-gramsmall}
   then bounds the interior chart velocity $T^{-1}w_0$ inside the flow's ball of initial conditions,
   while the Gram lower bound keeps the conserved speed positive so that $w_0\neq0$.
-  \cref{lem:dc-ch3-4-2-interior} then yields the strict interior confinement. $\square$
+  \cref{lem:dc-ch3-4-2-interior} then yields the strict interior confinement.
 \end{proof}
 
 \begin{lemma}[a geodesic segment has length equal to speed times elapsed parameter]
@@ -3309,11 +3160,12 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   \]
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   The length is the integral of the intrinsic speed $\sqrt{\langle\gamma',\gamma'\rangle_g}$ over
   $[a,b]$. Along a geodesic the squared speed is constant (\cref{lem:dc-ch3-2-1-constspeed}), equal
   to its value at $a$, so the integrand is the constant $\sqrt{\langle\gamma'(a),\gamma'(a)\rangle_g}$
-  and the integral is that constant times $b-a$. $\square$
+  and the integral is that constant times $b-a$.
 \end{proof}
 
 \begin{lemma}[the joining geodesic segment has length $\sqrt{\langle w,w\rangle}$, uniformly in the base]
@@ -3333,12 +3185,13 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   neighborhood. It is the metric payload that \cref{thm:dc-ch3-3-7} otherwise omits.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   The segment is a continuous intrinsic geodesic on the open time window, so
   \cref{lem:dc-ch3-geodesic-pathlength} gives its length as
   $\sqrt{\langle\gamma'(0),\gamma'(0)\rangle_g}$. Its squared speed at $s=0$ is the chart-Gram value
   $\langle w,w\rangle$ read in the fixed chart at $p$ (\cref{lem:dc-ch3-4-2-speedchart}), at the base
-  position $\varphi_p(\gamma(0))=y$ (the flow starts at its initial condition). $\square$
+  position $\varphi_p(\gamma(0))=y$ (the flow starts at its initial condition).
 \end{proof}
 
 \begin{lemma}[uniform radial upper bound]
@@ -3355,11 +3208,12 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   uniformly in the base point $y$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   The distance between the endpoints of a $C^1$ curve is at most its length; combine this with the
   length identity \cref{lem:dc-ch3-4-2-segment-length}. This is the $\le$ half of the normal-ball
   minimizing property (\cref{prop:dc-ch3-3-6}), now available \emph{uniformly} in the base point $y$
-  --- the direction that does not require a base-uniform Gauss estimate. $\square$
+  --- the direction that does not require a base-uniform Gauss estimate.
 \end{proof}
 
 \begin{lemma}[the joining geodesic carries the base-uniform metric payload]
@@ -3380,6 +3234,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   totally-normal joining geodesic, uniform over the ball of base points.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   The totally-normal diffeomorphism \cref{thm:dc-ch3-3-7} joins $q_1,q_2$ by the flow segment and now
   re-exposes the raw spray-flow predicate with the same $(T,Z)$, so the descent
@@ -3387,7 +3242,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   \cref{lem:dc-ch3-4-2-segment-length} its length $\sqrt{\langle w,w\rangle}$ (the constant-speed
   identity \cref{lem:dc-ch3-geodesic-pathlength}); the radial upper bound is
   \cref{lem:dc-ch3-4-2-segment-edist}. The joining velocity is uniformly small by
-  \cref{lem:dc-ch3-4-2-velsmall}, and $w=0$ forces zero length hence $q_1=q_2$. $\square$
+  \cref{lem:dc-ch3-4-2-velsmall}, and $w=0$ forces zero length hence $q_1=q_2$.
 \end{proof}
 
 \begin{lemma}[a short geodesic reaches the radial flow endpoint]
@@ -3404,6 +3259,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   particular $\gamma(1)=\varphi_p^{-1}\big((Z(\varphi_p q_1,T^{-1}w)T)_1\big)$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   The flow line is a continuous intrinsic geodesic on $(-(\varepsilon/T),\varepsilon/T)$
   (\cref{lem:dc-ch3-3-7-descent}) starting at $\varphi_p^{-1}(\varphi_p q_1)=q_1$ with chart velocity
@@ -3411,7 +3267,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   $(l,h)\cap(-(\varepsilon/T),\varepsilon/T)$, which contains $[0,1]$ because $h>1$ and
   $\varepsilon/T>1$, intrinsic geodesic uniqueness identifies the two curves; evaluating at $s=1$ gives
   the endpoint identity. Using the asymmetric overlap avoids the symmetric window $(-a,a)$, so the raw
-  $l<0<1<h$ data suffices. $\square$
+  $l<0<1<h$ data suffices.
 \end{proof}
 
 \begin{lemma}[base-uniform competitor bound with escape]
@@ -3423,11 +3279,12 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   For every $p$ there are $\beta,\rho'>0$, a time scale $T$ and a spray flow $Z$ such that for every
   base point $q\in\overline{B_\beta(p)}$ and every chart velocity $\|w\|<\rho'$, every $C^1$ curve
   $\sigma$ from $q$ to the radial flow endpoint $\varphi_p^{-1}\big((Z(\varphi_p q,T^{-1}w)T)_1\big)$
-  has length at least $\sqrt{\langle w,w\rangle_{p,\varphi_p q}}$. This is do Carmo's Proposition 3.6
+  has length at least $\sqrt{\langle w,w\rangle_{p,\varphi_p q}}$. This is the Proposition 3.6
   competitor inequality (\cref{lem:dc-ch3-3-6-competitor}), stated over the whole ball of centres $q$
   at once.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   Fix $q$ and read the totally-normal diffeomorphism (\cref{thm:dc-ch3-3-7}) at $y=\varphi_p q$: the
   slice $f_y(z)=(Z(y,T^{-1}z)T)_1$ is a $C^1$ diffeomorphism of a ball onto a chart region, with
@@ -3441,7 +3298,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   that time plus the coordinate-norm bound $\|z_0\|^2\le c\,\langle z_0,z_0\rangle_y$ gives
   $\ell(\sigma)\ge r'/\sqrt c>\sqrt{\langle w,w\rangle_y}$, the last inequality by the base-uniform
   smallness (\cref{lem:dc-ch3-4-2-gramsmall}) for $\|w\|<\rho'$. The region is open (the slice inverse
-  is a homeomorphism) and its closure is compact, so the first exit time is well defined. $\square$
+  is a homeomorphism) and its closure is compact, so the first exit time is well defined.
 \end{proof}
 
 \begin{lemma}[base-uniform lower bound: short geodesics realize the distance]
@@ -3454,11 +3311,12 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   For every $p$ there are $\beta_H,\rho_H>0$ such that every geodesic $\gamma$ on an open window
   $(l,h)\supsetneq[0,1]$ joining $q_1,q_2$ within $\beta_H$ of $p$, with small initial chart velocity
   $\|w\|<\rho_H$ and constant-speed length rate $\ell$ (i.e.\ $\ell(\gamma|_{[0,t]})=\ell t$), realizes
-  the distance between its endpoints: $\ell\le d(q_1,q_2)$. This is the base-uniform reading of do
-  Carmo's Proposition 3.6 (\cref{prop:dc-ch3-3-6}) --- exactly the hypothesis $H_{lb}$ of
-  \cref{lem:dc-ch3-4-2-minimizing-interior}, now discharged.
+  the distance between its endpoints: $\ell\le d(q_1,q_2)$. This is the
+  base-uniform form of the distance-realization result in
+  \cref{prop:dc-ch3-3-6}.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   Constant speed (\cref{lem:dc-ch3-geodesic-pathlength}), read in the fixed chart at $p$
   (\cref{lem:dc-ch3-4-2-speedchart}), forces $\ell=\sqrt{\langle w,w\rangle_{p,\varphi_p q_1}}$. The
@@ -3466,7 +3324,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   endpoint of $w$, so the base-uniform competitor bound (\cref{lem:dc-ch3-4-2-competitor-lb}) applies:
   every $C^1$ curve from $q_1$ to $q_2$ has length at least $\sqrt{\langle w,w\rangle}=\ell$. Since the
   distance is the infimum of $C^1$-curve lengths (the metric is the Riemannian distance),
-  $d(q_1,q_2)\ge\ell$. $\square$
+  $d(q_1,q_2)\ge\ell$.
 \end{proof}
 
 \begin{lemma}[minimizing geodesics with interior in the ball, modulo the lower bound]
@@ -3476,7 +3334,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   \leanok
   \uses{lem:dc-ch3-4-2-join-metric, lem:dc-ch3-4-2-interior-minimizing, prop:dc-ch3-3-6,
     cor:dc-ch3-3-9, def:dc-ch3-4-2-stronglyconvex, lem:dc-ch3-4-2-lowerbound}
-  Assume the \emph{base-uniform lower bound} $H_{lb}$: there are $\beta_H,\rho_H>0$ such that every
+  Assume the following base-uniform lower-bound property: there are $\beta_H,\rho_H>0$ such that every
   \emph{geodesic} $\gamma$ (on an open window $\supsetneq[0,1]$) joining $q_1,q_2$ within $\beta_H$ of
   $p$, with \emph{small} initial chart velocity ($\|w\|<\rho_H$) and constant-speed length
   $\ell(\gamma|_{[0,t]})=\ell t$, satisfies $\ell\le d(q_1,q_2)$ (a \emph{short} geodesic near $p$
@@ -3487,17 +3345,19 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   loop through $q_1=q_2$ has $\ell>0=d$). Then there is
   $\beta>0$ such that any $q_1,q_2\in\overline{B_\beta(p)}$ are joined by a \emph{minimizing} geodesic
   ($d(\gamma(s),\gamma(t))=|s-t|\,d(q_1,q_2)$) whose open arc lies in $\overline{B_\beta(p)}$. This is
-  do Carmo's strong convexity (\cref{def:dc-ch3-4-2-stronglyconvex}) \emph{minus} the uniqueness
-  clause, reduced to the single hypothesis $H_{lb}$.
+  the strong convexity (\cref{def:dc-ch3-4-2-stronglyconvex}) \emph{minus} the uniqueness
+  clause, under this lower-bound hypothesis.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   The joining geodesic and its length payload $\ell=\sqrt{\langle w,w\rangle}$ come from
-  \cref{lem:dc-ch3-4-2-join-metric}; $H_{lb}$ supplies the matching lower bound, so $d(q_1,q_2)=\ell$,
+  \cref{lem:dc-ch3-4-2-join-metric}; the lower-bound hypothesis supplies the matching lower bound, so
+  $d(q_1,q_2)=\ell$,
   and the arclength distance-realization of \cref{cor:dc-ch3-3-9}'s segment machinery propagates
   $d(\gamma(s),\gamma(t))=|s-t|\,d(q_1,q_2)$ from the endpoints. The interior-arc clause is
   \cref{lem:dc-ch3-4-2-interior-minimizing}; the degenerate $q_1=q_2$ case is the constant geodesic.
-  $\square$
+
 \end{proof}
 
 \begin{lemma}[strong convexity of the closed ball, modulo the lower bound and uniqueness]
@@ -3507,22 +3367,24 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   \leanok
   \uses{lem:dc-ch3-4-2-minimizing-interior, def:dc-ch3-4-2-stronglyconvex, thm:dc-ch3-3-7,
     prop:dc-ch3-3-6}
-  Assume the base-uniform lower bound $H_{lb}$ (\cref{lem:dc-ch3-4-2-minimizing-interior}) and the
-  \emph{local uniqueness} $H_{uniq}$ of minimizing geodesics near $p$: there is $\beta_U>0$ such that
+  Assume the base-uniform lower-bound property from
+  \cref{lem:dc-ch3-4-2-minimizing-interior} and local uniqueness of minimizing
+  geodesics near $p$: there is $\beta_U>0$ such that
   any two constant-speed distance-realizing geodesics joining the same $q_1,q_2$ within $\beta_U$ of
-  $p$ coincide on $[0,1]$ (do Carmo's reading of the injectivity of $\exp_{q_1}$). Then there is
+  $p$ coincide on $[0,1]$ (the reading of the injectivity of $\exp_{q_1}$). Then there is
   $\beta>0$ such that the \emph{closed} ball $\overline{B_\beta(p)}$ is strongly convex
-  (\cref{def:dc-ch3-4-2-stronglyconvex}). This is the whole of do Carmo's Proposition 4.2 for the
-  closed ball, assembled; only $H_{lb}$ and $H_{uniq}$ remain.
+  (\cref{def:dc-ch3-4-2-stronglyconvex}). This is the whole of the Proposition 4.2 for the
+  closed ball.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   The existence, minimizing and interior clauses are \cref{lem:dc-ch3-4-2-minimizing-interior}
   (shrinkable in the radius, so the strong-convexity radius $\beta=\min(B_0,\beta_U)$ couples
   correctly); the closure of a closed ball is itself, so the quantifier over $\overline{S}$ reads on
-  $\overline{B_\beta(p)}$; and $H_{uniq}$ discharges the uniqueness clause. The closed ball is used
+  $\overline{B_\beta(p)}$; local uniqueness supplies the uniqueness clause. The closed ball is used
   because the literal open-ball statement fails at a boundary diagonal $q_1=q_2\in\partial B_\beta(p)$
-  (constant geodesic, interior $\{q_1\}\not\subset$ open ball). $\square$
+  (constant geodesic, interior $\{q_1\}\not\subset$ open ball).
 \end{proof}
 
 \begin{lemma}[minimizing geodesics with interior in the ball --- unconditional]
@@ -3533,16 +3395,15 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   \uses{lem:dc-ch3-4-2-minimizing-interior, lem:dc-ch3-4-2-lowerbound}
   There is $\beta>0$ such that any $q_1,q_2\in\overline{B_\beta(p)}$ are joined by a \emph{minimizing}
   geodesic ($d(\gamma(s),\gamma(t))=|s-t|\,d(q_1,q_2)$) whose open arc lies in $\overline{B_\beta(p)}$.
-  This is \cref{lem:dc-ch3-4-2-minimizing-interior} with its hypothesis $H_{lb}$ now
-  \emph{discharged}: the base-uniform lower bound is the theorem
-  \cref{lem:dc-ch3-4-2-lowerbound}. It is the existence + minimizing + interior content of do Carmo's
-  strong convexity (\cref{def:dc-ch3-4-2-stronglyconvex}), unconditionally --- only uniqueness remains
-  open for the full proposition.
+  The lower-bound hypothesis in \cref{lem:dc-ch3-4-2-minimizing-interior} is supplied by
+  \cref{lem:dc-ch3-4-2-lowerbound}; hence this gives the existence, minimizing, and interior
+  clauses of strong convexity (\cref{def:dc-ch3-4-2-stronglyconvex}).
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
-  Feed the base-uniform lower bound $H_{lb}$ (\cref{lem:dc-ch3-4-2-lowerbound}) into the reduction
-  \cref{lem:dc-ch3-4-2-minimizing-interior}. $\square$
+  Apply the lower-bound lemma \cref{lem:dc-ch3-4-2-lowerbound} to the reduction
+  \cref{lem:dc-ch3-4-2-minimizing-interior}.
 \end{proof}
 
 \begin{lemma}[strong convexity of the closed ball, reduced to uniqueness alone]
@@ -3552,18 +3413,18 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   \leanok
   \uses{lem:dc-ch3-4-2-stronglyconvex-reduction, lem:dc-ch3-4-2-lowerbound,
     lem:dc-ch3-4-2-minimizing-interior-uncond}
-  Assume only the \emph{local uniqueness} $H_{uniq}$ of minimizing geodesics near $p$ (any two
+  Assume only local uniqueness of minimizing geodesics near $p$ (any two
   constant-speed distance-realizing geodesics joining the same $q_1,q_2$ within $\beta_U$ of $p$
   coincide on $[0,1]$). Then there is $\beta>0$ such that the \emph{closed} ball
   $\overline{B_\beta(p)}$ is strongly convex (\cref{def:dc-ch3-4-2-stronglyconvex}). This is
-  \cref{lem:dc-ch3-4-2-stronglyconvex-reduction} with $H_{lb}$ discharged
-  (\cref{lem:dc-ch3-4-2-lowerbound}); $H_{uniq}$ is the sole remaining hypothesis of do Carmo's
-  Proposition 4.2 for the closed ball.
+  \cref{lem:dc-ch3-4-2-stronglyconvex-reduction} together with
+  \cref{lem:dc-ch3-4-2-lowerbound}.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
-  Feed $H_{lb}$ (\cref{lem:dc-ch3-4-2-lowerbound}) into
-  \cref{lem:dc-ch3-4-2-stronglyconvex-reduction}. $\square$
+  Apply \cref{lem:dc-ch3-4-2-lowerbound} to
+  \cref{lem:dc-ch3-4-2-stronglyconvex-reduction}.
 \end{proof}
 
 \begin{lemma}[moving-base geodesic coincides with its flow reading on the overlap window]
@@ -3579,11 +3440,12 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   $(l,h)\cap(-(\varepsilon/T),\varepsilon/T)$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   Both curves are geodesics on the overlap window and share the position $q_1$ and the chart-$p$
   velocity $w$ at $0$; intrinsic uniqueness (\cref{lem:dc-ch3-3-4}) identifies them on the whole
   window. This is the \emph{EqOn} strengthening of the single-endpoint identification
-  \cref{lem:dc-ch3-4-2-endpoint-id}, freed of the $1<h$ restriction (only $l<0<h$ is used). $\square$
+  \cref{lem:dc-ch3-4-2-endpoint-id}, freed of the $1<h$ restriction (only $l<0<h$ is used).
 \end{proof}
 
 \begin{lemma}[base-uniform geodesic-uniqueness engine]
@@ -3595,17 +3457,17 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   For any $p$ there are radii $\beta,\rho_w>0$ such that any two continuous intrinsic geodesics
   $\gamma_1,\gamma_2$ on open windows $\supsetneq[0,1]$, both joining $q_1\in\overline{B_\beta(p)}$ to
   a common $q_2\in\overline{B_\beta(p)}$, with initial chart-$p$ coordinate velocities $w_1,w_2$ of
-  norm $<\rho_w$, coincide on $[0,1]$. This is the \emph{injectivity half} of $H_{uniq}$: the
-  uniqueness of minimizing geodesics near $p$, once each competitor is presented with an open time
-  window and its chart-$p$ velocity datum.
+  norm $<\rho_w$, coincide on $[0,1]$. Thus sufficiently short geodesics with
+  the same endpoints and initial chart velocity are unique in this neighborhood.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   Each $\gamma_i$ coincides with the flow-reading geodesic $g_{w_i}$ on a window containing $[0,1]$
   (\cref{lem:dc-ch3-4-2-eqon-flow-reading}), so $g_{w_i}(1)=\gamma_i(1)=q_2$. The unique-velocity
-  clause of the totally-normal $C^1$ diffeomorphism (\cref{thm:dc-ch3-3-7}) --- do Carmo's injectivity
+  clause of the totally-normal $C^1$ diffeomorphism (\cref{thm:dc-ch3-3-7}) --- the injectivity
   of $\exp_{q_1}$ --- forces $w_1=w_2$, whence $g_{w_1}=g_{w_2}$ and therefore $\gamma_1=\gamma_2$ on
-  $[0,1]$. $\square$
+  $[0,1]$.
 \end{proof}
 
 \begin{lemma}[a closed-interval geodesic extends to an open time window]
@@ -3619,6 +3481,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   $\alpha$ on $[0,1]$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   The endpoint values $\alpha(0),\alpha(1)$ are known points, not Cauchy limits, so a
   completeness-free forward prolongation of a geodesic on $(a,b)$ --- given the (known) endpoint
@@ -3627,7 +3490,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   solves the geodesic ODE at the known endpoint by local existence (\cref{prop:dc-ch3-2-5}). The two
   one-sided extensions are glued at the interior time $1/2$, where they both equal $\alpha$; they
   agree there because a geodesic is locally determined by its position and velocity
-  (\cref{lem:dc-ch3-3-4}). $\square$
+  (\cref{lem:dc-ch3-3-4}).
 \end{proof}
 
 \begin{lemma}[a minimizing geodesic has speed equal to the distance it realizes]
@@ -3642,6 +3505,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   $\sqrt{\langle\gamma'(0),\gamma'(0)\rangle_g}=d(q_1,q_2)$.
 \end{lemma}
 \begin{proof}
+  \sketch
   \leanok
   The inequality $d(q_1,q_2)\le\sqrt{S}$ (with $S$ the squared speed) is the length bound: a geodesic
   is at least as long as the chord between its endpoints. For the reverse, rescale the velocity by a
@@ -3651,7 +3515,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   (\cref{lem:dc-ch3-3-4}). The radial isometry of the normal ball (\cref{prop:dc-ch3-3-6}) then reads
   $d(q_1,\gamma(\kappa s))=s\,\kappa\sqrt{S}$ for small $s>0$, while the distance-realizing hypothesis
   reads the same distance as $\kappa s\,d(q_1,q_2)$; cancelling $\kappa s>0$ gives
-  $\sqrt{S}=d(q_1,q_2)$. $\square$
+  $\sqrt{S}=d(q_1,q_2)$.
 \end{proof}
 
 \begin{proposition}[convex neighborhoods]
@@ -3677,6 +3541,7 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   literal open-ball form is unsatisfiable at a boundary diagonal, see below.)
 \end{proposition}
 \begin{proof}
+  \sketch
   \leanok
   Let $c$ be as in \cref{lem:dc-ch3-4-1}. Choose $\delta>0$ and $W$ as in \cref{thm:dc-ch3-3-7}
   with $\delta<\frac{c}{2}$, and take $\beta<\delta$ with $\overline{B_\beta(p)}\subset W$. Let
@@ -3688,136 +3553,5 @@ $\langle\cdot,\cdot\rangle_p$ is the fixed chart Gram inner product at $p$.
   \cref{lem:dc-ch3-4-1-strict}: at $m$ the tangency $\partial F/\partial t(0)=0$ holds
   (Gauss lemma) and the strict separation $F(0)<F(s)$ for $s\neq0$ forces points of
   $\gamma$ near $m$ \emph{strictly} outside $\overline{B_r(p)}$, contradicting the
-  maximum. Hence the interior of $\gamma$ lies in $B_\beta(p)$, proving the proposition. $\square$
-
-  \emph{Formalization status.} The analytic/geometric crux is complete and the
-  \textbf{interior-in-ball deduction is now formalized}: \cref{lem:dc-ch3-4-2-interior} assembles
-  \cref{lem:dc-ch3-4-2-nomax} (no interior local maximum of the chart radial functional $F$),
-  \cref{lem:dc-ch3-4-2-bridge-ball} (the identification $F=d(p,\cdot)^2$ on a geodesic ball) and
-  \cref{lem:dc-ch3-4-2-maxdeduction} (the max-distance skeleton) into the statement that a
-  \cref{lem:dc-ch3-4-2-nomax}-admissible joining geodesic with endpoints in $\overline{B_\beta(p)}$
-  has its open arc \emph{strictly} inside $B_\beta(p)$ — precisely do Carmo's contradiction, carried
-  out by re-basing the geodesic at the interior distance-maximum. The chart velocity along such a
-  geodesic is controlled by the conserved speed (\cref{lem:dc-ch3-4-2-velbound}, through the
-  fixed-chart speed reading \cref{lem:dc-ch3-4-2-speedchart}).
-
-  The \textbf{interior-velocity interface gap is now closed}: the joining geodesic of
-  \cref{thm:dc-ch3-3-7} carries, at every interior time $t_0\in(0,1)$, the explicit chart-velocity datum
-  $\mathbf{x}$-$\gamma'(t_0)=T\,Z(\cdot)(t_0T)_2$ (\cref{lem:dc-ch3-3-7-descent-velocity}, now exposed by
-  \texttt{exists\_totallyNormal\_c1\_diffeo}), so the \texttt{HasDerivAt}-at-every-interior-time sub-clause of
-  \cref{lem:dc-ch3-4-2-interior}'s admissibility is available directly — previously the sole non-obvious gap,
-  since \cref{thm:dc-ch3-3-7} formerly exposed the segment's velocity only at $s=0$
-  (\cref{lem:dc-ch3-3-7-descent}).
-
-  The \textbf{joining-velocity smallness is now formalized}: the inverse pair map $\mathrm{Ginv}$ of
-  \cref{thm:dc-ch3-3-7} fixes the center diagonal (\cref{lem:dc-ch3-4-2-invdiagonal},
-  $\mathrm{Ginv}(\mathbf{x}(p),\mathbf{x}(p))=(\mathbf{x}(p),0)$, do Carmo's $\exp_p^{-1}p=0$, exposed by
-  \texttt{exists\_totallyNormal\_c1\_diffeo}), and being $C^1$ it is continuous there, so the joining
-  chart velocity $v=(\mathrm{Ginv}(\mathbf{x}(q_1),\mathbf{x}(q_2)))_2$ is uniformly small on a small
-  enough ball: for every $r>0$ there is $\beta>0$ with $\|v\|<r$ for all
-  $q_1,q_2\in\overline{B_\beta(p)}$ (\cref{lem:dc-ch3-4-2-velsmall}, via the general chart-pair smallness
-  \cref{lem:dc-ch3-4-2-pairsmall}). This is do Carmo's ``$v\to0$ as $q_1,q_2\to p$'', made uniform — the
-  velocity blocker identified for the remaining assembly.
-
-  The \textbf{interior-arc-in-ball clause is now formalized} modulo the minimizing hypothesis
-  (\cref{lem:dc-ch3-4-2-interior-minimizing}): rather than carrying the endpoint smallness along the
-  flow interior by joint continuity of the spray flow $Z$ (the ``tube'' route, which requires the
-  uniform center rest point and continuous dependence on initial conditions on the whole compact time
-  interval), the two smallness sub-clauses of \cref{lem:dc-ch3-4-2-interior}'s admissibility are
-  discharged directly from geometry: the \emph{base} $\mathbf{x}(\gamma(t_0))$ stays within $3\beta$
-  of $p$ by the triangle inequality on the minimizing length
-  ($d(\gamma(0),\gamma(t))=t\,d(q_1,q_2)\le2\beta$), so it reads into every prescribed neighborhood of
-  $\mathbf{x}(p)$ once $\beta$ is small; and the \emph{interior velocity} is controlled by the
-  \emph{conserved speed} — constant along the geodesic, equal at $t=0$ to the small chart-Gram value
-  $\langle w,w\rangle$ — through \cref{lem:dc-ch3-4-2-velbound} and the chart-Gram smallness
-  \cref{lem:dc-ch3-4-2-gramsmall}, the Gram lower bound keeping the speed positive so the velocity is
-  nonzero.
-
-  The remaining Lean assembly (`\texttt{exists\_stronglyConvex\_ball}`, still \texttt{proved=False})
-  must then supply, for the joining geodesic of \cref{thm:dc-ch3-3-7}, the two packaging clauses of
-  \cref{def:dc-ch3-4-2-stronglyconvex}: \emph{minimizing} (\cref{prop:dc-ch3-3-6} centered at $q_1$,
-  with a radius \emph{uniform} over $\overline{B_\beta(p)}$) and \emph{uniqueness}
-  (\cref{thm:dc-ch3-3-7}'s unique joining parameter plus intrinsic geodesic uniqueness). Once the
-  minimizing clause is available, \cref{lem:dc-ch3-4-2-interior-minimizing} closes the interior-arc
-  clause immediately. The residual hard blocker is the \emph{uniform normal-ball radius}: the
-  per-point Gauss estimates (\cref{prop:dc-ch3-3-6}) carry a radius depending on the base point, and
-  no lower-semicontinuity of that radius over $\overline{B_\beta(p)}$ is yet available, so the single
-  $\beta$ demanded by \cref{def:dc-ch3-4-2-stronglyconvex} is not yet extractable.
-
-  The \textbf{$\le$ direction of the minimizing clause is now formalized as a base-uniform metric
-  payload}: the joining geodesic of \cref{thm:dc-ch3-3-7}, which previously carried no length or
-  distance content at all, now has its length pinned to $\sqrt{\langle w,w\rangle_{p,y}}$
-  (\cref{lem:dc-ch3-4-2-segment-length}, off the general constant-speed length identity
-  \cref{lem:dc-ch3-geodesic-pathlength} and the fixed-chart speed reading
-  \cref{lem:dc-ch3-4-2-speedchart}), and hence realizes the radial \emph{upper} bound
-  $d(q_1,q_2)\le\sqrt{\langle w,w\rangle_{p,y}}$ (\cref{lem:dc-ch3-4-2-segment-edist}), \emph{uniformly}
-  over $\overline{B_\beta(p)}$. What remains for the minimizing clause is exactly the matching
-  \emph{lower} bound $d(q_1,q_2)\ge\sqrt{\langle w,w\rangle_{p,y}}$ (radial geodesics are the shortest
-  route), whose per-point form is \cref{prop:dc-ch3-3-6} but whose base-uniform form is the open crux
-  above: it requires transporting the Gauss length-comparison to the moving-base geodesic family, or
-  a lower-semicontinuous normal radius. $\square$
-
-  \emph{The existence + minimizing + interior clauses are now assembled modulo exactly that lower
-  bound.} The metric-laden joining geodesic \cref{lem:dc-ch3-4-2-join-metric} packages the totally
-  normal covering (\cref{thm:dc-ch3-3-7}) with the base-uniform length payload (now that
-  \cref{thm:dc-ch3-3-7} re-exposes its raw spray flow), and \cref{lem:dc-ch3-4-2-minimizing-interior}
-  feeds it, together with the lower bound $H_{lb}$ as an explicit hypothesis, through the
-  arclength distance-realization (\cref{cor:dc-ch3-3-9}) and the interior-arc deduction
-  (\cref{lem:dc-ch3-4-2-interior-minimizing}) to produce, for every pair of points of a small
-  \emph{closed} ball, a minimizing geodesic whose open arc lies in the ball. So the whole geometric
-  composition is verified; what is abstracted into $H_{lb}$ is precisely the base-uniform lower bound.
-
-  \emph{The whole of \cref{def:dc-ch3-4-2-stronglyconvex} for the closed ball is now assembled modulo
-  exactly two isolated cruxes} (\cref{lem:dc-ch3-4-2-stronglyconvex-reduction}): given $H_{lb}$ and the
-  local uniqueness $H_{uniq}$ of minimizing geodesics near $p$, the closed ball $\overline{B_\beta(p)}$
-  is strongly convex.
-
-  \emph{The lower bound $H_{lb}$ is now a theorem} (\cref{lem:dc-ch3-4-2-lowerbound}): the
-  moving-base reconciliation is carried out directly. Constant speed pins the length rate
-  $\ell=\sqrt{\langle w,w\rangle_{p,\varphi_p q_1}}$; the joining geodesic is identified with the
-  radial flow line by intrinsic uniqueness on the \emph{asymmetric} overlap window
-  $(l,h)\cap(-(\varepsilon/T),\varepsilon/T)$ (\cref{lem:dc-ch3-4-2-endpoint-id}), so its endpoint
-  $q_2$ is the radial endpoint of $w$; and the base-uniform competitor bound
-  (\cref{lem:dc-ch3-4-2-competitor-lb}) --- the moving-base Gauss radius comparison for confined
-  curves together with the first-exit escape estimate, both uniform over the ball of centres $q_1$ ---
-  makes every $C^1$ competitor from $q_1$ to $q_2$ at least $\sqrt{\langle w,w\rangle}$ long. This
-  \emph{replaces} the sought lower-semicontinuous normal radius: the single $\beta$ is extracted once,
-  at $p$, from the totally-normal package, and the Gauss estimate is transported to the moving-base
-  flow family (rather than re-run per centre).
-
-  \emph{$H_{lb}$ is now discharged into the assembly.} Feeding the theorem
-  \cref{lem:dc-ch3-4-2-lowerbound} into the two reductions yields, \emph{unconditionally}, the
-  existence + minimizing + interior clauses (\cref{lem:dc-ch3-4-2-minimizing-interior-uncond}), and
-  reduces the full proposition for the closed ball to the single hypothesis $H_{uniq}$
-  (\cref{lem:dc-ch3-4-2-stronglyconvex-uniq}). So the residual is now precisely: \textbf{uniqueness
-  $H_{uniq}$}. Do Carmo reads this off the injectivity of $\exp_{q_1}$; the base-uniform injectivity
-  is \emph{already available} (the \texttt{InjOn} clause of \cref{thm:dc-ch3-3-7}'s totally-normal
-  package over $B_{\delta_1}(\varphi_p p)\times B_\delta(0)$).
-
-  \emph{The injectivity half of $H_{uniq}$ is now formalized}
-  (\cref{lem:dc-ch3-4-2-uniqueness-engine}): once each competitor is presented \emph{with an open time
-  window $\supsetneq[0,1]$ and its chart-$p$ velocity datum $w$ ($\|w\|<\rho_w$)}, uniqueness follows
-  outright. Each such geodesic coincides with its flow-reading segment $g_w$ on a window containing
-  $[0,1]$ (\cref{lem:dc-ch3-4-2-eqon-flow-reading}, the \emph{EqOn} strengthening of the endpoint
-  readback \cref{lem:dc-ch3-4-2-endpoint-id}), so both competitors reach $q_2$ as flow-reading
-  endpoints; the unique-velocity clause of \cref{thm:dc-ch3-3-7} then forces the two velocities equal,
-  hence the two geodesics equal. This is exactly do Carmo's injectivity argument, base-uniform.
-
-  \emph{The presentation is now formalized, and the proposition is unconditional}
-  (\texttt{exists\_stronglyConvex\_closedBall}). An abstract minimizing competitor $\alpha$ --- given
-  as a geodesic on the \emph{closed} $[0,1]$ with neither an open window nor a velocity --- is
-  equipped with a two-sided window $\supsetneq[0,1]$ by \cref{lem:dc-ch3-4-2-window}: the endpoint
-  values $\alpha(0)=q_1,\alpha(1)=q_2$ are \emph{known} points (not Cauchy limits), so the geodesic
-  prolongs past each endpoint completeness-freely, and the two one-sided extensions glue at $1/2$. Its
-  chart-$p$ velocity $w$ then satisfies $\|w\|<\rho_w$ once $\beta$ is small: the conserved speed
-  equals $d(q_1,q_2)\le2\beta$ by \cref{lem:dc-ch3-4-2-speed-dist} (a minimizing geodesic has speed
-  equal to the distance it realizes, via the radial isometry of the normal ball), and the chart-Gram
-  comparison \cref{lem:dc-ch3-4-2-velbound} turns that into $\|w\|\le\sqrt{c}\,d(q_1,q_2)$. Feeding
-  both competitors into the injectivity engine \cref{lem:dc-ch3-4-2-uniqueness-engine} discharges
-  $H_{uniq}$, so \cref{lem:dc-ch3-4-2-stronglyconvex-uniq} becomes unconditional.
-
-  The proposition is stated for the \emph{closed} ball because the literal open-ball
-  form of \cref{def:dc-ch3-4-2-stronglyconvex} is unsatisfiable at a boundary diagonal
-  $q_1=q_2\in\partial B_\beta(p)$, where the (constant) minimizing geodesic's interior $\{q_1\}$ is
-  not in the open ball.
+  maximum. Hence the interior of $\gamma$ lies in $B_\beta(p)$, proving the proposition.
 \end{proof}

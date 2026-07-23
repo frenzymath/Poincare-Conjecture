@@ -1,44 +1,24 @@
 \chapter{Symmetric Spaces and Holonomy}
 \label{chap:pet-symmetric-spaces-and-holonomy}
 
-Faithful transcription of Petersen, \emph{Riemannian Geometry} (GTM 171, 3rd ed.),
-Chapter 10. The chapter opens (unnumbered, no formal statements) with a
-motivational overview of symmetric spaces and holonomy — explicit examples such
-as complex projective space, the de Rham decomposition theorem, the
-relationship between holonomy and symmetric spaces, the classification of
-compact manifolds with nonnegative curvature operator, and historical remarks
-on Yau's resolution of the Calabi conjecture and D. Joyce's construction of
-manifolds with exceptional holonomy. The formal development begins in §10.1,
-which defines a symmetric space $(M,g)$ as a Riemannian manifold each of whose
-points $p$ is an isolated fixed point of an isometric involution $A_p$ (with
-$DA_p|_p=-I$), tabulates the classical families of compact and noncompact
-symmetric spaces and introduces the notion of rank (§10.1.1); shows that
-having parallel curvature tensor almost characterizes symmetric spaces, via
-Cartan's two extension theorems (§10.1.2); and gives an algebraic
-(Lie-theoretic) description of the isotropy representation of a symmetric
-space, including the short exact sequence
-$0\to\mathrm{iso}_p\to\mathrm{iso}\to T_pM\to0$ of Killing-field Lie algebras
-(Petersen's Proposition 8.1.4, from outside this chapter) and a curvature
-formula for the Lie bracket of $\mathrm{iso}$ (§10.1.3). The chapter goes on to
-work this algebraic description out for the Grassmannians, complex projective
-space, $\mathrm{SL}(n)/\mathrm{SO}(n)$, and Lie groups with biinvariant metrics
-(§10.2), and finally develops the theory of the holonomy group, the de Rham
-splitting theorem, and the Berger–Simons classification of holonomy groups
-together with its consequences for rank and curvature rigidity (§10.3).
+Symmetric spaces are characterized locally by parallel curvature and admit a
+Lie-algebraic description at each point. Holonomy then controls metric
+splittings, parallel tensors, and the irreducible curvature alternatives.
 
 \section{Symmetric Spaces}
 
 \subsection{The Homogeneous Description}
 
+Point symmetries imply transitivity and supply the basic compact and
+noncompact families.
+
 \begin{definition}[symmetric space]
   \label{def:pet-ch10-symmetric-space}
   \lean{PetersenLib.IsSymmetricSpace}
-  A Riemannian manifold $(M,g)$ is a \emph{symmetric space} if for each
-  $p\in M$ the isotropy group $\mathrm{Iso}_p$ contains an isometry $A_p$ (the
-  \emph{point symmetry} at $p$) such that $DA_p:T_pM\to T_pM$ is the antipodal
-  map $-I$. Since isometries preserve geodesics, any geodesic $c(t)$ with
-  $c(0)=p$ satisfies $A_p(c(t))=c(-t)$.
-  \source{petersen:page-0379}
+  A Riemannian manifold $(M,g)$ is \emph{symmetric} if every $p\in M$ admits
+  $A_p\in\mathrm{Iso}_p$ with $D_pA_p=-I$. This \emph{point symmetry} reverses
+  each geodesic through $p$:
+  $A_p(c(t))=c(-t)$ whenever $c(0)=p$.
 \end{definition}
 
 \begin{proposition}[symmetric spaces are homogeneous, hence complete]
@@ -46,43 +26,33 @@ together with its consequences for rank and curvature rigidity (§10.3).
   \lean{PetersenLib.symmetricSpace_isHomogeneous}
   \uses{def:pet-ch10-symmetric-space}
   A symmetric space is homogeneous, and consequently complete.
-  \source{petersen:page-0379}
 \end{proposition}
 \begin{proof}
   \uses{prop:pet-ch10-symmetric-homogeneous}
-  If two points $q,r\in M$ are joined by a geodesic, the point symmetry $A_m$
-  at the midpoint $m$ of the geodesic segment between $q$ and $r$ is an
-  isometry that interchanges $q$ and $r$ (parametrize the geodesic so that
-  $m$ corresponds to $t=0$; then $A_m(c(t))=c(-t)$ sends the parameter value
-  of $q$ to that of $r$). Since any two points of the connected manifold $M$
-  can be joined by a broken sequence of geodesic segments, composing the
-  corresponding midpoint symmetries carries any $p\in M$ to any $q\in M$ by an
-  isometry, so $\mathrm{Iso}(M,g)$ acts transitively and $(M,g)$ is
-  homogeneous. Homogeneity forces the completeness of $(M,g)$: geodesics from
-  any point extend at least as far as from any other, so no geodesic can fail
-  to extend for all time.
+  \sketch
+  The symmetry at the midpoint of a geodesic segment interchanges its
+  endpoints. Composing such symmetries along a broken geodesic sends any point
+  to any other, so the isometry group is transitive. The maximal existence
+  time of a geodesic is therefore independent of its initial point; local
+  existence then extends every geodesic for all time.
 \end{proof}
 
 \begin{remark}[a symmetry at one point suffices; biinvariant Lie groups]
   \label{rem:pet-ch10-single-point-symmetry}
   \lean{PetersenLib.symmetricSpace_of_symmetry_at_one_point,PetersenLib.biinvariantLieGroupSymmetricSpace}
   \uses{def:pet-ch10-symmetric-space}
-  A homogeneous space $G/H=\mathrm{Iso}/\mathrm{Iso}_p$ is symmetric as soon as
-  the point symmetry $A_p$ exists at a single point $p$: for $q=h\cdot p$ with
-  $h\in\mathrm{Iso}$, $A_q:=h\circ A_p\circ h^{-1}$ is a point symmetry at $q$.
-  In particular, every Lie group $G$ with a biinvariant metric is a symmetric
-  space, since $g\mapsto g^{-1}$ is the desired point symmetry at the
-  identity element.
-  \source{petersen:page-0379}
+  On a homogeneous space, one point symmetry determines all others: if
+  $q=h\cdot p$, then $A_q=hA_ph^{-1}$. Consequently every Lie group with a
+  biinvariant metric is symmetric, because inversion is the point symmetry at
+  the identity.
 \end{remark}
 
-\begin{definition}[Tables 10.1--10.4 — compact groups, their noncompact duals, and the classical rank-one symmetric spaces]
+\begin{definition}[classical symmetric-space families]
   \label{def:pet-ch10-symmetric-space-tables}
   \lean{PetersenLib.symmetricSpaceTables}
   \uses{rem:pet-ch10-single-point-symmetry}
-  The following families of homogeneous spaces are symmetric, always occurring
-  in dual pairs of compact and noncompact spaces (there are many further
-  families and several exceptional examples).
+  The following compact symmetric spaces and their noncompact duals have the
+  indicated ranks and dimensions.
   \begin{center}
     \begin{tabular}{c|c|c}
       \multicolumn{3}{c}{\textbf{Table 10.1 Compact Groups}}\\
@@ -130,294 +100,229 @@ together with its consequences for rank and curvature rigidity (§10.3).
       $\mathrm{SL}(n,\mathbb R)$ & $\mathrm{SO}(n)$ & $\tfrac{n^2-1}2$ & $n-1$ & Euclidean structures on $\mathbb R^n$
     \end{tabular}
   \end{center}
-  Here $\mathrm{Spin}(n)$ is the universal double cover of $\mathrm{SO}(n)$,
-  $n>2$, with the low-dimensional identities
+  Here $\mathrm{Spin}(n)$ is the universal double cover of $\mathrm{SO}(n)$ for
+  $n>2$, and
   $\mathrm{SO}(2)=\mathrm U(1)$, $\mathrm{Spin}(3)=\mathrm{SU}(2)=\mathrm{Sp}(1)$,
-  $\mathrm{Spin}(4)=\mathrm{Spin}(3)\times\mathrm{Spin}(3)$. By O'Neill's formula
-  (Petersen's Theorem 4.5.3, outside this chapter) all the compact examples
-  have $\sec\ge0$, and all the projective spaces (compact and noncompact) have
-  quarter-pinched metrics, i.e.\ the ratio of smallest to largest sectional
-  curvature is $\tfrac14$.
-  \source{petersen:page-0379,petersen:page-0380}
+  $\mathrm{Spin}(4)=\mathrm{Spin}(3)\times\mathrm{Spin}(3)$. O'Neill's formula
+  gives $\sec\ge0$ for the compact examples. Each compact or noncompact
+  projective space is quarter-pinched: the ratio of extremal sectional
+  curvatures is $\tfrac14$.
 \end{definition}
 
 \begin{definition}[rank of a geodesic and of a Riemannian manifold; CROSSes]
   \label{def:pet-ch10-rank}
   \lean{PetersenLib.geodesicRank,PetersenLib.manifoldRank}
-  The \emph{rank} of a geodesic $c:\mathbb R\to M$ is the dimension of the
-  space of parallel fields $E$ along $c$ such that $R(E(t),\dot c(t))\dot c(t)=0$
-  for all $t$; it is always $\ge1$, since $E=\dot c$ always qualifies. The
-  \emph{rank} of a Riemannian manifold $(M,g)$ is the minimum rank over all
-  geodesics of $M$. Any Cartesian product has rank $\ge2$, and many symmetric
-  spaces have rank $\ge2$; all rank-one symmetric spaces are listed in
-  \cref{def:pet-ch10-symmetric-space-tables} (Tables 10.3, 10.4), and the
-  compact ones are called \emph{CROSSes}.
-  \source{petersen:page-0381}
+  For a geodesic $c:\mathbb R\to M$, its \emph{rank} is the dimension of
+  \[
+    \{E:E\text{ is parallel along }c,
+      \ R(E(t),\dot c(t))\dot c(t)=0\text{ for every }t\}.
+  \]
+  This is at least one because $E=\dot c$ is admissible. The rank of $(M,g)$
+  is the minimum over all geodesics. Products have rank at least two. The
+  rank-one spaces in \cref{def:pet-ch10-symmetric-space-tables} are the
+  compact and noncompact rank-one symmetric spaces; the compact ones are
+  called \emph{CROSSes}.
 \end{definition}
 
 \subsection{Isometries and Parallel Curvature}
 
-Since a point symmetry $A_p$ preserves the curvature tensor and its covariant
-derivative — $DA_p\big((\nabla_XR)(Y,Z,W)\big)=(\nabla_{DA_pX}R)(DA_pY,DA_pZ,DA_pW)$
-— evaluating at $p$ (where $DA_p=-I$) gives
-$-(\nabla_XR)(Y,Z,W)=(\nabla_{-X}R)(-Y,-Z,-W)=(\nabla_XR)(Y,Z,W)$, forcing
-$\nabla R=0$ at $p$, and hence (by homogeneity, \cref{prop:pet-ch10-symmetric-homogeneous})
-everywhere on $M$. This near-characterizes symmetric spaces.
+The invariance of $\nabla R$ under a point symmetry gives, at its fixed point,
+\[
+  -(\nabla_XR)(Y,Z,W)
+  =(\nabla_{-X}R)(-Y,-Z,-W)=(\nabla_XR)(Y,Z,W).
+\]
+Thus $\nabla R=0$ there and, by
+\cref{prop:pet-ch10-symmetric-homogeneous}, throughout a symmetric space.
 
 \begin{definition}[locally symmetric space]
   \label{def:pet-ch10-locally-symmetric-space}
   \lean{PetersenLib.IsLocallySymmetric}
-  A Riemannian manifold $(M,g)$ has \emph{parallel curvature tensor} if
-  $\nabla R=0$; such a manifold is called \emph{locally symmetric}.
-  \source{petersen:page-0382}
+  A Riemannian manifold is \emph{locally symmetric} when its curvature tensor
+  is parallel, $\nabla R=0$.
 \end{definition}
 
-\begin{theorem}[Thm. 10.1.1 (Cartan) — local symmetries from parallel curvature]
+\begin{theorem}[local symmetries from parallel curvature]
   \label{thm:pet-ch10-cartan-local-symmetry}
+  \dcref{ch10:10.1.1}
   \lean{PetersenLib.cartanLocalSymmetryExistence}
   \uses{def:pet-ch10-locally-symmetric-space,def:pet-ch10-symmetric-space}
-  If $(M,g)$ is a locally symmetric Riemannian manifold, then for each $p\in M$
-  there is an isometry $A_p$, defined on a neighborhood of $p$, with
-  $DA_p=-I$ on $T_pM$. If moreover $(M,g)$ is simply connected and complete,
-  the local symmetry is defined on all of $M$, and $(M,g)$ is a symmetric
-  space.
-  \source{petersen:page-0381,petersen:page-0382}
+  Every $p$ in a locally symmetric manifold has a neighborhood on which an
+  isometry $A_p$ satisfies $D_pA_p=-I$. If the manifold is also simply
+  connected and complete, $A_p$ extends globally and the manifold is
+  symmetric.
 \end{theorem}
 \begin{proof}
   \uses{thm:pet-ch10-cartan-local-symmetry,thm:pet-ch10-cartan-isometry-extension}
-  \emph{Local statement.} Choose $\varepsilon>0$ small enough that
-  $\exp_p:B(0,\varepsilon)\to B(p,\varepsilon)$ is a diffeomorphism, and define
-  $A_p(x)=-x$ in these normal coordinates; the claim is that this candidate
-  map is an isometry, i.e.\ that the metric in normal coordinates takes the
-  same value at $x$ and $-x$. In polar coordinates on $B(0,\varepsilon)$ this
-  reduces, by the fundamental equations relating curvature and the metric
-  along radial geodesics, to showing that the curvature tensor $R$ agrees when
-  transported the same distance in opposite radial directions from $p$. Two
-  facts give this: first, at $p$ itself, $R(\cdot,v)v=R(\cdot,-v)(-v)$ for
-  every $v\in T_pM$ (immediate from multilinearity and the symmetries of
-  $R$), so the curvature tensors, expressed along the radial geodesics through
-  $\pm v$, start out equal; second, since $\nabla R=0$, the radial field
-  $\partial_r$ satisfies $\nabla_{\partial_r}R=0$ along every geodesic from
-  $p$, so the curvature tensor along each radial geodesic satisfies the same
-  (trivial) first-order ODE in $r$ with the same initial data at $r=0$ in the
-  two opposite directions. Hence the curvature tensors agree at equal
-  distances in opposite directions, giving equal metrics at $x$ and $-x$ and
-  so an isometry $A_p$ near $p$.
-
-  \emph{Global statement.} As in the proof of
-  \cref{thm:pet-ch10-cartan-isometry-extension} below (and as in Petersen's
-  Theorem 5.6.7, outside this chapter, for the analogous statement about
-  constant-curvature isometries), the local isometry $A_p$ extends by
-  analytic continuation along curves to a global isometry of $M$: completeness
-  of $(M,g)$ guarantees the continuation never leaves the domain of
-  definition, and simple connectivity of $M$ guarantees the continuation is
-  independent of the path, hence single-valued. The resulting global isometry
-  $A_p$ still satisfies $DA_p|_p=-I$, exhibiting $(M,g)$ as a symmetric space.
+  \sketch
+  On a normal ball define $A_p=\exp_p\circ(-I)\circ\exp_p^{-1}$. Radial
+  curvatures determine the metric in exponential coordinates. For opposite
+  radial geodesics their initial curvature endomorphisms agree, and
+  $\nabla_{\partial_r}R=0$ keeps them equal; hence $A_p$ is a local isometry.
+  The continuation argument used in
+  \cref{thm:pet-ch10-cartan-isometry-extension} extends it along every curve.
+  Completeness prevents finite-time termination, and simple connectivity makes
+  the extension path-independent. Its differential at $p$ remains $-I$.
 \end{proof}
 
 \begin{remark}[left-invariant metrics need not be locally symmetric]
   \label{rem:pet-ch10-non-locally-symmetric-examples}
   \lean{PetersenLib.bergerSphereNotLocallySymmetric,PetersenLib.heisenbergNotLocallySymmetric}
   \uses{def:pet-ch10-locally-symmetric-space}
-  The Berger spheres ($\varepsilon\ne1$) and the Heisenberg group, with their
-  natural left-invariant metrics, do not have parallel curvature tensor and so
-  are not locally symmetric; since both are $3$-dimensional, they cannot even
-  have parallel Ricci tensor.
-  \source{petersen:page-0382}
+  For $\varepsilon\ne1$, Berger spheres and the Heisenberg group with their
+  standard left-invariant metrics have neither parallel curvature nor, in
+  dimension three, parallel Ricci tensor.
 \end{remark}
 
-\begin{theorem}[Thm. 10.1.2 (Cartan) — extending a curvature-preserving linear isometry]
+\begin{theorem}[extending a curvature-preserving linear isometry]
   \label{thm:pet-ch10-cartan-isometry-extension}
+  \dcref{ch10:10.1.2}
   \lean{PetersenLib.cartanIsometryExtension}
   \uses{def:pet-ch10-symmetric-space,def:pet-ch10-locally-symmetric-space}
-  Let $(M,g)$ be a simply connected symmetric space, $p\in M$, and let
-  $(N,\bar g)$ be a complete locally symmetric space of the same dimension,
-  $q\in N$. Given a linear isometry $L:T_pM\to T_qN$ such that
-  $L(R^\sharp(x,y)z)=\bar R^\sharp(Lx,Ly)Lz$ for all $x,y,z\in T_pM$, there is
-  a unique Riemannian isometry $F:M\to N$ with $D_pF=L$.
-  \source{petersen:page-0382}
+  Let $(M,g)$ be simply connected and symmetric, and let $(N,\bar g)$ be a
+  complete locally symmetric space of the same dimension. For $p\in M$ and
+  $q\in N$, suppose the linear isometry $L:T_pM\to T_qN$ satisfies
+  \[
+    L(R^\sharp(x,y)z)=\bar R^\sharp(Lx,Ly)Lz
+    \quad\text{for all }x,y,z\in T_pM.
+  \]
+  Then there is a unique Riemannian isometry $F:M\to N$ with $D_pF=L$.
 \end{theorem}
 \begin{proof}
   \uses{thm:pet-ch10-cartan-isometry-extension}
-  As in the constant-curvature case, the proof is by analytic continuation, so
-  it suffices to construct $F$ locally near $p$. If a local isometry $F$ with
-  $D_pF=L$ exists, it must be $F=\exp_q\circ L\circ\exp_p^{-1}$ on a normal
-  neighborhood of $p$, since an isometry is determined by its value and
-  differential at one point and this composite has the right value and
-  differential at $p$. To check that this candidate $F$ is indeed an isometry,
-  it suffices, exactly as in the proof of
-  \cref{thm:pet-ch10-cartan-local-symmetry}, to show that the metrics of $M$
-  and $N$ agree in exponential coordinates once the tangent spaces are
-  identified by $L$; since radial curvatures determine the metric in such
-  coordinates, it suffices to match the curvature tensors. Both $R$ and
-  $\bar R$ are parallel (the first because $(M,g)$ is symmetric, by the
-  computation preceding \cref{def:pet-ch10-locally-symmetric-space}, the
-  second by hypothesis on $(N,\bar g)$), so both satisfy the same trivial
-  first-order ODE $\nabla_{\partial_r}R=0$ along radial geodesics from $p$ and
-  $q$ respectively; by hypothesis they agree initially, via $L$, at $p$ and
-  $q$. Hence they remain equal (via $L$, extended by parallel translation)
-  in radially parallel frames around $p$ and $q$, so the two metrics agree in
-  exponential coordinates, and $F$ is a local isometry near $p$. The global
-  statement and its uniqueness then follow by analytically continuing $F$
-  along curves in $M$: simple connectivity of $M$ makes the continuation
-  single-valued, and completeness of $N$ makes it everywhere defined.
+  \sketch
+  On normal neighborhoods the only possible extension is
+  $F=\exp_q\circ L\circ\exp_p^{-1}$. Parallel translation of $L$ identifies the
+  curvature tensors along corresponding radial geodesics because both are
+  parallel and agree initially. The radial metric equations then show that
+  $F$ is a local isometry, as in
+  \cref{thm:pet-ch10-cartan-local-symmetry}. Analytic continuation is
+  single-valued by simple connectivity of $M$ and remains defined by
+  completeness of $N$. The first jet at one point also gives uniqueness; the
+  parallel-curvature input is \cref{def:pet-ch10-locally-symmetric-space}.
 \end{proof}
 
 \subsection{The Lie Algebra Description}
 
-Throughout this subsection $(M,g)$ is a symmetric space, $p\in M$, $A_p$ is the
-point symmetry at $p$ (the isometric involution with $A_p(p)=p$, $DA_p|_p=-I$),
-and $\mathrm{iso}=\mathrm{iso}(M,g)$ is the Lie algebra of Killing fields of $(M,g)$,
-with isotropy subalgebra $\mathrm{iso}_p=\{X\in\mathrm{iso}\mid X|_p=0\}$. Since
-$A_p$ is an isometry, its pushforward $(A_p)_*$ preserves Killing fields, giving a
-natural linear map $\sigma_p=(A_p)_*:\mathrm{iso}\to\mathrm{iso}$,
-$\sigma_p(X)=DA_p\circ X\circ A_p^{-1}$.
+Fix a symmetric space $(M,g)$, a point $p$, and its point symmetry $A_p$. Write
+$\mathrm{iso}=\mathrm{iso}(M,g)$,
+$\mathrm{iso}_p=\{X\in\mathrm{iso}:X_p=0\}$, and define
+\[
+  \sigma_p=(A_p)_*:\mathrm{iso}\longrightarrow\mathrm{iso},\qquad
+  \sigma_p(X)=DA_p\circ X\circ A_p^{-1}.
+\]
 
-\begin{proposition}[Prop. 10.1.3 — the involution $\sigma_p$ on $\mathrm{iso}$]
+\begin{proposition}[the involution $\sigma_p$ on $\mathrm{iso}$]
   \label{prop:pet-ch10-sigma-p-involution}
+  \dcref{ch10:10.1.3}
   \lean{PetersenLib.sigmaPInvolution}
   The map $\sigma_p=(A_p)_*$ is an involution of $\mathrm{iso}$: $\sigma_p^2=\mathrm{id}$.
   Its $1$-eigenspace is $\mathrm{iso}_p$, and its $(-1)$-eigenspace is
   $\{X\in\mathrm{iso}\mid(\nabla X)|_p=0\}$.
-  \source{petersen:page-0383,petersen:page-0384}
 \end{proposition}
 \begin{proof}
   \uses{prop:pet-ch10-sigma-p-involution}
-  Since $A_p^2=\mathrm{id}$, clearly $\sigma_p^2=\mathrm{id}$, so $\mathrm{iso}$
-  is the direct sum of the $(\pm1)$-eigenspaces of $\sigma_p$.
-
-  Because $A_p$ is an isometry, pushforward commutes with the Levi-Civita
-  connection: $(A_p)_*(\nabla_VX)=\nabla_{(A_p)_*V}(A_p)_*X$ for all vector fields
-  $V,X$. Fix $v\in T_pM$ and choose $V$ with $V|_p=-v$; since $A_p(p)=p$ and
-  $DA_p|_p=-I$, $(A_p)_*V|_p=DA_p(V|_p)=-V|_p=v$, so evaluating the identity
-  above at $p$ gives, for every $X\in\mathrm{iso}$,
+  \sketch
+  From $A_p^2=I$ one obtains $\sigma_p^2=I$. Naturality of the connection and
+  $D_pA_p=-I$ give, for every Killing field $X$,
   \[
-    (\nabla_v\sigma_p(X))|_p=DA_p\big((\nabla_VX)|_p\big)=-(\nabla_{-v}X)|_p=(\nabla_vX)|_p,
+    \sigma_p(X)_p=-X_p,\qquad
+    (\nabla\sigma_p(X))_p=(\nabla X)_p.
   \]
-  i.e.\ $(\nabla\sigma_p(X))|_p=(\nabla X)|_p$ for every $X\in\mathrm{iso}$
-  \emph{(unconditionally, not just on an eigenspace)}. Also, evaluating
-  $\sigma_p(X)=DA_p\circ X\circ A_p^{-1}$ at $p$ gives $\sigma_p(X)|_p=DA_p(X|_p)=-X|_p$.
-
-  \emph{$1$-eigenspace.} If $\sigma_p(X)=X$ then $X|_p=\sigma_p(X)|_p=-X|_p$, so
-  $X|_p=0$, i.e.\ $X\in\mathrm{iso}_p$. Conversely, if $X\in\mathrm{iso}_p$ then
-  $\sigma_p(X)|_p=-X|_p=0$ too, so $\sigma_p(X)\in\mathrm{iso}_p$ and $X,\sigma_p(X)$
-  agree at $p$; by the identity above they also have the same covariant derivative
-  at $p$. A Killing field is determined by its value and covariant derivative at one
-  point, so $\sigma_p(X)=X$.
-
-  \emph{$(-1)$-eigenspace.} If $\sigma_p(X)=-X$ then, using the unconditional
-  identity, $(\nabla X)|_p=(\nabla\sigma_p(X))|_p=(\nabla(-X))|_p=-(\nabla X)|_p$,
-  forcing $(\nabla X)|_p=0$. Conversely, if $(\nabla X)|_p=0$, then $-X$ and
-  $\sigma_p(X)$ agree at $p$ (both equal $-X|_p$) and both have vanishing covariant
-  derivative there (for $-X$ this is immediate, and for $\sigma_p(X)$ it follows from
-  the unconditional identity applied to $X$), so $\sigma_p(X)=-X$ by the same
-  uniqueness principle.
+  Thus a $1$-eigenvector vanishes at $p$, while a $(-1)$-eigenvector has zero
+  covariant derivative there. Conversely, the displayed identities make
+  $X$ and $\sigma_pX$, or $-X$ and $\sigma_pX$, have the same first jet.
+  Uniqueness of a Killing field from its first jet proves both reverse
+  inclusions.
 \end{proof}
 
-Petersen's Proposition 8.1.4 (not among the transcribed pages) supplies the short
-exact sequence $0\to\mathrm{iso}_p\to\mathrm{iso}\to t_p\to0$, $t_p=\{X|_p\in T_pM\mid
-X\in\mathrm{iso}\}$; since $M$ is homogeneous, $t_p=T_pM$, and since $M$ is symmetric
-\cref{prop:pet-ch10-sigma-p-involution} shows the $(-1)$-eigenspace of $\sigma_p$
-maps isomorphically onto $T_pM$ under evaluation at $p$.
+The first-jet exact sequence and homogeneity identify the evaluation image of
+$\mathrm{iso}$ with $T_pM$. By \cref{prop:pet-ch10-sigma-p-involution}, evaluation
+restricts to an isomorphism from the $(-1)$-eigenspace of $\sigma_p$ onto
+$T_pM$.
 
 \begin{definition}[the subspaces $t_p$ and $s_p$]
   \label{def:pet-ch10-tp-decomposition}
   \lean{PetersenLib.tpSubspace,PetersenLib.spSubspace}
   \uses{prop:pet-ch10-sigma-p-involution}
-  Redefine $t_p\subset\mathrm{iso}$ as the $(-1)$-eigenspace of $\sigma_p$, i.e.\
-  $t_p=\{X\in\mathrm{iso}\mid(\nabla X)|_p=0\}$; by
-  \cref{prop:pet-ch10-sigma-p-involution} evaluation at $p$ is a linear isomorphism
-  $t_p\xrightarrow{\sim}T_pM$. This gives the natural decomposition
-  $\mathrm{iso}=t_p\oplus\mathrm{iso}_p$, and evaluating at $p$ the alternate
-  representation
+  Let $t_p$ be the $(-1)$-eigenspace of $\sigma_p$. Then
+  \cref{prop:pet-ch10-sigma-p-involution} gives
+  \[
+    t_p=\{X\in\mathrm{iso}:(\nabla X)_p=0\},\qquad
+    t_p\xrightarrow{\ X\mapsto X_p\ }T_pM
+  \]
+  as a linear isomorphism. Hence $\mathrm{iso}=t_p\oplus\mathrm{iso}_p$, and
   \[
     \mathrm{iso}\simeq T_pM\oplus s_p\subset T_pM\oplus\mathfrak{so}(T_pM),
     \qquad
     s_p=\{(\nabla X)|_p\in\mathfrak{so}(T_pM)\mid X\in\mathrm{iso}_p\}.
   \]
-  \source{petersen:page-0384}
 \end{definition}
 
-\begin{proposition}[Prop. 10.1.4 — the bracket of $\mathrm{iso}$ from the curvature]
+\begin{proposition}[the bracket of $\mathrm{iso}$ from the curvature]
   \label{prop:pet-ch10-lie-bracket-curvature}
+  \dcref{ch10:10.1.4}
   \lean{PetersenLib.symmetricSpaceLieBracketCurvature}
   \uses{def:pet-ch10-tp-decomposition}
-  Under the identification $\mathrm{iso}\simeq T_pM\oplus s_p$ of
-  \cref{def:pet-ch10-tp-decomposition}, the Lie algebra structure of $\mathrm{iso}$
-  is determined entirely by the curvature tensor at $p$:
+  Under \cref{def:pet-ch10-tp-decomposition}, the bracket is determined by
+  $R_p$:
   \begin{enumerate}
     \item If $X,Y\in T_pM$, then $[X,Y]=R(X,Y)\in s_p$.
     \item If $X\in T_pM$ and $S\in s_p$, then $[X,S]=-S(X)\in T_pM$.
     \item If $S,T\in s_p$, then $[S,T]=-(S\circ T-T\circ S)\in s_p$.
   \end{enumerate}
-  \source{petersen:page-0384,petersen:page-0385}
 \end{proposition}
 \begin{proof}
   \uses{prop:pet-ch10-lie-bracket-curvature}
-  We rely on the Killing-field curvature identity (Petersen's Proposition 8.1.3):
-  for $X,Y\in\mathrm{iso}$, $[\nabla X,\nabla Y](V)+\nabla_V[X,Y]=R(X,Y)V$ for all
-  vector fields $V$.
-
-  \emph{(1)} For a Killing field, the torsion-free identity $[X,Y]=\nabla_XY-\nabla_YX$
-  holds; if $X,Y\in t_p$ then $(\nabla X)|_p=(\nabla Y)|_p=0$, so $[X,Y]|_p=0$,
-  i.e.\ $[X,Y]\in\mathrm{iso}_p$. Apply the curvature identity at $p$ with these
-  $X,Y$: since $(\nabla X)|_p=(\nabla Y)|_p=0$, also $[\nabla X,\nabla Y]|_p=0$,
-  giving $(\nabla[X,Y])|_p(Z|_p)=R(X|_p,Y|_p)Z|_p$ for all $Z\in T_pM$. Thus
-  $(\nabla[X,Y])|_p=R(X|_p,Y|_p)\in\mathfrak{so}(T_pM)$, i.e.\ $[X,Y]=R(X,Y)\in s_p$
-  under the identification.
-
-  \emph{(2)} For $X\in t_p$, $Y\in\mathrm{iso}_p$ (so $Y|_p=0$ and
-  $(\nabla Y)|_p=S\in s_p$), the torsion-free identity gives $[X,Y]=\nabla_YX-\nabla_XY$,
-  and at $p$: $(\nabla_YX)|_p=0$ since $Y|_p=0$, while $(\nabla_XY)|_p=S(X|_p)$.
-  Hence $[X,Y]|_p=-S(X|_p)$, i.e.\ $[X,S]=-S(X)$.
-
-  \emph{(3)} For $X,Y\in\mathrm{iso}_p$ (so $X|_p=Y|_p=0$, with
-  $(\nabla X)|_p=S$, $(\nabla Y)|_p=T$), $[X,Y]=\nabla_XY-\nabla_YX$ vanishes at
-  $p$, so $[X,Y]\in\mathrm{iso}_p$ again. Applying the curvature identity with
-  $V=Z\in T_pM$ at $p$: since $X|_p=Y|_p=0$, $R(X|_p,Y|_p)Z|_p=0$, so
-  $[\nabla X,\nabla Y](Z)|_p+(\nabla[X,Y])|_p(Z)=0$, i.e.\
-  $(\nabla[X,Y])|_p=-[\nabla X,\nabla Y]|_p=-[S,T]=-(S\circ T-T\circ S)$.
+  \sketch
+  Use torsion-freeness together with
+  \[
+    [\nabla X,\nabla Y](V)+\nabla_V[X,Y]=R(X,Y)V.
+  \]
+  If $X,Y\in t_p$, their first derivatives vanish at $p$, so $[X,Y]_p=0$
+  and $(\nabla[X,Y])_p=R(X_p,Y_p)$, proving the first formula. If
+  $X\in t_p$ and $S=(\nabla Y)_p$ for $Y\in\mathrm{iso}_p$, evaluation of
+  $[X,Y]=\nabla_YX-\nabla_XY$ gives $[X,S]=-S(X)$. Finally, for isotropy
+  fields with derivatives $S,T$, both values vanish at $p$; the displayed
+  curvature identity reduces to $(\nabla[X,Y])_p=-(S\circ T-T\circ S)$.
 \end{proof}
 
 \begin{definition}[adjoint action and Killing form]
   \label{def:pet-ch10-killing-form}
   \lean{PetersenLib.adjointAction,PetersenLib.killingForm}
-  On a (finite-dimensional) Lie algebra $\mathfrak g$ the \emph{adjoint action} is
-  $\mathrm{ad}_X:\mathfrak g\to\mathfrak g$, $\mathrm{ad}_X(Y)=[X,Y]$, and the
-  \emph{Killing form} is $B(X,Y)=\operatorname{tr}(\mathrm{ad}_X\circ\mathrm{ad}_Y)$.
-  The Killing form is symmetric, and $\mathrm{ad}_X$ is skew-symmetric with
-  respect to $B$: $B(\mathrm{ad}_X(Y),Z)+B(Y,\mathrm{ad}_X(Z))=0$.
-  \source{petersen:page-0385}
+  For a finite-dimensional Lie algebra $\mathfrak g$, define
+  \[
+    \mathrm{ad}_X(Y)=[X,Y],\qquad
+    B(X,Y)=\operatorname{tr}(\mathrm{ad}_X\mathrm{ad}_Y).
+  \]
+  The Killing form $B$ is symmetric and invariant:
+  $B(\mathrm{ad}_XY,Z)+B(Y,\mathrm{ad}_XZ)=0$.
 \end{definition}
 
-\begin{remark}[Rem. 10.1.5 — $\mathrm{ad}_S$ is skew and $B\le0$ on $s_p$]
+\begin{remark}[$\mathrm{ad}_S$ is skew and $B\le0$ on $s_p$]
   \label{rem:pet-ch10-adjoint-skew-symmetric}
+  \dcref{ch10:10.1.5}
   \lean{PetersenLib.adjointOnSpNegativeSemidefinite}
   \uses{prop:pet-ch10-lie-bracket-curvature,def:pet-ch10-killing-form}
-  Equip $\mathrm{iso}\simeq T_pM\oplus s_p$ with the natural inner product
-  $g((X_1,S_1),(X_2,S_2))=g(X_1,X_2)+g(S_1,S_2)$, where $g(S_1,S_2)=-\operatorname{tr}(S_1\circ S_2)$
-  is the standard inner product on $\mathfrak{so}(T_pM)$. For $S\in s_p$ the map
-  $\mathrm{ad}_S:\mathrm{iso}\to\mathrm{iso}$ is skew-symmetric with respect to this
-  inner product, so its adjoint satisfies $(\mathrm{ad}_S)^*=-\mathrm{ad}_S$; hence
+  Give $T_pM\oplus s_p$ the orthogonal-sum metric, using
+  $\langle S_1,S_2\rangle=-\operatorname{tr}(S_1S_2)$ on $s_p$. For $S\in s_p$,
+  $\mathrm{ad}_S$ is skew-adjoint. Consequently
   \[
     B(S,S)=\operatorname{tr}(\mathrm{ad}_S\circ\mathrm{ad}_S)=-\operatorname{tr}\big(\mathrm{ad}_S\circ(\mathrm{ad}_S)^*\big)\le0,
   \]
   with equality only if $S=0$.
-  \source{petersen:page-0385}
 \end{remark}
 \begin{proof}
   \uses{rem:pet-ch10-adjoint-skew-symmetric}
-  The inequality $B(S,S)=-\operatorname{tr}(\mathrm{ad}_S\circ(\mathrm{ad}_S)^*)\le0$ holds
-  because $\operatorname{tr}(A\circ A^*)\ge0$ for any linear map $A$ on an inner-product
-  space (it is the squared Hilbert–Schmidt norm of $A$). If $B(S,S)=0$ then
-  $\operatorname{tr}(\mathrm{ad}_S\circ(\mathrm{ad}_S)^*)=0$ forces $\mathrm{ad}_S=0$. In
-  particular $\mathrm{ad}_S(X)=[S,X]=S(X)=0$ for every $X\in T_pM$ (by
-  \cref{prop:pet-ch10-lie-bracket-curvature}(2)), and since $S\in\mathfrak{so}(T_pM)$
-  is itself a linear map on $T_pM$, vanishing on all of $T_pM$ forces $S=0$.
+  \sketch
+  Skew-adjointness yields
+  $B(S,S)=-\operatorname{tr}(\mathrm{ad}_S\mathrm{ad}_S^*)=-\|\mathrm{ad}_S\|^2$.
+  Equality therefore implies $\mathrm{ad}_S=0$. Its action on $T_pM$ is $S$
+  by \cref{prop:pet-ch10-lie-bracket-curvature}, so equality forces $S=0$.
 \end{proof}
 
-\begin{theorem}[Thm. 10.1.6 — curvature from the bracket]
+\begin{theorem}[curvature from the bracket]
   \label{thm:pet-ch10-curvature-bracket-formula}
+  \dcref{ch10:10.1.6}
   \lean{PetersenLib.curvatureFromBracket,PetersenLib.ricciFromKillingForm}
   \uses{prop:pet-ch10-lie-bracket-curvature,def:pet-ch10-killing-form}
   If $X,Y,Z\in t_p$, then at $p$, $R(X,Y)Z=[Z,[X,Y]]$; equivalently, under
@@ -429,78 +334,41 @@ maps isomorphically onto $T_pM$ under evaluation at $p$.
   \]
   Moreover, if $\operatorname{Ric}=\lambda g$ for a scalar $\lambda\ne0$, the curvature
   operator has the same sign as $\lambda$.
-  \source{petersen:page-0385,petersen:page-0386,petersen:page-0387}
 \end{theorem}
 \begin{proof}
   \uses{thm:pet-ch10-curvature-bracket-formula,rem:pet-ch10-adjoint-skew-symmetric}
-  We use the identity $\nabla^2_{A,B}C=-R(C,A)B$ valid for Killing fields
-  $A,B,C\in\mathrm{iso}$ (Petersen's Proposition 8.1.3). For $X,Y,Z\in t_p$,
-  $(\nabla X)|_p=(\nabla Y)|_p=(\nabla Z)|_p=0$. Applying the identity with
-  $(A,B,C)=(Z,X,Y)$ and $(A,B,C)=(Z,Y,X)$, and using that the connection terms
-  vanish at $p$ (as $(\nabla Z)|_p=0$), gives at $p$
+  \sketch
+  For Killing fields, $\nabla^2_{A,B}C=-R(C,A)B$. Apply this twice to
+  $X,Y,Z\in t_p$ and use Bianchi to obtain
   \[
-    \nabla_Z\nabla_XY=-R(Y,Z)X,\qquad\nabla_Z\nabla_YX=-R(X,Z)Y.
+    \nabla_Z[X,Y]=R(X,Y)Z=[Z,[X,Y]].
   \]
-  Subtracting and using $[X,Y]=\nabla_XY-\nabla_YX$, together with the first
-  Bianchi identity $R(X,Y)Z+R(Y,Z)X+R(Z,X)Y=0$, gives at $p$
+  The bracket rules in \cref{prop:pet-ch10-lie-bracket-curvature} give the
+  adjoint formula. Since $\mathrm{ad}_Y$ and $\mathrm{ad}_Z$ interchange the two
+  summands of $T_pM\oplus s_p$, cyclicity of trace gives
   \[
-    \nabla_Z[X,Y]=-R(Y,Z)X+R(X,Z)Y=R(X,Y)Z=[Z,[X,Y]],
+    B(Z,Y)=2\operatorname{tr}
+      (\mathrm{ad}_Z\mathrm{ad}_Y|_{T_pM}),
+    \qquad \operatorname{Ric}(Z,Y)=-\tfrac12B(Z,Y).
   \]
-  the last equality by the identification of $\nabla_Z[X,Y]|_p$ with the bracket of
-  the Killing fields $Z\in t_p$ and $[X,Y]\in\mathrm{iso}_p$ furnished by
-  \cref{prop:pet-ch10-lie-bracket-curvature}. Writing $[X,Y]=\mathrm{ad}_Y(X)\in s_p$
-  under the identification and applying \cref{prop:pet-ch10-lie-bracket-curvature}(2)
-  once more gives $R(X,Y)Z=[Z,\mathrm{ad}_Y(X)]=-\mathrm{ad}_Z\circ\mathrm{ad}_Y(X)$.
-
-  For the Ricci formula, note $\mathrm{ad}_Z\circ\mathrm{ad}_Y$ leaves the
-  decomposition $T_pM\oplus s_p$ invariant (each of $\mathrm{ad}_Z,\mathrm{ad}_Y$
-  interchanges the two summands, by parts (1)–(2) of
-  \cref{prop:pet-ch10-lie-bracket-curvature}), so
+  If $\operatorname{Ric}=\lambda g$, invariance of $B$ converts the curvature
+  quadratic form on $\sum_iX_i\wedge Y_i$ into
   \[
-    \operatorname{tr}\big(\mathrm{ad}_Z\circ\mathrm{ad}_Y|_{T_pM}\big)
-    =\operatorname{tr}\big(\mathrm{ad}_Z|_{s_p}\circ\mathrm{ad}_Y|_{T_pM}\big)
-    =\operatorname{tr}\big(\mathrm{ad}_Y|_{T_pM}\circ\mathrm{ad}_Z|_{s_p}\big)
-    =\operatorname{tr}\big(\mathrm{ad}_Y\circ\mathrm{ad}_Z|_{s_p}\big),
+    -\frac1{2\lambda}
+    B\left(\sum_i\mathrm{ad}_{X_i}(Y_i),
+            \sum_i\mathrm{ad}_{X_i}(Y_i)\right).
   \]
-  using cyclicity of the trace. By symmetry of $B$,
-  \[
-    B(Z,Y)=\operatorname{tr}(\mathrm{ad}_Z\circ\mathrm{ad}_Y)
-    =\operatorname{tr}(\mathrm{ad}_Z\circ\mathrm{ad}_Y|_{T_pM})+\operatorname{tr}(\mathrm{ad}_Z\circ\mathrm{ad}_Y|_{s_p})
-    =2\operatorname{tr}(\mathrm{ad}_Z\circ\mathrm{ad}_Y|_{T_pM}),
-  \]
-  and the curvature formula above shows
-  $\operatorname{Ric}(Z,Y)=-\operatorname{tr}(\mathrm{ad}_Z\circ\mathrm{ad}_Y|_{T_pM})=-\tfrac12B(Z,Y)$.
-
-  Finally, suppose $\operatorname{Ric}=\lambda g$, $\lambda\ne0$. Using
-  $\operatorname{Ric}(Y,Z)=-\tfrac12B(Z,Y)$ to rewrite the Killing form in terms of
-  $\operatorname{Ric}$, and then in terms of $g$, and the bracket identities of
-  \cref{prop:pet-ch10-lie-bracket-curvature} to move the $\operatorname{ad}$'s across the
-  pairing, one computes for $X,Y,W,Z\in T_pM$
-  \[
-    g(R(X,Y)Z,W)|_p
-    =-\tfrac1{2\lambda}B(\mathrm{ad}_Y(X),\mathrm{ad}_Z(W))
-    =-\tfrac1{2\lambda}B([X,Y],[W,Z])
-    =\tfrac1{2\lambda}\operatorname{tr}\big(\mathrm{ad}_{[X,Y]}\circ(\mathrm{ad}_{[W,Z]})^*\big).
-  \]
-  Summing over an orthonormal basis of a $2$-plane, $X_i\wedge Y_i$, the diagonal
-  term of the curvature operator becomes
-  \[
-    g\big(\mathfrak R(\textstyle\sum X_i\wedge Y_i),\sum X_i\wedge Y_i\big)\big|_p
-    =\sum g(R(X_i,Y_i)Y_j,X_j)|_p
-    =-\tfrac1{2\lambda}B\Big(\sum\mathrm{ad}_{X_i}(Y_i),\sum\mathrm{ad}_{X_i}(Y_i)\Big).
-  \]
-  Since $\sum\mathrm{ad}_{X_i}(Y_i)\in s_p$, \cref{rem:pet-ch10-adjoint-skew-symmetric}
-  gives $B(\sum\mathrm{ad}_{X_i}(Y_i),\sum\mathrm{ad}_{X_i}(Y_i))\le0$, so every
-  diagonal term of the curvature operator has the same sign as $\lambda$; hence so
-  does the curvature operator itself.
+  The vector inside $B$ belongs to $s_p$, where
+  \cref{rem:pet-ch10-adjoint-skew-symmetric} makes $B$ nonpositive. The
+  curvature operator consequently has the sign of $\lambda$.
 \end{proof}
 
 \begin{definition}[the abstract bracket on $T_pM\oplus\mathfrak{so}(T_pM)$]
   \label{def:pet-ch10-abstract-symmetric-bracket}
   \lean{PetersenLib.abstractSymmetricSpaceBracket}
   \uses{thm:pet-ch10-curvature-bracket-formula}
-  For a Riemannian manifold $(M,g)$ (not assumed symmetric) and $p\in M$, define
-  a bracket on $\mathfrak N_p:=T_pM\oplus\mathfrak{so}(T_pM)$ by
+  For any Riemannian manifold and $p\in M$, put
+  $\mathfrak N_p=T_pM\oplus\mathfrak{so}(T_pM)$ and define
   \[
     [X,Y]=R(X,Y)\in\mathfrak{so}(T_pM)\quad(X,Y\in T_pM),
   \]
@@ -510,19 +378,20 @@ maps isomorphically onto $T_pM$ under evaluation at $p$.
   \[
     [S,S']=-(S\circ S'-S'\circ S)\in\mathfrak{so}(T_pM)\quad(S,S'\in\mathfrak{so}(T_pM)).
   \]
-  This bracket need not satisfy the Jacobi identity on triples involving exactly two
-  elements of $T_pM$, where the Jacobi expression evaluates to
+  Jacobi is automatic for triples containing at most one tangent vector. For
+  three tangent vectors it is the first Bianchi identity. For $X,Y\in T_pM$
+  and $S\in\mathfrak{so}(T_pM)$, the remaining Jacobi expression is
   $-S\circ R_{X,Y}+R_{X,Y}\circ S+R_{S(X),Y}+R_{X,S(Y)}$ for $X,Y\in T_pM$,
-  $S\in\mathfrak{so}(T_pM)$; it does hold on triples with zero or one elements from
-  $T_pM$ (immediate from skew-symmetry of the bracket on
-  $\mathfrak{so}(T_pM)$), and on triples of three elements of $T_pM$ it is
-  equivalent to the first Bianchi identity
-  $R(X,Y)Z+R(Z,X)Y+R(Y,Z)X=0$, i.e.\ $[Z,[X,Y]]+[Y,[Z,X]]+[X,[Y,Z]]=0$.
-  \source{petersen:page-0387}
+  and need not vanish. Explicitly, the all-tangent relation is
+  \[
+    R(X,Y)Z+R(Z,X)Y+R(Y,Z)X
+    =[Z,[X,Y]]+[Y,[Z,X]]+[X,[Y,Z]]=0.
+  \]
 \end{definition}
 
-\begin{corollary}[Cor. 10.1.7 — membership criterion for $s_p$]
+\begin{corollary}[membership criterion for $s_p$]
   \label{cor:pet-ch10-so-membership-criterion}
+  \dcref{ch10:10.1.7}
   \lean{PetersenLib.spMembershipCriterion}
   \uses{def:pet-ch10-tp-decomposition}
   Let $(M,g)$ be a simply connected symmetric space. Then $S\in\mathfrak{so}(T_pM)$
@@ -530,349 +399,317 @@ maps isomorphically onto $T_pM$ under evaluation at $p$.
   \[
     -S\circ R_{X,Y}+R_{X,Y}\circ S+R_{S(X),Y}+R_{X,S(Y)}=0.
   \]
-  \source{petersen:page-0388}
 \end{corollary}
 \begin{proof}
   \uses{cor:pet-ch10-so-membership-criterion,thm:pet-ch10-cartan-isometry-extension}
-  ($\Rightarrow$) If $Z\in\mathrm{iso}_p$ and $S=(\nabla Z)|_p$, then $Z$ Killing
-  gives $\mathcal L_ZR=0$; since $[V,Z]|_p=S(V)$ for $V\in T_pM$, evaluating
-  $(\mathcal L_ZR)_{X,Y}V=0$ at $p$ gives
+  \sketch
+  For $Z\in\mathrm{iso}_p$ and $S=(\nabla Z)_p$, the identity
+  $\mathcal L_ZR=0$ evaluated at $p$ is
   \[
     0=-S(R_{X,Y}V)+R_{X,Y}S(V)+R_{S(X),Y}V+R_{X,S(Y)}V,
   \]
-  for all $V\in T_pM$, which is the stated identity.
-
-  ($\Leftarrow$) Given $S\in\mathfrak{so}(T_pM)$ satisfying the identity, construct
-  the one-parameter isometric flow of $S$ on $T_pM$.
-  \cref{thm:pet-ch10-cartan-isometry-extension} (Theorem 10.1.2) shows that a
-  curve of linear isometries of $T_pM$ integrates to a curve of global isometries
-  of $M$ exactly when the corresponding infinitesimal condition on the curvature
-  tensor holds; the hypothesis on $S$ is exactly that condition, so the flow of
-  $S$ generates a one-parameter group of isometries of $M$, whose infinitesimal
-  generator is a Killing field $Z\in\mathrm{iso}_p$ with $(\nabla Z)|_p=S$.
+  which proves necessity. Conversely, the asserted relation says that the
+  one-parameter group generated by $S$ preserves $R_p$. By
+  \cref{thm:pet-ch10-cartan-isometry-extension}, these linear maps extend to
+  global isometries fixing $p$. Their infinitesimal generator lies in
+  $\mathrm{iso}_p$ and has derivative $S$.
 \end{proof}
 
-\begin{corollary}[Cor. 10.1.8 — $T_pM\oplus s_p$ is the maximal Lie subalgebra]
+\begin{corollary}[$T_pM\oplus s_p$ is the maximal Lie subalgebra]
   \label{cor:pet-ch10-maximal-subalgebra}
+  \dcref{ch10:10.1.8}
   \lean{PetersenLib.tpSpMaximalSubalgebra}
   \uses{def:pet-ch10-abstract-symmetric-bracket,cor:pet-ch10-so-membership-criterion}
-  Let $(M,g)$ be a simply connected symmetric space. The bracket of
-  \cref{def:pet-ch10-abstract-symmetric-bracket} makes $T_pM\oplus s_p$ into a Lie
-  algebra, with subalgebra $c_p:=T_pM\oplus\{0\}$. In fact $T_pM\oplus s_p$ is the
-  maximal such Lie algebra: $c_p\subset T_pM\oplus s_p\subset\mathfrak N_{\mathfrak N_p}(c_p)$,
-  where $\mathfrak N_{\mathfrak N_p}(c_p)$ denotes the normalizer of $c_p$ in
-  $\mathfrak N_p=T_pM\oplus\mathfrak{so}(T_pM)$. The Lie algebra involution on
-  $T_pM\oplus s_p$ (and on $c_p$) has $T_pM$ as $(-1)$-eigenspace and $s_p$ as
-  $1$-eigenspace.
-  \source{petersen:page-0388}
+  Let $\mathfrak r_p\subset s_p$ be the Lie algebra generated by the curvature
+  endomorphisms $R_{X,Y}$, $X,Y\in T_pM$. For a simply connected symmetric
+  space, the bracket in
+  \cref{def:pet-ch10-abstract-symmetric-bracket} makes $T_pM\oplus s_p$ the
+  maximal Lie algebra of this form, with subalgebra
+  $c_p=T_pM\oplus\mathfrak r_p$. Moreover,
+  \[
+    c_p\subset T_pM\oplus s_p
+      \subset\mathfrak N_{\mathfrak N_p}(c_p).
+  \]
+  The canonical involution on $T_pM\oplus s_p$ has $T_pM$ and $s_p$ as its
+  $(-1)$- and $1$-eigenspaces; its restriction to $c_p$ has eigenspaces
+  $T_pM$ and $\mathfrak r_p$.
 \end{corollary}
 \begin{proof}
   \uses{cor:pet-ch10-maximal-subalgebra}
-  By \cref{cor:pet-ch10-so-membership-criterion}, any subalgebra
-  $\mathfrak t\subset\mathfrak{so}(T_pM)$ such that $T_pM\oplus\mathfrak t$ is a Lie
-  subalgebra of $\mathfrak N_p$ (i.e.\ also satisfies the Jacobi identity on the
-  mixed triples of \cref{def:pet-ch10-abstract-symmetric-bracket}) must consist of
-  elements $S$ satisfying the criterion, hence $\mathfrak t\subset s_p$; this gives
-  $T_pM\oplus\mathfrak t\subset T_pM\oplus s_p$, so $T_pM\oplus s_p$ is maximal
-  among such subalgebras. On the other hand $T_pM\oplus s_p\subset\mathfrak N_{\mathfrak N_p}(c_p)$
-  because for $S\in s_p$ and $X\in T_pM$, $[S,X]=-S(X)\in T_pM=c_p$ and
-  $[X,X']=R(X,X')\in s_p$ normalizes $c_p$ by the same computation.
+  \sketch
+  The only nonautomatic Jacobi relation for the bracket in
+  \cref{def:pet-ch10-abstract-symmetric-bracket} is the mixed relation. By
+  \cref{cor:pet-ch10-so-membership-criterion}, every
+  $\mathfrak t\subset\mathfrak{so}(T_pM)$ for which
+  $T_pM\oplus\mathfrak t$ is a Lie algebra satisfies $\mathfrak t\subset s_p$.
+  This proves maximality. Since $[X,X']=R_{X,X'}$, the space
+  $T_pM\oplus\mathfrak r_p$ is a subalgebra. For $S\in s_p$, the identity in
+  \cref{cor:pet-ch10-so-membership-criterion} shows that
+  $[S,R_{X,Y}]$ is a linear combination of curvature endomorphisms, while
+  $[S,X]=-S(X)\in T_pM$. Thus $T_pM\oplus s_p$ normalizes $c_p$. The two
+  summands have signs $-1$ and $1$ under the canonical involution, giving the
+  stated eigenspaces and their restrictions to $c_p$.
 \end{proof}
 
 \begin{remark}[reconstructing symmetric spaces from an involutive Lie algebra]
   \label{rem:pet-ch10-symmetric-space-from-involution}
   \lean{PetersenLib.symmetricSpaceFromInvolutiveLieAlgebra}
   \uses{cor:pet-ch10-maximal-subalgebra}
-  Conversely, let $\mathfrak g$ be a Lie algebra with a Lie algebra involution
-  $\sigma:\mathfrak g\to\mathfrak g$, and decompose $\mathfrak g=\mathfrak t\oplus\mathfrak k$
-  into the $(-1)$- and $1$-eigenspaces of $\sigma$. Then $\mathfrak k$ is a Lie
-  subalgebra (since $\sigma[X,Y]=[\sigma X,\sigma Y]=[X,Y]$ for $X,Y\in\mathfrak k$),
-  and $[\mathfrak k,\mathfrak t]\subset\mathfrak t$, $[\mathfrak t,\mathfrak t]\subset\mathfrak k$.
-  Suppose there is a connected compact Lie group $K$ with Lie algebra $\mathfrak k$
-  whose bracket action on $\mathfrak t$ integrates to an action of $K$ on
-  $\mathfrak t$ (automatic if $K$ is simply connected); compactness lets one choose
-  a $K$-invariant Euclidean metric on $\mathfrak t$, making
-  $\mathfrak g=\mathfrak t\oplus\mathfrak k$ of the type $\mathrm{iso}=t_p\oplus\mathrm{iso}_p$.
-  If further there is a Lie group $G\supset K$ with Lie algebra $\mathfrak g$, one
-  obtains a Riemannian manifold $G/K$; when $G$ is simply connected, $\sigma$ is
-  the differential of a Lie group involution $A:G\to G$ fixing $K$ pointwise,
-  giving the point symmetry at $p=eK$ that makes $G/K$ a symmetric space.
-  Without connectedness or simple-connectivity hypotheses there is a long exact
-  sequence of homotopy groups
+  Let $\sigma$ be an involution of a Lie algebra $\mathfrak g$, with
+  $\mathfrak g=\mathfrak t\oplus\mathfrak k$ its $(-1)$- and $1$-eigenspaces.
+  Then
+  \[
+    [\mathfrak k,\mathfrak k]\subset\mathfrak k,\qquad
+    [\mathfrak k,\mathfrak t]\subset\mathfrak t,\qquad
+    [\mathfrak t,\mathfrak t]\subset\mathfrak k.
+  \]
+  Suppose a connected compact group $K$ with Lie algebra $\mathfrak k$
+  integrates the bracket action on $\mathfrak t$; this is automatic when $K$
+  is simply connected. Averaging gives a $K$-invariant Euclidean metric on
+  $\mathfrak t$. If $K\subset G$ and $\operatorname{Lie}(G)=\mathfrak g$, this
+  metric defines a Riemannian quotient $G/K$. For simply connected $G$,
+  $\sigma$ integrates to an involution of $G$ fixing $K$, and its action at
+  $eK$ is the point symmetry.
+
+  The relevant homotopy sequence is
   \[
     \pi_1(K)\to\pi_1(G)\to\pi_1(G/K)\to\pi_0(K)\to\pi_0(G)\to\pi_0(G/K)\to1,
   \]
-  from which $G/K$ is connected and simply connected once $\pi_0(K)\to\pi_0(G)$
-  is an isomorphism and $\pi_1(K)\to\pi_1(G)$ is surjective. The involution
-  $\sigma$ is an essential part of the data: it need not exist on a given Lie
-  algebra, and $-\mathrm{id}$ is never a valid choice on a nonabelian $\mathfrak g$,
-  since it is a Lie algebra \emph{anti}-automorphism, not an automorphism.
-  \source{petersen:page-0388,petersen:page-0389}
+  so $G/K$ is connected and simply connected if
+  $\pi_0(K)\to\pi_0(G)$ is an isomorphism and
+  $\pi_1(K)\to\pi_1(G)$ is surjective. The involution is essential:
+  $-\mathrm{id}$ is an anti-automorphism, not an automorphism, on a nonabelian
+  Lie algebra.
 \end{remark}
 
 \section{Examples of Symmetric Spaces}
 
-Throughout this section, for $X,Y\in\operatorname{Mat}_{k\times l}(\mathbb F)$ ($\mathbb F=\mathbb R$
-or $\mathbb C$) write $\langle X,Y\rangle=\operatorname{tr}(X^\top Y)=\overline{\operatorname{tr}(XY^*)}$
-(conjugation relevant only for $\mathbb F=\mathbb C$); this inner product is invariant
-under $(A,B,X)\mapsto AXB^{-1}=AXB^\top$ for $A\in O(k)$, $B\in O(l)$, since
-$\langle O_1XO_2,O_1YO_2\rangle=\operatorname{tr}(O_2^\top X^\top O_1^\top O_1YO_2)=\operatorname{tr}(X^\top Y)$.
+For $X,Y\in\operatorname{Mat}_{k\times l}(\mathbb F)$, where
+$\mathbb F\in\{\mathbb R,\mathbb C\}$, set
+\[
+  \langle X,Y\rangle=\operatorname{tr}(X^\top Y)
+  =\overline{\operatorname{tr}(XY^*)}.
+\]
+This inner product is invariant under $X\mapsto AXB^\top$ for $A\in O(k)$ and
+$B\in O(l)$.
 
-\begin{example}[§10.2.1 — the compact Grassmannian]
+\begin{example}[the compact Grassmannian]
   \label{ex:pet-ch10-compact-grassmannian}
+  \dcref{ch10:10.2.1}
   \lean{PetersenLib.compactGrassmannianSymmetricSpace}
   \uses{def:pet-ch10-tp-decomposition,def:pet-ch10-killing-form,thm:pet-ch10-curvature-bracket-formula,cor:pet-ch10-maximal-subalgebra}
-  For $k,l\ge1$ with $k+l\ge3$, split $\mathbb R^{k+l}=\mathbb R^k\oplus\mathbb R^l$ and let
-  $M=\widetilde G_k(\mathbb R^{k+l})$ be the Grassmannian of \emph{oriented}
-  $k$-planes in $\mathbb R^{k+l}$, with distinguished point $p=\mathbb R^k$ (positively
-  oriented). Then $M$ is the homogeneous space $O(k+l)/(\mathrm{SO}(k)\times O(l))$,
-  $T_pM\cong\operatorname{Mat}_{k\times l}(\mathbb R)$ (an $\mathbb R^k$-graph over the
-  complementary $\mathbb R^l$), the isotropy action of $\mathrm{SO}(k)\times O(l)$ on
-  $\operatorname{Mat}_{k\times l}$ is $(A,B,X)\mapsto AXB^\top$, and $M$ is a symmetric
-  space with involution induced by $(A,B)=(I_k,-I_l)$. In the Lie algebra
-  decomposition $\mathfrak{so}(k+l)=t_p\oplus\mathfrak{so}(k)\oplus\mathfrak{so}(l)$,
-  with
+  Let $k,l\ge1$, $k+l\ge3$, and let
+  $M=\widetilde G_k(\mathbb R^{k+l})$ be the oriented Grassmannian based at
+  $p=\mathbb R^k$. Then
   \[
+    M=O(k+l)/(\mathrm{SO}(k)\times O(l)),\qquad
+    T_pM\simeq\operatorname{Mat}_{k\times l}(\mathbb R),
+  \]
+  with isotropy action $(A,B)\cdot X=AXB^\top$. The element $(I_k,-I_l)$
+  induces the point symmetry, and
+  \[
+    \mathfrak{so}(k+l)=t_p\oplus\mathfrak{so}(k)\oplus\mathfrak{so}(l),
+    \qquad
     t_p=\Big\{\begin{pmatrix}0&B\\-B^\top&0\end{pmatrix}\mid B\in\operatorname{Mat}_{k\times l}\Big\},
   \]
-  the natural inner product $\langle X,Y\rangle=\operatorname{tr}(X^\top Y)$ on $t_p$ (skew
-  matrices, $=-\operatorname{tr}(XY)$) equals $-\tfrac1{k+l-2}B(X,Y)$, and
+  On $t_p$,
+  $\langle X,Y\rangle=\operatorname{tr}(X^\top Y)=-\operatorname{tr}(XY)
+  =-(k+l-2)^{-1}B(X,Y)$, whence
   \[
     \operatorname{Ric}=\tfrac{k+l-2}2g,\qquad
     \langle R(X,Y)Y,X\rangle=|[X,Y]|^2\ge0.
   \]
-  Moreover $t_p=\mathfrak{so}(k)\otimes\mathfrak{so}(l)$-irreducible (but the isotropy
-  action, though irreducible, is not transitive on the unit sphere unless $k=1$ or
-  $l=1$, in which case the metric has constant positive curvature), and
-  \cref{cor:pet-ch10-maximal-subalgebra} identifies $\mathrm{iso}=\mathfrak{so}(k+l)$.
-  \source{petersen:page-0390,petersen:page-0391,petersen:page-0392}
+  The isotropy representation on $t_p$ is irreducible but is transitive on its
+  unit sphere only when $k=1$ or $l=1$; precisely then the curvature is positive
+  and constant. Moreover
+  \cref{cor:pet-ch10-maximal-subalgebra} gives
+  $\mathrm{iso}=\mathfrak{so}(k+l)$.
 \end{example}
 \begin{proof}
   \uses{ex:pet-ch10-compact-grassmannian}
-  \emph{Homogeneous structure.} $O(k+l)$ acts transitively on positively oriented
-  orthonormal $k$-frames, hence on oriented $k$-planes, by $O\cdot(e_1,\dots,e_k)=
-  (Oe_1,\dots,Oe_k)$; the isotropy at $p=\mathbb R^k$ is exactly $\mathrm{SO}(k)\times O(l)$
-  (orientation-preserving on $\mathbb R^k$, arbitrary orthogonal on $\mathbb R^l$).
-  A $k$-plane near $p$ is the graph of a linear map $\mathbb R^k\to\mathbb R^l$, giving
-  $T_pM\cong\operatorname{Mat}_{k\times l}$; conjugating this graph representation by
-  $(A,B)\in\mathrm{SO}(k)\times O(l)$ replaces the graph map $X$ by $AXB^{-1}=AXB^\top$.
-
-  \emph{Involution.} Taking $A=I_k$, $B=-I_l$ gives $AXB^\top=-X$ for all $X$,
-  so $(I_k,-I_l)\in\mathrm{SO}(k)\times O(l)$ acts as $-1$ on $T_pM$, exhibiting $M$
-  as a symmetric space (without yet identifying $\mathrm{iso}$).
-
-  \emph{Lie algebra decomposition.} Write $X\in\mathfrak{so}(k+l)$ in blocks
-  $X=\begin{pmatrix}X_1&B\\-B^\top&X_2\end{pmatrix}$ with $X_1\in\mathfrak{so}(k)$,
-  $X_2\in\mathfrak{so}(l)$, $B\in\operatorname{Mat}_{k\times l}$; this is exactly the
-  orthogonal decomposition $\mathfrak{so}(k+l)=t_p\oplus\mathfrak{so}(k)\oplus\mathfrak{so}(l)$
-  with $t_p=T_pM$ the off-diagonal block, on which the involution above acts as
-  $-1$.
-
-  \emph{Metric and curvature.} Since $t_p$ consists of skew-symmetric matrices,
-  $\langle X,Y\rangle=\operatorname{tr}(X^\top Y)=-\operatorname{tr}(XY)$; on the other hand the
-  Killing form of $\mathfrak{so}(n)$ is $B(X,Y)=(n-2)\operatorname{tr}(XY)$ (Exercise
-  10.5.6(5)), so with $n=k+l$, $\langle X,Y\rangle=-\tfrac1{k+l-2}B(X,Y)$. Combined
-  with \cref{thm:pet-ch10-curvature-bracket-formula}
-  ($\operatorname{Ric}(Y,Z)=-\tfrac12B(Z,Y)$), this gives $\operatorname{Ric}=\tfrac{k+l-2}2g$, and
+  \sketch
+  Transitivity of $O(k+l)$ and the graph chart at $\mathbb R^k$ give the stated
+  quotient, tangent space, and isotropy action. The element $(I_k,-I_l)$ acts
+  by $-I$ on graph maps. Block decomposition then identifies $t_p$ with the
+  off-diagonal skew matrices. Since
+  $B(X,Y)=(k+l-2)\operatorname{tr}(XY)$,
+  \cref{thm:pet-ch10-curvature-bracket-formula} yields
   \[
-    \langle R(X,Y)Y,X\rangle=\langle[X,Y],[X,Y]\rangle=-\tfrac1{k+l-2}B([X,Y],[X,Y])=|[X,Y]|^2\ge0
+    \operatorname{Ric}=\frac{k+l-2}{2}g,\qquad
+    \langle R(X,Y)Y,X\rangle=|[X,Y]|^2.
   \]
-  by \cref{thm:pet-ch10-curvature-bracket-formula} again (curvature has the sign
-  of the Einstein constant, here positive).
-
-  \emph{Isometry group.} Since the isotropy of $t_p$ is irreducible, any subalgebra
-  properly containing $\mathfrak{so}(k)\oplus\mathfrak{so}(l)$ inside $\mathfrak{so}(k+l)$
-  and normalizing it must be all of $\mathfrak{so}(k+l)$; \cref{cor:pet-ch10-maximal-subalgebra}
-  then gives $\mathrm{iso}=\mathfrak{so}(k+l)$, so $\mathrm{SO}(k+l)$ is a covering of
-  $\mathrm{Iso}(M,g)$.
+  Irreducibility of the isotropy module and
+  \cref{cor:pet-ch10-maximal-subalgebra} identify the isometry algebra with
+  $\mathfrak{so}(k+l)$.
 \end{proof}
 
-\begin{example}[§10.2.2 — the hyperbolic Grassmannian]
+\begin{example}[the hyperbolic Grassmannian]
   \label{ex:pet-ch10-hyperbolic-grassmannian}
+  \dcref{ch10:10.2.2}
   \lean{PetersenLib.hyperbolicGrassmannianSymmetricSpace}
   \uses{ex:pet-ch10-compact-grassmannian}
-  For $k,l>0$ let $\mathbb R^{k,l}$ carry the quadratic form
-  $v^\top I_{k,l}w=\sum_{i\le k}v_iw_i-\sum_{i>k}v_iw_i$, with isometry group
-  $O(k,l)=\{X\mid X\,I_{k,l}\,X^\top=I_{k,l}\}$ (noncompact when $k,l>0$,
-  containing the maximal compact subgroup $O(k)\times O(l)$) and Lie algebra
-  $\mathfrak{so}(k,l)=\{Y\mid Y\,I_{k,l}+I_{k,l}\,Y^\top=0\}=\big\{\begin{pmatrix}Y_1&B\\B^\top&Y_2\end{pmatrix}
-  \mid Y_1\in\mathfrak{so}(k),\,Y_2\in\mathfrak{so}(l),\,B\in\operatorname{Mat}_{k\times l}\big\}$.
-  The \emph{hyperbolic Grassmannian} $M=\widetilde G_k(\mathbb R^{k,l})$ is the space of
-  oriented $k$-planes on which the form is positive definite (an open subset of
-  $\widetilde G_k(\mathbb R^{k+l})$); $O(k,l)$ acts transitively with isotropy
-  $\mathrm{SO}(k)\times O(l)$ at $p=\mathbb R^k$, and $M$ is symmetric with
-  $\mathfrak{so}(k,l)=t_p\oplus\mathfrak{so}(k)\oplus\mathfrak{so}(l)$,
-  $t_p=\big\{\begin{pmatrix}0&B\\B^\top&0\end{pmatrix}\big\}$ now consisting of
-  \emph{symmetric} matrices, $\langle X,Y\rangle=\operatorname{tr}(XY)=\tfrac1{k+l-2}B(X,Y)$,
+  On $\mathbb R^{k,l}$ use
+  $v^\top I_{k,l}w=\sum_{i\le k}v_iw_i-\sum_{i>k}v_iw_i$. Then
+  \[
+    O(k,l)=\{X:XI_{k,l}X^\top=I_{k,l}\},
+  \]
+  and
+  \[
+    \mathfrak{so}(k,l)
+    =\left\{\begin{pmatrix}Y_1&B\\B^\top&Y_2\end{pmatrix}:
+      Y_1\in\mathfrak{so}(k),\ Y_2\in\mathfrak{so}(l)\right\}.
+  \]
+  The oriented positive $k$-planes form the symmetric space
+  \[
+    \widetilde G_k(\mathbb R^{k,l})
+      =O(k,l)/(\mathrm{SO}(k)\times O(l)).
+  \]
+  At $p=\mathbb R^k$,
+  $t_p=\{\left(\begin{smallmatrix}0&B\\B^\top&0\end{smallmatrix}\right)\}$ and
+  $g(X,Y)=\operatorname{tr}(XY)=(k+l-2)^{-1}B(X,Y)$. Therefore
   \[
     \operatorname{Ric}=-\tfrac{k+l-2}2g,\qquad
     \langle R(X,Y)Y,X\rangle=-|[X,Y]|^2\le0,
   \]
-  and $\mathrm{iso}=\mathfrak{so}(k,l)$. When $l=1$ this recovers hyperbolic space
-  $H^k$ with its full isometry group.
-  \source{petersen:page-0392,petersen:page-0393}
+  and $\mathrm{iso}=\mathfrak{so}(k,l)$. The case $l=1$ is hyperbolic space
+  $H^k$.
 \end{example}
 \begin{proof}
   \uses{ex:pet-ch10-hyperbolic-grassmannian}
-  The homogeneous and symmetric-space structure is identical to
-  \cref{ex:pet-ch10-compact-grassmannian}, replacing $O(k+l)$ by $O(k,l)$
-  throughout, since $O(k,l)\supset O(k)\times O(l)$ acts transitively on
-  positive-definite oriented $k$-planes and the same involution $(I_k,-I_l)$ fixes
-  $p=\mathbb R^k$ and acts as $-1$ on $T_pM$. The only change is that $t_p$ now
-  consists of matrices \emph{symmetric} with respect to transpose (from the $+B^\top$
-  block, dictated by the defining relation of $\mathfrak{so}(k,l)$), so
-  $\langle X,Y\rangle=\operatorname{tr}(X^*Y)=\operatorname{tr}(XY)$, the negative of the skew case;
-  since the Killing form of $\mathfrak{so}(k,l)$ is again $B(X,Y)=(k+l-2)\operatorname{tr}(XY)$
-  (Exercise 10.5.6(6)), $\langle X,Y\rangle=\tfrac1{k+l-2}B(X,Y)$, with the opposite
-  sign relative to \cref{ex:pet-ch10-compact-grassmannian}. Feeding this into
-  \cref{thm:pet-ch10-curvature-bracket-formula} negates $\operatorname{Ric}$ and the
-  sectional curvature formula relative to the compact case, giving nonpositive
-  curvature. Irreducibility of the isotropy representation again forces, via
-  \cref{cor:pet-ch10-maximal-subalgebra}, $\mathrm{iso}=\mathfrak{so}(k,l)$.
+  \sketch
+  Repeat the quotient and involution argument of
+  \cref{ex:pet-ch10-compact-grassmannian} with $O(k,l)$. The off-diagonal
+  matrices are now symmetric, so
+  $g=(k+l-2)^{-1}B$ on $t_p$. Hence
+  \cref{thm:pet-ch10-curvature-bracket-formula} reverses the compact signs and
+  gives the displayed Ricci and sectional-curvature formulas. The same
+  isotropy irreducibility, together with
+  \cref{cor:pet-ch10-maximal-subalgebra}, gives
+  $\mathrm{iso}=\mathfrak{so}(k,l)$.
 \end{proof}
 
-\begin{example}[§10.2.3 — complex projective space as a symmetric space]
+\begin{example}[complex projective space as a symmetric space]
   \label{ex:pet-ch10-complex-projective-space}
+  \dcref{ch10:10.2.3}
   \lean{PetersenLib.complexProjectiveSpaceSymmetricSpace}
   \uses{def:pet-ch10-tp-decomposition,thm:pet-ch10-curvature-bracket-formula}
-  Let $M=\mathbb{CP}^n=G_1(\mathbb C^{n+1})$, the complex lines in $\mathbb C^{n+1}$, with
-  $p=\mathbb C$ the first coordinate axis. Then $\mathrm{SU}(n+1)$ acts transitively on
-  $M$ with isotropy $\mathrm S(\mathrm U(1)\times\mathrm U(n))\cong\mathrm U(n)$ via
-  $A\mapsto\begin{pmatrix}\det A^{-1}&0\\0&A\end{pmatrix}$, and $M$ is symmetric
-  with involution $\begin{pmatrix}(-1)^n&0\\0&-I_n\end{pmatrix}$. At the Lie
-  algebra level, $\mathfrak{su}(n+1)=\mathfrak t_p\oplus\mathfrak u(n)$ with
+  For the first coordinate line $p\in\mathbb{CP}^n$,
   \[
+    \mathbb{CP}^n
+      =\mathrm{SU}(n+1)/\mathrm S(\mathrm U(1)\times\mathrm U(n)),
+  \]
+  where the isotropy is identified with $\mathrm U(n)$ by
+  $A\mapsto\left(\begin{smallmatrix}\det A^{-1}&0\\0&A\end{smallmatrix}\right)$.
+  The element
+  $\left(\begin{smallmatrix}(-1)^n&0\\0&-I_n\end{smallmatrix}\right)$ induces
+  the point symmetry. Moreover
+  \[
+    \mathfrak{su}(n+1)=\mathfrak t_p\oplus\mathfrak u(n),\qquad
     \mathfrak t_p=\Big\{\begin{pmatrix}0&-z^*\\z&0\end{pmatrix}\mid z\in\mathbb C^n\Big\},
   \]
-  $\langle X,Y\rangle=\operatorname{tr}(X^*Y)=-\operatorname{tr}(XY)=-\tfrac1{2(n+1)}B(X,Y)$ on
-  $\mathfrak t_p$, and
+  and $g(X,Y)=-\operatorname{tr}(XY)=-[2(n+1)]^{-1}B(X,Y)$ on $\mathfrak t_p$.
+  Thus
   \[
     \operatorname{Ric}=(n+1)g,\qquad
     \langle R(X,Y)Y,X\rangle=|[X,Y]|^2=4|\operatorname{Im}(z^*w)|^2-2\operatorname{Re}(z^*w)^2+2|z|^2|w|^2.
   \]
-  On an orthonormal $2$-plane ($|z|^2=|w|^2=\tfrac12$, $\operatorname{Re}(z^*w)=0$) this
-  equals $6|z^*w|^2+\tfrac12$, so $\tfrac14\le\sec\le2$: the Fubini–Study metric on
-  $\mathbb{CP}^n$ is quarter-pinched, with equality $\sec=2$ iff $w=iz$ and
-  $\sec=\tfrac14$ iff $z^*w=0$.
-  \source{petersen:page-0393,petersen:page-0394,petersen:page-0395}
+  For an orthonormal plane, $|z|^2=|w|^2=\tfrac12$ and
+  $\operatorname{Re}(z^*w)=0$, so the sectional curvature is
+  $6|z^*w|^2+\tfrac12$. Hence the Fubini--Study metric satisfies
+  $\tfrac14\le\sec\le2$, with its maximum at $w=iz$ and its minimum when
+  $z^*w=0$.
 \end{example}
 \begin{proof}
   \uses{ex:pet-ch10-complex-projective-space}
-  $\mathrm U(n+1)$ preserves the Hermitian form $z^*w=\sum\bar z_iw_i$ and acts on
-  $M$; scalars $aI$ with $a\bar a=1$ act trivially, so the action factors through
-  $\mathrm{SU}(n+1)$, still transitive (with finite kernel $\{aI:a^{n+1}=1\}$). The
-  isotropy of $p=\mathbb C$ is the block-diagonal $\mathrm S(\mathrm U(1)\times\mathrm U(n))$,
-  identified with $\mathrm U(n)$ as stated; the displayed matrix, having
-  determinant $(-1)^n\cdot(-1)^n=1$ and squaring to $I$, fixes $p$ and acts as $-1$
-  on the complementary directions, giving the symmetric-space involution.
-
-  Passing to Lie algebras, $\mathfrak{su}(n+1)=\{A=-A^*,\operatorname{tr}A=0\}$,
-  $\mathfrak u(n)=\{B=-B^*\}$ includes via $B\mapsto\begin{pmatrix}-\operatorname{tr}B&0\\0&B\end{pmatrix}$,
-  so a general element of $\mathfrak{su}(n+1)$ is
-  $\begin{pmatrix}-\operatorname{tr}B&-z^*\\z&B\end{pmatrix}$, giving the stated
-  $\mathfrak t_p$. For $X,Y\in\mathfrak t_p$, $\langle X,Y\rangle=\operatorname{tr}(X^*Y)=-\operatorname{tr}(XY)$
-  directly from the block form; the Killing form of $\mathfrak{su}(m)$ is
-  $B(X,Y)=2m\operatorname{tr}(XY)$ (Exercise 10.5.6(3)–(4) with $m=n+1$), giving
-  $\langle X,Y\rangle=-\tfrac1{2(n+1)}B(X,Y)$.
-
-  By \cref{thm:pet-ch10-curvature-bracket-formula}, $\operatorname{Ric}=(n+1)g$ and
-  $\langle R(X,Y)Y,X\rangle=|[X,Y]|^2$; a direct block computation of $[X,Y]$ for
-  $X,Y\in\mathfrak t_p$ (parametrized by $z,w\in\mathbb C^n$) gives
-  $[X,Y]=\begin{pmatrix}-(z^*w-w^*z)&0\\0&wz^*-zw^*\end{pmatrix}$, whose squared
-  norm expands (using $z^*w-w^*z=2i\operatorname{Im}(z^*w)$ and
-  $\operatorname{tr}((wz^*-zw^*)^2)=2|z|^2|w|^2-2|z^*w|^2$) to
-  $4|\operatorname{Im}(z^*w)|^2-2\operatorname{Re}(z^*w)^2+2|z|^2|w|^2$. Restricting to an
-  orthonormal $2$-plane forces $|z|^2=|w|^2=\tfrac12$, $\operatorname{Re}(z^*w)=0$, so
-  $z^*w=i\operatorname{Im}(z^*w)$ and the expression simplifies to
-  $6|z^*w|^2+\tfrac12\in[\tfrac14,2]$, attaining $2$ at $w=iz$ and $\tfrac14$ at
-  $z^*w=0$.
+  \sketch
+  The unitary action on complex lines is transitive; quotienting its scalar
+  kernel gives the stated special-unitary action and block-diagonal isotropy.
+  The displayed order-two element negates the complementary tangent block.
+  The Lie-algebra block form gives $t_p$ and
+  $g=-[2(n+1)]^{-1}B$, so
+  \cref{thm:pet-ch10-curvature-bracket-formula} gives
+  $\operatorname{Ric}=(n+1)g$. For tangent vectors represented by $z,w$,
+  \[
+    [X,Y]=\begin{pmatrix}-(z^*w-w^*z)&0\\0&wz^*-zw^*\end{pmatrix}.
+  \]
+  Expanding its norm yields the stated curvature expression. Under the
+  orthonormality conditions it becomes $6|z^*w|^2+\tfrac12$, whose extrema
+  occur at $w=iz$ and $z^*w=0$.
 \end{proof}
 
-\begin{example}[§10.2.4 — $\mathrm{SL}(n)/\mathrm{SO}(n)$]
+\begin{example}[$\mathrm{SL}(n)/\mathrm{SO}(n)$]
   \label{ex:pet-ch10-sl-so-quotient}
+  \dcref{ch10:10.2.4}
   \lean{PetersenLib.slSoSymmetricSpace}
   \uses{def:pet-ch10-tp-decomposition,thm:pet-ch10-curvature-bracket-formula}
-  Let $\mathfrak{sl}(n)=\{X\in\operatorname{Mat}_{n\times n}\mid\operatorname{tr}X=0\}$, split as
-  $\mathfrak{sl}(n)=\mathfrak t\oplus\mathfrak{so}(n)$ into symmetric and skew-symmetric
-  traceless matrices, with involution $\sigma(X)=-X^\top$ ($-1$ on $\mathfrak t$,
-  $+1$ on $\mathfrak{so}(n)$). On $\mathfrak t$, with the Euclidean metric
-  $\langle X,Y\rangle=\operatorname{tr}(X^*Y)=\operatorname{tr}(XY)=\tfrac1{2n}B(X,Y)$, one has
-  $\operatorname{Ric}=-ng$ and $\langle R(X,Y)Z,W\rangle=\langle[X,Y],[Z,W]\rangle$; in
-  particular $\mathrm{SL}(n)/\mathrm{SO}(n)$ has nonpositive sectional curvature.
-  \source{petersen:page-0395,petersen:page-0396}
+  Decompose $\mathfrak{sl}(n)=\mathfrak t\oplus\mathfrak{so}(n)$ into symmetric
+  traceless and skew-symmetric matrices. The involution
+  $\sigma(X)=-X^\top$ negates $\mathfrak t$ and fixes $\mathfrak{so}(n)$. On
+  $\mathfrak t$,
+  \[
+    g(X,Y)=\operatorname{tr}(XY)=\tfrac1{2n}B(X,Y),\qquad
+    \operatorname{Ric}=-ng,
+  \]
+  and $\langle R(X,Y)Z,W\rangle=\langle[X,Y],[Z,W]\rangle$. Thus
+  $\mathrm{SL}(n)/\mathrm{SO}(n)$ has nonpositive sectional curvature.
 \end{example}
 \begin{proof}
   \uses{ex:pet-ch10-sl-so-quotient}
-  $\mathfrak{sl}(n)$ splits as symmetric $\oplus$ skew-symmetric traceless
-  matrices since every traceless matrix is the sum of its symmetric and
-  skew-symmetric parts, each traceless (a symmetric traceless part has trace
-  $0$ automatically, and skew matrices are automatically traceless). The map
-  $\sigma(X)=-X^\top$ is a Lie algebra involution ($\sigma[X,Y]=-[X,Y]^\top=[-X^\top,-Y^\top]=[\sigma X,\sigma Y]$
-  by the antisymmetry of transpose on the commutator) fixing $\mathfrak{so}(n)$ and
-  negating $\mathfrak t$. On $\mathfrak t$, $\langle X,Y\rangle=\operatorname{tr}(X^*Y)=\operatorname{tr}(XY)$
-  since $X,Y$ are symmetric real, and the Killing form of $\mathfrak{sl}(n)$
-  restricted to $\mathfrak t$ is $2n\operatorname{tr}(XY)$ (Exercise 10.5.6(3)), giving
-  $\langle X,Y\rangle=\tfrac1{2n}B(X,Y)$. By
-  \cref{thm:pet-ch10-curvature-bracket-formula}, $\operatorname{Ric}=-ng$ (negative sign
-  because $\langle X,Y\rangle$ is the \emph{positive} multiple $\tfrac1{2n}B$ rather
-  than a negative one, reversing the sign relative to the compact
-  \cref{ex:pet-ch10-compact-grassmannian} computation), and
-  $\langle R(X,Y)Z,W\rangle=\langle[X,Y],[Z,W]\rangle$ is a sum of squares up to
-  sign, giving nonpositive sectional curvature $\langle R(X,Y)Y,X\rangle=-\langle[X,Y],[X,Y]\rangle\le0$.
+  \sketch
+  Transpose decomposes $\mathfrak{sl}(n)$ into symmetric traceless and
+  skew-symmetric matrices, while $X\mapsto-X^\top$ is an involution with these
+  as its $(-1)$- and $1$-eigenspaces. On the first summand,
+  $g=(2n)^{-1}B$. Thus
+  \cref{thm:pet-ch10-curvature-bracket-formula} gives
+  $\operatorname{Ric}=-ng$ and
+  \[
+    \langle R(X,Y)Y,X\rangle=-\langle[X,Y],[X,Y]\rangle\le0.
+  \]
+  This is the noncompact-sign counterpart of
+  \cref{ex:pet-ch10-compact-grassmannian}.
 \end{proof}
 
-\begin{example}[§10.2.5 — Lie groups as symmetric spaces]
+\begin{example}[Lie groups as symmetric spaces]
   \label{ex:pet-ch10-lie-group-symmetric}
+  \dcref{ch10:10.2.5}
   \lean{PetersenLib.compactLieGroupSymmetricSpace,PetersenLib.noncompactDualSymmetricSpace}
   \uses{rem:pet-ch10-symmetric-space-from-involution,def:pet-ch10-killing-form,thm:pet-ch10-curvature-bracket-formula}
-  Let $G$ be a compact Lie group with biinvariant metric and centerless Lie
-  algebra $\mathfrak g\cong T_eG$; since left-invariant fields are Killing fields,
-  $\mathrm{ad}_X=2(\nabla X)|_e$ is skew, so the Killing form $B$ is negative
-  semidefinite, vanishing only on the center, and $g=-B$ recovers the biinvariant
-  metric. The Lie algebra description of $G$ as a symmetric space is
-  $(\mathfrak g\oplus\mathfrak g,\sigma)$, $\sigma(X,Y)=(Y,X)$: the diagonal
-  $\mathfrak g^\Delta$ is the $1$-eigenspace $\mathfrak k$, the antidiagonal
-  $\mathfrak g^+=\{(X,-X)\}$ is the $(-1)$-eigenspace $\mathfrak t\cong\mathfrak g$,
-  and $G=(G\times G)/G^\Delta$. On $\mathfrak t$ (scaled by a factor of $2$ from
-  the biinvariant metric on $\mathfrak g$), $\operatorname{Ric}=-\tfrac12B=\tfrac12g$ and the
-  curvature operator is nonnegative. Dually, for the same centerless compact
-  $\mathfrak g$, the complexification $(\mathfrak g\otimes\mathbb C,\sigma)$ with
-  $\sigma(X)=\bar X$ has $\mathfrak k=\mathfrak g$, $\mathfrak t=i\mathfrak g$, metric
-  $g(iX,iY)=-B(X,Y)=B(iX,iY)$ on $\mathfrak t$, and gives a noncompact symmetric
-  space with $\operatorname{Ric}(iX,iY)=-\tfrac12g(iX,iY)$, i.e.\ nonpositive curvature.
-  \source{petersen:page-0389,petersen:page-0396}
+  Let $G$ be compact with a biinvariant metric and centerless Lie algebra
+  $\mathfrak g$. Then $B$ is negative definite and $g=-B$ is biinvariant. The
+  swap involution on $\mathfrak g\oplus\mathfrak g$ has eigenspaces
+  \[
+    \mathfrak k=\mathfrak g^\Delta,
+    \qquad \mathfrak t=\{(X,-X):X\in\mathfrak g\},
+  \]
+  and realizes $G=(G\times G)/G^\Delta$. On $\mathfrak t$ the metric has the
+  factor-two scaling, $\operatorname{Ric}=\tfrac12g$, and the curvature operator
+  is nonnegative.
+
+  The noncompact dual uses complex conjugation on
+  $\mathfrak g\otimes\mathbb C=\mathfrak g\oplus i\mathfrak g$. Here
+  $\mathfrak k=\mathfrak g$, $\mathfrak t=i\mathfrak g$,
+  \[
+    g(iX,iY)=-B(X,Y)=B(iX,iY),\qquad
+    \operatorname{Ric}=-\tfrac12g,
+  \]
+  and the curvature operator is nonpositive.
 \end{example}
 \begin{proof}
   \uses{ex:pet-ch10-lie-group-symmetric}
-  \emph{Compact case.} That $\mathrm{ad}_X$ is skew for left-invariant $X$ follows
-  because such $X$ are Killing for the biinvariant metric, so $\nabla X$ is
-  skew-symmetric, and $\mathrm{ad}_X=2(\nabla X)|_e$ on a biinvariant Lie group.
-  Then $B(X,X)=\operatorname{tr}(\mathrm{ad}_X^2)\le0$ as in
-  \cref{rem:pet-ch10-adjoint-skew-symmetric}, with equality exactly on the center;
-  when $\mathfrak g$ has trivial center, $B$ is negative definite and $g=-B$ is a
-  biinvariant metric (since $\mathrm{ad}_X$ is $B$-skew for every Lie algebra).
-  Applying \cref{rem:pet-ch10-symmetric-space-from-involution} to
-  $\mathfrak g\oplus\mathfrak g$ with $\sigma(X,Y)=(Y,X)$: this is visibly a Lie
-  algebra involution, its $1$-eigenspace is the diagonal $\mathfrak g^\Delta\cong\mathfrak g$
-  (matching the compact group $K=G^\Delta\cong G$) and its $(-1)$-eigenspace is
-  $\mathfrak g^+\cong\mathfrak g$; taking $G'=G\times G$ realizes the recipe of
-  \cref{rem:pet-ch10-symmetric-space-from-involution}, giving $G=(G\times G)/G^\Delta$
-  as a symmetric space. The Ricci and curvature-sign formulas follow from
-  \cref{thm:pet-ch10-curvature-bracket-formula} applied to this description,
-  using $B_{\mathfrak g\oplus\mathfrak g}((X,X),(Y,Y))=2B_{\mathfrak g}(X,Y)$ restricted to
-  the diagonal-complement identification of $\mathfrak t$ with $\mathfrak g$.
+  \sketch
+  For a biinvariant metric, $\mathrm{ad}_X=2(\nabla X)_e$ is skew-adjoint.
+  Hence $B\le0$, with kernel the center, as in
+  \cref{rem:pet-ch10-adjoint-skew-symmetric}. The swap involution on
+  $\mathfrak g\oplus\mathfrak g$ has diagonal and antidiagonal eigenspaces, so
+  \cref{rem:pet-ch10-symmetric-space-from-involution} realizes
+  $G=(G\times G)/G^\Delta$. Applying
+  \cref{thm:pet-ch10-curvature-bracket-formula} with the doubled Killing form
+  gives the compact curvature sign and Ricci constant.
 
-  \emph{Noncompact dual.} On $\mathfrak g\otimes\mathbb C=\mathfrak g\oplus i\mathfrak g$,
-  complex conjugation $\sigma(X)=\bar X$ is a Lie algebra involution (the bracket
-  on $\mathfrak g\otimes\mathbb C$ is $\mathbb C$-bilinear, hence commutes with the
-  real-linear conjugation) fixing $\mathfrak g$ and negating $i\mathfrak g$. The
-  Killing form of $\mathfrak g\otimes\mathbb C$ restricted to $\mathfrak g$ is (the
-  complexification of) $B$, negative definite by hypothesis, so restricted to
-  $i\mathfrak g$ it is positive definite: $g(iX,iY):=-B(X,Y)=B(iX,iY)$ defines a
-  genuine (positive-definite) metric on $\mathfrak t=i\mathfrak g$. Applying
-  \cref{thm:pet-ch10-curvature-bracket-formula} to this description gives
-  $\operatorname{Ric}(iX,iY)=-\tfrac12B(iX,iY)=-\tfrac12g(iX,iY)$, i.e.\ nonpositive
-  curvature.
+  Complex conjugation on $\mathfrak g\otimes\mathbb C$ fixes $\mathfrak g$ and
+  negates $i\mathfrak g$. Since $B(iX,iY)=-B(X,Y)$, it defines the positive
+  metric on the noncompact tangent summand, and the same bracket formula gives
+  $\operatorname{Ric}=-\tfrac12g$ and nonpositive curvature.
 \end{proof}
 
 \section{Holonomy}
@@ -882,16 +719,13 @@ $\langle O_1XO_2,O_1YO_2\rangle=\operatorname{tr}(O_2^\top X^\top O_1^\top O_1YO
 \begin{definition}[holonomy group and restricted holonomy group]
   \label{def:pet-ch10-holonomy-group}
   \lean{PetersenLib.HolonomyGroup,PetersenLib.RestrictedHolonomyGroup}
-  Let $(M,g)$ be a Riemannian $n$-manifold, $p\in M$. For a unit-speed
-  (piecewise smooth) curve $c:[a,b]\to M$ let
-  $P_{c(a)}^{c(b)}:T_{c(a)}M\to T_{c(b)}M$ denote parallel translation along $c$.
-  For a loop $c(a)=c(b)=p$, $P_p^p$ is an isometry of $T_pM$; the set of all such
-  isometries, over all piecewise smooth loops at $p$, forms the \emph{holonomy
-  group} $\mathrm{Hol}_p=\mathrm{Hol}_p(M,g)\subset O(T_pM)\cong O(n)$, a (possibly
-  noncompact) Lie group. The \emph{restricted holonomy group}
-  $\mathrm{Hol}_p^0=\mathrm{Hol}_p^0(M,g)$ is the connected normal subgroup obtained
-  using only contractible loops; it is compact and a Lie group.
-  \source{petersen:page-0396,petersen:page-0397}
+  Let $P_{c(a)}^{c(b)}$ denote parallel translation along a piecewise smooth
+  curve $c:[a,b]\to M$. For fixed $p\in M$, the maps $P_p^p$ arising from loops
+  based at $p$ form the holonomy group
+  $\mathrm{Hol}_p(M,g)\subset O(T_pM)$. The subgroup obtained from contractible
+  loops is the restricted holonomy group $\mathrm{Hol}_p^0(M,g)$; it is a
+  connected compact normal Lie subgroup. The full holonomy group is also a Lie
+  group and may be noncompact.
 \end{definition}
 
 \begin{remark}[elementary properties of the holonomy group]
@@ -913,19 +747,16 @@ $\langle O_1XO_2,O_1YO_2\rangle=\operatorname{tr}(O_2^\top X^\top O_1^\top O_1YO
       $\omega(Pv,Pw)=\omega(v,w)$ for all $P\in\mathrm{Hol}_p(M,g)$,
       $v,w\in T_pM$.
   \end{enumerate}
-  \source{petersen:page-0397}
 \end{remark}
 
-By property (f), a Cartesian-product splitting is reflected in a product structure
-of the holonomy, and by (g), if the (restricted) holonomy representation on
-$T_pM$ decomposes at one point it decomposes at every point (via parallel
-translation), yielding a global decomposition $TM=\eta_1\oplus\cdots\oplus\eta_k$
-of the tangent bundle into distributions invariant under parallel translation,
-obtained from an orthogonal decomposition of $T_pM$ into irreducible invariant
-subspaces for $\mathrm{Hol}_p^0$.
+An orthogonal decomposition of $T_pM$ into irreducible
+$\mathrm{Hol}_p^0$-modules transports to a parallel splitting
+$TM=\eta_1\oplus\cdots\oplus\eta_k$. Product metrics give the corresponding
+product decomposition of holonomy.
 
-\begin{theorem}[Thm. 10.3.1 — de Rham decomposition (1952)]
+\begin{theorem}[de Rham decomposition]
   \label{thm:pet-ch10-de-rham-decomposition}
+  \dcref{ch10:10.3.1}
   \lean{PetersenLib.deRhamDecomposition}
   \uses{rem:pet-ch10-holonomy-properties}
   Let $(M,g)$ be a Riemannian manifold and $TM=\eta_1\oplus\cdots\oplus\eta_k$
@@ -934,86 +765,64 @@ subspaces for $\mathrm{Hol}_p^0$.
   product structure $(U,g)=(U_1\times\cdots\times U_k,g_1+\cdots+g_k)$,
   $TU_i=\eta_i|_U$. If $(M,g)$ is simply connected and complete, this splitting
   is global: $(M,g)=(M_1\times\cdots\times M_k,g_1+\cdots+g_k)$, $TM_i=\eta_i$.
-  \source{petersen:page-0397,petersen:page-0398}
 \end{theorem}
 \begin{proof}
   \uses{thm:pet-ch10-de-rham-decomposition}
-  Each $\eta_i$ is integrable: being invariant under parallel translation, and
-  hence under the Levi-Civita connection, the distribution $\eta_i$ has
-  vanishing torsion of the induced connection, so its Lie bracket of sections
-  stays in $\eta_i$ (Frobenius integrability). This gives, at the manifold
-  level, a local splitting into maximal integral submanifolds through $p$. Each
-  integral submanifold is totally geodesic, since its tangent space is invariant
-  under parallel translation along curves within it; hence the ambient metric
-  restricted to a product neighborhood of integral submanifolds splits as
-  $g_1+\cdots+g_k$, giving the local statement.
+  \sketch
+  Parallel invariance makes each $\eta_i$ closed under the connection. Since
+  the Levi--Civita connection is torsion-free, Frobenius gives integral leaves;
+  connection invariance also makes those leaves totally geodesic. Orthogonality
+  and parallelism of the summands then split the metric on a product
+  neighborhood.
 
-  For the global statement, let $M_i$ be the maximal integral submanifold of
-  $\eta_i$ through a fixed $p\in M$, and consider the abstract product Riemannian
-  manifold $(M_1\times\cdots\times M_k,\,g_1+\cdots+g_k)$; by the local splitting,
-  $(M,g)$ and this product are isometric near $p$. Since $(M,g)$ is complete and
-  each $M_i$ is totally geodesic, $M_i$ (and hence the product) is complete. The
-  local isometry extends, by analytic continuation of the local isometric
-  embedding using completeness of both sides, to a global isometric immersion
-  $(M,g)\to(M_1\times\cdots\times M_k,g_1+\cdots+g_k)$; completeness makes this
-  immersion onto and in fact a Riemannian covering map. As $M$ is simply
-  connected, $M$ is therefore isometric to the universal cover of the product,
-  i.e.\ to $(\widetilde M_1\times\cdots\times\widetilde M_k,\widetilde g_1+\cdots+\widetilde g_k)$
-  with the pulled-back product metric.
+  Through a fixed point, take the maximal leaf $M_i$ of each $\eta_i$. These
+  leaves are complete when $M$ is complete. The local product isometry extends
+  to a Riemannian covering between $M$ and the product of the $M_i$; completeness
+  provides global continuation. If $M$ is simply connected, passage to the
+  universal covers of the factors turns this covering into the asserted global
+  isometry.
 \end{proof}
 
 \subsection{Rough Classification of Symmetric Spaces}
 
-Guided by the de Rham decomposition, classification questions reduce to the case
-of an \emph{irreducible} Riemannian manifold, i.e.\ one whose holonomy has no
-invariant subspaces.
+A Riemannian manifold is \emph{irreducible} when its holonomy representation
+has no proper invariant subspace. The de Rham theorem reduces classification
+questions to this case.
 
-\begin{theorem}[Thm. 10.3.2 — parallel tensors on irreducible manifolds]
+\begin{theorem}[parallel tensors on irreducible manifolds]
   \label{thm:pet-ch10-parallel-tensor-eigenvalue}
+  \dcref{ch10:10.3.2}
   \lean{PetersenLib.parallelTensorSingleEigenvalue}
   \uses{thm:pet-ch10-de-rham-decomposition}
   Let $(M,g)$ be an irreducible Riemannian manifold with a parallel $(1,1)$-tensor
   $T$. Then the symmetric part $S=\tfrac12(T+T^*)$ and skew-symmetric part
   $A=\tfrac12(T-T^*)$ each have exactly one (complex) eigenvalue. If $A\ne0$, it
   induces (after scaling) a parallel complex structure, i.e.\ a Kähler structure.
-  \source{petersen:page-0399}
 \end{theorem}
 \begin{proof}
   \uses{thm:pet-ch10-parallel-tensor-eigenvalue}
-  Since $g$ is parallel and $T$ is parallel, so is its adjoint: for vector fields
-  $X,Y,Z$,
+  \sketch
+  Metric compatibility implies
   \[
-    g((\nabla_XT)(Y),Z)
-    =\nabla_Xg(T(Y),Z)-g(T(Y),\nabla_XZ)-g(T(\nabla_XY),Z)
-    =g(Y,(\nabla_XT^*)(Z)),
+    g((\nabla_XT)Y,Z)=g(Y,(\nabla_XT^*)Z),
   \]
-  using $\nabla g=0$ to rewrite $g(T(Y),\nabla_XZ)=\nabla_Xg(Y,T^*Z)-g(Y,(\nabla_XT^*)(Z))$
-  and matching terms; hence $\nabla T=0$ implies $\nabla T^*=0$, so
-  $\nabla S=\nabla A=0$, and both $S,A$ are invariant under parallel translation.
-
-  Decompose $T_pM=E_1\oplus\cdots\oplus E_k$ into the orthogonal eigenspaces of
-  $S$ for its distinct (real) eigenvalues $\lambda_1<\cdots<\lambda_k$. Since $S$
-  is parallel, this decomposition parallel-translates to a global decomposition
-  $TM=\eta_1\oplus\cdots\oplus\eta_k$ with $S|_{\eta_i}=\lambda_iI$; each $\eta_i$
-  is preserved by the holonomy (being defined by parallel translation), so
-  irreducibility of $(M,g)$ forces $k=1$: $S$ has a single eigenvalue.
-
-  Similarly, $A$ has purely imaginary eigenvalues, giving an orthogonal
-  decomposition $T_pM=F_1\oplus\cdots\oplus F_l$ into $A$-invariant subspaces on
-  which $A$ has complex eigenvalue $i\mu_\mu$, $\mu_1<\cdots<\mu_l$; the same
-  irreducibility argument forces $l=1$. If $\mu_1\ne0$, then $\tfrac1{\mu_1}A$ is
-  parallel with only eigenvalue $i$, hence squares to $-I$: a parallel complex
-  structure, giving a Kähler structure on $(M,g)$.
+  so $T^*$, $S$, and $A$ are parallel. Every real eigenspace of $S$, and every
+  real invariant subspace associated with a conjugate pair of eigenvalues of
+  $A$, is therefore preserved by holonomy. Irreducibility leaves only one such
+  summand in each decomposition. Thus $S$ is scalar and the nonzero
+  skew-adjoint $A$ satisfies $A^2=-\mu^2I$ for one $\mu>0$. Then
+  $J=\mu^{-1}A$ is parallel and $J^2=-I$, which is the required Kähler
+  structure.
 \end{proof}
 
-\begin{corollary}[Cor. 10.3.3 — irreducible symmetric spaces are Einstein]
+\begin{corollary}[irreducible symmetric spaces are Einstein]
   \label{cor:pet-ch10-irreducible-symmetric-einstein}
+  \dcref{ch10:10.3.3}
   \lean{PetersenLib.irreducibleSymmetricSpaceEinstein}
   \uses{thm:pet-ch10-parallel-tensor-eigenvalue}
   A simply connected irreducible symmetric space is an Einstein manifold; in
   particular its curvature operator is nonnegative or nonpositive according to
   the sign of the Einstein constant.
-  \source{petersen:page-0399}
 \end{corollary}
 
 \begin{remark}[compact, flat, and noncompact type]
@@ -1027,7 +836,6 @@ invariant subspaces.
   flat, and the only irreducible Ricci-flat examples are $S^1$ and $\mathbb R^1$.
   \emph{Noncompact type}: if the Einstein constant is negative, Bochner's theorem
   on Killing fields forces $M$ noncompact, with nonpositive curvature operator.
-  \source{petersen:page-0399,petersen:page-0400}
 \end{remark}
 
 \begin{definition}[Types I--IV of irreducible symmetric spaces]
@@ -1062,7 +870,6 @@ invariant subspaces.
   classical invariance problem for the isotropy representation — used, e.g., to
   compute Pontryagin and Chern classes from the cohomology of real and complex
   Grassmannians.
-  \source{petersen:page-0400}
 \end{definition}
 
 \subsection{Curvature and Holonomy}
@@ -1086,11 +893,11 @@ invariant subspaces.
       $n=7$ & $G_2$ & Ricci flat
     \end{tabular}
   \end{center}
-  \source{petersen:page-0401}
 \end{definition}
 
-\begin{theorem}[Thm. 10.3.4 — Berger (1955) and Simons (1962)]
+\begin{theorem}[holonomy classification alternative]
   \label{thm:pet-ch10-berger-simons-classification}
+  \dcref{ch10:10.3.4}
   \lean{PetersenLib.bergerSimonsClassification}
   \uses{def:pet-ch10-berger-holonomy-table,def:pet-ch10-rank}
   Let $(M,g)$ be a simply connected irreducible Riemannian $n$-manifold. Then
@@ -1098,31 +905,31 @@ invariant subspaces.
   which case $\mathrm{Hol}_p$ is one of the groups of
   \cref{def:pet-ch10-berger-holonomy-table}, or $(M,g)$ is a symmetric space of
   rank $\ge2$.
-  \source{petersen:page-0401}
 \end{theorem}
 
-\begin{corollary}[Cor. 10.3.5 — nontransitive holonomy forces reducibility or rank $\ge2$]
+\begin{corollary}[nontransitive holonomy forces reducibility or rank $\ge2$]
   \label{cor:pet-ch10-nontransitive-holonomy}
+  \dcref{ch10:10.3.5}
   \lean{PetersenLib.nontransitiveHolonomyReducibleOrSymmetric}
   \uses{thm:pet-ch10-berger-simons-classification}
   If a Riemannian manifold's holonomy does not act transitively on the unit
   sphere, then it is either reducible or a locally symmetric space of rank
   $\ge2$; in particular its rank is $\ge2$.
-  \source{petersen:page-0402}
 \end{corollary}
 
-\begin{theorem}[Thm. 10.3.6 — rank rigidity for nonpositive curvature (Ballmann; Burns–Spatzier)]
+\begin{theorem}[rank rigidity in nonpositive curvature]
   \label{thm:pet-ch10-rank-rigidity-nonpositive}
+  \dcref{ch10:10.3.6}
   \lean{PetersenLib.rankRigidityNonpositiveCurvature}
   \uses{cor:pet-ch10-nontransitive-holonomy}
   A compact Riemannian manifold of nonpositive curvature and rank $\ge2$ does
   not have transitive holonomy; in particular it is either reducible or locally
   symmetric.
-  \source{petersen:page-0402}
 \end{theorem}
 
-\begin{theorem}[Thm. 10.3.7 — Gallot and D. Meyer (1975)]
+\begin{theorem}[classification under nonnegative curvature operator]
   \label{thm:pet-ch10-gallot-meyer}
+  \dcref{ch10:10.3.7}
   \lean{PetersenLib.gallotMeyerNonnegativeCurvatureOperator}
   \uses{thm:pet-ch10-berger-simons-classification,thm:pet-ch10-parallel-tensor-eigenvalue,thm:pet-ch10-de-rham-decomposition}
   Let $(M,g)$ be a compact Riemannian $n$-manifold with nonnegative curvature
@@ -1134,55 +941,35 @@ invariant subspaces.
     \item[(c)] $\mathrm{Hol}^0(M,g)=\mathrm U(n/2)$ and the universal cover is a
       homology $\mathbb{CP}^{n/2}$.
   \end{enumerate}
-  \source{petersen:page-0402,petersen:page-0403}
 \end{theorem}
 \begin{proof}
   \uses{thm:pet-ch10-gallot-meyer}
-  By the structure theory for nonnegative Ricci curvature, the universal cover
-  is isometric to $N\times\mathbb R^k$ with $k>0$ if $\pi_1(M)$ is infinite, so $M$
-  is then reducible; hence we may assume $M$ is simply connected. By the Hodge
-  theorem, either $H^p(M,\mathbb R)=0$ for all $0<p<n$ (a homology sphere), or some
-  $H^p(M,\mathbb R)\ne0$ for $0<p<n$ carries a nonzero harmonic $p$-form $\omega$; as
-  the curvature operator is nonnegative, the Bochner technique shows $\omega$ is
-  parallel.
+  \sketch
+  If $\pi_1(M)$ is infinite, the splitting theorem for nonnegative Ricci
+  curvature gives an Euclidean factor in the universal cover, hence case (a).
+  Otherwise pass to the simply connected cover. Bochner turns every harmonic
+  form into a parallel form.
 
-  Assume $M$ is irreducible with transitive holonomy (the reducible case is (a),
-  and by \cref{thm:pet-ch10-berger-simons-classification} the only remaining
-  alternative to transitivity is that $M$ is symmetric, again giving (a)). The
-  Ricci-flat holonomies in
-  \cref{def:pet-ch10-berger-holonomy-table} are impossible, since nonnegative
-  curvature together with Ricci flatness forces $M$ flat. This leaves
-  $\mathrm{SO}(n)$, $\mathrm U(n/2)$, $\mathrm{Sp}(1)\mathrm{Sp}(n/4)$, or
-  $\mathrm{Spin}(9)$; in the latter two, holonomy considerations force $M$
-  Einstein, and Tachibana's theorem (nonnegative curvature operator plus
-  Einstein implies locally symmetric) gives (a), with the classification of
-  symmetric spaces identifying $M$ with $\mathbb{HP}^{n/4}$ or $\mathbb{OP}^2$.
+  Assume irreducibility. By
+  \cref{thm:pet-ch10-berger-simons-classification}, nontransitive holonomy gives
+  local symmetry. Among the transitive groups in
+  \cref{def:pet-ch10-berger-holonomy-table}, Ricci-flat cases are flat, while
+  the quaternionic and $\mathrm{Spin}(9)$ cases are Einstein and hence locally
+  symmetric under the curvature-operator hypothesis. Thus only
+  $\mathrm{SO}(n)$ and $\mathrm U(n/2)$ remain.
 
-  Suppose $\mathrm{Hol}_p=\mathrm{SO}(n)$ and $\omega$ is a parallel $p$-form,
-  $0<p<n$. For $v_1,\dots,v_p\in T_pM$ there is $P\in\mathrm{SO}(n)$ with
-  $P(v_i)=v_i$ for $i\ge2$ and $P(v_1)=-v_1$ (reflect $v_1$, correct the
-  determinant using an unused dimension since $p<n$); holonomy invariance of
-  $\omega$ then gives $\omega(v_1,\dots,v_p)=\omega(Pv_1,\dots,Pv_p)=-\omega(v_1,\dots,v_p)$,
-  so $\omega=0$, and case (b) holds by exclusion (there is no nonzero
-  intermediate harmonic form, so $M$ is a homology sphere).
-
-  Suppose instead $\mathrm{Hol}_p=\mathrm U(n/2)$, i.e.\ $(M,g)$ is Kähler. The
-  invariant parallel complex structure gives, after type change, a parallel
-  $2$-form $\omega$; by \cref{thm:pet-ch10-parallel-tensor-eigenvalue}, any other
-  parallel $2$-form is a multiple of $\omega$, so $\dim H^2=1$. Odd cohomology
-  vanishes as in the $\mathrm{SO}(n)$ case, using $P=-I\in\mathrm U(n/2)$ (valid
-  since $n$ is even). More generally, for a $\mathrm U(n/2)$-invariant $p$-form
-  $\theta$, $1<p<n$, and an orthonormal basis $e_1,\dots,e_n$, one finds
-  $P\in\mathrm U(n/2)$ fixing $e_1,\dots,e_{p-1}$ and sending $e_p\mapsto e_{i_p}$
-  for any index $i_p$, so $\theta(e_1,\dots,e_p)=\theta(e_1,\dots,e_{p-1},e_{i_p})$;
-  iterating shows $\theta$ is constant on ordered $p$-tuples of basis vectors, so
-  all $p$-forms are proportional. The powers $\omega^k=\omega\wedge\cdots\wedge\omega$
-  are nonzero parallel forms, hence generate $H^{2k}$, giving $M$ the cohomology
-  ring of $\mathbb{CP}^{n/2}$: case (c).
+  The group $\mathrm{SO}(n)$ has no invariant $p$-forms for $0<p<n$: reverse
+  one argument vector and compensate the determinant in an unused direction.
+  Hence there is no intermediate cohomology. In the unitary case the Kähler
+  form is parallel; invariant-form theory, with the uniqueness mechanism of
+  \cref{thm:pet-ch10-parallel-tensor-eigenvalue}, shows that odd cohomology
+  vanishes and each $H^{2k}$ is generated by the nonzero power $\omega^k$.
+  These are precisely the cohomology groups of $\mathbb{CP}^{n/2}$.
 \end{proof}
 
-\begin{theorem}[Thm. 10.3.8 — Brendle and Schoen (2008)]
+\begin{theorem}[classification under nonnegative complex sectional curvature]
   \label{thm:pet-ch10-brendle-schoen}
+  \dcref{ch10:10.3.8}
   \lean{PetersenLib.brendleSchoenNonnegativeComplexSectionalCurvature}
   \uses{thm:pet-ch10-gallot-meyer}
   Let $(M,g)$ be a compact Riemannian $n$-manifold with nonnegative complex
@@ -1192,20 +979,13 @@ invariant subspaces.
     \item[(b)] $M$ is diffeomorphic to a space of constant positive curvature;
     \item[(c)] the universal cover of $M$ is biholomorphic to $\mathbb{CP}^{n/2}$.
   \end{enumerate}
-  \source{petersen:page-0404}
 \end{theorem}
-
-\section{Further Study}
-
-Petersen points the reader to Besse, Helgason, Jost, Eberlein, O'Neill, and
-Klingenberg for topics on symmetric spaces beyond the scope of this chapter,
-notably the fine classification of the irreducible symmetric spaces of each
-type and the theory of Lie groups underlying it.
 
 \section{Exercises}
 
-\begin{remark}[Exercise 10.5.1 — geodesic loops are closed geodesics]
+\begin{remark}[geodesic loops are closed geodesics]
   \label{rem:pet-ch10-exercise-symmetric-flow-axis}
+  \dcref{ch10:10.5.1}
   \lean{PetersenLib.exercise10_5_1}
   \uses{def:pet-ch10-tp-decomposition}
   Let $M$ be a symmetric space and $X\in t_p$ nontrivial (so $X$ is a Killing
@@ -1213,22 +993,22 @@ type and the theory of Lie groups underlying it.
   $F_s=A_{\exp(sX|_p)}\circ A_p$; (2) $c(t)=\exp(tX|_p)$ is an axis for $F_s$,
   i.e.\ $F_s(c(t))=c(t+s)$; (3) if $c(a)=c(b)$ then $\dot c(a)=\dot c(b)$;
   (4) conclude that geodesic loops are always closed geodesics.
-  \source{petersen:page-0405}
 \end{remark}
 
-\begin{remark}[Exercise 10.5.2 — the fundamental group of a symmetric space is abelian]
+\begin{remark}[the fundamental group of a symmetric space is abelian]
   \label{rem:pet-ch10-exercise-pi1-abelian}
+  \dcref{ch10:10.5.2}
   \lean{PetersenLib.exercise10_5_2}
   \uses{rem:pet-ch10-exercise-symmetric-flow-axis}
   Let $M$ be a symmetric space. Show that $A_p$ acting on $\pi_1(M,p)$ by
   $[\gamma]\mapsto[\gamma]^{-1}$ shows $\pi_1(M,p)$ is abelian. (Hint: every
   element of $\pi_1(M,p)$ is represented by a geodesic loop, which by
   \cref{rem:pet-ch10-exercise-symmetric-flow-axis} is a closed geodesic.)
-  \source{petersen:page-0405}
 \end{remark}
 
-\begin{remark}[Exercise 10.5.3 — Jacobi fields along a geodesic in a symmetric space]
+\begin{remark}[Jacobi fields along a geodesic in a symmetric space]
   \label{rem:pet-ch10-exercise-jacobi-fields-eigenvector}
+  \dcref{ch10:10.5.3}
   \lean{PetersenLib.exercise10_5_3}
   \uses{def:pet-ch10-tp-decomposition}
   Let $M$ be a symmetric space and $c$ a geodesic. (1) If $E(t)$ is parallel
@@ -1239,11 +1019,11 @@ type and the theory of Lie groups underlying it.
   $J(t_0/u)=0$ for the appropriate rescaling parameter $u$. (4) With $J$ as in
   (3), construct a geodesic variation $c(s,t)$ with $\partial_sc(0,t)=J(t)$,
   $c(s,0)=c(0)$, $c(s,t_0)=c(t_0)$.
-  \source{petersen:page-0405,petersen:page-0406}
 \end{remark}
 
-\begin{remark}[Exercise 10.5.4 — nonnegative curvature of compact symmetric spaces]
+\begin{remark}[nonnegative curvature of compact symmetric spaces]
   \label{rem:pet-ch10-exercise-compact-nonneg-curvature}
+  \dcref{ch10:10.5.4}
   \lean{PetersenLib.exercise10_5_4}
   \uses{rem:pet-ch10-exercise-jacobi-fields-eigenvector}
   Let $M$ be a symmetric space. (1) Show directly that if $M$ is compact then
@@ -1251,22 +1031,22 @@ type and the theory of Lie groups underlying it.
   along a geodesic). (2) Show that if $c$ is a closed geodesic then
   $R(\cdot,\dot c)\dot c$ has no negative eigenvalues. (3) Show that if
   $\operatorname{Ric}>0$ then $\sec\ge0$.
-  \source{petersen:page-0406}
 \end{remark}
 
-\begin{remark}[Exercise 10.5.5 — equivalent characterizations of a flat parallel direction]
+\begin{remark}[equivalent characterizations of a flat parallel direction]
   \label{rem:pet-ch10-exercise-jacobi-field-equivalence}
+  \dcref{ch10:10.5.5}
   \lean{PetersenLib.exercise10_5_5}
   \uses{def:pet-ch10-holonomy-group}
   Assume $M$ has nonpositive or nonnegative sectional curvature, $c$ a geodesic,
   $E$ a parallel field along $c$. Show the following are equivalent: (1)
   $g(R(E,\dot c)\dot c,E)=0$ everywhere along $c$; (2) $R(E,\dot c)\dot c=0$
   everywhere along $c$; (3) $E$ is a Jacobi field.
-  \source{petersen:page-0405,petersen:page-0406}
 \end{remark}
 
-\begin{remark}[Exercise 10.5.6 — Killing forms of the classical Lie algebras]
+\begin{remark}[Killing forms of the classical Lie algebras]
   \label{rem:pet-ch10-exercise-killing-form-classical}
+  \dcref{ch10:10.5.6}
   \lean{PetersenLib.exercise10_5_6}
   \uses{def:pet-ch10-killing-form}
   (1) Show the Killing form of $\mathfrak g\otimes\mathbb C$ is the
@@ -1283,139 +1063,139 @@ type and the theory of Lie groups underlying it.
   (hint: use the basis $E_{ij}-E_{ji}$, $i<j$). (6) Show
   $\mathfrak{so}(k+l,\mathbb C)=\mathfrak{so}(k,l)\otimes\mathbb C$, and conclude
   $\mathfrak{so}(k,l)$ has Killing form $B(X,Y)=(k+l-2)\operatorname{tr}(XY)$.
-  \source{petersen:page-0406}
 \end{remark}
 
-\begin{remark}[Exercise 10.5.7 — nondegenerate bilinear forms as a symmetric space]
+\begin{remark}[nondegenerate bilinear forms as a symmetric space]
   \label{rem:pet-ch10-exercise-gl-so-symmetric}
+  \dcref{ch10:10.5.7}
   \lean{PetersenLib.exercise10_5_7}
   \uses{rem:pet-ch10-symmetric-space-from-involution}
   Show that $\mathrm{GL}^+(p+q,\mathbb R)/\mathrm{SO}(p,q)$ defines a symmetric space,
   identifiable with the nondegenerate bilinear forms on $\mathbb R^{p+q}$ of index
   $q$.
-  \source{petersen:page-0406}
 \end{remark}
 
-\begin{remark}[Exercise 10.5.8 — $\mathrm U(p,q)/\mathrm{SO}(p,q)$ as a symmetric space]
+\begin{remark}[$\mathrm U(p,q)/\mathrm{SO}(p,q)$ as a symmetric space]
   \label{rem:pet-ch10-exercise-u-pq-so-pq-symmetric}
+  \dcref{ch10:10.5.8}
   \lean{PetersenLib.exercise10_5_8}
   \uses{rem:pet-ch10-symmetric-space-from-involution}
   Show that $\mathrm U(p,q)/\mathrm{SO}(p,q)$ defines a symmetric space and that
   $\mathfrak u(p,q)\otimes\mathbb C=\mathfrak{gl}(p+q,\mathbb C)$.
-  \source{petersen:page-0406}
 \end{remark}
 
-\begin{remark}[Exercise 10.5.9 — holonomy of $\mathbb{CP}^n$]
+\begin{remark}[holonomy of $\mathbb{CP}^n$]
   \label{rem:pet-ch10-exercise-cpn-holonomy}
+  \dcref{ch10:10.5.9}
   \lean{PetersenLib.exercise10_5_9}
   \uses{ex:pet-ch10-complex-projective-space,def:pet-ch10-holonomy-group}
   Show that the holonomy of $\mathbb{CP}^n$ is $\mathrm U(n)$.
-  \source{petersen:page-0406}
 \end{remark}
 
-\begin{remark}[Exercise 10.5.10 — covering spaces of symmetric spaces]
+\begin{remark}[covering spaces of symmetric spaces]
   \label{rem:pet-ch10-exercise-covering-symmetric}
+  \dcref{ch10:10.5.10}
   \lean{PetersenLib.exercise10_5_10}
   \uses{prop:pet-ch10-sigma-p-involution}
   Show that a covering space of a symmetric space is a symmetric space; give an
   example showing the converse fails.
-  \source{petersen:page-0406}
 \end{remark}
 
-\begin{remark}[Exercise 10.5.11 — flatness iff discrete holonomy]
+\begin{remark}[flatness iff discrete holonomy]
   \label{rem:pet-ch10-exercise-flat-discrete-holonomy}
+  \dcref{ch10:10.5.11}
   \lean{PetersenLib.exercise10_5_11}
   \uses{def:pet-ch10-holonomy-group}
   Show that a manifold is flat if and only if the (restricted) holonomy Lie
   algebra $\mathfrak{hol}_p=\{0\}$, i.e.\ the holonomy group is discrete.
-  \source{petersen:page-0406}
 \end{remark}
 
-\begin{remark}[Exercise 10.5.12 — finite fundamental group under irreducible holonomy and $\operatorname{Ric}\ge0$]
+\begin{remark}[finite fundamental group under irreducible holonomy and $\operatorname{Ric}\ge0$]
   \label{rem:pet-ch10-exercise-finite-fundamental-group}
+  \dcref{ch10:10.5.12}
   \lean{PetersenLib.exercise10_5_12}
   \uses{def:pet-ch10-holonomy-group}
   Show that a compact Riemannian manifold with irreducible restricted holonomy
   and $\operatorname{Ric}\ge0$ has finite fundamental group.
-  \source{petersen:page-0406}
 \end{remark}
 
-\begin{remark}[Exercise 10.5.13 — identifying $\mathrm{SL}(2,\mathbb R)/\mathrm{SO}(2)$ and $\mathrm{SL}(2,\mathbb C)/\mathrm{SU}(2)$]
+\begin{remark}[identifying $\mathrm{SL}(2,\mathbb R)/\mathrm{SO}(2)$ and $\mathrm{SL}(2,\mathbb C)/\mathrm{SU}(2)$]
   \label{rem:pet-ch10-exercise-sl2-quotients}
+  \dcref{ch10:10.5.13}
   \lean{PetersenLib.exercise10_5_13}
   \uses{ex:pet-ch10-sl-so-quotient}
   Which known spaces are described by $\mathrm{SL}(2,\mathbb R)/\mathrm{SO}(2)$ and
   $\mathrm{SL}(2,\mathbb C)/\mathrm{SU}(2)$?
-  \source{petersen:page-0406}
 \end{remark}
 
-\begin{remark}[Exercise 10.5.14 — Kähler structure iff holonomy in $\mathrm U(m)$]
+\begin{remark}[Kähler structure iff holonomy in $\mathrm U(m)$]
   \label{rem:pet-ch10-exercise-kahler-unitary-holonomy}
+  \dcref{ch10:10.5.14}
   \lean{PetersenLib.exercise10_5_14}
   \uses{def:pet-ch10-holonomy-group,def:pet-ch10-berger-holonomy-table}
   Show that the holonomy of a Riemannian manifold is contained in $\mathrm U(m)$
   if and only if it has a Kähler structure.
-  \source{petersen:page-0406}
 \end{remark}
 
-\begin{remark}[Exercise 10.5.15 — maximal isotropy forces constant curvature]
+\begin{remark}[maximal isotropy forces constant curvature]
   \label{rem:pet-ch10-exercise-isop-so-constant-curvature}
+  \dcref{ch10:10.5.15}
   \lean{PetersenLib.exercise10_5_15}
   \uses{def:pet-ch10-tp-decomposition}
   Show that if a homogeneous space has $\mathrm{iso}_p=\mathfrak{so}(T_pM)$ at
   some $p$, then it has constant curvature.
-  \source{petersen:page-0406}
 \end{remark}
 
-\begin{remark}[Exercise 10.5.16 — maximality of two subalgebras of $\mathfrak{so}(n)$]
+\begin{remark}[maximality of two subalgebras of $\mathfrak{so}(n)$]
   \label{rem:pet-ch10-exercise-maximal-subalgebras-son}
+  \dcref{ch10:10.5.16}
   \lean{PetersenLib.exercise10_5_16}
   \uses{ex:pet-ch10-compact-grassmannian,ex:pet-ch10-complex-projective-space}
   Show that the subalgebras $\mathfrak{so}(k)\times\mathfrak{so}(n-k)$ and
   $\mathfrak u(n/2)$ are maximal in $\mathfrak{so}(n)$.
-  \source{petersen:page-0406}
 \end{remark}
 
-\begin{remark}[Exercise 10.5.17 — $\mathfrak{su}(m)\subset\mathfrak{so}(m^2-1)$]
+\begin{remark}[$\mathfrak{su}(m)\subset\mathfrak{so}(m^2-1)$]
   \label{rem:pet-ch10-exercise-sum-in-so}
+  \dcref{ch10:10.5.17}
   \lean{PetersenLib.exercise10_5_17}
   \uses{def:pet-ch10-killing-form}
   Show that $\mathfrak{su}(m)\subset\mathfrak{so}(m^2-1)$. (Hint: let
   $\mathfrak{su}(m)$ act on itself by the adjoint representation.)
-  \source{petersen:page-0406}
 \end{remark}
 
-\begin{remark}[Exercise 10.5.18 — $t_p\subset\mathfrak{hol}_p$ in general]
+\begin{remark}[$t_p\subset\mathfrak{hol}_p$ in general]
   \label{rem:pet-ch10-exercise-tp-subset-holp}
+  \dcref{ch10:10.5.18}
   \lean{PetersenLib.exercise10_5_18}
   \uses{def:pet-ch10-tp-decomposition,def:pet-ch10-holonomy-group}
   Show that for any Riemannian manifold $t_p\subset\mathfrak{hol}_p$ (the
   holonomy Lie algebra). Give an example where equality fails.
-  \source{petersen:page-0407}
 \end{remark}
 
-\begin{remark}[Exercise 10.5.19 — $t_p=\mathfrak{hol}_p$ for symmetric spaces]
+\begin{remark}[$t_p=\mathfrak{hol}_p$ for symmetric spaces]
   \label{rem:pet-ch10-exercise-tp-equals-holp-symmetric}
+  \dcref{ch10:10.5.19}
   \lean{PetersenLib.exercise10_5_19}
   \uses{rem:pet-ch10-exercise-tp-subset-holp,cor:pet-ch10-maximal-subalgebra}
   Show that for a symmetric space, $t_p=\mathfrak{hol}_p$. Use this to show
   that, unless the curvature is constant, $t_p=\mathfrak{hol}_p=\mathrm{iso}_p$
   provided $t_p\subset\mathfrak{so}(T_pM)$ is maximal.
-  \source{petersen:page-0407}
 \end{remark}
 
-\begin{remark}[Exercise 10.5.20 — nonpositive curvature operator of two further quotients]
+\begin{remark}[nonpositive curvature operator of two further quotients]
   \label{rem:pet-ch10-exercise-son-c-sln-c-symmetric}
+  \dcref{ch10:10.5.20}
   \lean{PetersenLib.exercise10_5_20}
   \uses{ex:pet-ch10-lie-group-symmetric}
   Show that $\mathrm{SO}(n,\mathbb C)/\mathrm{SO}(n)$ and
   $\mathrm{SL}(n,\mathbb C)/\mathrm{SU}(n)$ are symmetric spaces with nonpositive
   curvature operator.
-  \source{petersen:page-0407}
 \end{remark}
 
-\begin{remark}[Exercise 10.5.21 — quaternionic projective space as $\mathrm{Sp}(n+1)/(\mathrm{Sp}(1)\times\mathrm{Sp}(n))$]
+\begin{remark}[quaternionic projective space as $\mathrm{Sp}(n+1)/(\mathrm{Sp}(1)\times\mathrm{Sp}(n))$]
   \label{rem:pet-ch10-exercise-quaternionic-projective-space}
+  \dcref{ch10:10.5.21}
   \lean{PetersenLib.exercise10_5_21}
   \uses{ex:pet-ch10-complex-projective-space}
   The \emph{quaternionic projective space} $\mathbb{HP}^n$ is the space of
@@ -1424,20 +1204,20 @@ type and the theory of Lie groups underlying it.
   generated by $i,j,k$ on $\mathbb R^{4n}$, equivalently the $n\times n$
   quaternionic matrices $A$ with $A^{-1}=A^*$. Show that, viewing $\mathbb H^{n+1}$
   as a right (or left) $\mathbb H$-module, $\mathbb{HP}^n=\mathrm{Sp}(n+1)/(\mathrm{Sp}(1)\times\mathrm{Sp}(n))$.
-  \source{petersen:page-0407}
 \end{remark}
 
-\begin{remark}[Exercise 10.5.22 — hyperbolic analogues of complex projective space]
+\begin{remark}[hyperbolic analogues of complex projective space]
   \label{rem:pet-ch10-exercise-hyperbolic-complex-projective}
+  \dcref{ch10:10.5.22}
   \lean{PetersenLib.exercise10_5_22}
   \uses{ex:pet-ch10-complex-projective-space,ex:pet-ch10-hyperbolic-grassmannian}
   Construct the hyperbolic analogues of the complex projective spaces. Show
   that they have negative curvature and are quarter-pinched.
-  \source{petersen:page-0407}
 \end{remark}
 
-\begin{remark}[Exercise 10.5.23 — the monodromy map of a locally symmetric space]
+\begin{remark}[the monodromy map of a locally symmetric space]
   \label{rem:pet-ch10-exercise-lie-algebra-locally-symmetric}
+  \dcref{ch10:10.5.23}
   \lean{PetersenLib.exercise10_5_23}
   \uses{rem:pet-ch10-symmetric-space-from-involution}
   Give a Lie algebra description of a locally symmetric space (not necessarily
@@ -1445,43 +1225,42 @@ type and the theory of Lie groups underlying it.
   Conclude that a simply connected locally symmetric space admits a monodromy
   map into a unique global symmetric space, bijective when the locally
   symmetric space is complete.
-  \source{petersen:page-0407}
 \end{remark}
 
-\begin{remark}[Exercise 10.5.24 — strict curvature-operator sign forces constant curvature]
+\begin{remark}[strict curvature-operator sign forces constant curvature]
   \label{rem:pet-ch10-exercise-pinched-curvature-operator-constant}
+  \dcref{ch10:10.5.24}
   \lean{PetersenLib.exercise10_5_24}
   \uses{cor:pet-ch10-irreducible-symmetric-einstein}
   Show that if an irreducible symmetric space has strictly positive or strictly
   negative curvature operator, then it has constant curvature.
-  \source{petersen:page-0407}
 \end{remark}
 
-\begin{remark}[Exercise 10.5.25 — $[t_p,\mathrm{iso}_p]\subset t_p$]
+\begin{remark}[isotropy preserves the translational summand]
   \label{rem:pet-ch10-exercise-bracket-tp-isop}
+  \dcref{ch10:10.5.25}
   \lean{PetersenLib.exercise10_5_25}
   \uses{prop:pet-ch10-lie-bracket-curvature}
   Let $M$ be a symmetric space. Show that if $X\in t_p$ and $Y\in\mathrm{iso}_p$,
   then $[X,Y]\in t_p$.
-  \source{petersen:page-0407}
 \end{remark}
 
-\begin{remark}[Exercise 10.5.26 — curvature and Ricci tensor via the $L_X$ operators]
+\begin{remark}[curvature and Ricci tensor via the $L_X$ operators]
   \label{rem:pet-ch10-exercise-curvature-ricci-bracket-formula}
+  \dcref{ch10:10.5.26}
   \lean{PetersenLib.exercise10_5_26}
   \uses{thm:pet-ch10-curvature-bracket-formula}
   Let $M$ be a symmetric space and $X,Y,Z\in t_p$. Show
   $R(X,Y)Z=[L_X,L_Y]Z$ and $\operatorname{Ric}(X,Y)=-\operatorname{tr}([L_X,L_Y])$, where
   $L_X:=\operatorname{ad}_X$.
-  \source{petersen:page-0407}
 \end{remark}
 
-\begin{remark}[Exercise 10.5.27 — parallel extension of a $p$-form via holonomy invariance]
+\begin{remark}[parallel extension of a $p$-form via holonomy invariance]
   \label{rem:pet-ch10-exercise-parallel-form-holonomy-invariant}
+  \dcref{ch10:10.5.27}
   \lean{PetersenLib.exercise10_5_27}
   \uses{rem:pet-ch10-holonomy-properties}
   Consider a Riemannian manifold $M$ and a $p$-form $\omega$ on $T_pM$. Show
   that $\omega$ extends to a parallel form on $M$ if and only if $\omega$ is
   invariant under $\mathrm{Hol}_p(M)$.
-  \source{petersen:page-0407}
 \end{remark}

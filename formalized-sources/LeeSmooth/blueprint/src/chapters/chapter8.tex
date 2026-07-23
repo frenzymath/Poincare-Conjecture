@@ -1,8 +1,7 @@
 % Chapter 8: Vector Fields
-% Lee, *Introduction to Smooth Manifolds* (2nd ed., GTM 218).
+% Lee, Introduction to Smooth Manifolds (2nd ed., GTM 218).
 % Generated from the section extraction; nodes carry only Lean that is
 % verified sorry-free. See ../../UPSTREAM_LEAN_AUDIT.md.
-
 
 \section{Vector Fields on Manifolds}
 
@@ -11,13 +10,12 @@
 \lean{smooth_chart_coordinate_vector_field_smooth}
 \leanok
 \dcref{ch8:8.2}
-If $\left( {U,\left( {x}^{i}\right) }\right)$ is any smooth chart on $M$ , the assignment
-
+For a smooth chart $(U,(x^i))$ on $M$, the assignment
 \[
-p \mapsto  {\left. \frac{\partial }{\partial {x}^{i}}\right| }_{p}
+p\longmapsto \left.\frac{\partial}{\partial x^i}\right|_p
 \]
-
-determines a vector field on $U$ , called the $i$ th coordinate vector field and denoted by $\partial /\partial {x}^{i}$ . It is smooth because its component functions are constants.
+is a smooth vector field on $U$, called the $i$th coordinate vector field. Its
+components in this chart are constant.
 \end{example}
 
 \begin{example}[The Euler Vector Field]
@@ -25,13 +23,11 @@ determines a vector field on $U$ , called the $i$ th coordinate vector field and
 \lean{euler_vector_field_points_radially_outward}
 \leanok
 \dcref{ch8:8.3}
-The vector field $V$ on ${\mathbb{R}}^{n}$ whose value at $x \in  {\mathbb{R}}^{n}$ is
-
+The Euler vector field on $\mathbb{R}^n$ is
 \[
-{V}_{x} = {\left. {x}^{1}{\left. \frac{\partial }{\partial {x}^{1}}\right| }_{x} + \cdots  + {x}^{n}{\left. \frac{\partial }{\partial {x}^{n}}\right| }_{x}\right| }_{x}
+V_x=\sum_{i=1}^n x^i\left.\frac{\partial}{\partial x^i}\right|_x.
 \]
-
-is smooth because its coordinate functions are linear. It vanishes at the origin, and points radially outward everywhere else. It is called the Euler vector field because of its appearance in Euler's homogeneous function theorem (see Problem 8-2). //
+It is smooth, vanishes at the origin, and points radially outward elsewhere.
 \end{example}
 
 \begin{example}[The Angle Coordinate Vector Field on the Circle]
@@ -39,7 +35,11 @@ is smooth because its coordinate functions are linear. It vanishes at the origin
 \lean{exists_smooth_circle_angle_vector_field}
 \leanok
 \dcref{ch8:8.4}
-Let $\theta$ be any angle coordinate on a proper open subset $U \subseteq  {\mathbb{S}}^{1}$ (see Problem 1-8), and let $d/{d\theta }$ denote the corresponding coordinate vector field. Because any other angle coordinate $\widetilde{\theta }$ differs from $\theta$ by an additive constant in a neighborhood of each point, the transformation law for coordinate vector fields (3.11) shows that $d/{d\theta } = d/d\widetilde{\theta }$ on their common domain. For this reason, there is a globally defined vector field on ${\mathbb{S}}^{1}$ whose coordinate representation is $d/{d\theta }$ with respect to any angle coordinate. It is a smooth vector field because its component function is constant in any such chart. We denote this global vector field by $d/{d\theta }$ , even though, strictly speaking, it cannot be considered as a coordinate vector field on the entire circle at once.
+If $\theta$ and $\widetilde\theta$ are angle coordinates on $\mathbb{S}^1$,
+then locally $\widetilde\theta-\theta$ is constant, so
+$d/d\theta=d/d\widetilde\theta$ on overlapping domains. These local fields
+therefore define a global smooth vector field on $\mathbb{S}^1$, denoted
+$d/d\theta$.
 \end{example}
 
 \begin{lemma}[Extension Lemma for Vector Fields]
@@ -47,13 +47,11 @@ Let $\theta$ be any angle coordinate on a proper open subset $U \subseteq  {\mat
 \lean{exists_supported_contMDiff_vectorField_extension_of_isClosed}
 \leanok
 \dcref{ch8:8.6}
-Let $M$ be a smooth manifold with or without boundary, and let $A \subseteq  M$ be a closed subset. Suppose $X$ is a smooth vector field along $A$ . Given any open subset $U$ containing $A$ , there exists a smooth global vector field $\widetilde{X}$ on $M$ such that ${\left. \widetilde{X}\right| }_{A} = X$ and supp $\widetilde{X} \subseteq  U$ .
+Let $M$ be a smooth manifold, possibly with boundary, let $A\subseteq M$ be
+closed, and let $X$ be a smooth vector field along $A$. For every open
+$U\supseteq A$, there is a smooth vector field $\widetilde X$ on $M$ such that
+$\widetilde X|_A=X$ and $\operatorname{supp}\widetilde X\subseteq U$.
 \end{lemma}
-
-\begin{proof}
-\leanok
-See Problem 8-1.
-\end{proof}
 
 \begin{proposition}
 \label{prop:8-7}
@@ -61,12 +59,16 @@ See Problem 8-1.
 \leanok
 \uses{lem:8-6}
 \dcref{ch8:8.7}
-Let $M$ be a smooth manifold with or without boundary. Given $p \in  M$ and $v \in  {T}_{p}M$ , there is a smooth global vector field $X$ on $M$ such that ${X}_{p} = v.$
+If $M$ is a smooth manifold, possibly with boundary, $p\in M$, and
+$v\in T_pM$, then some smooth global vector field $X$ on $M$ satisfies
+$X_p=v$.
 \end{proposition}
 
 \begin{proof}
 \leanok
-The assignment $p \mapsto  v$ is an example of a vector field along the set $\{ p\}$ as defined above. It is smooth because it can be extended, say, to a constant-coefficient vector field in a coordinate neighborhood of $p$ . Thus, the proposition follows from the extension lemma with $A = \{ p\}$ and $U = M$ .
+\sketch Extend $v$ to a constant-coefficient field in a coordinate
+neighborhood of $p$, regard it as a smooth field along $\{p\}$, and apply the
+extension lemma with $A=\{p\}$ and $U=M$.
 \end{proof}
 
 \begin{proposition}
@@ -74,23 +76,13 @@ The assignment $p \mapsto  v$ is an example of a vector field along the set $\{ 
 \lean{smoothVectorFieldModule}
 \leanok
 \dcref{ch8:8.8}
-Let $M$ be a smooth manifold with or without boundary.
-
-(a) If $X$ and $Y$ are smooth vector fields on $M$ and $f, g \in  {C}^{\infty }\left( M\right)$ , then ${fX} + {gY}$ is a smooth vector field.
-
-(b) $\mathfrak{X}\left( M\right)$ is a module over the ring ${C}^{\infty }\left( M\right)$ .
+Let $M$ be a smooth manifold, possibly with boundary.
+\begin{enumerate}
+\item If $X,Y\in\mathfrak{X}(M)$ and $f,g\in C^\infty(M)$, then
+$fX+gY$ is smooth.
+\item Consequently, $\mathfrak{X}(M)$ is a module over $C^\infty(M)$.
+\end{enumerate}
 \end{proposition}
-
-\begin{exercise}
-\label{exer:8-9}
-\lean{smoothVectorFieldModule}
-\leanok
-\uses{prop:8-8}
-\dcref{ch8:8.9}
-\begin{itemize}
-\item Exercise 8.9. Prove Proposition 8.8.
-\end{itemize}
-\end{exercise}
 
 
 \section{Local and Global Frames}
@@ -99,98 +91,116 @@ Let $M$ be a smooth manifold with or without boundary.
 \label{def:8-55-extra-1}
 \lean{VectorField.SpansTangentBundleOn}
 \leanok
-Coordinate vector fields in a smooth chart provide a convenient way of representing vector fields, because their values form a basis for the tangent space at each point. However, they are not the only choices.
-
-Suppose $M$ is a smooth $n$ -manifold with or without boundary. An ordered $k$ - tuple $\left( {{X}_{1},\ldots ,{X}_{k}}\right)$ of vector fields defined on some subset $A \subseteq  M$ is said to be linearly independent if $\left( {{\left. {X}_{1}\right| }_{p},\ldots ,{\left. {X}_{k}\right| }_{p}}\right)$ is a linearly independent $k$ -tuple in ${T}_{p}M$ for each $p \in  A$ , and is said to span the tangent bundle if the $k$ -tuple $\left( {{\left. {X}_{1}\right| }_{p},\ldots ,{\left. {X}_{k}\right| }_{p}}\right)$ spans ${T}_{p}M$ at each $p \in  A$ . A local frame for $M$ is an ordered $n$ -tuple of vector fields $\left( {{E}_{1},\ldots ,{E}_{n}}\right)$ defined on an open subset $U \subseteq  M$ that is linearly independent and spans the tangent bundle; thus the vectors $\left( {{\left. {E}_{1}\right| }_{p},\ldots ,{\left. {E}_{n}\right| }_{p}}\right)$ form a basis for ${T}_{p}M$ at each $p \in  U$ . It is called a global frame if $U = M$ , and a smooth frame if each of the vector fields ${E}_{i}$ is smooth. We often use the shorthand notation $\left( {E}_{i}\right)$ to denote a frame $\left( {{E}_{1},\ldots ,{E}_{n}}\right)$ . If $M$ has dimension $n$ , then to check that an ordered $n$ -tuple of vector fields $\left( {{E}_{1},\ldots ,{E}_{n}}\right)$ is a local frame, it suffices to check either that it is linearly independent or that it spans the tangent bundle.
+An ordered tuple $(X_1,\ldots,X_k)$ of vector fields on $A\subseteq M$ is
+\emph{linearly independent} if $(X_1|_p,\ldots,X_k|_p)$ is linearly
+independent in $T_pM$ for every $p\in A$, and it
+\emph{spans the tangent bundle} if these vectors span $T_pM$ for every $p$.
+For an $n$-manifold, a \emph{local frame} on an open set $U$ is an ordered
+$n$-tuple $(E_1,\ldots,E_n)$ whose values form a basis of every $T_pM$,
+$p\in U$. It is \emph{global} when $U=M$ and \emph{smooth} when every $E_i$
+is smooth. For an $n$-tuple, either pointwise independence or pointwise
+spanning suffices to verify the frame condition.
 \end{definition}
 
 \begin{proposition}[Completion of Local Frames]
 \label{prop:8-11}
 \lean{exists_localFrame_extension_of_closed}
 \leanok
-\uses{prob:8-5}
 \dcref{ch8:8.11}
-Let $M$ be a smooth $n$ -manifold with or without boundary.
-
-(a) If $\left( {{X}_{1},\ldots ,{X}_{k}}\right)$ is a linearly independent $k$ -tuple of smooth vector fields on an open subset $U \subseteq  M$ , with $1 \leq  k < n$ , then for each $p \in  U$ there exist smooth vector fields ${X}_{k + 1},\ldots ,{X}_{n}$ in a neighborhood $V$ of $p$ such that $\left( {{X}_{1},\ldots ,{X}_{n}}\right)$ is a smooth local frame for $M$ on $U \cap  V$ .
-
-(b) If $\left( {{v}_{1},\ldots ,{v}_{k}}\right)$ is a linearly independent $k$ -tuple of vectors in ${T}_{p}M$ for some $p \in  M$ , with $1 \leq  k \leq  n$ , then there exists a smooth local frame $\left( {X}_{i}\right)$ on a neighborhood of $p$ such that ${\left. {X}_{i}\right| }_{p} = {v}_{i}$ for $i = 1,\ldots , k$ .
-
-(c) If $\left( {{X}_{1},\ldots ,{X}_{n}}\right)$ is a linearly independent $n$ -tuple of smooth vector fields along a closed subset $A \subseteq  M$ , then there exists a smooth local frame $\left( {{\widetilde{X}}_{1},\ldots ,{\widetilde{X}}_{n}}\right)$ on some neighborhood of $A$ such that ${\widetilde{X}}_{i}{ \mid  }_{A} = {X}_{i}$ for $i = 1,\ldots , n$ .
+Let $M$ be a smooth $n$-manifold, possibly with boundary.
+\begin{enumerate}
+\item If $(X_1,\ldots,X_k)$ is a linearly independent tuple of smooth vector
+fields on an open $U\subseteq M$, where $1\leq k<n$, then each $p\in U$ has a
+neighborhood $V$ carrying smooth fields $X_{k+1},\ldots,X_n$ such that
+$(X_1,\ldots,X_n)$ is a smooth frame on $U\cap V$.
+\item If $(v_1,\ldots,v_k)$ is linearly independent in $T_pM$, where
+$1\leq k\leq n$, then a smooth local frame $(X_i)$ exists near $p$ with
+$X_i|_p=v_i$ for $1\leq i\leq k$.
+\item If $(X_1,\ldots,X_n)$ is a pointwise linearly independent tuple of
+smooth vector fields along a closed $A\subseteq M$, then some neighborhood of
+$A$ admits a smooth frame $(\widetilde X_1,\ldots,\widetilde X_n)$ satisfying
+$\widetilde X_i|_A=X_i$ for every $i$.
+\end{enumerate}
 \end{proposition}
-
-\begin{proof}
-\leanok
-See Problem 8-5.
-\end{proof}
 
 \begin{definition}
 \label{def:8-55-extra-2}
 \lean{IsOrthonormalFrameOn}
 \leanok
-For subsets of ${\mathbb{R}}^{n}$ , there is a special type of frame that is often more useful for geometric problems than arbitrary frames. A $k$ -tuple of vector fields $\left( {{E}_{1},\ldots ,{E}_{k}}\right)$ defined on some subset $A \subseteq  {\mathbb{R}}^{n}$ is said to be orthonormal if for each $p \in  A$ , the vectors $\left( {{\left. {E}_{1}\right| }_{p},\ldots ,{\left. {E}_{k}\right| }_{p}}\right)$ are orthonormal with respect to the Euclidean dot product (where we identify ${T}_{p}{\mathbb{R}}^{n}$ with ${\mathbb{R}}^{n}$ in the usual way). A (local or global) frame consisting of orthonormal vector fields is called an orthonormal frame.
+A tuple $(E_1,\ldots,E_k)$ of vector fields on $A\subseteq\mathbb{R}^n$ is
+\emph{orthonormal} if $(E_1|_p,\ldots,E_k|_p)$ is orthonormal for the Euclidean
+inner product at every $p\in A$. An orthonormal frame is a frame consisting of
+orthonormal vector fields.
 \end{definition}
 
-\begin{example}
+\begin{example}[A Polar Orthonormal Frame]
 \label{ex:8-12}
 \lean{example_8_12_E2_tangent_to_centered_circles}
 \leanok
 \dcref{ch8:8.12}
-The standard coordinate frame is a global orthonormal frame on ${\mathbb{R}}^{n}$ . For a less obvious example, consider the smooth vector fields defined on ${\mathbb{R}}^{2} \smallsetminus  \{ 0\}$ by
-
+The standard coordinate frame is a global orthonormal frame on $\mathbb{R}^n$.
+On $\mathbb{R}^2\setminus\{0\}$, with $r=\sqrt{x^2+y^2}$,
 \[
-{E}_{1} = \frac{x}{r}\frac{\partial }{\partial x} + \frac{y}{r}\frac{\partial }{\partial y},\;{E}_{2} =  - \frac{y}{r}\frac{\partial }{\partial x} + \frac{x}{r}\frac{\partial }{\partial y}, \tag{8.3}
+E_1=\frac{x}{r}\frac{\partial}{\partial x}
+   +\frac{y}{r}\frac{\partial}{\partial y},\qquad
+E_2=-\frac{y}{r}\frac{\partial}{\partial x}
+   +\frac{x}{r}\frac{\partial}{\partial y}. \tag{8.3}
 \]
-
-where $r = \sqrt{{x}^{2} + {y}^{2}}$ . A straightforward computation shows that $\left( {{E}_{1},{E}_{2}}\right)$ is an orthonormal frame for ${\mathbb{R}}^{2}$ over the open subset ${\mathbb{R}}^{2} \smallsetminus  \{ 0\}$ . Geometrically, ${E}_{1}$ and ${E}_{2}$ are unit vector fields tangent to radial lines and circles centered at the origin, respectively.
+This is an orthonormal frame; $E_1$ is radial and $E_2$ is tangent to centered
+circles.
 \end{example}
 
-\begin{lemma}[Gram-Schmidt Algorithm for Frames]
+\begin{lemma}[Gram--Schmidt Algorithm for Frames]
 \label{lem:8-13}
 \lean{exists_orthonormalFrameOn_with_same_initial_spans}
 \leanok
 \dcref{ch8:8.13}
-Suppose $\left( {X}_{j}\right)$ is a smooth local frame for $T{\mathbb{R}}^{n}$ over an open subset $U \subseteq  {\mathbb{R}}^{n}$ . Then there is a smooth orthonormal frame $\left( {E}_{j}\right)$ over $U$ such that $\operatorname{span}\left( {{E}_{1}{\left. \right| }_{p},\ldots ,{E}_{j}{\left. \right| }_{p}}\right)  = \operatorname{span}\left( {{X}_{1}{\left. \right| }_{p},\ldots ,{X}_{j}{\left. \right| }_{p}}\right)$ for each $j = 1,\ldots , n$ and each $p \in  U$ .
+If $(X_j)$ is a smooth local frame on an open $U\subseteq\mathbb{R}^n$, then
+there is a smooth orthonormal frame $(E_j)$ on $U$ such that, for every
+$p\in U$ and $1\leq j\leq n$,
+\[
+\operatorname{span}(E_1|_p,\ldots,E_j|_p)
+=\operatorname{span}(X_1|_p,\ldots,X_j|_p).
+\]
 \end{lemma}
 
 \begin{proof}
 \leanok
-Applying the Gram-Schmidt algorithm to the vectors $\left( {\left. {X}_{j}\right| }_{p}\right)$ at each $p \in  U$ , we obtain an $n$ -tuple of rough vector fields $\left( {{E}_{1},\ldots ,{E}_{n}}\right)$ given inductively by
-
+\sketch Apply Gram--Schmidt pointwise:
 \[
-{E}_{j} = \frac{{X}_{j} - \mathop{\sum }\limits_{{i = 1}}^{{j - 1}}\left( {{X}_{j} \cdot  {E}_{i}}\right) {E}_{i}}{\left| {X}_{j} - \mathop{\sum }\limits_{{i = 1}}^{{j - 1}}\left( {X}_{j} \cdot  {E}_{i}\right) {E}_{i}\right| }.
+E_j=\frac{X_j-\sum_{i=1}^{j-1}(X_j\cdot E_i)E_i}
+{\left|X_j-\sum_{i=1}^{j-1}(X_j\cdot E_i)E_i\right|}.
 \]
-
-For each $j = 1,\ldots , n$ and each $p \in  U,{X}_{j}{\left. \right| }_{p} \notin  \operatorname{span}\left( {{\left. {E}_{1}\right| }_{p},\ldots ,{\left. {E}_{j - 1}\right| }_{p}}\right)$ (which is equal to span $\left( {{X}_{1}{\left| {}_{p},\ldots ,{X}_{j - 1}\right| }_{p}}\right)$ ), so the denominator above is a nowhere-vanishing smooth function on $U$ . Therefore, this formula defines $\left( {E}_{j}\right)$ as a smooth orthonormal frame on $U$ that satisfies the conclusion of the lemma.
+The frame hypothesis makes every denominator nonzero. The formula therefore
+defines smooth fields and preserves each initial span.
 \end{proof}
 
 \begin{definition}
 \label{def:8-55-extra-3}
 \lean{parallelizable}
 \leanok
-Although smooth local frames are plentiful, global ones are not. A smooth manifold with or without boundary is said to be parallelizable if it admits a smooth global frame.
+A smooth manifold, possibly with boundary, is \emph{parallelizable} if it
+admits a smooth global frame.
 \end{definition}
 
-
-\section{Vector Fields as Derivations of ${C}^{\infty }\left( M\right)$}
+\section{Vector Fields as Derivations of $C^\infty(M)$}
 
 \begin{notation}
 \label{not:8-56-extra-1}
 \lean{Notation_8_56_extra_1}
 \leanok
-An essential property of vector fields is that they define operators on the space of smooth real-valued functions. If $X \in  \mathfrak{X}\left( M\right)$ and $f$ is a smooth real-valued function defined on an open subset $U \subseteq  M$ , we obtain a new function ${Xf} : U \rightarrow  \mathbb{R}$ , defined by
-
+For $X\in\mathfrak{X}(M)$ and a smooth $f\colon U\to\mathbb{R}$ on an open
+$U\subseteq M$, define $Xf\colon U\to\mathbb{R}$ by
 \[
-\left( {Xf}\right) \left( p\right)  = {X}_{p}f
+(Xf)(p)=X_pf.
 \]
-
-(Be careful not to confuse the notations ${fX}$ and ${Xf}$ : the former is the smooth vector field on $U$ obtained by multiplying $X$ by $f$ , while the latter is the real-valued function on $U$ obtained by applying the vector field $X$ to the smooth function $f$ .) Because the action of a tangent vector on a function is determined by the values of the function in an arbitrarily small neighborhood, it follows that ${Xf}$ is locally determined. In particular, for any open subset $V \subseteq  U$ ,
-
+This operation is local: for every open $V\subseteq U$,
 \[
-{\left. \left( Xf\right) \right| }_{V} = X\left( {\left. f\right| }_{V}\right) . \tag{8.4}
+(Xf)|_V=X(f|_V). \tag{8.4}
 \]
+Here $fX$ denotes scalar multiplication of a vector field, whereas $Xf$
+denotes the action of $X$ on a function.
 \end{notation}
-
 
 \section{Vector Fields and Smooth Maps}
 
@@ -198,13 +208,15 @@ An essential property of vector fields is that they define operators on the spac
 \label{def:8-57-extra-1}
 \lean{VectorField.f_related}
 \leanok
-If $F : M \rightarrow  N$ is a smooth map and $X$ is a vector field on $M$ , then for each point $p \in  M$ , we obtain a vector $d{F}_{p}\left( {X}_{p}\right)  \in  {T}_{F\left( p\right) }N$ by applying the differential of $F$ to ${X}_{p}$ . However, this does not in general define a vector field on $N$ . For example, if $F$ is not surjective, there is no way to decide what vector to assign to a point $q \in  N \smallsetminus  F\left( M\right)$ (Fig. 8.2). If $F$ is not injective, then for some points of $N$ there may be several different vectors obtained by applying ${dF}$ to $X$ at different points of $M$ .
-
-![196_378_187_780_262_0.jpg](images/196_378_187_780_262_0.jpg)
-
-Fig. 8.2 The differential might not take vector fields to vector fields
-
-Suppose $F : M \rightarrow  N$ is smooth and $X$ is a vector field on $M$ , and suppose there happens to be a vector field $Y$ on $N$ with the property that for each $p \in  M$ , $d{F}_{p}\left( {X}_{p}\right)  = {Y}_{F\left( p\right) }$ . In this case, we say the vector fields $X$ and $Y$ are $\mathbf{F}$ -related (see Fig. 8.3). The next proposition shows how $F$ -related vector fields act on smooth functions.
+Let $F\colon M\to N$ be smooth, and let $X$ and $Y$ be vector fields on $M$
+and $N$, respectively. They are \emph{$F$-related} if
+\[
+dF_p(X_p)=Y_{F(p)}
+\qquad\text{for every }p\in M.
+\]
+For a general smooth $F$, the vectors $dF_p(X_p)$ need not determine a vector
+field on $N$: points outside $F(M)$ receive no value, and distinct points in a
+fiber may yield incompatible values.
 \end{definition}
 
 \begin{proposition}
@@ -212,74 +224,58 @@ Suppose $F : M \rightarrow  N$ is smooth and $X$ is a vector field on $M$ , and 
 \lean{f_related_iff_mfderiv_comp_eq}
 \leanok
 \dcref{ch8:8.16}
-Suppose $F : M \rightarrow  N$ is a smooth map between manifolds with or without boundary, $X \in  \mathcal{X}\left( M\right)$ , and $Y \in  \mathcal{X}\left( N\right)$ . Then $X$ and $Y$ are $F$ -related if and only if for every smooth real-valued function $f$ defined on an open subset of $N$ ,
-
+Let $F\colon M\to N$ be smooth between manifolds, possibly with boundary, and
+let $X\in\mathfrak{X}(M)$ and $Y\in\mathfrak{X}(N)$. Then $X$ and $Y$ are
+$F$-related if and only if every smooth real-valued function $f$ on an open
+subset of $N$ satisfies
 \[
-X\left( {f \circ  F}\right)  = \left( {Yf}\right)  \circ  F. \tag{8.6}
+X(f\circ F)=(Yf)\circ F. \tag{8.6}
 \]
 \end{proposition}
 
 \begin{proof}
 \leanok
-For any $p \in  M$ and any smooth real-valued $f$ defined in a neighborhood of $F\left( p\right)$ ,
-
+\sketch At each $p\in M$ and for every smooth $f$ near $F(p)$,
 \[
-X\left( {f \circ  F}\right) \left( p\right)  = {X}_{p}\left( {f \circ  F}\right)  = d{F}_{p}\left( {X}_{p}\right) f
+X(f\circ F)(p)=dF_p(X_p)f,
+\qquad ((Yf)\circ F)(p)=Y_{F(p)}f.
 \]
-
-while
-
-\[
-\left( {Yf}\right)  \circ  F\left( p\right)  = \left( {Yf}\right) \left( {F\left( p\right) }\right)  = {Y}_{F\left( p\right) }f.
-\]
-
-Thus,(8.6) is true for all $f$ if and only if $d{F}_{p}\left( {X}_{p}\right)  = {Y}_{F\left( p\right) }$ for all $p$ , i.e., if and only if $X$ and $Y$ are $F$ -related.
+Equality for all such $f$ is equivalent to $dF_p(X_p)=Y_{F(p)}$.
 \end{proof}
 
-\begin{example}
+\begin{example}[The Rotation Field]
 \label{ex:8-17}
 \lean{example_8_17_d_dt_related_rotation_field}
 \leanok
 \dcref{ch8:8.17}
-Let $F : \mathbb{R} \rightarrow  {\mathbb{R}}^{2}$ be the smooth map $F\left( t\right)  = \left( {\cos t,\sin t}\right)$ . Then $d/{dt} \in  \mathfrak{X}\left( \mathbb{R}\right)$ is $F$ -related to the vector field $Y \in  \mathfrak{X}\left( {\mathbb{R}}^{2}\right)$ defined by
-
+For $F\colon\mathbb{R}\to\mathbb{R}^2$ given by
+$F(t)=(\cos t,\sin t)$, the field $d/dt$ is $F$-related to
 \[
-Y = x\frac{\partial }{\partial y} - y\frac{\partial }{\partial x}.
+Y=x\frac{\partial}{\partial y}-y\frac{\partial}{\partial x}.
 \]
 \end{example}
 
-\begin{exercise}
-\label{exer:8-18}
-\lean{example_8_17_d_dt_related_rotation_field}
-\leanok
-\uses{ex:8-17,prop:8-16}
-\dcref{ch8:8.18}
-Prove the claim in the preceding example in two ways: directly from the definition, and by using Proposition 8.16.
-\end{exercise}
 
 \begin{proposition}
 \label{prop:8-19}
 \lean{existsUnique_smooth_f_related_vectorField_of_diffeomorph}
 \leanok
 \dcref{ch8:8.19}
-Suppose $M$ and $N$ are smooth manifolds with or without boundary, and $F : M \rightarrow  N$ is a diffeomorphism. For every $X \in  \mathfrak{X}\left( M\right)$ , there is a unique smooth vector field on $N$ that is $F$ -related to $X$ .
+If $F\colon M\to N$ is a diffeomorphism between smooth manifolds, possibly
+with boundary, then every $X\in\mathfrak{X}(M)$ is $F$-related to a unique
+smooth vector field on $N$.
 \end{proposition}
 
 \begin{proof}
 \leanok
-For $Y \in  \mathfrak{X}\left( N\right)$ to be $F$ -related to $X$ means that $d{F}_{p}\left( {X}_{p}\right)  = {Y}_{F\left( p\right) }$ for every $p \in  M$ . If $F$ is a diffeomorphism, therefore, we define $Y$ by
-
+\sketch The unique possible field is
 \[
-{Y}_{q} = d{F}_{{F}^{-1}\left( q\right) }\left( {X}_{{F}^{-1}\left( q\right) }\right) .
+Y_q=dF_{F^{-1}(q)}(X_{F^{-1}(q)}).
 \]
-
-It is clear that $Y$ , so defined, is the unique (rough) vector field that is $F$ -related to $X$ . Note that $Y : N \rightarrow  {TN}$ is the composition of the following smooth maps:
-
+It is smooth because, as a map $N\to TN$, it is the composite
 \[
-N\overset{{F}^{-1}}{ \rightarrow  }M\overset{X}{ \rightarrow  }{TM}\overset{dF}{ \rightarrow  }{TN}
+N\xrightarrow{F^{-1}}M\xrightarrow{X}TM\xrightarrow{dF}TN.
 \]
-
-It follows that $Y$ is smooth.
 \end{proof}
 
 \begin{definition}
@@ -287,13 +283,11 @@ It follows that $Y$ is smooth.
 \lean{VectorField.mpullback}
 \mathlibok
 \uses{prop:8-19}
-In the situation of the preceding proposition we denote the unique vector field that is $F$ -related to $X$ by ${F}_{ * }X$ , and call it the pushforward of $X$ by $F$ . Remember, it is only when $F$ is a diffeomorphism that ${F}_{ * }X$ is defined. The proof of Proposition 8.19 shows that ${F}_{ * }X$ is defined explicitly by the formula
-
+For a diffeomorphism $F\colon M\to N$ and $X\in\mathfrak{X}(M)$, the unique
+$F$-related field is the \emph{pushforward} $F_*X$, given by
 \[
-{\left( {F}_{ * }X\right) }_{q} = d{F}_{{F}^{-1}\left( q\right) }\left( {X}_{{F}^{-1}\left( q\right) }\right) . \tag{8.7}
+(F_*X)_q=dF_{F^{-1}(q)}(X_{F^{-1}(q)}). \tag{8.7}
 \]
-
-As long as the inverse map ${F}^{-1}$ can be computed explicitly, the pushforward of a vector field can be computed directly from this formula.
 \end{definition}
 
 \begin{corollary}
@@ -302,13 +296,12 @@ As long as the inverse map ${F}^{-1}$ can be computed explicitly, the pushforwar
 \leanok
 \uses{prop:8-16}
 \dcref{ch8:8.21}
-Suppose $F : M \rightarrow  N$ is a diffeomorphism and $X \in  \mathfrak{X}\left( M\right)$ . For any $f \in  {C}^{\infty }\left( N\right)$ ,
-
+If $F\colon M\to N$ is a diffeomorphism, $X\in\mathfrak{X}(M)$, and
+$f\in C^\infty(N)$, then
 \[
-\left( {\left( {{F}_{ * }X}\right) f}\right)  \circ  F = X\left( {f \circ  F}\right) .
+((F_*X)f)\circ F=X(f\circ F).
 \]
 \end{corollary}
-
 
 \section{Vector Fields and Submanifolds}
 
@@ -316,9 +309,11 @@ Suppose $F : M \rightarrow  N$ is a diffeomorphism and $X \in  \mathfrak{X}\left
 \label{def:8-58-extra-1}
 \lean{VectorField.IsTangentToSubmanifold}
 \leanok
-If $S \subseteq  M$ is an immersed or embedded submanifold (with or without boundary), a vector field $X$ on $M$ does not necessarily restrict to a vector field on $S$ , because ${X}_{p}$ may not lie in the subspace ${T}_{p}S \subseteq  {T}_{p}M$ at a point $p \in  S$ . Given a point $p \in  S$ , a vector field $X$ on $M$ is said to be tangent to $S$ at $p$ if ${X}_{p} \in  {T}_{p}S \subseteq  {T}_{p}M$ . It is tangent to $S$ if it is tangent to $S$ at every point of $S$ (Fig. 8.4).
+Let $S\subseteq M$ be an immersed or embedded submanifold, possibly with
+boundary. A vector field $X$ on $M$ is \emph{tangent to $S$ at $p\in S$} if
+$X_p\in T_pS\subseteq T_pM$, and it is \emph{tangent to $S$} if this holds at
+every point of $S$.
 \end{definition}
-
 
 \section{Lie Brackets}
 
@@ -326,10 +321,10 @@ If $S \subseteq  M$ is an immersed or embedded submanifold (with or without boun
 \label{def:8-59-extra-1}
 \lean{VectorField.mlieBracket}
 \mathlibok
-We can also apply the same two vector fields in the opposite order, obtaining a (usually different) function ${XYf}$ . Applying both of these operators to $f$ and subtracting, we obtain an operator $\left\lbrack  {X, Y}\right\rbrack   : {C}^{\infty }\left( M\right)  \rightarrow  {C}^{\infty }\left( M\right)$ , called the Lie bracket of $X$ and $Y$ , defined by
-
+For $X,Y\in\mathfrak{X}(M)$, their \emph{Lie bracket} is the operator
 \[
-\left\lbrack  {X, Y}\right\rbrack  f = {XYf} - {YXf}
+[X,Y]f=XYf-YXf
+\qquad (f\in C^\infty(M)).
 \]
 \end{definition}
 
@@ -338,65 +333,44 @@ We can also apply the same two vector fields in the opposite order, obtaining a 
 \lean{lieBracketWithin_coordinateComponent}
 \leanok
 \dcref{ch8:8.26}
-Let $X, Y$ be smooth vector fields on a smooth manifold $M$ with or without boundary, and let $X = \; {X}^{i}\partial /\partial {x}^{i}$ and $Y = {Y}^{j}\partial /\partial {x}^{j}$ be the coordinate expressions for $X$ and $Y$ in terms of some smooth local coordinates $\left( {x}^{i}\right)$ for $M$ . Then $\left\lbrack  {X, Y}\right\rbrack$ has the following coordinate expression:
-
+Let $X$ and $Y$ be smooth vector fields on a smooth manifold $M$ with or
+without boundary. In smooth local coordinates, if
+$X=X^i\partial/\partial x^i$ and $Y=Y^j\partial/\partial x^j$, then
 \[
-\left\lbrack  {X, Y}\right\rbrack   = \left( {{X}^{i}\frac{\partial {Y}^{j}}{\partial {x}^{i}} - {Y}^{i}\frac{\partial {X}^{j}}{\partial {x}^{i}}}\right) \frac{\partial }{\partial {x}^{j}}, \tag{8.8}
+[X,Y]=\left(X^i\frac{\partial Y^j}{\partial x^i}
+-Y^i\frac{\partial X^j}{\partial x^i}\right)
+\frac{\partial}{\partial x^j}, \tag{8.8}
 \]
-
-or more concisely,
-
+equivalently,
 \[
-\left\lbrack  {X, Y}\right\rbrack   = \left( {X{Y}^{j} - Y{X}^{j}}\right) \frac{\partial }{\partial {x}^{j}}. \tag{8.9}
+[X,Y]=(XY^j-YX^j)\frac{\partial}{\partial x^j}. \tag{8.9}
 \]
 \end{proposition}
 
 \begin{proof}
 \leanok
-Because we know already that $\left\lbrack  {X, Y}\right\rbrack$ is a smooth vector field, its action on a function is determined locally: ${\left. \left( \left\lbrack  X, Y\right\rbrack  f\right) \right| }_{U} = \left\lbrack  {X, Y}\right\rbrack  \left( {\left. f\right| }_{U}\right)$ . Thus it suffices to compute in a single smooth chart, where we have
-
-\[
-\left\lbrack  {X, Y}\right\rbrack  f = {X}^{i}\frac{\partial }{\partial {x}^{i}}\left( {{Y}^{j}\frac{\partial f}{\partial {x}^{j}}}\right)  - {Y}^{j}\frac{\partial }{\partial {x}^{j}}\left( {{X}^{i}\frac{\partial f}{\partial {x}^{i}}}\right)
-\]
-
-\[
-= {X}^{i}\frac{\partial {Y}^{j}}{\partial {x}^{i}}\frac{\partial f}{\partial {x}^{j}} + {X}^{i}{Y}^{j}\frac{{\partial }^{2}f}{\partial {x}^{i}\partial {x}^{j}} - {Y}^{j}\frac{\partial {X}^{i}}{\partial {x}^{j}}\frac{\partial f}{\partial {x}^{i}} - {Y}^{j}{X}^{i}\frac{{\partial }^{2}f}{\partial {x}^{j}\partial {x}^{i}}
-\]
-
-\[
-= {X}^{i}\frac{\partial {Y}^{j}}{\partial {x}^{i}}\frac{\partial f}{\partial {x}^{j}} - {Y}^{j}\frac{\partial {X}^{i}}{\partial {x}^{j}}\frac{\partial f}{\partial {x}^{i}},
-\]
-
-where in the last step we have used the fact that mixed partial derivatives of a smooth function can be taken in any order. Interchanging the roles of the dummy indices $i$ and $j$ in the second term, we obtain (8.8).
+\sketch Expanding $XYf-YXf$ in a chart gives first-derivative terms with the
+displayed coefficients and second-derivative terms
+$X^iY^j\partial_i\partial_jf-Y^jX^i\partial_j\partial_if$. The latter cancel
+because mixed partial derivatives commute; relabeling dummy indices yields
+(8.8).
 \end{proof}
 
-\begin{example}
+\begin{example}[A Lie Bracket on $\mathbb{R}^3$]
 \label{ex:8-27}
 \lean{example_8_27_lie_bracket_apply}
 \leanok
 \dcref{ch8:8.27}
-Define smooth vector fields $X, Y \in  \mathfrak{X}\left( {\mathbb{R}}^{3}\right)$ by
-
+For
 \[
-X = x\frac{\partial }{\partial x} + \frac{\partial }{\partial y} + x\left( {y + 1}\right) \frac{\partial }{\partial z},
+X=x\frac{\partial}{\partial x}+\frac{\partial}{\partial y}
+  +x(y+1)\frac{\partial}{\partial z},
+\qquad
+Y=\frac{\partial}{\partial x}+y\frac{\partial}{\partial z},
 \]
-
+formula (8.9) gives
 \[
-Y = \frac{\partial }{\partial x} + y\frac{\partial }{\partial z}
-\]
-
-Then (8.9) yields
-
-\[
-\left\lbrack  {X, Y}\right\rbrack   = X\left( 1\right) \frac{\partial }{\partial x} + X\left( y\right) \frac{\partial }{\partial z} - Y\left( x\right) \frac{\partial }{\partial x} - Y\left( 1\right) \frac{\partial }{\partial y} - Y\left( {x\left( {y + 1}\right) }\right) \frac{\partial }{\partial z}
-\]
-
-\[
-= 0\frac{\partial }{\partial x} + 1\frac{\partial }{\partial z} - 1\frac{\partial }{\partial x} - 0\frac{\partial }{\partial y} - \left( {y + 1}\right) \frac{\partial }{\partial z}
-\]
-
-\[
-=  - \frac{\partial }{\partial x} - y\frac{\partial }{\partial z}.
+[X,Y]=-\frac{\partial}{\partial x}-y\frac{\partial}{\partial z}.
 \]
 \end{example}
 
@@ -405,76 +379,25 @@ Then (8.9) yields
 \lean{lie_bracket_smul_smul}
 \leanok
 \dcref{ch8:8.28}
-The Lie bracket satisfies the following identities for all $X, Y, Z \in  \mathfrak{X}\left( M\right)$ :
-
-(a) BILINEARITY: For $a, b \in  \mathbb{R}$ ,
-
-\[
-\left\lbrack  {{aX} + {bY}, Z}\right\rbrack   = a\left\lbrack  {X, Z}\right\rbrack   + b\left\lbrack  {Y, Z}\right\rbrack
-\]
-
-\[
-\left\lbrack  {Z,{aX} + {bY}}\right\rbrack   = a\left\lbrack  {Z, X}\right\rbrack   + b\left\lbrack  {Z, Y}\right\rbrack  .
-\]
-
-(b) ANTISYMMETRY:
-
-\[
-\left\lbrack  {X, Y}\right\rbrack   =  - \left\lbrack  {Y, X}\right\rbrack
-\]
-
-(c) JACOBI IDENTITY:
-
-\[
-\left\lbrack  {X,\left\lbrack  {Y, Z}\right\rbrack  }\right\rbrack   + \left\lbrack  {Y,\left\lbrack  {Z, X}\right\rbrack  }\right\rbrack   + \left\lbrack  {Z,\left\lbrack  {X, Y}\right\rbrack  }\right\rbrack   = 0.
-\]
-
-(d) For $f, g \in  {C}^{\infty }\left( M\right)$ ,
-
-\[
-\left\lbrack  {{fX},{gY}}\right\rbrack   = {fg}\left\lbrack  {X, Y}\right\rbrack   + \left( {fXg}\right) Y - \left( {gYf}\right) X. \tag{8.11}
-\]
+For $X,Y,Z\in\mathfrak{X}(M)$, $a,b\in\mathbb{R}$, and
+$f,g\in C^\infty(M)$, the Lie bracket satisfies
+\begin{align*}
+[aX+bY,Z]&=a[X,Z]+b[Y,Z],\\
+[Z,aX+bY]&=a[Z,X]+b[Z,Y],\\
+[X,Y]&=-[Y,X],\\
+[X,[Y,Z]]+[Y,[Z,X]]+[Z,[X,Y]]&=0,\\
+[fX,gY]&=fg[X,Y]+(fXg)Y-(gYf)X. \tag{8.11}
+\end{align*}
 \end{proposition}
 
 \begin{proof}
 \leanok
-Bilinearity and antisymmetry are obvious consequences of the definition. The proof of the Jacobi identity is just a computation:
-
-\[
-\left\lbrack  {X,\left\lbrack  {Y, Z}\right\rbrack  }\right\rbrack  f + \left\lbrack  {Y,\left\lbrack  {Z, X}\right\rbrack  }\right\rbrack  f + \left\lbrack  {Z,\left\lbrack  {X, Y}\right\rbrack  }\right\rbrack  f
-\]
-
-\[
-= X\left\lbrack  {Y, Z}\right\rbrack  f - \left\lbrack  {Y, Z}\right\rbrack  {Xf} + Y\left\lbrack  {Z, X}\right\rbrack  f
-\]
-
-\[
-\begin{itemize}
-\item \left\lbrack  {Z, X}\right\rbrack  {Yf} + Z\left\lbrack  {X, Y}\right\rbrack  f - \left\lbrack  {X, Y}\right\rbrack  {Zf}
-\end{itemize}
-\]
-
-\[
-= {XYZf} - {XZYf} - {YZXf} + {ZYXf} + {YZXf} - {YXZf}
-\]
-
-\[
-\begin{itemize}
-\item {ZXYf} + {XZYf} + {ZXYf} - {ZYXf} - {XYZf} + {YXZf}.
-\end{itemize}
-\]
-
-In this last expression all the terms cancel in pairs. Part (d) is a direct computation from the definition of the Lie bracket, and is left as an exercise.
+\sketch Bilinearity and antisymmetry follow directly from the definition.
+Expanding the Jacobi sum on an arbitrary smooth function cancels all six
+third-order compositions in pairs. Expanding $[fX,gY]$ and applying the
+Leibniz rule gives (8.11).
 \end{proof}
 
-\begin{exercise}
-\label{exer:8-29}
-\lean{lie_bracket_smul_smul}
-\leanok
-\uses{prop:8-28}
-\dcref{ch8:8.29}
-Prove part (d) of the preceding proposition.
-\end{exercise}
 
 \begin{proposition}[Naturality of the Lie Bracket]
 \label{prop:8-30}
@@ -482,36 +405,20 @@ Prove part (d) of the preceding proposition.
 \leanok
 \uses{prop:8-16}
 \dcref{ch8:8.30}
-Let $F : M \rightarrow  N$ be a smooth map between manifolds with or without boundary, and let ${X}_{1},{X}_{2} \in  \mathfrak{X}\left( M\right)$ and ${Y}_{1},{Y}_{2} \in  \mathfrak{X}\left( N\right)$ be vector fields such that ${X}_{i}$ is $F$ -related to ${Y}_{i}$ for $i = 1,2$ . Then $\left\lbrack  {{X}_{1},{X}_{2}}\right\rbrack$ is $F$ -related to $\left\lbrack  {{Y}_{1},{Y}_{2}}\right\rbrack$ .
+Let $F\colon M\to N$ be smooth between manifolds, possibly with boundary. If
+$X_i\in\mathfrak{X}(M)$ is $F$-related to $Y_i\in\mathfrak{X}(N)$ for
+$i=1,2$, then $[X_1,X_2]$ is $F$-related to $[Y_1,Y_2]$.
 \end{proposition}
 
 \begin{proof}
 \leanok
-Using Proposition 8.16 and the fact that ${X}_{i}$ and ${Y}_{i}$ are $F$ -related,
-
+\sketch Proposition~\ref{prop:8-16} gives, for every smooth $f$ on $N$,
 \[
-{X}_{1}{X}_{2}\left( {f \circ  F}\right)  = {X}_{1}\left( {\left( {{Y}_{2}f}\right)  \circ  F}\right)  = \left( {{Y}_{1}{Y}_{2}f}\right)  \circ  F.
+X_1X_2(f\circ F)=(Y_1Y_2f)\circ F,
+\qquad
+X_2X_1(f\circ F)=(Y_2Y_1f)\circ F.
 \]
-
-Similarly,
-
-\[
-{X}_{2}{X}_{1}\left( {f \circ  F}\right)  = \left( {{Y}_{2}{Y}_{1}f}\right)  \circ  F.
-\]
-
-Therefore,
-
-\[
-\left\lbrack  {{X}_{1},{X}_{2}}\right\rbrack  \left( {f \circ  F}\right)  = {X}_{1}{X}_{2}\left( {f \circ  F}\right)  - {X}_{2}{X}_{1}\left( {f \circ  F}\right)
-\]
-
-\[
-= \left( {{Y}_{1}{Y}_{2}f}\right)  \circ  F - \left( {{Y}_{2}{Y}_{1}f}\right)  \circ  F
-\]
-
-\[
-= \left( {\left\lbrack  {{Y}_{1},{Y}_{2}}\right\rbrack  f}\right)  \circ  F\text{ . }
-\]
+Subtracting and applying that proposition again proves the claim.
 \end{proof}
 
 \begin{corollary}[Pushforwards of Lie Brackets]
@@ -520,14 +427,18 @@ Therefore,
 \leanok
 \uses{prop:8-30}
 \dcref{ch8:8.31}
-Suppose $F : M \rightarrow  N$ is a diffeomorphism and ${X}_{1},{X}_{2} \in  \mathfrak{X}\left( M\right)$ . Then ${F}_{ * }\left\lbrack  {{X}_{1},{X}_{2}}\right\rbrack   = \left\lbrack  {{F}_{ * }{X}_{1},{F}_{ * }{X}_{2}}\right\rbrack$ .
+If $F\colon M\to N$ is a diffeomorphism and
+$X_1,X_2\in\mathfrak{X}(M)$, then
+\[
+F_*[X_1,X_2]=[F_*X_1,F_*X_2].
+\]
 \end{corollary}
 
 \begin{proof}
 \leanok
-This is just the special case of Proposition 8.30 in which $F$ is a diffeomorphism and ${Y}_{i} = {F}_{ * }{X}_{i}$ .
+\sketch Apply Proposition~\ref{prop:8-30} with $Y_i=F_*X_i$ and use the
+uniqueness of the pushforward.
 \end{proof}
-
 
 \section{The Lie Algebra of a Lie Group}
 
@@ -535,15 +446,16 @@ This is just the special case of Proposition 8.30 in which $F$ is a diffeomorphi
 \label{def:8-60-extra-1}
 \lean{VectorField.isLeftInvariant_iff_mfderiv}
 \leanok
-One of the most important applications of Lie brackets occurs in the context of Lie groups. Suppose $G$ is a Lie group. Recall that $G$ acts smoothly and transitively on itself by left translation: ${L}_{g}\left( h\right)  = {gh}$ . (See Example 7.22(c).) A vector field $X$ on $G$ is said to be left-invariant if it is invariant under all left translations, in the sense that it is ${L}_{g}$ -related to itself for every $g \in  G$ . More explicitly, this means
-
+For a Lie group $G$, write $L_g(h)=gh$. A vector field $X$ on $G$ is
+\emph{left-invariant} if it is $L_g$-related to itself for every $g\in G$;
+equivalently,
 \[
-d{\left( {L}_{g}\right) }_{{g}^{\prime }}\left( {X}_{{g}^{\prime }}\right)  = {X}_{g{g}^{\prime }},\;\text{ for all }g,{g}^{\prime } \in  G. \tag{8.12}
+d(L_g)_{g'}(X_{g'})=X_{gg'}
+\qquad(g,g'\in G). \tag{8.12}
 \]
-
-Since ${L}_{g}$ is a diffeomorphism, this can be abbreviated by writing ${\left( {L}_{g}\right) }_{ * }X = X$ for every $g \in  G$ .
-
-Because ${\left( {L}_{g}\right) }_{ * }\left( {{aX} + {bY}}\right)  = a{\left( {L}_{g}\right) }_{ * }X + b{\left( {L}_{g}\right) }_{ * }Y$ , the set of all smooth left-invariant vector fields on $G$ is a linear subspace of $\mathfrak{X}\left( G\right)$ . But it is much more than that. The central fact is that it is closed under Lie brackets.
+Since every $L_g$ is a diffeomorphism, this condition is also
+$(L_g)_*X=X$. Smooth left-invariant fields form a linear subspace of
+$\mathfrak{X}(G)$.
 \end{definition}
 
 \begin{proposition}
@@ -552,121 +464,105 @@ Because ${\left( {L}_{g}\right) }_{ * }\left( {{aX} + {bY}}\right)  = a{\left( {
 \leanok
 \uses{cor:8-31}
 \dcref{ch8:8.33}
-Let $G$ be a Lie group, and suppose $X$ and $Y$ are smooth left-invariant vector fields on $G$ . Then $\left\lbrack  {X, Y}\right\rbrack$ is also left-invariant.
+The Lie bracket of two smooth left-invariant vector fields on a Lie group is
+left-invariant.
 \end{proposition}
 
 \begin{proof}
 \leanok
-Let $g \in  G$ be arbitrary. Since ${\left( {L}_{g}\right) }_{ * }X = X$ and ${\left( {L}_{g}\right) }_{ * }Y = Y$ by definition of left-invariance, it follows from Corollary 8.31 that
-
+\sketch For every $g\in G$, Corollary~\ref{cor:8-31} gives
 \[
-{\left( {L}_{g}\right) }_{ * }\left\lbrack  {X, Y}\right\rbrack   = \left\lbrack  {{\left( {L}_{g}\right) }_{ * }X,{\left( {L}_{g}\right) }_{ * }Y}\right\rbrack   = \left\lbrack  {X, Y}\right\rbrack  .
+(L_g)_*[X,Y]=[(L_g)_*X,(L_g)_*Y]=[X,Y].
 \]
-
-Thus, $\left\lbrack  {X, Y}\right\rbrack$ is ${L}_{g}$ -related to itself for each $g$ , which is to say it is left-invariant.
 \end{proof}
 
 \begin{definition}
 \label{def:8-60-extra-2}
 \lean{lie_jacobi}
 \mathlibok
-A Lie algebra (over $\mathbb{R}$ ) is a real vector space $\mathfrak{g}$ endowed with a map called the bracket from $\mathfrak{g} \times  \mathfrak{g}$ to $\mathfrak{g}$ , usually denoted by $\left( {X, Y}\right)  \mapsto  \left\lbrack  {X, Y}\right\rbrack$ , that satisfies the following properties for all $X, Y, Z \in  \mathfrak{g}$ :
-
-(i) BILINEARITY: For $a, b \in  \mathbb{R}$ ,
-
+A \emph{Lie algebra} is a real vector space $\mathfrak g$ with a bilinear
+bracket $[\ ,\ ]\colon\mathfrak g\times\mathfrak g\to\mathfrak g$ such that,
+for all $X,Y,Z\in\mathfrak g$,
 \[
-\left\lbrack  {{aX} + {bY}, Z}\right\rbrack   = a\left\lbrack  {X, Z}\right\rbrack   + b\left\lbrack  {Y, Z}\right\rbrack
+[X,Y]=-[Y,X],
+\qquad
+[X,[Y,Z]]+[Y,[Z,X]]+[Z,[X,Y]]=0.
 \]
-
-\[
-\left\lbrack  {Z,{aX} + {bY}}\right\rbrack   = a\left\lbrack  {Z, X}\right\rbrack   + b\left\lbrack  {Z, Y}\right\rbrack  .
-\]
-
-(ii) ANTISYMMETRY:
-
-\[
-\left\lbrack  {X, Y}\right\rbrack   =  - \left\lbrack  {Y, X}\right\rbrack
-\]
-
-(iii) JACOBI IDENTITY:
-
-\[
-\left\lbrack  {X,\left\lbrack  {Y, Z}\right\rbrack  }\right\rbrack   + \left\lbrack  {Y,\left\lbrack  {Z, X}\right\rbrack  }\right\rbrack   + \left\lbrack  {Z,\left\lbrack  {X, Y}\right\rbrack  }\right\rbrack   = 0.
-\]
-
-Notice that the Jacobi identity is a substitute for associativity, which does not hold in general for brackets in a Lie algebra. It is useful in some circumstances to define Lie algebras over $\mathbb{C}$ or other fields, but we do not have any reason to consider such Lie algebras; thus all of our Lie algebras are assumed without further comment to be real.
+All Lie algebras are taken over $\mathbb{R}$.
 \end{definition}
 
 \begin{definition}
 \label{def:8-60-extra-3}
 \lean{LieSubalgebra}
 \mathlibok
-If $\mathfrak{g}$ is a Lie algebra, a linear subspace $\mathfrak{h} \subseteq  \mathfrak{g}$ is called a Lie subalgebra of $\mathfrak{g}$ if it is closed under brackets. In this case $\mathfrak{h}$ is itself a Lie algebra with the restriction of the same bracket.
+A linear subspace $\mathfrak h\subseteq\mathfrak g$ is a \emph{Lie
+subalgebra} if $[X,Y]\in\mathfrak h$ for all $X,Y\in\mathfrak h$; it then
+inherits the restricted bracket.
 \end{definition}
 
 \begin{definition}
 \label{def:8-60-extra-4}
 \lean{LieHom}
 \mathlibok
-If $\mathfrak{g}$ and $\mathfrak{h}$ are Lie algebras, a linear map $A : \mathfrak{g} \rightarrow  \mathfrak{h}$ is called a Lie algebra homomorphism if it preserves brackets: $A\left\lbrack  {X, Y}\right\rbrack   = \left\lbrack  {{AX},{AY}}\right\rbrack$ . An invertible Lie algebra homomorphism is called a Lie algebra isomorphism. If there exists a Lie algebra isomorphism from $\mathfrak{g}$ to $\mathfrak{h}$ , we say that they are isomorphic as Lie algebras.
+A linear map $A\colon\mathfrak g\to\mathfrak h$ is a \emph{Lie algebra
+homomorphism} if
+\[
+A[X,Y]=[AX,AY].
+\]
+An invertible Lie algebra homomorphism is a \emph{Lie algebra isomorphism}.
 \end{definition}
 
-\begin{exercise}
+\begin{proposition}[Kernel and Image of a Lie Algebra Homomorphism]
 \label{exer:8-34}
 \lean{f.ker}
 \mathlibok
 \dcref{ch8:8.34}
-Verify that the kernel and image of a Lie algebra homomorphism are Lie subalgebras.
-\end{exercise}
+The kernel and image of a Lie algebra homomorphism are Lie subalgebras.
+\end{proposition}
 
-\begin{exercise}
+\begin{proposition}[Basis Criterion for Lie Algebra Homomorphisms]
 \label{exer:8-35}
 \lean{linearMap_is_lieHom_iff_preserves_bracket_on_basis}
 \leanok
 \dcref{ch8:8.35}
-Suppose $\mathfrak{g}$ and $\mathfrak{h}$ are finite-dimensional Lie algebras and $A : \mathfrak{g} \rightarrow  \mathfrak{h}$ is a linear map. Show that $A$ is a Lie algebra homomorphism if and only if $A\left\lbrack  {{E}_{i},{E}_{j}}\right\rbrack   = \; \left\lbrack  {A{E}_{i}, A{E}_{j}}\right\rbrack$ for some basis $\left( {{E}_{1},\ldots ,{E}_{n}}\right)$ of $\mathfrak{g}$ .
-\end{exercise}
+Let $A\colon\mathfrak g\to\mathfrak h$ be linear between finite-dimensional
+Lie algebras. Then $A$ is a Lie algebra homomorphism if and only if, for
+some basis $(E_1,\ldots,E_n)$ of $\mathfrak g$,
+\[
+A[E_i,E_j]=[AE_i,AE_j]
+\qquad(1\leq i,j\leq n).
+\]
+\end{proposition}
 
-\begin{example}
+\begin{example}[Standard Lie Algebras]
 \label{ex:8-36}
 \lean{abelian_lie_algebra}
 \leanok
 \uses{prop:8-28}
 \dcref{ch8:8.36}
-(a) The space $\mathfrak{X}\left( M\right)$ of all smooth vector fields on a smooth manifold $M$ is a Lie algebra under the Lie bracket by Proposition 8.28.
-
-(b) If $G$ is a Lie group, the set of all smooth left-invariant vector fields on $G$ is a Lie subalgebra of $\mathfrak{X}\left( G\right)$ and is therefore a Lie algebra.
-
-(c) The vector space $\mathrm{M}\left( {n,\mathbb{R}}\right)$ of $n \times  n$ real matrices becomes an ${n}^{2}$ -dimensional Lie algebra under the commutator bracket:
-
-\[
-\left\lbrack  {A, B}\right\rbrack   = {AB} - {BA}.
-\]
-
-Bilinearity and antisymmetry are obvious from the definition, and the Jacobi identity follows from a straightforward calculation. When we are regarding $\mathrm{M}\left( {n,\mathbb{R}}\right)$ as a Lie algebra with this bracket, we denote it by $\mathfrak{{gl}}\left( {n,\mathbb{R}}\right)$ .
-
-![205_373_194_787_311_0.jpg](images/205_373_194_787_311_0.jpg)
-
-Fig. 8.5 Defining a left-invariant vector field
-
-(d) Similarly, $\mathfrak{{gl}}\left( {n,\mathbb{C}}\right)$ is the $2{n}^{2}$ -dimensional (real) Lie algebra obtained by endowing $\mathrm{M}\left( {n,\mathbb{C}}\right)$ with the commutator bracket.
-
-(e) If $V$ is a vector space, the vector space of all linear maps from $V$ to itself becomes a Lie algebra, which we denote by $\mathfrak{{gl}}\left( V\right)$ , with the commutator bracket:
-
-\[
-\left\lbrack  {A, B}\right\rbrack   = A \circ  B - B \circ  A.
-\]
-
-Under our usual identification of $n \times  n$ matrices with linear maps from ${\mathbb{R}}^{n}$ to itself, $\mathfrak{{gl}}\left( {\mathbb{R}}^{n}\right)$ is the same as $\mathfrak{{gl}}\left( {n,\mathbb{R}}\right)$ .
-
-(f) Any vector space $V$ becomes a Lie algebra if we define all brackets to be zero. Such a Lie algebra is said to be abelian. (The name reflects the fact that brackets in most Lie algebras, as in the preceding examples, are defined as commutators in terms of underlying associative products, so all brackets are zero precisely when the underlying product is commutative; it also reflects the connection between abelian Lie algebras and abelian Lie groups, which you will explore in Problems 8-25 and 20-7.)
+The following are Lie algebras or Lie subalgebras.
+\begin{enumerate}
+\item $\mathfrak{X}(M)$ with the vector-field bracket.
+\item The smooth left-invariant vector fields on a Lie group $G$.
+\item The $n^2$-dimensional space
+$\mathfrak{gl}(n,\mathbb{R})=\mathrm{M}(n,\mathbb{R})$ with
+$[A,B]=AB-BA$.
+\item The real $2n^2$-dimensional space
+$\mathfrak{gl}(n,\mathbb{C})=\mathrm{M}(n,\mathbb{C})$ with the same bracket.
+\item For a vector space $V$, the space $\mathfrak{gl}(V)$ of endomorphisms,
+with $[A,B]=A\circ B-B\circ A$; under the standard matrix identification,
+$\mathfrak{gl}(\mathbb R^n)=\mathfrak{gl}(n,\mathbb R)$.
+\item Any vector space with the zero bracket; such a Lie algebra is
+\emph{abelian}.
+\end{enumerate}
 \end{example}
 
 \begin{definition}
 \label{def:8-60-extra-5}
 \lean{contMDiff_mulInvariantVectorField}
 \mathlibok
-Example (b) is the most important one. The Lie algebra of all smooth left-invariant vector fields on a Lie group $G$ is called the Lie algebra of $\mathbf{G}$ , and is denoted by $\operatorname{Lie}\left( G\right)$ . (We will see below that the assumption of smoothness is redundant; see Corollary 8.38.) The fundamental fact is that $\operatorname{Lie}\left( G\right)$ is finite-dimensional, and in fact has the same dimension as $G$ itself, as the following theorem shows.
+The \emph{Lie algebra of a Lie group $G$}, denoted $\operatorname{Lie}(G)$,
+is the Lie algebra of its smooth left-invariant vector fields.
 \end{definition}
 
 \begin{theorem}
@@ -674,47 +570,37 @@ Example (b) is the most important one. The Lie algebra of all smooth left-invari
 \lean{lie_algebra_finrank_eq_manifold_finrank}
 \leanok
 \dcref{ch8:8.37}
-Let $G$ be a Lie group. The evaluation map $\varepsilon  : \operatorname{Lie}\left( G\right)  \rightarrow  {T}_{e}G$ , given by $\varepsilon \left( X\right)  = {X}_{e}$ , is a vector space isomorphism. Thus, $\operatorname{Lie}\left( G\right)$ is finite-dimensional, with dimension equal to $\dim G$ .
+For a Lie group $G$, evaluation at the identity,
+\[
+\varepsilon\colon\operatorname{Lie}(G)\longrightarrow T_eG,
+\qquad \varepsilon(X)=X_e,
+\]
+is a vector-space isomorphism. Hence
+$\dim\operatorname{Lie}(G)=\dim G$.
 \end{theorem}
 
 \begin{proof}
 \leanok
-It is clear from the definition that $\varepsilon$ is linear over $\mathbb{R}$ . It is easy to prove that it is injective: if $\varepsilon \left( X\right)  = {X}_{e} = 0$ for some $X \in  \operatorname{Lie}\left( G\right)$ , then left-invariance of $X$ implies that ${X}_{g} = d{\left( {L}_{g}\right) }_{e}\left( {X}_{e}\right)  = 0$ for every $g \in  G$ , so $X = 0$ .
-
-To show that $\varepsilon$ is surjective, let $v \in  {T}_{e}G$ be arbitrary, and define a (rough) vector field ${v}^{\mathrm{L}}$ on $G$ by
-
+\sketch The map is linear. Left invariance implies
+$X_g=d(L_g)_e(X_e)$, so evaluation is injective. For $v\in T_eG$, define
 \[
-{\left. {v}^{\mathrm{L}}\right| }_{g} = d{\left( {L}_{g}\right) }_{e}\left( v\right) . \tag{8.13}
+v^L|_g=d(L_g)_e(v). \tag{8.13}
 \]
-
-(See Fig. 8.5.) If there is a left-invariant vector field on $G$ whose value at the identity is $v$ , clearly it has to be given by this formula.
-
-First we need to check that ${v}^{\mathrm{L}}$ is smooth. By Proposition 8.14, it suffices to show that ${v}^{\mathrm{L}}f$ is smooth whenever $f \in  {C}^{\infty }\left( G\right)$ . Choose a smooth curve $\gamma  : \left( {-\delta ,\delta }\right)  \rightarrow  G$ such that $\gamma \left( 0\right)  = e$ and ${\gamma }^{\prime }\left( 0\right)  = v$ . Then for all $g \in  G$ ,
-
+If $\gamma(0)=e$ and $\gamma'(0)=v$, then for $f\in C^\infty(G)$,
 \[
-{\left. \left( {v}^{\mathrm{L}}f\right) \left( g\right)  = {v}^{\mathrm{L}}\right| }_{g}f = d{\left( {L}_{g}\right) }_{e}\left( v\right) f = v\left( {f \circ  {L}_{g}}\right)  = {\gamma }^{\prime }\left( 0\right) \left( {f \circ  {L}_{g}}\right)
+(v^Lf)(g)=\left.\frac{d}{dt}\right|_{t=0}f(g\gamma(t)).
 \]
-
-\[
-= {\left. \frac{d}{dt}\right| }_{t = 0}\left( {f \circ  {L}_{g} \circ  \gamma }\right) \left( t\right) .
-\]
-
-If we define $\varphi  : \left( {-\delta ,\delta }\right)  \times  G \rightarrow  \mathbb{R}$ by $\varphi \left( {t, g}\right)  = f \circ  {L}_{g} \circ  \gamma \left( t\right)  = f\left( {{g\gamma }\left( t\right) }\right)$ , the computation above shows that $\left( {{v}^{\mathrm{L}}f}\right) \left( g\right)  = \partial \varphi /\partial t\left( {0, g}\right)$ . Because $\varphi$ is a composition of group multiplication, $f$ , and $\gamma$ , it is smooth. It follows that $\partial \varphi /\partial t\left( {0, g}\right)$ depends smoothly on $g$ , so ${v}^{\mathrm{L}}f$ is smooth.
-
-Next we show that ${v}^{\mathrm{L}}$ is left-invariant, which is to say that $d{\left( {L}_{h}\right) }_{g}\left( {\left. {v}^{\mathrm{L}}\right| }_{g}\right)  = \; {\left. {v}^{\mathrm{L}}\right| }_{hg}$ for all $g, h \in  G$ . This follows from the definition of ${v}^{\mathrm{L}}$ and the fact that ${L}_{h} \circ \; {L}_{g} = {L}_{hg} :$
-
-\[
-d{\left( {L}_{h}\right) }_{g}\left( {\left. {v}^{\mathrm{L}}\right| }_{g}\right)  = d{\left( {L}_{h}\right) }_{g} \circ  d{\left( {L}_{g}\right) }_{e}\left( v\right)  = d{\left( {L}_{h} \circ  {L}_{g}\right) }_{e}\left( v\right)  = d{\left( {L}_{hg}\right) }_{e}\left( v\right)  = {\left. {v}^{\mathrm{L}}\right| }_{hg}.
-\]
-
-Thus ${v}^{\mathrm{L}} \in  \operatorname{Lie}\left( G\right)$ . Since ${L}_{e}$ (left translation by the identity) is the identity map of $G$ , it follows that $\varepsilon \left( {v}^{\mathrm{L}}\right)  = {\left. {v}^{\mathrm{L}}\right| }_{e} = v$ , so $\varepsilon$ is surjective.
+Smooth dependence on $(t,g)$ shows that $v^L$ is smooth. The identity
+$L_h\circ L_g=L_{hg}$ makes $v^L$ left-invariant, and $v^L|_e=v$; thus
+evaluation is surjective.
 \end{proof}
 
 \begin{notation}
 \label{not:8-60-extra-6}
 \lean{mulInvariantVectorField}
 \mathlibok
-Given any vector $v \in  {T}_{e}G$ , we continue to use the notation ${v}^{\mathrm{L}}$ to denote the smooth left-invariant vector field defined by (8.13).
+For $v\in T_eG$, write $v^L$ for the smooth left-invariant vector field
+defined by (8.13).
 \end{notation}
 
 \begin{corollary}
@@ -727,14 +613,16 @@ Every left-invariant rough vector field on a Lie group is smooth.
 
 \begin{proof}
 \leanok
-Let $X$ be a left-invariant rough vector field on a Lie group $G$ , and let $v = {X}_{e}$ . The fact that $X$ is left-invariant implies that $X = {v}^{\mathrm{L}}$ , which is smooth.
+\sketch If $v=X_e$, left invariance gives $X=v^L$, which is smooth by the
+theorem.
 \end{proof}
 
 \begin{definition}
 \label{def:8-60-extra-7}
 \lean{IsLeftInvariantFrameOn}
 \leanok
-The existence of global left-invariant vector fields also yields the following important property of Lie groups. Recall that a smooth manifold is said to be paral-lelizable if it admits a smooth global frame. If $G$ is a Lie group, a local or global frame consisting of left-invariant vector fields is called a left-invariant frame.
+A local or global frame on a Lie group is \emph{left-invariant} if each of its
+fields is left-invariant.
 \end{definition}
 
 \begin{corollary}
@@ -742,12 +630,14 @@ The existence of global left-invariant vector fields also yields the following i
 \lean{lie_group_is_parallelizable}
 \leanok
 \dcref{ch8:8.39}
-Every Lie group admits a left-invariant smooth global frame, and therefore every Lie group is parallelizable.
+Every Lie group has a smooth left-invariant global frame and is therefore
+parallelizable.
 \end{corollary}
 
 \begin{proof}
 \leanok
-If $G$ is a Lie group, every basis for $\operatorname{Lie}\left( G\right)$ is a left-invariant smooth global frame for $G$ .
+\sketch Under the evaluation isomorphism, any basis of $T_eG$ corresponds to
+a basis of $\operatorname{Lie}(G)$ whose pointwise values form a global frame.
 \end{proof}
 
 \begin{proposition}[Lie Algebra of the General Linear Group]
@@ -755,321 +645,86 @@ If $G$ is a Lie group, every basis for $\operatorname{Lie}\left( G\right)$ is a 
 \lean{general_linear_group_lie_equiv_matrix}
 \leanok
 \dcref{ch8:8.41}
-The composition of the natural maps
-
+The natural maps
 \[
-\operatorname{Lie}\left( {\mathrm{{GL}}\left( {n,\mathbb{R}}\right) }\right)  \rightarrow  {T}_{{I}_{n}}\mathrm{{GL}}\left( {n,\mathbb{R}}\right)  \rightarrow  \mathfrak{{gl}}\left( {n,\mathbb{R}}\right) \tag{8.14}
+\operatorname{Lie}(\mathrm{GL}(n,\mathbb{R}))
+\longrightarrow T_{I_n}\mathrm{GL}(n,\mathbb{R})
+\longrightarrow\mathfrak{gl}(n,\mathbb{R}) \tag{8.14}
 \]
-
-gives a Lie algebra isomorphism between $\operatorname{Lie}\left( {\mathrm{{GL}}\left( {n,\mathbb{R}}\right) }\right)$ and the matrix algebra $\mathfrak{{gl}}\left( {n,\mathbb{R}}\right)$ .
+compose to a Lie algebra isomorphism.
 \end{proposition}
 
 \begin{proof}
 \leanok
-Using the matrix entries ${X}_{j}^{i}$ as global coordinates on $\operatorname{GL}\left( {n,\mathbb{R}}\right)  \subseteq  \mathfrak{{gl}}\left( {n,\mathbb{R}}\right)$ , the natural isomorphism ${T}_{{I}_{n}}\mathrm{{GL}}\left( {n,\mathbb{R}}\right)  \leftrightarrow  \mathfrak{{gl}}\left( {n,\mathbb{R}}\right)$ takes the form
-
+\sketch Under the coordinates $X_j^i$ and the identification
 \[
-{\left. {A}_{j}^{i}\frac{\partial }{\partial {X}_{j}^{i}}\right| }_{{I}_{n}} \leftrightarrow  \left( {A}_{j}^{i}\right) .
+\left.A_j^i\frac{\partial}{\partial X_j^i}\right|_{I_n}
+\longleftrightarrow (A_j^i),
 \]
-
-(Because of the dual role of the indices $i, j$ as coordinate indices and matrix row and column indices, in this case it is impossible to maintain our convention that all coordinates have upper indices. However, we continue to observe the summation convention and the other index conventions associated with it. In particular, in the expression above, an upper index "in the denominator" is to be regarded as a lower index, and vice versa.)
-
-Let $\mathfrak{g}$ denote the Lie algebra of $\mathrm{{GL}}\left( {n,\mathbb{R}}\right)$ . Any matrix $A = \left( {A}_{j}^{i}\right)  \in  \mathfrak{{gl}}\left( {n,\mathbb{R}}\right)$ determines a left-invariant vector field ${A}^{\mathrm{L}} \in  \mathfrak{g}$ defined by (8.13), which in this case becomes
-
+where $i,j$ serve simultaneously as coordinate and matrix row/column indices;
+the summation convention applies, and an index in a denominator is interpreted
+with the opposite variance.
+The left-invariant field associated with $A\in\mathfrak{gl}(n,\mathbb{R})$ is
 \[
-{\left. {A}^{\mathrm{L}}\right| }_{X} = d{\left( {L}_{X}\right) }_{{I}_{n}}\left( A\right)  = d{\left( {L}_{X}\right) }_{{I}_{n}}\left( {\left. {A}_{j}^{i}\frac{\partial }{\partial {X}_{j}^{i}}\right| }_{{I}_{n}}\right) .
+A^L|_X=\left.X_j^iA_k^j\frac{\partial}{\partial X_k^i}\right|_X. \tag{8.15}
 \]
-
-Since ${L}_{X}$ is the restriction to $\mathrm{{GL}}\left( {n,\mathbb{R}}\right)$ of the linear map $A \mapsto  {XA}$ on $\mathfrak{{gl}}\left( {n,\mathbb{R}}\right)$ , its differential is represented in coordinates by exactly the same linear map. In other words, the left-invariant vector field ${A}^{\mathrm{L}}$ determined by $A$ is the one whose value at $X \in  \mathrm{{GL}}\left( {n,\mathbb{R}}\right)$ is
-
+The coordinate bracket formula yields
 \[
-{\left. {A}^{\mathrm{L}}\right| }_{X} = {\left. {X}_{j}^{i}{A}_{k}^{j}\frac{\partial }{\partial {X}_{k}^{i}}\right| }_{X}. \tag{8.15}
+[A^L,B^L]|_{I_n}
+=\left(A_k^iB_r^k-B_k^iA_r^k\right)
+ \left.\frac{\partial}{\partial X_r^i}\right|_{I_n},
 \]
-
-Given two matrices $A, B \in  \mathfrak{{gl}}\left( {n,\mathbb{R}}\right)$ , the Lie bracket of the corresponding left-invariant vector fields is given by
-
-\[
-\left\lbrack  {{A}^{\mathrm{L}},{B}^{\mathrm{L}}}\right\rbrack   = \left\lbrack  {{X}_{j}^{i}{A}_{k}^{j}\frac{\partial }{\partial {X}_{k}^{i}},{X}_{q}^{p}{B}_{r}^{q}\frac{\partial }{\partial {X}_{r}^{p}}}\right\rbrack
-\]
-
-\[
-= {X}_{j}^{i}{A}_{k}^{j}\frac{\partial }{\partial {X}_{k}^{i}}\left( {{X}_{q}^{p}{B}_{r}^{q}}\right) \frac{\partial }{\partial {X}_{r}^{p}} - {X}_{q}^{p}{B}_{r}^{q}\frac{\partial }{\partial {X}_{r}^{p}}\left( {{X}_{j}^{i}{A}_{k}^{j}}\right) \frac{\partial }{\partial {X}_{k}^{i}}
-\]
-
-\[
-= {X}_{j}^{i}{A}_{k}^{j}{B}_{r}^{k}\frac{\partial }{\partial {X}_{r}^{i}} - {X}_{q}^{p}{B}_{r}^{q}{A}_{k}^{r}\frac{\partial }{\partial {X}_{k}^{p}}
-\]
-
-\[
-= \left( {{X}_{j}^{i}{A}_{k}^{j}{B}_{r}^{k} - {X}_{j}^{i}{B}_{k}^{j}{A}_{r}^{k}}\right) \frac{\partial }{\partial {X}_{r}^{i}},
-\]
-
-where we have used the fact that $\partial {X}_{q}^{p}/\partial {X}_{k}^{i}$ is equal to 1 if $p = i$ and $q = k$ , and 0 otherwise, and ${A}_{j}^{i}$ and ${B}_{j}^{i}$ are constants. Evaluating this last expression when $X$ is equal to the identity matrix, we get
-
-\[
-{\left\lbrack  {A}^{\mathrm{L}},{B}^{\mathrm{L}}\right\rbrack  }_{{I}_{n}} = \left( {{A}_{k}^{i}{B}_{r}^{k} - {B}_{k}^{i}{A}_{r}^{k}}\right) {\left. \frac{\partial }{\partial {X}_{r}^{i}}\right| }_{{I}_{n}}.
-\]
-
-This is the vector corresponding to the matrix commutator bracket $\left\lbrack  {A, B}\right\rbrack$ . Since the left-invariant vector field $\left\lbrack  {{A}^{\mathrm{L}},{B}^{\mathrm{L}}}\right\rbrack$ is determined by its value at the identity, this implies that
-
-\[
-\left\lbrack  {{A}^{\mathrm{L}},{B}^{\mathrm{L}}}\right\rbrack   = {\left\lbrack  A, B\right\rbrack  }^{\mathrm{L}}
-\]
-
-which is precisely the statement that the composite map (8.14) is a Lie algebra isomorphism.
+which corresponds to the matrix commutator $AB-BA$. Since a left-invariant
+field is determined by its value at $I_n$, $[A^L,B^L]=[A,B]^L$.
 \end{proof}
-
 
 \section{The Lie Algebra of a Lie Subgroup}
 
-\begin{proposition}
+\begin{proposition}[The Lie Algebra of $\mathrm{GL}(n,\mathbb{C})$]
 \label{prop:8-48}
 \lean{complex_general_linear_group_identity_tangent_equiv_matrix_apply}
 \leanok
 \uses{ex:7-18,prop:8-41}
 \dcref{ch8:8.48}
-$ ). The composition of the maps in (8.18) yields a Lie algebra isomorphism between $\operatorname{Lie}\left( {\mathrm{{GL}}\left( {n,\mathbb{C}}\right) }\right)$ and the matrix algebra $\mathfrak{{gl}}\left( {n,\mathbb{C}}\right)$ .
+Let $\varepsilon$ be evaluation at the identity and let $\varphi$ identify the
+tangent space of the open matrix group with the matrix algebra. The maps
+\[
+\operatorname{Lie}(\mathrm{GL}(n,\mathbb{C}))
+\xrightarrow{\ \varepsilon\ }
+T_{I_n}\mathrm{GL}(n,\mathbb{C})
+\xrightarrow{\ \varphi\ }
+\mathfrak{gl}(n,\mathbb{C}) \tag{8.18}
+\]
+compose to a Lie algebra isomorphism.
 \end{proposition}
 
 \begin{proof}
 \leanok
-The Lie group homomorphism $\beta  : \mathrm{{GL}}\left( {n,\mathbb{C}}\right)  \rightarrow  \mathrm{{GL}}\left( {{2n},\mathbb{R}}\right)$ that we constructed in Example 7.18(d) induces a Lie algebra homomorphism
-
+\sketch The real representation
+$\beta\colon\mathrm{GL}(n,\mathbb{C})\to\mathrm{GL}(2n,\mathbb{R})$ induces
+$\beta_* $ on Lie algebras. Because $\beta$ is linear, its derivative at
+$I_n$ has the same formula. Under the canonical tangent-space identifications
+this gives an injective map
 \[
-{\beta }_{ * } : \operatorname{Lie}\left( {\mathrm{{GL}}\left( {n,\mathbb{C}}\right) }\right)  \rightarrow  \operatorname{Lie}\left( {\mathrm{{GL}}\left( {{2n},\mathbb{R}}\right) }\right) .
+\alpha\colon\mathfrak{gl}(n,\mathbb{C})
+\longrightarrow\mathfrak{gl}(2n,\mathbb{R}).
 \]
-
-Composing ${\beta }_{ * }$ with our canonical isomorphisms yields a commutative diagram
-
+The identity $\beta(AB)=\beta(A)\beta(B)$ implies
 \[
-\operatorname{Lie}\left( {\operatorname{GL}\left( {n,\mathbb{C}}\right) }\right) \overset{\varepsilon }{ \rightarrow  }{T}_{{I}_{n}}\operatorname{GL}\left( {n,\mathbb{C}}\right) \overset{\varphi }{ \rightarrow  }\mathfrak{{gl}}\left( {n,\mathbb{C}}\right)
+\alpha([A,B])=[\alpha(A),\alpha(B)].
 \]
-
-\[
-\left| \begin{array}{ll} {\beta }_{ * } & \left\lfloor  {d{\beta }_{{I}_{n}}}\right.  \end{array}\right| \tag{8.19}
-\]
-
-\[
-\operatorname{Lie}\left( {\mathrm{{GL}}\left( {{2n},\mathbb{R}}\right) }\right) \overset{\varepsilon }{ \rightarrow  }{T}_{{I}_{2n}}\mathrm{{GL}}\left( {{2n},\mathbb{R}}\right) \overset{\varphi }{ \rightarrow  }\mathfrak{{gl}}\left( {{2n},\mathbb{R}}\right) ,
-\]
-
-in which $\alpha  = \varphi  \circ  d{\beta }_{{I}_{n}} \circ  {\varphi }^{-1}$ . Proposition 8.41 showed that the composition of the isomorphisms in the bottom row is a Lie algebra isomorphism; we need to show the same thing for the top row.
-
-It is easy to see from the formula in Example 7.18(d) that $\beta$ is (the restriction of) a linear map. It follows that $d{\beta }_{{I}_{n}} : {T}_{{I}_{n}}\mathrm{{GL}}\left( {n,\mathbb{C}}\right)  \rightarrow  {T}_{{I}_{2n}}\mathrm{{GL}}\left( {{2n},\mathbb{R}}\right)$ is given by exactly the same formula as $\beta$ , as is $\alpha  : \mathfrak{{gl}}\left( {n,\mathbb{C}}\right)  \rightarrow  \mathfrak{{gl}}\left( {{2n},\mathbb{R}}\right)$ . Because $\beta \left( {AB}\right)  = \; \beta \left( A\right) \beta \left( B\right)$ , it follows that $\alpha$ preserves matrix commutators:
-
-\[
-\alpha \left\lbrack  {A, B}\right\rbrack   = \alpha \left( {{AB} - {BA}}\right)  = \alpha \left( A\right) \alpha \left( B\right)  - \alpha \left( B\right) \alpha \left( A\right)  = \left\lbrack  {\alpha \left( A\right) ,\alpha \left( B\right) }\right\rbrack  .
-\]
-
-Thus $\alpha$ is an injective Lie algebra homomorphism from $\mathfrak{{gl}}\left( {n,\mathbb{C}}\right)$ to $\mathfrak{{gl}}\left( {{2n},\mathbb{R}}\right)$ (considering both as matrix algebras). Replacing the bottom row in (8.19) by the images of the vertical maps, we obtain a commutative diagram of vector space isomorphisms in which the bottom map and the two vertical maps are Lie algebra isomorphisms; it follows that the top map is also a Lie algebra isomorphism.
+The commutative diagram with Proposition~\ref{prop:8-41}, restricted to the
+images of the vertical maps, therefore shows that the maps in (8.18) preserve
+brackets and form the asserted isomorphism.
 \end{proof}
 
 \begin{definition}
 \label{def:8-62-extra-1}
 \lean{LieModule.IsFaithful}
 \mathlibok
-Parallel to the notion of representations of Lie groups, there is also a notion of representations of Lie algebras. If $\mathfrak{g}$ is a finite-dimensional Lie algebra, a (finite-dimensional) representation of $\mathfrak{g}$ is a Lie algebra homomorphism $\varphi  : \mathfrak{g} \rightarrow  \mathfrak{{gl}}\left( V\right)$ for some finite-dimensional vector space $V$ , where $\mathfrak{{gl}}\left( V\right)$ denotes the Lie algebra of linear maps from $V$ to itself. If $\varphi$ is injective, it is said to be faithful, in which case $\mathfrak{g}$ is isomorphic to the Lie subalgebra $\varphi \left( \mathfrak{g}\right)  \subseteq  \mathfrak{{gl}}\left( V\right)  \cong  \mathfrak{{gl}}\left( {n,\mathbb{R}}\right)$ .
+A finite-dimensional \emph{representation} of a finite-dimensional Lie
+algebra $\mathfrak g$ is a Lie algebra homomorphism
+$\varphi\colon\mathfrak g\to\mathfrak{gl}(V)$ for a finite-dimensional vector
+space $V$. It is \emph{faithful} if $\varphi$ is injective; then
+$\mathfrak g\cong\varphi(\mathfrak g)\subseteq\mathfrak{gl}(V)$.
 \end{definition}
-
-
-\section{Problems}
-
-\begin{exercise}
-\label{prob:8-1}
-\lean{exists_supported_contMDiff_vectorField_extension_of_isClosed}
-\leanok
-\uses{lem:8-6}
-8-1. Prove Lemma 8.6 (the extension lemma for vector fields).
-\end{exercise}
-
-\begin{exercise}
-\label{prob:8-2}
-\lean{euler_homogeneous_function_theorem}
-\leanok
-\uses{ex:8-3}
-8-2. EULER's HOMOGENEOUS FUNCTION THEOREM: Let $c$ be a real number, and let $f : {\mathbb{R}}^{n} \smallsetminus  \{ 0\}  \rightarrow  \mathbb{R}$ be a smooth function that is positively homogeneous of degree $c$ , meaning that $f\left( {\lambda x}\right)  = {\lambda }^{c}f\left( x\right)$ for all $\lambda  > 0$ and $x \in  {\mathbb{R}}^{n} \smallsetminus  \{ 0\}$ . Prove that ${Vf} = {cf}$ , where $V$ is the Euler vector field defined in Example 8.3. (Used on p. 248.)
-\end{exercise}
-
-\begin{exercise}
-\label{prob:8-3}
-\lean{smoothVectorField_not_finiteDimensional}
-\leanok
-8-3. Let $M$ be a nonempty positive-dimensional smooth manifold with or without boundary. Show that $\mathfrak{X}\left( M\right)$ is infinite-dimensional.
-\end{exercise}
-
-\begin{exercise}
-\label{prob:8-5}
-\lean{exists_localFrame_extension_of_closed}
-\leanok
-\uses{prop:8-11}
-8-5. Prove Proposition 8.11 (completion of local frames).
-\end{exercise}
-
-\begin{exercise}
-\label{prob:8-6}
-\lean{problem_8_6_X3_coordinates}
-\leanok
-\uses{prob:7-22,prob:7-23}
-8-6. Let $\mathbb{H}$ be the algebra of quaternions and let $\mathcal{S} \subseteq  \mathbb{H}$ be the group of unit quaternions (see Problems 7-22 and 7-23).
-
-(a) Show that if $p \in  \mathbb{H}$ is imaginary, then ${qp}$ is tangent to $\mathcal{S}$ at each $q \in  \mathcal{S}$ . (Here we are identifying each tangent space to $\mathbb{H}$ with $\mathbb{H}$ itself in the usual way.)
-
-(b) Define vector fields ${X}_{1},{X}_{2},{X}_{3}$ on $\mathbb{H}$ by
-
-\[
-{\left. {X}_{1}\right| }_{q} = q{\left. {\left. {\left. {X}_{2}\right| }_{q} = q\right| }_{p},\;{X}_{3}\right| }_{q} = q\mathbb{k}.
-\]
-
-Show that these vector fields restrict to a smooth left-invariant global frame on $S$ .
-
-(c) Under the isomorphism $\left( {{x}^{1},{x}^{2},{x}^{3},{x}^{4}}\right)  \leftrightarrow  {x}^{1}\mathbb{1} + {x}^{2}\mathbb{i} + {x}^{3}\mathbb{j} + {x}^{4}\mathbb{k}$ between ${\mathbb{R}}^{4}$ and $\mathbb{H}$ , show that these vector fields have the following coordinate representations:
-
-\[
-{X}_{1} =  - {x}^{2}\frac{\partial }{\partial {x}^{1}} + {x}^{1}\frac{\partial }{\partial {x}^{2}} + {x}^{4}\frac{\partial }{\partial {x}^{3}} - {x}^{3}\frac{\partial }{\partial {x}^{4}},
-\]
-
-\[
-{X}_{2} =  - {x}^{3}\frac{\partial }{\partial {x}^{1}} - {x}^{4}\frac{\partial }{\partial {x}^{2}} + {x}^{1}\frac{\partial }{\partial {x}^{3}} + {x}^{2}\frac{\partial }{\partial {x}^{4}},
-\]
-
-\[
-{X}_{3} =  - {x}^{4}\frac{\partial }{\partial {x}^{1}} + {x}^{3}\frac{\partial }{\partial {x}^{2}} - {x}^{2}\frac{\partial }{\partial {x}^{3}} + {x}^{1}\frac{\partial }{\partial {x}^{4}}.
-\]
-
-(Used on pp. 179, 562.)
-\end{exercise}
-
-\begin{exercise}
-\label{prob:8-7}
-\lean{problem_8_7_isLocalFrameOn}
-\leanok
-\uses{prob:7-22,prob:8-6}
-8-7. The algebra of octonions (also called Cayley numbers) is the 8-dimensional real vector space $\mathbb{O} = \mathbb{H} \times  \mathbb{H}$ (where $\mathbb{H}$ is the space of quaternions defined in Problem 7-22) with the following bilinear product:
-
-\[
-\left( {p, q}\right) \left( {r, s}\right)  = \left( {{pr} - s{q}^{ * },{p}^{ * }s + {rq}}\right) ,\;\text{ for }p, q, r, s \in  \mathbb{H}. \tag{8.20}
-\]
-
-Show that $\mathbb{O}$ is a noncommutative, nonassociative algebra over $\mathbb{R}$ , and prove that there exists a smooth global frame on ${\mathbb{S}}^{7}$ by imitating as much of Problem 8-6 as you can. [Hint: it might be helpful to prove that $\left( {P{Q}^{ * }}\right) Q = \; P\left( {{Q}^{ * }Q}\right)$ for all $P, Q \in  \mathbb{O}$ , where ${\left( p, q\right) }^{ * } = \left( {{p}^{ * }, - q}\right)$ . For more about the octonions, see [Bae02].] (Used on p. 179.)
-\end{exercise}
-
-\begin{exercise}
-\label{prob:8-8}
-\lean{problem_8_8_not_linearIndependent_of_mfderiv_eq}
-\leanok
-8-8. The algebra of sedenions is the 16-dimensional real vector space $\mathbb{S} = \mathbb{O} \times  \mathbb{O}$ with the product defined by (8.20), but with $p, q, r$ , and $s$ interpreted as elements of $\mathbb{O}$ . Why does sedenionic multiplication not yield a global frame for ${\mathbb{S}}^{15}$ ? [Remark: the name "sedenion" comes from the Latin sedecim, meaning sixteen. A division algebra is an algebra with a multiplicative identity element and no zero divisors (i.e., ${ab} = 0$ if and only if $a = 0$ or $b = 0$ ). It follows from the work of Bott, Milnor, and Kervaire on parallelizability of spheres [MB58, Ker58] that a finite-dimensional division algebra over $\mathbb{R}$ must have dimension 1, 2, 4, or 8.]
-\end{exercise}
-
-\begin{exercise}
-\label{prob:8-9}
-\lean{problem_8_9_no_smooth_related_vector_field}
-\leanok
-\uses{prop:8-19}
-8-9. Show by finding a counterexample that Proposition 8.19 is false if we replace the assumption that $F$ is a diffeomorphism by the weaker assumption that it is smooth and bijective.
-\end{exercise}
-
-\begin{exercise}
-\label{prob:8-11}
-\lean{problem_8_11_radius_squared_x_field_polar_coordinates}
-\leanok
-8-11. For each of the following vector fields on the plane, compute its coordinate representation in polar coordinates on the right half-plane $\{ \left( {x, y}\right)  : x > 0\}$ .
-
-(a) $X = x\frac{\partial }{\partial x} + y\frac{\partial }{\partial y}$ .
-
-(b) $Y = x\frac{\partial }{\partial y} - y\frac{\partial }{\partial x}$ .
-
-(c) $Z = \left( {{x}^{2} + {y}^{2}}\right) \frac{\partial }{\partial x}$ .
-\end{exercise}
-
-\begin{exercise}
-\label{prob:8-16}
-\lean{problem_8_16_lie_bracket}
-\leanok
-8-16. For each of the following pairs of vector fields $X, Y$ defined on ${\mathbb{R}}^{3}$ , compute the Lie bracket $\left\lbrack  {X, Y}\right\rbrack$ .
-
-(a) $X = y\frac{\partial }{\partial z} - {2x}{y}^{2}\frac{\partial }{\partial y};\;Y = \frac{\partial }{\partial y}$ .
-
-(b) $X = x\frac{\partial }{\partial y} - y\frac{\partial }{\partial x};\;Y = y\frac{\partial }{\partial z} - z\frac{\partial }{\partial y}$ .
-
-(c) $X = x\frac{\partial }{\partial y} - y\frac{\partial }{\partial x};\;Y = x\frac{\partial }{\partial y} + y\frac{\partial }{\partial x}.$
-\end{exercise}
-
-\begin{exercise}
-\label{prob:8-19}
-\lean{Cross.lieAlgebra}
-\leanok
-8-19. Show that ${\mathbb{R}}^{3}$ with the cross product is a Lie algebra.
-\end{exercise}
-
-\begin{exercise}
-\label{prob:8-20}
-\lean{problem_8_20_cross_equiv_A}
-\leanok
-8-20. Let $A \subseteq  \mathfrak{X}\left( {\mathbb{R}}^{3}\right)$ be the subspace spanned by $\{ X, Y, Z\}$ , where
-
-\[
-X = y\frac{\partial }{\partial z} - z\frac{\partial }{\partial y},\;Y = z\frac{\partial }{\partial x} - x\frac{\partial }{\partial z},\;Z = x\frac{\partial }{\partial y} - y\frac{\partial }{\partial x}.
-\]
-
-Show that $A$ is a Lie subalgebra of $\mathfrak{X}\left( {\mathbb{R}}^{3}\right)$ , which is isomorphic to ${\mathbb{R}}^{3}$ with the cross product. (Used on p. 538.)
-\end{exercise}
-
-\begin{exercise}
-\label{prob:8-21}
-\lean{gl2_real_two_dimensional_models_not_lie_equiv}
-\leanok
-8-21. Prove that up to isomorphism, there are exactly one 1-dimensional Lie algebra and two 2-dimensional Lie algebras. Show that all three algebras are isomorphic to Lie subalgebras of $\mathfrak{{gl}}\left( {2,\mathbb{R}}\right)$ .
-\end{exercise}
-
-\begin{exercise}
-\label{prob:8-22}
-\lean{algebra_derivations_lie_subalgebra}
-\leanok
-8-22. Let $A$ be any algebra over $\mathbb{R}$ . A derivation of $A$ is a linear map $D : A \rightarrow  A$ satisfying $D\left( {xy}\right)  = \left( {Dx}\right) y + x\left( {Dy}\right)$ for all $x, y \in  A$ . Show that if ${D}_{1}$ and ${D}_{2}$ are derivations of $A$ , then $\left\lbrack  {{D}_{1},{D}_{2}}\right\rbrack   = {D}_{1} \circ  {D}_{2} - {D}_{2} \circ  {D}_{1}$ is also a derivation. Show that the set of derivations of $A$ is a Lie algebra with this bracket operation.
-\end{exercise}
-
-\begin{exercise}
-\label{prob:8-23}
-\lean{GroupLieAlgebra.prodLieEquiv}
-\leanok
-8-23. (a) Given Lie algebras $\mathfrak{g}$ and $\mathfrak{h}$ , show that the direct sum $\mathfrak{g} \oplus  \mathfrak{h}$ is a Lie algebra with the bracket defined by
-
-\[
-\left\lbrack  {\left( {X, Y}\right) ,\left( {{X}^{\prime },{Y}^{\prime }}\right) }\right\rbrack   = \left( {\left\lbrack  {X,{X}^{\prime }}\right\rbrack  ,\left\lbrack  {Y,{Y}^{\prime }}\right\rbrack  }\right) .
-\]
-
-(b) Suppose $G$ and $H$ are Lie groups. Prove that $\operatorname{Lie}\left( {G \times  H}\right)$ is isomorphic to $\operatorname{Lie}\left( G\right)  \oplus  \operatorname{Lie}\left( H\right)$ .
-\end{exercise}
-
-\begin{exercise}
-\label{prob:8-24}
-\lean{inversion_pushforward_on_groupLieAlgebra_map_lie}
-\leanok
-8-24. Suppose $G$ is a Lie group and $\mathfrak{g}$ is its Lie algebra. A vector field $X \in  \mathfrak{X}\left( G\right)$ is said to be right-invariant if it is invariant under all right translations.
-
-(a) Show that the set $\overline{\mathrm{g}}$ of right-invariant vector fields on $G$ is a Lie subalgebra of $\mathfrak{X}\left( G\right)$ .
-
-(b) Let $i : G \rightarrow  G$ denote the inversion map $i\left( g\right)  = {g}^{-1}$ . Show that the push-forward ${i}_{ * } : \mathcal{X}\left( G\right)  \rightarrow  \mathcal{X}\left( G\right)$ restricts to a Lie algebra isomorphism from $\mathfrak{g}$ to $\overline{\mathfrak{g}}$ .
-\end{exercise}
-
-\begin{exercise}
-\label{prob:8-25}
-\lean{AddGroupLieAlgebra.instIsLieAbelian_of_addCommGroup}
-\leanok
-\uses{prob:7-2}
-8-25. Prove that if $G$ is an abelian Lie group, then $\operatorname{Lie}\left( G\right)$ is abelian. [Hint: show that the inversion map $i : G \rightarrow  G$ is a group homomorphism, and use Problem 7-2.]
-\end{exercise}
-
-\begin{exercise}
-\label{prob:8-31}
-\lean{LieHom.mem_ker}
-\mathlibok
-8-31. Let $\mathfrak{g}$ be a Lie algebra. A linear subspace $\mathfrak{h} \subseteq  \mathfrak{g}$ is called an ideal in $\mathfrak{g}$ if $\left\lbrack  {X, Y}\right\rbrack   \in  \mathfrak{h}$ whenever $X \in  \mathfrak{h}$ and $Y \in  \mathfrak{g}.$
-
-(a) Show that if $\mathfrak{h}$ is an ideal in $\mathfrak{g}$ , then the quotient space $\mathfrak{g}/\mathfrak{h}$ has a unique Lie algebra structure such that the projection $\pi  : \mathfrak{g} \rightarrow  \mathfrak{g}/\mathfrak{h}$ is a Lie algebra homomorphism.
-
-(b) Show that a subspace $\mathfrak{h} \subseteq  \mathfrak{g}$ is an ideal if and only if it is the kernel of a Lie algebra homomorphism.
-
-(Used on p. 533.)
-\end{exercise}
-

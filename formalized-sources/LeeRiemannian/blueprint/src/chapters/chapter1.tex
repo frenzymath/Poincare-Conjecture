@@ -2,26 +2,20 @@
 % Transcribed from the cited source, with manual checks for a few pages, and organized according to leanblueprint
 % conventions (semantic \label, bracketed titles, \uses dependency edges, \dcref to Lee's own numbering) below.
 
-If you have spent some time studying modern differential geometry, with its intricate web of manifolds, submanifolds, vector fields, Lie derivatives, tensor fields, differential forms, orientations, and foliations, you might be forgiven for wondering what it all has to do with geometry. In most people's experience, geometry is concerned with properties such as distances, lengths, angles, areas, volumes, and curvature. These concepts, however, are often barely mentioned in typical beginning graduate courses in smooth manifold theory.
-
-The purpose of this book is to introduce the theory of \emph{Riemannian manifolds}: these are smooth manifolds equipped with Riemannian metrics (smoothly varying choices of inner products on tangent spaces), which allow one to measure geometric quantities such as distances and angles. This is the branch of differential geometry in which ``geometric'' ideas, in the familiar sense of the word, come to the fore. It is the direct descendant of Euclid's plane and solid geometry, by way of Gauss's theory of curved surfaces in space, and it is a dynamic subject of contemporary research.
-
-The central unifying theme in current Riemannian geometry research is the notion of curvature and its relation to topology. This book is designed to help you develop both the tools and the intuition you will need for an in-depth exploration of curvature in the Riemannian setting. Unfortunately, as you will soon discover, an adequate development of curvature in an arbitrary number of dimensions requires a great deal of technical machinery, making it easy to lose sight of the underlying geometric content. To put the subject in perspective, therefore, let us begin by asking some very basic questions: What is curvature? What are some important theorems about it? In this chapter, we explore these and related questions in an informal way, without proofs. The ``official'' treatment of the subject begins in Chapter 2.
-
 \section{The Euclidean Plane}
-
-To get a sense of the kinds of questions Riemannian geometers address and where these questions came from, let us look back at the very roots of our subject. The treatment of geometry as a mathematical subject began with Euclidean plane geometry, which you probably studied in secondary school. Its elements are points, lines, distances, angles, and areas; and its most fundamental relationship is \textbf{congruence}---two plane figures are congruent if one can be transformed into the other by a \textbf{\textit{rigid motion of the plane}}, which is a bijective transformation from the plane to itself that preserves distances. Here are a couple of typical theorems.
 
 \begin{definition}[rigid motion, congruence]
 \label{def:rigid-motion}
 \lean{AffineIsometryEquiv}
 \mathlibok
-A \emph{rigid motion} of a Euclidean space $E$ is a bijection $f\colon E\to E$ with
-$\norm{f(x)-f(y)} = \norm{x-y}$ for all $x,y\in E$. Two families of points $(v_i)_{i\in I}$ and
-$(w_i)_{i\in I}$ of $E$ are \emph{congruent} if there is a rigid motion $f$ of $E$ with $f(v_i)=w_i$
-for every $i$; two subsets of $E$ are congruent if some rigid motion carries the first onto the
-second. By the Mazur--Ulam theorem a distance-preserving bijection of $E$ is automatically affine, so
-the rigid motions of $E$ are exactly its affine isometric automorphisms.
+A \emph{rigid motion} of a Euclidean space $E$ is a bijection $f\colon E\to E$ such that
+\[
+\norm{f(x)-f(y)}=\norm{x-y}\qquad (x,y\in E).
+\]
+Families $(v_i)_{i\in I}$ and $(w_i)_{i\in I}$ of points are \emph{congruent} when a rigid motion
+$f$ satisfies $f(v_i)=w_i$ for every $i$; subsets are congruent when a rigid motion maps one onto
+the other. By the Mazur--Ulam theorem every distance-preserving bijection of $E$ is affine, so rigid
+motions are precisely affine isometric automorphisms.
 \end{definition}
 
 \begin{lemma}[isometry extension]
@@ -29,35 +23,28 @@ the rigid motions of $E$ are exactly its affine isometric automorphisms.
 \uses{def:rigid-motion}
 \lean{LeeLib.Ch01.exists_affineIsometryEquiv_of_dist_eq}
 \leanok
-Let $E$ be a finite-dimensional Euclidean space and let $(v_i)_{i\in I}$ and $(w_i)_{i\in I}$ be
-nonempty families of points of $E$ satisfying $\norm{v_i-v_j} = \norm{w_i-w_j}$ for all $i,j\in I$.
-Then $(v_i)$ and $(w_i)$ are congruent.
+Let $E$ be finite-dimensional and Euclidean, and let $(v_i)_{i\in I}$ and $(w_i)_{i\in I}$ be
+nonempty point families satisfying
+\[
+\norm{v_i-v_j}=\norm{w_i-w_j}\qquad (i,j\in I).
+\]
+Then the two families are congruent.
 \end{lemma}
 \begin{proof}
 \uses{def:rigid-motion}
-Fix $i_0\in I$ and put $v_i' = v_i - v_{i_0}$ and $w_i' = w_i - w_{i_0}$. Polarization gives
+\sketch Choose $i_0\in I$ and set $v_i'=v_i-v_{i_0}$ and $w_i'=w_i-w_{i_0}$. Polarization gives
 \[
-2\inner{v_i'}{v_j'} = \norm{v_i'}^2 + \norm{v_j'}^2 - \norm{v_i'-v_j'}^2
- = \norm{v_i-v_{i_0}}^2 + \norm{v_j-v_{i_0}}^2 - \norm{v_i-v_j}^2,
+2\inner{v_i'}{v_j'}=\norm{v_i'}^2+\norm{v_j'}^2-\norm{v_i'-v_j'}^2,
 \]
-and the same identity for $w$. The hypothesis makes the two right-hand sides equal, so
-$\inner{v_i'}{v_j'} = \inner{w_i'}{w_j'}$ for all $i,j$.
-
-Let $c$ be a finitely supported family of reals. Expanding the square and using the previous line,
+and the distance hypothesis gives the same expression for the $w_i'$, hence
+$\inner{v_i'}{v_j'}=\inner{w_i'}{w_j'}$. Thus the map
 \[
-\Bigl\lVert \sum_i c_i v_i' \Bigr\rVert^2 = \sum_{i,j} c_i c_j \inner{v_i'}{v_j'}
- = \sum_{i,j} c_i c_j \inner{w_i'}{w_j'} = \Bigl\lVert \sum_i c_i w_i' \Bigr\rVert^2 .
+\sum_i c_i v_i'\longmapsto\sum_i c_i w_i'
 \]
-Hence the linear maps $c\mapsto \sum_i c_i v_i'$ and $c\mapsto \sum_i c_i w_i'$ have the same kernel,
-so $\sum_i c_i v_i' \mapsto \sum_i c_i w_i'$ is a well-defined linear map $L$ on the subspace
-$S = \operatorname{span}\{v_i' : i\in I\}$, and the displayed equality of norms says exactly that $L$
-is a linear isometry of $S$ into $E$.
-
-Because $E$ is finite-dimensional, $S^\perp$ and $(LS)^\perp$ have the same dimension, so $L$ extends
-to a linear isometry $g$ of $E$ into itself; being an injective endomorphism of a finite-dimensional
-space, $g$ is bijective. Then $f(x) = g(x - v_{i_0}) + w_{i_0}$ is a composite of a translation, a
-linear isometry and a translation, hence a rigid motion of $E$, and
-$f(v_i) = g(v_i') + w_{i_0} = w_i' + w_{i_0} = w_i$ for every $i$.
+is a well-defined linear isometry from $S=\operatorname{span}\{v_i'\}$ into $E$: equality of the
+two squared norms shows that the map is independent of the chosen finite representation. Extend it
+to a linear isometry $g\colon E\to E$ by choosing orthonormal complements; finite dimensionality
+makes $g$ bijective. Then $f(x)=g(x-v_{i_0})+w_{i_0}$ is a rigid motion with $f(v_i)=w_i$.
 \end{proof}
 
 \begin{theorem}[Side-Side-Side]
@@ -66,19 +53,14 @@ $f(v_i) = g(v_i') + w_{i_0} = w_i' + w_{i_0} = w_i$ for every $i$.
 \uses{def:rigid-motion}
 \lean{LeeLib.Ch01.side_side_side_iff}
 \leanok
-Two Euclidean triangles are congruent if and only if the lengths of their corresponding sides are equal.
+Two Euclidean triangles are congruent if and only if their corresponding side lengths agree.
 \end{theorem}
 \begin{proof}
 \uses{lem:isometry-extension,def:rigid-motion}
-Let the triangles have vertices $a,b,c$ and $a',b',c'$. If a rigid motion $f$ satisfies $f(a)=a'$,
-$f(b)=b'$ and $f(c)=c'$, then, $f$ being distance-preserving, $\norm{a'-b'} = \norm{a-b}$ and likewise
-for the other two sides; so corresponding sides have equal lengths.
-
-Conversely, assume $\norm{a-b}=\norm{a'-b'}$, $\norm{b-c}=\norm{b'-c'}$ and $\norm{c-a}=\norm{c'-a'}$.
-Distances are symmetric and vanish on the diagonal, so these three equalities give
-$\norm{v_i-v_j} = \norm{w_i-w_j}$ for all $i,j$, where $(v_0,v_1,v_2)=(a,b,c)$ and
-$(w_0,w_1,w_2)=(a',b',c')$. The isometry extension lemma applied to these two families produces a
-rigid motion carrying each vertex of the first triangle to the corresponding vertex of the second.
+\sketch A rigid motion preserves all pairwise distances, proving the forward implication. For the
+converse, label the vertices $(a,b,c)$ and $(a',b',c')$. Equality of the three corresponding side
+lengths, together with symmetry and vanishing on the diagonal, gives equality of all pairwise
+distances for the two indexed triples. Apply Lemma \ref{lem:isometry-extension}.
 \end{proof}
 
 \begin{theorem}[Angle-Sum Theorem]
@@ -86,16 +68,8 @@ rigid motion carrying each vertex of the first triangle to the corresponding ver
 \dcref{ch1:1.2}
 \lean{EuclideanGeometry.angle_add_angle_add_angle_eq_pi}
 \mathlibok
-The sum of the interior angles of a Euclidean triangle is $\pi$.
+The interior angles of a Euclidean triangle sum to $\pi$.
 \end{theorem}
-
-As trivial as they may seem, these theorems serve to illustrate two major types of results that permeate the study of geometry; in this book, we call them ``classification theorems'' and ``local-to-global theorems.''
-
-The side-side-side (SSS) theorem is a \textit{classification theorem}. Such a theorem tells us how to determine whether two mathematical objects are equivalent (under some appropriate equivalence relation). An ideal classification theorem lists a small number of computable invariants (whatever ``small'' may mean in a given context), and says that two objects are equivalent if and only if all of these invariants match. In this case the equivalence relation is congruence, and the invariants are the three side lengths.
-
-The angle-sum theorem is of a different sort. It relates a local geometric property (angle measure) to a global property (that of being a three-sided polygon or triangle). Most of the theorems we study in this book are of this type, which, for lack of a better name, we call \textit{local-to-global theorems}.
-
-After proving the basic facts about points and lines and the figures constructed directly from them, one can go on to study other figures derived from the basic elements, such as circles. Two typical results about circles are given below; the first is a classification theorem, while the second is a local-to-global theorem. (It may not be obvious at this point why we consider the second to be a local-to-global theorem, but it will become clearer soon.)
 
 \begin{theorem}[Circle Classification Theorem]
 \label{thm:circle-classification}
@@ -103,19 +77,14 @@ After proving the basic facts about points and lines and the figures constructed
 \uses{def:rigid-motion}
 \lean{LeeLib.Ch01.euclidean_circle_congruent_iff_radius_eq}
 \leanok
-Two circles in the Euclidean plane are congruent if and only if they have the same radius.
+Two Euclidean circles are congruent if and only if their radii are equal.
 \end{theorem}
 \begin{proof}
 \uses{def:rigid-motion}
-Let $C_i$ be the circle of centre $c_i$ and radius $R_i\ge 0$. A rigid motion preserves distances and
-is onto, so it preserves the diameter of a set. The diameter of a circle of radius $R$ is $2R$: two
-antipodal points of $C_i$ are at distance $2R$, and no two of its points are farther apart, since any
-$x,y\in C_i$ satisfy $\norm{x-y} \le \norm{x-c_i} + \norm{c_i-y} = 2R$. Hence if a rigid motion
-carries $C_1$ onto $C_2$ then $2R_1 = \operatorname{diam} C_1 = \operatorname{diam} C_2 = 2R_2$, so
-$R_1 = R_2$.
-
-Conversely, suppose $R_1 = R_2$. The translation $x\mapsto x + (c_2-c_1)$ is a rigid motion, and it
-carries $C_1$ onto $C_2$ because $\norm{(x + (c_2-c_1)) - c_2} = \norm{x-c_1}$.
+\sketch A circle of radius $R\geq0$ has diameter $2R$: antipodal points realize this distance, while the
+triangle inequality bounds every pair of points by $2R$. A rigid motion preserves diameters, so
+congruent circles have equal radii. If the radii agree, translation by the difference of the centers
+maps one circle onto the other and is a rigid motion.
 \end{proof}
 
 \begin{theorem}[Circumference Theorem]
@@ -126,172 +95,144 @@ carries $C_1$ onto $C_2$ because $\norm{(x + (c_2-c_1)) - c_2} = \norm{x-c_1}$.
 The circumference of a Euclidean circle of radius $R$ is $2\pi R$.
 \end{theorem}
 \begin{proof}
-The circle of centre $c$ and radius $R\ge 0$ is traced by $\gamma(t) = c + R e^{it}$ for
-$t\in[0,2\pi]$, and its circumference is the length of $\gamma$, that is, the supremum of the
-inscribed polygonal perimeters $\sum_{k<n} \norm{\gamma(t_{k+1}) - \gamma(t_k)}$ over finite
-increasing subdivisions $t_0\le\dots\le t_n$ of $[0,2\pi]$. Since
-$e^{ix} - e^{iy} = e^{iy}(e^{i(x-y)}-1)$ and $\norm{e^{i\theta}-1} = 2\lvert\sin(\theta/2)\rvert$, the
-chords of $\gamma$ are given by
+\sketch For $R\geq0$, parametrize the circle by $\gamma(t)=c+Re^{it}$ for $0\leq t\leq2\pi$ and define its
+length as the supremum of polygonal subdivision sums. Since
 \[
-\norm{\gamma(x)-\gamma(y)} = 2R\,\Bigl\lvert \sin\tfrac{x-y}{2} \Bigr\rvert .
+\norm{\gamma(x)-\gamma(y)}=2R\left|\sin\frac{x-y}{2}\right|\leq R|x-y|,
 \]
-
-For the upper bound, $\lvert\sin\theta\rvert \le \lvert\theta\rvert$ shows $\gamma$ is $R$-Lipschitz,
-so every subdivision sum is at most $R\sum_{k<n}(t_{k+1}-t_k) = 2\pi R$; hence the length is at most
-$2\pi R$.
-
-For the lower bound, take the regular subdivision $t_k = 2\pi k/n$. Its sum is the perimeter of the
-inscribed regular $n$-gon,
+every subdivision sum is at most $2\pi R$. For the regular subdivision $t_k=2\pi k/n$, the sum
+is
 \[
-\sum_{k<n} 2R\,\sin\tfrac{\pi}{n} = 2\pi R\cdot\frac{\sin(\pi/n)}{\pi/n},
+2nR\sin\frac{\pi}{n}=2\pi R\frac{\sin(\pi/n)}{\pi/n},
 \]
-which tends to $2\pi R$ as $n\to\infty$ because $\sin\theta/\theta \to 1$ as $\theta\to 0$. So the
-length is at least $2\pi R$.
-
-The two bounds agree, so the circumference is exactly $2\pi R$.
+which tends to $2\pi R$; the supremum is therefore exactly $2\pi R$.
 \end{proof}
 
-If we want to continue our study of plane geometry beyond figures constructed from lines and circles, sooner or later we have to come to terms with other curves in the plane. An arbitrary curve cannot be completely described by one or two numbers such as length or radius; instead, the basic invariant is \textit{curvature}, which is defined using calculus and is a function of position on the curve.
-
-Formally, the \textbf{\textit{curvature}} of a plane curve $\gamma$ is defined to be $\kappa(t) = |\gamma''(t)|$, the length of the acceleration vector, when $\gamma$ is given a unit-speed parametrization.
-
-% [FIGURE: Osculating circle at a point p on a curve, showing inscribed circle with radius r and tangent vector  \gamma ']
-
-(Here and throughout this book, the word ``curve'' refers to a parametrized curve, not a set of points. Typically, a curve will be defined as a smooth function of a real variable $t$, with a prime representing an ordinary derivative with respect to $t$.)
-
-Geometrically, the curvature has the following interpretation. Given a point $p = \gamma(t)$, there are many circles tangent to $\gamma$ at $p$—namely, those circles whose velocity vector at $p$ is the same as that of $\gamma$ when both are given unit-speed parametrizations; these are the circles whose centers lie on the line that passes through $p$ and is orthogonal to $\gamma'(p)$. Among these circles, there is exactly one unit-speed parametrized circle whose acceleration vector at $p$ is the same as that of $\gamma$; it is called the \emph{osculating circle} (Fig. 1.1). (If the acceleration of $\gamma$ is zero, replace the osculating circle by a straight line, thought of as a ``circle with infinite radius.'') The curvature is then $\kappa(t) = 1/R$, where $R$ is the radius of the osculating circle. The larger the curvature, the greater the acceleration and the smaller the osculating circle, and therefore the faster the curve is turning. A circle of radius $R$ has constant curvature $\kappa \equiv 1/R$, while a straight line has curvature zero.
-
-It is often convenient for some purposes to extend the definition of the curvature of a plane curve, allowing it to take on both positive and negative values. This is done by choosing a continuous unit normal vector field $N$ along the curve, and assigning the curvature a positive sign if the curve is turning toward the chosen normal or a negative sign if it is turning away from it. The resulting function $\kappa_N$ along the curve is then called the \emph{signed curvature}.
-
-Here are two typical theorems about plane curves.
+A \emph{curve} is a smooth parametrized map of a real variable; a prime denotes differentiation in
+the parameter. For a unit-speed plane curve $\gamma$, its (unsigned) curvature is
+\[
+\kappa(t)=\norm{\gamma''(t)}.
+\]
+At $p=\gamma(t)$, tangent circles have centers on the line through $p$ orthogonal to $\gamma'(t)$.
+There is a unique unit-speed tangent circle whose acceleration at $p$ equals $\gamma''(t)$, the
+\emph{osculating circle}; if $\gamma''(t)=0$, it is replaced by a straight line (infinite radius).
+Thus $\kappa=1/R$ for osculating radius $R$; a radius-$R$ circle has curvature $1/R$, while a
+straight line has curvature zero. Given a continuous unit normal field $N$, the \emph{signed curvature}
+$\kappa_N$ is positive when the curve turns toward $N$ and negative when it turns away.
 
 \begin{theorem}[Plane Curve Classification Theorem]
 \label{thm:plane-curve-classification}
 \dcref{ch1:1.5}
 \notready
-Suppose $\gamma$ and $\tilde{\gamma}: [a,b] \to \mathbb{R}^2$ are smooth, unit-speed plane curves with unit normal vector fields $N$ and $\tilde{N}$, and $\kappa_N(t), \kappa_{\tilde{N}}(t)$ represent the signed curvatures at $\gamma(t)$ and $\tilde{\gamma}(t)$, respectively. Then $\gamma$ and $\tilde{\gamma}$ are congruent by a direction-preserving congruence if and only if $\kappa_N(t) = \kappa_{\tilde{N}}(t)$ for all $t \in [a,b]$.
+Suppose $\gamma,\widetilde\gamma\colon[a,b]\to\mathbb R^2$ are smooth unit-speed curves with unit
+normal fields $N,\widetilde N$. They are congruent by a direction-preserving congruence if and only if
+\[
+\kappa_N(t)=\kappa_{\widetilde N}(t)\qquad(t\in[a,b]).
+\]
 \end{theorem}
 
 \begin{theorem}[Total Curvature Theorem]
 \label{thm:total-curvature}
 \dcref{ch1:1.6}
 \notready
-If $\gamma: [a,b] \to \mathbb{R}^2$ is a unit-speed simple closed curve such that $\gamma'(a) = \gamma'(b)$, and $N$ is the inward-pointing normal, then
+If $\gamma\colon[a,b]\to\mathbb R^2$ is a unit-speed simple closed curve with
+$\gamma'(a)=\gamma'(b)$ and $N$ is the inward-pointing normal, then
 \[
-\int_a^b \kappa_N(t) \, dt = 2\pi.
+\int_a^b\kappa_N(t)\,dt=2\pi.
 \]
 \end{theorem}
 
-The first of these is a classification theorem, as its name suggests. The second is a local-to-global theorem, since it relates the local property of curvature to the global (topological) property of being a simple closed curve. We will prove both of these theorems later in the book; the second will be derived as a consequence of a more general result in Chapter~9 (see Corollary~9.6); the proof of the first is left to Problem~9-12.
-
-It is interesting to note that when we specialize to circles, these theorems reduce to the two theorems about circles above: Theorem~1.5 says that two circles are congruent if and only if they have the same curvature, while Theorem~1.6 says that if a circle has curvature $\kappa$ and circumference $C$, then $\kappa C = 2\pi$. It is easy to see that these two results are equivalent to Theorems~1.3 and~1.4. This is why it makes sense to regard the circumference theorem as a local-to-global theorem.
-
 \section{Surfaces in Space}
 
-The next step in generalizing Euclidean geometry is to start working in three dimensions. After investigating the basic elements of ``solid geometry''---points, lines, planes, polyhedra, spheres, distances, angles, surface areas, volumes---one is led to study more general curved surfaces in space (2-dimensional embedded submanifolds of $\mathbb{R}^3$, in the language of differential geometry). The basic invariant in this setting is again curvature, but it is a bit more complicated than for plane curves, because a surface can curve differently in different directions.
+For a surface $S\subseteq\mathbb R^3$, a point $p\in S$, and a unit normal $N$ at $p$, a normal
+section is obtained by intersecting $S$ near $p$ with a plane through $p$ parallel to $N$. The signed
+curvature of this plane curve, computed with respect to $N$, varies with the normal plane; its minimum
+and maximum are the \emph{principal curvatures} $\kappa_1$ and $\kappa_2$ at $p$.
 
-The curvature of a surface in space is described by two numbers at each point, called the \emph{principal curvatures}. We will define them formally in Chapter~8, but here is an informal recipe for computing them. Suppose $S$ is a surface in $\mathbb{R}^3$, $p$ is a point in $S$, and $N$ is a unit normal vector to $S$ at $p$.
+A property of surfaces in $\mathbb R^3$ is \emph{intrinsic} when it is preserved by isometries,
+that is, maps preserving lengths of curves. Principal curvatures are not intrinsic: for
+\[
+S_1=\{(x,y,0):0<x<\pi,\ 0<y<\pi\},\qquad
+S_2=\{(x,y,z):z=\sqrt{1-y^2},\ 0<x<\pi,\ |y|<1\},
+\]
+the principal curvatures (for a downward normal) are $(0,0)$ and $(0,1)$, respectively, but
+$(x,y,0)\mapsto(x,\cos y,\sin y)$ is an isometry $S_1\to S_2$.
 
-\begin{enumerate}
-\item Choose a plane $\Pi$ passing through $p$ and perpendicular to $N$. The intersection of $\Pi$ with a neighborhood of $p$ in $S$ is a plane curve $\gamma \subseteq \Pi$ containing $p$ (Fig.~1.2).
-\item Compute the signed curvature $\kappa_N$ of $\gamma$ at $p$ with respect to the chosen unit normal $N$.
-\item Repeat this for all normal planes $\Pi$. The \emph{principal curvatures} of $S$ at $p$, denoted by $\kappa_1$ and $\kappa_2$, are the minimum and maximum signed curvatures so obtained.
-\end{enumerate}
-
-Although the principal curvatures give us a lot of information about the geometry of $S$, they do not directly address a question that turns out to be of paramount importance in Riemannian geometry: Which properties of a surface are \emph{intrinsic}? Roughly speaking, intrinsic properties are those that could in principle be measured or computed by a 2-dimensional being living entirely within the surface. More precisely, a property of surfaces in $\mathbb{R}^3$ is called \emph{intrinsic} if it is preserved by \emph{isometries} (maps from one surface to another that preserve lengths of curves).
-
-To see that the principal curvatures are not intrinsic, consider the following two embedded surfaces $S_1$ and $S_2$ in $\mathbb{R}^3$ (Figs.~1.3 and~1.4): $S_1$ is the square in the $xy$-plane where $0 < x < \pi$ and $0 < y < \pi$, and $S_2$ is the half-cylinder $\{(x,y,z) : z = \sqrt{1-y^2}, 0 < x < \pi, |y| < 1\}$. If we follow the recipe above for computing principal curvatures (using, say, the downward-pointing unit normal), we find that, since all planes intersect $S_1$ in straight lines, the principal curvatures of $S_1$ are $\kappa_1 = \kappa_2 = 0$. On the other hand, it is not hard to see that the principal curvatures of $S_2$ are $\kappa_1 = 0$ and $\kappa_2 = 1$. However, the map taking $(x,y,0)$ to $(x, \cos y, \sin y)$ is a diffeomorphism from $S_1$ to $S_2$ that preserves lengths of curves, and is thus an isometry.
-
-% [FIGURE: Torus/surface of revolution showing normal vector N, principal directions D and  \gamma , and the plane section]
-
-% [FIGURE: Flat plane in 3D space labeled S_1]
-
-% [FIGURE: Half-cylinder surface labeled S_2]
-
-Even though the principal curvatures are not intrinsic, the great German mathematician Carl Friedrich Gauss made the surprising discovery in 1827 \cite{Gau65} that a particular combination of them is intrinsic. (See also \cite[Vol. 2]{Spi79} for an excellent discussion of the details of Gauss's paper.) He found a proof that the product $K = \kappa_1\kappa_2$, now called the \emph{Gaussian curvature}, is intrinsic. He thought this result was so amazing that he named it \emph{Theorema Egregium}. (This does not mean ``totally awful theorem'' as its English cognate \emph{egregious} might suggest; a better translation into modern colloquial English might be ``totally awesome theorem.'')
-
-% [FIGURE: Bowl-shaped surface with positive Gaussian curvature, labeled "Fig. 1.5: K > 0"]
-
-% [FIGURE: Saddle-shaped surface with negative Gaussian curvature, labeled "Fig. 1.6: K < 0"]
-
-To get a feeling for what Gaussian curvature tells us about surfaces, let us look at a few examples. Simplest of all is any surface that is an open subset of a plane: as we have seen, such a surface has both principal curvatures equal to zero and therefore has constant Gaussian curvature equal to zero. The half-cylinder described above also has $K = \kappa_1 \kappa_2 = 0 \cdot \infty = 0$, as the Theorem Egregium tells us it must, being isometric to a square. Another simple example is a sphere of radius $R$. Every normal plane intersects the sphere in a great circle, which has radius $R$ and therefore curvature $\pm 1/R$ (with the sign depending on whether we choose the outward-pointing or inward-pointing normal). Thus the principal curvatures are both equal to $\pm 1/R$, and the Gaussian curvature is $\kappa_1 \kappa_2 = 1/R^2$. Note that while the signs of the principal curvatures depend on the choice of unit normal, the Gaussian curvature does not: it is always positive on the sphere.
-
-Similarly, any surface that is ``bowl-shaped'' or ``dome-shaped'' has positive Gaussian curvature (Fig.~1.5), because the two principal curvatures always have the same sign, regardless of which normal is chosen. On the other hand, the Gaussian curvature of any surface that is ``saddle-shaped'' (Fig.~1.6) is negative, because the principal curvatures are of opposite signs.
-
-The model spaces of surface theory are the surfaces with constant Gaussian curvature. We have already seen two of them: the Euclidean plane $\mathbb{R}^2$ ($K = 0$), and the sphere of radius $R$ ($K = 1/R^2$). The most important model surface with constant negative Gaussian curvature is called the \emph{hyperbolic plane}, which will be defined in Chapter~3. It is not so easy to visualize because it cannot be realized globally as a smoothly embedded surface in $\mathbb{R}^3$ (see [Spi79, Vol.~3, pp.~373--385] for a proof).
-
-Surface theory is a highly developed branch of geometry. Of all its results, two---a classification theorem and a local-to-global theorem---are generally acknowledged as the most important.
+The Theorema Egregium asserts that
+\[
+K=\kappa_1\kappa_2
+\]
+is intrinsic; see \cite{Gau65} and \cite[Vol.~2]{Spi79}. The plane and the half-cylinder above have
+$K=0$ (for the latter, $0\cdot1=0$), while a sphere of radius $R$ has principal curvatures
+$\pm1/R$ and Gaussian curvature $K=1/R^2$, independent of the choice of unit normal. The constant
+Gaussian-curvature model surfaces include the Euclidean plane ($K=0$), spheres of radius $R$
+($K=1/R^2$), and the hyperbolic plane ($K<0$), which has no global smooth embedding in $\mathbb R^3$
+[Spi79, Vol.~3, pp.~373--385].
 
 \begin{theorem}[Uniformization Theorem]
 \label{thm:uniformization-theorem}
 \dcref{ch1:1.7}
 \notready
-Every connected 2-manifold is diffeomorphic to a quotient of one of the constant-curvature model surfaces described above by a discrete group of isometries without fixed points. Thus every connected 2-manifold has a complete Riemannian metric with constant Gaussian curvature.
+Every connected $2$-manifold is diffeomorphic to a quotient of a constant-Gaussian-curvature model
+surface by a discrete fixed-point-free group of isometries. Consequently, every connected
+$2$-manifold admits a complete Riemannian metric of constant Gaussian curvature.
 \end{theorem}
 
 \begin{theorem}[Gauss--Bonnet Theorem]
 \label{thm:gauss-bonnet-theorem-preview}
 \dcref{ch1:1.8}
 \notready
-Suppose $S$ is a compact Riemannian 2-manifold. Then
+If $S$ is a compact Riemannian $2$-manifold, then
 \[
-\int_S K \, dA = 2\pi \chi(S),
+\int_S K\,dA=2\pi\chi(S),
 \]
-where $\chi(S)$ is the Euler characteristic of $S$.
+where $dA$ is the Riemannian area measure and $\chi(S)$ is the Euler characteristic.
 \end{theorem}
 
-The uniformization theorem is a classification theorem, because it replaces the problem of classifying surfaces with that of classifying certain discrete groups of isometries of the models. The latter problem is not easy by any means, but it sheds a great deal of new light on the topology of surfaces nonetheless. In Chapter 3, we sketch a proof of the uniformization theorem for the case of compact surfaces.
-
-Although stated here as a geometric-topological result, the uniformization theorem is usually stated somewhat differently and proved using complex analysis. If you are familiar with complex analysis and the complex version of the uniformization theorem, it will be an enlightening exercise after you have finished this book to prove that the complex version of the theorem is equivalent to the one stated here.
-
-The Gauss--Bonnet theorem, on the other hand, is purely a theorem of differential geometry, arguably the most fundamental and important one of all. It relates a local geometric property (the curvature) with a global topological invariant (the Euler characteristic). We give a detailed proof in Chapter 9.
-
-Taken together, these theorems place strong restrictions on the types of metrics that can occur on a given surface. For example, one consequence of the Gauss--Bonnet theorem is that the only compact, connected, orientable surface that admits a metric of strictly positive Gaussian curvature is the sphere. On the other hand, if a compact, connected, orientable surface has nonpositive Gaussian curvature, the Gauss--Bonnet theorem rules out the sphere, and then the uniformization theorem tells us that its universal covering space is topologically equivalent to the plane.
+The Gauss--Bonnet and uniformization theorems imply that a compact connected orientable surface
+admitting a metric with strictly positive Gaussian curvature is diffeomorphic to the sphere. A compact
+connected orientable surface with nonpositive Gaussian curvature is not a sphere, and its universal
+cover is topologically the plane.
 
 \section{Curvature in Higher Dimensions}
 
-We end our survey of the basic ideas of Riemannian geometry by mentioning briefly how curvature appears in higher dimensions. Suppose $M$ is an $n$-dimensional Riemannian manifold. As with surfaces, the basic geometric invariant is curvature, but curvature becomes a much more complicated quantity in higher dimensions because a manifold may curve in so many different directions.
+Let $(M,g)$ be an $n$-dimensional Riemannian manifold. Geodesics, locally shortest curves between
+nearby points, replace plane sections as intrinsic probes of curvature. Through each $p\in M$ and
+$v\in T_pM$ there is a unique geodesic with initial point $p$ and initial velocity $v$.
 
-The first problem we must contend with is that, in general, Riemannian manifolds are not presented to us as embedded submanifolds of Euclidean space. Therefore, we must abandon the idea of cutting out curves by intersecting our manifold with planes, as we did when defining the principal curvatures of a surface in $\mathbb{R}^3$. Instead, we need a more intrinsic way of sweeping out submanifolds. Fortunately, \emph{geodesics}---curves that are the shortest paths between nearby points---are ready-made tools for this and many other purposes in Riemannian geometry. Examples are straight lines in Euclidean space and great circles on a sphere.
-
-The most fundamental fact about geodesics, which we prove in Chapter 4, is that given any point $p\in M$ and any vector $v$ tangent to $M$ at $p$, there is a unique geodesic starting at $p$ with initial velocity $v$.
-
-Here is a brief recipe for computing some curvatures at a point $p\in M$.
-
-\begin{enumerate}
-\item Choose a 2-dimensional subspace $\Pi$ of the tangent space to $M$ at $p$.
-\item Look at all the geodesics through $p$ whose initial velocities lie in the selected plane $\Pi$. It turns out that near $p$ these sweep out a certain 2-dimensional submanifold $S_\Pi$ of $M$, which inherits a Riemannian metric from $M$.
-\item Compute the Gaussian curvature of $S_\Pi$ at $p$, which the \emph{Theorema Egregium} tells us can be computed from the Riemannian metric that $S_\Pi$ inherits from $M$. This gives a number, denoted by $\sec(\Pi)$, called the \emph{sectional curvature} of $M$ at $p$ associated with the plane $\Pi$.
-\end{enumerate}
-
-Thus the ``curvature'' of $M$ at $p$ has to be interpreted as a map
+For $p\in M$ and a $2$-plane $\Pi\subset T_pM$, the geodesics through $p$ with initial velocities
+in $\Pi$ locally sweep out a $2$-submanifold $S_\Pi$ with the induced metric. Its Gaussian curvature
+at $p$ is the \emph{sectional curvature} $\sec(\Pi)$, so curvature at $p$ is the map
 \[
-\sec: \{2\text{-planes in }T_p M\} \to \mathbb{R}.
+\sec\colon\{\text{2-planes in }T_pM\}\to\mathbb R.
 \]
 
-As we will see in Chapter 3, we again have three classes of constant (sectional) curvature model spaces: $\mathbb{R}^n$ with its Euclidean metric (for which $\sec = 0$); the $n$-sphere of radius $R$, with the Riemannian metric inherited from $\mathbb{R}^{n+1}$ ($\sec \equiv 1/R^2$); and hyperbolic space of radius $R$ (with $\sec \equiv -1/R^2$). Unfortunately, however, there is as yet no satisfactory uniformization theorem for Riemannian manifolds in higher dimensions. In particular, it is definitely \emph{not} true that every manifold possesses a metric of constant sectional curvature. In fact, the constant-curvature metrics can all be described rather explicitly by the following classification theorem.
+The constant-sectional-curvature model spaces are Euclidean space ($\sec=0$), the sphere of radius
+$R$ ($\sec=1/R^2$), and hyperbolic space of radius $R$ ($\sec=-1/R^2$). Not every manifold admits a
+constant-sectional-curvature metric.
 
 \begin{theorem}[Characterization of Constant-Curvature Metrics]
 \label{thm:characterization-constant-curvature}
 \dcref{ch1:1.9}
 \notready
-The complete, connected, $n$-dimensional Riemannian manifolds of constant sectional curvature are, up to isometry, exactly the Riemannian quotients of the form $\widetilde{M}/\Gamma$, where $\widetilde{M}$ is a Euclidean space, sphere, or hyperbolic space with constant sectional curvature, and $\Gamma$ is a discrete group of isometries of $\widetilde{M}$ that acts freely on $\widetilde{M}$.
+The complete connected $n$-dimensional Riemannian manifolds of constant sectional curvature are,
+up to isometry, exactly the quotients $\widetilde M/\Gamma$, where $\widetilde M$ is Euclidean,
+spherical, or hyperbolic space with constant sectional curvature and $\Gamma$ is a discrete group of
+isometries acting freely on $\widetilde M$.
 \end{theorem}
-
-On the other hand, there are a number of powerful local-to-global theorems, which can be thought of as generalizations of the Gauss--Bonnet theorem in various directions. They are consequences of the fact that positive curvature makes geodesics converge, while negative curvature forces them to spread out. Here (in somewhat simplified form) are two of the most important such theorems.
 
 \begin{theorem}[Cartan--Hadamard]
 \label{thm:cartan-hadamard-preview}
 \dcref{ch1:1.10}
 \notready
-Suppose $M$ is a complete, connected Riemannian $n$-manifold with all sectional curvatures less than or equal to zero. Then the universal covering space of $M$ is diffeomorphic to $\mathbb{R}^n$.
+If $M$ is a complete connected Riemannian $n$-manifold with sectional curvature everywhere at most
+zero, then its universal covering space is diffeomorphic to $\mathbb R^n$.
 \end{theorem}
 
 \begin{theorem}[Myers]
 \label{thm:myers}
 \dcref{ch1:1.11}
 \notready
-Suppose $M$ is a complete, connected Riemannian manifold with all sectional curvatures bounded below by a positive constant. Then $M$ is compact and has a finite fundamental group.
+If $M$ is a complete connected Riemannian manifold whose sectional curvature is bounded below by a
+positive constant, then $M$ is compact and has finite fundamental group.
 \end{theorem}
-
-Looking back at the remarks concluding the section on surfaces above, you can see that these last three theorems generalize some of the consequences of the uniformization and Gauss--Bonnet theorems, although not their full strength. It is the primary goal of this book to prove Theorems 1.9, 1.10, and 1.11, among others; it is a primary goal of current research in Riemannian geometry to improve upon them and further generalize the results of surface theory to higher dimensions.

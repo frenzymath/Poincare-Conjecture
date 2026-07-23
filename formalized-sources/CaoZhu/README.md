@@ -13,7 +13,6 @@ geometrization. Lean declarations will be added along its dependency frontier.
 - `CaoZhuLib/` - Lean source modules.
 - `blueprint/src/content.tex` - blueprint entry point.
 - `blueprint/src/chapters/` - the authoritative source chapter files.
-- `blueprint/AUDIT.md` - source-coverage audit.
 - `hgraph/config.yaml` - graph synchronization configuration.
 
 The package uses `DoCarmoLib` through the sibling `../DoCarmo` path dependency.

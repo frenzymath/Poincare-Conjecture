@@ -2,107 +2,52 @@
 % Transcribed from the cited source, with manual checks for a few pages, and organized according to leanblueprint
 % conventions (semantic \label, bracketed titles, \uses dependency edges, \dcref to Lee's own numbering) below.
 
-Our ultimate goal is to define a notion of curvature that makes sense on arbitrary Riemannian manifolds, and to relate it to other geometric and topological properties. Before we can do so, however, we need to study \emph{geodesics}, the generalizations to Riemannian manifolds of straight lines in Euclidean space. There are two key properties satisfied by straight lines in $\mathbb{R}^n$, either of which serves to characterize them uniquely: first, every segment of a straight line is the unique shortest path between its endpoints; and second, straight lines are the only curves that have parametrizations with zero acceleration.
-
-The first of these characterizations---as shortest paths---is probably the most ``geometric,'' so it is tempting to try to use it as a definition of geodesics in Riemannian manifolds. However, this property turns out to be technically difficult to work with as a definition, so instead we will use ``zero acceleration'' as the defining property and generalize that.
-
-To make sense of acceleration on a manifold, we have to introduce a new object called a \emph{connection}---essentially a coordinate-independent set of rules for taking directional derivatives of vector fields.
-
-We begin this chapter by examining more closely the problem of finding an invariant interpretation for the acceleration of a curve, as a way to motivate the definitions that follow. We then give a rather general definition of a connection, in terms of directional derivatives of sections of vector bundles. After deriving some basic properties of connections, we show how to use them to differentiate vector fields along curves, to define geodesics, and to define ``parallel transport'' of vectors along curves.
-
 \section{The Problem of Differentiating Vector Fields}
 
-To see why we need a new kind of differentiation operator, let us begin by thinking informally about curves in $\mathbb{R}^n$. Let $I\subseteq\mathbb{R}$ be an interval and $\gamma\colon I\to\mathbb{R}^n$ a smooth curve, written in standard coordinates as $\gamma(t)=(\gamma^1(t),\ldots,\gamma^n(t))$. Such a curve has a well-defined \emph{velocity} $\gamma'(t)$ and \emph{acceleration} $\gamma''(t)$ at each $t \in I$, computed by differentiating the components:
+For a smooth curve $\gamma:I\to\mathbb R^n$,
 \begin{align}
-\gamma'(t) &= \dot{\gamma}^1(t) \frac{\partial}{\partial x^1}\bigg|_{\gamma(t)} + \cdots + \dot{\gamma}^n(t) \frac{\partial}{\partial x^n}\bigg|_{\gamma(t)}, \label{eq:4.1}\\
-\gamma''(t) &= \ddot{\gamma}^1(t) \frac{\partial}{\partial x^1}\bigg|_{\gamma(t)} + \cdots + \ddot{\gamma}^n(t) \frac{\partial}{\partial x^n}\bigg|_{\gamma(t)}. \label{eq:4.2}
+\gamma'(t)&=\dot\gamma^i(t)\frac{\partial}{\partial x^i}\bigg|_{\gamma(t)},\label{eq:4.1}\\
+\gamma''(t)&=\ddot\gamma^i(t)\frac{\partial}{\partial x^i}\bigg|_{\gamma(t)}.\label{eq:4.2}
 \end{align}
+Dots denote derivatives in $t$. A curve is a straight line exactly when it admits a parametrization with $\gamma''=0$.
 
-(Here and throughout the book, we use dots to denote ordinary derivatives with respect to $t$ when there are superscripts that would make primes hard to read.) A curve $\gamma$ in $\mathbb{R}^n$ is a straight line if and only if it has a parametrization for which $\gamma''(t) \equiv 0$.
-
-We can also make sense of directional derivatives of vector fields on $\mathbb{R}^n$, just by computing ordinary directional derivatives of the component functions in standard coordinates: given a vector field $Y \in \mathfrak{X}(\mathbb{R}^n)$ and a vector $v \in T_p\mathbb{R}^n$, we define the \emph{Euclidean directional derivative of $Y$ in the direction $v$} by the formula
+For $Y=Y^i\partial_i$ on $\mathbb R^n$ and $v=v^i\partial_i|_p$, the Euclidean directional derivative is
 \[
-\bar{\nabla}_v Y = v(Y^1) \frac{\partial}{\partial x^1}\bigg|_p + \cdots + v(Y^n) \frac{\partial}{\partial x^n}\bigg|_p,
+\bar\nabla_vY=v(Y^i)\partial_i|_p,
+\qquad v(Y^i)=v^j\frac{\partial Y^i(p)}{\partial x^j}.
 \]
-where for each $i$, $v(Y^i)$ is the result of applying the vector $v$ to the function $Y^i$:
-\[
-v(Y^i) = v^1 \frac{\partial Y^i(p)}{\partial x^1} + \cdots + v^n \frac{\partial Y^i(p)}{\partial x^n}.
-\]
-
-If $X$ is another vector field on $\mathbb{R}^n$, we obtain a new vector field $\bar{\nabla}_X Y$ by evaluating $\bar{\nabla}_{X_p} Y$ at each point:
+For a vector field $X$, this gives
 \begin{equation}
-\bar{\nabla}_X Y = X(Y^1) \frac{\partial}{\partial x^1} + \cdots + X(Y^n) \frac{\partial}{\partial x^n}. \tag{4.3}
+\bar\nabla_XY=X(Y^i)\frac{\partial}{\partial x^i}.\tag{4.3}
 \end{equation}
 
-More generally, we can play the same game with curves and vector fields on a submanifold of $\mathbb{R}^n$. Suppose $M \subset \mathbb{R}^n$ is an embedded submanifold and consider a smooth curve $\gamma : I \to M$. We wish to think of a \emph{geodesic} in $M$ as a curve in $M$ that is ``as straight as possible.'' Of course, if $M$ itself is curved, then $\gamma'(t)$ (thought of as a vector in $\mathbb{R}^n$) will probably have to vary, or else the curve will leave $M$. But we can try to insist that the velocity not change any more than necessary for the curve to stay in $M$. One way to do this is to compute the Euclidean acceleration $\gamma''(t)$ as above, and then apply the tangential projection $\pi^\top : T_{\gamma(t)}\mathbb{R}^n \to T_{\gamma(t)}M$ (see Prop.\ 2.16).
+If $M\subset\mathbb R^n$ is an embedded submanifold, the tangential acceleration of a curve is $\gamma''{}^\top=\pi^\top(\gamma'')$. For a local field $Y$ on $M$, extend it to $\widetilde Y$ near $M$ and define
+\begin{equation}
+\nabla_v^\top Y=\pi^\top(\bar\nabla_v\widetilde Y).\tag{4.4}
+\end{equation}
+The projection is onto $T_pM$; the value is independent of the extension by Problem 4-1.
 \uses{prop:normal-bundle}
-This yields a vector $\gamma''(t)^\top = \pi^\top(\gamma''(t))$ tangent to $M$, which we call the \emph{tangential acceleration of $\gamma$}. It is reasonable to say that $\gamma$ is as straight as it is possible for a curve in $M$ to be if its tangential acceleration is zero.
 
-Similarly, suppose $Y$ is a smooth vector field on (an open subset of) $M$, and we wish to ask how much $Y$ is varying \emph{in $M$} in the direction of a vector $v \in T_pM$. Just as in the case of velocity vectors, if we look at it from the point of view of $\mathbb{R}^n$, the vector field $Y$ might be forced to vary just so that it can remain tangent to $M$. But one plausible way to answer the question is to extend $Y$ to a smooth vector field $\tilde{Y}$ on an open subset of $\mathbb{R}^n$, compute the Euclidean directional derivative of $\tilde{Y}$ in the direction $v$, and then project orthogonally onto $T_pM$. Let us define the \textbf{tangential directional derivative of $Y$ in the direction $v$} to be
-\begin{equation}
-\nabla_v^\top Y = \pi^\top(\bar{\nabla}_v \tilde{Y}). \tag{4.4}
-\end{equation}
-
-% [FIGURE: Fig. 4.1 - Circle with tangent and acceleration vectors labeled $\gamma'(t)$ and $\gamma''(t)$ in Cartesian coordinates with axes $x$ and $y$]
-% [FIGURE: Fig. 4.2 - Coordinate axes in polar coordinates with axes $r$ and $\theta$, showing a vector $\gamma'(t)$]
-
-Problem 4-1 shows that the tangential directional derivative is well defined and preserved by rigid motions of $\mathbb{R}^n$. However, at this point there is little reason to believe that the tangential directional derivative is an intrinsic invariant of $M$ (one that depends only on the Riemannian geometry of $M$ with its induced metric).
-
-On an abstract Riemannian manifold, for which there is no ``ambient Euclidean space'' in which to differentiate, this technique is not available. Thus we have to find some way to make sense of the acceleration of a smooth curve in an abstract manifold. Let $\gamma: I \to M$ be such a curve. As you know from your study of smooth manifold theory, at each time $t \in I$, the velocity of $\gamma$ is a well-defined vector $\gamma'(t) \in T_{\gamma(t)} M$ (see Appendix A), whose representation in any coordinates is given by \eqref{eq:4.1}, just as in Euclidean space.
-
-However, unlike velocity, acceleration has no such coordinate-independent interpretation. For example, consider the parametrized circle in the plane given in Cartesian coordinates by $\gamma(t) = (x(t), y(t)) = (\cos t, \sin t)$ (Fig. 4.1). As a smooth curve in $\mathbb{R}^2$, it has an acceleration vector at time $t$ given by
-\[
-\gamma''(t) = x''(t) \frac{\partial}{\partial x}\bigg|_{\gamma(t)} + y''(t) \frac{\partial}{\partial y}\bigg|_{\gamma(t)}
-= -\cos t \frac{\partial}{\partial x}\bigg|_{\gamma(t)} - \sin t \frac{\partial}{\partial y}\bigg|_{\gamma(t)}.
-\]
-
-% [FIGURE: Curve on a manifold with tangent vectors $\gamma'(t)$ and $\gamma'(t+h)$ labeled at different points, illustrating that these vectors lie in different tangent spaces]
-
-But in polar coordinates, the same curve is described by $(r(t), \theta(t)) = (1, t)$ (Fig.\ 4.2). In these coordinates, if we try to compute the acceleration vector by the analogous formula, we get
-\[
-\gamma''(t) = r''(t) \frac{\partial}{\partial r}\bigg|_{\gamma(t)} + \theta''(t) \frac{\partial}{\partial \theta}\bigg|_{\gamma(t)} = 0.
-\]
-
-The problem is this: to define $\gamma''(t)$ by differentiating $\gamma'(t)$ with respect to $t$, we have to take a limit of a difference quotient involving the vectors $\gamma'(t + h)$ and $\gamma'(t)$; but these live in different vector spaces ($T_{\gamma(t+h)}M$ and $T_{\gamma(t)}M$ respectively), so it does not make sense to subtract them (Fig.\ 4.3). The definition of acceleration works in the special case of smooth curves in $\mathbb{R}^n$ expressed in standard coordinates (or more generally, curves in any finite-dimensional vector space expressed in linear coordinates) because each tangent space can be naturally identified with the vector space itself. On a general smooth manifold, there is no such natural identification.
-
-The velocity vector $\gamma'(t)$ is an example of a \emph{vector field along a curve}, a concept for which we will give a rigorous definition presently. To interpret the acceleration of a curve in a manifold, what we need is some coordinate-independent way to differentiate vector fields along curves. To do so, we need a way to compare values of the vector field at different points, or intuitively, to ``connect'' nearby tangent spaces. This is where a connection comes in: it will be an additional piece of data on a manifold, a rule for computing directional derivatives of vector fields.
+On an abstract manifold, velocity still has the coordinate-independent expression \eqref{eq:4.1}, but $\gamma'(t+h)$ and $\gamma'(t)$ lie in different tangent spaces, so their difference quotient is undefined. Coordinate expressions can therefore give incompatible accelerations (the unit circle has Cartesian acceleration $-\cos t\,\partial_x-\sin t\,\partial_y$ but polar expression $r''\partial_r+\theta''\partial_\theta=0$). A connection supplies a coordinate-independent rule for comparing and differentiating such vectors.
 
 \section{Connections}
-
-It turns out to be easiest to define a connection first as a way of differentiating sections of vector bundles. The definition is meant to capture the essential properties of the Euclidean and tangential directional derivative operators ($\bar\nabla$ and $\nabla^\top$) that we defined above. (We will verify later that those operators actually are connections; see Examples 4.8 and 4.9.) After defining connections in this general setting, we will adapt the definition to the case of vector fields along curves.
 
 \begin{definition}[Connection]
 \label{def:connection}
 \lean{LeeLib.Ch04.Connection, LeeLib.Ch04.covariantDeriv}
 \leanok
-Let $\pi : E \to M$ be a smooth vector bundle over a smooth manifold $M$ with or without boundary, and let $\Gamma(E)$ denote the space of smooth sections of $E$. A \emph{connection} in $E$ is a map
+Let $\pi:E\to M$ be a smooth vector bundle over a smooth manifold with or without boundary. A connection is a map
 \[
-\nabla: \mathfrak{X}(M) \times \Gamma(E) \to \Gamma(E),
+\nabla:\mathfrak X(M)\times\Gamma(E)\to\Gamma(E)
 \]
-written $(X, Y) \mapsto \nabla_X Y$, satisfying the following properties:
+such that
 \begin{enumerate}
-\item[(i)] $\nabla_X Y$ is linear over $C^\infty(M)$ in $X$: for $f_1, f_2 \in C^\infty(M)$ and $X_1, X_2 \in \mathfrak{X}(M)$,
-\[
-\nabla_{f_1 X_1 + f_2 X_2} Y = f_1 \nabla_{X_1} Y + f_2 \nabla_{X_2} Y.
-\]
-
-\item[(ii)] $\nabla_X Y$ is linear over $\mathbb{R}$ in $Y$: for $a_1, a_2 \in \mathbb{R}$ and $Y_1, Y_2 \in \Gamma(E)$,
-\[
-\nabla_X(a_1 Y_1 + a_2 Y_2) = a_1 \nabla_X Y_1 + a_2 \nabla_X Y_2.
-\]
-
-\item[(iii)] $\nabla$ satisfies the following product rule: for $f \in C^\infty(M)$,
-\[
-\nabla_X(fY) = f \nabla_X Y + (Xf)Y.
-\]
+\item[(i)] $\nabla_{f_1X_1+f_2X_2}Y=f_1\nabla_{X_1}Y+f_2\nabla_{X_2}Y$;
+\item[(ii)] $\nabla_X(a_1Y_1+a_2Y_2)=a_1\nabla_XY_1+a_2\nabla_XY_2$;
+\item[(iii)] $\nabla_X(fY)=f\nabla_XY+(Xf)Y$.
 \end{enumerate}
+Here $f,f_i\in C^\infty(M)$, $a_i\in\mathbb R$, and the fields have the indicated domains.
 \end{definition}
-
-The symbol $\nabla$ is read ``del'' or ``nabla,'' and $\nabla_X Y$ is called the \emph{covariant derivative of $Y$ in the direction $X$}. (This use of the word ``covariant'' has nothing to do with covariant functors in category theory. It is related, albeit indirectly, to the use of the word in the context of covariant and contravariant tensors, in that it reflects the fact that the components of the covariant derivative have a transformation law that ``varies correctly'' to give a well-defined meaning independent of coordinates. From the modern coordinate-free point of view, ``invariant derivative'' would probably be a better term.)
-
-There is a variety of types of connections that are useful in different circumstances. The type of connection we have defined here is sometimes called a \emph{Koszul connection} to distinguish it from other types. Since we have no need to consider other types of connections in this book, we refer to Koszul connections simply as \emph{connections}.
-
-Although a connection is defined by its action on global sections, it follows from the definitions that it is actually a \emph{local operator}, as the next lemma shows.
 
 \begin{lemma}[Locality]
 \label{lem:connection-is-local-operator}
@@ -110,112 +55,77 @@ Although a connection is defined by its action on global sections, it follows fr
 \uses{def:connection}
 \lean{LeeLib.Ch04.covariantDeriv_local}
 \leanok
-Suppose $\nabla$ is a connection in a smooth vector bundle $E \to M$. For every $X \in \mathfrak{X}(M)$, $Y \in \Gamma(E)$, and $p \in M$, the covariant derivative $\nabla_X Y |_p$ depends only on the values of $X$ and $Y$ in an arbitrarily small neighborhood of $p$. More precisely, if $X = \tilde{X}$ and $Y = \tilde{Y}$ on a neighborhood of $p$, then $\nabla_X Y |_p = \nabla_{\tilde{X}} \tilde{Y} |_p$.
+If $\nabla$ is a connection, then $\nabla_XY|_p$ depends only on the germs of $X,Y$ near $p$: if $X=\widetilde X$ and $Y=\widetilde Y$ near $p$, then $\nabla_XY|_p=\nabla_{\widetilde X}\widetilde Y|_p$.
 \end{lemma}
-
 \begin{proof}
 \leanok
-First consider $Y$. Replacing $Y$ by $Y - \tilde{Y}$ shows that it suffices to prove $\nabla_X Y |_p = 0$ if $Y$ vanishes on a neighborhood of $p$.
-
-Thus suppose $Y$ is a smooth section of $E$ that is identically zero on a neighborhood $U$ of $p$. Choose a bump function $\varphi \in C^\infty(M)$ with support in $U$ such that $\varphi(p) = 1$. The hypothesis that $Y$ vanishes on $U$ implies that $\varphi Y \equiv 0$ on all of $M$, so for every $X \in \mathfrak{X}(M)$, we have $\nabla_X(\varphi Y) = \nabla_X 0 = 0$. Thus the product rule gives
+\sketch If $Y$ vanishes near $p$, choose a bump function $\varphi$ supported there with $\varphi(p)=1$. Since $\varphi Y=0$, the product rule gives
 \begin{equation}
-0 = \nabla_X(\varphi Y) = (X\varphi)Y + \varphi(\nabla_X Y). \tag{4.5}
+0=\nabla_X(\varphi Y)=(X\varphi)Y+\varphi\nabla_XY.\tag{4.5}
 \end{equation}
-
-Now $Y \equiv 0$ on the support of $\varphi$, so the first term on the right is identically zero. Evaluating (4.5) at $p$ shows that $\nabla_X Y|_p = 0$. The argument for $X$ is similar but easier.
+Both terms except $\nabla_XY|_p$ vanish at $p$. The argument for changing $X$ is analogous, using $C^\infty$-linearity in the first slot.
 \end{proof}
 
 \begin{exercise}\label{exer:lemma-4-1-comparison}\dcref{ch4:4.2}
 \uses{lem:connection-is-local-operator}
-Complete the proof of Lemma 4.1 by showing that $\nabla_X Y$ and $\nabla_{\bar{X}} Y$ agree at $p$ if $X = \bar{X}$ on a neighborhood of $p$.
+Complete the proof of the preceding lemma for the first argument.
 \end{exercise}
 
 \begin{proposition}[Restriction of a Connection]\label{prop:connection-restriction}\dcref{ch4:4.3}
 \uses{lem:connection-is-local-operator}
-Suppose $\nabla$ is a connection in a smooth vector bundle $E \to M$. For every open subset $U \subseteq M$, there is a unique connection $\nabla^U$ on the restricted bundle $E|_U$ that satisfies the following relation for every $X \in \mathfrak{X}(M)$ and $Y \in \Gamma(E)$:
+If $\nabla$ is a connection on $E\to M$ and $U\subseteq M$ is open, there is a unique connection $\nabla^U$ on $E|_U$ satisfying
 \begin{equation}
-\nabla^U_{(X|_U)}(Y|_U) = (\nabla_X Y)|_U. \tag{4.6}
+\nabla^U_{X|_U}(Y|_U)=(\nabla_XY)|_U.\tag{4.6}
 \end{equation}
 \end{proposition}
-
 \begin{proof}
-First we prove uniqueness. Suppose $\nabla^U$ is any such connection and $X \in \mathfrak{X}(U)$ and $Y \in \Gamma(E|_U)$ are arbitrary. Given $p \in U$, we can use a bump function to construct a smooth vector field $\bar{X} \in \mathfrak{X}(M)$ and a smooth section $\bar{Y} \in \Gamma(E)$ such that $\bar{X}|_U$ agrees with $X$ and $\bar{Y}|_U$ agrees with $Y$ on some neighborhood of $p$, and then Lemma 4.1 together with (4.6) implies
+\sketch Extend local fields and sections near each $p\in U$ to global ones with bump functions and define
 \begin{equation}
-\nabla^U_X Y|_p = \nabla^U_{(\bar{X}|_U)}(\bar{Y}|_U)|_p = (\nabla_{\bar{X}} \bar{Y})|_p. \tag{4.7}
+\nabla^U_XY|_p=(\nabla_{\widetilde X}\widetilde Y)|_p.\tag{4.7}
 \end{equation}
-
-Since the right-hand side is completely determined by $\nabla$, this shows that $\nabla^U$ is uniquely defined if it exists.
-
-To prove existence, given $X \in \mathfrak{X}(U)$ and $Y \in \Gamma(E|_U)$, for every $p \in U$ we just construct $\bar{X}$ and $\bar{Y}$ as above, and define $\nabla^U_X Y|_p$ by (4.7). This is independent of the choices of $\bar{X}$ and $\bar{Y}$ by Lemma 4.1, and it is smooth because the same formula holds on some neighborhood of $p$. The fact that it satisfies the properties of a connection is an easy exercise.
+Lemma \ref{lem:connection-is-local-operator} makes this independent of extensions and smooth; the connection axioms follow locally.
 \end{proof}
 
 \begin{exercise}\label{exer:connection-restriction-is-connection}\dcref{ch4:4.4}
 \uses{prop:connection-restriction}
-Complete the proof of the preceding proposition by showing that $\nabla^U$ is a connection.
+Complete the proof that $\nabla^U$ is a connection.
 \end{exercise}
-
-In the situation of this proposition, we typically just refer to the restricted connection as $\nabla$ instead of $\nabla^U$; the proposition guarantees that there is no ambiguity in doing so.
-
-Lemma 4.1 tells us that we can compute the value of $\nabla_X Y$ at $p$ knowing only the values of $X$ and $Y$ in a neighborhood of $p$. In fact, as the next proposition shows, we need only know the value of $X$ at $p$ itself.
 
 \begin{proposition}\label{prop:covariant-deriv-dependence-at-point}\dcref{ch4:4.5}
 \uses{lem:connection-is-local-operator}
 \lean{LeeLib.Ch04.covariantDeriv_dependence_at_point}
 \leanok
-Under the hypotheses of Lemma 4.1, $\nabla_X Y|_p$ depends only on the values of $Y$ in a neighborhood of $p$ and the value of $X$ at $p$.
+For a connection, $\nabla_XY|_p$ depends only on the germ of $Y$ near $p$ and the single value $X_p$.
 \end{proposition}
-
 \begin{proof}
 \leanok
-The claim about $Y$ was proved in Lemma 4.1. To prove the claim about $X$, it suffices by linearity to assume that $X_p = 0$ and show that $\nabla_X Y|_p = 0$. Choose a coordinate neighborhood $U$ of $p$, and write $X = X^i \partial_i$ in coordinates on $U$, with $X^i(p) = 0$. Thanks to Proposition 4.3, it suffices to work with the restricted connection on $U$, which we also denote by $\nabla$. For every $Y \in \Gamma(E|_U)$, we have
-\[
-\nabla_X Y|_p = \nabla_{X^i \partial_i} Y|_p = X^i(p)\nabla_{\partial_i} Y|_p = 0.
-\]
+\sketch Locality handles $Y$. If $X_p=0$, restrict to coordinates and write $X=X^i\partial_i$ with $X^i(p)=0$; restriction to the coordinate neighborhood and $C^\infty$-linearity give $\nabla_XY|_p=X^i(p)\nabla_{\partial_i}Y|_p=0$.
 \end{proof}
 
-Thanks to Propositions 4.3 and 4.5, we can make sense of the expression $\nabla_v Y$ when $v$ is some element of $T_p M$ and $Y$ is a smooth local section of $E$ defined only on some neighborhood of $p$. To evaluate it, let $X$ be a vector field on a neighborhood of $p$ whose value at $p$ is $v$, and set $\nabla_v Y = \nabla_X Y|_p$. Proposition 4.5 shows that the result does not depend on the extension chosen. Henceforth, we will interpret covariant derivatives of local sections of bundles in this way without further comment.
+Thus for $v\in T_pM$ and a local section $Y$, define $\nabla_vY$ by extending $v$ to a local field $X$ and setting $\nabla_vY=\nabla_XY|_p$; the preceding proposition makes this well defined.
 
 \section{Connections in the Tangent Bundle}
 
-For Riemannian or pseudo-Riemannian geometry, our primary concern is with connections in the tangent bundle, so for the rest of the chapter we focus primarily on that case. A connection in the tangent bundle is often called simply a \emph{connection on $M$}. (The terms \emph{affine connection} and \emph{linear connection} are also sometimes used in this context, but there is little agreement on the precise definitions of these terms, so we avoid them.)
+A connection in $TM$ is a connection on $M$ and is a map $\mathfrak X(M)^2\to\mathfrak X(M)$ satisfying (i)--(iii). It is not a $(1,2)$-tensor because the second slot obeys the product rule rather than $C^\infty(M)$-linearity.
 
-Suppose $M$ is a smooth manifold with or without boundary. By the definition we just gave, a connection in $TM$ is a map
-\[
-\nabla: \mathfrak{X}(M) \times \mathfrak{X}(M) \to \mathfrak{X}(M)
-\]
-satisfying properties (i)--(iii) above. Although the definition of a connection resembles the characterization of $(1,2)$-tensor fields given by the tensor characterization lemma (Lemma B.6), a connection in $TM$ is not a tensor field because it is not linear over $C^\infty(M)$ in its second argument, but instead satisfies the product rule.
-
-For computations, we need to examine how a connection appears in terms of a local frame. Let $(E_i)$ be a smooth local frame for $TM$ on an open subset $U \subseteq M$. For every choice of the indices $i$ and $j$, we can expand the vector field $\nabla_{E_i} E_j$ in terms of this same frame:
+For a local frame $(E_i)$, define connection coefficients by
 \begin{equation}
-\nabla_{E_i} E_j = \Gamma^k_{ij} E_k. \tag{4.8}
+\nabla_{E_i}E_j=\Gamma^k_{ij}E_k.\tag{4.8}
 \end{equation}
-
-As $i$, $j$, and $k$ range from 1 to $n = \dim M$, this defines $n^3$ smooth functions $\Gamma^k_{ij}: U \to \mathbb{R}$, called the \emph{connection coefficients} of $\nabla$ with respect to the given frame. The following proposition shows that the connection is completely determined in $U$ by its connection coefficients.
-
 \begin{proposition}
 \label{prop:connection-coefficients-frame}
 \dcref{ch4:4.6}
 \uses{def:connection}
 \lean{LeeLib.Ch04.connectionCoeff, LeeLib.Ch04.covariantDeriv_frame_eq_sum_connectionCoeff, LeeLib.Ch04.covariantDeriv_eq_connectionCoeff_formula}
 \leanok
-Let $M$ be a smooth manifold with or without boundary, and let $\nabla$ be a connection in $TM$. Suppose $(E_i)$ is a smooth local frame over an open subset $U \subseteq M$, and let $\{\Gamma^k_{ij}\}$ be the connection coefficients of $\nabla$ with respect to this frame. For smooth vector fields $X,Y \in \mathfrak{X}(U)$, written in terms of the frame as $X = X^i E_i$, $Y = Y^j E_j$, one has
+If $X=X^iE_i$ and $Y=Y^jE_j$ on a local frame domain, then
 \begin{equation}
-\nabla_X Y = \left(X(Y^k) + X^i Y^j \Gamma^k_{ij}\right) E_k. \tag{4.9}
+\nabla_XY=\left(X(Y^k)+X^iY^j\Gamma^k_{ij}\right)E_k.\tag{4.9}
 \end{equation}
 \end{proposition}
-
 \begin{proof}
-Just use the defining properties of a connection and compute:
-\begin{align*}
-\nabla_X Y &= \nabla_X (Y^j E_j) \\
-&= X(Y^j) E_j + Y^j \nabla_{X^i E_i} E_j \\
-&= X(Y^j) E_j + X^i Y^j \nabla_{E_i} E_j \\
-&= X(Y^j) E_j + X^i Y^j \Gamma^k_{ij} E_k.
-\end{align*}
-Renaming the dummy index in the first term yields (4.9).
+\sketch Expand $\nabla_X(Y^jE_j)$ using the product rule and $C^\infty$-linearity in $X$, substitute (4.8), and rename the dummy index in the derivative term.
 \end{proof}
-
-Once the connection coefficients (and thus the connection) have been determined in some local frame, they can be determined in any other local frame on the same open set by the result of the following proposition.
 
 \begin{proposition}[Transformation Law for Connection Coefficients]
 \label{prop:transformation-law-connection-coefficients}
@@ -223,93 +133,55 @@ Once the connection coefficients (and thus the connection) have been determined 
 \uses{def:connection,prop:connection-coefficients-frame}
 \lean{LeeLib.Ch04.connectionCoeff_transformation_law}
 \leanok
-Let $M$ be a smooth manifold with or without boundary, and let $\nabla$ be a connection in $TM$. Suppose we are given two smooth local frames $(E_i)$ and $(\tilde{E}_j)$ for $TM$ on an open subset $U \subseteq M$, related by $\tilde{E}_i = A^j_i E_j$ for some matrix of functions $(A^j_i)$. Let $\Gamma^k_{ij}$ and $\tilde{\Gamma}^k_{ij}$ denote the connection coefficients of $\nabla$ with respect to these two frames. Then
+If $\widetilde E_i=A^j_iE_j$ are two local frames, their coefficients satisfy
 \[
-\tilde{\Gamma}^k_{ij} = (A^{-1})^k_p A^q_i A^r_j \Gamma^p_{qr} + (A^{-1})^k_p A^q_i E_q(A^p_j),
+\widetilde\Gamma^k_{ij}=(A^{-1})^k_pA^q_iA^r_j\Gamma^p_{qr}+(A^{-1})^k_pA^q_iE_q(A^p_j).
 \]
-where $(A^{-1})^k_p$ is the inverse transition matrix (the $\tilde{E}_k$-component of $E_p$) and $E_q(A^p_j)$ is the directional derivative of the transition component $A^p_j$ along $E_q$.
 \end{proposition}
-
 \begin{proof}
 \leanok
-Write $\tilde{E}_j = A^r_j E_r$. By $\mathbb{R}$-linearity of $\nabla$ in its section argument and the product rule (Definition~\ref{def:connection}(ii),(iii)),
-\[
-\nabla_{\tilde{E}_i}\tilde{E}_j = \nabla_{\tilde{E}_i}(A^r_j E_r)
-  = \sum_r \big( A^r_j\, \nabla_{\tilde{E}_i} E_r + (\tilde{E}_i A^r_j)\, E_r \big).
-\]
-By $C^\infty(M)$-linearity of $\nabla$ in its direction argument together with the defining relation $\nabla_{E_q} E_r = \Gamma^p_{qr} E_p$ (equation (4.8), Proposition~\ref{prop:connection-coefficients-frame}), and $\tilde{E}_i = A^q_i E_q$,
-\[
-\nabla_{\tilde{E}_i} E_r = A^q_i\, \nabla_{E_q} E_r = A^q_i \Gamma^p_{qr} E_p.
-\]
-Expressing the frame $(E_r)$ in terms of $(\tilde{E}_k)$ via $E_p = (A^{-1})^k_p \tilde{E}_k$ and reading off the $\tilde{E}_k$-component yields
-\[
-\tilde{\Gamma}^k_{ij} = (A^{-1})^k_p A^q_i A^r_j \Gamma^p_{qr} + (A^{-1})^k_p\, \tilde{E}_i(A^p_j).
-\]
-Finally $\tilde{E}_i(A^p_j) = A^q_i\, E_q(A^p_j)$ since $\tilde{E}_i = A^q_i E_q$ acts as a derivation, giving the stated formula. The Lean proof reuses the frame formula (4.9) (Proposition~\ref{prop:connection-coefficients-frame}) applied to the section $\tilde{E}_j = \sum_r A^r_j E_r$, with the transition components $A^r_j$ smooth by Lemma~A.33 and the section germ swapped by locality (Lemma~\ref{lem:connection-is-local-operator}).
+\sketch Expand $\nabla_{\widetilde E_i}(A^r_jE_r)$ using the product rule from Definition \ref{def:connection}; substitute (4.8) and Proposition \ref{prop:connection-coefficients-frame}, then write $E_p=(A^{-1})^k_p\widetilde E_k$ and $\widetilde E_i(A^p_j)=A^q_iE_q(A^p_j)$. Reusing Proposition \ref{prop:connection-coefficients-frame} gives the stated formula; the derivative term shows that coefficients are not tensor components.
 \end{proof}
 
-Observe that the first term above is exactly what the transformation law would be if $\Gamma^k_{ij}$ were the components of a $(1,2)$-tensor field; but the second term is of a different character, because it involves derivatives of the transition matrix $(A^p_j)$.
-
 \section{Existence of Connections}
-
-So far, we have studied properties of connections but have not produced any, so you might be wondering whether they are plentiful or rare. In fact, they are quite plentiful, as we will show shortly. Let us begin with the simplest example.
 
 \begin{example}[The Euclidean Connection]
 \label{ex:euclidean-connection}
 \dcref{ch4:4.8}
-On $T\mathbb{R}^n$, define the \emph{Euclidean connection} $\bar\nabla$ by formula (4.3). It is easy to check that this satisfies the required properties for a connection, and that its connection coefficients in the standard coordinate frame are all zero.
+On $T\mathbb R^n$, the formula (4.3) defines the Euclidean connection $\bar\nabla$; its standard-frame coefficients are zero.
 \end{example}
 
 \begin{example}[The Tangential Connection on a Submanifold of $\mathbb{R}^n$]
 \label{ex:tangential-connection-submanifold}
 \dcref{ch4:4.9}
 \uses{prop:normal-bundle,ex:euclidean-connection,exer:extension-smooth-function,prob:embedded-submanifold-covariant-derivative,prop:adapted-orthonormal-frames}
-Let $M \subseteq \mathbb{R}^n$ be an embedded submanifold. Define a connection $\nabla^T$ on $TM$, called the \emph{tangential connection}, by setting
+For an embedded $M\subseteq\mathbb R^n$, define
 \[
-\nabla_X^T Y = \pi^T(\tilde{\nabla}_{\tilde{X}} \tilde{Y}|_M),
+\nabla_X^TY=\pi^T\bigl(\widetilde\nabla_{\widetilde X}\widetilde Y|_M\bigr),
 \]
-where $\pi^T$ is the orthogonal projection onto $TM$ (Prop.\ 2.16), $\tilde{\nabla}$ is the Euclidean connection on $\mathbb{R}^n$ (Example 4.8), and $\tilde{X}$ and $\tilde{Y}$ are smooth extensions of $X$ and $Y$ to an open set in $\mathbb{R}^n$. (Such extensions exist by the result of Exercise A.23.) Since the value of $\tilde{\nabla}_{\tilde{X}} \tilde{Y}$ at a point $p \in M$ depends only on $\tilde{X}_p = X_p$, this just boils down to defining $(\nabla_X^T Y)_p$ to be equal to the tangential directional derivative $\nabla_X^T Y$ that we defined in (4.4) above. Problem 4-1 shows that this value is independent of the choice of extension $\tilde{Y}$, so $\nabla^T$ is well defined. Smoothness is easily verified by expressing $\nabla_X^T Y$ in terms of an adapted orthonormal frame (see Prop.\ 2.14).
+where extensions are taken near $M$, $\widetilde\nabla$ is the Euclidean connection, and $\pi^T$ is the tangential projection. This is independent of extensions by (4.4) and is a connection.
 
-It is immediate from the definition that $\nabla^T Y$ is linear over $C^\infty(M)$ in $X$ and over $\mathbb{R}$ in $Y$, so to show that $\nabla^T$ is a connection, only the product rule needs to be checked. Let $f \in C^\infty(M)$, and let $\tilde{f}$ be an extension of $f$ to a neighborhood of $M$ in $\mathbb{R}^n$. Then $\tilde{f}\tilde{Y}$ is a smooth extension of $fY$ to a neighborhood of $M$, so
-\begin{align*}
-\nabla_X^T(fY) &= \pi^T(\tilde{\nabla}_{\tilde{X}}(\tilde{f}\tilde{Y})|_M) \\
-&= \pi^T((\tilde{X}\tilde{f})\tilde{Y}|_M + \tilde{f}(\tilde{\nabla}_{\tilde{X}}\tilde{Y}|_M)) \\
-&= (Xf)Y + f\nabla_X^T Y.
-\end{align*}
-
-Thus $\nabla^T$ is a connection. \hfill $\parallel$
+\sketch Linearity in $X,Y$ is immediate. For an extension $\widetilde f$ of $f$,
+\[
+\nabla_X^T(fY)=\pi^T\bigl(\widetilde\nabla_{\widetilde X}(\widetilde f\widetilde Y)|_M\bigr)=(Xf)Y+f\nabla_X^TY.
+\]
 \end{example}
-
-In fact, there are many connections on $\mathbb{R}^n$, or indeed on every smooth manifold that admits a global frame (for example, every manifold covered by a single smooth coordinate chart). The following lemma shows how to construct all of them explicitly.
 
 \begin{lemma}
 \label{lem:connections-from-connection-coefficients}
 \dcref{ch4:4.10}
 \uses{prop:connection-coefficients-frame}
-% Both directions of the correspondence are formalized for a global frame given by a
-% global trivialization `e` (`e.baseSet = univ`, matching Lee's global-frame hypothesis).
-% Forward (connection → coefficients via (4.9)): covariantDeriv_eq_connectionCoeff_formula
-% (in ConnectionCoefficients.lean). Converse (coefficients → connection via (4.9), as a
-% *definition*): connOfCoeff, an honest `Connection I E (TangentSpace I)`, whose recovered
-% coefficients are exactly the given Γ (connectionCoeff_connOfCoeff). The literal type-level
-% bijection is not formalized (junk non-differentiable sections make it false verbatim), so
-% no \leanok on the "one-to-one correspondence" as stated.
 \lean{LeeLib.Ch04.connOfCoeff, LeeLib.Ch04.connectionCoeff_connOfCoeff, LeeLib.Ch04.covariantDeriv_eq_connectionCoeff_formula}
-Suppose $M$ is a smooth $n$-manifold with or without boundary, and $M$ admits a global frame $(E_i)$. Formula (4.9) gives a one-to-one correspondence between connections in $TM$ and choices of $n^3$ smooth real-valued functions $\{\Gamma^k_{ij}\}$ on $M$.
+If a smooth $n$-manifold with or without boundary has a global frame $(E_i)$, then (4.9) gives a one-to-one correspondence between connections on $TM$ and $n^3$ smooth functions $\Gamma^k_{ij}$.
 \end{lemma}
-
 \begin{proof}
-Every connection determines functions $\{\Gamma^k_{ij}\}$ by (4.8), and Proposition 4.6 shows that those functions satisfy (4.9). On the other hand, given $\{\Gamma^k_{ij}\}$, we can define $\nabla_X Y$ by (4.9); it is easy to see that the resulting expression is smooth if $X$ and $Y$ are smooth, linear over $\mathbb{R}$ in $Y$, and linear over $C^\infty(M)$ in $X$. To prove that it is a connection, only the product rule requires checking; this is a straightforward computation left as an exercise.
+\sketch A connection supplies $\Gamma^k_{ij}$ through (4.8). Conversely, (4.9) defines a smooth operation satisfying linearity; the product rule is the direct expansion of $X(Y^j)$.
 \end{proof}
 
 \begin{exercise}
 \label{exer:complete-proof-lemma-4.10}
 \dcref{ch4:4.11}
 \uses{lem:connections-from-connection-coefficients}
-% The step Lee leaves as an exercise — that the formula (4.9) definition satisfies the
-% connection axioms — is completed: connOfCoeff_isCovariantDerivativeOn proves the
-% additivity (`add`) and the product rule (`leibniz`) directly from (4.9) on the global
-% trivialization frame, and connectionCoeff_connOfCoeff recovers the coefficients.
 \lean{LeeLib.Ch04.connOfCoeff_isCovariantDerivativeOn, LeeLib.Ch04.connectionCoeff_connOfCoeff}
 \leanok
 Complete the proof of Lemma 4.10.
@@ -319,25 +191,18 @@ Complete the proof of Lemma 4.10.
 \label{prop:tangent-bundle-admits-connection}
 \dcref{ch4:4.12}
 \uses{lem:connections-from-connection-coefficients}
-The tangent bundle of every smooth manifold with or without boundary admits a connection.
+Every smooth manifold with or without boundary admits a connection on its tangent bundle.
 \end{proposition}
-
 \begin{proof}
-Let $M$ be a smooth manifold with or without boundary, and cover $M$ with coordinate charts $\{U_\alpha\}$; the preceding lemma guarantees the existence of a connection $\nabla^\alpha$ on each $U_\alpha$. Choose a partition of unity $\{\varphi_\alpha\}$ subordinate to $\{U_\alpha\}$. We would like to patch the various $\nabla^\alpha$'s together by the formula
+\sketch Choose local connections $\nabla^\alpha$ on a coordinate cover and a subordinate partition of unity $(\varphi_\alpha)$. Set
 \begin{equation}
-\nabla_X Y = \sum_\alpha \varphi_\alpha \nabla_X^\alpha Y. \tag{4.11}
+\nabla_XY=\sum_\alpha\varphi_\alpha\nabla_X^\alpha Y.\tag{4.11}
 \end{equation}
-
-Because the set of supports of the $\varphi_\alpha$'s is locally finite, the sum on the right-hand side has only finitely many nonzero terms in a neighborhood of each point, so it defines a smooth vector field on $M$. It is immediate from this definition that $\nabla_X Y$ is linear over $\mathbb{R}$ in $Y$ and linear over $C^\infty(M)$ in $X$. We have to be a bit careful with the product rule, though, since a linear combination of connections is not necessarily a connection. (You can check, for example, that if $\nabla^0$ and $\nabla^1$ are connections, then neither $2\nabla^0$ nor $\nabla^0 + \nabla^1$ satisfies the product rule.) By direct computation,
-\begin{align*}
-\nabla_X(fY) &= \sum_\alpha \varphi_\alpha \nabla_X^\alpha(fY) \\
-&= \sum_\alpha \varphi_\alpha((Xf)Y + f\nabla_X^\alpha Y) \\
-&= (Xf)Y \sum_\alpha \varphi_\alpha + f\sum_\alpha \varphi_\alpha \nabla_X^\alpha Y \\
-&= (Xf)Y + f\nabla_X Y.
-\end{align*}
+Local finiteness gives smoothness. The partition identity $\sum_\alpha\varphi_\alpha=1$ yields
+\[
+\nabla_X(fY)=\sum_\alpha\varphi_\alpha((Xf)Y+f\nabla_X^\alpha Y)=(Xf)Y+f\nabla_XY.
+\]
 \end{proof}
-
-Although a connection is not a tensor field, the next proposition shows that the difference between two connections is.
 
 \begin{proposition}[The Difference Tensor]
 \label{prop:difference-tensor}
@@ -345,20 +210,12 @@ Although a connection is not a tensor field, the next proposition shows that the
 \uses{def:connection}
 \lean{LeeLib.Ch04.differenceTensor, LeeLib.Ch04.differenceTensor_apply}
 \leanok
-Let $M$ be a smooth manifold with or without boundary. For any two connections $\nabla^0$ and $\nabla^1$ in $TM$, define a map $D: \mathfrak{X}(M) \times \mathfrak{X}(M) \to \mathfrak{X}(M)$ by
-\[
-D(X,Y) = \nabla_X^1 Y - \nabla_X^0 Y.
-\]
-
-Then $D$ is bilinear over $C^\infty(M)$, and thus defines a $(1,2)$-tensor field called the difference tensor between $\nabla^0$ and $\nabla^1$.
+For connections $\nabla^0,\nabla^1$ on $TM$, define $D(X,Y)=\nabla_X^1Y-\nabla_X^0Y$. Then $D$ is $C^\infty(M)$-bilinear and hence a $(1,2)$-tensor field.
 \end{proposition}
-
 \begin{proof}
 \leanok
-It is immediate from the definition that $D$ is linear over $C^\infty(M)$ in its first argument, because both $\nabla^0$ and $\nabla^1$ are. To show that it is linear over $C^\infty(M)$ in the second argument, expand $D(X, fY)$ using the product rule, and note that the two terms in which $f$ is differentiated cancel each other.
+\sketch First-slot linearity is inherited. Expanding $D(X,fY)$ with the two product rules cancels the two $(Xf)Y$ terms, leaving $D(X,fY)=fD(X,Y)$.
 \end{proof}
-
-Now that we know there is always one connection in $TM$, we can use the result of the preceding proposition to say exactly how many there are.
 
 \begin{theorem}
 \label{thm:connections-affine-space}
@@ -366,158 +223,146 @@ Now that we know there is always one connection in $TM$, we can use the result o
 \uses{prop:difference-tensor}
 \lean{LeeLib.Ch04.addOneForm, LeeLib.Ch04.eq_addOneForm_differenceTensor}
 \leanok
-Let $M$ be a smooth manifold with or without boundary, and let $\nabla^0$ be any connection in $TM$. Then the set $\mathcal{A}(TM)$ of all connections in $TM$ is equal to the following affine space:
+For any connection $\nabla^0$ on a smooth manifold, the set of all connections is the affine space
 \[
-\mathcal{A}(TM) = \{\nabla^0 + D : D \in \Gamma(T^{(1,2)}TM)\},
+\mathcal A(TM)=\{\nabla^0+D:D\in\Gamma(T^{(1,2)}TM)\},
 \]
-where $D \in \Gamma(T^{(1,2)}TM)$ is interpreted as a map from $\mathfrak{X}(M) \times \mathfrak{X}(M)$ to $\mathfrak{X}(M)$ as in Proposition B.1, and $\nabla^0 + D : \mathfrak{X}(M) \times \mathfrak{X}(M) \to \mathfrak{X}(M)$ is defined by
-\[
-(\nabla^0 + D)_X Y = \nabla^0_X Y + D(X,Y).
-\]
+where $(\nabla^0+D)_XY=\nabla^0_XY+D(X,Y)$.
 \end{theorem}
-
 \begin{proof}
 \leanok
 \uses{prop:difference-tensor}
-First, every connection lies in the given set. Let $\nabla$ be any connection in $TM$, and let $D = \nabla^1 - \nabla^0$ with $\nabla^1 = \nabla$; by Proposition \ref{prop:difference-tensor} the map $D(X,Y) = \nabla_X Y - \nabla^0_X Y$ is a $(1,2)$-tensor field, and $\nabla_X Y = \nabla^0_X Y + D(X,Y) = (\nabla^0 + D)_X Y$, so $\nabla \in \{\nabla^0 + D\}$.
-
-Conversely, for any $(1,2)$-tensor field $D \in \Gamma(T^{(1,2)}TM)$, the map $(\nabla^0 + D)_X Y = \nabla^0_X Y + D(X,Y)$ is again a connection. It is linear over $C^\infty(M)$ in $X$ and over $\mathbb{R}$ in $Y$ because both $\nabla^0$ and $D$ are. For the product rule, since $D$ is $C^\infty(M)$-linear in $Y$ it contributes no derivative term, so
-\[
-(\nabla^0 + D)_X(fY) = f\nabla^0_X Y + (Xf)Y + fD(X,Y) = f(\nabla^0 + D)_X Y + (Xf)Y.
-\]
-Hence $\mathcal{A}(TM) = \{\nabla^0 + D : D \in \Gamma(T^{(1,2)}TM)\}$.
+\sketch Proposition \ref{prop:difference-tensor} writes any $\nabla$ as $\nabla^0+D$. Conversely, adding a tensor $D$ preserves the two linearities, and $C^\infty$-linearity of $D$ in $Y$ leaves the product rule of $\nabla^0$ unchanged.
 \end{proof}
-
 \section{Covariant Derivatives of Tensor Fields}
 
-By definition, a connection in $TM$ is a rule for computing covariant derivatives of vector fields. We show in this section that every connection in $TM$ automatically induces connections in all tensor bundles over $M$, and thus gives us a way to compute covariant derivatives of tensor fields of any type.
-
-\begin{proposition}\label{prop:connection-on-tensor-bundles}\dcref{ch4:4.15}
-% Formalized in the covector (1-form) case: the induced covariant derivative of a
-% covector field via Lee's eq. (4.13) `(∇_X ω)(Y) = X(ω Y) − ω(∇_X Y)`, packaged as a
-% genuine covector `covDerivCovector` (its tensoriality in Y is the crux), together
-% with property (a) — the pairing Leibniz rule `covDeriv_pairing_leibniz`. mathlib has
-% no Hom/dual/tensor-product vector bundle, so the full (i)–(iv) statement on all
-% tensor bundles T^{(k,l)}TM is not formalized (hence no \leanok).
+\begin{proposition}
+\label{prop:connection-on-tensor-bundles}
+\dcref{ch4:4.15}
 \lean{LeeLib.Ch04.covDerivCovector, LeeLib.Ch04.covDerivCovector_apply, LeeLib.Ch04.covDeriv_pairing_leibniz}
-Let $M$ be a smooth manifold with or without boundary, and let $\nabla$ be a connection in $TM$. Then $\nabla$ uniquely determines a connection in each tensor bundle $T^{(k,l)}TM$, also denoted by $\nabla$, such that the following four conditions are satisfied.
+Let $M$ be a smooth manifold with or without boundary and let $\nabla$ be a
+connection in $TM$. There is a unique induced connection on every tensor
+bundle $T^{(k,l)}TM$, denoted again by $\nabla$, satisfying:
 \begin{enumerate}
-\item[(i)] In $T^{(1,0)}TM = TM$, $\nabla$ agrees with the given connection.
-\item[(ii)] In $T^{(0,0)}TM = M \times \mathbb{R}$, $\nabla$ is given by ordinary differentiation of functions:
-\[\nabla_X f = Xf.\]
-\item[(iii)] $\nabla$ obeys the following product rule with respect to tensor products:
-\[\nabla_X (F \otimes G) = (\nabla_X F) \otimes G + F \otimes (\nabla_X G).\]
-\item[(iv)] $\nabla$ commutes with all contractions: if ``tr'' denotes a trace on any pair of indices, one covariant and one contravariant, then
-\[\nabla_X (\mathrm{tr} F) = \mathrm{tr}(\nabla_X F).\]
+\item[(i)] on $TM$, it is the given connection;
+\item[(ii)] on $T^{(0,0)}TM=M\times\mathbb R$, $\nabla_Xf=Xf$;
+\item[(iii)] $\nabla_X(F\otimes G)=(\nabla_XF)\otimes G+F\otimes(\nabla_XG)$;
+\item[(iv)] $\nabla_X(\operatorname{tr}F)=\operatorname{tr}(\nabla_XF)$ for every
+contraction of one covariant and one contravariant index.
 \end{enumerate}
-
-This connection also satisfies the following additional properties:
+It also satisfies
 \begin{enumerate}
-\item[(a)] $\nabla$ obeys the following product rule with respect to the natural pairing between a covector field $\omega$ and a vector field $Y$:
-\[\nabla_X \langle \omega, Y \rangle = \langle \nabla_X \omega, Y \rangle + \langle \omega, \nabla_X Y \rangle.\]
-\item[(b)] For all $F \in \Gamma(T^{(k,l)}TM)$, smooth 1-forms $\omega^1, \ldots, \omega^k$, and smooth vector fields $Y_1, \ldots, Y_l$,
+\item[(a)]
+\[
+\nabla_X\langle\omega,Y\rangle
+=\langle\nabla_X\omega,Y\rangle+\langle\omega,\nabla_XY\rangle;
+\]
+\item[(b)] for $F\in\Gamma(T^{(k,l)}TM)$, smooth $1$-forms
+$\omega^1,\ldots,\omega^k$, and smooth vector fields $Y_1,\ldots,Y_l$,
 \begin{align}
-  (\nabla_X F)(\omega^1,\ldots,\omega^k, Y_1,\ldots,Y_l) &= X\big(F(\omega^1,\ldots,\omega^k, Y_1,\ldots,Y_l)\big) \nonumber\\
-  &\quad - \sum_{i=1}^{k} F(\omega^1,\ldots,\nabla_X\omega^i,\ldots,\omega^k, Y_1,\ldots,Y_l) \nonumber\\
-  &\quad - \sum_{j=1}^{l} F(\omega^1,\ldots,\omega^k, Y_1,\ldots,\nabla_X Y_j,\ldots,Y_l). \label{eq:4.12}\tag{4.12}
+(\nabla_XF)(\omega^1,\ldots,\omega^k,Y_1,\ldots,Y_l)
+&=X\big(F(\omega^1,\ldots,\omega^k,Y_1,\ldots,Y_l)\big)\nonumber\\
+&\quad-\sum_{i=1}^kF(\omega^1,\ldots,\nabla_X\omega^i,\ldots,\omega^k,Y_1,\ldots,Y_l)\nonumber\\
+&\quad-\sum_{j=1}^lF(\omega^1,\ldots,\omega^k,Y_1,\ldots,\nabla_XY_j,\ldots,Y_l).
+\label{eq:4.12}\tag{4.12}
 \end{align}
 \end{enumerate}
 \end{proposition}
-
 \begin{proof}
-First we show that every family of connections on all tensor bundles satisfying (i)--(iv) also satisfies (a) and (b). Suppose we are given such a family of connections, all denoted by $\nabla$. To prove (a), note that $\langle \omega, Y \rangle = \operatorname{tr}(\omega \otimes Y)$, as can be seen by evaluating both sides in coordinates, where they both reduce to $\omega_i Y^i$. Therefore, (i)--(iv) imply
-\begin{align*}
-  \nabla_X \langle \omega, Y \rangle &= \nabla_X (\operatorname{tr}(\omega \otimes Y)) \\
-  &= \operatorname{tr}(\nabla_X(\omega \otimes Y)) \\
-  &= \operatorname{tr}(\nabla_X\omega \otimes Y + \omega \otimes \nabla_X Y) \\
-  &= \langle \nabla_X\omega, Y \rangle + \langle \omega, \nabla_X Y \rangle.
-\end{align*}
-
-Then (b) is proved by induction using a similar computation applied to
-\[
-  F(\omega^1,\ldots,\omega^k, Y_1,\ldots,Y_l) = \underbrace{\operatorname{tr}\circ\cdots\circ\operatorname{tr}}_{k+l}(F \otimes \omega^1 \otimes \cdots \otimes \omega^k \otimes Y_1 \otimes \cdots \otimes Y_l),
-\]
-where each trace operator acts on an upper index of $F$ and the lower index of the corresponding 1-form, or a lower index of $F$ and the upper index of the corresponding vector field.
-
-Next we address uniqueness. Assume again that $\nabla$ represents a family of connections satisfying (i)--(iv), and hence also (a) and (b). Observe that (ii) and (a) imply that the covariant derivative of every 1-form $\omega$ can be computed by
+\sketch Pairing is the contraction of $\omega\otimes Y$, so (i)--(iv) give
+(a). Repeatedly expressing the evaluation of $F$ as contractions of
+$F\otimes\omega^1\otimes\cdots\otimes\omega^k\otimes Y_1\otimes\cdots\otimes
+Y_l$ gives (b). Formula (a) with functions determines the derivative of every
+1-form:
 \begin{equation}
-  (\nabla_X\omega)(Y) = X(\omega(Y)) - \omega(\nabla_X Y). \label{eq:4.13}\tag{4.13}
+(\nabla_X\omega)(Y)=X(\omega(Y))-\omega(\nabla_XY).
+\label{eq:4.13}\tag{4.13}
 \end{equation}
-It follows that the connection on 1-forms is uniquely determined by the original connection in $TM$. Similarly, (b) gives a formula that determines the covariant derivative of every tensor field $F$ in terms of covariant derivatives of vector fields and 1-forms, so the connection in every tensor bundle is uniquely determined.
-
-Now to prove existence, we first define covariant derivatives of 1-forms by \eqref{eq:4.13}, and then we use \eqref{eq:4.12} to define $\nabla$ on all other tensor bundles. The first thing that needs to be checked is that the resulting expression is multilinear over $C^\infty(M)$ in each $\omega^i$ and $Y_j$, and therefore defines a smooth tensor field. This is done by inserting $f\omega^i$ in place of $\omega^i$, or $fY_j$ in place of $Y_j$, and expanding the right-hand side, noting that the two terms in which $f$ is differentiated cancel each other out. Once we know that $\nabla_X F$ is a smooth tensor field, we need to check that it satisfies the defining properties of a connection. Linearity over $C^\infty(M)$ in $X$ and linearity over $\mathbb{R}$ in $F$ are both evident from (4.12) and (4.13), and the product rule in $F$ follows easily from the fact that differentiation of functions by $X$ satisfies the product rule.
+Then (4.12) determines all higher tensor derivatives, proving uniqueness.
+Conversely, define the derivative of $1$-forms by (4.13) and all other
+derivatives by (4.12). The terms obtained by differentiating a coefficient
+$f$ cancel when an argument is replaced by $f\omega^i$ or $fY_j$, so the
+result is tensorial and smooth. Linearity and the tensor-product rule follow
+from the corresponding rules for differentiation of functions.
 \end{proof}
-
-While (4.12) and (4.13) are useful for proving the existence and uniqueness of the connections in tensor bundles, they are not very practical for computation, because computing the value of $\nabla_X F$ at a point requires extending all of its arguments to vector fields and covector fields in an open set, and computing a great number of derivatives. For computing the components of a covariant derivative in terms of a local frame, the formulas in the following proposition are far more useful.
 
 \begin{proposition}
 \label{prop:covariant-derivative-components}
 \dcref{ch4:4.16}
-Let $M$ be a smooth manifold with or without boundary, and let $\nabla$ be a connection in $TM$. Suppose $(E_i)$ is a local frame for $M$, $(\epsilon^j)$ is its dual coframe, and $\{\Gamma^k_{ij}\}$ are the connection coefficients of $\nabla$ with respect to this frame. Let $X$ be a smooth vector field, and let $X^i E_i$ be its local expression in terms of this frame.
-
-\begin{enumerate}
-\item[(a)] The covariant derivative of a 1-form $\omega = \omega_i \epsilon^i$ is given locally by
+Let $M$ be a smooth manifold with or without boundary, let $\nabla$ be a
+connection in $TM$, and let $(E_i)$ be a local frame with dual coframe
+$(\epsilon^j)$ and coefficients $\nabla_{E_i}E_j=\Gamma^k_{ij}E_k$.
+If $X=X^jE_j$, then for
+$\omega=\omega_i\epsilon^i$,
 \[
-\nabla_X(\omega) = (X(\omega_k) - X^j \omega_i \Gamma^i_{jk}) \epsilon^k.
+\nabla_X\omega=\bigl(X(\omega_k)-X^j\omega_i\Gamma^i_{jk}\bigr)\epsilon^k.
 \]
-
-\item[(b)] If $F \in \Gamma(T^{(k,\ell)}TM)$ is a smooth mixed tensor field of any rank, expressed locally as
+For a tensor
 \[
-F = F^{i_1 \cdots i_k}_{j_1 \cdots j_\ell} E_{i_1} \otimes \cdots \otimes E_{i_k} \otimes \epsilon^{j_1} \otimes \cdots \otimes \epsilon^{j_\ell},
+F=F^{i_1\cdots i_k}_{j_1\cdots j_l}
+E_{i_1}\otimes\cdots\otimes E_{i_k}\otimes
+\epsilon^{j_1}\otimes\cdots\otimes\epsilon^{j_l},
 \]
-then the covariant derivative of $F$ is given locally by
 \[
-\nabla_X F = \left(X(F^{i_1 \cdots i_k}_{j_1 \cdots j_\ell}) + \sum_{s=1}^k X^m F^{i_1 \cdots p \cdots i_k}_{j_1 \cdots j_\ell} \Gamma^{i_s}_{mp} - \sum_{s=1}^{\ell} X^m F^{i_1 \cdots i_k}_{j_1 \cdots p \cdots j_\ell} \Gamma^p_{ms}\right) \times E_{i_1} \otimes \cdots \otimes E_{i_k} \otimes \epsilon^{j_1} \otimes \cdots \otimes \epsilon^{j_\ell}.
+\begin{aligned}
+\nabla_XF={}&\Bigl(X(F^{i_1\cdots i_k}_{j_1\cdots j_l})
++\sum_{s=1}^kX^mF^{i_1\cdots p\cdots i_k}_{j_1\cdots j_l}\Gamma^{i_s}_{mp}\\
+&\qquad-\sum_{s=1}^lX^mF^{i_1\cdots i_k}_{j_1\cdots p\cdots j_l}\Gamma^p_{ms}\Bigr)
+E_{i_1}\otimes\cdots\otimes E_{i_k}\otimes
+\epsilon^{j_1}\otimes\cdots\otimes\epsilon^{j_l}.
+\end{aligned}
 \]
-\end{enumerate}
 \end{proposition}
-
-\begin{proof}
-Problem 4-5.
-\end{proof}
-
-Because the covariant derivative $\nabla_X F$ of a tensor field (or, as a special case, a vector field) is linear over $C^\infty(M)$ in $X$, the covariant derivatives of $F$ in all directions can be handily encoded in a single tensor field whose rank is one more than the rank of $F$, as follows.
 
 \begin{proposition}[The Total Covariant Derivative]
 \label{prop:total-covariant-derivative}
 \dcref{ch4:4.17}
-Let $M$ be a smooth manifold with or without boundary and let $\nabla$ be a connection in $TM$. For every $F \in \Gamma(T^{(k,\ell)}TM)$, the map
+Let $M$ be a smooth manifold with or without boundary and $\nabla$ a
+connection. For $F\in\Gamma(T^{(k,l)}TM)$ define
 \[
-\nabla F: \underbrace{\Omega^1(M) \times \cdots \times \Omega^1(M)}_{k \text{ copies}} \times \underbrace{\mathfrak{X}(M) \times \cdots \times \mathfrak{X}(M)}_{\ell+1 \text{ copies}} \to C^\infty(M)
+\nabla F\colon\underbrace{\Omega^1(M)\times\cdots\times\Omega^1(M)}_{k}
+\times\underbrace{\mathfrak{X}(M)\times\cdots\times\mathfrak{X}(M)}_{l+1}
+\longrightarrow C^\infty(M)
 \]
-given by
+by
 \begin{equation}
-(\nabla F)(\omega^1, \ldots, \omega^k, Y_1, \ldots, Y_\ell, X) = (\nabla_X F)(\omega^1, \ldots, \omega^k, Y_1, \ldots, Y_\ell) \tag{4.14}
+(\nabla F)(\omega^1,\ldots,\omega^k,Y_1,\ldots,Y_l,X)
+=(\nabla_XF)(\omega^1,\ldots,\omega^k,Y_1,\ldots,Y_l).
+\tag{4.14}
 \end{equation}
-defines a smooth $(k,l+1)$-tensor field on $M$ called the \textbf{total covariant derivative} of $F$.
+This is a smooth $(k,l+1)$-tensor field, called the total covariant derivative.
 \end{proposition}
-
 \begin{proof}
-This follows immediately from the tensor characterization lemma (Lemma B.6): $\nabla_X F$ is a tensor field, so it is multilinear over $C^\infty(M)$ in its $k+l$ arguments; and it is linear over $C^\infty(M)$ in $X$ by definition of a connection.
+\sketch The tensor characterization lemma applies because $\nabla_XF$ is
+tensorial in its $k+l$ arguments and a connection is $C^\infty(M)$-linear in
+$X$.
 \end{proof}
 
-When we write the components of a total covariant derivative in terms of a local frame, it is standard practice to use a semicolon to separate indices resulting from differentiation from the preceding indices. Thus, for example, if $Y$ is a vector field written in coordinates as $Y = Y^i E_i$, the components of the $(1,1)$-tensor field $\nabla Y$ are written $Y^i_{;j}$, so that
+Writing the differentiation index last, if $Y=Y^iE_i$ and
+$\omega=\omega_i\epsilon^i$, then
 \[
-\nabla Y = Y^i_{;j} E_i \otimes \epsilon^j,
+\nabla Y=Y^i_{;j}E_i\otimes\epsilon^j,
+\qquad Y^i_{;j}=E_jY^i+Y^k\Gamma^i_{jk},
 \]
-with
+and
 \[
-Y^i_{;j} = E_j Y^i + Y^k \Gamma^i_{jk}.
+\nabla\omega=\omega_{i;j}\epsilon^i\otimes\epsilon^j,
+\qquad \omega_{i;j}=E_j\omega_i-\omega_k\Gamma^k_{ji}.
 \]
-
-For a 1-form $\omega$, the formulas read
-\[
-\nabla \omega = \omega_{i;j} \epsilon^i \otimes \epsilon^j, \quad \text{with} \quad \omega_{i;j} = E_j \omega_i - \omega_k \Gamma^k_{ji}.
-\]
-
-More generally, the next proposition gives a formula for the components of total covariant derivatives of arbitrary tensor fields.
 
 \begin{proposition}
 \label{prop:total-covariant-derivative-components}
 \dcref{ch4:4.18}
-Let $M$ be a smooth manifold with or without boundary and let $\nabla$ be a connection in $TM$; and let $(E_i)$ be a smooth local frame for $TM$ and $\{\Gamma^k_{ij}\}$ the corresponding connection coefficients. The components of the total covariant derivative of a $(k,l)$-tensor field $F$ with respect to this frame are given by
+Let $M$ be a smooth manifold with or without boundary, let $\nabla$ be a
+connection in $TM$, and let $(E_i)$ be a smooth local frame with connection
+coefficients $\Gamma^k_{ij}$. For a $(k,l)$-tensor $F$,
 \[
-F^{i_1\cdots i_k}_{j_1\cdots j_l;m} = E_m\left(F^{i_1\cdots i_k}_{j_1\cdots j_l}\right) + \sum_{s=1}^k F^{i_1\cdots p \cdots i_k}_{j_1\cdots j_l} \Gamma^{i_s}_{mp} - \sum_{s=1}^l F^{i_1\cdots i_k}_{j_1\cdots p \cdots j_l} \Gamma^p_{mj_s}.
+\begin{aligned}
+F^{i_1\cdots i_k}_{j_1\cdots j_l;m}
+={}&E_m\bigl(F^{i_1\cdots i_k}_{j_1\cdots j_l}\bigr)
++\sum_{s=1}^kF^{i_1\cdots p\cdots i_k}_{j_1\cdots j_l}\Gamma^{i_s}_{mp}\\
+&-\sum_{s=1}^lF^{i_1\cdots i_k}_{j_1\cdots p\cdots j_l}\Gamma^p_{mj_s}.
+\end{aligned}
 \]
 \end{proposition}
 
@@ -531,692 +376,680 @@ Prove Proposition \ref{prop:total-covariant-derivative-components}.
 \begin{exercise}
 \label{exer:tensor-product-covariant-derivative}
 \dcref{ch4:4.20}
-Suppose $F$ is a smooth $(k,l)$-tensor field and $G$ is a smooth $(r,s)$-tensor field. Show that the components of the total covariant derivative of $F \otimes G$ are given by
+For smooth $(k,l)$- and $(r,s)$-tensor fields $F,G$,
 \[
-(\nabla(F \otimes G))^{j_1\cdots j_k p_1\cdots p_r}_{i_1\cdots i_l q_1\cdots q_s;m} = F^{j_1\cdots j_k}_{i_1\cdots i_l;m} G^{p_1\cdots p_r}_{q_1\cdots q_s} + F^{j_1\cdots j_k}_{i_1\cdots i_l} G^{p_1\cdots p_r}_{q_1\cdots q_s;m}.
+\begin{aligned}
+(\nabla(F\otimes G))^{j_1\cdots j_kp_1\cdots p_r}_{i_1\cdots i_lq_1\cdots q_s;m}
+={}&F^{j_1\cdots j_k}_{i_1\cdots i_l;m}G^{p_1\cdots p_r}_{q_1\cdots q_s}\\
+&+F^{j_1\cdots j_k}_{i_1\cdots i_l}G^{p_1\cdots p_r}_{q_1\cdots q_s;m}.
+\end{aligned}
 \]
-
-[Remark: This formula is often written in the following way, more suggestive of the product rule for ordinary derivatives:
-\[
-\left(F^{j_1\cdots j_k}_{i_1\cdots i_l} G^{p_1\cdots p_r}_{q_1\cdots q_s}\right)_{;m} = F^{j_1\cdots j_k}_{i_1\cdots i_l;m} G^{p_1\cdots p_r}_{q_1\cdots q_s} + F^{j_1\cdots j_k}_{i_1\cdots i_l} G^{p_1\cdots p_r}_{q_1\cdots q_s;m}.
-\]
-
-Notice that this does not say that $\nabla(F \otimes G) = (\nabla F) \otimes G + F \otimes (\nabla G)$, because in the first term on the right-hand side of this latter formula, the index resulting from differentiation is not the last lower index.]
+Equivalently, the semicolon derivative of the component product obeys the
+ordinary product rule. This does not assert
+$\nabla(F\otimes G)=(\nabla F)\otimes G+F\otimes(\nabla G)$, because the
+differentiation index in the first term would not be in the final lower slot.
 \end{exercise}
 
 \section{Second Covariant Derivatives}
 
-Having defined the tensor field $\nabla F$ for a $(k,l)$-tensor field $F$, we can in turn take its total covariant derivative and obtain a $(k, l + 2)$-tensor field $\nabla^2 F = \nabla(\nabla F)$. Given vector fields $X, Y \in \mathfrak{X}(M)$, let us introduce the notation $\nabla^2_{X,Y} F$ for the $(k,l)$-tensor field obtained by inserting $X, Y$ in the last two slots of $\nabla^2 F$:
+For a smooth manifold $M$ with or without boundary and a connection $\nabla$,
+set $\nabla^2F=\nabla(\nabla F)$ for $F\in\Gamma(T^{(k,l)}TM)$ and define
 \[
-\nabla^2_{X,Y} F(\ldots) = \nabla^2 F(\ldots, Y, X).
+\nabla^2_{X,Y}F(\ldots)=\nabla^2F(\ldots,Y,X).
 \]
+The reversal of $X,Y$ records that the differentiation index is appended last;
+$\nabla^2_{X,Y}$ differentiates first in the $Y$ direction and then in the
+$X$ direction. It is $C^\infty(M)$-linear in $Y$, unlike
+$\nabla_X(\nabla_YF)$.
 
-Note the reversal of order of $X$ and $Y$: this is necessitated by our convention that the last index position in $\nabla F$ is the one resulting from differentiation, while it is conventional to let $\nabla^2_{X,Y}$ stand for differentiating first in the $Y$ direction, then in the $X$ direction. (For this reason, some authors adopt the convention that the new index position introduced by differentiation is the first instead of the last. As usual, be sure to check each author's conventions when you read.)
-
-It is important to be aware that $\nabla^2_{X,Y} F$ is not the same as $\nabla_X (\nabla_Y F)$. The main reason is that the former is linear over $C^\infty(M)$ in $Y$, while the latter is not. The relationship between the two expressions is given in the following proposition.
-
-\begin{proposition}\label{prop:second-covariant-derivative-formula}\dcref{ch4:4.21}
+\begin{proposition}
+\label{prop:second-covariant-derivative-formula}
+\dcref{ch4:4.21}
 \uses{prop:connection-on-tensor-bundles}
-% Formalized in the function case (F = u a scalar): the corrected identity
-% `∇²_{X,Y} u = ∇_X(∇_Y u) − ∇_{∇_X Y} u = X(Yu) − (∇_X Y)u` (`secondCovariantDeriv_function`).
-% The general tensor case needs the (unavailable) tensor-bundle connection, so no \leanok.
 \lean{LeeLib.Ch04.secondCovariantDeriv_function}
-Let $M$ be a smooth manifold with or without boundary and let $\nabla$ be a connection in $TM$. For every smooth vector field or tensor field $F$,
+For every smooth vector or tensor field $F$,
 \[
-\nabla^2_{X,Y} F = \nabla_X (\nabla_Y F) - \nabla_{[X,Y]} F.
+\nabla^2_{X,Y}F=\nabla_X(\nabla_YF)-\nabla_{\nabla_XY}F.
 \]
 \end{proposition}
-
 \begin{proof}
-A covariant derivative $\nabla_Y F$ can be expressed as the trace of $\nabla F \otimes Y$ on its last two indices:
+\sketch Contract $\nabla F\otimes Y$ in its final two slots to obtain
+$\nabla_YF$, and contract $\nabla^2F\otimes X$ and then $Y$ to obtain
+$\nabla^2_{X,Y}F$. Applying $\nabla_X$, using compatibility with contraction
+and the tensor-product rule, gives
 \[
-\nabla_Y F = \operatorname{tr}(\nabla F \otimes Y),
+\nabla_X(\nabla_YF)=\nabla^2_{X,Y}F+\nabla_{\nabla_XY}F.
 \]
-as you can verify by noting that both expressions have the same component formula, $F^{i_1\ldots i_k}_{j_1 \ldots j_l, m} Y^m$. Similarly, $\nabla^2_{X,Y} F$ can be expressed as an iterated trace:
-\[
-\nabla^2_{X,Y} F = \operatorname{tr}(\operatorname{tr}(\nabla^2 F \otimes X) \otimes Y).
-\]
-
-(First trace the last index of $\nabla^2 F$ with that of $X$, and then trace the last remaining free index---originally the second-to-last in $\nabla^2 F$---with that of $Y$.)
-
-Therefore, since $\nabla_X$ commutes with contraction and satisfies the product rule with respect to tensor products (Prop.\ 4.15), we have
-\begin{align*}
-\nabla_X (\nabla_Y F) &= \nabla_X (\operatorname{tr}(\nabla F \otimes Y)) \\
-&= \operatorname{tr}(\nabla_X (\nabla F \otimes Y)) \\
-&= \operatorname{tr}(\nabla_X(\nabla F) \otimes Y + \nabla F \otimes \nabla_X Y) \\
-&= \operatorname{tr}(\operatorname{tr}(\nabla^2 F \otimes X) \otimes Y) + \operatorname{tr}(\nabla F \otimes \nabla_X Y) \\
-&= \nabla^2_{X,Y} F + \nabla_{[X,Y]} F.
-\end{align*}
+Rearrange to obtain the formula.
 \end{proof}
 
 \begin{example}[The Covariant Hessian]
 \label{ex:covariant-hessian}
 \dcref{ch4:4.22}
 \uses{prop:second-covariant-derivative-formula}
-% Formalized: the covariant Hessian ∇²u as a genuine (0,2)-tensor
-% `covariantHessianTensor` (built via `TensorialAt.mkHom₂` from eq. (4.13) with ω = du),
-% with action ∇²u(X,Y) = X(Yu) − (∇_X Y)u (`covariantHessian_apply`,
-% `covariantHessianTensor_apply`) and the function case of Prop. 4.21
-% (`secondCovariantDeriv_function`).
 \lean{LeeLib.Ch04.covariantHessianTensor, LeeLib.Ch04.covariantHessianTensor_apply, LeeLib.Ch04.covariantHessian_apply}
 \leanok
-Let $u$ be a smooth function on $M$. Then $\nabla u \in \Gamma(T^{(0,1)}TM) = \Omega^1(M)$ is just the 1-form $du$, because both tensors have the same action on vectors: $\nabla u(X) = \nabla_X u = Xu = du(X)$. The 2-tensor $\nabla^2 u = \nabla(du)$ is called the \emph{covariant Hessian} of $u$. Proposition 4.21 shows that its action on smooth vector fields $X, Y$ can be computed by the following formula:
+For $u\in C^\infty(M)$, $\nabla u=du$ as a $1$-form, since
+$\nabla_Xu=Xu=du(X)$. The tensor $\nabla^2u=\nabla(du)$ is the covariant
+Hessian, and
 \[
-\nabla^2 u(Y,X) = \nabla^2_{X,Y}u = \nabla_X(\nabla_Y u) - \nabla_{(\nabla_X Y)}u = Y(Xu) - (\nabla_Y X)u.
+\nabla^2u(Y,X)=\nabla^2_{X,Y}u
+=\nabla_X(\nabla_Yu)-\nabla_{\nabla_XY}u
+=X(Yu)-(\nabla_XY)u.
 \]
-
-In any local coordinates, it is
+In local coordinates,
 \[
-\nabla^2 u = u_{ij}\, dx^i \otimes dx^j, \quad \text{with } u_{ij} = \partial_j \partial_i u - \Gamma^k_{ji} \partial_k u. \quad \parallel
+\nabla^2u=u_{ij}\,dx^i\otimes dx^j,
+\qquad u_{ij}=\partial_j\partial_i u-\Gamma^k_{ji}\partial_ku.
 \]
 \end{example}
 
 \section{Vector and Tensor Fields Along Curves}
 
-Now we can address the question that originally motivated the definition of connections: How can we make sense of the derivative of a vector field along a curve?
-
-Let $M$ be a smooth manifold with or without boundary. Given a smooth curve $\gamma: I \to M$, a \emph{vector field along $\gamma$} is a continuous map $V: I \to TM$ such that $V(t) \in T_{\gamma(t)}M$ for every $t \in I$. It is a \emph{smooth vector field along $\gamma$} if it is smooth as a map from $I$ to $TM$. Let $\mathfrak{X}(\gamma)$ denote the set of all smooth vector fields along $\gamma$. It is a real vector space under pointwise vector addition and multiplication by constants, and it is a module over $C^\infty(I)$ with multiplication defined pointwise:
+Let $M$ be a smooth manifold with or without boundary and let
+$\gamma\colon I\to M$ be smooth. A vector field along $\gamma$ is a
+continuous map $V\colon I\to TM$ with $V(t)\in T_{\gamma(t)}M$; it is smooth
+when smooth as a map to $TM$. Write $\mathfrak{X}(\gamma)$ for the smooth
+fields. Pointwise operations make it a real vector space and a
+$C^\infty(I)$-module:
 \[
-(fX)(t) = f(t)X(t).
+(fX)(t)=f(t)X(t).
 \]
+The velocity $\gamma'$ is a smooth field along $\gamma$. In $\mathbb R^2$, if
+$R$ is rotation by $\pi/2$, then $N=R\gamma'$ has coordinates
+$N(t)=(-\dot\gamma^2(t),\dot\gamma^1(t))$.
 
-The most obvious example of a vector field along a smooth curve $\gamma$ is the curve's velocity: $\gamma'(t) \in T_{\gamma(t)}M$ for each $t$, and its coordinate expression (4.1) shows that it is smooth. Here is another example: if $\gamma$ is a curve in $\mathbb{R}^2$, let $N(t) = R\gamma'(t)$, where $R$ is counterclockwise rotation by $\pi/2$, so $N(t)$ is normal to $\gamma'(t)$. In standard coordinates, $N(t) = (-\dot{\gamma}^2(t), \dot{\gamma}^1(t))$, so $N$ is a smooth vector field along $\gamma$.
-
-A large supply of examples is provided by the following construction: suppose $\gamma: I \to M$ is a smooth curve and $\bar{V}$ is a smooth vector field on an open subset of $M$ containing the image of $\gamma$. Define $V: I \to TM$ by setting $V(t) = \bar{V}_{\gamma(t)}$ for each $t \in I$. Since $V$ is equal to the composition $\bar{V} \circ \gamma$, it is smooth. A smooth vector field along $\gamma$ is said to be \emph{extendible} if there exists a smooth vector field $\bar{V}$ on a neighborhood of the image of $\gamma$ that is related to $V$ in this way (Fig. 4.4). Not every vector field along a curve need be extendible; for example, if $\gamma(t_1) = \gamma(t_2)$ but $\gamma'(t_1) \ne \gamma'(t_2)$ (Fig. 4.5), then $\gamma'$ is not extendible. Even if $\gamma$ is injective, its velocity need not be extendible, as the next example shows.
+If $\overline V$ is a smooth vector field on a neighborhood of $\gamma(I)$,
+then $V(t)=\overline V_{\gamma(t)}$ is smooth and is called \emph{extendible}.
+If $\gamma(t_1)=\gamma(t_2)$ but $\gamma'(t_1)\ne\gamma'(t_2)$, then $\gamma'$
+is not extendible. A tensor field along $\gamma$ is defined analogously in
+$T^{(k,l)}TM$, and extendibility means restriction of a smooth tensor field
+defined near $\gamma(I)$.
 
 \begin{example}
 \label{ex:figure-eight-curve}
 \dcref{ch4:4.23}
-Consider the \emph{figure eight curve} $\gamma: (-\pi, \pi) \to \mathbb{R}^2$ defined by
+The curve
 \[
-\gamma(t) = (\sin 2t, \sin t).
+\gamma\colon(-\pi,\pi)\to\mathbb R^2,
+\qquad \gamma(t)=(\sin 2t,\sin t),
 \]
-
-% [FIGURE: Extendible vector field on a curve with vectors emanating outward from the curve]
-% [FIGURE: Nonextendible vector field on a curve with vectors that cannot extend smoothly away from the curve]
-% [FIGURE: The image of the figure eight curve showing a symmetric two-lobed shape]
-
-Its image is a set that looks like a figure eight in the plane (Fig. 4.6). Problem 4-7 asks you to show that $\gamma$ is an injective smooth immersion, but its velocity vector field is not extendible. \hfill $\parallel$
+is an injective smooth immersion, but its velocity field is not extendible.
 \end{example}
 
-More generally, a \emph{tensor field along $\gamma$} is a continuous map $\sigma$ from $I$ to some tensor bundle $T^{(k,l)} TM$ such that $\sigma(t) \in T^{(k,l)}(T_{\gamma(t)} M)$ for each $t \in I$. It is a \emph{smooth tensor field along $\gamma$} if it is smooth as a map from $I$ to $T^{(k,l)} TM$, and it is \emph{extendible} if there is a smooth tensor field $\bar{\sigma}$ on a neighborhood of $\gamma(I)$ such that $\sigma = \bar{\sigma} \circ \gamma$.
-
 \section{Covariant Derivatives Along Curves}
-
-Here is the promised interpretation of a connection as a way to take derivatives of vector fields along curves.
 
 \begin{theorem}[Covariant Derivative Along a Curve]
 \label{thm:covariant-derivative-along-curve}
 \dcref{ch4:4.24}
 \uses{ex:figure-eight-curve}
-% Partially formalized (chart-coordinate operator D_t V = V̇ + Γ(u̇,V)(c), with
-% properties (i) additivity and (ii) the product rule); the global uniqueness and
-% property (iii) extendibility across charts are not yet done, so no \leanok.
 \lean{LeeLib.Ch04.covariantDerivAlongChart, LeeLib.Ch04.covariantDerivAlongChart_add, LeeLib.Ch04.covariantDerivAlongChart_smul}
-Let $M$ be a smooth manifold with or without boundary and let $\nabla$ be a connection in $TM$. For each smooth curve $\gamma : I \to M$, the connection determines a unique operator
+For a connection $\nabla$ on a smooth manifold $M$ with or without boundary and
+a smooth curve $\gamma\colon I\to M$, there is a unique operator
 \[
-D_t : \mathfrak{X}(\gamma) \to \mathfrak{X}(\gamma),
+D_t\colon\mathfrak{X}(\gamma)\to\mathfrak{X}(\gamma)
 \]
-called the \textbf{covariant derivative along $\gamma$}, satisfying the following properties:
-
-(i) \textbf{Linearity over $\mathbb{R}$}:
+such that
+\begin{enumerate}
+\item[(i)] $D_t(aV+bW)=aD_tV+bD_tW$ for $a,b\in\mathbb R$;
+\item[(ii)] $D_t(fV)=f'V+fD_tV$ for $f\in C^\infty(I)$;
+\item[(iii)] if $V$ is the restriction of a smooth field $\widetilde V$ near
+$\gamma(I)$, then
 \[
-D_t(aV + bW) = aD_tV + bD_tW \quad \text{for } a, b \in \mathbb{R}.
+D_tV(t)=\nabla_{\gamma'(t)}\widetilde V.
 \]
-
-(ii) \textbf{Product rule}:
-\[
-D_t(fV) = f'V + fD_tV \quad \text{for } f \in C^{\infty}(I).
-\]
-
-(iii) If $V \in \mathfrak{X}(\gamma)$ is extendible, then for every extension $\tilde{V}$ of $V$,
-\[
-D_tV(t) = \nabla_{\gamma'(t)}\tilde{V}.
-\]
-
-There is an analogous operator on the space of smooth tensor fields of any type along $\gamma$.
+\end{enumerate}
+The same construction applies to smooth tensor fields of every type along
+$\gamma$.
 \end{theorem}
-
 \begin{proof}
-For simplicity, we prove the theorem for the case of vector fields along $\gamma$; the proof for arbitrary tensor fields is essentially identical except for notation.
-
-First we show uniqueness. Suppose $D_t$ is such an operator, and let $t_0 \in I$ be arbitrary. An argument similar to that of Lemma 4.1 shows that the value of $D_t V$ at $t_0$ depends only on the values of $V$ in any interval $(t_0 - \varepsilon, t_0 + \varepsilon)$ containing $t_0$. (If $t_0$ is an endpoint of $I$, extend a coordinate representation of $\gamma$ to a slightly bigger open interval, prove the lemma there, and then restrict back to $I$.)
-
-Choose smooth coordinates $\{x^i\}$ for $M$ in a neighborhood of $\gamma(t_0)$, and write
-\[
-V(t) = V^i(t)\partial_i\bigg|_{\gamma(t)}
-\]
-for $t$ near $t_0$, where $V^1, \ldots, V^n$ are smooth real-valued functions defined on some neighborhood of $t_0$ in $I$. By the properties of $D_t$, since each $\partial_j$ is extendible,
-\begin{align}
-D_tV(t) &= \dot{V}^j(t)\partial_j\bigg|_{\gamma(t)} + V^j(t)\nabla_{\gamma'(t)}\partial_j\bigg|_{\gamma(t)} \nonumber \\
-&= \left(\dot{V}^k(t) + \dot{\gamma}^i(t)V^j(t)\Gamma_{ij}^k(\gamma(t))\right)\partial_k\bigg|_{\gamma(t)}. \tag{4.15}
-\end{align}
-
-This shows that such an operator is unique if it exists.
-
-For existence, if $\gamma(I)$ is contained in a single chart, we can \emph{define} $D_t V$ by (4.15); the easy verification that it satisfies the requisite properties is left as an exercise. In the general case, we can cover $\gamma(I)$ with coordinate charts and define $D_t V$ by this formula in each chart, and uniqueness implies that the various definitions agree wherever two or more charts overlap.
+\sketch At $t_0\in I$, locality reduces the construction to a coordinate
+neighborhood of $\gamma(t_0)$. Writing
+$V(t)=V^i(t)\partial_i|_{\gamma(t)}$ gives the forced formula
+\begin{equation}
+D_tV(t)=\bigl(\dot V^k(t)+\dot\gamma^i(t)V^j(t)\Gamma^k_{ij}(\gamma(t))\bigr)
+\partial_k|_{\gamma(t)}.\tag{4.15}
+\end{equation}
+This proves uniqueness. Define $D_t$ by (4.15) in a chart containing the curve;
+the coordinate formula satisfies (i)--(iii), and uniqueness makes definitions
+agree on overlaps. At an endpoint, extend the coordinate curve to a slightly
+larger interval before restricting.
 \end{proof}
-
-(It is worth noting that in the physics literature, the covariant derivative along a curve is sometimes called the \textbf{absolute derivative}.)
 
 \begin{exercise}
 \label{exer:covariant-derivative-properties}
 \dcref{ch4:4.25}
 \uses{thm:covariant-derivative-along-curve}
-Complete the proof of Theorem 4.24 by showing that the operator $D_t$ defined in coordinates by (4.15) satisfies properties (i)--(iii).
+Verify directly that (4.15) satisfies properties (i)--(iii) of Theorem
+\ref{thm:covariant-derivative-along-curve}.
 \end{exercise}
-
-Apart from its use in proving existence of the covariant derivative along a curve, (4.15) also gives a practical formula for computing such covariant derivatives in coordinates.
-
-Now we can improve Proposition 4.5 by showing that $\nabla_v Y$ actually depends only on the values of $Y$ along any curve through $p$ whose velocity is $v$.
 
 \begin{proposition}
 \label{prop:covariant-derivative-depends-on-curve}
 \dcref{ch4:4.26}
 \uses{prop:covariant-deriv-dependence-at-point,thm:covariant-derivative-along-curve}
-Let $M$ be a smooth manifold with or without boundary, let $\nabla$ be a connection in $TM$, and let $p \in M$ and $v \in T_p M$. Suppose $Y$ and $\bar{Y}$ are two smooth vector fields that agree at points in the image of some smooth curve $\gamma: I \to M$ such that $\gamma(t_0) = p$ and $\gamma'(t_0) = v$. Then $\nabla_v Y = \nabla_v \bar{Y}$.
+Let $M$ be a smooth manifold with or without boundary, let $p\in M$,
+$v\in T_pM$, and let $Y,\overline Y$ be smooth vector fields
+that agree along a smooth curve $\gamma$ with $\gamma(t_0)=p$ and
+$\gamma'(t_0)=v$. Then
+\[
+\nabla_vY=\nabla_v\overline Y.
+\]
 \end{proposition}
-
 \begin{proof}
-We can define a smooth vector field $Z$ along $\gamma$ by $Z(t) = Y_{\gamma(t)} = \bar{Y}_{\gamma(t)}$. Since both $Y$ and $\bar{Y}$ are extensions of $Z$, it follows from condition (iii) in Theorem 4.24 that both $\nabla_v Y$ and $\nabla_v \bar{Y}$ are equal to $D_t Z(t_0)$.
+\sketch The common restriction $Z(t)=Y_{\gamma(t)}=\overline Y_{\gamma(t)}$
+is a field along $\gamma$. Both $Y$ and $\overline Y$ extend $Z$, so property
+(iii) of Theorem \ref{thm:covariant-derivative-along-curve} identifies both
+derivatives with $D_tZ(t_0)$.
 \end{proof}
-
 \section{Geodesics}
 
-Armed with the notion of covariant differentiation along curves, we can now define acceleration and geodesics.
-
-Let $M$ be a smooth manifold with or without boundary and let $\nabla$ be a connection in $TM$. For every smooth curve $\gamma: I \to M$, we define the \textbf{acceleration of} $\gamma$ to be the vector field $D_t \gamma'$ along $\gamma$. A smooth curve $\gamma$ is called a \textbf{geodesic} (with respect to $\nabla$) if its acceleration is zero: $D_t \gamma' \equiv 0$. In terms of smooth coordinates $(x^i)$, if we write the component functions of $\gamma$ as $\gamma(t) = (x^1(t), \ldots, x^n(t))$, then it follows from (4.15) that $\gamma$ is a geodesic if and only if its component functions satisfy the following \textbf{geodesic equation}:
+Let $M$ be a smooth manifold, possibly with boundary, with a connection $\nabla$
+in $TM$. The acceleration of a smooth curve $\gamma\colon I\to M$ is
+$D_t\gamma'$. A curve is a geodesic when this field vanishes. In coordinates
+$\gamma(t)=(x^1(t),\ldots,x^n(t))$, this is equivalent to
 \begin{equation}
-\ddot{x}^k(t) + \dot{x}^i(t) \dot{x}^j(t) \Gamma^k_{ij}(x(t)) = 0, \tag{4.16}
+\ddot x^k(t)+\dot x^i(t)\dot x^j(t)\Gamma^k_{ij}(x(t))=0. \tag{4.16}
 \end{equation}
-where we use $x(t)$ as an abbreviation for the $n$-tuple of component functions $(x^1(t), \ldots, x^n(t))$. This is a system of second-order ordinary differential equations (ODEs) for the real-valued functions $x^1, \ldots, x^n$. The next theorem uses ODE theory to prove existence and uniqueness of geodesics with suitable initial conditions. (Because difficulties can arise when a geodesic starts on the boundary or later hits the boundary, we state and prove this theorem only for manifolds without boundary.)
 
 \begin{definition}[Geodesic]
 \label{def:geodesic}
 \uses{thm:covariant-derivative-along-curve}
-% Chart-coordinate formalization: the acceleration D_t γ' and the geodesic condition
-% "acceleration ≡ 0", equivalently the geodesic equation (4.16), read in a chart. A
-% geodesic is exactly a curve whose velocity field is parallel (isGeodesicInChart_iff_isParallel).
 \lean{LeeLib.Ch04.chartAcceleration, LeeLib.Ch04.IsGeodesicInChart, LeeLib.Ch04.isGeodesicInChart_iff}
 \leanok
-The \textbf{acceleration} of a smooth curve $\gamma$ with respect to $\nabla$ is the vector field $D_t \gamma'$ along $\gamma$, and $\gamma$ is a \textbf{geodesic} if its acceleration vanishes, $D_t \gamma' \equiv 0$; equivalently, its velocity field is parallel. In coordinates this is the geodesic equation (4.16), $\ddot{x}^k + \dot{x}^i \dot{x}^j \Gamma^k_{ij}(x) = 0$.
+The \emph{acceleration} of $\gamma$ is $D_t\gamma'$. The curve is a
+\emph{geodesic} when $D_t\gamma'\equiv0$, equivalently when its velocity is
+parallel. Its coordinate functions satisfy (4.16).
 \end{definition}
 
 \begin{theorem}[Existence and Uniqueness of Geodesics]
 \label{thm:geodesic-existence-uniqueness}
 \dcref{ch4:4.27}
-% Formalized via the geodesic spray on TM (eqs. 4.16-4.18): the chart-fixed spray
-% geodesicVectorFieldChart is a C¹ section of T(TM) (the one connection-specific
-% smoothness reduces to chartConnectionCoeff_contMDiffOn), fed to mathlib's
-% integral-curve theory on the boundaryless manifold TM. IsSprayGeodesicAt is Lee's
-% geodesic as the base projection of a local integral curve of the spray.
-% Existence (exists_sprayGeodesic_initial) is FULL: for every p, w ∈ T_pM, t₀ there is
-% a geodesic through p carried by a lift f with f t₀ = ⟨p,w⟩ (initial point and velocity).
-% Uniqueness (sprayGeodesic_eventuallyEq / isSprayGeodesicAt_eventuallyEq_of_lift_eq) is
-% the LOCAL "agree on a neighbourhood of t₀" form from mathlib; the global clopen-union
-% upgrade to "agree on the whole common domain" is the maximal-geodesic argument (4.28),
-% not yet done, so no \leanok. Carries the connection C¹-on-chart hypothesis, as the
-% chart bridge does throughout.
-% EQUATION READBACK (GeodesicEquationReadback.lean): the spray construction is now
-% bridged back to Lee's DEFINITION of a geodesic (D_tγ'=0). For a spray geodesic with
-% initial data (p,v), reading the integral curve in the chart at its foot p via
-% IsMIntegralCurveAt.eventually_hasDerivAt (eventually_hasDerivAt_geodesic_reading) gives:
-% hasDerivAt_extChartAt_zero (γ leaves p with velocity v) and chartAcceleration_zero
-% (Lee's geodesic equation x''+Γ(x',x')(γ)=0 at the initial time, chartAcceleration=0 —
-% i.e. the spray geodesic satisfies Lee's geodesic condition, def:geodesic, at that
-% initial time). Chart-local /
-% initial-time (not the global ∀t IsGeodesicInChart, which needs cross-chart gluing).
 \lean{LeeLib.Ch04.IsSprayGeodesicAt, LeeLib.Ch04.exists_sprayGeodesic_initial, LeeLib.Ch04.sprayGeodesic_eventuallyEq, LeeLib.Ch04.isSprayGeodesicAt_eventuallyEq_of_lift_eq, LeeLib.Ch04.IsSprayGeodesicOnWithInitial.chartAcceleration_zero, LeeLib.Ch04.IsSprayGeodesicOnWithInitial.hasDerivAt_extChartAt_zero}
-Let $M$ be a smooth manifold and $\nabla$ a connection in $TM$. For every $p \in M$, $w \in T_p M$, and $t_0 \in \mathbb{R}$, there exist an open interval $I \subseteq \mathbb{R}$ containing $t_0$ and a geodesic $\gamma: I \to M$ satisfying $\gamma(t_0) = p$ and $\gamma'(t_0) = w$. Any two such geodesics agree on their common domain.
+Let $M$ be a smooth manifold without boundary and $\nabla$ a connection in
+$TM$. For every $p\in M$, $w\in T_pM$, and $t_0\in\mathbb R$, there are an open
+interval $I\ni t_0$ and a geodesic $\gamma\colon I\to M$ such that
+\[
+\gamma(t_0)=p,
+\qquad \gamma'(t_0)=w.
+\]
+Any two geodesics with these initial data agree on their common domain.
 \end{theorem}
 
 \begin{proof}
-Let $(x^i)$ be smooth coordinates on some neighborhood $U$ of $p$. A smooth curve in $U$, written as $\gamma(t) = (x^1(t), \ldots, x^n(t))$, is a geodesic if and only if its component functions satisfy (4.16). The standard trick for proving existence and uniqueness for such a second-order system is to introduce auxiliary variables $v^i = \dot{x}^i$ to convert it to the following equivalent first-order system in twice the number of variables:
+\sketch In coordinates near $p$, introduce $v^i=\dot x^i$ and rewrite (4.16) as
 \begin{align}
-\dot{x}^k(t) &= v^k(t), \\
-\dot{v}^k(t) &= -v^i(t)v^j(t)\Gamma^k_{ij}(x(t)). \tag{4.17}
+\dot x^k(t)&=v^k(t),\\
+\dot v^k(t)&=-v^i(t)v^j(t)\Gamma^k_{ij}(x(t)). \tag{4.17}
 \end{align}
-
-% [FIGURE: Uniqueness of geodesics---curve with tangent vectors labeled $\gamma(t_0)$ and $\gamma(\beta)$ at two points]
-
-Treating $(x^1,\ldots,x^n,v^1,\ldots,v^n)$ as coordinates on $U \times \mathbb{R}^n$, we can recognize (4.17) as the equations for the flow of the vector field $G \in \mathfrak{X}(U \times \mathbb{R}^n)$ given by
+This is the integral-curve equation for
 \begin{equation}
-G_{(x,v)} = v^k \frac{\partial}{\partial x^k}\bigg|_{(x,v)} - v^i v^j \Gamma^k_{ij}(x) \frac{\partial}{\partial v^k}\bigg|_{(x,v)}. \tag{4.18}
+G_{(x,v)}=v^k\frac{\partial}{\partial x^k}\bigg|_{(x,v)}
+-v^iv^j\Gamma^k_{ij}(x)\frac{\partial}{\partial v^k}\bigg|_{(x,v)}. \tag{4.18}
 \end{equation}
-
-By the fundamental theorem on flows (Thm.~A.42), for each $(p,w) \in U \times \mathbb{R}^n$ and $t_0 \in \mathbb{R}$, there exist an open interval $I_0$ containing $t_0$ and a unique smooth solution $\zeta: I_0 \to U \times \mathbb{R}^n$ to this system satisfying the initial condition $\zeta(t_0) = (p,w)$. If we write the component functions of $\zeta$ as $\zeta(t) = (x^i(t), v^i(t))$, then we can easily check that the curve $\gamma(t) = (x^1(t),\ldots,x^n(t))$ in $U$ satisfies the existence claim of the theorem.
-
-To prove the uniqueness claim, suppose $\gamma,\tilde{\gamma}: I \to M$ are both geodesics defined on some open interval $I$ with $\gamma(t_0) = \tilde{\gamma}(t_0)$ and $\gamma'(t_0) = \tilde{\gamma}'(t_0)$. In any local coordinates around $\gamma(t_0)$, we can define smooth curves $\zeta, \tilde{\zeta}: (t_0 - \varepsilon, t_0 + \varepsilon) \to U \times \mathbb{R}^n$ as above. These curves both satisfy the same initial value problem for the system (4.17), so by the uniqueness of ODE solutions, they agree on $(t_0 - \varepsilon,t_0 + \varepsilon)$ for some $\varepsilon > 0$. Suppose for the sake of contradiction that $\gamma(b) \neq \tilde{\gamma}(b)$ for some $b \in I$. First suppose $b > t_0$ and let $\beta$ be the infimum of numbers $b \in I$ such that $b > t_0$ and $\gamma(b) \neq \tilde{\gamma}(b)$ (Fig.~4.7). Then $\beta \in I$, and by continuity, $\gamma(\beta) = \tilde{\gamma}(\beta)$ and $\gamma'(\beta) = \tilde{\gamma}'(\beta)$. Applying local uniqueness in a neighborhood of $\beta$, we conclude that $\gamma$ and $\tilde{\gamma}$ agree on a neighborhood of $\beta$, which contradicts our choice of $\beta$. Arguing similarly to the left of $t_0$, we conclude that $\gamma \equiv \tilde{\gamma}$ on all of $I$.
+Local flow existence and uniqueness for $G$ give the required geodesic and local
+uniqueness. For two solutions, the set of times at which their positions and
+velocities agree is nonempty and locally open by the same coordinate argument;
+continuity makes it closed in the common interval. Connectedness of the interval
+gives equality on the full common domain.
 \end{proof}
 
-A geodesic $\gamma: I \to M$ is said to be \textbf{maximal} if it cannot be extended to a geodesic on a larger interval, that is, if there does not exist a geodesic $\tilde{\gamma}: \tilde{I} \to M$ defined on an interval $\tilde{I}$ properly containing $I$ and satisfying $\tilde{\gamma}|_I = \gamma$. A \textbf{geodesic segment} is a geodesic whose domain is a compact interval.
-
-% [FIGURE: A parallel vector field along a curve]
+A geodesic is \emph{maximal} if it has no extension to a strictly larger interval.
+A \emph{geodesic segment} has compact interval domain.
 
 \begin{corollary}[Existence of maximal geodesics]
 \label{cor:existence-of-maximal-geodesic}
 \dcref{ch4:4.28}
 \uses{thm:geodesic-existence-uniqueness}
-% Formalized via the union-over-local-extensions construction on the geodesic spray:
-% maximalSprayGeodesicInterval is the union of all preconnected open J ∋ 0 carrying a
-% geodesic with initial data (p,v); it is open (maximalSprayGeodesicInterval_isOpen),
-% contains 0 and is nonempty (needs the connection C¹ on the chart at p). The canonical
-% maximal geodesic curve maximalSprayGeodesic (Classical.choose on the interval, junk
-% value p outside) starts at p (maximalSprayGeodesic_zero); the packaged structure
-% maximalSprayGeodesic_structure_of_footInSource records openness + 0-membership + γ0=p
-% + junk-off-interval + pointwise IsSprayGeodesicAt regularity at interior points. The
-% globalised "geodesic on the whole maximal interval" and the uniqueness of the maximal
-% geodesic need cross-chart gluing (moving-chart geodesic equation), deferred, so no \leanok.
+Let $M$ be a smooth manifold and $\nabla$ a connection in $TM$. For every
+$p\in M$ and $v\in T_pM$, there is a unique maximal geodesic
+$\gamma\colon I\to M$ on an open interval $I\ni0$ satisfying
+$\gamma(0)=p$ and $\gamma'(0)=v$.
 \lean{LeeLib.Ch04.maximalSprayGeodesicInterval, LeeLib.Ch04.maximalSprayGeodesic, LeeLib.Ch04.maximalSprayGeodesicInterval_isOpen, LeeLib.Ch04.maximalSprayGeodesic_structure_of_footInSource}
-Let $M$ be a smooth manifold and let $\nabla$ be a connection in $TM$. For each $p \in M$ and $v \in T_p M$, there is a unique maximal geodesic $\gamma : I \to M$ with $\gamma(0) = p$ and $\gamma'(0) = v$, defined on some open interval $I$ containing $0$.
 \end{corollary}
 
 \begin{proof}
-Given $p \in M$ and $v \in T_p M$, let $I$ be the union of all open intervals containing $0$ on which there is a geodesic with the given initial conditions. By Theorem 4.27, all such geodesics agree where they overlap, so they define a geodesic $\gamma : I \to M$, which is obviously the unique maximal geodesic with the given initial conditions.
+\sketch Take the union of all open intervals containing $0$ on which a geodesic
+with the prescribed data exists. Theorem \ref{thm:geodesic-existence-uniqueness}
+makes the local geodesics agree on overlaps, so they glue to the unique maximal
+one.
 \end{proof}
 
 \begin{exercise}[Geodesics in Euclidean space]
 \label{exer:euclidean-geodesics}
 \dcref{ch4:4.29}
 \uses{prop:connection-restriction}
-Show that the maximal geodesics on $\mathbb{R}^n$ with respect to the Euclidean connection (4.3) are exactly the constant curves and the straight lines with constant-speed parametrizations.
+Show that the maximal geodesics of the Euclidean connection on $\mathbb R^n$ are
+exactly constant curves and constant-speed parametrizations of straight lines.
 \end{exercise}
 
-The unique maximal geodesic $\gamma$ with $\gamma(0) = p$ and $\gamma'(0) = v$ is often called simply the \emph{geodesic with initial point $p$ and initial velocity $v$}, and is denoted by $\gamma_v$. (For simplicity, we do not specify the initial point $p$ in the notation; it can implicitly be recovered from $v$ by $p = \pi(v)$, where $\pi : TM \to M$ is the natural projection.)
+Write $\gamma_v$ for the maximal geodesic with initial velocity $v$ and initial
+point $\pi(v)$, where $\pi\colon TM\to M$ is the bundle projection.
 
 \section{Parallel Transport}
 
-Another construction involving covariant differentiation along curves that will be useful later is called \emph{parallel transport}. As we did with geodesics, we restrict attention here to manifolds without boundary.
+A smooth vector or tensor field $V$ along $\gamma$ is \emph{parallel} when
+$D_tV=0$. Thus $\gamma$ is geodesic exactly when $\gamma'$ is parallel.
 
-Let $M$ be a smooth manifold and let $\nabla$ be a connection in $TM$. A smooth vector or tensor field $V$ along a smooth curve $\gamma$ is said to be \emph{parallel along $\gamma$} (with respect to $\nabla$) if $D_t V = 0$ (Fig. 4.8). Thus a geodesic can be characterized as a curve whose velocity vector field is parallel along the curve.
-
-\begin{exercise}\label{exer:parallel-vector-field-euclidean-connection}\dcref{ch4:4.30}
-Let $\gamma : I \to \mathbb{R}^n$ be a smooth curve, and let $V$ be a smooth vector field along $\gamma$. Show that $V$ is parallel along $\gamma$ with respect to the Euclidean connection if and only if its component functions (with respect to the standard basis) are constants.
+\begin{exercise}
+\label{exer:parallel-vector-field-euclidean-connection}
+\dcref{ch4:4.30}
+Let $\gamma\colon I\to\mathbb R^n$ be smooth. Show that a smooth vector field
+along $\gamma$ is parallel for the Euclidean connection if and only if its
+components in the standard basis are constant.
 \end{exercise}
 
-The fundamental fact about parallel vector and tensor fields along curves is that every tangent vector or tensor at any point on a curve can be uniquely extended to a parallel field along the entire curve. Before we prove this claim, let us examine what the equation of parallelism looks like in coordinates. Given a smooth curve $\gamma$ with a local coordinate representation $\gamma(t) = (\gamma^1(t), \ldots, \gamma^n(t))$, formula (4.15) shows that a vector field $V$ is parallel along $\gamma$ if and only if
+In a coordinate representation $\gamma(t)=(\gamma^1(t),\ldots,\gamma^n(t))$,
+a vector field is parallel precisely when
 \begin{equation}
-\dot{V}^k(t) = -V^j(t) \dot{\gamma}^i(t) \Gamma^k_{ij}(\gamma(t)), \quad k = 1, \ldots, n,
-\tag{4.19}
+\dot V^k(t)=-V^j(t)\dot\gamma^i(t)\Gamma^k_{ij}(\gamma(t)),
+\qquad k=1,\ldots,n. \tag{4.19}
 \end{equation}
-with analogous expressions based on Proposition 4.18 for tensor fields of other types. In each case, this is a system of first-order linear ordinary differential equations for the unknown coefficients of the vector or tensor field---in the vector case, the functions $(V^1(t), \ldots, V^n(t))$. The usual ODE theorem guarantees the existence and uniqueness of a solution for a short time, given any initial values at $t = t_0$; but since the equation is linear, we can actually show much more: there exists a unique solution on the entire parameter interval.
+Tensor fields satisfy the analogous linear systems from Proposition 4.18.
 
-\begin{theorem}[Existence, Uniqueness, and Smoothness for Linear ODEs]\label{thm:linear-ode-existence-uniqueness}\dcref{ch4:4.31}
-% Existence + uniqueness (+ ℝ-linearity and injectivity of the endpoint flow map) are
-% formalized over a Banach space for a continuous bounded coefficient A : ℝ → (E →L E),
-% on any compact interval; this is the analytic engine driving parallel transport. The
-% smooth-dependence-on-(t,c) clause has no mathlib theorem yet, so no \leanok.
+\begin{theorem}[Existence, Uniqueness, and Smoothness for Linear ODEs]
+\label{thm:linear-ode-existence-uniqueness}
+\dcref{ch4:4.31}
 \lean{LeeLib.Ch04.exists_hasDerivWithinAt_Icc, LeeLib.Ch04.IsSolOn, LeeLib.Ch04.flowMap, LeeLib.Ch04.flowMap_injective}
-Let $I \subseteq \mathbb{R}$ be an open interval, and for $1 \le i,k \le n$, let $A^k_i : I \to \mathbb{R}$ be smooth functions. For all $t_0 \in I$ and every initial value $(c^1, \ldots, c^n) \in \mathbb{R}^n$, the linear initial value problem
+Let $I\subseteq\mathbb R$ be an open interval and let
+$A_i^k\colon I\to\mathbb R$ be smooth for $1\leq i,k\leq n$. For every
+$t_0\in I$ and $c=(c^1,\ldots,c^n)\in\mathbb R^n$, the problem
 \begin{equation}
-\dot{V}^k(t) = A^k_i(t) V^i(t),
-\tag{4.20}
+\dot V^k(t)=A_i^k(t)V^i(t) \tag{4.20}
 \end{equation}
-\[
-V^k(t_0) = c^k,
-\]
-has a unique smooth solution on all of $I$, and the solution depends smoothly on $(t, c) \in I \times \mathbb{R}^n$.
+with $V^k(t_0)=c^k$ has a unique smooth solution on all of $I$. The solution
+depends smoothly on $(t,c)\in I\times\mathbb R^n$.
 \end{theorem}
 
 \begin{proof}
-First assume $t_0 = 0$. Let $(x^0, x^1, \ldots, x^n)$ denote standard coordinates on the manifold $I \times \mathbb{R}^n \subseteq \mathbb{R}^{n+1}$, and consider the vector field $Y \in \mathfrak{X}(I \times \mathbb{R}^n)$ defined by
+\sketch After translating the parameter, take $t_0=0$. On
+$I\times\mathbb R^n$ define
 \[
-Y = \frac{\partial}{\partial x^0} + A^1_j(x^0) x^j \frac{\partial}{\partial x^1} + \cdots + A^n_j(x^0) x^j \frac{\partial}{\partial x^n}.
+Y=\frac{\partial}{\partial x^0}
++\sum_{k=1}^n A_j^k(x^0)x^j\frac{\partial}{\partial x^k}.
 \]
-
-If $V(t) = (V^1(t), \ldots, V^n(t))$ is a solution to (4.20) with $t_0 = 0$ defined on some interval $I_0 \subseteq I$, then the curve $\eta(t) = (t, V^1(t), \ldots, V^n(t))$ is an integral curve of $Y$ defined on $I_0$ satisfying the initial condition
+Solutions correspond to integral curves $\eta(t)=(t,V(t))$ with
 \begin{equation}
-\eta(0) = (0, c^1, \ldots, c^n).
-\tag{4.21}
+\eta(0)=(0,c^1,\ldots,c^n). \tag{4.21}
 \end{equation}
-
-Conversely, for each $(c^1, \ldots, c^n) \in \mathbb{R}^n$, there is an integral curve $\eta$ of $Y$ defined on some open interval $I_0 \subseteq I$ containing 0 and satisfying (4.21). If we write the component functions of $\eta$ as $\eta(t) = (\eta^0(t), \eta^1(t), \ldots, \eta^n(t))$, then $\dot{\eta}^0(t) \equiv 1$ and $\eta^0(0) = 0$, so $\eta^0(t) = t$ for all $t$. It then follows that $V(t) = (\eta^1(t), \ldots, \eta^n(t))$ solves (4.20) with $t_0 = 0$. Thus there is a one-to-one correspondence between solutions to (4.20) and integral curves of $Y$ satisfying (4.21).
-
-The fundamental theorem on flows of vector fields (Thm. A.42) guarantees that for each $(c^1,\ldots,c^n) \in \mathbb{R}^n$, there exists a maximal integral curve $\eta$ of $Y$ defined on some open interval containing $0$ and satisfying the initial condition (4.21), and the solutions depend smoothly on $(t,c)$. Therefore, there is a solution to (4.20) for $t$ in some maximal interval $I_0 \subseteq I$, and we need only show that $I_0 = I$. Write $I = (a,b)$ and $I_0 = (a_0, b_0)$ (where $a, a_0, b_0$ can be finite or infinite), and assume for the sake of contradiction that $b_0 < b$.
-
-Let us use the differential equation to estimate the derivative of $|V(t)|^2$:
-\begin{align*}
-\frac{d}{dt}|V(t)|^2 &= 2\sum_{k} \dot{V}^k(t)V^k(t)\\
-&= 2\sum_{j,k} A^k_j(t)V^j(t)V^k(t)\\
-&= 2V(t)^T A(t)V(t) \le 2|A(t)||V(t)|^2.
-\end{align*}
-
-Here $|\cdot|$ denotes the \textbf{Frobenius norm} of a vector or matrix, obtained by summing the squares of all the components and taking the square root. (It is just the Euclidean norm of the components.) On the compact interval $[0, b_0] \subseteq I$, the functions $A^k_j$ are all bounded, so there is a constant $M$ such that $|A(t)| \le M$ there. It then follows that
+The flow theorem gives local existence, uniqueness, and smooth dependence. To
+show the maximal solution fills $I=(a,b)$, suppose its right endpoint is
+$b_0<b$. On $[0,b_0]$, choose $M$ with $|A(t)|\leq M$ in Frobenius norm. Then
 \[
-\frac{d}{dt}(e^{-2Mt}|V(t)|^2) = e^{-2Mt}\left(\frac{d}{dt}|V(t)|^2 - 2M|V(t)|^2\right) \le 0,
+\frac d{dt}|V|^2=2V^TA(t)V\leq2M|V|^2,
 \]
-so the expression $e^{-2Mt}|V(t)|^2$ is a nonincreasing function of $t$, and thus is bounded for all $t \in [0, b_0)$ by its initial value $|V(0)|^2$. This implies $|V(t)|^2 \le e^{2Mt}|V(0)|^2$ for $t \in [0, b_0)$, which in turn implies that the corresponding integral curve of $Y$ stays in the compact set $[0, b_0] \times \bar{B}_R(0) \subseteq I \times \mathbb{R}^n$, where $R = e^{Mb_0}|V(0)|$. This contradicts the escape lemma (Lemma A.43), and shows that $b_0 = b$. The possibility that $a < a_0$ can be ruled out by applying the same reasoning to the vector field $-Y$.
-
-Finally, the case of general $t_0 \in I$ can be reduced to the previous case by making the substitutions $V^k(t) = \bar{V}^k(t - t_0)$ and $A^k_j(t) = \bar{A}^k_j(t - t_0)$.
+so
+\[
+\frac d{dt}\left(e^{-2Mt}|V(t)|^2\right)\leq0,
+\qquad
+|V(t)|\leq e^{Mt}|V(0)|.
+\]
+Thus $(t,V(t))$ remains in the compact set
+$[0,b_0]\times\overline B_R(0)$, with $R=e^{Mb_0}|V(0)|$, contradicting the
+escape lemma. Apply the same argument to $-Y$ for the left endpoint, and undo
+the parameter translation.
 \end{proof}
 
 \begin{theorem}[Existence and Uniqueness of Parallel Transport]
 \label{thm:existence-uniqueness-parallel-transport}
 \dcref{ch4:4.32}
 \uses{thm:covariant-derivative-along-curve,thm:linear-ode-existence-uniqueness}
-% Formalized in the single-chart case (Lee's first paragraph): parallelism is the
-% linear ODE V̇ = −Γ(u̇,V)(c) (eq. 4.19); existence + forward-Grönwall uniqueness hold
-% on ANY compact subinterval, and the parallel transport map P^γ_{t₀t₁} is a linear
-% isomorphism. The cross-chart supremum-gluing to a non-chart-covered curve is not yet
-% done, so no \leanok on the full (global) statement.
 \lean{LeeLib.Ch04.exists_isParallelAlongChart_Icc, LeeLib.Ch04.isParallelAlongChart_eqOn_Icc, LeeLib.Ch04.chartParallelTransport}
-Suppose $M$ is a smooth manifold with or without boundary, and $\nabla$ is a connection in $TM$. Given a smooth curve $\gamma: I \to M$, $t_0 \in I$, and a vector $v \in T_{\gamma(t_0)} M$ or tensor $v \in T^{(k,l)}_{\gamma(t_0)} M$, there exists a unique parallel vector or tensor field $V$ along $\gamma$ such that $V(t_0) = v$.
+Let $M$ be a smooth manifold, possibly with boundary, with a connection in $TM$.
+Given a smooth curve $\gamma\colon I\to M$, $t_0\in I$, and either
+$v\in T_{\gamma(t_0)}M$ or $v\in T^{(k,l)}_{\gamma(t_0)}M$, there is a unique
+parallel vector or tensor field $V$ along $\gamma$ satisfying $V(t_0)=v$.
 \end{theorem}
 
 \begin{proof}
-As in the proof of Theorem 4.24, we carry out the proof for vector fields. The case of tensor fields differs only in notation.
-
-First suppose $\gamma(I)$ is contained in a single coordinate chart. Then $V$ is parallel along $\gamma$ if and only if its components satisfy the linear system of ODEs (4.19). Theorem 4.31 guarantees the existence and uniqueness of a solution on all of $I$ with any initial condition $V(t_0) = v$.
-
-% [FIGURE: Fig. 4.9 - Existence and uniqueness of parallel transports along a curve, illustrated with vectors and curves on a manifold]
-
-Now suppose $\gamma(I)$ is not covered by a single chart. Let $\beta$ denote the supremum of all $b > t_0$ for which a unique parallel transport exists on $[t_0, b]$. (The argument for $t < t_0$ is similar.) We know that $\beta > t_0$, since for $b$ close enough to $t_0$, $\gamma([t_0, b])$ is contained in a single chart and the above argument applies. Then a unique parallel transport $V$ exists on $[t_0, \beta)$ (Fig. 4.9). If $\beta$ is equal to $\sup I$, we are done. If not, choose smooth coordinates on an open set containing $\gamma(\beta - \delta, \beta + \delta)$ for some positive $\delta$. Then there exists a unique parallel vector field $\tilde{V}$ on $(\beta - \delta, \beta + \delta)$ satisfying the initial condition $\tilde{V}(\beta - \delta/2) = V(\beta - \delta/2)$. By uniqueness, $V = \tilde{V}$ on their common domain, and therefore $\tilde{V}$ is a parallel extension of $V$ past $\beta$, which is a contradiction.
+\sketch If $\gamma(I)$ lies in one chart, solve (4.19), or the analogous tensor
+system, on all of $I$ using Theorem \ref{thm:linear-ode-existence-uniqueness}.
+In general, extend the solution through successive chart-covered subintervals.
+If the supremum of reachable parameters were an interior point of $I$, a chart
+around its image and the single-chart result would extend the field farther.
+The same argument to the left of $t_0$ gives existence on all of $I$; local
+uniqueness propagates across overlaps.
 \end{proof}
 
-The vector or tensor field whose existence and uniqueness are proved in Theorem 4.32 is called the \textbf{parallel transport of $v$ along $\gamma$}. For each $t_0, t_1 \in I$, we define a map
+The resulting field is the \emph{parallel transport} of $v$ along $\gamma$. For
+$t_0,t_1\in I$, define
 \begin{equation}
-P_{t_0t_1}^\gamma : T_{\gamma(t_0)} M \to T_{\gamma(t_1)} M, \tag{4.22}
+P_{t_0t_1}^\gamma\colon T_{\gamma(t_0)}M\longrightarrow T_{\gamma(t_1)}M,
+\qquad P_{t_0t_1}^\gamma(v)=V(t_1). \tag{4.22}
 \end{equation}
-called the \textbf{parallel transport map}, by setting $P_{t_0t_1}^\gamma(v) = V(t_1)$ for each $v \in T_{\gamma(t_0)} M$, where $V$ is the parallel transport of $v$ along $\gamma$. This map is linear, because the equation of parallelism is linear. It is in fact an isomorphism, because $P_{t_1t_0}^\gamma$ is an inverse for it.
+This map is linear, and $P_{t_1t_0}^\gamma$ is its inverse.
 
-It is also useful to extend the parallel transport operation to curves that are merely piecewise smooth. Given an admissible curve $\gamma : [a, b] \to M$, a map $V : [a, b] \to TM$ such that $V(t) \in T_{\gamma(t)} M$ for each $t$ is called a \textbf{piecewise smooth vector field along $\gamma$} if $V$ is continuous and there is an admissible partition $(a_0, \ldots, a_k)$ for $\gamma$ such that $V$ is smooth on each subinterval $[a_{i-1}, a_i]$. We will call any such partition an \textbf{admissible partition for $V$}. A piecewise smooth vector field $V$ along $\gamma$ is said to be \textbf{parallel along $\gamma$} if $D_t V = 0$ wherever $V$ is smooth.
+For an admissible curve $\gamma\colon[a,b]\to M$, a \emph{piecewise smooth vector
+field along $\gamma$} is a continuous $V\colon[a,b]\to TM$, with
+$V(t)\in T_{\gamma(t)}M$, that is smooth on every subinterval of some admissible
+partition. It is parallel when $D_tV=0$ wherever both fields are smooth.
 
 \begin{corollary}[Parallel Transport Along Piecewise Smooth Curves]
 \label{cor:parallel-transport-piecewise-smooth-curves}
 \dcref{ch4:4.33}
-% Formalized at the chart-coordinate level (matching the single-chart Thm 4.32): for an
-% admissible partition `a 0 ≤ … ≤ a k` with the curve `C¹` into one chart domain on each
-% segment, a piecewise-smooth parallel field exists (`exists_isPiecewiseParallelAlongChart_Icc`,
-% concatenating the per-segment chart-local parallel transports via the linear-ODE gluing
-% `exists_isSolOn_pieces`) and is unique (`isPiecewiseParallelAlongChart_eqOn_Icc`, propagating
-% per-segment Grönwall uniqueness across breakpoints). The cross-chart (moving-chart) global
-% form is inherited from the single-chart Thm 4.32 gap, so no \leanok.
 \lean{LeeLib.Ch04.exists_isPiecewiseParallelAlongChart_Icc, LeeLib.Ch04.isPiecewiseParallelAlongChart_eqOn_Icc}
-Suppose $M$ is a smooth manifold with or without boundary, and $\nabla$ is a connection in $TM$. Given an admissible curve $\gamma : [a,b] \to M$ and a vector $v \in T_{\gamma(a)}M$ or tensor $v \in T^{(k,l)}(T_{\gamma(a)} M)$, there exists a unique piecewise smooth parallel vector or tensor field $V$ along $\gamma$ such that $V(a) = v$, and $V$ is smooth wherever $\gamma$ is.
+Let $M$ be a smooth manifold, possibly with boundary, with a connection in $TM$.
+For an admissible curve $\gamma\colon[a,b]\to M$ and initial vector
+$v\in T_{\gamma(a)}M$ or tensor $v\in T^{(k,l)}(T_{\gamma(a)}M)$, there is a
+unique piecewise smooth parallel field $V$ along $\gamma$ with $V(a)=v$.
+Moreover, $V$ is smooth wherever $\gamma$ is smooth.
 \end{corollary}
 
 \begin{proof}
-Let $(a_0,\ldots,a_k)$ be an admissible partition for $\gamma$. First define $V|_{[a_0,a_1]}$ to be the parallel transport of $v$ along the first smooth segment $\gamma|_{[a_0,a_1]}$; then define $V|_{[a_1,a_2]}$ to be the parallel transport of $V(a_1)$ along the next smooth segment $\gamma|_{[a_1,a_2]}$; and continue by induction.
+\sketch On an admissible partition $(a_0,\ldots,a_k)$, transport $v$ along the
+first smooth segment and use its endpoint value as the initial value on the next
+segment. Induction gives existence, and segmentwise uniqueness gives global
+uniqueness.
 \end{proof}
 
-Here is an extremely useful tool for working with parallel transport. Given any basis $(b_1,\ldots,b_n)$ for $T_{\gamma(t_0)}M$, we can parallel transport the vectors $b_i$ along $\gamma$, thus obtaining an $n$-tuple of parallel vector fields $(E_1,\ldots,E_n)$ along $\gamma$. Because each parallel transport map is an isomorphism, the vectors $(E_i(t))$ form a basis for $T_{\gamma(t)}M$ at each point $\gamma(t)$. Such an $n$-tuple of vector fields along $\gamma$ is called a \textbf{parallel frame along $\gamma$}. Every smooth (or piecewise smooth) vector field along $\gamma$ can be expressed in terms of such a frame as $V(t) = V^i(t) E_i(t)$, and then the properties of covariant derivatives along curves, together with the fact that the $E_i$'s are parallel, imply
+Transporting a basis of $T_{\gamma(t_0)}M$ produces a \emph{parallel frame}
+$(E_1,\ldots,E_n)$ along $\gamma$. Since parallel transport is an isomorphism,
+this is a basis at each time. If $V=V^iE_i$, then
 \begin{equation}
-D_t V(t) = \dot{V}^i(t) E_i(t) \tag{4.23}
+D_tV(t)=\dot V^i(t)E_i(t) \tag{4.23}
 \end{equation}
-whenever $V$ and $\gamma$ are smooth. This means that a vector field is parallel along $\gamma$ if and only if its component functions with respect to the frame $(E_i)$ are constants.
-
-The parallel transport map is the means by which a connection ``connects'' nearby tangent spaces. The next theorem and its corollary show that parallel transport determines covariant differentiation along curves, and thereby the connection itself.
+wherever $V$ and $\gamma$ are smooth. Hence $V$ is parallel exactly when its
+components in a parallel frame are constant.
 
 \begin{theorem}[Parallel Transport Determines Covariant Differentiation]
 \label{thm:parallel-transport-determines-covariant-diff}
 \dcref{ch4:4.34}
 \uses{cor:parallel-transport-piecewise-smooth-curves}
-Let $M$ be a smooth manifold with or without boundary, and let $\nabla$ be a connection in $TM$. Suppose $\gamma : I \to M$ is a smooth curve and $V$ is a smooth vector field along $\gamma$. For each $t_0 \in I$,
+For a smooth curve $\gamma\colon I\to M$, a smooth vector field $V$ along it,
+and $t_0\in I$,
 \begin{equation}
-D_t V(t_0) = \lim_{t_1 \to t_0} \frac{P_{t_1 t_0}^{\gamma} V(t_1) - V(t_0)}{t_1 - t_0}. \tag{4.24}
+D_tV(t_0)=\lim_{t_1\to t_0}
+\frac{P_{t_1t_0}^\gamma V(t_1)-V(t_0)}{t_1-t_0}. \tag{4.24}
 \end{equation}
 \end{theorem}
 
 \begin{proof}
-Let $(E_i)$ be a parallel frame along $\gamma$, and write $V(t) = V^i(t) E_i(t)$ for $t \in I$. On the one hand, (4.23) shows that $D_t V(t_0) = \dot{V}^i(t_0) E_i(t_0)$. On the other hand, for every fixed $t_1 \in I$, the parallel transport of the vector $V(t_1)$ along $\gamma$ is the constant-coefficient vector field $W(t) = V^i(t_1) E_i(t)$ along $\gamma$, so $P_{t_1 t_0}^{\gamma} V(t_1) = V^i(t_1) E_i(t_0)$. Inserting these formulas into (4.24) and taking the limit as $t_1 \to t_0$, we conclude that the right-hand side is also equal to $\dot{V}^i(t_0) E_i(t_0)$.
+\sketch Write $V(t)=V^i(t)E_i(t)$ in a parallel frame. Equation (4.23) gives
+$D_tV(t_0)=\dot V^i(t_0)E_i(t_0)$, while
+\[
+P_{t_1t_0}^\gamma V(t_1)=V^i(t_1)E_i(t_0).
+\]
+The difference quotient has the same limit.
 \end{proof}
 
 \begin{corollary}[Parallel Transport Determines the Connection]
 \label{cor:parallel-transport-determines-connection}
 \dcref{ch4:4.35}
 \uses{thm:parallel-transport-determines-covariant-diff}
-Let $M$ be a smooth manifold with or without boundary, and let $\nabla$ be a connection in $TM$. Suppose $X$ and $Y$ are smooth vector fields on $M$. For every $p \in M$,
+Let $X,Y$ be smooth vector fields. For $p\in M$ and any smooth curve
+$\gamma\colon I\to M$ satisfying $\gamma(0)=p$ and $\gamma'(0)=X_p$,
 \begin{equation}
-\nabla_X Y|_p = \lim_{h \to 0} \frac{P_{h0}^{\gamma} Y(\gamma(h)) - Y_p}{h}, \tag{4.25}
+\nabla_XY|_p=\lim_{h\to0}
+\frac{P_{h0}^\gamma Y(\gamma(h))-Y_p}{h}. \tag{4.25}
 \end{equation}
-where $\gamma : I \to M$ is any smooth curve such that $\gamma(0) = p$ and $\gamma'(0) = X_p$.
 \end{corollary}
 
 \begin{proof}
-Given $p \in M$ and a smooth curve $\gamma$ such that $\gamma(0) = p$ and $\gamma'(0) = X_p$, let $V(t)$ denote the vector field along $\gamma$ determined by $Y$, so $V(t) = Y_{\gamma(t)}$. By property (iii) of Theorem 4.24, $\nabla_X Y |_p$ is equal to $D_t V(0)$, so the result follows from Theorem 4.34.
+\sketch Restrict $Y$ to $\gamma$. The defining property of covariant
+differentiation along curves gives $\nabla_XY|_p=D_t(Y\circ\gamma)(0)$; apply
+Theorem \ref{thm:parallel-transport-determines-covariant-diff}.
 \end{proof}
 
-A smooth vector or tensor field on $M$ is said to be \textbf{parallel} (with respect to $\nabla$) if it is parallel along every smooth curve in $M$. For example, Exercise 4.30 shows that every constant-coefficient vector field on $\mathbb{R}^n$ is parallel.
+A smooth vector or tensor field on $M$ is \emph{parallel} when it is parallel
+along every smooth curve.
 
 \begin{proposition}
 \label{prop:parallel-field-characterization}
 \dcref{ch4:4.36}
-Suppose $M$ is a smooth manifold with or without boundary, $\nabla$ is a connection in $TM$, and $A$ is a smooth vector or tensor field on $M$. Then $A$ is parallel on $M$ if and only if $\nabla A \equiv 0$.
+Let $M$ be a smooth manifold, possibly with boundary, with a connection $\nabla$
+in $TM$. A smooth vector or tensor field $A$ is parallel on $M$ if and only if
+$\nabla A\equiv0$.
 \end{proposition}
-
-\begin{proof}
-Problem 4-12.
-\end{proof}
-
-Although Theorem 4.32 showed that it is always possible to extend a vector at a point to a parallel vector field along any given curve, it may not be possible in general to extend it to a \textbf{parallel vector field} on an open subset of the manifold. The impossibility of finding such extensions is intimately connected with the phenomenon of curvature, which will occupy a major portion of our attention in the second half of the book.
 
 \section{Pullback Connections}
 
-Like vector fields, connections in the tangent bundle cannot be either pushed forward or pulled back by arbitrary smooth maps. However, there is a natural way to pull back such connections by means of a \textbf{diffeomorphism}. In this section we define this operation and enumerate some of its most important properties.
-
-Suppose $M$ and $\tilde{M}$ are smooth manifolds and $\varphi : M \to \tilde{M}$ is a diffeomorphism. For a smooth vector field $X \in \mathfrak{X}(M)$, recall that the \textbf{pushforward} of $X$ is the unique vector field $\varphi_* X \in \mathfrak{X}(\tilde{M})$ that satisfies $d\varphi_p(X_p) = (\varphi_* X)_{\varphi(p)}$ for all $p \in M$. (See Lemma A.36.)
+For a diffeomorphism $\varphi\colon M\to\widetilde M$, write $\varphi_*X$ for
+the vector field satisfying
+$d\varphi_p(X_p)=(\varphi_*X)_{\varphi(p)}$.
 
 \begin{lemma}[Pullback Connections]
 \label{lem:pullback-connection}
 \dcref{ch4:4.37}
 \uses{lem:pushforward-vector-field}
-% Formalized: TangentConnection.pullback builds `φ*∇̃` as an honest
-% `Connection I E (TangentSpace I)` from eq. (4.26), on the raw-section representation
-% `(φ*∇̃) σ x = (dφ_x)⁻¹ ∘L (∇̃ (φ_*σ)(φx)) ∘L dφ_x`, discharging additivity and the
-% Leibniz product rule (the latter via Lee's eq. (A.7) chain rule
-% `d(f∘φ⁻¹)_{φx}∘dφ_x = df_x`); ℝ-/C^∞-linearity are free from the covariantDeriv API.
 \lean{LeeLib.Ch04.TangentConnection.pullback}
 \leanok
-Suppose $M$ and $\tilde{M}$ are smooth manifolds with or without boundary. If $\tilde{\nabla}$ is a connection in $T\tilde{M}$ and $\varphi : M \to \tilde{M}$ is a diffeomorphism, then the map $\varphi^* \tilde{\nabla} : \mathfrak{X}(M) \times \mathfrak{X}(M) \to \mathfrak{X}(M)$ defined by
+Let $M,\widetilde M$ be smooth manifolds, possibly with boundary, let
+$\widetilde\nabla$ be a connection in $T\widetilde M$, and let
+$\varphi\colon M\to\widetilde M$ be a diffeomorphism. Then
 \begin{equation}
-(\varphi^* \tilde{\nabla})_X Y = (\varphi^{-1})_* \left( \tilde{\nabla}_{\varphi_* X} (\varphi_* Y) \right) \tag{4.26}
+(\varphi^*\widetilde\nabla)_XY
+=(\varphi^{-1})_*
+\left(\widetilde\nabla_{\varphi_*X}(\varphi_*Y)\right) \tag{4.26}
 \end{equation}
-is a connection in $TM$, called the \textbf{pullback} of $\tilde{\nabla}$ by $\varphi$.
+defines a connection in $TM$, called the \emph{pullback connection}.
 \end{lemma}
 
 \begin{proof}
-It is immediate from the definition that $(\varphi^* \tilde{\nabla})_X Y$ is linear over $\mathbb{R}$ in $Y$. To see that it is linear over $C^\infty(M)$ in $X$, let $f \in C^\infty(M)$, and let $\tilde{f} = f \circ \varphi^{-1}$, so $\varphi_*(fX) = \tilde{f} \varphi_* X$. Then
+\sketch Real linearity in $Y$ is immediate. For $f\in C^\infty(M)$, set
+$\widetilde f=f\circ\varphi^{-1}$. Since
+$\varphi_*(fX)=\widetilde f\,\varphi_*X$, equation (4.26) gives
 \[
-(\varphi^* \tilde{\nabla})_{fX} Y = (\varphi^{-1})_* (\tilde{\nabla}_{\tilde{f} \varphi_* X} (\varphi_* Y))
-= (\varphi^{-1})_* (\tilde{f}\tilde{\nabla}_{\varphi_* X} (\varphi_* Y))
-= f(\varphi^* \tilde{\nabla})_X Y.
+(\varphi^*\widetilde\nabla)_{fX}Y
+=f(\varphi^*\widetilde\nabla)_XY.
 \]
-
-Finally, to prove the product rule in $Y$, let $f$ and $\tilde{f}$ be as above, and note that (A.7) implies $(\varphi_* X)(\tilde{f}) = (Xf) \circ \varphi^{-1}$. Thus
+Also $(\varphi_*X)(\widetilde f)=(Xf)\circ\varphi^{-1}$, so the Leibniz rule for
+$\widetilde\nabla$ yields
 \[
-(\varphi^* \tilde{\nabla})_X (fY) = (\varphi^{-1})_* (\tilde{\nabla}_{\varphi_* X} (\tilde{f} \varphi_* Y))
-= (\varphi^{-1})_* (\tilde{f}\tilde{\nabla}_{\varphi_* X} (\varphi_* Y) + (\varphi_* X)(\tilde{f})\varphi_* Y)
-= f(\varphi^* \tilde{\nabla})_X Y + (Xf)Y.
+(\varphi^*\widetilde\nabla)_X(fY)
+=f(\varphi^*\widetilde\nabla)_XY+(Xf)Y.
 \]
+Thus (4.26) satisfies the connection axioms.
 \end{proof}
-
-The next proposition shows that various important concepts defined in terms of connections---covariant derivatives along curves, parallel transport, and geodesics---all behave as expected with respect to pullback connections.
 
 \begin{proposition}[Properties of Pullback Connections]
 \label{prop:pullback-connection-properties}
 \dcref{ch4:4.38}
 \uses{lem:pullback-connection}
-% Formalized: the abstract naturality at the heart of (a),(b),(c) —
-% covariantDeriv_pullback_naturality: `dφ_x` intertwines the pullback covariant derivative
-% with `∇̃`, `dφ_x((φ*∇̃)_X σ x) = ∇̃(φ_*σ)(φx)(dφ_x(X x))` (with read-off
-% pullback_covariantDeriv_apply). The three global consequences (D_t along curves,
-% geodesics, parallel transport) are instances of this, but their global forms live only
-% chart-locally / partially in LeeLib, so no \leanok on the full proposition.
 \lean{LeeLib.Ch04.covariantDeriv_pullback_naturality, LeeLib.Ch04.pullback_covariantDeriv_apply}
-Suppose $M$ and $\tilde{M}$ are smooth manifolds with or without boundary, and $\varphi: M \to \tilde{M}$ is a diffeomorphism. Let $\tilde{\nabla}$ be a connection in $T\tilde{M}$ and let $\nabla = \varphi^*\tilde{\nabla}$ be the pullback connection in $TM$. Suppose $\gamma: I \to M$ is a smooth curve.
-
-(a) $\varphi$ takes covariant derivatives along curves to covariant derivatives along curves: if $V$ is a smooth vector field along $\gamma$, then
-\[d\varphi \circ D_t V = \tilde{D}_t(d\varphi \circ V),\]
-where $D_t$ is covariant differentiation along $\gamma$ with respect to $\nabla$, and $\tilde{D}_t$ is covariant differentiation along $\varphi \circ \gamma$ with respect to $\tilde{\nabla}$.
-
-(b) $\varphi$ takes geodesics to geodesics: if $\gamma$ is a $\nabla$-geodesic in $M$, then $\varphi \circ \gamma$ is a $\tilde{\nabla}$-geodesic in $\tilde{M}$.
-
-(c) $\varphi$ takes parallel transport to parallel transport: for every $t_0, t_1 \in I$,
-\[d\varphi_{\gamma(t_1)} \circ P^\gamma_{t_0t_1} = P^{\varphi \circ \gamma}_{t_0t_1} \circ d\varphi_{\gamma(t_0)}.\]
+Let $\nabla=\varphi^*\widetilde\nabla$ and let $\gamma\colon I\to M$ be smooth.
+\begin{enumerate}
+\item[(a)] For every smooth vector field $V$ along $\gamma$,
+\[
+d\varphi\circ D_tV=\widetilde D_t(d\varphi\circ V),
+\]
+where the two derivatives are taken along $\gamma$ and $\varphi\circ\gamma$.
+\item[(b)] If $\gamma$ is a $\nabla$-geodesic, then $\varphi\circ\gamma$ is a
+$\widetilde\nabla$-geodesic.
+\item[(c)] For $t_0,t_1\in I$,
+\[
+d\varphi_{\gamma(t_1)}\circ P_{t_0t_1}^\gamma
+=P_{t_0t_1}^{\varphi\circ\gamma}\circ d\varphi_{\gamma(t_0)}.
+\]
+\end{enumerate}
 \end{proposition}
-
-\begin{proof}
-Problem 4-13.
-\end{proof}
-
 \section{Problems}
 
 \begin{exercise}
 \label{prob:embedded-submanifold-covariant-derivative}
 \dcref{ch4:4-1}
 \uses{prop:tangent-space-submanifold}
-Let $M \subseteq \mathbb{R}^n$ be an embedded submanifold and $Y \in \mathfrak{X}(M)$. For every point $p \in M$ and vector $v \in T_p M$, define $\nabla_v^\top Y$ by (4.4).
-
-(a) Show that $\nabla_v^\top Y$ does not depend on the choice of extension $\tilde{Y}$ of $Y$. [Hint: Use Prop. A.28.]
-
-(b) Show that $\nabla_v^\top Y$ is invariant under rigid motions of $\mathbb{R}^n$, in the following sense: if $F \in E(n)$ and $\tilde{M} = F(M)$, then $dF_p(\nabla_v^\top Y) = \nabla_{dF_p(v)}^\top (F_* Y)$.
-
-(Used on pp. 87, 93.)
+Let $M\subseteq\mathbb R^n$ be an embedded submanifold, let
+$Y\in\mathfrak X(M)$, and define $\nabla_v^\top Y$ by (4.4) for
+$p\in M$ and $v\in T_pM$.
+\begin{enumerate}
+\item[(a)] Prove that $\nabla_v^\top Y$ is independent of the chosen extension
+$\widetilde Y$ of $Y$. You may use Proposition A.28.
+\item[(b)] Prove invariance under rigid motions: if $F\in E(n)$ and
+$\widetilde M=F(M)$, then
+\[
+dF_p(\nabla_v^\top Y)=\nabla_{dF_p(v)}^\top(F_*Y).
+\]
+\end{enumerate}
 \end{exercise}
 
-\begin{exercise}\label{prob:lie-derivative-not-connection}\dcref{ch4:4-2}
+\begin{exercise}
+\label{prob:lie-derivative-not-connection}
+\dcref{ch4:4-2}
 \uses{prop:lie-derivative-equals-bracket}
-In your study of smooth manifolds, you have already seen another way of taking ``directional derivatives of vector fields,'' the Lie derivative $\mathcal{L}_X Y$ (which is equal to the Lie bracket $[X,Y]$; see Prop.~A.46). Suppose $M$ is a smooth manifold of positive dimension.
-
-(a) Show that the map $\mathcal{L}: \mathfrak{X}(M) \times \mathfrak{X}(M) \to \mathfrak{X}(M)$ is not a connection.
-
-(b) Show that there are smooth vector fields $X$ and $Y$ on $\mathbb{R}^2$ such that $X = Y = \partial_1$ along the $x^1$-axis, but the Lie derivatives $\mathcal{L}_X(\partial_2)$ and $\mathcal{L}_Y(\partial_2)$ are not equal on the $x^1$-axis.
+Let $M$ be a positive-dimensional smooth manifold and
+$\mathcal L_XY=[X,Y]$.
+\begin{enumerate}
+\item[(a)] Prove that
+$\mathcal L\colon\mathfrak X(M)\times\mathfrak X(M)\to\mathfrak X(M)$ is not a
+connection.
+\item[(b)] Find smooth vector fields $X,Y$ on $\mathbb R^2$ such that
+$X=Y=\partial_1$ along the $x^1$-axis, but
+$\mathcal L_X(\partial_2)$ and $\mathcal L_Y(\partial_2)$ differ there.
+\end{enumerate}
 \end{exercise}
 
-\begin{exercise}\label{prob:transformation-law-connection}\dcref{ch4:4-3}
+\begin{exercise}
+\label{prob:transformation-law-connection}
+\dcref{ch4:4-3}
 \uses{prop:transformation-law-connection-coefficients}
 \lean{LeeLib.Ch04.connectionCoeff_transformation_law}
 \leanok
-Prove Proposition 4.7 (the transformation law for the connection coefficients).
+Prove Proposition 4.7, the transformation law for connection coefficients.
 \end{exercise}
 
-\begin{exercise}\label{prob:characterizing-connections}\dcref{ch4:4-4}
+\begin{exercise}
+\label{prob:characterizing-connections}
+\dcref{ch4:4-4}
 \uses{thm:connections-affine-space}
-Prove Theorem 4.14 (characterizing the space of connections).
+Prove Theorem 4.14 characterizing the affine space of connections.
 \end{exercise}
 
-\begin{exercise}\label{prob:tensor-field-formulas}\dcref{ch4:4-5}
+\begin{exercise}
+\label{prob:tensor-field-formulas}
+\dcref{ch4:4-5}
 \uses{prop:covariant-derivative-components}
-Prove Proposition 4.16 (local formulas for covariant derivatives of tensor fields).
+Prove Proposition 4.16, the local component formulas for covariant derivatives of
+tensor fields.
 \end{exercise}
 
-\begin{exercise}\label{prob:torsion-tensor}\dcref{ch4:4-6}
+\begin{exercise}
+\label{prob:torsion-tensor}
+\dcref{ch4:4-6}
 \uses{ex:covariant-hessian}
 \lean{LeeLib.Ch04.torsion, LeeLib.Ch04.torsion_apply, LeeLib.Ch04.isSymmetric_iff}
-Let $M$ be a smooth manifold and let $\nabla$ be a connection in $TM$. Define a map $\tau: \mathfrak{X}(M) \times \mathfrak{X}(M) \to \mathfrak{X}(M)$ by
+Let $\nabla$ be a connection in $TM$ and define
 \[
-\tau(X,Y) = \nabla_X Y - \nabla_Y X - [X,Y].
+\tau(X,Y)=\nabla_XY-\nabla_YX-[X,Y].
 \]
-
-(a) Show that $\tau$ is a $(1,2)$-tensor field, called the \textit{torsion tensor} of $\nabla$.
-
-(b) We say that $\nabla$ is \textit{symmetric} if its torsion vanishes identically. Show that $\nabla$ is symmetric if and only if its connection coefficients with respect to every coordinate frame are symmetric: $\Gamma^k_{ij} = \Gamma^k_{ji}$. [Warning: They might not be symmetric with respect to other frames.]
-
-(c) Show that $\nabla$ is symmetric if and only if the covariant Hessian $\nabla^2 u$ of every smooth function $u \in C^\infty(M)$ is a symmetric 2-tensor field. (See Example 4.22.)
-
-(d) Show that the Euclidean connection $\nabla$ on $\mathbb{R}^n$ is symmetric.
-
-(Used on pp. 113, 121, 123.)
+\begin{enumerate}
+\item[(a)] Prove that $\tau$ is a $(1,2)$-tensor field, called the
+\emph{torsion tensor} of $\nabla$.
+\item[(b)] Call $\nabla$ \emph{symmetric} when $\tau\equiv0$. Prove that this is
+equivalent to
+\[
+\Gamma^k_{ij}=\Gamma^k_{ji}
+\]
+in every coordinate frame. \emph{Warning.} The coefficients need not be symmetric
+in a noncoordinate frame.
+\item[(c)] Prove that $\nabla$ is symmetric if and only if the covariant Hessian
+$\nabla^2u$ is a symmetric $2$-tensor for every $u\in C^\infty(M)$.
+\item[(d)] Prove that the Euclidean connection on $\mathbb R^n$ is symmetric.
+\end{enumerate}
 \end{exercise}
 
-\begin{exercise}\label{prob:figure-eight-immersion}\dcref{ch4:4-7}
+\begin{exercise}
+\label{prob:figure-eight-immersion}
+\dcref{ch4:4-7}
 \uses{ex:figure-eight-curve}
-Let $\gamma: (-\pi, \pi) \to \mathbb{R}^2$ be the figure eight curve defined in Example 4.23. Prove that $\gamma$ is an injective smooth immersion, but its velocity vector field is not extendible.
+Let $\gamma\colon(-\pi,\pi)\to\mathbb R^2$ be the figure-eight curve of
+Example 4.23. Prove that $\gamma$ is an injective smooth immersion whose velocity
+field is not extendible.
 \end{exercise}
 
-\begin{exercise}\label{prob:vector-field-extendibility}\dcref{ch4:4-8}
-Suppose $M$ is a smooth manifold (without boundary), $I \subseteq \mathbb{R}$ is an interval (bounded or not, with or without endpoints), and $\gamma: I \to M$ is a smooth curve.
-
-(a) Show that for every $t_0 \in I$ such that $\gamma'(t_0) \neq 0$, there is a connected neighborhood $J$ of $t_0$ in $I$ such that every smooth vector field along $\gamma|_J$ is extendible.
+\begin{exercise}
+\label{prob:vector-field-extendibility}
+\dcref{ch4:4-8}
+Let $M$ be a smooth manifold without boundary, let $I\subseteq\mathbb R$ be any
+interval, bounded or unbounded and with or without endpoints, and let
+$\gamma\colon I\to M$ be smooth.
+\begin{enumerate}
+\item[(a)] If $t_0\in I$ and $\gamma'(t_0)\ne0$, prove that some connected
+neighborhood $J$ of $t_0$ in $I$ has the property that every smooth vector field
+along $\gamma|_J$ is extendible.
+\item[(b)] If $I$ is open or compact and $\gamma$ is a smooth embedding, prove
+that every smooth vector field along $\gamma$ is extendible.
+\end{enumerate}
 \end{exercise}
 
 \begin{exercise}[Two connections and their difference tensor]
 \label{prob:connections-difference-tensor}
 \dcref{ch4:4-9}
 \uses{prob:torsion-tensor}
-% Part (a) formalized (sameTorsion_iff_differenceTensor_symm), via the identity
-% τ¹(X,Y)−τ⁰(X,Y) = D(Y,X)−D(X,Y).
-% Part (b) formalized at the level of the geodesic equation
-% (sameChartAcceleration_iff_chartGamma_diff_antisymm,
-% isGeodesicInChart_congr_of_diff_antisymm): the two connections induce the same
-% acceleration D_tγ' on every chart curve — hence the same chart geodesics — iff the
-% difference Γ¹−Γ⁰ of their chart Christoffel contractions is antisymmetric, via the
-% polarization identity biadditive_diag_eq_zero_iff_antisymm.  This chart condition is
-% bridged to Lee's abstract difference tensor D = ∇¹−∇⁰ (differenceTensor, Prop 4.13):
-% chartGamma_diff_antisymm_iff_differenceTensor_frame_antisymm shows Γ¹−Γ⁰ is
-% antisymmetric iff D is antisymmetric on the chart frame, D(∂_j,∂_i)=−D(∂_i,∂_j) — the
-% exact geodesic counterpart of part (a) (torsion ↔ D symmetric), via the frame identity
-% differenceTensor_chartFrame_eq_sum (D's chart components = Christoffel coefficient
-% differences).  The equivalence with the same solution SET (rather than the same
-% equation) is the spray existence/uniqueness theory, still partial in the chapter, so
-% no \leanok on the whole problem.
 \lean{LeeLib.Ch04.sameTorsion_iff_differenceTensor_symm, LeeLib.Ch04.sameChartAcceleration_iff_chartGamma_diff_antisymm, LeeLib.Ch04.isGeodesicInChart_congr_of_diff_antisymm, LeeLib.Ch04.chartGamma_diff_antisymm_iff_differenceTensor_frame_antisymm, LeeLib.Ch04.differenceTensor_chartFrame_eq_sum}
-Let $M$ be a smooth manifold, and let $\nabla^0$ and $\nabla^1$ be two connections on $TM$.
-
-(a) Show that $\nabla^0$ and $\nabla^1$ have the same torsion (Problem 4-6) if and only if their difference tensor is symmetric, i.e., $D(X,Y) = D(Y,X)$ for all $X$ and $Y$.
-
-(b) Show that $\nabla^0$ and $\nabla^1$ determine the same geodesics if and only if their difference tensor is antisymmetric, i.e., $D(X,Y) = -D(Y,X)$ for all $X$ and $Y$.
-
-(Used on p. 145.)
+Let $\nabla^0,\nabla^1$ be connections on $TM$, with difference tensor $D$.
+\begin{enumerate}
+\item[(a)] Prove that the two connections have the same torsion if and only if
+$D$ is symmetric:
+\[
+D(X,Y)=D(Y,X).
+\]
+\item[(b)] Prove that they determine the same geodesics if and only if $D$ is
+antisymmetric:
+\[
+D(X,Y)=-D(Y,X).
+\]
+\end{enumerate}
 \end{exercise}
 
 \begin{exercise}[Parallel vector fields and reparametrization]
 \label{prob:parallel-reparametrization}
 \dcref{ch4:4-10}
-% Formalized in chart coordinates (isParallelAlongChart_comp), via the chain-rule
-% rescaling of the covariant derivative along a curve under reparametrization
-% D_s(V∘φ) = φ' • (D_t V)∘φ (covariantDerivAlongChart_comp); parallel (D_t V ≡ 0)
-% is therefore preserved.  Chart-local like the rest of the D_t development, so no
-% \leanok on the abstract 𝔛(γ) statement.
 \lean{LeeLib.Ch04.covariantDerivAlongChart_comp, LeeLib.Ch04.isParallelAlongChart_comp}
-Suppose $M$ is a smooth manifold endowed with a connection, $\gamma: I \to M$ is a smooth curve, and $Y \in \mathfrak{X}(\gamma)$. Prove that if $Y$ is parallel along $\gamma$, then it is parallel along every reparametrization of $\gamma$.
+Let $M$ carry a connection, let $\gamma\colon I\to M$ be smooth, and let
+$Y\in\mathfrak X(\gamma)$. Prove that if $Y$ is parallel along $\gamma$, then its
+induced field is parallel along every reparametrization of $\gamma$.
 \end{exercise}
 
 \begin{exercise}[Connection on Lie groups]
 \label{prob:lie-group-connection}
 \dcref{ch4:4-11}
 \uses{prob:torsion-tensor}
-Suppose $G$ is a Lie group.
-
-(a) Show that there is a unique connection $\nabla$ in $TG$ with the property that every left-invariant vector field is parallel.
-
-(b) Show that the torsion tensor of $\nabla$ (Problem 4-6) is zero if and only if $G$ is abelian.
+Let $G$ be a Lie group.
+\begin{enumerate}
+\item[(a)] Prove that there is a unique connection $\nabla$ in $TG$ for which
+every left-invariant vector field is parallel.
+\item[(b)] Prove that the torsion of $\nabla$ vanishes if and only if the identity
+component of $G$ is abelian.
+\end{enumerate}
 \end{exercise}
 
 \begin{exercise}[Parallel tensor fields]
 \label{prob:parallel-tensor-fields}
 \dcref{ch4:4-12}
 \uses{prop:parallel-field-characterization}
-Prove Proposition 4.36 (a vector or tensor field $A$ is parallel if and only if $\nabla A = 0$).
+Prove Proposition 4.36 on the characterization of parallel fields: a vector or
+tensor field $A$ is parallel if and only if $\nabla A=0$.
 \end{exercise}
 
 \begin{exercise}[Pullback connections]
 \label{prob:pullback-connections}
 \dcref{ch4:4-13}
 \uses{prop:pullback-connection-properties}
-Prove Proposition 4.38 (properties of pullback connections).
+Prove Proposition 4.38 on the naturality properties of pullback connections.
 \end{exercise}
 
 \begin{exercise}[Connection 1-forms and Cartan's first structure equation]
 \label{prob:connection-1forms-cartan}
 \dcref{ch4:4-14}
 \uses{prob:torsion-tensor}
-Let $M$ be a smooth $n$-manifold and $\nabla$ a connection in $TM$, let $(E_i)$ be a local frame on some open subset $U \subset M$, and let $(\epsilon^i)$ be the dual coframe.
-
-(a) Show that there is a uniquely determined $n \times n$ matrix of smooth 1-forms $(\omega^i_j)$ on $U$, called the \textbf{connection 1-forms} for this frame, such that
+Let $M$ be a smooth $n$-manifold, let $\nabla$ be a connection in $TM$, let
+$(E_i)$ be a local frame on an open $U\subseteq M$, and let $(\epsilon^i)$ be its
+dual coframe.
+\begin{enumerate}
+\item[(a)] Prove that there is a unique matrix of smooth $1$-forms
+$(\omega_i{}^j)$ on $U$, called the \emph{connection $1$-forms} of the frame,
+such that
 \[
-\nabla_X E_i = \omega^i_j(X) E_j
+\nabla_XE_i=\omega_i{}^j(X)E_j
+\qquad(X\in\mathfrak X(U)).
 \]
-for all $X \in \mathfrak{X}(U)$.
-
-(b) \textbf{Cartan's first structure equation}: Prove that these forms satisfy the following equation, due to \'Elie Cartan:
+\item[(b)] Prove Cartan's first structure equation
 \[
-d\epsilon^i = \epsilon^i \wedge \omega^i_j + \tau^i,
+d\epsilon^j=\epsilon^i\wedge\omega_i{}^j+\tau^j,
 \]
-where $\tau^1, \ldots, \tau^n \in \Omega^2(M)$ are the \textbf{torsion 2-forms}, defined in terms of the torsion tensor $\tau$ (Problem 4-6) and the frame $(E_i)$ by
+where the torsion $2$-forms $\tau^1,\ldots,\tau^n\in\Omega^2(M)$ are defined by
 \[
-\tau(X,Y) = \tau^i(X,Y) E_i.
+\tau(X,Y)=\tau^j(X,Y)E_j.
 \]
-
-(Used on pp. 145, 222.)
+\end{enumerate}
 \end{exercise}
