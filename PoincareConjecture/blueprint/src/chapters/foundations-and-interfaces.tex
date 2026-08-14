@@ -1,0 +1,619 @@
+\chapter{Foundations and Interfaces}
+
+This chapter records the comparison argument used later for time-dependent
+maxima, the geometric input for controlled surgery, and the neck-and-cap
+topology needed to read the effect of surgery on a three-manifold.
+
+\section{Forward-Difference Comparison}
+
+For a continuous function $f\colon[a,b]\to\mathbb R$, write
+$D^+f(t)\le c$ when
+\[
+  \limsup_{h\downarrow0}\frac{f(t+h)-f(t)}h\le c,
+  \qquad t\in[a,b).
+\]
+
+\begin{theorem}[{Forward-Dini comparison principle}]
+\label{node:MT.02.lem.22}
+\dcref{ch2:2.22}
+\notready
+Let $f\colon[a,b]\to\mathbb R$ be continuous, let
+$\psi\colon[a,b]\times\mathbb R\to\mathbb R$ be of class $C^1$, and
+suppose
+\[
+  D^+f(t)\le \psi(t,f(t))\qquad(a\le t<b).
+\]
+If $G\in C^1([a,b])$ satisfies
+$G'(t)=\psi(t,G(t))$ and $f(a)\le G(a)$, then
+$f(t)\le G(t)$ for every $t\in[a,b]$.
+\end{theorem}
+
+\begin{proof}
+The ranges of $f$ and $G$ lie in a compact interval $J$.  On the compact
+set $[a,b]\times J$ the derivative $\partial_2\psi$ is bounded, so there is
+$L\ge0$ such that
+\[
+  |\psi(t,u)-\psi(t,v)|\le L|u-v|
+  \quad(t\in[a,b],\ u,v\in J).
+\]
+Put $u=f-G$.  At every point at which $u(t)\ge0$, subtraction of the
+ordinary right derivative of $G$ from the upper forward derivative of $f$
+gives
+\[
+  D^+u(t)\le\psi(t,f(t))-\psi(t,G(t))\le Lu(t).
+\]
+Consequently $v(t)=e^{-L(t-a)}u(t)$ satisfies $D^+v(t)\le0$ whenever
+$v(t)\ge0$.
+
+We use the elementary right-Dini mean-value lemma: if a continuous function
+$q$ on $[c,d]$ satisfies $q(d)>q(c)$, then some $s<d$ has
+$D^+q(s)>0$.  Indeed, choose
+$0<\eta<(q(d)-q(c))/(d-c)$ and minimize
+$q(t)-\eta(t-c)$ on $[c,d]$.  The endpoint $d$ is not a minimizer, and at
+any minimizing point $s<d$ all positive difference quotients of $q$ are at
+least $\eta$.
+
+If $v$ were positive, let $c$ be the last zero before a point $d$ in a
+positive component (taking $c=a$ if the component starts at $a$).  Thus
+$v(c)=0$, $v>0$ on $(c,d]$, and the Dini mean-value lemma supplies
+$s\in[c,d)$ with $D^+v(s)>0$.  But $v(s)\ge0$, contradicting the inequality
+$D^+v(s)\le0$.  Hence $v\le0$ and therefore $f\le G$.
+\end{proof}
+
+\begin{lemma}[{Uniform transport of time-slice maxima}]
+\label{node:MT.02.constr.time_slice_max_forward_difference}
+\dcref{ch2:2.23}
+\notready
+Let $X$ be a set with functions
+$\tau,F,V\colon X\to\mathbb R$, let $Z\subset X$, and let
+$m\colon[a,b]\to\mathbb R$.  Suppose that every time slice has a point
+$x\in Z$ with $\tau(x)=t$ and $F(x)=m(t)$, and that
+$F(y)\le m(\tau(y))$ whenever $\tau(y)\in[a,b]$.  Suppose also that there
+are $\rho>0$ and transports $\Phi_h(x)$, defined for $x\in Z$,
+$|h|<\rho$, and $\tau(x)+h\in[a,b]$, such that
+\[
+ \tau(\Phi_h(x))=\tau(x)+h,
+ \qquad
+ \sup_{x\in Z}|F(\Phi_h(x))-F(x)|\longrightarrow0
+ \quad(h\to0),
+\]
+and, for every $\eta>0$, there is $h_0>0$ such that
+\[
+ \frac{F(x)-F(\Phi_{-h}(x))}{h}\le V(x)+\eta
+\]
+for every $x\in Z$ and every $0<h<h_0$ for which the backward transport
+is defined.
+If $\psi\colon[a,b]\times\mathbb R\to\mathbb R$ is continuous and
+\[
+  V(x)\le\psi(\tau(x),F(x))\qquad(x\in Z),
+\]
+then $m$ is continuous and
+$D^+m(t)\le\psi(t,m(t))$ for every $t<b$.
+\end{lemma}
+
+\begin{proof}
+Fix nearby $s,t\in[a,b]$.  Transport a maximizer $x_s\in Z$ from time
+$s$ to time $t$.  Since its transported value is at most $m(t)$,
+\[
+ m(s)-m(t)\le F(x_s)-F(\Phi_{t-s}(x_s)).
+\]
+Interchanging $s$ and $t$ and using the uniform value control proves
+$|m(s)-m(t)|\to0$ as $s-t\to0$.
+
+Now fix $t<b$ and $h>0$ small, and choose a maximizer $x_h\in Z$ at
+time $t+h$.  Backward transport puts $\Phi_{-h}(x_h)$ in the time-$t$
+slice, so
+\[
+ \frac{m(t+h)-m(t)}h
+ \le \frac{F(x_h)-F(\Phi_{-h}(x_h))}{h}.
+\]
+Given $\eta>0$, the uniform first-order hypothesis bounds the right-hand
+side, for all sufficiently small $h$, by $V(x_h)+\eta$.  The maximum-point
+inequality then bounds it by
+$\psi(t+h,m(t+h))+\eta$.  Continuity of $m$ and $\psi$, followed by
+$h\downarrow0$ and then $\eta\downarrow0$, gives the asserted upper
+forward derivative bound.
+\end{proof}
+
+\begin{theorem}[{Time-slice maximum and forward-difference comparison}]
+\label{node:MT.02.prop.23}
+\dcref{ch2:2.23}
+\notready
+Let $M$ be a smooth manifold, let $\chi$ be a smooth vector field, and let
+$\mathbf t\colon M\to[a,b]$ be smooth with $\chi(\mathbf t)=1$.  Let
+$F\colon M\to\mathbb R$ be smooth, suppose that $F$ attains a maximum on
+every level set of $\mathbf t$, and suppose that the union $\mathcal Z$ of
+all levelwise maximizers is compact.  If
+$\psi\in C^1([a,b]\times\mathbb R)$ and
+\[
+ \chi(F)(x)\le\psi(\mathbf t(x),F(x))
+ \qquad(x\in\mathcal Z),
+\]
+then
+\[
+ F_{\max}(t)=\max_{\mathbf t^{-1}(t)}F
+\]
+is continuous and satisfies
+$D^+F_{\max}(t)\le\psi(t,F_{\max}(t))$ for $t<b$.  Hence, if
+$G' = \psi(t,G)$ and $F_{\max}(a)\le G(a)$, then
+$F_{\max}(t)\le G(t)$ throughout $[a,b]$.
+\end{theorem}
+
+\begin{proof}
+\uses{node:MT.02.constr.time_slice_max_forward_difference,node:MT.02.lem.22}
+The local flow $\varphi_h$ of $\chi$ satisfies
+$\mathbf t(\varphi_h(x))=\mathbf t(x)+h$ and
+\[
+ \frac{d}{dh}F(\varphi_h(x))=\chi(F)(\varphi_h(x)).
+\]
+Compactness of $\mathcal Z$ supplies one lifetime $\rho>0$ valid near every
+point of $\mathcal Z$.  Smoothness on the resulting compact flow tube gives
+uniform continuity of $F(\varphi_h(x))$ and the uniform first-order expansion
+\[
+ \frac{F(x)-F(\varphi_{-h}(x))}{h}\longrightarrow\chi(F)(x).
+\]
+Thus the preceding transport lemma, with
+$Z=\mathcal Z$, $V=\chi(F)$, and $m=F_{\max}$, gives continuity and the
+forward-difference inequality.  The comparison conclusion is then exactly
+the forward-difference comparison theorem.
+\end{proof}
+
+\section{Controlled-Surgery Inputs}
+
+\begin{definition}[{Maximal extension of a generalized Ricci flow}]
+\label{node:MT.11.def.22}
+\dcref{ch11:11.22}
+\notready
+Let $(\mathcal M,G)$ be a generalized Ricci flow on a terminal interval
+$[T^-,T)$, identify it there with $M\times[T^-,T)$, and let
+\[
+ \Omega=\{x\in M: \liminf_{t\uparrow T}R(x,t)<\infty\}.
+\]
+Suppose that $\Omega$ is open and that $g(t)|_\Omega$ converges smoothly on
+compact subsets to a metric $g(T)$.  Its \emph{maximal extension to $T$} is
+\[
+ \widehat{\mathcal M}
+ =\mathcal M\cup_{\Omega\times[T^-,T)}
+   (\Omega\times[T^-,T]),
+\]
+equipped with the glued time function and time vector field and with the
+horizontal metric $\widehat G$ equal to $G$ on $\mathcal M$ and to $g(t)$ on
+$\Omega\times[T^-,T]$.  Agreement on the overlap makes $\widehat G$ smooth
+and gives
+$\mathcal L_\chi\widehat G=-2\operatorname{Ric}_{\widehat G}$.
+The terminal slice is $(\Omega,g(T))$ and need not be complete.
+\end{definition}
+
+\begin{lemma}[{The radial surgery map is pointwise nonexpanding}]
+\label{node:MT.13.claim.radial_surgery_map_nonexpanding}
+\dcref{ch13:distance-decreasing-radial-map-claim}
+\notready
+Let $(N,g)$ be a $\delta$-neck centered at $x_0$, write
+$h=R(x_0)g$, and let $h_0+ds^2$ be the scalar-curvature-one
+cylinder in neck coordinates.  Put $\eta=1-2\delta$ and let
+$\xi$ preserve the angular variable, send the $s$-coordinate to the
+radial $g_0$-coordinate $A_0+4-s$, and collapse $s\ge A_0+4$ to the
+tip.  Then, for $\delta$ sufficiently small,
+\[
+ h\ge \eta(h_0+ds^2),
+ \qquad
+ \xi^*(\eta g_0)\le \eta(h_0+ds^2),
+\]
+as quadratic forms wherever $\xi$ is differentiable.  Consequently
+$\xi\colon(N,h)\to(\mathbb R^3,\eta g_0)$ is distance nonincreasing.
+If a target metric $\widehat h$ satisfies
+$\xi^*\widehat h\le\xi^*(\eta g_0)$, then the same map to
+$(\mathbb R^3,\widehat h)$ is distance nonincreasing.
+\end{lemma}
+
+\begin{proof}
+The $\delta$-neck estimate gives
+$h\ge(1-\delta)(h_0+ds^2)$ as quadratic forms.  Since
+$\eta=1-2\delta<1-\delta$, this implies
+$h\ge\eta(h_0+ds^2)$.  In the standard cap write
+$g_0=dr^2+u(r)^2h_0$.  The construction of the standard initial metric
+has $|dr/ds|\le1$ and $u(A_0+4-s)\le1$.  Hence, for
+$v=a\partial_s+w$, $w\perp\partial_s$,
+\[
+ |d\xi(v)|_{g_0}^2
+ =a^2|dr/ds|^2+u(r)^2|w|_{h_0}^2
+ \le a^2+|w|_{h_0}^2=|v|_{h_0+ds^2}^2.
+\]
+On the collapsed region $d\xi=0$.  Thus
+$|d\xi(v)|_{\eta g_0}\le|v|_h$ almost everywhere.  For every
+piecewise $C^1$ curve $\gamma$, integration gives
+$L_{\eta g_0}(\xi\circ\gamma)\le L_h(\gamma)$; taking the infimum
+over curves proves the distance assertion.  The final assertion follows
+from the same pointwise calculation with $\widehat h$ in place of
+$\eta g_0$.
+\end{proof}
+
+\begin{lemma}[{Curvature of the local surgery interpolation}]
+\label{node:MT.13.lem.local_surgery_curvature_interpolation}
+\dcref{ch13:local-conformal-curvature-computation}
+\notready
+Let $h$ be $C^{\lfloor1/\delta\rfloor}$-close to
+$h_0+ds^2$ on $S^2\times I$, and put
+$\widehat h=e^{-2f}h$ with
+$f=C_0\delta e^{-q/s}$ for $s>0$.  There are universal choices
+$q\gg(A_0+4)^2$, $C_0=2Ke^q$, and $\delta_*>0$ such that, if
+$0<\delta\le\delta_*$ and $1\le s<4$, all sectional
+curvatures of $\widehat h$ are positive.  On the overlap with the
+original neck its scalar curvature is no smaller than that of $h$ and
+its least curvature-operator eigenvalue is strictly larger.
+\end{lemma}
+
+\begin{proof}
+Use coordinates $x^0=s,x^1,x^2$ adapted to the product.  Since $f$ only
+depends on $s$,
+\[
+ f_0=\frac q{s^2}f,\qquad
+ f_{00}=\left(\frac{q^2}{s^4}-\frac{2q}{s^3}\right)f
+          +\frac q{s^2}f\,O(\delta),
+ \qquad f_{ij}=\frac q{s^2}f\,O(\delta)\quad(i,j)\ne(0,0).
+\]
+Substitution in the conformal curvature formula, followed by
+Gram--Schmidt from the product frame and diagonalization of the
+two-dimensional small-eigenvalue block, gives an $h$-orthonormal
+curvature frame in which the eigenvalues $\lambda\ge\mu\ge\nu$ of
+$h$ satisfy $|\lambda-1/2|+|\mu|+|\nu|\le K\delta$ and the
+eigenvalues of $\widehat h$ obey
+\begin{align*}
+ \left|\lambda'-e^{2f}\left(\lambda-\frac{q^2}{s^4}f^2\right)\right|
+   &\le A\frac{q^2}{s^4}f\delta,\\
+ \left|\mu'-e^{2f}\left(\mu+\left(\frac{q^2}{s^4}-\frac{2q}{s^3}\right)f\right)\right|
+   &\le A\frac{q^2}{s^4}f\delta,\\
+ \left|\nu'-e^{2f}\left(\nu+\left(\frac{q^2}{s^4}-\frac{2q}{s^3}\right)f\right)\right|
+   &\le A\frac{q^2}{s^4}f\delta.
+\end{align*}
+Here $A$ is universal; the same calculation applies to the fixed
+$\alpha$-interpolation after multiplying $A$ by a fixed constant.
+Choose $q$ so that $q^2/s^4\gg q/s^3$ on the indicated compact
+interval and $q^2s^{-4}e^{-q/s}\ll1$.  Then decrease $\delta_*$ so
+that $A\delta<1/4$ and $f<1/4$.  It follows that
+\[
+ \mu'\ge e^{2f}\left(\mu+\frac{q^2}{2s^4}f\right),\qquad
+ \nu'\ge e^{2f}\left(\nu+\frac{q^2}{2s^4}f\right).
+\]
+The logarithmic derivative of $q^2f/(2s^4)$ is
+$(q-4s)/s^2$, which is positive on $[1,4]$ after choosing $q>16$.
+Thus $q^2f/(2s^4)$ is increasing there, and at
+$s=1$ it equals
+$q^2C_0e^{-q}\delta/2=q^2K\delta>K\delta$.  Thus
+$\mu',\nu'>0$.  The first estimate and $q^2f^2/s^4=o(1)$ give
+$\lambda'>1/4$.
+
+Finally the scalar conformal formula is
+\[
+ R_{\widehat h}=e^{2f}\left(R_h+4\left(\frac{q^2}{s^4}-\frac{2q}{s^3}\right)f
+ -2\frac{q^2}{s^4}f^2+\frac q{s^2}f\,O(\delta)\right).
+\]
+The choices just made render the added term nonnegative.  The lower
+bound for $\nu'$ is strict and improves the least eigenvalue.  This
+proves all assertions.
+\end{proof}
+
+\begin{lemma}[{Positive curvature of the standard cap interpolation}]
+\label{node:MT.13.lem.standard_cap_conformal_positivity}
+\dcref{ch13:standard-cap-conformal-positivity-calculations}
+\notready
+For the rotationally symmetric standard cap metric $g_0$, the terminal
+cap piece and the final cutoff interpolation in the local surgery construction
+have positive sectional curvature, provided the fixed surgery parameters are
+chosen in the source order and the neck parameter is sufficiently small.
+Moreover, the interpolation preserves the scalar-curvature lower bound and
+the curvature-operator pinching inequalities required by the surgery theorem.
+\end{lemma}
+
+\begin{proof}
+On the standard cap, write $g_0=dr^2+u(r)^2h_0$.  The defining concavity and
+monotonicity inequalities for $u$ give positive radial and tangential
+sectional curvatures.  On the final cutoff interval, the two endpoint metrics
+are rotationally symmetric and the cutoff derivatives are bounded by the
+fixed choice of the transition length.  The conformal curvature formula then
+shows that the positive cap terms dominate the cutoff error once the neck
+parameter is decreased.  The same estimates preserve the scalar lower bound
+and the pinching inequalities.  This is the standard-cap calculation used in
+the local surgery theorem.
+\end{proof}
+
+\begin{theorem}[{Local surgery on a $\delta$-neck}]
+\label{node:MT.13.thm.02}
+\dcref{ch13:13.2}
+\notready
+Fix the standard rotationally symmetric initial metric $g_0$ on
+$\mathbb R^3$, its tip $p_0$, and a cylindrical radial coordinate $s$ for
+which $g_0$ is asymptotic to the scalar-curvature-one product cylinder.
+Let $(N,g)$ be a $\delta$-neck centered at $x_0$, normalized by $R(x_0)$,
+and glue its negative half to the standard cap.  With
+$\eta=1-2\delta$, fixed cutoff functions $\alpha,\beta$, and
+\[
+ f(s)=\begin{cases}0,&s\le0,\\ C_0\delta e^{-q/s},&s>0,\end{cases}
+\]
+define the interpolating metric $\widehat g$ by
+\[
+\begin{cases}
+ e^{-2f}R(x_0)g,&s\le1,\\
+ e^{-2f}\bigl(\alpha R(x_0)g+(1-\alpha)\eta g_0\bigr),&1\le s\le2,\\
+ e^{-2f}\eta g_0,&2\le s\le A_0+4-r_0,\\
+ \bigl(\beta e^{-2f}+(1-\beta)e^{-2f(A_0+4)}\bigr)\eta g_0,
+     &A_0+4-r_0\le s\le A_0+4,
+\end{cases}
+\]
+The rescaled surgery metric is
+\[
+  \widetilde g=R(x_0)^{-1}\widehat g.
+\]
+There are universal constants $C_0,q,R_0<\infty$ and $\delta'_0>0$ such
+that, whenever $R(x_0)\ge R_0$ and $0<\delta\le\delta'_0$, the surgery
+manifold $(\mathcal S,\widetilde g)$ has all of the following properties.
+\begin{enumerate}
+\item If $t\ge0$, $X(p)=\max(0,-\nu_g(p))$, and on $N$
+\[
+ R\ge-\frac6{1+4t},\qquad
+ R\ge2X\bigl(\log X+\log(1+t)-3\bigr)\quad(X>0),
+\]
+then the same inequalities hold everywhere on $\mathcal S$.
+\item The sectional curvature of $\widetilde g$ is positive on the cap
+region $1\le s\le A_0+4$.
+\item The radial map $\xi\colon N\to\mathcal S$ which is the natural
+identification on the retained half-neck and collapses the removed end to
+the cap tip is distance nonincreasing from $(N,g)$ to
+$(\mathcal S,\widetilde g)$.
+\item For every $\delta''>0$ there is $\delta'_1(\delta'')>0$ such that,
+if $\delta\le\min(\delta'_0,\delta'_1)$, then $\widehat g$ on
+$B_{\widehat g}(p_0,(\delta'')^{-1})$ is $\delta''$-close in
+$C^{\lfloor1/\delta''\rfloor}$ to $g_0$ on the corresponding standard
+ball.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\uses{node:MT.13.claim.radial_surgery_map_nonexpanding,node:MT.13.lem.local_surgery_curvature_interpolation,node:MT.13.lem.standard_cap_conformal_positivity}
+The pointwise radial-map lemma and the inequalities built into each piece
+of $\widehat g$ show that the radial collapse never enlarges a tangent
+vector.  Rescaling both source and target proves the third assertion.
+
+The curvature-interpolation lemma proves positivity for $1\le s<4$
+and proves that, on the original-neck overlap,
+$R$ does not decrease while $X=\max(0,-\nu)$ does not increase.  If
+$X\ge e^3/(1+t)$, the function
+$2X(\log X+\log(1+t)-3)$ is increasing in $X$, so both pinching
+inequalities pass to the new metric.  If $X<e^3/(1+t)$, the
+Hamilton--Ivey right side is negative and the nonnegative scalar
+curvature of a sufficiently round neck suffices.  The standard-cap
+positivity lemma supplies strict positivity on $4\le s\le A_0+4$,
+including the final $\beta$-interpolation region.  The pinching inequalities
+there follow from positivity.  This proves the first two assertions.
+
+Finally, on every fixed standard ball all cutoff errors and every derivative
+of $f$ tend uniformly to zero with $\delta$, while $\eta\to1$.  Thus
+$\widehat g\to g_0$ in $C^k$ on that ball for every fixed $k$.  Taking
+$k=\lfloor1/\delta''\rfloor$ and shrinking $\delta$ gives the fourth
+assertion.
+\end{proof}
+
+\begin{definition}[{Fixed canonical-neighborhood constants}]
+\label{node:MT.15.choice_C_epsilon}
+\dcref{ch15:choice-of-c-and-epsilon}
+\notready
+Let $D,A_0,\bar\epsilon_1,\bar\epsilon',\epsilon_0$ be the fixed constants
+from the bounded-curvature, standard-cap, neck, $\kappa$-solution, and
+canonical-neighborhood estimates, and let $\beta<1/2$ be the neck-gluing
+constant.  Choose once and for all
+\[
+ 0<\epsilon\le
+ \min\left\{\frac1{200},\frac1{\sqrt D(A_0+5)},
+ \frac{\bar\epsilon_1}{2},\frac{\bar\epsilon'}2,\epsilon_0\right\}
+\]
+and set
+\[
+ C=\max\{C(\epsilon),\ C'(\beta\epsilon/3)+1\}.
+\]
+All subsequent controlled surgery flows use these fixed values.
+\end{definition}
+
+\section{Canonical Neck and Cap Topology}
+
+\begin{lemma}[{Topology and frontier of an infinite balanced neck chain}]
+\label{node:MT.A.lem.infinite_balanced_neck_chain_product}
+\dcref{app:balanced-neck-chain-product-and-frontier}
+\notready
+Let $\{N_j\}_{j\in J}$ be a finite or infinite balanced chain of
+sufficiently small $\epsilon$-necks.  Its union $U$ is diffeomorphic to
+$S^2\times(0,1)$, compatibly with the isotopy classes of the central
+spheres.  If $J=\{0,1,\ldots\}$, then the frontier of $U$ is exactly
+the frontier of the negative end of $N_0$; in particular the infinite
+end has no frontier.
+\end{lemma}
+
+\begin{proof}
+For a finite chain, induct on its length.  When $N_b$ is appended, the
+neck-overlap theorem identifies $N_b\cap\bigcup_{j<b}N_j$ with
+$S^2\times(0,1)$ and identifies a cross-sectional sphere there with the
+factor sphere in both pieces.  The collars therefore glue to a longer
+product.  The product charts can be chosen compatibly under inclusion;
+exhausting an infinite chain by finite subchains gives a proper interval
+coordinate and hence a diffeomorphism $U\cong S^2\times(0,1)$.
+
+For the frontier assertion, let $z_k\in U$ converge to
+$z\in\operatorname{Fr}_M(U)$.  If the $z_k$ lie in a fixed finite
+subchain, the finite-chain frontier description puts $z$ at the negative
+end of $N_0$ or the positive end of its last neck.  The latter lies in
+the next neck and is not in $\operatorname{Fr}_M(U)$.  Otherwise pass to
+$z_k\in N_{j_k}$ with $j_k\to\infty$.  Since $z_k\to z$, continuity
+of scalar curvature bounds $R(z_k)$ and gives a positive lower bound $a$
+for the neck scales.  Balanced overlap and neck geometry give a lower
+bound $c\epsilon^{-1}a>0$ for the width of every sufficiently late
+neck.  Any path from $z_k$ to $z$ crosses either $N_0$ or one of those
+late necks, so $d(z_k,z)\ge c\epsilon^{-1}a$, a contradiction.  Thus
+the infinite end has no frontier.
+\end{proof}
+
+\begin{lemma}[{No infinite nested chain of canonical caps}]
+\label{node:MT.A.lem.no_infinite_nested_caps}
+\dcref{app:no-infinite-nested-caps}
+\notready
+For fixed $C$ and sufficiently small $\epsilon$, there is no chain of
+$(C,\epsilon)$-caps $C_0\subset C_1\subset\cdots$ such that the
+closure of the core of $C_i$ meets
+$\operatorname{Fr}_M(C_{i-1})$ for every $i\ge1$.
+\end{lemma}
+
+\begin{proof}
+Fix $x_0\in C_0$ and set $Q_0=R(x_0)$.  Let $S'_i$ be the boundary
+of the core of $C_i$, realized as the central sphere of a neck $N'_i$,
+and let $N_i$ be the neck end of $C_i$.  Cap curvature comparison gives
+every $N_i$ scale at least $C^{-1/2}Q_0^{-1/2}$.  Compare $S'_i$ with
+$C_{i-1}$.
+
+If $S'_i$ is disjoint from $C_{i-1}$, the component of
+$M\setminus S'_i$ containing $C_{i-1}$ must be the core side;
+otherwise $C_{i-1}\cap C_i$ would lie entirely in the neck end,
+contrary to $C_{i-1}\subset C_i$.  Thus the core of $C_i$ contains
+$C_{i-1}$ and
+\[
+ d(x_0,M\setminus C_i)-d(x_0,M\setminus C_{i-1})
+ \ge c\epsilon^{-1}C^{-1/2}Q_0^{-1/2}.
+\]
+If $S'_i\subset C_{i-1}$, the component of $M\setminus S'_i$ whose
+closure lies in $C_{i-1}$ cannot be the core side, since that core
+meets $\operatorname{Fr}(C_{i-1})$.  It would therefore contain the
+neck end of $C_i$ but have only one boundary sphere, while the neck end
+has two frontier components.  This contradicts $C_{i-1}\subset C_i$.
+
+In the remaining case $S'_i$ crosses $N_{i-1}$.  The neck-overlap
+theorem says that the two cylinder directions almost agree or almost
+oppose.  A cross-section of $N'_i$ at distance
+$0.05\epsilon^{-1}$ inside $N_{i-1}$ lies between the
+$0.94\epsilon^{-1}$ and $0.96\epsilon^{-1}$ levels of $N_{i-1}$.
+Separation forces the agreeing orientation.  The central sphere of
+$N_i$ consequently lies beyond the positive end of $N_{i-1}$, and
+neck geometry gives the same displayed increase.  Hence every
+noncontradictory step increases the distance by one fixed positive
+amount.  But the cap diameter axiom bounds
+$\operatorname{diam}(C_i)\le C Q_0^{-1/2}$ because $x_0\in C_i$ and
+the cap curvatures are $C$-comparable.  This is impossible for
+arbitrarily large $i$.
+\end{proof}
+
+\begin{theorem}[{Separating neck centers lie in an $\epsilon$-tube}]
+\label{node:MT.A.prop.19}
+\dcref{app:A.19}
+\notready
+There is $\epsilon_0>0$ such that the following holds for
+$0<\epsilon\le\epsilon_0$.  Let $X$ be a connected subset of a Riemannian
+three-manifold $M$.  Suppose every $x\in X$ is the center of an
+$\epsilon$-neck $N(x)$ and the central two-sphere of every $N(x)$ separates
+$M$.  Then some subcollection of these necks, after reversing cylinder
+coordinates when necessary, is a balanced chain whose union $U$ contains
+$X$.  Moreover $U$ is diffeomorphic to $S^2\times(0,1)$; in particular it
+is an $\epsilon$-tube.
+\end{theorem}
+
+\begin{proof}
+\uses{node:MT.A.lem.infinite_balanced_neck_chain_product}
+Start with one neck centered in $X$.  If the union of a finite balanced
+chain does not contain $X$, connectedness supplies a point of $X$ on the
+frontier of one of its two ends.  For sufficiently small $\epsilon$, the
+overlap estimates for necks show that a neck centered there can be oriented
+and appended while preserving the balanced-chain inequalities.  Repeat in
+both directions.
+
+If the process terminates, its union contains $X$.  For a half-infinite
+chain, the preceding lemma says that only its finite end has frontier; if
+that end cannot be extended, connectedness forces $X$ into the union.  For
+a chain infinite in both directions the lemma gives no frontier, so its
+union is an ambient component and contains $X$.  The same lemma identifies
+the union with $S^2\times(0,1)$.
+\end{proof}
+
+\begin{theorem}[{Connected subsets covered by cap cores and neck centers}]
+\label{node:MT.A.prop.24}
+\dcref{app:A.24}
+\notready
+For every $C<\infty$ and all sufficiently small $\epsilon>0$, let $X$ be
+a connected subset of a Riemannian three-manifold $M$.  Suppose every point
+of $X$ is either the center of an $\epsilon$-neck or lies in the core of a
+$(C,\epsilon)$-cap.  Then at least one of the following holds:
+\begin{enumerate}
+\item $X$ is contained in a component of $M$ which is the union of two
+      $(C,\epsilon)$-caps; the component is diffeomorphic to $S^3$,
+      $\mathbb{RP}^3$, or $\mathbb{RP}^3\#\mathbb{RP}^3$;
+\item $X$ is contained in a component of $M$ which is a double
+      $C$-capped $\epsilon$-tube, again of one of those three diffeomorphism
+      types;
+\item $X$ is contained in one $(C,\epsilon)$-cap;
+\item $X$ is contained in a $C$-capped $\epsilon$-tube;
+\item $X$ is contained in an $\epsilon$-tube;
+\item $X$ is contained in a component of $M$ which is an
+      $\epsilon$-fibration and is itself a union of $\epsilon$-necks.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\uses{node:MT.A.lem.infinite_balanced_neck_chain_product,node:MT.A.lem.no_infinite_nested_caps,node:MT.A.prop.19}
+Suppose first that a point of $X$ lies in a cap core.  The no-nested-caps
+lemma lets us choose a cap $C_0$ containing such a point so that the
+construction cannot pass indefinitely to a larger cap whose core meets the
+current frontier.  Connectedness then gives three possibilities.  If $X$
+misses the frontier of $C_0$, it lies in that cap, giving (3).  If frontier
+points of $X$ are neck centers, append a balanced chain.  If this chain
+terminates before another cap, or runs to an end with no frontier, its union
+with $C_0$ is a capped tube containing $X$, giving (4).
+
+It remains to consider the first appended cap $C'$ whose core meets the
+frontier of the capped chain.  Compare the central neck sphere of $C'$ with
+the last neck of the chain.  If the sphere lies inside the capped chain, is
+disjoint from it, or crosses its last neck, the neck-overlap and separation
+arguments in each case show that $C'$ and the capped chain occupy opposite
+sides of a common cross-sectional sphere.  Their union is therefore an
+entire component containing $X$.  Gluing the two possible cap cores across
+the product neck region gives $S^3$, $\mathbb{RP}^3$, or
+$\mathbb{RP}^3\#\mathbb{RP}^3$.  According as the intervening chain is
+absorbed into the two cap descriptions or retained as a tube, this is
+alternative (1) or (2).
+
+Now suppose every point of $X$ is a neck center.  If all central spheres
+separate $M$, Proposition~A.19 places $X$ in an $\epsilon$-tube, giving
+(5).  Otherwise build a balanced chain from the necks centered on $X$.
+It either terminates in a finite tube containing $X$, runs infinitely to a
+product end and contains $X$ by the frontier lemma, or returns to its first
+end.  In the return case, neck overlap either directly closes the product
+chain or does so after passing to the universal cover; deck translation
+preserves its cross-sectional spheres.  The resulting component is an
+$S^2$-fibration over $S^1$ covered by $\epsilon$-necks, which is (6).
+These cases exhaust the source construction.
+\end{proof}
+
+\begin{theorem}[{Topology of a manifold covered by caps and necks}]
+\label{node:MT.A.prop.25}
+\dcref{app:A.25}
+\notready
+For every $C<\infty$ and all sufficiently small $\epsilon>0$, let $(M,g)$
+be a connected Riemannian three-manifold such that each point is either the
+center of an $\epsilon$-neck or belongs to the core of a
+$(C,\epsilon)$-cap.  Exactly one of the following types occurs:
+\begin{enumerate}
+\item $M$ is diffeomorphic to $S^3$, $\mathbb{RP}^3$, or
+$\mathbb{RP}^3\#\mathbb{RP}^3$, and is either the union of two caps or a
+double-capped $\epsilon$-tube;
+\item $M$ is diffeomorphic to $\mathbb R^3$ or to
+$\mathbb{RP}^3\setminus\{p\}$, and is a cap or a capped
+$\epsilon$-tube;
+\item $M$ is diffeomorphic to $S^2\times\mathbb R$ and is an
+$\epsilon$-tube;
+\item $M$ is diffeomorphic to an $S^2$-bundle over $S^1$ and is an
+$\epsilon$-fibration.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\uses{node:MT.A.prop.24}
+Apply Proposition~A.24 with $X=M$.  Since $M$ is a whole connected
+component, its six alternatives collapse in pairs.  The two-cap and
+double-capped-tube cases give item (1); the single-cap and capped-tube cases
+give item (2); the tube case gives item (3); and the $\epsilon$-fibration
+case gives item (4).  The cap-core diffeomorphism types and the product
+description of a tube give exactly the types displayed in the statement.
+\end{proof}
