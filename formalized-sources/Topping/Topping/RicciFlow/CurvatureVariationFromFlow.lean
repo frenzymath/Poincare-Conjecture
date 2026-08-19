@@ -475,6 +475,121 @@ theorem exists_chartFrame_covRicciAt_cov_second_eq_chartSum
     rw [hval, hval_a, hval_c]
     rw [← hchart]
 
+/-- **Math.** A single germ-local chart frame simultaneously expands the
+Christoffel corrections in the derivative slot and both Ricci tensor slots of
+`covRicciAt`.  Keeping the same frame in all three identities is what permits
+their later assembly into the intrinsic corrected Ricci Hessian. -/
+theorem exists_chartFrame_covRicciAt_connection_corrections_eq_chartSums
+    (g : RiemannianMetric I M) (alpha : M) (y : E)
+    (hy : y ∈ (extChartAt I alpha).target)
+    (r a b c : Fin (Module.finrank ℝ E)) :
+    let p : M := (extChartAt I alpha).symm y
+    let hLC := g.leviCivitaConnection.isLeviCivita_of_koszulDual g
+      (fun X Y W q => g.koszulDualSection_dual X Y W q)
+    ∃ X : Fin (Module.finrank ℝ E) → SmoothVectorField I M,
+      (∀ i j, (g.leviCivitaConnection.cov (X i) (X j)).toFun p =
+        ∑ m, Riemannian.chartChristoffel g alpha i j m y • (X m).toFun p) ∧
+      MorganTianLib.covRicciAt g g.leviCivitaConnection hLC p
+          ((g.leviCivitaConnection.cov (X r) (X a)) p) (X b p) (X c p) =
+        ∑ s, Riemannian.chartChristoffel g alpha r a s y *
+          MorganTianLib.chartCovRicciOnE g alpha s b c y ∧
+      MorganTianLib.covRicciAt g g.leviCivitaConnection hLC p (X a p)
+          ((g.leviCivitaConnection.cov (X r) (X b)) p) (X c p) =
+        ∑ s, Riemannian.chartChristoffel g alpha r b s y *
+          MorganTianLib.chartCovRicciOnE g alpha a s c y ∧
+      MorganTianLib.covRicciAt g g.leviCivitaConnection hLC p
+          (X a p) (X b p) ((g.leviCivitaConnection.cov (X r) (X c)) p) =
+        ∑ s, Riemannian.chartChristoffel g alpha r c s y *
+          MorganTianLib.chartCovRicciOnE g alpha a b s y := by
+  let p : M := (extChartAt I alpha).symm y
+  have hp : p ∈ (chartAt H alpha).source := by
+    rw [← extChartAt_source (𝕜 := ℝ) (E := E) I alpha]
+    exact (extChartAt I alpha).map_target hy
+  obtain ⟨X, hX, hcov⟩ :=
+    MorganTianLib.exists_chartFrame_nhds_leviCivita_christoffel g hp
+  have hpy : (extChartAt I alpha) p = y :=
+    (extChartAt I alpha).right_inv hy
+  rw [hpy] at hcov
+  let hLC := g.leviCivitaConnection.isLeviCivita_of_koszulDual g
+    (fun X Y W q => g.koszulDualSection_dual X Y W q)
+  have hXval (i : Fin (Module.finrank ℝ E)) :
+      (X i).toFun p = Tensor.chartBasisVecFiber (I := I) alpha i p :=
+    (hX i).self_of_nhds
+  have hcomponent (u v w : Fin (Module.finrank ℝ E)) :
+      MorganTianLib.covRicciAt g g.leviCivitaConnection hLC p
+          (X u p) (X v p) (X w p) =
+        MorganTianLib.chartCovRicciOnE g alpha u v w y := by
+    have hchart := MorganTianLib.chartCovRicciOnE_eq_covRicciAt_chartBasis
+      g alpha u v w hy
+    rw [hXval u, hXval v, hXval w]
+    rw [← hchart]
+  have hsumDir (s0 : Finset (Fin (Module.finrank ℝ E)))
+      (coef : Fin (Module.finrank ℝ E) → ℝ) :
+      MorganTianLib.covRicciAt g g.leviCivitaConnection hLC p
+          (∑ i ∈ s0, coef i • (X i p)) (X b p) (X c p) =
+        ∑ i ∈ s0, coef i *
+          MorganTianLib.covRicciAt g g.leviCivitaConnection hLC p
+            (X i p) (X b p) (X c p) := by
+    classical
+    induction s0 using Finset.induction_on with
+    | empty =>
+        simpa using
+          (MorganTianLib.covRicciAt_smul_dir g g.leviCivitaConnection hLC p
+            0 0 (X b p) (X c p))
+    | @insert i s hi ih =>
+        rw [Finset.sum_insert hi, Finset.sum_insert hi,
+          MorganTianLib.covRicciAt_add_dir,
+          MorganTianLib.covRicciAt_smul_dir, ih]
+  have hsumFst (s0 : Finset (Fin (Module.finrank ℝ E)))
+      (coef : Fin (Module.finrank ℝ E) → ℝ) :
+      MorganTianLib.covRicciAt g g.leviCivitaConnection hLC p (X a p)
+          (∑ i ∈ s0, coef i • (X i p)) (X c p) =
+        ∑ i ∈ s0, coef i *
+          MorganTianLib.covRicciAt g g.leviCivitaConnection hLC p
+            (X a p) (X i p) (X c p) := by
+    classical
+    induction s0 using Finset.induction_on with
+    | empty =>
+        simpa using
+          (MorganTianLib.covRicciAt_smul_fst g g.leviCivitaConnection hLC p
+            0 (X a p) 0 (X c p))
+    | @insert i s hi ih =>
+        rw [Finset.sum_insert hi, Finset.sum_insert hi,
+          MorganTianLib.covRicciAt_add_fst,
+          MorganTianLib.covRicciAt_smul_fst, ih]
+  have hsumSnd (s0 : Finset (Fin (Module.finrank ℝ E)))
+      (coef : Fin (Module.finrank ℝ E) → ℝ) :
+      MorganTianLib.covRicciAt g g.leviCivitaConnection hLC p
+          (X a p) (X b p) (∑ i ∈ s0, coef i • (X i p)) =
+        ∑ i ∈ s0, coef i *
+          MorganTianLib.covRicciAt g g.leviCivitaConnection hLC p
+            (X a p) (X b p) (X i p) := by
+    classical
+    induction s0 using Finset.induction_on with
+    | empty =>
+        simpa using
+          (MorganTianLib.covRicciAt_smul_snd g g.leviCivitaConnection hLC p
+            0 (X a p) (X b p) 0)
+    | @insert i s hi ih =>
+        rw [Finset.sum_insert hi, Finset.sum_insert hi,
+          MorganTianLib.covRicciAt_add_snd,
+          MorganTianLib.covRicciAt_smul_snd, ih]
+  refine ⟨X, ?_, ?_, ?_, ?_⟩
+  · intro i j
+    simpa [p] using hcov i j
+  · rw [hcov r a, hsumDir]
+    apply Finset.sum_congr rfl
+    intro s hs
+    rw [hcomponent s b c]
+  · rw [hcov r b, hsumFst]
+    apply Finset.sum_congr rfl
+    intro s hs
+    rw [hcomponent a s c]
+  · rw [hcov r c, hsumSnd]
+    apply Finset.sum_congr rfl
+    intro s hs
+    rw [hcomponent a b s]
+
 /-- **Math.** The coordinate expression for the derivative of the Riemann
 tensor on four arbitrary tangent vectors. -/
 noncomputable def chartRiemannVariationAt
