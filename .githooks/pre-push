@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
-# Refuse to publish history containing Claude/Anthropic attribution.
+# Refuse to publish unvalidated Lean changes or AI-attributed history.
 set -euo pipefail
 
+hook_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 declare -A checked_oids=()
+declare -a validation_bases=()
+declare -a validation_heads=()
 
 while read -r _local_ref local_oid _remote_ref _remote_oid; do
   if [[ "$local_oid" =~ ^0+$ ]]; then
@@ -15,6 +18,17 @@ while read -r _local_ref local_oid _remote_ref _remote_oid; do
     continue
   fi
   checked_oids[$commit_oid]=1
+
+  if [[ "$_remote_oid" =~ ^0+$ ]]; then
+    if base_oid=$(git merge-base "$commit_oid" refs/remotes/origin/main 2>/dev/null); then
+      validation_bases+=("$base_oid")
+    else
+      validation_bases+=("$(git hash-object -t tree /dev/null)")
+    fi
+  else
+    validation_bases+=("$_remote_oid")
+  fi
+  validation_heads+=("$commit_oid")
 
   if bad_commits=$(
     git log --format='%H%n%B%x00' "$commit_oid" |
@@ -40,4 +54,9 @@ while read -r _local_ref local_oid _remote_ref _remote_oid; do
     "$bad_commits" >&2
   printf 'Rewrite those commit messages before pushing.\n' >&2
   exit 1
+done
+
+for i in "${!validation_heads[@]}"; do
+  "$hook_dir/../scripts/validate-lean-changes.sh" \
+    "${validation_bases[$i]}" "${validation_heads[$i]}"
 done

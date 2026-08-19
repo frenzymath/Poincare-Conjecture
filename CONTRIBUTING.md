@@ -26,7 +26,11 @@ git config core.hooksPath .githooks
 ```
 
 The hooks remove unwanted generated attribution from commit messages and block
-publishing history that still contains it.
+publishing history that still contains it. Before a push containing Lean
+changes, they also build each changed package and every local package that
+depends on it, then enforce the CI sorry and axiom budgets. Files whose names
+contain `Scratch` are rejected; promote useful experiments to a production
+module before publishing them.
 
 ## Lean
 
@@ -44,6 +48,12 @@ For a reference project, use its path under `formalized-sources/`:
 cd formalized-sources/DoCarmo
 lake exe cache get
 lake build
+```
+
+To run the same dependency-aware validation before committing:
+
+```bash
+scripts/validate-lean-changes.sh origin/main
 ```
 
 All packages use the pinned toolchain and mathlib revision recorded in their
