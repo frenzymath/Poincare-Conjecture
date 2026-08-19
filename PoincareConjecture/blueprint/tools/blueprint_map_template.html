@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blueprint map</title>
+  <style>
+    :root {
+      --ink: #172235;
+      --muted: #64748b;
+      --line: #d7dee8;
+      --soft: #f4f7fb;
+      --panel: #ffffff;
+      --blue: #3568b8;
+      --blue-soft: #e9f0fd;
+      --green: #28845e;
+      --amber: #ba6d18;
+      --gray: #9aa7b7;
+      --shadow: 0 12px 28px rgba(30, 48, 75, .08);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--soft);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--soft); }
+    body { overflow: hidden; }
+    button, input, select { font: inherit; }
+    button { color: inherit; }
+    .map-app { height: 100vh; min-height: 720px; display: flex; flex-direction: column; background: var(--soft); }
+    .map-toolbar {
+      z-index: 20; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      padding: 13px 18px 12px; border-bottom: 1px solid var(--line); background: rgba(255,255,255,.95);
+      box-shadow: 0 2px 12px rgba(25, 43, 68, .05);
+    }
+    .map-title { margin-right: 6px; }
+    .map-title h1 { margin: 0; font-size: 18px; line-height: 1.2; letter-spacing: 0; }
+    .map-title p { margin: 3px 0 0; color: var(--muted); font-size: 11px; }
+    .map-stat { color: var(--muted); font-size: 11px; white-space: nowrap; }
+    .map-control { height: 32px; border: 1px solid var(--line); border-radius: 6px; background: #fff; }
+    .map-search { width: min(230px, 32vw); padding: 0 10px; color: var(--ink); outline: none; }
+    .map-search:focus { border-color: #7ba2e1; box-shadow: 0 0 0 3px rgba(53,104,184,.13); }
+    .map-select { padding: 0 8px; color: var(--ink); max-width: 230px; }
+    .map-button { min-width: 32px; padding: 0 9px; cursor: pointer; }
+    .map-button:hover { border-color: #92add7; background: var(--blue-soft); }
+    .map-spacer { flex: 1; }
+    .map-legend { display: flex; gap: 9px; align-items: center; color: var(--muted); font-size: 10px; }
+    .legend-dot { width: 8px; height: 8px; display: inline-block; border-radius: 50%; margin-right: 3px; }
+    .legend-mathlib { background: #2f6fbd; }
+    .legend-ok { background: var(--green); }
+    .legend-pending { background: var(--gray); }
+    .legend-sorry { background: var(--amber); }
+    .map-viewport { position: relative; flex: 1; overflow: auto; cursor: grab; overscroll-behavior: contain; }
+    .map-viewport.dragging { cursor: grabbing; user-select: none; }
+    .map-scene { position: relative; min-width: 100%; min-height: 100%; }
+    .map-canvas { position: absolute; left: 0; top: 0; display: flex; align-items: flex-start; gap: 18px; width: max-content; min-height: 100%; padding: 22px 24px 42px; transform-origin: top left; }
+    .edge-layer { position: absolute; left: 0; top: 0; z-index: 0; overflow: visible; pointer-events: none; }
+    .edge-layer > path.edge-path { fill: none; stroke: #8fb1df; stroke-width: 1.25; opacity: .72; }
+    .edge-layer > path.edge-cross { stroke: #6f95cb; stroke-width: 1.55; opacity: .78; }
+    .edge-arrowhead { opacity: .72; }
+    .edge-arrowhead.edge-cross { opacity: .78; }
+    .edge-layer.muted > path, .edge-layer.muted > .edge-arrowhead { opacity: .13; }
+    .edge-layer-focus { z-index: 3; }
+    .edge-layer-focus path.edge-focus { stroke-width: 3.2; opacity: 1; filter: drop-shadow(0 0 2px #fff); }
+    .edge-layer-focus path.edge-incoming { stroke: #7556a8; }
+    .edge-layer-focus path.edge-outgoing { stroke: #168176; }
+    .edge-layer-focus > .edge-arrowhead { opacity: 1; filter: drop-shadow(0 0 2px #fff); }
+    .chapter-column { position: relative; z-index: 1; flex: 0 0 340px; min-height: 360px; border: 1px solid var(--chapter-line, #b8cbe7); border-radius: 8px; background: rgba(255,255,255,.64); box-shadow: 0 5px 16px rgba(30, 48, 75, .045); }
+    .chapter-column:nth-of-type(2) { --chapter-line: #c6bde4; }
+    .chapter-column:nth-of-type(3) { --chapter-line: #b4d2bd; }
+    .chapter-column:nth-of-type(4) { --chapter-line: #dfc89d; }
+    .chapter-column:nth-of-type(5) { --chapter-line: #aad4d1; }
+    .chapter-head { padding: 13px 15px 11px; border-bottom: 1px solid rgba(140, 161, 190, .27); }
+    .chapter-kicker { color: var(--chapter-color, #3868ad); font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .chapter-head h2 { margin: 4px 0 0; font-size: 15px; line-height: 1.25; letter-spacing: 0; }
+    .chapter-count { margin-top: 4px; color: var(--muted); font-size: 10px; }
+    .chapter-body { display: flex; flex-direction: column; gap: 12px; padding: 12px 10px 14px; }
+    .section-group { padding: 9px; border: 1px solid rgba(190, 201, 216, .62); border-radius: 7px; background: rgba(255,255,255,.77); }
+    .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 0 1px 8px; }
+    .section-head h3 { margin: 0; color: #43556f; font-size: 10.5px; line-height: 1.3; font-weight: 750; }
+    .section-head span { color: #8b99ab; font-size: 9px; white-space: nowrap; }
+    .node-list { display: flex; flex-direction: column; gap: 7px; padding-right: 22px; }
+    .node-card { --node-border: #8d9aaa; --node-fill: #f2f4f7; --node-text: #485569; position: relative; display: block; width: 100%; min-height: 38px; padding: 8px 36px 8px 10px; border: 1px solid var(--node-border); border-left: 4px solid var(--node-border); border-radius: 6px; background: var(--node-fill); color: var(--node-text); text-align: left; box-shadow: 0 2px 4px rgba(25, 43, 68, .06); cursor: pointer; transition: border-color .15s, box-shadow .15s, opacity .15s; }
+    .node-card[data-status="mathlib_ok"] { --node-border: #2f6fbd; --node-fill: #e8f1fc; --node-text: #17477d; }
+    .node-card[data-status="lean_ok"] { --node-border: #28845e; --node-fill: #e6f4ec; --node-text: #175c40; }
+    .node-card[data-status="sorry"] { --node-border: #ba6d18; --node-fill: #fff1df; --node-text: #82470c; }
+    .node-card.selected { border-color: #2c5b9f; box-shadow: 0 0 0 2px rgba(53,104,184,.24), 0 4px 12px rgba(38,82,144,.17); }
+    .node-card:focus-visible { outline: 2px solid #2c5b9f; outline-offset: 2px; }
+    .node-card.dim { opacity: .17; }
+    .node-card.match { border-color: #2c5b9f; box-shadow: 0 0 0 2px rgba(53,104,184,.17); }
+    .node-title { display: block; color: inherit; font-size: 10.5px; font-weight: 750; line-height: 1.3; }
+    .node-preview-toggle { position: absolute; top: 50%; right: 5px; width: 25px; height: 25px; padding: 0; display: grid; place-items: center; border: 1px solid color-mix(in srgb, var(--node-border) 55%, #fff); border-radius: 4px; background: rgba(255,255,255,.82); color: var(--node-text); font-size: 19px; line-height: 1; cursor: pointer; transform: translateY(-50%); transition: transform .15s, background .15s, border-color .15s; }
+    .node-preview-toggle:hover, .node-preview-toggle:focus-visible { border-color: var(--node-border); background: #fff; outline: none; }
+    .node-card.preview-open .node-preview-toggle { transform: translateY(-50%) rotate(90deg); }
+    .map-empty { width: min(520px, calc(100vw - 48px)); margin: 70px auto; padding: 30px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--muted); text-align: center; }
+    .detail-panel { position: fixed; z-index: 30; left: 0; top: 0; width: min(430px, calc(100vw - 24px)); max-height: min(560px, calc(100vh - 24px)); overflow: auto; display: none; padding: 17px; border: 1px solid #cbd6e3; border-radius: 9px; background: rgba(255,255,255,.98); box-shadow: 0 18px 42px rgba(25, 43, 68, .2); }
+    .detail-panel.open { display: block; }
+    .detail-kind { color: var(--blue); font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .detail-panel h2 { margin: 7px 0 5px; font-size: 18px; line-height: 1.25; }
+    .detail-label { color: var(--muted); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 10px; overflow-wrap: anywhere; }
+    .detail-grid { display: grid; grid-template-columns: 76px 1fr; gap: 5px 9px; margin: 14px 0; font-size: 11px; }
+    .detail-grid dt { color: var(--muted); }
+    .detail-grid dd { margin: 0; color: var(--ink); }
+    .detail-body { padding: 11px; border: 1px solid #e1e7ef; border-radius: 6px; background: #f8fafc; color: #44546b; font-size: 11px; line-height: 1.55; }
+    .detail-body .katex-display { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
+    .detail-links { margin-top: 14px; }
+    .detail-links h3 { margin: 0 0 6px; color: #43556f; font-size: 11px; }
+    .detail-links.dependencies h3 { color: #7556a8; }
+    .detail-links.used-by h3 { color: #168176; }
+    .detail-links ul { margin: 0; padding-left: 17px; color: #52647c; font-size: 10px; line-height: 1.55; }
+    .detail-links li + li { margin-top: 3px; }
+    @media (max-width: 720px) {
+      .map-toolbar { padding: 11px 12px; }
+      .map-title { flex-basis: 100%; }
+      .map-search { width: min(100%, 260px); }
+      .map-legend { display: none; }
+      .map-canvas { padding-left: 14px; padding-right: 14px; }
+      .chapter-column { flex-basis: 300px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="map-app">
+    <header class="map-toolbar">
+      <div class="map-title">
+        <h1>Blueprint map</h1>
+        <p>Current blueprint statements arranged by chapter and section</p>
+      </div>
+      <span class="map-stat" id="map-stat"></span>
+      <span class="map-spacer"></span>
+      <input class="map-control map-search" id="map-search" type="search" placeholder="Find a statement..." aria-label="Find a statement">
+      <select class="map-control map-select" id="map-status" aria-label="Filter by formalization status">
+        <option value="all">All statuses</option>
+        <option value="lean_ok">Lean OK</option>
+        <option value="mathlib_ok">Mathlib OK</option>
+        <option value="sorry">Sorry</option>
+        <option value="empty">Unformalized</option>
+      </select>
+      <select class="map-control map-select" id="map-chapter" aria-label="Focus a chapter">
+        <option value="all">All chapters</option>
+      </select>
+      <button class="map-control map-button" id="map-close" type="button" title="Return to the blueprint" aria-label="Return to the blueprint">×</button>
+      <button class="map-control map-button" id="map-fit" type="button" title="Fit the map to the available width" aria-label="Fit map">Fit</button>
+      <div class="map-legend" aria-label="Status legend">
+        <span><i class="legend-dot legend-mathlib"></i>mathlib</span>
+        <span><i class="legend-dot legend-ok"></i>Lean</span>
+        <span><i class="legend-dot legend-pending"></i>open</span>
+        <span><i class="legend-dot legend-sorry"></i>sorry</span>
+      </div>
+    </header>
+    <section class="map-viewport" id="map-viewport" aria-label="Blueprint dependency map">
+      <div class="map-scene" id="map-scene">
+        <div class="map-canvas" id="map-canvas">
+          <svg class="edge-layer" id="edge-layer" aria-hidden="true"></svg>
+          <svg class="edge-layer edge-layer-focus" id="focus-edge-layer" aria-hidden="true"></svg>
+        </div>
+      </div>
+    </section>
+    <aside class="detail-panel" id="detail-panel" aria-live="polite">
+      <div class="detail-kind" id="detail-kind"></div>
+      <h2 id="detail-title"></h2>
+      <div class="detail-label" id="detail-label"></div>
+      <dl class="detail-grid">
+        <dt>Chapter</dt><dd id="detail-chapter"></dd>
+        <dt>Section</dt><dd id="detail-section"></dd>
+        <dt>Status</dt><dd id="detail-status"></dd>
+      </dl>
+      <div class="detail-body" id="detail-body"></div>
+      <div class="detail-links dependencies">
+        <h3>Dependencies</h3>
+        <ul id="detail-deps"></ul>
+      </div>
+      <div class="detail-links used-by">
+        <h3>Used by</h3>
+        <ul id="detail-used-by"></ul>
+      </div>
+    </aside>
+  </main>
+  <script>
+    const DATA = __BLUEPRINT_MAP_DATA__;
+    const KATEX_MACROS = __BLUEPRINT_MAP_MACROS__;
+    const byId = new Map(DATA.nodes.map((node) => [node.id, node]));
+    const incoming = new Map(DATA.nodes.map((node) => [node.id, []]));
+    const outgoing = new Map(DATA.nodes.map((node) => [node.id, []]));
+    for (const edge of DATA.edges) {
+      incoming.get(edge.to)?.push(edge.from);
+      outgoing.get(edge.from)?.push(edge.to);
+    }
+
+    const canvas = document.getElementById("map-canvas");
+    const scene = document.getElementById("map-scene");
+    const viewport = document.getElementById("map-viewport");
+    const edgeLayer = document.getElementById("edge-layer");
+    const focusEdgeLayer = document.getElementById("focus-edge-layer");
+    const stat = document.getElementById("map-stat");
+    const search = document.getElementById("map-search");
+    const status = document.getElementById("map-status");
+    const chapterSelect = document.getElementById("map-chapter");
+    const detail = document.getElementById("detail-panel");
+    let zoom = 1;
+    let baseWidth = 0;
+    let baseHeight = 0;
+    let focusedId = null;
+    let fitMode = true;
+    let previewId = null;
+    let previewAnchor = null;
+    let katexLoader = null;
+
+    const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[char]));
+    const statusLabel = (value) => ({ lean_ok: "Lean OK", mathlib_ok: "Mathlib OK", sorry: "Sorry", empty: "Open" }[value] || value || "Open");
+    const chapterColor = (index) => ["#3868ad", "#7556a8", "#35865a", "#b87923", "#2d8580"][index % 5];
+
+    function render() {
+      canvas.querySelectorAll(".chapter-column").forEach((node) => node.remove());
+      for (const [index, chapter] of DATA.chapters.entries()) {
+        const column = document.createElement("section");
+        column.className = "chapter-column";
+        column.dataset.chapter = chapter.title;
+        column.style.setProperty("--chapter-color", chapterColor(index));
+        const count = chapter.sections.reduce((sum, section) => sum + section.nodes.length, 0);
+        column.innerHTML = `<header class="chapter-head"><div class="chapter-kicker">Stage ${String(index + 1).padStart(2, "0")}</div><h2>${escapeHtml(chapter.title)}</h2><div class="chapter-count">${count} statement${count === 1 ? "" : "s"}</div></header><div class="chapter-body"></div>`;
+        const body = column.querySelector(".chapter-body");
+        for (const section of chapter.sections) {
+          const group = document.createElement("section");
+          group.className = "section-group";
+          group.dataset.section = section.title;
+          group.innerHTML = `<header class="section-head"><h3>${escapeHtml(section.title)}</h3><span>${section.nodes.length}</span></header><div class="node-list"></div>`;
+          const list = group.querySelector(".node-list");
+          for (const node of section.nodes) {
+            const card = document.createElement("div");
+            card.className = "node-card";
+            card.tabIndex = 0;
+            card.setAttribute("role", "button");
+            card.setAttribute("aria-pressed", "false");
+            card.dataset.node = node.id;
+            card.dataset.chapter = chapter.title;
+            card.dataset.status = node.status;
+            card.dataset.search = `${node.title} ${node.label} ${node.kind}`.toLowerCase();
+            card.innerHTML = `<span class="node-title">${escapeHtml(node.display_title || node.title)}</span><button class="node-preview-toggle" type="button" title="Show statement preview" aria-label="Show statement preview" aria-expanded="false">›</button>`;
+            card.addEventListener("click", () => selectNode(node.id));
+            card.addEventListener("keydown", (event) => {
+              if (event.target !== card || event.key !== "Enter" && event.key !== " ") return;
+              event.preventDefault();
+              selectNode(node.id);
+            });
+            card.querySelector(".node-preview-toggle").addEventListener("click", (event) => {
+              event.stopPropagation();
+              toggleDetail(node.id, card);
+            });
+            list.appendChild(card);
+          }
+          body.appendChild(group);
+        }
+        canvas.appendChild(column);
+      }
+      for (const chapter of DATA.chapters) {
+        const option = document.createElement("option");
+        option.value = chapter.title;
+        option.textContent = chapter.title;
+        chapterSelect.appendChild(option);
+      }
+      stat.textContent = `${DATA.stats.nodes} statements · ${DATA.stats.edges} dependency links`;
+      requestAnimationFrame(() => {
+        measure();
+        fitMap(false);
+      });
+    }
+
+    function measure() {
+      canvas.style.transform = "none";
+      const columns = [...canvas.querySelectorAll(".chapter-column")];
+      const style = getComputedStyle(canvas);
+      const paddingRight = Number.parseFloat(style.paddingRight) || 0;
+      const paddingBottom = Number.parseFloat(style.paddingBottom) || 0;
+      baseWidth = Math.ceil(Math.max(...columns.map((column) => column.offsetLeft + column.offsetWidth), 1) + paddingRight);
+      baseHeight = Math.ceil(Math.max(...columns.map((column) => column.offsetTop + column.offsetHeight), 1) + paddingBottom);
+      canvas.style.transform = `scale(${zoom})`;
+      scene.style.width = `${Math.max(viewport.clientWidth, Math.ceil(baseWidth * zoom))}px`;
+      scene.style.height = `${Math.max(viewport.clientHeight, Math.ceil(baseHeight * zoom))}px`;
+      for (const layer of [edgeLayer, focusEdgeLayer]) {
+        layer.setAttribute("width", String(baseWidth));
+        layer.setAttribute("height", String(baseHeight));
+        layer.setAttribute("viewBox", `0 0 ${baseWidth} ${baseHeight}`);
+      }
+    }
+
+    function drawArrowhead(layer, path, color, classes = [], focused = false) {
+      const length = path.getTotalLength();
+      if (!Number.isFinite(length) || length <= 0) return;
+      const tip = path.getPointAtLength(length);
+      const sampleDistance = Math.min(14, Math.max(4, length * .25));
+      const before = path.getPointAtLength(Math.max(0, length - sampleDistance));
+      const angle = Math.atan2(tip.y - before.y, tip.x - before.x) * 180 / Math.PI;
+      const headLength = focused ? 10 : 8.5;
+      const halfWidth = focused ? 5 : 4.25;
+      const arrowhead = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+      arrowhead.classList.add("edge-arrowhead", ...classes);
+      arrowhead.setAttribute("points", `0,0 ${-headLength},${-halfWidth} ${-headLength},${halfWidth}`);
+      arrowhead.setAttribute("transform", `translate(${tip.x} ${tip.y}) rotate(${angle})`);
+      arrowhead.setAttribute("fill", color);
+      layer.appendChild(arrowhead);
+    }
+
+    function drawEdges() {
+      const rect = canvas.getBoundingClientRect();
+      edgeLayer.querySelectorAll(".edge-path, .edge-arrowhead").forEach((element) => element.remove());
+      focusEdgeLayer.querySelectorAll(".edge-path, .edge-arrowhead").forEach((element) => element.remove());
+      edgeLayer.classList.toggle("muted", !!focusedId);
+      for (const edge of DATA.edges) {
+        const from = canvas.querySelector(`[data-node="${CSS.escape(edge.from)}"]`);
+        const to = canvas.querySelector(`[data-node="${CSS.escape(edge.to)}"]`);
+        if (!from || !to) continue;
+        const a = from.getBoundingClientRect();
+        const b = to.getBoundingClientRect();
+        const sameChapter = byId.get(edge.from)?.chapter === byId.get(edge.to)?.chapter;
+        const x1 = (a.right - rect.left) / zoom;
+        const y1 = (a.top + a.height / 2 - rect.top) / zoom;
+        const x2 = ((sameChapter ? b.right : b.left) - rect.left) / zoom;
+        const y2 = (b.top + b.height / 2 - rect.top) / zoom;
+        let pathData;
+        if (sameChapter) {
+          const right = Math.max(x1, x2) + 16;
+          pathData = `M ${x1} ${y1} C ${right} ${y1}, ${right} ${y2}, ${x2} ${y2}`;
+        } else {
+          const delta = Math.max(28, Math.abs(x2 - x1) * .34);
+          const direction = x2 >= x1 ? 1 : -1;
+          pathData = `M ${x1} ${y1} C ${x1 + delta * direction} ${y1}, ${x2 - delta * direction} ${y2}, ${x2} ${y2}`;
+        }
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.classList.add("edge-path");
+        if (!sameChapter) path.classList.add("edge-cross");
+        path.setAttribute("d", pathData);
+        edgeLayer.appendChild(path);
+        drawArrowhead(
+          edgeLayer,
+          path,
+          sameChapter ? "#8fb1df" : "#6f95cb",
+          sameChapter ? [] : ["edge-cross"]
+        );
+        if (focusedId && (edge.from === focusedId || edge.to === focusedId)) {
+          const relation = edge.to === focusedId ? "incoming" : "outgoing";
+          const color = relation === "incoming" ? "#7556a8" : "#168176";
+          const focusPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          focusPath.classList.add("edge-path", "edge-focus", `edge-${relation}`);
+          focusPath.setAttribute("d", pathData);
+          focusEdgeLayer.appendChild(focusPath);
+          drawArrowhead(focusEdgeLayer, focusPath, color, [`edge-${relation}`], true);
+        }
+      }
+    }
+
+    function applyFilters() {
+      const query = search.value.trim().toLowerCase();
+      const selectedStatus = status.value;
+      const selectedChapter = chapterSelect.value;
+      let visible = 0;
+      canvas.querySelectorAll(".node-card").forEach((card) => {
+        const node = byId.get(card.dataset.node);
+        const isChapter = selectedChapter === "all" || card.dataset.chapter === selectedChapter;
+        const isStatus = selectedStatus === "all" || card.dataset.status === selectedStatus;
+        const isQuery = !query || card.dataset.search.includes(query);
+        const match = isChapter && isStatus && isQuery;
+        card.classList.toggle("dim", !match);
+        card.classList.toggle("match", !!query && isQuery);
+        if (match) visible += 1;
+        if (node) card.setAttribute("aria-label", `${node.title}, ${statusLabel(node.status)}`);
+      });
+      canvas.querySelectorAll(".chapter-column").forEach((column) => {
+        column.style.opacity = selectedChapter === "all" || column.dataset.chapter === selectedChapter ? "1" : ".35";
+      });
+      stat.textContent = `${visible}/${DATA.stats.nodes} statements · ${DATA.stats.edges} dependency links`;
+      drawEdges();
+    }
+
+    function linkList(ids, emptyText) {
+      if (!ids.length) return `<li>${escapeHtml(emptyText)}</li>`;
+      return ids.slice(0, 12).map((id) => {
+        const node = byId.get(id);
+        return node ? `<li>${escapeHtml(node.display_title || node.title)}</li>` : "";
+      }).join("");
+    }
+
+    async function discoverKatex() {
+      const mainScript = [...window.parent.document.querySelectorAll("script[type=module][src]")]
+        .map((script) => script.src)
+        .find((source) => /\/assets\/index-[^/]+\.js$/.test(source));
+      if (!mainScript) throw new Error("hgraph entry bundle was not found");
+      const bundle = await fetch(mainScript).then((response) => response.text());
+      const renderer = bundle.match(/katexLoader-[A-Za-z0-9_-]+\.js/)?.[0];
+      const stylesheet = bundle.match(/katexLoader-[A-Za-z0-9_-]+\.css/)?.[0];
+      if (!renderer || !stylesheet) throw new Error("hgraph KaTeX assets were not found");
+      if (!document.querySelector('link[data-katex-stylesheet]')) {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.dataset.katexStylesheet = "";
+        link.href = new URL(stylesheet, new URL(".", mainScript)).href;
+        document.head.appendChild(link);
+      }
+      return import(new URL(renderer, new URL(".", mainScript)).href).then((module) => module.default);
+    }
+
+    function loadKatex() {
+      if (!katexLoader) katexLoader = discoverKatex();
+      return katexLoader;
+    }
+
+    function typesetDetailBody(id, card) {
+      const body = document.getElementById("detail-body");
+      if (!body || !body.textContent.includes("$") && !body.textContent.includes("\\(")) return;
+      loadKatex().then((render) => {
+        if (!body.isConnected || previewId !== id) return;
+        render(body, {
+          delimiters: [
+            { left: "\\[", right: "\\]", display: true },
+            { left: "\\(", right: "\\)", display: false },
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false },
+          ],
+          macros: KATEX_MACROS,
+          globalGroup: true,
+          throwOnError: false,
+        });
+        if (previewId === id && card) placeDetail(card);
+      }).catch(() => {});
+    }
+
+    function placeDetail(card) {
+      if (!card || !detail.classList.contains("open")) return;
+      const anchor = card.getBoundingClientRect();
+      const viewportRect = viewport.getBoundingClientRect();
+      if (anchor.right < viewportRect.left || anchor.left > viewportRect.right || anchor.bottom < viewportRect.top || anchor.top > viewportRect.bottom) {
+        closeDetail();
+        return;
+      }
+      const margin = 12;
+      const gap = 10;
+      const preferredWidth = Math.min(430, window.innerWidth - margin * 2);
+      const spaces = {
+        right: window.innerWidth - anchor.right - gap - margin,
+        left: anchor.left - gap - margin,
+        below: window.innerHeight - anchor.bottom - gap - margin,
+        above: anchor.top - gap - margin,
+      };
+      const horizontalSide = spaces.right >= preferredWidth || spaces.left >= preferredWidth
+        ? (spaces.right >= spaces.left ? "right" : "left")
+        : null;
+
+      detail.style.left = "auto";
+      detail.style.right = "auto";
+      detail.style.top = "auto";
+      detail.style.bottom = "auto";
+      detail.style.width = `${preferredWidth}px`;
+      detail.style.maxHeight = `${Math.min(560, window.innerHeight - margin * 2)}px`;
+
+      if (horizontalSide) {
+        detail.style.left = horizontalSide === "right"
+          ? `${anchor.right + gap}px`
+          : `${anchor.left - gap - preferredWidth}px`;
+        const panelHeight = detail.getBoundingClientRect().height;
+        detail.style.top = `${Math.max(margin, Math.min(anchor.top, window.innerHeight - panelHeight - margin))}px`;
+        detail.dataset.placement = horizontalSide;
+        return;
+      }
+
+      const verticalSide = spaces.below >= spaces.above ? "below" : "above";
+      const availableHeight = Math.max(80, spaces[verticalSide]);
+      detail.style.maxHeight = `${Math.min(560, availableHeight)}px`;
+      detail.style.left = `${Math.max(margin, Math.min(anchor.left + anchor.width / 2 - preferredWidth / 2, window.innerWidth - preferredWidth - margin))}px`;
+      if (verticalSide === "below") {
+        detail.style.top = `${anchor.bottom + gap}px`;
+      } else {
+        detail.style.bottom = `${window.innerHeight - anchor.top + gap}px`;
+      }
+      detail.dataset.placement = verticalSide;
+    }
+
+    function openDetail(id, card = canvas.querySelector(`[data-node="${CSS.escape(id)}"]`)) {
+      const node = byId.get(id);
+      if (!node) return;
+      previewId = id;
+      previewAnchor = card;
+      canvas.querySelectorAll(".node-card").forEach((nodeCard) => {
+        const isOpen = nodeCard.dataset.node === id;
+        nodeCard.classList.toggle("preview-open", isOpen);
+        const button = nodeCard.querySelector(".node-preview-toggle");
+        button.setAttribute("aria-expanded", String(isOpen));
+        button.setAttribute("aria-label", isOpen ? "Hide statement preview" : "Show statement preview");
+        button.title = isOpen ? "Hide statement preview" : "Show statement preview";
+      });
+      document.getElementById("detail-kind").textContent = node.kind;
+      document.getElementById("detail-title").textContent = node.title;
+      document.getElementById("detail-label").textContent = node.label;
+      document.getElementById("detail-chapter").textContent = node.chapter;
+      document.getElementById("detail-section").textContent = node.section;
+      document.getElementById("detail-status").textContent = statusLabel(node.status);
+      document.getElementById("detail-body").textContent = node.body || "No statement text was captured for this node.";
+      document.getElementById("detail-deps").innerHTML = linkList(incoming.get(id) || [], "No prerequisites in the current blueprint.");
+      document.getElementById("detail-used-by").innerHTML = linkList(outgoing.get(id) || [], "No downstream consumers in the current blueprint.");
+      detail.classList.add("open");
+      if (card) {
+        placeDetail(card);
+      }
+      typesetDetailBody(id, card);
+    }
+
+    function toggleDetail(id, card) {
+      if (previewId === id && detail.classList.contains("open")) {
+        closeDetail();
+      } else {
+        openDetail(id, card);
+      }
+    }
+
+    function closeDetail() {
+      previewId = null;
+      previewAnchor = null;
+      detail.classList.remove("open");
+      delete detail.dataset.placement;
+      canvas.querySelectorAll(".node-card.preview-open").forEach((card) => {
+        card.classList.remove("preview-open");
+        const button = card.querySelector(".node-preview-toggle");
+        button.setAttribute("aria-expanded", "false");
+        button.setAttribute("aria-label", "Show statement preview");
+        button.title = "Show statement preview";
+      });
+    }
+
+    function selectNode(id) {
+      focusedId = focusedId === id ? null : id;
+      canvas.querySelectorAll(".node-card").forEach((card) => {
+        const isSelected = card.dataset.node === focusedId;
+        card.classList.toggle("selected", isSelected);
+        card.setAttribute("aria-pressed", String(isSelected));
+      });
+      drawEdges();
+    }
+
+    function setZoom(next, keepFit = false) {
+      zoom = Math.max(.08, Math.min(4, next));
+      fitMode = keepFit;
+      measure();
+      drawEdges();
+    }
+
+    function fitMap(smooth = true) {
+      measure();
+      const fittedZoom = viewport.clientWidth / Math.max(baseWidth, 1);
+      setZoom(fittedZoom, true);
+      viewport.scrollTo({ left: 0, top: 0, behavior: smooth ? "smooth" : "auto" });
+    }
+
+    search.addEventListener("input", applyFilters);
+    status.addEventListener("change", applyFilters);
+    chapterSelect.addEventListener("change", applyFilters);
+    document.getElementById("map-close").addEventListener("click", () => {
+      if (window.parent !== window) window.parent.location.reload();
+    });
+    document.getElementById("map-fit").addEventListener("click", () => fitMap(true));
+    viewport.addEventListener("scroll", () => {
+      if (previewAnchor) requestAnimationFrame(() => placeDetail(previewAnchor));
+    }, { passive: true });
+    let resizeFrame = null;
+    new ResizeObserver(() => {
+      cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(() => {
+        if (fitMode) fitMap(false); else { measure(); drawEdges(); }
+        if (previewAnchor) placeDetail(previewAnchor);
+      });
+    }).observe(viewport);
+
+    // Dragging the blank canvas makes the wide chapter layout feel like a map,
+    // while buttons and text keep their normal click behaviour.
+    let drag = null;
+    viewport.addEventListener("pointerdown", (event) => {
+      if (event.target.closest(".node-card, button, input, select")) return;
+      drag = { x: event.clientX, y: event.clientY, left: viewport.scrollLeft, top: viewport.scrollTop };
+      viewport.classList.add("dragging");
+      viewport.setPointerCapture(event.pointerId);
+    });
+    viewport.addEventListener("pointermove", (event) => {
+      if (!drag) return;
+      viewport.scrollLeft = drag.left - (event.clientX - drag.x);
+      viewport.scrollTop = drag.top - (event.clientY - drag.y);
+    });
+    const stopDrag = () => { drag = null; viewport.classList.remove("dragging"); };
+    viewport.addEventListener("pointerup", stopDrag);
+    viewport.addEventListener("pointercancel", stopDrag);
+
+    render();
+  </script>
+</body>
+</html>
