@@ -1375,8 +1375,26 @@ omit [FiniteDimensional ℝ E] in
       ((0 : TangentSpace I x), -((r : ℝ) * g.metricInner x (X x) (Y x))) := by
   simp only [coneRadialCorrection, SmoothVectorField.smul_apply, coneRadius,
     coneRadialField_apply]
-  rw [Prod.smul_mk]
-  simp
+  have hsmul (c : ℝ) (u : TangentSpace I x) (a : ℝ) :
+      c • ((u, a) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) =
+        ((c • u, c • a) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) := by
+    rfl
+  change (-((r : ℝ) * g.metricInner x (X x) (Y x))) • ((0, 1) :
+    TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) =
+      ((0, -((r : ℝ) * g.metricInner x (X x) (Y x))) :
+        TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r))
+  rw [hsmul]
+  have hpair {u v : E} {a b : ℝ}
+      (hu : u = v) (ha : a = b) :
+      ((u, a) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) =
+        ((v, b) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) := by
+    subst v
+    subst b
+    rfl
+  apply hpair
+  · change (-((r : ℝ) * g.metricInner x (X x) (Y x))) • (0 : E) = (0 : E)
+    exact smul_zero _
+  · ring
 
 /-- **Math.** The horizontal lift `X/r`, bundled as a smooth cone field. -/
 noncomputable def coneInvRadiusHorizontal (X : SmoothVectorField I N) :
@@ -1391,7 +1409,14 @@ omit [FiniteDimensional ℝ E] in
     coneInvRadiusHorizontal X (x, r) = ((r : ℝ)⁻¹ • X x, 0) := by
   simp only [coneInvRadiusHorizontal, SmoothVectorField.smul_apply, coneRadius,
     coneHorizontalLift_apply]
-  rw [Prod.smul_mk]
+  have hsmul (c : ℝ) (u : TangentSpace I x) (a : ℝ) :
+      c • ((u, a) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) =
+        ((c • u, c • a) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) := by
+    rfl
+  change (r : ℝ)⁻¹ • ((X x, 0) :
+    TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) =
+      (((r : ℝ)⁻¹ • X x, 0) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r))
+  rw [hsmul]
   simp
 
 /-- **Math.** For horizontal lifts,
@@ -1409,8 +1434,25 @@ theorem coneLeviCivitaConnection_cov_horizontal_horizontal
   rw [coneLeviCivitaConnection_cov_horizontal_horizontal_apply]
   rw [SmoothVectorField.add_apply, coneHorizontalLift_apply,
     coneRadialCorrection_apply]
-  rw [Prod.mk_add_mk]
-  simp
+  have hadd (u v : TangentSpace I q.1) (a b : ℝ) :
+      ((u, a) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) q) +
+          ((v, b) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) q) =
+        ((u + v, a + b) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) q) := by
+    rfl
+  change ((_, _) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) q) =
+    ((_, 0) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) q) +
+      ((0, _) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) q)
+  rw [hadd]
+  have hpair {u v : E} {a b : ℝ}
+      (hu : u = v) (ha : a = b) :
+      ((u, a) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) q) =
+        ((v, b) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) q) := by
+    subst v
+    subst b
+    rfl
+  apply hpair
+  · exact (add_zero _).symm
+  · ring
 
 /-- **Math.** For a horizontal lift,
 `nabla_(X^h) partial_r = X^h/r`, as an identity of smooth fields. -/
@@ -1505,10 +1547,28 @@ theorem coneLeviCivitaConnection_cov_radial_invRadiusHorizontal
     coneRadialField_dir_invRadius, SmoothVectorField.zero_apply]
   rw [coneInvRadiusHorizontal_apply, coneHorizontalLift_apply]
   simp only [coneRadius]
-  rw [Prod.smul_mk, Prod.smul_mk, Prod.mk_add_mk]
+  have hsmul (c : ℝ) (u : TangentSpace I x) (a : ℝ) :
+      c • ((u, a) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) =
+        ((c • u, c • a) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) := by
+    rfl
+  have hadd (u v : TangentSpace I x) (a b : ℝ) :
+      ((u, a) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) +
+          ((v, b) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) =
+        ((u + v, a + b) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) := by
+    rfl
+  change (r : ℝ)⁻¹ • (((r : ℝ)⁻¹ • X x, 0) :
+    TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) +
+      (-((r : ℝ)⁻¹) ^ 2) • ((X x, 0) :
+        TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) =
+    (0 : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r))
+  rw [hsmul, hsmul, hadd]
+  simp only [smul_zero, add_zero]
   change _ = ((0 : TangentSpace I x), (0 : ℝ))
   apply Prod.ext
-  · module
+  · change (r : ℝ)⁻¹ • ((r : ℝ)⁻¹ • X x) +
+      (-((r : ℝ)⁻¹) ^ 2) • X x = 0
+    rw [smul_smul]
+    module
   · simp
 
 /-- **Math.** Every radial two-plane in the open cone has zero curvature:

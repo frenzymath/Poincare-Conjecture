@@ -260,4 +260,50 @@ def variationalField (I : ModelWithCorners ℝ E H) (f : ℝ × ℝ → M) : ℝ
     variationalField I f t = mfderiv 𝓘(ℝ, ℝ) I (transversal f t) 0 1 :=
   rfl
 
+/-- **Math.** The variational field of a proper variation vanishes at the left
+endpoint.  Indeed, properness makes the transversal `s ↦ f (s, 0)` equal to
+the constant curve `c 0` on a neighbourhood of `s = 0`; the `mfderiv`
+congruence theorem therefore identifies its derivative with `mfderiv_const`.
+This is the endpoint implication used in do Carmo Ch. 9, Definition 2.1 and
+the forward direction of Proposition 2.5. -/
+theorem IsProperVariation.variationalField_zero
+    {c : ℝ → M} {a ε : ℝ} {f : ℝ × ℝ → M}
+    (hf : IsProperVariation c a ε f) (hε : 0 < ε) :
+    variationalField I f 0 = 0 := by
+  rw [variationalField_apply]
+  have hnhds : Ioo (-ε) ε ∈ 𝓝 (0 : ℝ) :=
+    isOpen_Ioo.mem_nhds (by constructor <;> linarith)
+  have hEq : transversal f 0 =ᶠ[𝓝 (0 : ℝ)] (fun _ => c 0) := by
+    filter_upwards [hnhds] with s hs
+    exact (hf s hs).1
+  rw [hEq.mfderiv_eq, mfderiv_const]
+  rfl
+
+/-- **Math.** The variational field of a proper variation vanishes at the
+right endpoint.  This is the endpoint companion to
+`IsProperVariation.variationalField_zero`; together they provide the
+`V(0)=V(a)=0` hypothesis in the proper first- and second-variation formulas. -/
+theorem IsProperVariation.variationalField_right
+    {c : ℝ → M} {a ε : ℝ} {f : ℝ × ℝ → M}
+    (hf : IsProperVariation c a ε f) (hε : 0 < ε) :
+    variationalField I f a = 0 := by
+  rw [variationalField_apply]
+  have hnhds : Ioo (-ε) ε ∈ 𝓝 (0 : ℝ) :=
+    isOpen_Ioo.mem_nhds (by constructor <;> linarith)
+  have hEq : transversal f a =ᶠ[𝓝 (0 : ℝ)] (fun _ => c a) := by
+    filter_upwards [hnhds] with s hs
+    exact (hf s hs).2
+  rw [hEq.mfderiv_eq, mfderiv_const]
+  rfl
+
+/-- **Math.** A proper `IsVariation` has a variational field that vanishes at
+both endpoints.  This packages the two endpoint lemmas above with the
+positivity of `ε` already stored in `IsVariation`. -/
+theorem IsVariation.variationalField_eq_zero_endpoints
+    {c : ℝ → M} {a ε : ℝ} {f : ℝ × ℝ → M}
+    (hvar : IsVariation I c a ε f) (hproper : IsProperVariation c a ε f) :
+    variationalField I f 0 = 0 ∧ variationalField I f a = 0 := by
+  exact ⟨hproper.variationalField_zero hvar.epsilon_pos,
+    hproper.variationalField_right hvar.epsilon_pos⟩
+
 end Riemannian.Variation

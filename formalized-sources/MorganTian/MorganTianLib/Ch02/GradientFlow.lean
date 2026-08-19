@@ -1,4 +1,5 @@
 import MorganTianLib.Ch02.GradientFlowLine
+import MorganTianLib.Ch01.CutTimeMeasurable
 
 /-!
 # Morgan–Tian Ch. 2 — the global flow of a parallel gradient field
@@ -147,6 +148,182 @@ def IsContGeodesicallyComplete (g : RiemannianMetric I M) : Prop :=
   ∀ (p : M) (v : TangentSpace I p), ∃ γ : ℝ → M, Continuous γ ∧ γ 0 = p ∧
     HasDerivAt (fun s => extChartAt I p (γ s)) v 0 ∧
     Riemannian.Geodesic.IsGeodesic (I := I) g γ
+
+/-! ### Direct Hessian-zero flow package -/
+
+/-- **Math.** On a geodesically complete manifold, `Hess f = 0` makes the
+geodesic with initial velocity `grad f` a global gradient-flow line. The
+result keeps the geodesic and speed conclusions visible, as required by the
+parallel-gradient flow lemma. -/
+theorem exists_gradientFlowLine_of_hessian
+    [SigmaCompactSpace M] [T2Space M] (g : RiemannianMetric I M)
+    {nabla : AffineConnection I M} (hLC : nabla.IsLeviCivita g)
+    {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) {c : ℝ}
+    (hhess : ∀ p : M, ∀ v w : TangentSpace I p,
+      hessianAt nabla f p v w = 0)
+    (hgrad : ∀ q, metricNormSq g (gradientField g f hf) q = c)
+    (hcomp : IsContGeodesicallyComplete g) (x : M) :
+    ∃ γ : ℝ → M, Continuous γ ∧ γ 0 = x ∧
+      Riemannian.Geodesic.IsGeodesic (I := I) g γ ∧
+      IsMIntegralCurve γ (fun q => gradientField g f hf q) ∧
+      (∀ t, g.metricInner (γ t) (curveVelocity (I := I) γ t)
+        (curveVelocity (I := I) γ t) = c) ∧
+      ∀ t, f (γ t) = f x + c * t := by
+  obtain ⟨γ, hcont, h0, hv, hgeo⟩ := hcomp x (gradientField g f hf x)
+  subst h0
+  have hinit : curveVelocity (I := I) γ 0 = gradientField g f hf (γ 0) :=
+    curveVelocity_eq_of_hasDerivAt (I := I) hv
+  exact ⟨γ, hcont, rfl, hgeo,
+    isMIntegralCurve_gradientField_of_hessian (I := I) g hLC hf hhess
+      hgeo hcont hinit,
+    fun t => metricInner_curveVelocity_self_of_hessian (I := I) g hLC hf
+      hhess hgrad hgeo hcont hinit t,
+    fun t => comp_eq_add_mul_of_hessian (I := I) g hLC hf hhess hgrad
+      hgeo hcont hinit t⟩
+
+/-- **Math.** Under `Hess f = 0`, geodesic completeness supplies a global
+integral curve of `grad f` through every point. -/
+theorem exists_isMIntegralCurve_gradientField_of_hessian
+    [SigmaCompactSpace M] [T2Space M] (g : RiemannianMetric I M)
+    {nabla : AffineConnection I M} (hLC : nabla.IsLeviCivita g)
+    {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
+    (hhess : ∀ p : M, ∀ v w : TangentSpace I p,
+      hessianAt nabla f p v w = 0)
+    (hcomp : IsContGeodesicallyComplete g) :
+    ∀ x : M, ∃ γ : ℝ → M, γ 0 = x ∧
+      IsMIntegralCurve γ (fun q => gradientField g f hf q) := by
+  intro x
+  obtain ⟨γ, hcont, h0, hv, hgeo⟩ := hcomp x (gradientField g f hf x)
+  subst h0
+  have hinit : curveVelocity (I := I) γ 0 = gradientField g f hf (γ 0) :=
+    curveVelocity_eq_of_hasDerivAt (I := I) hv
+  exact ⟨γ, rfl, isMIntegralCurve_gradientField_of_hessian (I := I) g
+    hLC hf hhess hgeo hcont hinit⟩
+
+/-- **Math.** The chosen global gradient flow under `Hess f = 0` has
+geodesic trajectories. -/
+theorem isGeodesic_smoothVectorFieldFlow_gradientField_of_hessian
+    [SigmaCompactSpace M] [T2Space M] (g : RiemannianMetric I M)
+    {nabla : AffineConnection I M} (hLC : nabla.IsLeviCivita g)
+    {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
+    (hhess : ∀ p : M, ∀ v w : TangentSpace I p,
+      hessianAt nabla f p v w = 0)
+    (hcomp : IsContGeodesicallyComplete g)
+    (hex : ∀ x : M, ∃ γ : ℝ → M, γ 0 = x ∧
+      IsMIntegralCurve γ (fun q => gradientField g f hf q))
+    (x : M) :
+    Riemannian.Geodesic.IsGeodesic (I := I) g
+      (fun t => smoothVectorFieldFlow (gradientField g f hf) hex t x) := by
+  obtain ⟨γ, hcont, h0, hv, hgeo⟩ := hcomp x (gradientField g f hf x)
+  subst h0
+  have hinit : curveVelocity (I := I) γ 0 = gradientField g f hf (γ 0) :=
+    curveVelocity_eq_of_hasDerivAt (I := I) hv
+  have hIC := isMIntegralCurve_gradientField_of_hessian (I := I) g hLC hf
+    hhess hgeo hcont hinit
+  have hflow :
+      (fun t => smoothVectorFieldFlow (gradientField g f hf) hex t (γ 0)) = γ := by
+    funext t
+    exact smoothVectorFieldFlow_eq_of_isMIntegralCurve
+      (gradientField g f hf) hex hIC rfl t
+  rw [hflow]
+  exact hgeo
+
+/-- **Math.** The chosen global direct-Hessian flow has constant squared
+speed `c`; in particular it is unit-speed when `c = 1`. -/
+theorem metricInner_curveVelocity_smoothVectorFieldFlow_of_hessian
+    [SigmaCompactSpace M] [T2Space M] (g : RiemannianMetric I M)
+    {nabla : AffineConnection I M} (hLC : nabla.IsLeviCivita g)
+    {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) {c : ℝ}
+    (hhess : ∀ p : M, ∀ v w : TangentSpace I p,
+      hessianAt nabla f p v w = 0)
+    (hgrad : ∀ q, metricNormSq g (gradientField g f hf) q = c)
+    (hcomp : IsContGeodesicallyComplete g)
+    (hex : ∀ x : M, ∃ γ : ℝ → M, γ 0 = x ∧
+      IsMIntegralCurve γ (fun q => gradientField g f hf q))
+    (x : M) (t : ℝ) :
+    let θ := fun s => smoothVectorFieldFlow (gradientField g f hf) hex s x
+    g.metricInner (θ t) (curveVelocity (I := I) θ t)
+      (curveVelocity (I := I) θ t) = c := by
+  dsimp only
+  obtain ⟨γ, -, h0, -, hIC, hspeed, -⟩ :=
+    exists_gradientFlowLine_of_hessian (I := I) g hLC hf hhess hgrad hcomp x
+  have hflow :
+      (fun s => smoothVectorFieldFlow (gradientField g f hf) hex s x) = γ := by
+    funext s
+    exact smoothVectorFieldFlow_eq_of_isMIntegralCurve
+      (gradientField g f hf) hex hIC h0 s
+  have hvflow := congrArg (fun q : ℝ → M => curveVelocity (I := I) q t) hflow
+  rw [congrFun hflow t, hvflow]
+  exact hspeed t
+
+/-- **Math.** Along the chosen global direct-Hessian flow,
+`f (θ_t x) = f x + c t`. -/
+theorem comp_smoothVectorFieldFlow_gradientField_of_hessian
+    [SigmaCompactSpace M] [T2Space M] (g : RiemannianMetric I M)
+    {nabla : AffineConnection I M} (hLC : nabla.IsLeviCivita g)
+    {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) {c : ℝ}
+    (hhess : ∀ p : M, ∀ v w : TangentSpace I p,
+      hessianAt nabla f p v w = 0)
+    (hgrad : ∀ q, metricNormSq g (gradientField g f hf) q = c)
+    (hcomp : IsContGeodesicallyComplete g)
+    (hex : ∀ x : M, ∃ γ : ℝ → M, γ 0 = x ∧
+      IsMIntegralCurve γ (fun q => gradientField g f hf q))
+    (t : ℝ) (x : M) :
+    f (smoothVectorFieldFlow (gradientField g f hf) hex t x) = f x + c * t := by
+  obtain ⟨γ, -, h0, -, hIC, -, hcomp_eq⟩ :=
+    exists_gradientFlowLine_of_hessian (I := I) g hLC hf hhess hgrad hcomp x
+  rw [smoothVectorFieldFlow_eq_of_isMIntegralCurve
+    (gradientField g f hf) hex hIC h0 t]
+  exact hcomp_eq t
+
+/-- **Math.** The direct-Hessian gradient flow agrees with the exponential
+formula. Choosing the canonical `globalGeodesic` witness makes the radial
+rescaling theorem identify its time-`t` value with
+`expMapGlobal x (t • grad f x)`. -/
+theorem smoothVectorFieldFlow_eq_expMapGlobal_smul_of_hessian
+    {N : Type*} [MetricSpace N] [ChartedSpace H N] [IsManifold I ∞ N]
+    [SigmaCompactSpace N] [T2Space N] [CompleteSpace N]
+    (g : RiemannianMetric I N) (hg : g.IsRiemannianDist)
+    {nabla : AffineConnection I N} (hLC : nabla.IsLeviCivita g)
+    {f : N → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
+    (hhess : ∀ p : N, ∀ v w : TangentSpace I p,
+      hessianAt nabla f p v w = 0)
+    (hex : ∀ x : N, ∃ γ : ℝ → N, γ 0 = x ∧
+      IsMIntegralCurve γ (fun q => gradientField g f hf q))
+    (x : N) (t : ℝ) :
+    smoothVectorFieldFlow (gradientField g f hf) hex t x =
+      expMapGlobal (I := I) g hg x
+        (t • gradientField g f hf x) := by
+  let γ : ℝ → N := globalGeodesic (I := I) g hg x
+    (gradientField g f hf x)
+  have hgeo : Riemannian.Geodesic.IsGeodesic (I := I) g γ := by
+    exact isGeodesic_globalGeodesic g hg x (gradientField g f hf x)
+  have hcont : Continuous γ := by
+    exact continuous_globalGeodesic g hg x (gradientField g f hf x)
+  have hv := hasDerivAt_chartReading_globalGeodesic g hg x
+    (gradientField g f hf x)
+  have h0 : γ 0 = x := by
+    simp [γ, globalGeodesic_zero]
+  have hchart : chartLocalCurve (I := I) γ 0 =
+      chartReading (I := I) x γ := by
+    funext s
+    simp only [chartLocalCurve_def, chartReading_def, h0]
+  have hinit : curveVelocity (I := I) γ 0 = gradientField g f hf (γ 0) := by
+    apply curveVelocity_eq_of_hasDerivAt (I := I)
+    rw [hchart]
+    rw [h0]
+    simpa [γ] using hv
+  have hIC := isMIntegralCurve_gradientField_of_hessian (I := I) g hLC hf
+    hhess hgeo hcont hinit
+  calc
+    smoothVectorFieldFlow (gradientField g f hf) hex t x = γ t :=
+      smoothVectorFieldFlow_eq_of_isMIntegralCurve
+        (gradientField g f hf) hex hIC h0 t
+    _ = expMapGlobal (I := I) g hg x
+        (t • gradientField g f hf x) := by
+      simpa [γ] using
+        (globalGeodesic_eq_expMapGlobal_smul (I := I) g hg x
+          (gradientField g f hf x) t)
 
 /-- **Math.** Blueprint `lem:parallel-gradient-flow`(2), **existence of flow
 lines**: on a geodesically complete manifold, under the Bochner package

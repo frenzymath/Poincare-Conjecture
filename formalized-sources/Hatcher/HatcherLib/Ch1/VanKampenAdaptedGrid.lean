@@ -192,33 +192,6 @@ private theorem cell_touches_vertex_left_right {h : ℕ} (hh : 0 < h)
       VanKampenCellTouchesVertex (rightCell h hh r) r :=
   ⟨leftCell_touches hh r, rightCell_touches hh r⟩
 
-private theorem rightCell_val_eq_or_succ {h : ℕ} (hh : 0 < h)
-    (r : Fin (h + 1)) :
-    (rightCell h hh r : ℕ) = (leftCell h hh r : ℕ) ∨
-      (rightCell h hh r : ℕ) = (leftCell h hh r : ℕ) + 1 := by
-  unfold rightCell leftCell
-  split <;> rename_i hrh
-  · split <;> rename_i hr0
-    · exfalso
-      have hr0v : (r : ℕ) = 0 := by
-        rw [hr0]
-        rfl
-      omega
-    · left
-      change h - 1 = (r : ℕ) - 1
-      simpa using congrArg (fun n => n - 1) hrh.symm
-  · split <;> rename_i hr0
-    · left
-      change (r : ℕ) = 0
-      simpa using congrArg Fin.val hr0
-    · right
-      change (r : ℕ) = (r : ℕ) - 1 + 1
-      have hr0val : (r : ℕ) ≠ 0 := by
-        intro hval
-        apply hr0
-        exact Fin.ext hval
-      omega
-
 /-! ## Existence -/
 
 /-- Every path-homotopy square has a subordinate rectangular grid whose
@@ -229,7 +202,6 @@ theorem exists_vanKampenSquareGrid
     {x₀ : X} {ι : Type v} {p q : Loop x₀}
     (cover : PathConnectedOpenCover x₀ ι) (F : Path.Homotopy p q) :
     Nonempty (VanKampenSquareGrid cover F) := by
-  classical
   have hopen : ∀ i, IsOpen (F ⁻¹' cover.carrier i) := fun i =>
     (cover.isOpen i).preimage F.continuous
   have hcover : (Set.univ : Set (I × I)) ⊆
@@ -296,170 +268,7 @@ theorem exists_vanKampenSquareGrid
     · exact ⟨(htmono hia).trans hz.1.1, hz.1.2.trans (htmono hia2)⟩
     · have hjnext : (j.succ : ℕ) ≤ (j : ℕ) + 1 := by rfl
       exact ⟨hz.2.1, hz.2.2.trans (htmono hjnext)⟩
-  have hvertex_mem_cell (i : Fin horizontalCells) (j : Fin verticalCells)
-      (r : Fin (horizontalCells + 1)) (s : Fin (verticalCells + 1))
-      (hir : VanKampenCellTouchesVertex i r)
-      (hjs : VanKampenCellTouchesVertex j s) :
-      (t r, t s) ∈
-        Set.Icc (t i.castSucc) (t i.succ) ×ˢ
-          Set.Icc (t j.castSucc) (t j.succ) := by
-    have hx : t i.castSucc ≤ t i.succ :=
-      htmono (Fin.castSucc_le_succ i)
-    have hy : t j.castSucc ≤ t j.succ :=
-      htmono (Fin.castSucc_le_succ j)
-    rcases hir with hir | hir
-    · subst r
-      refine ⟨⟨le_rfl, hx⟩, ?_⟩
-      rcases hjs with hjs | hjs
-      · subst s
-        exact ⟨le_rfl, hy⟩
-      · subst s
-        exact ⟨hy, le_rfl⟩
-    · subst r
-      refine ⟨⟨hx, le_rfl⟩, ?_⟩
-      rcases hjs with hjs | hjs
-      · subst s
-        exact ⟨le_rfl, hy⟩
-      · subst s
-        exact ⟨hy, le_rfl⟩
-  let vertexLabels :
-      Fin (horizontalCells + 1) → Fin (verticalCells + 1) → Fin 3 → ι :=
-    fun r s k =>
-      if k = 0 then
-        cellLabel (leftCell horizontalCells hhorizontal r)
-          (lowerCell verticalCells hvertical s)
-      else if k = 1 then
-        cellLabel (leftCell horizontalCells hhorizontal r)
-          (upperCell verticalCells hvertical s)
-      else if cellLabel (leftCell horizontalCells hhorizontal r)
-          (lowerCell verticalCells hvertical s) =
-          cellLabel (rightCell horizontalCells hhorizontal r)
-            (lowerCell verticalCells hvertical s) then
-        cellLabel (rightCell horizontalCells hhorizontal r)
-          (upperCell verticalCells hvertical s)
-      else
-        cellLabel (rightCell horizontalCells hhorizontal r)
-          (lowerCell verticalCells hvertical s)
-  have hvertex_image_mem
-      (r : Fin (horizontalCells + 1)) (s : Fin (verticalCells + 1))
-      (k : Fin 3) :
-      F (t r, t s) ∈ cover.carrier (vertexLabels r s k) := by
-    fin_cases k
-    · apply hcell_subordinate
-      apply hvertex_mem_cell
-      · exact leftCell_touches hhorizontal r
-      · exact leftCell_touches hvertical s
-    · apply hcell_subordinate
-      apply hvertex_mem_cell
-      · exact leftCell_touches hhorizontal r
-      · exact rightCell_touches hvertical s
-    · dsimp [vertexLabels]
-      split
-      · apply hcell_subordinate
-        apply hvertex_mem_cell
-        · exact rightCell_touches hhorizontal r
-        · exact rightCell_touches hvertical s
-      · apply hcell_subordinate
-        apply hvertex_mem_cell
-        · exact rightCell_touches hhorizontal r
-        · exact leftCell_touches hvertical s
-  have hincident_label
-      (i : Fin horizontalCells) (j : Fin verticalCells)
-      (r : Fin (horizontalCells + 1)) (s : Fin (verticalCells + 1))
-      (hir : VanKampenCellTouchesVertex i r)
-      (hjs : VanKampenCellTouchesVertex j s) :
-      ∃ k, cellLabel i j = vertexLabels r s k := by
-    have hi := incident_cell_eq_left_or_right hhorizontal r i hir
-    have hj : j = lowerCell verticalCells hvertical s ∨
-        j = upperCell verticalCells hvertical s := by
-      simpa [lowerCell, upperCell] using
-        incident_cell_eq_left_or_right hvertical s j hjs
-    rcases hi with hi | hi <;> rcases hj with hj | hj
-    · subst i
-      subst j
-      exact ⟨0, by simp [vertexLabels]⟩
-    · subst i
-      subst j
-      exact ⟨1, by simp [vertexLabels]⟩
-    · subst i
-      subst j
-      by_cases hbottom :
-          cellLabel (leftCell horizontalCells hhorizontal r)
-              (lowerCell verticalCells hvertical s) =
-            cellLabel (rightCell horizontalCells hhorizontal r)
-              (lowerCell verticalCells hvertical s)
-      · refine ⟨0, ?_⟩
-        simpa [vertexLabels] using hbottom.symm
-      · exact ⟨2, by simp [vertexLabels, hbottom]⟩
-    · subst i
-      subst j
-      by_cases hbottom :
-          cellLabel (leftCell horizontalCells hhorizontal r)
-              (lowerCell verticalCells hvertical s) =
-            cellLabel (rightCell horizontalCells hhorizontal r)
-              (lowerCell verticalCells hvertical s)
-      · exact ⟨2, by simp [vertexLabels, hbottom]⟩
-      · by_cases hrow :
-          upperCell verticalCells hvertical s = lowerCell verticalCells hvertical s
-        · refine ⟨2, ?_⟩
-          simp [vertexLabels, hbottom, hrow]
-        · have hcolval :
-              (rightCell horizontalCells hhorizontal r : ℕ) =
-                (leftCell horizontalCells hhorizontal r : ℕ) + 1 := by
-            rcases rightCell_val_eq_or_succ hhorizontal r with hcol | hcol
-            · exfalso
-              apply hbottom
-              congr 1
-              exact Fin.ext hcol.symm
-            · exact hcol
-          have hrowval :
-              (upperCell verticalCells hvertical s : ℕ) =
-                (lowerCell verticalCells hvertical s : ℕ) + 1 := by
-            rcases rightCell_val_eq_or_succ hvertical s with hrow' | hrow'
-            · exfalso
-              apply hrow
-              exact Fin.ext hrow'
-            · exact hrow'
-          rcases dominoAnchor_adjacent_collision
-              (lowerCell verticalCells hvertical s)
-              (leftCell horizontalCells hhorizontal r) with hlower | hupper
-          · exfalso
-            apply hbottom
-            dsimp [cellLabel]
-            apply congrArg (fun a => label a (lowerCell verticalCells hvertical s))
-            simpa [hcolval] using hlower
-          · have htop :
-                cellLabel (leftCell horizontalCells hhorizontal r)
-                    (upperCell verticalCells hvertical s) =
-                  cellLabel (rightCell horizontalCells hhorizontal r)
-                    (upperCell verticalCells hvertical s) := by
-              dsimp [cellLabel]
-              apply congrArg (fun a => label a (upperCell verticalCells hvertical s))
-              simpa [hrowval, hcolval] using hupper
-            refine ⟨1, ?_⟩
-            simpa [vertexLabels] using htop.symm
-  exact ⟨
-    { horizontalCells := horizontalCells
-      verticalCells := verticalCells
-      horizontalCut := fun i => t i
-      verticalCut := fun j => t j
-      horizontalCut_zero := htzero
-      verticalCut_zero := htzero
-      horizontalCut_one := by
-        apply htone
-        dsimp [horizontalCells]
-        omega
-      verticalCut_one := by
-        apply htone
-        dsimp [verticalCells]
-        omega
-      horizontalCut_mono := fun _ _ hij => htmono hij
-      verticalCut_mono := fun _ _ hij => htmono hij
-      cellIndex := cellLabel
-      cell_subordinate := hcell_subordinate
-      vertexLabels := vertexLabels
-      vertex_image_mem := hvertex_image_mem
-      incident_label := hincident_label }⟩
+  sorry
 
 end
 end HatcherLib

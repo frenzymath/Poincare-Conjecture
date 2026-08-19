@@ -275,7 +275,8 @@ theorem eventually_bookSegmentDomain
     rcases hq with ⟨z, hz, hzeq⟩
     have hzmin : IsMinimizingUpTo (I := I) g hg p (z : TangentSpace I p) 1 := hz.1.2
     have hzv : (z : TangentSpace I p) = v := hvuniq z hzmin hzeq
-    exact hz.2 (by simpa [hzv] using hvU)
+    have hzvE : z = (v : E) := hzv
+    exact hz.2 (hzvE.symm ▸ hvU)
   have hq : f (v : E) ∈ (f '' B)ᶜ := hqbad
   have hV : IsOpen ((f '' B)ᶜ) := hbadclosed.isOpen_compl
   have hVmem : (f '' B)ᶜ ∈ 𝓝 (f (v : E)) := hV.mem_nhds hq

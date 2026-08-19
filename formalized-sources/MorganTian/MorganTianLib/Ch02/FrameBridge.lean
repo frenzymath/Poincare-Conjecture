@@ -477,6 +477,58 @@ theorem isParallelAlong_comp_of_cov_eq_zero [SigmaCompactSpace M] [T2Space M]
   exact hasCovDerivAlongAt_comp_zero (I := I) g Z
     (fun X => hcov X (γ t)) (hmem t) hv
 
+/-! ### The direct Hessian-zero form
+
+The Bochner wrappers below are useful for the Busemann application, but the
+geometric level-set statement in the blueprint assumes `Hess f = 0` directly.
+Keep that hypothesis visible here so later flow/level-set theorems need not
+reintroduce the stronger constant-Laplacian and Ricci assumptions.
+-/
+
+/-- **Math.** A smooth function with identically zero Hessian has a parallel
+gradient.  This is the direct `Hess f = 0` form of the Bochner parallelism
+step, with no Ricci or constant-Laplacian hypotheses.
+Blueprint: `lem:parallel-gradient-flow`, `lem:parallel-gradient-level-sets`. -/
+theorem cov_gradientField_apply_eq_zero_of_hessian
+    [SigmaCompactSpace M] [T2Space M]
+    (g : RiemannianMetric I M) {nabla : AffineConnection I M}
+    (hLC : nabla.IsLeviCivita g) {f : M → ℝ}
+    (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
+    (hhess : ∀ p : M, ∀ v w : TangentSpace I p,
+      hessianAt nabla f p v w = 0)
+    (X : SmoothVectorField I M) (p : M) :
+    (nabla.cov X (gradientField g f hf)) p = 0 := by
+  rw [← g.metricInner_eq_iff_eq p]
+  intro w
+  rw [metricInner_cov_gradientField_eq_hessianAt g hLC.2 hf X p w,
+    hhess p (X p) w, g.metricInner_zero_left]
+
+/-- **Math.** Under `Hess f = 0`, the gradient field restricts to a parallel
+field along every chart-regular curve.  The curve regularity is exposed in
+the same form as `isParallelAlong_comp_of_cov_eq_zero` so it can be consumed
+by the flow and level-set developments directly.
+Blueprint: `lem:parallel-gradient-flow`, `lem:parallel-gradient-level-sets`. -/
+theorem isParallelAlong_gradientField_comp_of_hessian
+    [SigmaCompactSpace M] [T2Space M]
+    (g : RiemannianMetric I M) {nabla : AffineConnection I M}
+    (hLC : nabla.IsLeviCivita g) {f : M → ℝ}
+    (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
+    (hhess : ∀ p : M, ∀ v w : TangentSpace I p,
+      hessianAt nabla f p v w = 0)
+    {γ : ℝ → M}
+    (hmem : ∀ t, ∀ᶠ s in 𝓝 t, γ s ∈ (chartAt H (γ t)).source)
+    (hvel : ∀ t, ∃ v : E, HasDerivAt (chartLocalCurve (I := I) γ t) v t) :
+    IsParallelAlong (I := I) g γ (fun t => gradientField g f hf (γ t)) := by
+  have hLC' : g.leviCivitaConnection.IsLeviCivita g :=
+    g.leviCivitaConnection.isLeviCivita_of_koszulDual g
+      (fun X Y W q => g.koszulDualSection_dual X Y W q)
+  have hEqn : nabla = g.leviCivitaConnection :=
+    AffineConnection.leviCivita_unique' g nabla g.leviCivitaConnection hLC hLC'
+  refine isParallelAlong_comp_of_cov_eq_zero (I := I) g _ ?_ hmem hvel
+  intro X p
+  rw [← hEqn]
+  exact cov_gradientField_apply_eq_zero_of_hessian g hLC hf hhess X p
+
 /-- **Math.** Blueprint `lem:parallel-gradient-flow`(1)–(2), Bochner form: if
 `f` is smooth with `Δf` and `|∇f|²` constant on a manifold with non-negative
 Ricci curvature along the gradient, then the gradient field of `f` restricts

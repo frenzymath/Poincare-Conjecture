@@ -5,9 +5,9 @@ import Topping.MaximumPrinciple.TensorNormAlgebra
 
 `exists_normAt_le_of_isStarProduct` bounds any star product, but its constant is
 extracted by induction over a derivation of `IsStarProduct g A B C` — a proof that
-mentions `g`. So it yields `∀ g, ∃ K, …` and never `∃ K, ∀ g, …`, while Topping's
-`C = C(n)` is the latter. For the fixed correction in 2.5.1, the gap is closed by
-reading its bound off the eight-term shape
+mentions `g`. So it yields `∀ g, ∃ K, …` and never `∃ K, ∀ g, …`, and Topping's
+`C = C(n)` is the latter (inbox I-0479). TOP.CH02 closed the gap for *one* fixed
+expression, the correction of 2.5.1, by reading its bound off the eight-term shape
 by hand.
 
 This module closes it in general. The observation is that every constructor of
@@ -26,7 +26,7 @@ derivation and on the dimension — `√n` per contraction, `|c|` per scalar, su
   statement `∃ K, ∀ g A B p, |eval s g A B| ≤ K|A||B|` follows for every fixed
   shape — `exists_uniform_normAt_eval_le`.
 
-This is the reusable form of `exists_uniform_normAt_curvatureEvolutionCorrection_le`:
+This is the reusable form of TOP.CH02's `exists_uniform_normAt_curvatureEvolutionCorrection_le`:
 any expression exhibited as `eval s` for a shape `s` gets a dimension-only constant
 for free, with no bespoke triangle-inequality argument. Chapter 3 needs that
 repeatedly — the derivative estimates involve `∇^k\Rm * ∇^j\Rm` for varying `k, j`,
@@ -221,7 +221,7 @@ right quantifier order.** For each shape there is a constant depending only on t
 dimension — namely `const n s` — bounding `|A * B| ≤ C|A||B|` for *every* metric,
 *every* pair of tensor fields and *every* point.
 
-This is the general form of
+This is the general form of TOP.CH02's
 `exists_uniform_normAt_curvatureEvolutionCorrection_le`, which is the case of the
 one eight-term shape appearing in Topping 2.5.1. Any expression exhibited as
 `s.eval` for a fixed `s` now gets its dimension-only constant with no bespoke

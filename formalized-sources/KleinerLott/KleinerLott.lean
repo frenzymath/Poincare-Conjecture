@@ -1,4 +1,5 @@
 import KleinerLott.Basic
+import KleinerLott.RicciFlow.SmoothRicciFlow
 
 /-!
 # Kleiner--Lott
@@ -6,8 +7,10 @@ import KleinerLott.Basic
 Lean entry point for the formalization of the dependency blueprint extracted
 from Kleiner and Lott's *Notes on Perelman's Papers*.
 
-The project is blueprint-first. No mathematical declarations have yet been
-formalized, so this module intentionally contains only the namespace scaffold.
+The project contains reusable scalar Ricci-flow point-selection infrastructure
+and a smooth Riemannian metric-family adapter. The adapter identifies the
+time-slice distance with Riemannian length distance and the selector score with
+the norm of the curvature tensor used in the Ricci-flow equation.
 -/
 
 namespace KleinerLott

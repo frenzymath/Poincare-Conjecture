@@ -11,10 +11,10 @@ Proposition 3.2.10 needs rests on one identity applied twice:
 
 `X⟨A,B⟩ = ⟨∇_XA,B⟩ + ⟨A,∇_XB⟩`.
 
-This module proves it. The obstruction was that `tensorInnerAt` and `normSqAt`
-are *defined* by contracting
+This module proves it. The obstruction three previous sessions recorded (inbox
+I-0494) was that `tensorInnerAt` and `normSqAt` are *defined* by contracting
 against `stdOrthonormalBasis`, a per-point choice carrying no regularity, so the
-left-hand side could not be differentiated at all.
+left-hand side could not be differentiated at all. TOP.CH02's
 `normSqAt_eq_sum_of_frame` removed that: the contraction may be computed in any
 orthonormal basis, in particular in a *smooth* local frame.
 
@@ -35,7 +35,8 @@ The frame is *not* assumed normal at `p`. A normal frame would make each `ω`
 vanish individually and is the textbook route; antisymmetry from metric
 compatibility is weaker and suffices, so that is what is used here.
 
-Two related results are worth noting. `PetersenLib.exercise2_5_19` constructs a normal frame, and
+Two pointers, because this is not the first proof of this fact in the workspace
+(inbox I-0511). `PetersenLib.exercise2_5_19` does construct a normal frame, and
 `PetersenLib.tensorFieldMetricInner_leibniz_orthonormal` proves this same Leibniz
 rule by the same involution. Neither is importable here — Topping's lakefile
 requires only `DoCarmoLib` and `MorganTianLib` — and both are stated in Petersen's
@@ -279,64 +280,6 @@ theorem dir_sum_mul_components {n k : ℕ} (F : Fin n → SmoothVectorField I M)
     ((hB v).mdifferentiableAt (by norm_num))]
   ring
 
-/-! ### Expanding one slot over the frame
-
-The Leibniz correction of `∇_XA` feeds `∇_XF_{v_i}` into slot `i`. To collect the
-corrections into the antisymmetric-times-symmetric shape, that argument is
-expanded over the frame: `∇_XF_j(p) = Σ_m ⟨∇_XF_j, F_m⟩(p) · F_m(p)`, and
-multilinearity pulls the sum out of the slot. -/
-
-omit [CompleteSpace E] [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
-/-- **Math.** **Expanding a slot's argument over an orthonormal basis.** For a
-pointwise multilinear `A` and an orthonormal basis `e` of `T_pM`,
-`A(…, w, …) = Σ_m ⟨e_m, w⟩ · A(…, e_m, …)` in any single slot `i`.
-
-This is `IsPointwiseMultilinear` doing the work it was defined for: the value is
-linear in slot `i`, so substituting the orthonormal expansion of `w` and
-distributing gives the sum. -/
-theorem pointwiseValue_expand_slot (g : RiemannianMetric I M) {k : ℕ}
-    {A : CovTensorField I M k} {p : M} (hA : IsPointwiseMultilinear A p)
-    (i : Fin k) (v : Fin k → TangentSpace I p) (w : TangentSpace I p)
-    {ι : Type*} [Fintype ι]
-    (e : letI : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
-        ⟨g.toRiemannianMetric⟩
-      OrthonormalBasis ι ℝ (TangentSpace I p)) :
-    letI : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
-      ⟨g.toRiemannianMetric⟩
-    pointwiseValue A p (Function.update v i w)
-      = ∑ m, g.metricInner p (e m) w *
-          pointwiseValue A p (Function.update v i (e m)) := by
-  classical
-  letI : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
-    ⟨g.toRiemannianMetric⟩
-  -- rewrite `w` as its orthonormal expansion and pull the finite sum out of the slot
-  have hexp : w = ∑ m, (inner ℝ (e m) w) • (e m : TangentSpace I p) := by
-    have hcoef : ∀ m, (inner ℝ (e m) w) • (e m : TangentSpace I p)
-        = (e.repr w).ofLp m • e m := fun m => by rw [e.repr_apply_apply w m]
-    rw [Finset.sum_congr rfl fun m _ => hcoef m]
-    exact (e.sum_repr w).symm
-  have hsum : ∀ (s : Finset _) (c : _ → ℝ),
-      pointwiseValue A p (Function.update v i (∑ m ∈ s, c m • (e m : TangentSpace I p)))
-        = ∑ m ∈ s, c m * pointwiseValue A p (Function.update v i (e m)) := by
-    intro s c
-    induction s using Finset.induction_on with
-    | empty =>
-        rw [Finset.sum_empty, Finset.sum_empty]
-        have h0 : pointwiseValue A p (Function.update v i (0 : TangentSpace I p))
-            = 0 := by
-          have h := hA.smul i v 0 (0 : TangentSpace I p)
-          rw [zero_smul] at h
-          simpa using h
-        exact h0
-    | insert a t ha IH =>
-        rw [Finset.sum_insert ha, hA.add i v _ _, IH, Finset.sum_insert ha,
-          hA.smul i v (c a) (e a)]
-  have hbridge : ∀ m, g.metricInner p (e m) w = inner ℝ (e m) w := fun m =>
-    (MorganTianLib.inner_tangentSpace_eq_metricInner g p (e m) w).symm
-  rw [Finset.sum_congr rfl (fun m (_ : m ∈ Finset.univ) => by rw [hbridge m])]
-  conv_lhs => rw [hexp]
-  rw [hsum Finset.univ (fun m => inner ℝ (e m) w)]
-
 /-! ### The Leibniz rule, in frame components
 
 Everything is now in place. Fix a frame `F` orthonormal near `p` and write
@@ -511,16 +454,10 @@ back into `tensorInnerAt` needs `tensorInnerAt_eq_sum_of_frame` three times — 
 for `⟨A,B⟩` and once for each of `⟨∇_XA,B⟩`, `⟨A,∇_XB⟩` — and the latter two
 require `∇_XA` and `∇_XB` to be **pointwise multilinear at `p`**.
 
-That is true and standard (it is exactly what the Leibniz correction in
-`covDerivAlong` is there to achieve: `∇_XA` is `C^∞(M)`-linear in each slot, hence
-tensorial), but it is **not proved in this project** — `CurvatureMultilinear.lean`
-supplies witnesses for `\Rm`, `\Ric` and `g` only, and none for a covariant
-derivative. Deriving it needs `∇_X(fY) = f∇_XY + X(f)Y` together with a bump-function
-argument to get from `C^∞`-linearity to pointwise tensoriality.
-
-So the statement below carries it as a named hypothesis. This is an implication with
-one open antecedent, not a closed result, and the antecedent is named rather than
-hidden inside a `simp`. -/
+The general statement below carries those two facts explicitly. For the curvature
+tensor, `CurvatureMultilinear.lean` now supplies both the first and iterated
+covariant-derivative witnesses, so the specialized consequences later in this file
+are unconditional. -/
 
 /-- **Math.** **The Leibniz rule for the metric pairing, basis-free:**
 `X⟨A,B⟩ = ⟨∇_XA,B⟩ + ⟨A,∇_XB⟩` at `p`.
@@ -528,8 +465,8 @@ hidden inside a `simp`. -/
 The frame-component form is `dir_tensorInner_frame_leibniz`; this converts both
 sides using `tensorInnerAt_eq_sum_of_frame`. The two hypotheses `hdA`, `hdB` —
 pointwise multilinearity of the covariant derivatives — are the price of that
-conversion and are **open** in this project (see the section docstring). Everything
-else is proved, including the cancellation of the cross terms and `hpair`, which
+conversion in this general lemma. Everything else is proved, including the
+cancellation of the cross terms and `hpair`, which
 `eventually_tensorInnerAt_eq_frame_sum` below discharges. -/
 theorem dir_tensorInnerAt_leibniz (g : RiemannianMetric I M) {k : ℕ}
     {A B : CovTensorField I M k} {p : M} (X : SmoothVectorField I M)
@@ -581,7 +518,7 @@ theorem dir_tensorInnerAt_leibniz (g : RiemannianMetric I M) {k : ℕ}
 
 `dir_tensorInnerAt_leibniz` takes `hpair`: that `⟨A,B⟩` agrees with the frame sum
 on a *neighbourhood* of `p`, not merely at `p`. That is a second antecedent, and
-`exists_smooth_frame_normSqAt` does not supply it — that theorem is
+TOP.CH02's `exists_smooth_frame_normSqAt` does not supply it — that theorem is
 about `normSqAt`, one field, and the eventual equality it produces is guarded by
 `IsPointwiseMultilinear A q` at each nearby `q`.
 
@@ -635,6 +572,25 @@ theorem eventually_tensorInnerAt_eq_frame_sum (g : RiemannianMetric I M) {k : �
     exact MorganTianLib.frameOrthonormalBasis_apply (I := I) g hq (v j)
   rw [hframe _ (hAm q).tensorial, hframe _ (hBm q).tensorial]
 
+/-- **Math.** The metric contraction of two smooth covariant tensor fields is a
+smooth scalar function.  A smooth local orthonormal frame turns the contraction
+near each point into a finite sum of products of smooth component functions. -/
+theorem tensorInnerAt_contMDiff (g : RiemannianMetric I M) {k : ℕ}
+    {A B : CovTensorField I M k}
+    (hAm : ∀ q : M, IsPointwiseMultilinear A q)
+    (hBm : ∀ q : M, IsPointwiseMultilinear B q)
+    (hA : HasSmoothComponents A) (hB : HasSmoothComponents B) :
+    ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun q => tensorInnerAt g A B q) := by
+  intro p
+  obtain ⟨F, hF⟩ := MorganTianLib.exists_orthonormalFrame (I := I) g p
+  have hs : ContMDiff I 𝓘(ℝ, ℝ) ∞
+      (fun q => ∑ v : Fin k → Fin (Module.finrank ℝ E),
+        A (fun j => F (v j)) q * B (fun j => F (v j)) q) :=
+    MorganTianLib.contMDiff_fun_sum fun v _ => (hA _).mul (hB _)
+  apply (hs p).congr_of_eventuallyEq
+  filter_upwards [eventually_tensorInnerAt_eq_frame_sum g hAm hBm hF] with q hq
+  exact hq
+
 /-! ### The consequence Bochner consumes -/
 
 /-- **Math.** **`X|A|^2 = 2⟨∇_XA, A⟩`.** The `A = B` case of the Leibniz rule,
@@ -670,11 +626,9 @@ theorem dir_normSqAt_eq_two_mul_tensorInnerAt (g : RiemannianMetric I M) {k : �
 
 The instance Proposition 3.2.10 needs. `\Rm` has all the general hypotheses
 witnessed — `isPointwiseMultilinear_riemannTensorField` for multilinearity at every
-point, `MorganTianLib.exists_orthonormalFrame` for the frame, and
-`curvatureForm_contMDiff` (via `HasSmoothComponents`) for the components — so the
-only thing the caller still owes is multilinearity of `∇_X\Rm`. Stating it here,
-rather than leaving the general lemma to be instantiated later, is what keeps this
-module from being an orphan. -/
+point, `MorganTianLib.exists_orthonormalFrame` for the frame,
+`curvatureForm_contMDiff` (via `HasSmoothComponents`) for the components, and the
+curvature-specific covariant-derivative producer from `CurvatureMultilinear.lean`. -/
 
 /-- **Math.** **`\Rm` has smooth components.** Evaluating the curvature `4`-tensor
 field on smooth vector fields gives a smooth function: `\Rm(X,Y,Z,W)` *is* the
@@ -694,26 +648,37 @@ theorem hasSmoothComponents_riemannTensorField (g : RiemannianMetric I M) :
   exact MorganTianLib.curvatureForm_contMDiff g g.leviCivitaConnection
     (Y 0) (Y 1) (Y 2) (Y 3)
 
-/-- **Math.** **`X|\Rm|^2 = 2⟨∇_X\Rm, \Rm⟩`.** The Leibniz rule at the curvature
-tensor, with every hypothesis discharged except multilinearity of `∇_X\Rm`.
+/-- **Math.** The squared norm of the curvature tensor of a fixed metric is
+smooth in the base point. This is an unconditional producer: smooth curvature
+components and pointwise multilinearity feed the smooth metric contraction. -/
+theorem riemannNormAt_sq_contMDiff (g : RiemannianMetric I M) :
+    ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun q => riemannNormAt g q ^ 2) := by
+  have hbridge : riemannCovTensorField g = riemannTensorField g := rfl
+  simpa only [riemannNormAt_sq, hbridge, tensorInnerAt_self] using
+    (tensorInnerAt_contMDiff g
+      (isPointwiseMultilinear_riemannTensorField g)
+      (isPointwiseMultilinear_riemannTensorField g)
+      (hasSmoothComponents_riemannTensorField g)
+      (hasSmoothComponents_riemannTensorField g))
 
-Everything except `hdRm` is *produced* here rather than assumed:
+/-- **Math.** **`X|\Rm|^2 = 2⟨∇_X\Rm, \Rm⟩`.** The Leibniz rule at the curvature
+tensor, with every tensoriality and smoothness hypothesis discharged.
+
 `exists_orthonormalFrame` gives the frame, `eventually_tensorInnerAt_eq_frame_sum`
 the frame-sum identity, `isPointwiseMultilinear_riemannTensorField` the
-multilinearity, and `hasSmoothComponents_riemannTensorField` the smoothness. So
-`hdRm` — multilinearity of `∇_X\Rm` — is the **single** hypothesis this statement
-carries and remains to be discharged. -/
+multilinearity of `\Rm`, `isPointwiseMultilinear_covDerivAlong_riemannTensorField`
+the multilinearity of `∇_X\Rm`, and `hasSmoothComponents_riemannTensorField`
+the smoothness. -/
 theorem dir_riemannNormSq_eq_two_mul_tensorInnerAt (g : RiemannianMetric I M)
-    (p : M) (X : SmoothVectorField I M)
-    (hdRm : IsPointwiseMultilinear
-      (covDerivAlong g.leviCivitaConnection X (riemannTensorField g)) p) :
+    (p : M) (X : SmoothVectorField I M) :
     X.dir (fun q => normSqAt g (riemannTensorField g) q) p
       = 2 * tensorInnerAt g
           (covDerivAlong g.leviCivitaConnection X (riemannTensorField g))
           (riemannTensorField g) p := by
   obtain ⟨F, hF⟩ := MorganTianLib.exists_orthonormalFrame (I := I) g p
   exact dir_normSqAt_eq_two_mul_tensorInnerAt g X
-    (isPointwiseMultilinear_riemannTensorField g) hdRm hF
+    (isPointwiseMultilinear_riemannTensorField g)
+    (isPointwiseMultilinear_covDerivAlong_riemannTensorField g X p) hF
     (fun v => hasSmoothComponents_riemannTensorField g _)
     (eventually_tensorInnerAt_eq_frame_sum g
       (isPointwiseMultilinear_riemannTensorField g)
@@ -727,9 +692,7 @@ restatement and not a second theorem — it exists so that
 `CurvatureNormEvolution.lean` can consume the Leibniz rule without unfolding
 `riemannNormAt` by hand. -/
 theorem dir_riemannNormAt_sq (g : RiemannianMetric I M) (p : M)
-    (X : SmoothVectorField I M)
-    (hdRm : IsPointwiseMultilinear
-      (covDerivAlong g.leviCivitaConnection X (riemannTensorField g)) p) :
+    (X : SmoothVectorField I M) :
     X.dir (fun q => riemannNormAt g q ^ 2) p
       = 2 * tensorInnerAt g
           (covDerivAlong g.leviCivitaConnection X (riemannTensorField g))
@@ -741,7 +704,72 @@ theorem dir_riemannNormAt_sq (g : RiemannianMetric I M) (p : M)
     have hbridge : riemannCovTensorField g = riemannTensorField g := rfl
     rw [riemannNormAt, normAt_sq, hbridge]
   rw [hfun]
-  exact dir_riemannNormSq_eq_two_mul_tensorInnerAt g p X hdRm
+  exact dir_riemannNormSq_eq_two_mul_tensorInnerAt g p X
+
+/-- **Math.** Differentiating the pairing `⟨∇_Y Rm, Rm⟩` gives the two
+covariant-derivative terms.  All tensoriality and regularity antecedents are
+witnessed by the curvature producers above. -/
+theorem dir_covDerivAlong_riemannTensorInnerAt (g : RiemannianMetric I M)
+    (p : M) (X Y : SmoothVectorField I M) :
+    X.dir (fun q => tensorInnerAt g
+        (covDerivAlong g.leviCivitaConnection Y (riemannTensorField g))
+        (riemannTensorField g) q) p =
+      tensorInnerAt g
+          (covDerivAlong g.leviCivitaConnection X
+            (covDerivAlong g.leviCivitaConnection Y (riemannTensorField g)))
+          (riemannTensorField g) p
+        + tensorInnerAt g
+          (covDerivAlong g.leviCivitaConnection Y (riemannTensorField g))
+          (covDerivAlong g.leviCivitaConnection X (riemannTensorField g)) p := by
+  obtain ⟨F, hF⟩ := MorganTianLib.exists_orthonormalFrame (I := I) g p
+  exact dir_tensorInnerAt_leibniz g X
+    (isPointwiseMultilinear_covDerivAlong_riemannTensorField g Y p)
+    (isPointwiseMultilinear_riemannTensorField g p)
+    (isPointwiseMultilinear_covDerivAlong_covDerivAlong_riemannTensorField
+      g Y X p)
+    (isPointwiseMultilinear_covDerivAlong_riemannTensorField g X p) hF
+    (fun _ => (hasSmoothComponents_riemannTensorField g).covDerivAlong
+      g.leviCivitaConnection Y _)
+    (fun _ => hasSmoothComponents_riemannTensorField g _)
+    (eventually_tensorInnerAt_eq_frame_sum g
+      (isPointwiseMultilinear_covDerivAlong_riemannTensorField g Y)
+      (isPointwiseMultilinear_riemannTensorField g) hF)
+
+/-- **Math.** The Hessian of `|Rm|²` in one direction is
+`2|∇_X Rm|² + 2⟨∇²_{X,X}Rm,Rm⟩`.  This is the untraced Bochner
+identity; tracing it produces the rough-Laplacian formula. -/
+theorem hessian_riemannNormAt_sq (g : RiemannianMetric I M) (p : M)
+    (X : SmoothVectorField I M) :
+    MorganTianLib.hessian g.leviCivitaConnection
+        (fun q => riemannNormAt g q ^ 2) X X p =
+      2 * tensorInnerAt g
+          (covDerivAlong g.leviCivitaConnection X (riemannTensorField g))
+          (covDerivAlong g.leviCivitaConnection X (riemannTensorField g)) p
+        + 2 * tensorInnerAt g
+          (secondCovDerivAlong g.leviCivitaConnection X X (riemannTensorField g))
+          (riemannTensorField g) p := by
+  have hfirst : X.dir (fun q => riemannNormAt g q ^ 2) = fun q =>
+      2 * tensorInnerAt g
+        (covDerivAlong g.leviCivitaConnection X (riemannTensorField g))
+        (riemannTensorField g) q := by
+    funext q
+    exact dir_riemannNormAt_sq g q X
+  have hmd : MDifferentiableAt I 𝓘(ℝ, ℝ)
+      (fun q => tensorInnerAt g
+        (covDerivAlong g.leviCivitaConnection X (riemannTensorField g))
+        (riemannTensorField g) q) p :=
+    ((tensorInnerAt_contMDiff g
+      (isPointwiseMultilinear_covDerivAlong_riemannTensorField g X)
+      (isPointwiseMultilinear_riemannTensorField g)
+      ((hasSmoothComponents_riemannTensorField g).covDerivAlong
+        g.leviCivitaConnection X)
+      (hasSmoothComponents_riemannTensorField g)).mdifferentiable (by norm_num)) p
+  rw [MorganTianLib.hessian, hfirst, X.dir_const_mul 2 p hmd,
+    dir_covDerivAlong_riemannTensorInnerAt g p X X,
+    dir_riemannNormAt_sq g p (g.leviCivitaConnection.cov X X)]
+  simp only [secondCovDerivAlong, tensorInnerAt, sub_mul,
+    Finset.sum_sub_distrib]
+  ring
 
 end Topping
 

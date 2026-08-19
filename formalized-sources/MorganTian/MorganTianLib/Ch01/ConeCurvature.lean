@@ -45,6 +45,24 @@ omit [CompleteSpace E] [FiniteDimensional ℝ E] [IsManifold I ∞ N]
 
 omit [CompleteSpace E] [FiniteDimensional ℝ E] [IsManifold I ∞ N]
     [I.Boundaryless] [SigmaCompactSpace N] [T2Space N] in
+@[simp] theorem coneTangent_smul (x : N) (r : ↥positiveReal)
+    (c : ℝ) (u : TangentSpace I x) (a : ℝ) :
+    c • ((u, a) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) =
+      ((c • u, c • a) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) := by
+  rfl
+
+omit [CompleteSpace E] [FiniteDimensional ℝ E] [IsManifold I ∞ N]
+    [I.Boundaryless] [SigmaCompactSpace N] [T2Space N] in
+theorem coneTangent_ext (x : N) (r : ↥positiveReal)
+    {u v : TangentSpace I x} {a b : ℝ} (hu : u = v) (ha : a = b) :
+    ((u, a) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) =
+      ((v, b) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) := by
+  subst v
+  subst b
+  rfl
+
+omit [CompleteSpace E] [FiniteDimensional ℝ E] [IsManifold I ∞ N]
+    [I.Boundaryless] [SigmaCompactSpace N] [T2Space N] in
 @[simp] theorem coneTangent_fst (x : N) (r : ↥positiveReal)
     (u : TangentSpace I x) (a : ℝ) :
     (((u, a) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r))).1 = u := by
@@ -106,23 +124,50 @@ theorem coneLeviCivitaConnection_cov_horizontal_radialCorrection_apply
   unfold coneRadialCorrection
   rw [(coneLeviCivitaConnection g).leibniz,
     coneLeviCivitaConnection_cov_horizontal_radial]
-  simp only [coneInvRadiusHorizontal_apply, coneRadialField_apply,
-    coneHorizontalLift_dir_radialCorrectionScalar]
-  rw [Prod.smul_mk, Prod.smul_mk, Prod.mk_add_mk]
-  simp only [coneRadius, smul_zero, add_zero, zero_add]
-  rw [smul_smul]
+  simp only [coneInvRadiusHorizontal_apply, coneRadialField_apply]
+  rw [coneHorizontalLift_dir_radialCorrectionScalar]
+  simp only [coneRadius]
   have hcoeff :
       (-((r : ℝ) * g.metricInner x (X x) (Z x))) * (r : ℝ)⁻¹ =
         -(g.metricInner x (X x) (Z x)) := by
     field_simp [ne_of_gt (positiveReal_mem r)]
-  with_unfolding_all
-    change
-      (((-((r : ℝ) * g.metricInner x (X x) (Z x))) * (r : ℝ)⁻¹) • A x,
-        (-(r : ℝ) * A.dir (fun p => g.metricInner p (X p) (Z p)) x) • 1) =
-      (-(g.metricInner x (X x) (Z x)) • A x,
-        -(r : ℝ) * A.dir (fun p => g.metricInner p (X p) (Z p)) x)
-  rw [hcoeff]
-  simp
+  calc
+    _ = (((-((r : ℝ) * g.metricInner x (X x) (Z x))) •
+            ((r : ℝ)⁻¹ • A x),
+          (-((r : ℝ) * g.metricInner x (X x) (Z x))) • (0 : ℝ)) :
+          TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) +
+        (((-(r : ℝ) * A.dir (fun p => g.metricInner p (X p) (Z p)) x) •
+            (0 : TangentSpace I x),
+          (-(r : ℝ) * A.dir (fun p => g.metricInner p (X p) (Z p)) x) •
+            (1 : ℝ)) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) :=
+      congrArg₂
+        (fun u v : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r) => u + v)
+        (coneTangent_smul (I := I) x r
+          (-((r : ℝ) * g.metricInner x (X x) (Z x)))
+          ((r : ℝ)⁻¹ • A x) 0)
+        (coneTangent_smul (I := I) x r
+          (-(r : ℝ) * A.dir (fun p => g.metricInner p (X p) (Z p)) x)
+          0 1)
+    _ = (((-((r : ℝ) * g.metricInner x (X x) (Z x))) •
+              ((r : ℝ)⁻¹ • A x) +
+            (-(r : ℝ) * A.dir (fun p => g.metricInner p (X p) (Z p)) x) •
+              (0 : TangentSpace I x),
+          (-((r : ℝ) * g.metricInner x (X x) (Z x))) • (0 : ℝ) +
+            (-(r : ℝ) * A.dir (fun p => g.metricInner p (X p) (Z p)) x) • 1) :
+          TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) :=
+      coneTangent_add (I := I) x r
+        ((-((r : ℝ) * g.metricInner x (X x) (Z x))) •
+          ((r : ℝ)⁻¹ • A x))
+        ((-(r : ℝ) * A.dir (fun p => g.metricInner p (X p) (Z p)) x) •
+          (0 : TangentSpace I x))
+        ((-((r : ℝ) * g.metricInner x (X x) (Z x))) • (0 : ℝ))
+        ((-(r : ℝ) * A.dir (fun p => g.metricInner p (X p) (Z p)) x) •
+          (1 : ℝ))
+    _ = _ := by
+      apply coneTangent_ext (I := I) x r
+      · rw [smul_smul, hcoeff]
+        module
+      · simp
 
 /-- **Math.** The horizontal part of the cone curvature is the base curvature minus the
 constant-curvature-one correction.  This uses DoCarmoLib's `(1,3)` sign
@@ -136,28 +181,190 @@ theorem coneCurvature_horizontal_horizontal_horizontal_apply
           - g.metricInner x (X x) (Z x) • Y x
           + g.metricInner x (Y x) (Z x) • X x,
         0) := by
-  rw [(coneLeviCivitaConnection g).curvature_apply,
-    coneLeviCivitaConnection_cov_horizontal_horizontal g X Z,
-    coneLeviCivitaConnection_cov_horizontal_horizontal g Y Z,
-    (coneLeviCivitaConnection g).add_right,
-    (coneLeviCivitaConnection g).add_right,
-    coneLeviCivitaConnection_cov_horizontal_horizontal g Y
-      ((leviCivitaConnectionGeneral g).cov X Z),
-    coneLeviCivitaConnection_cov_horizontal_horizontal g X
-      ((leviCivitaConnectionGeneral g).cov Y Z),
-    bracketField_coneHorizontalLift_coneHorizontalLift,
-    coneLeviCivitaConnection_cov_horizontal_horizontal g (bracketField X Y) Z,
-    (leviCivitaConnectionGeneral g).curvature_apply]
-  simp only [SmoothVectorField.add_apply]
-  erw [coneLeviCivitaConnection_cov_horizontal_radialCorrection_apply g Y X Z,
-    coneLeviCivitaConnection_cov_horizontal_radialCorrection_apply g X Y Z]
-  simp only [coneHorizontalLift_apply, coneRadialCorrection_apply]
-  erw [coneTangent_add (I := I) x r,
-    coneTangent_add (I := I) x r,
-    coneTangent_add (I := I) x r]
-  apply Prod.ext
-  · module
-  · have hcompat := (leviCivitaConnectionGeneral_isLeviCivita g).2
+  let aH : TangentSpace I x :=
+    ((leviCivitaConnectionGeneral g).cov Y
+      ((leviCivitaConnectionGeneral g).cov X Z)) x +
+      -(g.metricInner x (X x) (Z x)) • Y x
+  let aR : ℝ :=
+    (-(r : ℝ) * g.metricInner x (Y x)
+      (((leviCivitaConnectionGeneral g).cov X Z) x)) +
+      (-(r : ℝ) * Y.dir (fun p => g.metricInner p (X p) (Z p)) x)
+  let bH : TangentSpace I x :=
+    ((leviCivitaConnectionGeneral g).cov X
+      ((leviCivitaConnectionGeneral g).cov Y Z)) x +
+      -(g.metricInner x (Y x) (Z x)) • X x
+  let bR : ℝ :=
+    (-(r : ℝ) * g.metricInner x (X x)
+      (((leviCivitaConnectionGeneral g).cov Y Z) x)) +
+      (-(r : ℝ) * X.dir (fun p => g.metricInner p (Y p) (Z p)) x)
+  let cH : TangentSpace I x :=
+    ((leviCivitaConnectionGeneral g).cov (bracketField X Y) Z) x
+  let cR : ℝ :=
+    -(r : ℝ) * g.metricInner x ((bracketField X Y) x) (Z x)
+  let aT : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r) := (aH, aR)
+  let bT : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r) := (bH, bR)
+  let cT : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r) := (cH, cR)
+  let dT : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r) :=
+    (aH - bH, aR - bR)
+  let outT : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r) :=
+    (aH - bH + cH, aR - bR + cR)
+  have hA :
+      ((coneLeviCivitaConnection g).cov (coneHorizontalLift Y)
+        ((coneLeviCivitaConnection g).cov (coneHorizontalLift X)
+          (coneHorizontalLift Z))) (x, r) = aT := by
+    have hAraw :
+        ((coneLeviCivitaConnection g).cov (coneHorizontalLift Y)
+          ((coneLeviCivitaConnection g).cov (coneHorizontalLift X)
+            (coneHorizontalLift Z))) (x, r) =
+          ((((leviCivitaConnectionGeneral g).cov Y
+                ((leviCivitaConnectionGeneral g).cov X Z)) x,
+              -(r : ℝ) * g.metricInner x (Y x)
+                (((leviCivitaConnectionGeneral g).cov X Z) x)) :
+            TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) +
+          ((-(g.metricInner x (X x) (Z x)) • Y x,
+              -(r : ℝ) *
+                Y.dir (fun p => g.metricInner p (X p) (Z p)) x) :
+            TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) := by
+      calc
+        _ = ((coneLeviCivitaConnection g).cov (coneHorizontalLift Y)
+            (coneHorizontalLift ((leviCivitaConnectionGeneral g).cov X Z) +
+              coneRadialCorrection g X Z)) (x, r) :=
+          congrArg
+            (fun V => ((coneLeviCivitaConnection g).cov
+              (coneHorizontalLift Y) V) (x, r))
+            (coneLeviCivitaConnection_cov_horizontal_horizontal g X Z)
+        _ = (((coneLeviCivitaConnection g).cov (coneHorizontalLift Y)
+              (coneHorizontalLift ((leviCivitaConnectionGeneral g).cov X Z))) +
+            ((coneLeviCivitaConnection g).cov (coneHorizontalLift Y)
+              (coneRadialCorrection g X Z))) (x, r) :=
+          congrArg (fun V => V (x, r))
+            ((coneLeviCivitaConnection g).add_right (coneHorizontalLift Y)
+              (coneHorizontalLift ((leviCivitaConnectionGeneral g).cov X Z))
+              (coneRadialCorrection g X Z))
+        _ = ((((leviCivitaConnectionGeneral g).cov Y
+                ((leviCivitaConnectionGeneral g).cov X Z)) x,
+              -(r : ℝ) * g.metricInner x (Y x)
+                (((leviCivitaConnectionGeneral g).cov X Z) x)) :
+            TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) +
+          ((-(g.metricInner x (X x) (Z x)) • Y x,
+              -(r : ℝ) *
+                Y.dir (fun p => g.metricInner p (X p) (Z p)) x) :
+            TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) := by
+          rw [SmoothVectorField.add_apply,
+            coneLeviCivitaConnection_cov_horizontal_horizontal_apply,
+            coneLeviCivitaConnection_cov_horizontal_radialCorrection_apply] <;>
+            with_unfolding_all rfl
+    have hAadd :
+        ((((leviCivitaConnectionGeneral g).cov Y
+              ((leviCivitaConnectionGeneral g).cov X Z)) x,
+            -(r : ℝ) * g.metricInner x (Y x)
+              (((leviCivitaConnectionGeneral g).cov X Z) x)) :
+          TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) +
+        ((-(g.metricInner x (X x) (Z x)) • Y x,
+            -(r : ℝ) * Y.dir (fun p => g.metricInner p (X p) (Z p)) x) :
+          TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) = aT := by
+      dsimp only [aT, aH, aR]
+      exact coneTangent_add (I := I) x r
+        (((leviCivitaConnectionGeneral g).cov Y
+          ((leviCivitaConnectionGeneral g).cov X Z)) x)
+        (-(g.metricInner x (X x) (Z x)) • Y x)
+        (-(r : ℝ) * g.metricInner x (Y x)
+          (((leviCivitaConnectionGeneral g).cov X Z) x))
+        (-(r : ℝ) * Y.dir (fun p => g.metricInner p (X p) (Z p)) x)
+    exact hAraw.trans hAadd
+  have hB :
+      ((coneLeviCivitaConnection g).cov (coneHorizontalLift X)
+        ((coneLeviCivitaConnection g).cov (coneHorizontalLift Y)
+          (coneHorizontalLift Z))) (x, r) = bT := by
+    have hBraw :
+        ((coneLeviCivitaConnection g).cov (coneHorizontalLift X)
+          ((coneLeviCivitaConnection g).cov (coneHorizontalLift Y)
+            (coneHorizontalLift Z))) (x, r) =
+          ((((leviCivitaConnectionGeneral g).cov X
+                ((leviCivitaConnectionGeneral g).cov Y Z)) x,
+              -(r : ℝ) * g.metricInner x (X x)
+                (((leviCivitaConnectionGeneral g).cov Y Z) x)) :
+            TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) +
+          ((-(g.metricInner x (Y x) (Z x)) • X x,
+              -(r : ℝ) *
+                X.dir (fun p => g.metricInner p (Y p) (Z p)) x) :
+            TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) := by
+      calc
+        _ = ((coneLeviCivitaConnection g).cov (coneHorizontalLift X)
+            (coneHorizontalLift ((leviCivitaConnectionGeneral g).cov Y Z) +
+              coneRadialCorrection g Y Z)) (x, r) :=
+          congrArg
+            (fun V => ((coneLeviCivitaConnection g).cov
+              (coneHorizontalLift X) V) (x, r))
+            (coneLeviCivitaConnection_cov_horizontal_horizontal g Y Z)
+        _ = (((coneLeviCivitaConnection g).cov (coneHorizontalLift X)
+              (coneHorizontalLift ((leviCivitaConnectionGeneral g).cov Y Z))) +
+            ((coneLeviCivitaConnection g).cov (coneHorizontalLift X)
+              (coneRadialCorrection g Y Z))) (x, r) :=
+          congrArg (fun V => V (x, r))
+            ((coneLeviCivitaConnection g).add_right (coneHorizontalLift X)
+              (coneHorizontalLift ((leviCivitaConnectionGeneral g).cov Y Z))
+              (coneRadialCorrection g Y Z))
+        _ = ((((leviCivitaConnectionGeneral g).cov X
+                ((leviCivitaConnectionGeneral g).cov Y Z)) x,
+              -(r : ℝ) * g.metricInner x (X x)
+                (((leviCivitaConnectionGeneral g).cov Y Z) x)) :
+            TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) +
+          ((-(g.metricInner x (Y x) (Z x)) • X x,
+              -(r : ℝ) *
+                X.dir (fun p => g.metricInner p (Y p) (Z p)) x) :
+            TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) := by
+          rw [SmoothVectorField.add_apply,
+            coneLeviCivitaConnection_cov_horizontal_horizontal_apply,
+            coneLeviCivitaConnection_cov_horizontal_radialCorrection_apply] <;>
+            with_unfolding_all rfl
+    have hBadd :
+        ((((leviCivitaConnectionGeneral g).cov X
+              ((leviCivitaConnectionGeneral g).cov Y Z)) x,
+            -(r : ℝ) * g.metricInner x (X x)
+              (((leviCivitaConnectionGeneral g).cov Y Z) x)) :
+          TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) +
+        ((-(g.metricInner x (Y x) (Z x)) • X x,
+            -(r : ℝ) * X.dir (fun p => g.metricInner p (Y p) (Z p)) x) :
+          TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) = bT := by
+      dsimp only [bT, bH, bR]
+      exact coneTangent_add (I := I) x r
+        (((leviCivitaConnectionGeneral g).cov X
+          ((leviCivitaConnectionGeneral g).cov Y Z)) x)
+        (-(g.metricInner x (Y x) (Z x)) • X x)
+        (-(r : ℝ) * g.metricInner x (X x)
+          (((leviCivitaConnectionGeneral g).cov Y Z) x))
+        (-(r : ℝ) * X.dir (fun p => g.metricInner p (Y p) (Z p)) x)
+    exact hBraw.trans hBadd
+  have hC :
+      ((coneLeviCivitaConnection g).cov
+        (bracketField (coneHorizontalLift X) (coneHorizontalLift Y))
+        (coneHorizontalLift Z)) (x, r) = cT := by
+    rw [bracketField_coneHorizontalLift_coneHorizontalLift,
+      coneLeviCivitaConnection_cov_horizontal_horizontal_apply] <;>
+      dsimp only [cT, cH, cR] <;>
+      with_unfolding_all rfl
+  have hAB := congrArg₂
+    (fun u v : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r) => u - v) hA hB
+  have hABC := congrArg₂
+    (fun u v : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r) => u + v) hAB hC
+  have hSub : aT - bT = dT := by
+    dsimp only [aT, bT, dT]
+    exact coneTangent_sub (I := I) x r aH bH aR bR
+  have hAdd : dT + cT = outT := by
+    dsimp only [dT, cT, outT]
+    exact coneTangent_add (I := I) x r (aH - bH) cH (aR - bR) cR
+  have hH :
+      aH - bH + cH =
+        ((leviCivitaConnectionGeneral g).curvature X Y Z) x -
+          g.metricInner x (X x) (Z x) • Y x +
+          g.metricInner x (Y x) (Z x) • X x := by
+    dsimp only [aH, bH, cH]
+    rw [(leviCivitaConnectionGeneral g).curvature_apply]
+    module
+  have hR : aR - bR + cR = 0 := by
+    dsimp only [aR, bR, cR]
+    have hcompat := (leviCivitaConnectionGeneral_isLeviCivita g).2
     have hYXZ := hcompat Y X Z x
     have hXYZ := hcompat X Y Z x
     have hsym := (leviCivitaConnectionGeneral_isLeviCivita g).1 X Y x
@@ -167,6 +374,31 @@ theorem coneCurvature_horizontal_horizontal_horizontal_apply
     linear_combination
       -(r : ℝ) * hYXZ + (r : ℝ) * hXYZ +
         (r : ℝ) * hsym_inner
+  have hOut :
+      outT =
+        ((((leviCivitaConnectionGeneral g).curvature X Y Z) x -
+            g.metricInner x (X x) (Z x) • Y x +
+            g.metricInner x (Y x) (Z x) • X x, 0) :
+          TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) := by
+    dsimp only [outT]
+    exact congrArg₂
+      (fun u : TangentSpace I x => fun s : ℝ =>
+        ((u, s) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r))) hH hR
+  calc
+    _ = ((coneLeviCivitaConnection g).cov (coneHorizontalLift Y)
+          ((coneLeviCivitaConnection g).cov (coneHorizontalLift X)
+            (coneHorizontalLift Z))) (x, r) -
+        ((coneLeviCivitaConnection g).cov (coneHorizontalLift X)
+          ((coneLeviCivitaConnection g).cov (coneHorizontalLift Y)
+            (coneHorizontalLift Z))) (x, r) +
+        ((coneLeviCivitaConnection g).cov
+          (bracketField (coneHorizontalLift X) (coneHorizontalLift Y))
+          (coneHorizontalLift Z)) (x, r) :=
+      (coneLeviCivitaConnection g).curvature_apply _ _ _ _
+    _ = aT - bT + cT := hABC
+    _ = dT + cT := congrArg (fun q => q + cT) hSub
+    _ = outT := hAdd
+    _ = _ := hOut
 
 /-- **Math.** The all-horizontal component of the cone curvature form is
 `r²` times the base curvature form minus the metric exterior-square form. -/
@@ -283,13 +515,18 @@ def coneTangentHorizontalInclusion (x : N) (r : ↥positiveReal) :
     TangentSpace I x →ₗ[ℝ] TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r) where
   toFun u := (u, 0)
   map_add' u v := by
-    change ((u + v, (0 : ℝ)) : E × ℝ) = (u, 0) + (v, 0)
-    rw [Prod.mk_add_mk]
-    simp
+    calc
+      _ = ((u + v, (0 : ℝ) + 0) :
+          TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) :=
+        coneTangent_ext (I := I) x r rfl (add_zero 0).symm
+      _ = _ := (coneTangent_add (I := I) x r u v 0 0).symm
   map_smul' c u := by
-    change ((c • u, (0 : ℝ)) : E × ℝ) = c • (u, 0)
-    rw [Prod.smul_mk]
-    simp
+    apply Eq.symm
+    calc
+      _ = ((c • u, c • (0 : ℝ)) :
+          TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) :=
+        coneTangent_smul (I := I) x r c u 0
+      _ = _ := coneTangent_ext (I := I) x r rfl (smul_zero c)
 
 omit [CompleteSpace E] [FiniteDimensional ℝ E] [IsManifold I ∞ N]
     [I.Boundaryless] [SigmaCompactSpace N] [T2Space N] in
@@ -365,7 +602,9 @@ theorem coneWedgeInnerAt_horizontal_mixed
         (⇑(coneTangentHorizontalInclusion (I := I) x r) ∘ ![w 0, w 1]) =
           ![((w 0), (0 : ℝ)), ((w 1), (0 : ℝ))] := by
       funext i
-      fin_cases i <;> simp
+      fin_cases i
+      · exact coneTangentHorizontalInclusion_apply x r (w 0)
+      · exact coneTangentHorizontalInclusion_apply x r (w 1)
     rw [hmap]
     exact coneWedgeInnerAt_horizontal_mixed_generator g x r (w 0) (w 1) z
   have h := LinearMap.congr_fun hzero φ
@@ -427,9 +666,10 @@ theorem coneCurvatureOperatorAt_horizontal_tangent
         (ιMulti ℝ 2 ![(z, (0 : ℝ)), (w, (0 : ℝ))]) =
       (r : ℝ) ^ 2 * coneBaseCurvatureDifferenceAt g x
         (ιMulti ℝ 2 ![u, v]) (ιMulti ℝ 2 ![z, w]) := by
-  simpa only [coneHorizontalLift_apply, extendVector_apply] using
-    coneCurvatureOperatorAt_horizontal g
-      (extendVector x u) (extendVector x v) (extendVector x z) (extendVector x w) x r
+  have h := coneCurvatureOperatorAt_horizontal g
+    (extendVector x u) (extendVector x v) (extendVector x z) (extendVector x w) x r
+  simp only [coneHorizontalLift_apply, extendVector_apply] at h
+  with_unfolding_all exact h
 
 /-- **Math.** A horizontal cone bivector is curvature-orthogonal to every
 mixed radial bivector. -/
@@ -449,9 +689,10 @@ theorem coneCurvatureOperatorAt_horizontal_mixed_decomposable
           (u, 0) (v, 0) (z, 0) (0, 1) :=
       coneCurvatureOperatorAt_ιMulti g (x, r) _ _ _ _
     _ = 0 := by
-      simpa only [coneHorizontalLift_apply, coneRadialField_apply, extendVector_apply] using
-        coneCurvatureForm_horizontal_horizontal_horizontal_radial g
-          (extendVector x u) (extendVector x v) (extendVector x z) x r
+      have h := coneCurvatureForm_horizontal_horizontal_horizontal_radial g
+        (extendVector x u) (extendVector x v) (extendVector x z) x r
+      simp only [coneHorizontalLift_apply, coneRadialField_apply, extendVector_apply] at h
+      with_unfolding_all exact h
 
 set_option maxHeartbeats 4000000 in
 /-- **Math.** Canonical-splitting form of the horizontal-mixed vanishing
@@ -489,9 +730,10 @@ theorem coneCurvatureOperatorAt_mixed_horizontal_decomposable
         (coneLeviCivitaConnection g) (coneLeviCivitaConnection_isLeviCivita g)
         (x, r)).pairSwap _ _ _ _
     _ = 0 := by
-      simpa only [coneHorizontalLift_apply, coneRadialField_apply, extendVector_apply] using
-        coneCurvatureForm_horizontal_horizontal_horizontal_radial g
-          (extendVector x z) (extendVector x w) (extendVector x u) x r
+      have h := coneCurvatureForm_horizontal_horizontal_horizontal_radial g
+        (extendVector x z) (extendVector x w) (extendVector x u) x r
+      simp only [coneHorizontalLift_apply, coneRadialField_apply, extendVector_apply] at h
+      with_unfolding_all exact h
 
 set_option maxHeartbeats 4000000 in
 /-- **Math.** Canonical-splitting form of the mixed-horizontal vanishing
@@ -524,9 +766,10 @@ theorem coneCurvatureOperatorAt_mixed_mixed_decomposable
           (u, 0) (0, 1) (v, 0) (0, 1) :=
       coneCurvatureOperatorAt_ιMulti g (x, r) _ _ _ _
     _ = 0 := by
-      simpa only [coneHorizontalLift_apply, coneRadialField_apply, extendVector_apply] using
-        coneCurvatureForm_horizontal_radial_horizontal_radial g
-          (extendVector x u) (extendVector x v) x r
+      have h := coneCurvatureForm_horizontal_radial_horizontal_radial g
+        (extendVector x u) (extendVector x v) x r
+      simp only [coneHorizontalLift_apply, coneRadialField_apply, extendVector_apply] at h
+      with_unfolding_all exact h
 
 set_option maxHeartbeats 4000000 in
 /-- **Math.** Canonical-splitting form of the mixed-mixed vanishing component. -/
@@ -615,24 +858,57 @@ theorem coneCurvatureOperatorAt_eq_block
             ![((b 0).1, (0 : ℝ)), ((b 1).1, (0 : ℝ))] := by
         funext i
         fin_cases i <;> rfl
-      simp only [map_add, LinearMap.add_apply,
-        exteriorPower.map_apply_ιMulti]
+      simp only [exteriorPower.map_apply_ιMulti]
       rw [hmapa, hmapb]
-      have hhh := coneCurvatureOperatorAt_horizontal_tangent (I := I) g x r
-        (a 0).1 (a 1).1 (b 0).1 (b 1).1
-      have hhm := coneCurvatureOperatorAt_horizontal_mixed (I := I) g x r
-        (a 0).1 (a 1).1 ((b 1).2 • (b 0).1 - (b 0).2 • (b 1).1)
-      have hmh := coneCurvatureOperatorAt_mixed_horizontal (I := I) g x r
-        ((a 1).2 • (a 0).1 - (a 0).2 • (a 1).1) (b 0).1 (b 1).1
-      have hmm := coneCurvatureOperatorAt_mixed_mixed (I := I) g x r
-        ((a 1).2 • (a 0).1 - (a 0).2 • (a 1).1)
-        ((b 1).2 • (b 0).1 - (b 0).2 • (b 1).1)
-      simp only [hmm, add_zero]
+      let aH : ⋀[ℝ]^2 (TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) :=
+        ιMulti ℝ 2 ![((a 0).1, (0 : ℝ)), ((a 1).1, (0 : ℝ))]
+      let aM : ⋀[ℝ]^2 (TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) :=
+        coneWedgeMixed ((a 1).2 • (a 0).1 - (a 0).2 • (a 1).1)
+      let bH : ⋀[ℝ]^2 (TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) :=
+        ιMulti ℝ 2 ![((b 0).1, (0 : ℝ)), ((b 1).1, (0 : ℝ))]
+      let bM : ⋀[ℝ]^2 (TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, r)) :=
+        coneWedgeMixed ((b 1).2 • (b 0).1 - (b 0).2 • (b 1).1)
+      change coneCurvatureOperatorAt g (x, r) (aH + aM) (bH + bM) = _
+      have hhh : coneCurvatureOperatorAt g (x, r) aH bH =
+          (r : ℝ) ^ 2 * coneBaseCurvatureDifferenceAt g x
+            (ιMulti ℝ 2 ![(a 0).1, (a 1).1])
+            (ιMulti ℝ 2 ![(b 0).1, (b 1).1]) := by
+        have h := coneCurvatureOperatorAt_horizontal_tangent (I := I) g x r
+          (a 0).1 (a 1).1 (b 0).1 (b 1).1
+        with_unfolding_all exact h
+      have hhm : coneCurvatureOperatorAt g (x, r) aH bM = 0 := by
+        have h := coneCurvatureOperatorAt_horizontal_mixed (I := I) g x r
+          (a 0).1 (a 1).1 ((b 1).2 • (b 0).1 - (b 0).2 • (b 1).1)
+        with_unfolding_all exact h
+      have hmh : coneCurvatureOperatorAt g (x, r) aM bH = 0 := by
+        have h := coneCurvatureOperatorAt_mixed_horizontal (I := I) g x r
+          ((a 1).2 • (a 0).1 - (a 0).2 • (a 1).1) (b 0).1 (b 1).1
+        with_unfolding_all exact h
+      have hmm : coneCurvatureOperatorAt g (x, r) aM bM = 0 := by
+        have h := coneCurvatureOperatorAt_mixed_mixed (I := I) g x r
+          ((a 1).2 • (a 0).1 - (a 0).2 • (a 1).1)
+          ((b 1).2 • (b 0).1 - (b 0).2 • (b 1).1)
+        with_unfolding_all exact h
       calc
+        _ = (coneCurvatureOperatorAt g (x, r) aH +
+              coneCurvatureOperatorAt g (x, r) aM) (bH + bM) := by
+          exact congrArg (fun L => L (bH + bM))
+            ((coneCurvatureOperatorAt g (x, r)).map_add aH aM)
+        _ = coneCurvatureOperatorAt g (x, r) aH (bH + bM) +
+              coneCurvatureOperatorAt g (x, r) aM (bH + bM) := by
+          rw [LinearMap.add_apply]
+        _ = (coneCurvatureOperatorAt g (x, r) aH bH +
+                coneCurvatureOperatorAt g (x, r) aH bM) +
+              (coneCurvatureOperatorAt g (x, r) aM bH +
+                coneCurvatureOperatorAt g (x, r) aM bM) := by
+          exact congrArg₂ (· + ·)
+            ((coneCurvatureOperatorAt g (x, r) aH).map_add bH bM)
+            ((coneCurvatureOperatorAt g (x, r) aM).map_add bH bM)
         _ = ((r : ℝ) ^ 2 * coneBaseCurvatureDifferenceAt g x
               (ιMulti ℝ 2 ![(a 0).1, (a 1).1])
-              (ιMulti ℝ 2 ![(b 0).1, (b 1).1]) + 0) + 0 :=
-          congrArg₂ (· + ·) (congrArg₂ (· + ·) hhh hmh) hhm
+              (ιMulti ℝ 2 ![(b 0).1, (b 1).1]) + 0) + (0 + 0) :=
+          congrArg₂ (· + ·) (congrArg₂ (· + ·) hhh hhm)
+            (congrArg₂ (· + ·) hmh hmm)
         _ = _ := by simp only [add_zero]
 
 end ConeCurvature

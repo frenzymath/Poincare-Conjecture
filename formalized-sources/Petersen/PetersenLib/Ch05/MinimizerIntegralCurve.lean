@@ -7,7 +7,7 @@ import PetersenLib.Ch03.CurvatureCoordinates
 `rem:pet-ch5-minimizer-is-reparametrized-integral-curve`.
 
 `Ch05/DistanceRigidity.lean` already proves the remark
-(`distanceFunction_minimizer_eq_integralCurve_comp`), but carries an *extra*
+(`distanceFunction_minimizer_eq_integralCurve_comp_with_gradient`), but carries an *extra*
 hypothesis `hgrad`: that `∇r` is a `C¹` section of `TM` over `U`.  This file
 **discharges that hypothesis**, so the remark holds under exactly the book's
 hypotheses (`IsDistanceFunction g U r` and nothing more).
@@ -75,10 +75,25 @@ be a smooth curve realising the bound `L(c)|_a^b = r(c(b)) − r(c(a))`, put
 Then `c = σ ∘ φ` on `[a,b]`: a curve realising the bound is a reparametrisation of
 an integral curve of `∇r`.
 
-This is `distanceFunction_minimizer_eq_integralCurve_comp` with the `C¹`-section
+This is `distanceFunction_minimizer_eq_integralCurve_comp_with_gradient` with the `C¹`-section
 side condition on `∇r` discharged via `gradient_contMDiffOn_of_contMDiffOn`; the
 smoothness of `r` on `U` recorded in `IsDistanceFunction` is all that is needed.
 As in the book, the integral curve `σ` is *hypothesised*, not constructed. -/
+theorem distanceFunction_minimizer_eq_integralCurve_comp
+    {g : RiemannianMetric I M}
+    {U : Set M} (hU : IsOpen U) {r : M → ℝ} (hr : IsDistanceFunction g U r)
+    {c : ℝ → M} {a b : ℝ} (hab : a < b) (hc : ContMDiff 𝓘(ℝ, ℝ) I ∞ c)
+    (hcU : ∀ t ∈ Icc a b, c t ∈ U)
+    (heq : curveLength (I := I) g c a b = r (c b) - r (c a))
+    {σ : ℝ → M} (hσ : ContMDiff 𝓘(ℝ, ℝ) I ∞ σ) (hσ0 : σ 0 = c a)
+    (hσint : ∀ u ∈ Icc 0 (curveLength (I := I) g c a b),
+      velocity (I := I) σ u = gradient g r (σ u)) :
+    ∀ s ∈ Icc a b, c s = σ (curveLength (I := I) g c a s) :=
+  distanceFunction_minimizer_eq_integralCurve_comp_with_gradient hU hr
+    ((gradient_contMDiffOn_of_contMDiffOn g hU hr.1).of_le (by norm_num))
+    hab hc hcU heq hσ hσ0 hσint
+
+/-- **Compatibility.** Retain the earlier primed wrapper spelling for downstream clients. -/
 theorem distanceFunction_minimizer_eq_integralCurve_comp'
     {g : RiemannianMetric I M}
     {U : Set M} (hU : IsOpen U) {r : M → ℝ} (hr : IsDistanceFunction g U r)
@@ -89,8 +104,6 @@ theorem distanceFunction_minimizer_eq_integralCurve_comp'
     (hσint : ∀ u ∈ Icc 0 (curveLength (I := I) g c a b),
       velocity (I := I) σ u = gradient g r (σ u)) :
     ∀ s ∈ Icc a b, c s = σ (curveLength (I := I) g c a s) :=
-  distanceFunction_minimizer_eq_integralCurve_comp hU hr
-    ((gradient_contMDiffOn_of_contMDiffOn g hU hr.1).of_le (by norm_num))
-    hab hc hcU heq hσ hσ0 hσint
+  distanceFunction_minimizer_eq_integralCurve_comp hU hr hab hc hcU heq hσ hσ0 hσint
 
 end PetersenLib

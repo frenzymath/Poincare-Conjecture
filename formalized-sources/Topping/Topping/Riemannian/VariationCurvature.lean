@@ -19,7 +19,8 @@ the vocabulary of `CovariantTensor` and `StarProduct`:
 
 These are statements, not derivations: each says "the time derivative of *this*
 quantity is *that* expression". Deriving them from `IsMetricVariationOn` plus
-joint smoothness requires the analytic results developed in Morgan--Tian Chapter 3.
+joint smoothness is the analytic work MorganTian Ch3 owns under the split of
+conversations I-0441/I-0442.
 -/
 
 open scoped ContDiff Manifold Topology Bundle RealInnerProductSpace

@@ -243,6 +243,15 @@ theorem exists_expGram_sub_le_sq (g : RiemannianMetric I M) (p : M) :
     _ ≤ K * ‖x‖ * ‖x‖ := h
     _ = K * ‖x‖ ^ 2 := by ring
 
+/-! The blueprint uses the Petersen-facing name for the same quantitative estimate.
+Keeping this alias at the public Ch. 5 boundary makes the formalization target
+stable while retaining the basis-free metric pairing used by `expGram`. -/
+
+theorem expCoordinates_firstOrderFlatness (g : RiemannianMetric I M) (p : M) :
+    ∃ ρ : ℝ, 0 < ρ ∧ ∀ a b : E, ∃ C : ℝ, 0 ≤ C ∧ ∀ x ∈ ball (0 : E) ρ,
+      |expGram (I := I) g p x a b - g.metricInner p a b| ≤ C * ‖x‖ ^ 2 :=
+  exists_expGram_sub_le_sq (I := I) g p
+
 end PetersenLib
 
 end

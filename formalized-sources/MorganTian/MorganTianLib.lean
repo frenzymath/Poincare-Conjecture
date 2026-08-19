@@ -233,6 +233,12 @@ import MorganTianLib.Ch03.RicciFlow.TimeSlice
 import MorganTianLib.Ch03.RicciFlow.HorizontalMetric
 import MorganTianLib.Ch03.RicciFlow.HorizontalLieDerivative
 import MorganTianLib.Ch03.RicciFlow.GeneralizedTimeSlice
+import MorganTianLib.Ch03.RicciFlow.GeneralizedRicciFlow
 import MorganTianLib.Ch03.RicciFlow.MetricVariation
+import MorganTianLib.Ch03.RicciFlow.MetricCoordinateVariation
+import MorganTianLib.Ch03.RicciFlow.CurvatureCoordinateVariation
+import MorganTianLib.Ch03.RicciFlow.ScalarEvolution
+import MorganTianLib.Ch03.RicciFlow.VolumeEvolution
+import MorganTianLib.Ch03.RicciFlow.ScalarTraceEvolution
 import MorganTianLib.Ch03.RicciFlow.MetricTraceVariation
 import MorganTianLib.Ch03.RicciFlow.ScalarCurvatureSmooth

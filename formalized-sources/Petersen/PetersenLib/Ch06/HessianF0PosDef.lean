@@ -139,6 +139,50 @@ theorem jacobiField_energy_le_boundary_nonpositiveCurvature (g : RiemannianMetri
   have := curvatureTerm_nonpos_of_secBoundedAbove_zero g hsec J t
   linarith
 
+/-- **Math.** Petersen Lemma 6.2.5 (p. 261), the radial-Jacobi form of
+`Hess f₀ ≥ g`.  For `f₀ = r²/2` and a radial Jacobi field with `J(0)=0`, the desired
+inequality at time `b` is
+`|J(b)|² ≤ b · g(J̇(b), J(b))`.
+
+The curvature contribution is handled here without any further abstraction:
+`jacobiField_energy_le_boundary_nonpositiveCurvature` gives
+`∫₀ᵇ |J̇|² ≤ g(J(b),J̇(b))`.  The remaining hypothesis `hL2` is exactly the
+along-curve Cauchy--Schwarz estimate
+`|J(b)|² ≤ b ∫₀ᵇ |J̇|²`, normally proved after identifying all fibres along `c`
+by parallel transport.  Keeping that transport estimate explicit isolates the only
+missing bundle-valued integration bridge; the Hessian comparison itself is proved. -/
+theorem hess_f0_ge_metric_nonpositiveCurvature (g : RiemannianMetric I M)
+    {c : ℝ → M} {J : ∀ t, TangentSpace I (c t)} (hJ : IsJacobiFieldAlong g c J)
+    {b : ℝ} (hb : 0 ≤ b) (hsec : HasSecBoundedAbove g.leviCivita 0) (hJ0 : J 0 = 0)
+    (hc : ∀ t, ContinuousAt c t)
+    (hu : ∀ t, DifferentiableAt ℝ (fun τ => extChartAt I (c t) (c τ)) t)
+    (hJd : ∀ t, DifferentiableAt ℝ (chartFieldRep c (c t) J) t)
+    (hDJd : ∀ t, DifferentiableAt ℝ (chartFieldRep c (c t) (derivAlongCurve g c J)) t)
+    (hG : ∀ t, ∀ i j, DifferentiableAt ℝ (chartGramOnE g (c t) i j)
+      (extChartAt I (c t) (c t)))
+    (hint : IntervalIntegrable (fun t =>
+      g.metricInner (c t) (derivAlongCurve g c J t) (derivAlongCurve g c J t)
+      - g.metricInner (c t)
+          (curvatureTensorAt (g.leviCivita).toAffineConnection (c t)
+            (J t) (curveVelocity c t) (curveVelocity c t)) (J t)) volume 0 b)
+    (hintJ : IntervalIntegrable (fun t =>
+      g.metricInner (c t) (derivAlongCurve g c J t) (derivAlongCurve g c J t)) volume 0 b)
+    (hL2 : g.metricInner (c b) (J b) (J b) ≤ b * ∫ t in (0 : ℝ)..b,
+      g.metricInner (c t) (derivAlongCurve g c J t) (derivAlongCurve g c J t)) :
+    g.metricInner (c b) (J b) (J b) ≤
+      b * g.metricInner (c b) (derivAlongCurve g c J b) (J b) := by
+  have henergy := jacobiField_energy_le_boundary_nonpositiveCurvature
+    g hJ hb hsec hc hu hJd hDJd hG hint hintJ
+  rw [hJ0, g.metricInner_zero_left, sub_zero] at henergy
+  calc
+    g.metricInner (c b) (J b) (J b)
+        ≤ b * ∫ t in (0 : ℝ)..b,
+            g.metricInner (c t) (derivAlongCurve g c J t) (derivAlongCurve g c J t) := hL2
+    _ ≤ b * g.metricInner (c b) (J b) (derivAlongCurve g c J b) :=
+      mul_le_mul_of_nonneg_left henergy hb
+    _ = b * g.metricInner (c b) (derivAlongCurve g c J b) (J b) := by
+      rw [g.metricInner_comm (c b) (J b) (derivAlongCurve g c J b)]
+
 /-- **Math.** Petersen §6.2 (p. 259), `rem:pet-ch6-hessian-f0-positive-definite` — strict
 positivity of the Hessian estimate.  On a manifold of nonpositive curvature, for a Jacobi
 field `J` along `c` with `J(0) = 0` and `J(b) ≠ 0` (`b > 0`),

@@ -106,7 +106,13 @@ is `0`, and the Christoffel contraction is linear in the field slot. -/
 @[simp] theorem derivAlongCurve_zero (g : RiemannianMetric I M) (c : ℝ → M) (t : ℝ) :
     derivAlongCurve (I := I) g c (fun τ => (0 : TangentSpace I (c τ))) t = 0 := by
   rw [derivAlongCurve_def, chartFieldRep_zero, deriv_const']
-  simp [Geodesic.chartChristoffelContraction_def, Geodesic.chartCoord_zero]
+  rw [Geodesic.chartChristoffelContraction_symm]
+  change (0 : E) +
+      Geodesic.chartChristoffelContraction (I := I) g (c t) (0 : E)
+        (deriv (Geodesic.chartLocalCurve c t) t)
+        (extChartAt I (c t) (c t)) = 0
+  rw [Geodesic.chartChristoffelContraction_zero_left]
+  simp
 
 /-! ### The Jacobi equation -/
 

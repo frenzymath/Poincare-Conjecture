@@ -31,7 +31,8 @@ theorem HasSmoothCompleteGeometryOn.isLocallyDistanceComparableOn
     {M : Type*} [TopologicalSpace M] {flow : RicciFlowData M} {I : Set ℝ}
     (hgeometry : flow.HasSmoothCompleteGeometryOn I) (x₀ : M) :
     flow.IsLocallyDistanceComparableOn x₀ I :=
-  (hgeometry.radial_paths x₀).isLocallyDistanceComparableOn
+  (hgeometry.radial_paths x₀).hasAlmostRadialDistancePathsOn
+    |>.isLocallyDistanceComparableOn
     (hgeometry.proper x₀) (hgeometry.dist_self_eq_zero x₀)
     (hgeometry.dist_continuous x₀)
 

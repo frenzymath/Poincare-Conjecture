@@ -7,7 +7,8 @@ import Topping.RicciFlow.CurvatureStar
 `exists_normAt_le_of_isStarProduct` extracts its constant by induction on a
 *derivation* of `IsStarProduct g A B C`, and that derivation mentions `g`. So the
 constant it produces sits inside the scope of `g`: from it alone one gets
-`∀ g, ∃ K, …`, not `∃ K, ∀ g, …`.
+`∀ g, ∃ K, …`, not `∃ K, ∀ g, …`. TOP.CH03 flagged this (inbox I-0476/I-0479) after
+first claiming the reverse.
 
 The uniform statement is nevertheless true for the curvature-evolution correction,
 and this module proves it. The reason is that
@@ -129,8 +130,9 @@ in the metric.** There is a constant depending only on the dimension — one may
 `|correction| ≤ C(n)|\Rm|^2`.
 
 The uniformity is real and is what Chapter 3 needs: `K` is bound outside `g`, so a
-time-dependent family `g t` gets the *same* constant at every time. A bound obtained
-from an `IsStarProduct` derivation is only per-metric; this one is read off the
+time-dependent family `g t` gets the *same* constant at every time. That is exactly
+the gap TOP.CH03 identified in I-0476/I-0479 — their bound is per-metric because
+its constant comes from an `IsStarProduct` derivation; this one is read off the
 fixed shape of the correction instead. -/
 theorem exists_uniform_normAt_curvatureEvolutionCorrection_le :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ (g : RiemannianMetric I M) (p : M),

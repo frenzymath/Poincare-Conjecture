@@ -98,6 +98,7 @@ theorem hasMFDerivAt_of_hasDerivAt_chartLocalCurve {γ : ℝ → M} {t₀ : ℝ}
   rw [heq]
   exact hv.hasFDerivAt
 
+set_option backward.isDefEq.respectTransparency false in
 /-- **Math.** **Chain rule at the moving foot**: for `F : M → ℝ` smooth and a
 curve `γ` with chart velocity `v` at `t₀`,
 `(F ∘ γ)'(t₀) = dF_{γ t₀}(v)` — the manifold differential of `F` applied to
@@ -133,6 +134,160 @@ theorem isParallelAlong_curveVelocity_of_isGeodesic (g : RiemannianMetric I M)
   exact (hasGeodesicEquationAt_iff_hasCovDerivAlongAt_velocity_zero (I := I)
     (g := g) (eventually_mem_chartAt_source hcont.continuousAt)
     hev).mp (hgeo t)
+
+/-! ### Flow lines under the direct Hessian-zero hypothesis -/
+
+/-- **Math.** If `Hess f = 0`, a continuous geodesic whose velocity agrees
+with `grad f` once is an integral curve of `grad f` for all time. This is the
+direct hypothesis used in the splitting statement, without the stronger
+Bochner package. -/
+theorem curveVelocity_eq_gradientField_of_hessian
+    [SigmaCompactSpace M] [T2Space M] (g : RiemannianMetric I M)
+    {nabla : AffineConnection I M} (hLC : nabla.IsLeviCivita g)
+    {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
+    (hhess : ∀ p : M, ∀ v w : TangentSpace I p,
+      hessianAt nabla f p v w = 0)
+    {γ : ℝ → M} (hgeo : Riemannian.Geodesic.IsGeodesic (I := I) g γ)
+    (hcont : Continuous γ) {t₁ : ℝ}
+    (hinit : curveVelocity (I := I) γ t₁ = gradientField g f hf (γ t₁))
+    (t : ℝ) :
+    curveVelocity (I := I) γ t = gradientField g f hf (γ t) := by
+  have hmem : ∀ s, ∀ᶠ u in 𝓝 s, γ u ∈ (chartAt H (γ s)).source := fun s =>
+    eventually_mem_chartAt_source hcont.continuousAt
+  have hvel : ∀ s, ∃ v : E, HasDerivAt (chartLocalCurve (I := I) γ s) v s := by
+    intro s
+    obtain ⟨v, a, hv, -, -, -⟩ := hgeo s
+    exact ⟨v, hv⟩
+  have hpar₂ := isParallelAlong_gradientField_comp_of_hessian (I := I) g hLC hf
+    hhess hmem hvel
+  have hpar₁ := isParallelAlong_curveVelocity_of_isGeodesic (I := I) g hgeo hcont
+  exact hpar₁.apply_eq (I := I) hpar₂ hinit t
+
+/-- **Math.** A direct-Hessian gradient flow line has the prescribed constant
+squared speed. In the splitting application `c = 1`. -/
+theorem metricInner_curveVelocity_self_of_hessian
+    [SigmaCompactSpace M] [T2Space M] (g : RiemannianMetric I M)
+    {nabla : AffineConnection I M} (hLC : nabla.IsLeviCivita g)
+    {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) {c : ℝ}
+    (hhess : ∀ p : M, ∀ v w : TangentSpace I p,
+      hessianAt nabla f p v w = 0)
+    (hgrad : ∀ q, metricNormSq g (gradientField g f hf) q = c)
+    {γ : ℝ → M} (hgeo : Riemannian.Geodesic.IsGeodesic (I := I) g γ)
+    (hcont : Continuous γ) {t₁ : ℝ}
+    (hinit : curveVelocity (I := I) γ t₁ = gradientField g f hf (γ t₁))
+    (t : ℝ) :
+    g.metricInner (γ t) (curveVelocity (I := I) γ t)
+      (curveVelocity (I := I) γ t) = c := by
+  rw [curveVelocity_eq_gradientField_of_hessian (I := I) g hLC hf hhess
+    hgeo hcont hinit t]
+  exact hgrad (γ t)
+
+/-- **Math.** Along a direct-Hessian gradient flow line, `(f ∘ γ)' = c`
+when `|grad f|² = c`. -/
+theorem hasDerivAt_comp_of_hessian
+    [SigmaCompactSpace M] [T2Space M] (g : RiemannianMetric I M)
+    {nabla : AffineConnection I M} (hLC : nabla.IsLeviCivita g)
+    {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) {c : ℝ}
+    (hhess : ∀ p : M, ∀ v w : TangentSpace I p,
+      hessianAt nabla f p v w = 0)
+    (hgrad : ∀ q, metricNormSq g (gradientField g f hf) q = c)
+    {γ : ℝ → M} (hgeo : Riemannian.Geodesic.IsGeodesic (I := I) g γ)
+    (hcont : Continuous γ) {t₁ : ℝ}
+    (hinit : curveVelocity (I := I) γ t₁ = gradientField g f hf (γ t₁))
+    (t : ℝ) :
+    HasDerivAt (fun s => f (γ s)) c t := by
+  obtain ⟨v, a, hv, -, -, -⟩ := hgeo t
+  have hchain := hasDerivAt_comp_chartLocalCurve (I := I) hf
+    hcont.continuousAt hv
+  have hveq : curveVelocity (I := I) γ t = (v : TangentSpace I (γ t)) :=
+    curveVelocity_eq_of_hasDerivAt (I := I) hv
+  have hvgrad : (v : TangentSpace I (γ t)) = gradientField g f hf (γ t) :=
+    hveq.symm.trans (curveVelocity_eq_gradientField_of_hessian (I := I) g hLC
+      hf hhess hgeo hcont hinit t)
+  have hval : mfderiv I 𝓘(ℝ, ℝ) f (γ t) (v : TangentSpace I (γ t)) = c := by
+    rw [← metricInner_gradientAt g f (γ t) (v : TangentSpace I (γ t)), hvgrad]
+    exact hgrad (γ t)
+  rw [hval] at hchain
+  exact hchain
+
+/-- **Math.** Along a direct-Hessian gradient flow line,
+`f (γ t) = f (γ 0) + c t`. -/
+theorem comp_eq_add_mul_of_hessian
+    [SigmaCompactSpace M] [T2Space M] (g : RiemannianMetric I M)
+    {nabla : AffineConnection I M} (hLC : nabla.IsLeviCivita g)
+    {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) {c : ℝ}
+    (hhess : ∀ p : M, ∀ v w : TangentSpace I p,
+      hessianAt nabla f p v w = 0)
+    (hgrad : ∀ q, metricNormSq g (gradientField g f hf) q = c)
+    {γ : ℝ → M} (hgeo : Riemannian.Geodesic.IsGeodesic (I := I) g γ)
+    (hcont : Continuous γ) {t₁ : ℝ}
+    (hinit : curveVelocity (I := I) γ t₁ = gradientField g f hf (γ t₁))
+    (t : ℝ) :
+    f (γ t) = f (γ 0) + c * t := by
+  have hder : ∀ u : ℝ, HasDerivAt (fun s => f (γ s) - c * s) 0 u := by
+    intro u
+    have h₁ := hasDerivAt_comp_of_hessian (I := I) g hLC hf hhess hgrad
+      hgeo hcont hinit u
+    have h₂ : HasDerivAt (fun s : ℝ => c * s) c u := by
+      simpa using (hasDerivAt_id u).const_mul c
+    convert h₁.sub h₂ using 1 <;> first | rfl | exact (sub_self c).symm
+  have hconst := is_const_of_deriv_eq_zero
+    (fun u => (hder u).differentiableAt) (fun u => (hder u).deriv) t 0
+  have : f (γ t) - c * t = f (γ 0) - c * 0 := hconst
+  linarith
+
+/-- **Math.** A direct-Hessian geodesic with initial velocity `grad f` is a
+global manifold integral curve of the gradient field. -/
+theorem isMIntegralCurve_gradientField_of_hessian
+    [SigmaCompactSpace M] [T2Space M] (g : RiemannianMetric I M)
+    {nabla : AffineConnection I M} (hLC : nabla.IsLeviCivita g)
+    {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
+    (hhess : ∀ p : M, ∀ v w : TangentSpace I p,
+      hessianAt nabla f p v w = 0)
+    {γ : ℝ → M} (hgeo : Riemannian.Geodesic.IsGeodesic (I := I) g γ)
+    (hcont : Continuous γ) {t₁ : ℝ}
+    (hinit : curveVelocity (I := I) γ t₁ = gradientField g f hf (γ t₁)) :
+    IsMIntegralCurve γ (fun x => gradientField g f hf x) := by
+  intro t
+  obtain ⟨v, a, hv, -, -, -⟩ := hgeo t
+  have hvv : (v : TangentSpace I (γ t)) = gradientField g f hf (γ t) :=
+    (curveVelocity_eq_of_hasDerivAt (I := I) hv).symm.trans
+      (curveVelocity_eq_gradientField_of_hessian (I := I) g hLC hf hhess
+        hgeo hcont hinit t)
+  show HasMFDerivAt 𝓘(ℝ, ℝ) I γ t
+    ((1 : ℝ →L[ℝ] ℝ).smulRight (gradientField g f hf (γ t)))
+  rw [← hvv]
+  exact hasMFDerivAt_of_hasDerivAt_chartLocalCurve (I := I) hcont.continuousAt hv
+
+/-! ### Level-set geodesics under the direct Hessian-zero hypothesis -/
+
+/-- **Math.** If `Hess f = 0`, orthogonality of a continuous geodesic's
+velocity to `grad f` at one time persists for all time. Both the velocity and
+the gradient restricted to the geodesic are parallel fields.
+Blueprint: `lem:parallel-gradient-level-sets`(2). -/
+theorem metricInner_curveVelocity_gradientField_of_hessian
+    [SigmaCompactSpace M] [T2Space M] (g : RiemannianMetric I M)
+    {nabla : AffineConnection I M} (hLC : nabla.IsLeviCivita g)
+    {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
+    (hhess : ∀ p : M, ∀ v w : TangentSpace I p,
+      hessianAt nabla f p v w = 0)
+    {γ : ℝ → M} (hgeo : Riemannian.Geodesic.IsGeodesic (I := I) g γ)
+    (hcont : Continuous γ) {t₁ : ℝ}
+    (horth : g.metricInner (γ t₁) (curveVelocity (I := I) γ t₁)
+      (gradientField g f hf (γ t₁)) = 0)
+    (t : ℝ) :
+    g.metricInner (γ t) (curveVelocity (I := I) γ t)
+      (gradientField g f hf (γ t)) = 0 := by
+  have hmem : ∀ s, ∀ᶠ u in 𝓝 s, γ u ∈ (chartAt H (γ s)).source := fun s =>
+    eventually_mem_chartAt_source hcont.continuousAt
+  have hvel : ∀ s, ∃ v : E, HasDerivAt (chartLocalCurve (I := I) γ s) v s := by
+    intro s
+    obtain ⟨v, a, hv, -, -, -⟩ := hgeo s
+    exact ⟨v, hv⟩
+  have hpar₂ := isParallelAlong_gradientField_comp_of_hessian (I := I) g hLC hf
+    hhess hmem hvel
+  have hpar₁ := isParallelAlong_curveVelocity_of_isGeodesic (I := I) g hgeo hcont
+  exact (hpar₁.metricInner_eq (I := I) hpar₂ t t₁).trans horth
 
 /-! ### Flow lines of a Bochner-parallel gradient field -/
 

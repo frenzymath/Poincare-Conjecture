@@ -22,7 +22,7 @@ make it usable:
   `Classical.choose` whose dependence on `p` carries no regularity at all
   (`extendVector_apply` is its only property). Smoothness of `ΔA` would need the
   `orthoFrameField` route instead — the same smooth-frame gap that blocks the
-  Bochner identity;
+  Bochner identity (inbox I-0494);
 * the Ricci tensor field has it, because near any point `\Ric(X,Y)` is a finite
   sum of curvature pairings of the smooth orthonormal frame
   (`MorganTianLib.ricciField_eq_frame_sum` and `curvatureForm_contMDiff`).

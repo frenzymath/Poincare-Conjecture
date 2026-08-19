@@ -42,8 +42,8 @@ here.)
 Reference: do Carmo, *Riemannian Geometry*, Ch. 9, §2, Remark 2.10.
 -/
 
-open Set Riemannian Filter
-open scoped ContDiff Manifold Topology
+open Set Riemannian Filter MeasureTheory
+open scoped BigOperators ContDiff Manifold Topology
 
 set_option linter.unusedSectionVars false
 set_option autoImplicit false
@@ -112,6 +112,26 @@ theorem indexForm_def (g : RiemannianMetric I M) (γ : ℝ → M) (V DV : ℝ �
           - g.leviCivitaConnection.curvatureFormAt g (γ t)
               (DCVelocity (I := I) γ t) (V t : TangentSpace I (γ t))
               (DCVelocity (I := I) γ t) (V t)) := rfl
+
+/-- **Math.** The index form is finitely additive over a subdivision.  This is
+the integral identity used to pass from the segment version of formula (6) to
+the piecewise version in do Carmo Ch. 9, Remark 2.10.  As for energy, oriented
+interval integrals make monotonicity of `tau` unnecessary; integrability on
+each adjacent segment is the only analytic input. -/
+theorem indexForm_eq_sum_subdivision
+    (g : RiemannianMetric I M) (γ : ℝ → M) (V DV : ℝ → E)
+    (tau : ℕ → ℝ) (n : ℕ)
+    (hint : ∀ i < n, IntervalIntegrable
+      (fun t => g.metricInner (γ t) (DV t : TangentSpace I (γ t)) (DV t)
+        - g.leviCivitaConnection.curvatureFormAt g (γ t)
+            (DCVelocity (I := I) γ t) (V t : TangentSpace I (γ t))
+            (DCVelocity (I := I) γ t) (V t))
+      volume (tau i) (tau (i + 1))) :
+    indexForm (I := I) g γ V DV (tau 0) (tau n)
+      = ∑ i ∈ Finset.range n,
+          indexForm (I := I) g γ V DV (tau i) (tau (i + 1)) := by
+  simp only [indexForm]
+  exact (intervalIntegral.sum_integral_adjacent_intervals hint).symm
 
 /-- **Math.** The index form of the zero field vanishes: both integrands are
 multilinear in `V`, resp. `DV`. -/

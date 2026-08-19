@@ -1,4 +1,5 @@
 import DoCarmoLib.Riemannian.Variation.IndexForm
+import DoCarmoLib.Riemannian.Variation.ExponentialVariation
 import DoCarmoLib.Riemannian.Variation.SecondVariationFormula
 import DoCarmoLib.Riemannian.Variation.SmoothEnergy
 import DoCarmoLib.Riemannian.Variation.VelocitySeededFrameAlong
@@ -824,6 +825,155 @@ structure ProperSecondVariationData (g : RiemannianMetric I M)
   hi_DtS : IntervalIntegrable
     (fun t => g.metricInner (f (s₀, t))
       (DtS (s₀, t) : TangentSpace I (f (s₀, t))) (DtS (s₀, t))) volume a b
+
+/-- **Math.** The velocity of the time slice of a parametrized surface. -/
+def variationTimeVelocity (f : ℝ × ℝ → M) (p : ℝ × ℝ) : E :=
+  mfderiv 𝓘(ℝ, ℝ) I (fun t => f (p.1, t)) p.2 1
+
+/-- **Math.** The velocity of the parameter slice of a parametrized surface. -/
+def variationParameterVelocity (f : ℝ × ℝ → M) (p : ℝ × ℝ) : E :=
+  mfderiv 𝓘(ℝ, ℝ) I (fun s => f (s, p.2)) p.1 1
+
+/-- **Math.** Construct the proper second-variation package for the concrete
+Bonnet--Myers sine variation from its remaining surface-derivative data.
+
+The two first-order fields are fixed to the actual intrinsic velocities of the
+time and parameter slices.  Consequently the zero time slice, its geodesic
+equation, chart differentiability, and continuity are discharged from the
+concrete exponential variation and the base geodesic.  The hypotheses left to
+the caller are precisely the second energy derivative, covariant surface-field
+pairs, curvature commutation, endpoint, and integrability statements.  The
+returned equalities identify the chosen parameter velocity and its supplied
+time covariant derivative with the standard sine field used by the index form. -/
+theorem exists_properSecondVariationData_bonnetMyersSineVariation_of_surfaceData
+    [CompleteSpace M]
+    (g : RiemannianMetric I M) (hg : g.IsRiemannianDist)
+    {γ : ℝ → M} {e : ℝ → E} {a b : ℝ}
+    (hγc : Continuous γ) (hgeo : Riemannian.Geodesic.IsGeodesic (I := I) g γ)
+    (_he : IsParallelFieldAlongOn (I := I) g γ e a b)
+    (_hsegment : Set.Icc (0 : ℝ) 1 ⊆ Set.Ioo a b)
+    (DsT DsDsT DtS W2 DtW2 : ℝ × ℝ → E)
+    (hE2 : HasDerivAt
+      (deriv (fun σ => DCEnergy (I := I) g
+        (fun t => bonnetMyersSineVariation (I := I) g hg γ e (σ, t)) 0 1))
+      (2 * ∫ t in (0 : ℝ)..1,
+        (g.metricInner (γ t) (DsDsT (0, t) : TangentSpace I (γ t))
+            (DCVelocity (I := I) γ t)
+          + g.metricInner (γ t) (DsT (0, t) : TangentSpace I (γ t)) (DsT (0, t)))) 0)
+    (hW2 : IsCovariantDerivFieldAlongOn (I := I) g γ
+      (fun t => W2 (0, t)) (fun t => DtW2 (0, t)) 0 1)
+    (hsymm : ∀ t ∈ Ioo (0 : ℝ) 1, DsT (0, t) = DtS (0, t))
+    (hric : ∀ t ∈ Ioo (0 : ℝ) 1,
+      g.metricInner (γ t) (DsDsT (0, t) : TangentSpace I (γ t))
+          (DCVelocity (I := I) γ t)
+        = g.metricInner (γ t) (DtW2 (0, t) : TangentSpace I (γ t))
+            (DCVelocity (I := I) γ t)
+          - g.leviCivitaConnection.curvatureFormAt g (γ t)
+              (Real.sin (Real.pi * t) • e t) (DCVelocity (I := I) γ t)
+              (Real.sin (Real.pi * t) • e t) (DCVelocity (I := I) γ t))
+    (hW2a : W2 (0, 0) = 0) (hW2b : W2 (0, 1) = 0)
+    (hi_DsDsT : IntervalIntegrable
+      (fun t => g.metricInner (γ t) (DsDsT (0, t) : TangentSpace I (γ t))
+        (DCVelocity (I := I) γ t)) volume 0 1)
+    (hi_DsT : IntervalIntegrable
+      (fun t => g.metricInner (γ t) (DsT (0, t) : TangentSpace I (γ t)) (DsT (0, t)))
+        volume 0 1)
+    (hi_DtW2 : IntervalIntegrable
+      (fun t => g.metricInner (γ t) (DtW2 (0, t) : TangentSpace I (γ t))
+        (DCVelocity (I := I) γ t)) volume 0 1)
+    (hi_R : IntervalIntegrable
+      (fun t => g.leviCivitaConnection.curvatureFormAt g
+        (γ t) (Real.sin (Real.pi * t) • e t) (DCVelocity (I := I) γ t)
+        (Real.sin (Real.pi * t) • e t) (DCVelocity (I := I) γ t)) volume 0 1)
+    (hi_DtS : IntervalIntegrable
+      (fun t => g.metricInner (γ t) (DtS (0, t) : TangentSpace I (γ t)) (DtS (0, t)))
+        volume 0 1)
+    (hDtS : ∀ t, DtS (0, t) = deriv (fun u => Real.sin (Real.pi * u)) t • e t) :
+    ∃ hdata : ProperSecondVariationData (I := I) g
+        (bonnetMyersSineVariation (I := I) g hg γ e) 0 0 1,
+      (∀ t, hdata.S (0, t) = Real.sin (Real.pi * t) • e t) ∧
+      ∀ t, hdata.DtS (0, t) = deriv (fun u => Real.sin (Real.pi * u)) t • e t := by
+  let f := bonnetMyersSineVariation (I := I) g hg γ e
+  let T := variationTimeVelocity (I := I) f
+  let S := variationParameterVelocity (I := I) f
+  have hf0 : (fun t => f (0, t)) = γ := by
+    funext t
+    exact bonnetMyersSineVariation_zero (I := I) g hg γ e t
+  have hbaseGeo : IsCovariantDerivFieldAlongOn (I := I) g
+      (fun t => f (0, t)) (fun t => T (0, t)) (fun _ => 0) 0 1 := by
+    dsimp only [T, variationTimeVelocity]
+    rw [hf0]
+    exact
+      (isParallelFieldAlongOn_velocity (I := I) g zero_lt_one
+        (hgeo.isGeodesicOn _) (fun t _ => hγc.continuousAt)).isCovariantDerivFieldAlongOn
+  have hdiff : IsChartDifferentiableOn (I := I) (fun t => f (0, t)) 0 1 := by
+    rw [hf0]
+    exact Riemannian.Variation.IsGeodesicOn.isChartDifferentiableOn
+      (hgeo.isGeodesicOn (Set.Icc (0 : ℝ) 1)) (fun t _ => hγc.continuousAt)
+  have hcont : ∀ t ∈ Icc (0 : ℝ) 1, ContinuousAt (fun t => f (0, t)) t := by
+    rw [hf0]
+    exact fun t _ => hγc.continuousAt
+  have hS : ∀ t, S (0, t) = Real.sin (Real.pi * t) • e t := by
+    intro t
+    change variationalField I f t = Real.sin (Real.pi * t) • e t
+    change variationalField I
+      (exponentialVariation (I := I) g hg γ
+        (fun u => Real.sin (Real.pi * u) • e u)) t = Real.sin (Real.pi * t) • e t
+    exact congrFun (variationalField_exponentialVariation (I := I) g hg γ
+      (fun u => Real.sin (Real.pi * u) • e u)) t
+  let hdata : ProperSecondVariationData (I := I) g f 0 0 1 :=
+    { hab := zero_le_one
+      T := T
+      S := S
+      DsT := DsT
+      DsDsT := DsDsT
+      DtS := DtS
+      W2 := W2
+      DtW2 := DtW2
+      hE2 := by
+        have hE2' := hE2
+        rw [← hf0] at hE2'
+        have hfamily :
+            (fun σ => DCEnergy (I := I) g
+              (fun t => bonnetMyersSineVariation (I := I) g hg
+                (fun t => f (0, t)) e (σ, t)) 0 1) =
+              (fun σ => DCEnergy (I := I) g (fun t => f (σ, t)) 0 1) := by
+          rw [hf0]
+        rw [hfamily] at hE2'
+        simpa only [T, variationTimeVelocity, DCVelocity] using hE2'
+      hvel := fun _ => rfl
+      hgeo := hbaseGeo
+      hW2 := by simpa only [hf0] using hW2
+      hdiff := hdiff
+      hcont := hcont
+      hsymm := hsymm
+      hric := by
+        have hric' := hric
+        rw [← hf0] at hric'
+        simpa only [T, variationTimeVelocity, DCVelocity, S, hS] using hric'
+      hW2a := hW2a
+      hW2b := hW2b
+      hi_DsDsT := by
+        have hi_DsDsT' := hi_DsDsT
+        rw [← hf0] at hi_DsDsT'
+        simpa only [T, variationTimeVelocity, DCVelocity] using hi_DsDsT'
+      hi_DsT := by
+        have hi_DsT' := hi_DsT
+        rw [← hf0] at hi_DsT'
+        simpa only using hi_DsT'
+      hi_DtW2 := by
+        have hi_DtW2' := hi_DtW2
+        rw [← hf0] at hi_DtW2'
+        simpa only [T, variationTimeVelocity, DCVelocity] using hi_DtW2'
+      hi_R := by
+        have hi_R' := hi_R
+        rw [← hf0] at hi_R'
+        simpa only [T, variationTimeVelocity, DCVelocity, S, hS] using hi_R'
+      hi_DtS := by
+        have hi_DtS' := hi_DtS
+        rw [← hf0] at hi_DtS'
+        simpa only using hi_DtS' }
+  exact ⟨hdata, hS, hDtS⟩
 
 /-- **Math.** The bundled proper-variation data gives formula (6),
 `E''(s₀) = 2 I(V,V)`, in one call. -/

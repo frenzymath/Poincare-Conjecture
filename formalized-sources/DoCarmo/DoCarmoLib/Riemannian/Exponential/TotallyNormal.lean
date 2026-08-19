@@ -3,7 +3,6 @@ import DoCarmoLib.Riemannian.Geodesic.FlowDependence
 import DoCarmoLib.Riemannian.Geodesic.FlowC1Dependence
 import DoCarmoLib.Riemannian.Geodesic.EquationTransfer
 import DoCarmoLib.Riemannian.Exponential.StrictDerivative
-import DoCarmoLib.Riemannian.Util.ContinuousLinearEquivShear
 
 /-!
 # Totally normal neighborhoods (do Carmo Ch. 3, Theorem 3.7)
@@ -50,6 +49,21 @@ noncomputable section
 
 open Bundle Manifold Set Filter Metric
 open scoped Manifold Topology ContDiff NNReal
+
+namespace ContinuousLinearEquiv
+
+/-- **Math.** The right additive shear map `(a, b) ↦ (a, a + b)` on `E × E`. -/
+protected def shearAddRight (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E] :
+    (E × E) ≃L[ℝ] E × E :=
+  ContinuousLinearEquiv.equivOfInverse
+    ((ContinuousLinearMap.fst ℝ E E).prod
+      ((ContinuousLinearMap.fst ℝ E E) + (ContinuousLinearMap.snd ℝ E E)))
+    ((ContinuousLinearMap.fst ℝ E E).prod
+      ((ContinuousLinearMap.snd ℝ E E) - (ContinuousLinearMap.fst ℝ E E)))
+    (fun _ => by simp [ContinuousLinearMap.prod_apply])
+    (fun _ => by simp [ContinuousLinearMap.prod_apply])
+
+end ContinuousLinearEquiv
 
 namespace Riemannian
 
@@ -525,7 +539,7 @@ theorem exists_totallyNormal_neighborhood (g : RiemannianMetric I M) (p : M) :
     fun x => ((x.1 : E), (Z ((x.1, T⁻¹ • x.2) : E × E) T).1) with hGdef
   have hTIcc : T ∈ Icc (-ε) ε := ⟨by linarith [hT, hε], hTε.le⟩
   have hstrict' : HasStrictFDerivAt G
-      ((ContinuousLinearEquiv.shearAddRight ℝ E : (E × E) ≃L[ℝ] E × E) :
+      ((ContinuousLinearEquiv.shearAddRight E : (E × E) ≃L[ℝ] E × E) :
         (E × E) →L[ℝ] E × E) x₀ := hstrict
   -- the inverse function theorem: `G` is a homeomorphism near `x₀`
   set ho := hstrict'.toOpenPartialHomeomorph G

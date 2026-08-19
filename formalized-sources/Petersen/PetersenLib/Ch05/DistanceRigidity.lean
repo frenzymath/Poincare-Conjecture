@@ -18,7 +18,8 @@ Cauchy–Schwarz then pins the direction of the velocity
 a curve in `U` realising `L(c)|_a^b = r(c(b)) − r(c(a))` satisfies
 `ċ(s) = |ċ(s)| ∇r(c(s))` for every `s ∈ [a,b]`.
 
-`distanceFunction_minimizer_eq_integralCurve_comp` — the remark's second clause:
+`distanceFunction_minimizer_eq_integralCurve_comp_with_gradient` — the internal
+side-condition-bearing proof of the remark's second clause:
 such a `c` *is* the integral curve `σ` of `∇r` through `c(a)`, reparametrised by
 the arclength `φ(s) = ∫_a^s |ċ| = L(c)|_a^s`.  Both `c` and `σ ∘ φ` solve the
 first-order **non-autonomous** ODE `y'(s) = |ċ(s)| ∇r(y(s))` with the same value
@@ -522,7 +523,7 @@ curve `c` in the domain `U` of a smooth distance function `r` realising
 By the rigidity clause `ċ(s) = |ċ(s)| ∇r(c(s))`, and `φ'(s) = |ċ(s)|`, so both `c`
 and `σ ∘ φ` solve `y'(s) = |ċ(s)| ∇r(y(s))` and agree at `s = a`; Grönwall
 uniqueness for the time-scaled field concludes. -/
-theorem distanceFunction_minimizer_eq_integralCurve_comp [T2Space M]
+theorem distanceFunction_minimizer_eq_integralCurve_comp_with_gradient [T2Space M]
     {g : RiemannianMetric I M}
     {U : Set M} (hU : IsOpen U) {r : M → ℝ} (hr : IsDistanceFunction g U r)
     (hgrad : ContMDiffOn I (I.prod 𝓘(ℝ, E)) 1

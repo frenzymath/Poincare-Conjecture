@@ -1,6 +1,8 @@
 import PetersenLib.Ch06.JacobiFields
 import PetersenLib.Ch06.CurvatureChartBridgeMoving
 import PetersenLib.Riemannian.Jacobi.PairJacobiField
+import PetersenLib.Riemannian.Connection.ChartChristoffelChange
+import PetersenLib.Riemannian.Geodesic.HopfRinow.ConstantSpeed
 
 /-!
 # Petersen Ch. 6, §6.1 — reading the Jacobi equation in a fixed chart
@@ -31,6 +33,8 @@ Main results:
 * `curvatureTensorAt_eq_chartCurvature_along` — the Jacobi curvature term
   `R(V, ċ)ċ` at the moving foot is the transported chart curvature
   `chartCurvature g α (u t) (V_α t) (u̇ t) (u̇ t)`;
+* `Jacobi.IsJacobiFieldOn.transfer` — **chart covariance**: a fixed-chart Jacobi pair
+  certificate can be rebased across an overlapping chart without shrinking its interval;
 * `IsJacobiFieldAlongOn` — the interval form of `IsJacobiFieldAlong`, which is what a
   chart-local ODE solution can supply and what a gluing argument consumes;
 * `isJacobiFieldAlongOn_Ioo_of_isJacobiFieldOn` — **transfer**: a chart-`α` pair solution,
@@ -47,11 +51,10 @@ the chart-covering walk that `Ch06/ParallelGlobal.lean` already performs for the
 parallel system (`parallelField_existence_uniqueness_global`): a Lebesgue number for a chart
 cover of the compact interval, chart-local uniqueness, and left/right extension by gluing.
 The pieces are all present one order down; the missing ingredient specific to Jacobi is a
-**chart-change covariance of the pair system** (`Jacobi.IsJacobiFieldOn` transferred between
-two overlapping charts), the analogue of DoCarmo's `IsJacobiFieldOn.transfer`. Note that
-`covariantDerivCoord_transfer` gives that covariance for the *first* component; the second
-component additionally needs the curvature naturality
-`chartCurvature_coordChange` (`Ch06/CurvatureChartBridgeMoving.lean`), which is available.
+certificate-level readback/restriction adapter connecting the raw model-space pair produced
+by the fixed-chart ODE to successive intrinsic fields. The chart-change covariance itself is
+now `Jacobi.IsJacobiFieldOn.transfer` above: its second component combines the Christoffel
+transformation law with `chartCurvature_coordChange`.
 -/
 
 open Set Filter Bundle Manifold
@@ -171,6 +174,388 @@ theorem covariantDerivCoord_congr (g : RiemannianMetric I M) (α : M) (u : ℝ �
     {V W : ℝ → E} {t : ℝ} (h : V =ᶠ[𝓝 t] W) :
     covariantDerivCoord (I := I) g α u V t = covariantDerivCoord (I := I) g α u W t := by
   rw [covariantDerivCoord_def, covariantDerivCoord_def, h.deriv_eq, h.self_of_nhds]
+
+/-! ### Chart covariance of the Jacobi pair system
+
+The fixed-chart ODE certificate is useful only if it can be rebased on an
+overlap.  The following is the second-order analogue of
+`covariantDerivCoord_transfer`: the product rule for the transition derivative
+is cancelled by the inhomogeneous Christoffel transformation law, and the
+curvature term is transported by `chartCurvature_coordChange`.
+-/
+
+/-- **Math.** Petersen §6.1: **chart-change covariance of the Jacobi pair system**.
+Along a geodesic whose compact time-piece lies in two chart sources, a Jacobi
+certificate written in chart `α` remains a certificate in chart `β`.  The
+fields `J` and `DJ` are carried along the curve (their chart readings are
+`chartFieldRep`).  This is the overlap lemma needed by the chart-covering walk
+that globalizes the local Jacobi IVP.
+
+The proof is deliberately interval-relative: `HasDerivWithinAt` is retained at
+the endpoints, so certificates produced by `Jacobi.exists_isJacobiFieldOn_Icc`
+can be transferred without shrinking the interval. -/
+theorem Jacobi.IsJacobiFieldOn.transfer
+    {g : RiemannianMetric I M} {γ : ℝ → M}
+    {J DJ : ∀ t, TangentSpace I (γ t)} {α β : M}
+    {a b : ℝ}
+    (hgeo : Geodesic.IsGeodesicOn (I := I) g γ (Icc a b))
+    (hγc : ∀ t ∈ Icc a b, ContinuousAt γ t)
+    (hsrcα : ∀ τ ∈ Icc a b, γ τ ∈ (chartAt H α).source)
+    (hsrcβ : ∀ τ ∈ Icc a b, γ τ ∈ (chartAt H β).source)
+    (h : Jacobi.IsJacobiFieldOn (I := I) g α (fun τ => extChartAt I α (γ τ))
+      (chartFieldRep (I := I) γ α J) (chartFieldRep (I := I) γ α DJ) a b) :
+    Jacobi.IsJacobiFieldOn (I := I) g β (fun τ => extChartAt I β (γ τ))
+      (chartFieldRep (I := I) γ β J) (chartFieldRep (I := I) γ β DJ)
+      a b := by
+  classical
+  -- At each time package the transition map, its derivative along the curve,
+  -- and the eventual change-of-chart formula for both field components.
+  have key : ∀ τ ∈ Icc a b,
+      (chartFieldRep (I := I) γ β J =ᶠ[𝓝 τ]
+        fun σ => fderiv ℝ (chartTransition (I := I) α β)
+          (extChartAt I α (γ σ)) (chartFieldRep (I := I) γ α J σ)) ∧
+      (chartFieldRep (I := I) γ β DJ =ᶠ[𝓝 τ]
+        fun σ => fderiv ℝ (chartTransition (I := I) α β)
+          (extChartAt I α (γ σ)) (chartFieldRep (I := I) γ α DJ σ)) ∧
+      HasDerivAt (fun σ => fderiv ℝ (chartTransition (I := I) α β)
+          (extChartAt I α (γ σ)))
+        (fderiv ℝ (fderiv ℝ (chartTransition (I := I) α β))
+          (extChartAt I α (γ τ))
+          (deriv (fun σ => extChartAt I α (γ σ)) τ)) τ ∧
+      deriv (fun σ => extChartAt I β (γ σ)) τ
+        = tangentCoordChange I α β (γ τ)
+            (deriv (fun σ => extChartAt I α (γ σ)) τ) ∧
+      fderiv ℝ (chartTransition (I := I) α β) (extChartAt I α (γ τ))
+        = tangentCoordChange I α β (γ τ) := by
+    intro τ hτ
+    have hxα := hsrcα τ hτ
+    have hxβ := hsrcβ τ hτ
+    have hcτ := hγc τ hτ
+    have hxα' : γ τ ∈ (extChartAt I α).source := by
+      rw [extChartAt_source]
+      exact hxα
+    have hxβ' : γ τ ∈ (extChartAt I β).source := by
+      rw [extChartAt_source]
+      exact hxβ
+    have hyT : extChartAt I α (γ τ)
+        ∈ chartTransitionDomain (I := I) α β :=
+      mem_chartTransitionDomain hxα' hxβ'
+    -- The geodesic equation supplies the two-sided derivative of the fixed
+    -- chart reading, even when `τ` is an endpoint of the certificate.
+    have hu : HasDerivAt (fun σ => extChartAt I α (γ σ))
+        (deriv (fun σ => extChartAt I α (γ σ)) τ) τ := by
+      have hev := (hgeo τ hτ).eventually_hasDerivAt_extChartAt hcτ hxα
+      exact hev.self_of_nhds.differentiableAt.hasDerivAt
+    have hTd : HasFDerivAt (chartTransition (I := I) α β)
+        (tangentCoordChange I α β (γ τ)) (extChartAt I α (γ τ)) :=
+      hasFDerivAt_chartTransition (I := I) hxα' hxβ'
+    have hev_mem : ∀ᶠ σ in 𝓝 τ,
+        γ σ ∈ (chartAt H α).source ∧ γ σ ∈ (chartAt H β).source := by
+      have h₁ : γ ⁻¹' (chartAt H α).source ∈ 𝓝 τ :=
+        hcτ.preimage_mem_nhds ((chartAt H α).open_source.mem_nhds hxα)
+      have h₂ : γ ⁻¹' (chartAt H β).source ∈ 𝓝 τ :=
+        hcτ.preimage_mem_nhds ((chartAt H β).open_source.mem_nhds hxβ)
+      filter_upwards [h₁, h₂] with σ h1 h2
+      exact ⟨h1, h2⟩
+    have hrep : ∀ V : ℝ → E, chartFieldRep (I := I) γ β V =ᶠ[𝓝 τ]
+        fun σ => fderiv ℝ (chartTransition (I := I) α β)
+          (extChartAt I α (γ σ)) (chartFieldRep (I := I) γ α V σ) := by
+      intro V
+      filter_upwards [hev_mem] with σ hσ
+      have hα' : γ σ ∈ (extChartAt I α).source := by
+        rw [extChartAt_source]
+        exact hσ.1
+      have hβ' : γ σ ∈ (extChartAt I β).source := by
+        rw [extChartAt_source]
+        exact hσ.2
+      have hfdσ : fderiv ℝ (chartTransition (I := I) α β)
+          (extChartAt I α (γ σ)) = tangentCoordChange I α β (γ σ) :=
+        fderiv_chartTransition (I := I) hα' hβ'
+      rw [hfdσ, chartFieldRep_apply, chartFieldRep_apply]
+      exact (tangentCoordChange_comp (I := I)
+        ⟨⟨mem_extChartAt_source (I := I) (γ σ), hα'⟩, hβ'⟩).symm
+    -- The transition is smooth to order two on the overlap, hence its
+    -- derivative has the displayed derivative along the chart reading.
+    have hτ2 : ContDiffAt ℝ 2 (chartTransition (I := I) α β)
+        (extChartAt I α (γ τ)) :=
+      (contDiffAt_chartTransition hyT).of_le ENat.LEInfty.out
+    have hτfd : DifferentiableAt ℝ
+        (fderiv ℝ (chartTransition (I := I) α β))
+        (extChartAt I α (γ τ)) :=
+      (hτ2.fderiv_right (m := 1) (by norm_num)).differentiableAt (by norm_num)
+    have hC' : HasDerivAt (fun σ => fderiv ℝ (chartTransition (I := I) α β)
+          (extChartAt I α (γ σ)))
+        (fderiv ℝ (fderiv ℝ (chartTransition (I := I) α β))
+          (extChartAt I α (γ τ))
+          (deriv (fun σ => extChartAt I α (γ σ)) τ)) τ :=
+      hτfd.hasFDerivAt.comp_hasDerivAt τ hu
+    have huβ : HasDerivAt (fun σ => extChartAt I β (γ σ))
+        (tangentCoordChange I α β (γ τ)
+          (deriv (fun σ => extChartAt I α (γ σ)) τ)) τ := by
+      have hcomp := hTd.comp_hasDerivAt τ hu
+      have hcong : (fun σ => extChartAt I β (γ σ)) =ᶠ[𝓝 τ]
+          fun σ => chartTransition (I := I) α β
+            (extChartAt I α (γ σ)) := by
+        filter_upwards [hev_mem] with σ hσ
+        have hα' : γ σ ∈ (extChartAt I α).source := by
+          rw [extChartAt_source]
+          exact hσ.1
+        exact (chartTransition_extChartAt (I := I) (α := α) hα').symm
+      exact hcomp.congr_of_eventuallyEq hcong
+    exact ⟨hrep J, hrep DJ, hC', huβ.deriv, hTd.fderiv⟩
+  refine ⟨fun τ hτ => ?_, fun τ hτ => ?_⟩
+  · -- First pair equation; the transition Hessian cancels with Γ-change.
+    obtain ⟨hJrep, hDJrep, hC', hduβ, hfd⟩ := key τ hτ
+    have hxα := hsrcα τ hτ
+    have hxβ := hsrcβ τ hτ
+    have hxα' : γ τ ∈ (extChartAt I α).source := by
+      rw [extChartAt_source]
+      exact hxα
+    have hxβ' : γ τ ∈ (extChartAt I β).source := by
+      rw [extChartAt_source]
+      exact hxβ
+    have hJτ : chartFieldRep (I := I) γ β J τ
+        = fderiv ℝ (chartTransition (I := I) α β)
+            (extChartAt I α (γ τ)) (chartFieldRep (I := I) γ α J τ) :=
+      hJrep.self_of_nhds
+    have hDJτ : chartFieldRep (I := I) γ β DJ τ
+        = fderiv ℝ (chartTransition (I := I) α β)
+            (extChartAt I α (γ τ)) (chartFieldRep (I := I) γ α DJ τ) :=
+      hDJrep.self_of_nhds
+    have hval := (hC'.hasDerivWithinAt.clm_apply
+      (h.hasDerivWithinAt_fst τ hτ)).congr_of_eventuallyEq
+      (hJrep.filter_mono nhdsWithin_le_nhds) hJrep.self_of_nhds
+    have heq : chartFieldRep (I := I) γ β DJ τ
+        - Geodesic.chartChristoffelContraction (I := I) g β
+            (deriv (fun σ => extChartAt I β (γ σ)) τ)
+            (chartFieldRep (I := I) γ β J τ) (extChartAt I β (γ τ))
+        = fderiv ℝ (fderiv ℝ (chartTransition (I := I) α β))
+            (extChartAt I α (γ τ))
+            (deriv (fun σ => extChartAt I α (γ σ)) τ)
+            (chartFieldRep (I := I) γ α J τ)
+          + fderiv ℝ (chartTransition (I := I) α β)
+            (extChartAt I α (γ τ))
+            (chartFieldRep (I := I) γ α DJ τ
+              - Geodesic.chartChristoffelContraction (I := I) g α
+                  (deriv (fun σ => extChartAt I α (γ σ)) τ)
+                  (chartFieldRep (I := I) γ α J τ)
+                  (extChartAt I α (γ τ))) := by
+      have hlaw := chartChristoffelContraction_change (I := I) g β α
+        hxβ hxα (deriv (fun σ => extChartAt I α (γ σ)) τ)
+        (chartFieldRep (I := I) γ α J τ)
+      have hlaw' :
+          fderiv ℝ (chartTransition (I := I) α β)
+              (extChartAt I α (γ τ))
+              (Geodesic.chartChristoffelContraction (I := I) g α
+                (deriv (fun σ => extChartAt I α (γ σ)) τ)
+                (chartFieldRep (I := I) γ α J τ) (extChartAt I α (γ τ)))
+            = Geodesic.chartChristoffelContraction (I := I) g β
+                (fderiv ℝ (chartTransition (I := I) α β)
+                  (extChartAt I α (γ τ))
+                  (deriv (fun σ => extChartAt I α (γ σ)) τ))
+                (fderiv ℝ (chartTransition (I := I) α β)
+                  (extChartAt I α (γ τ)) (chartFieldRep (I := I) γ α J τ))
+                (extChartAt I β (γ τ))
+              + fderiv ℝ (fderiv ℝ (chartTransition (I := I) α β))
+                  (extChartAt I α (γ τ))
+                  (deriv (fun σ => extChartAt I α (γ σ)) τ)
+                  (chartFieldRep (I := I) γ α J τ) := by
+        rw [hfd]
+        convert hlaw using 1 <;> rfl
+      have halg :
+          fderiv ℝ (chartTransition (I := I) α β)
+              (extChartAt I α (γ τ)) (chartFieldRep (I := I) γ α DJ τ)
+            - Geodesic.chartChristoffelContraction (I := I) g β
+                (fderiv ℝ (chartTransition (I := I) α β)
+                  (extChartAt I α (γ τ))
+                  (deriv (fun σ => extChartAt I α (γ σ)) τ))
+                (fderiv ℝ (chartTransition (I := I) α β)
+                  (extChartAt I α (γ τ)) (chartFieldRep (I := I) γ α J τ))
+                (extChartAt I β (γ τ))
+            = fderiv ℝ (fderiv ℝ (chartTransition (I := I) α β))
+                (extChartAt I α (γ τ))
+                (deriv (fun σ => extChartAt I α (γ σ)) τ)
+                (chartFieldRep (I := I) γ α J τ)
+              + fderiv ℝ (chartTransition (I := I) α β)
+                (extChartAt I α (γ τ))
+                (chartFieldRep (I := I) γ α DJ τ
+                  - Geodesic.chartChristoffelContraction (I := I) g α
+                    (deriv (fun σ => extChartAt I α (γ σ)) τ)
+                    (chartFieldRep (I := I) γ α J τ)
+                    (extChartAt I α (γ τ))) := by
+        calc
+          _ = fderiv ℝ (fderiv ℝ (chartTransition (I := I) α β))
+                (extChartAt I α (γ τ))
+                (deriv (fun σ => extChartAt I α (γ σ)) τ)
+                (chartFieldRep (I := I) γ α J τ)
+              + fderiv ℝ (chartTransition (I := I) α β)
+                (extChartAt I α (γ τ)) (chartFieldRep (I := I) γ α DJ τ)
+              - (Geodesic.chartChristoffelContraction (I := I) g β
+                  (fderiv ℝ (chartTransition (I := I) α β)
+                    (extChartAt I α (γ τ))
+                    (deriv (fun σ => extChartAt I α (γ σ)) τ))
+                  (fderiv ℝ (chartTransition (I := I) α β)
+                    (extChartAt I α (γ τ)) (chartFieldRep (I := I) γ α J τ))
+                  (extChartAt I β (γ τ))
+                + fderiv ℝ (fderiv ℝ (chartTransition (I := I) α β))
+                    (extChartAt I α (γ τ))
+                    (deriv (fun σ => extChartAt I α (γ σ)) τ)
+                    (chartFieldRep (I := I) γ α J τ)) := by abel
+          _ = _ := by rw [← hlaw', map_sub]; abel
+      simpa only [hfd, hduβ, hDJτ, hJτ] using halg
+    rw [heq]
+    exact hval
+  · -- Second pair equation; curvature is equivariant under the same transport.
+    obtain ⟨hJrep, hDJrep, hC', hduβ, hfd⟩ := key τ hτ
+    have hxα := hsrcα τ hτ
+    have hxβ := hsrcβ τ hτ
+    have hxα' : γ τ ∈ (extChartAt I α).source := by
+      rw [extChartAt_source]
+      exact hxα
+    have hxβ' : γ τ ∈ (extChartAt I β).source := by
+      rw [extChartAt_source]
+      exact hxβ
+    have hJτ : chartFieldRep (I := I) γ β J τ
+        = fderiv ℝ (chartTransition (I := I) α β)
+            (extChartAt I α (γ τ)) (chartFieldRep (I := I) γ α J τ) :=
+      hJrep.self_of_nhds
+    have hDJτ : chartFieldRep (I := I) γ β DJ τ
+        = fderiv ℝ (chartTransition (I := I) α β)
+            (extChartAt I α (γ τ)) (chartFieldRep (I := I) γ α DJ τ) :=
+      hDJrep.self_of_nhds
+    have hval := (hC'.hasDerivWithinAt.clm_apply
+      (h.hasDerivWithinAt_snd τ hτ)).congr_of_eventuallyEq
+      (hDJrep.filter_mono nhdsWithin_le_nhds) hDJrep.self_of_nhds
+    have heq : -(Jacobi.chartCurvature (I := I) g β (extChartAt I β (γ τ))
+            (chartFieldRep (I := I) γ β J τ)
+            (deriv (fun σ => extChartAt I β (γ σ)) τ)
+            (deriv (fun σ => extChartAt I β (γ σ)) τ))
+        - Geodesic.chartChristoffelContraction (I := I) g β
+            (deriv (fun σ => extChartAt I β (γ σ)) τ)
+            (chartFieldRep (I := I) γ β DJ τ) (extChartAt I β (γ τ))
+        = fderiv ℝ (fderiv ℝ (chartTransition (I := I) α β))
+            (extChartAt I α (γ τ))
+            (deriv (fun σ => extChartAt I α (γ σ)) τ)
+            (chartFieldRep (I := I) γ α DJ τ)
+          + fderiv ℝ (chartTransition (I := I) α β)
+            (extChartAt I α (γ τ))
+            (-(Jacobi.chartCurvature (I := I) g α (extChartAt I α (γ τ))
+                  (chartFieldRep (I := I) γ α J τ)
+                  (deriv (fun σ => extChartAt I α (γ σ)) τ)
+                  (deriv (fun σ => extChartAt I α (γ σ)) τ))
+              - Geodesic.chartChristoffelContraction (I := I) g α
+                  (deriv (fun σ => extChartAt I α (γ σ)) τ)
+                  (chartFieldRep (I := I) γ α DJ τ)
+                  (extChartAt I α (γ τ))) := by
+      have hlaw := chartChristoffelContraction_change (I := I) g β α
+        hxβ hxα (deriv (fun σ => extChartAt I α (γ σ)) τ)
+        (chartFieldRep (I := I) γ α DJ τ)
+      have hcurv := chartCurvature_coordChange (I := I) g hxα hxβ
+        (chartFieldRep (I := I) γ α J τ)
+        (deriv (fun σ => extChartAt I α (γ σ)) τ)
+        (deriv (fun σ => extChartAt I α (γ σ)) τ)
+      have hlaw' :
+          fderiv ℝ (chartTransition (I := I) α β)
+              (extChartAt I α (γ τ))
+              (Geodesic.chartChristoffelContraction (I := I) g α
+                (deriv (fun σ => extChartAt I α (γ σ)) τ)
+                (chartFieldRep (I := I) γ α DJ τ) (extChartAt I α (γ τ)))
+            = Geodesic.chartChristoffelContraction (I := I) g β
+                (fderiv ℝ (chartTransition (I := I) α β)
+                  (extChartAt I α (γ τ))
+                  (deriv (fun σ => extChartAt I α (γ σ)) τ))
+                (fderiv ℝ (chartTransition (I := I) α β)
+                  (extChartAt I α (γ τ)) (chartFieldRep (I := I) γ α DJ τ))
+                (extChartAt I β (γ τ))
+              + fderiv ℝ (fderiv ℝ (chartTransition (I := I) α β))
+                  (extChartAt I α (γ τ))
+                  (deriv (fun σ => extChartAt I α (γ σ)) τ)
+                  (chartFieldRep (I := I) γ α DJ τ) := by
+        rw [hfd]
+        convert hlaw using 1 <;> rfl
+      have hgamma :
+          Geodesic.chartChristoffelContraction (I := I) g β
+              (fderiv ℝ (chartTransition (I := I) α β)
+                (extChartAt I α (γ τ))
+                (deriv (fun σ => extChartAt I α (γ σ)) τ))
+              (fderiv ℝ (chartTransition (I := I) α β)
+                (extChartAt I α (γ τ)) (chartFieldRep (I := I) γ α DJ τ))
+              (extChartAt I β (γ τ))
+            = fderiv ℝ (chartTransition (I := I) α β)
+                (extChartAt I α (γ τ))
+                (Geodesic.chartChristoffelContraction (I := I) g α
+                  (deriv (fun σ => extChartAt I α (γ σ)) τ)
+                  (chartFieldRep (I := I) γ α DJ τ)
+                  (extChartAt I α (γ τ)))
+              - fderiv ℝ (fderiv ℝ (chartTransition (I := I) α β))
+                  (extChartAt I α (γ τ))
+                  (deriv (fun σ => extChartAt I α (γ σ)) τ)
+                  (chartFieldRep (I := I) γ α DJ τ) := by
+        calc
+          _ = (_ + fderiv ℝ (fderiv ℝ (chartTransition (I := I) α β))
+                (extChartAt I α (γ τ))
+                (deriv (fun σ => extChartAt I α (γ σ)) τ)
+                (chartFieldRep (I := I) γ α DJ τ))
+              - fderiv ℝ (fderiv ℝ (chartTransition (I := I) α β))
+                  (extChartAt I α (γ τ))
+                  (deriv (fun σ => extChartAt I α (γ σ)) τ)
+                  (chartFieldRep (I := I) γ α DJ τ) := by abel
+          _ = _ := by rw [← hlaw'];
+      have hcurv' :
+          Jacobi.chartCurvature (I := I) g β (extChartAt I β (γ τ))
+              (fderiv ℝ (chartTransition (I := I) α β)
+                (extChartAt I α (γ τ)) (chartFieldRep (I := I) γ α J τ))
+              (fderiv ℝ (chartTransition (I := I) α β)
+                (extChartAt I α (γ τ))
+                (deriv (fun σ => extChartAt I α (γ σ)) τ))
+              (fderiv ℝ (chartTransition (I := I) α β)
+                (extChartAt I α (γ τ))
+                (deriv (fun σ => extChartAt I α (γ σ)) τ))
+            = fderiv ℝ (chartTransition (I := I) α β)
+                (extChartAt I α (γ τ))
+                (Jacobi.chartCurvature (I := I) g α (extChartAt I α (γ τ))
+                  (chartFieldRep (I := I) γ α J τ)
+                  (deriv (fun σ => extChartAt I α (γ σ)) τ)
+                  (deriv (fun σ => extChartAt I α (γ σ)) τ)) := by
+        rw [hfd]
+        convert hcurv using 1 <;> rfl
+      have halg :
+          -(Jacobi.chartCurvature (I := I) g β (extChartAt I β (γ τ))
+              (fderiv ℝ (chartTransition (I := I) α β)
+                (extChartAt I α (γ τ)) (chartFieldRep (I := I) γ α J τ))
+              (fderiv ℝ (chartTransition (I := I) α β)
+                (extChartAt I α (γ τ))
+                (deriv (fun σ => extChartAt I α (γ σ)) τ))
+              (fderiv ℝ (chartTransition (I := I) α β)
+                (extChartAt I α (γ τ))
+                (deriv (fun σ => extChartAt I α (γ σ)) τ)))
+            - Geodesic.chartChristoffelContraction (I := I) g β
+                (fderiv ℝ (chartTransition (I := I) α β)
+                  (extChartAt I α (γ τ))
+                  (deriv (fun σ => extChartAt I α (γ σ)) τ))
+                (fderiv ℝ (chartTransition (I := I) α β)
+                  (extChartAt I α (γ τ)) (chartFieldRep (I := I) γ α DJ τ))
+                (extChartAt I β (γ τ))
+            = fderiv ℝ (fderiv ℝ (chartTransition (I := I) α β))
+                (extChartAt I α (γ τ))
+                (deriv (fun σ => extChartAt I α (γ σ)) τ)
+                (chartFieldRep (I := I) γ α DJ τ)
+              + fderiv ℝ (chartTransition (I := I) α β)
+                (extChartAt I α (γ τ))
+                (-(Jacobi.chartCurvature (I := I) g α (extChartAt I α (γ τ))
+                    (chartFieldRep (I := I) γ α J τ)
+                    (deriv (fun σ => extChartAt I α (γ σ)) τ)
+                    (deriv (fun σ => extChartAt I α (γ σ)) τ))
+                  - Geodesic.chartChristoffelContraction (I := I) g α
+                    (deriv (fun σ => extChartAt I α (γ σ)) τ)
+                    (chartFieldRep (I := I) γ α DJ τ)
+                    (extChartAt I α (γ τ))) := by
+        rw [hcurv', hgamma]
+        simp only [map_neg, map_sub]
+        abel
+      simpa only [hfd, hduβ, hDJτ, hJτ] using halg
+    rw [heq]
+    exact hval
 
 /-- **Math.** Petersen §6.1, `def:pet-ch6-jacobi-field`, **interval form**: `J` solves the
 Jacobi equation `J̈ + R(J, ċ)ċ = 0` at every time of `s`. `Ch06/JacobiFields.lean`'s

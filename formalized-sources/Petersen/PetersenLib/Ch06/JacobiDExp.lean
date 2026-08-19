@@ -539,7 +539,7 @@ theorem jacobiField_dexp_relation (g : RiemannianMetric I M) (p : M) :
   have hconst : (fun s : ℝ => extChartAt I (f 0 0) (f s 0))
       = fun _ : ℝ => extChartAt I (f 0 0) (f 0 0) := by
     funext s; rw [hf00 s]
-  rw [hconst, deriv_const']
+  rw [hconst, deriv_const']; try rfl
 
 end PetersenLib
 

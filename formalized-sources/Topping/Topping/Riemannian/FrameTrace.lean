@@ -29,7 +29,8 @@ computed in **any** orthonormal basis of `T_pM` (`traceFirstTwo_eq_sum_of_frame`
 `normSqAt_eq_sum_of_frame`). For a local *smooth* orthonormal frame — which
 `MorganTianLib.exists_orthonormalFrame` produces — this turns the per-point sum
 into a sum of smooth functions on a neighbourhood, which is what termwise
-differentiation of `|A|²` and `ΔA` needs.
+differentiation of `|A|²` and `ΔA` needs (memory item I-0494, asked for twice by
+the maximum-principle lane in I-0482/I-0496).
 
 The proofs go through DoCarmo's `Riemannian.bilinTrace` and Petersen's
 `OrthonormalBasis.sum_apply_diagonal_invariant`: a diagonal sum over an
@@ -192,6 +193,58 @@ theorem traceFirstTwo_eq_sum_of_frame (g : RiemannianMetric I M) {k : ℕ}
     (pairBilin hA v)]
   exact Finset.sum_congr rfl fun i _ => pairBilin_apply hA v (e i) (e i)
 
+/-! ### Expanding one slot over a frame -/
+
+omit [CompleteSpace E] in
+/-- **Math.** **Expanding a slot's argument over an orthonormal basis.** For a
+pointwise multilinear `A` and an orthonormal basis `e` of `T_pM`,
+`A(..., w, ...) = sum_m <e_m, w> A(..., e_m, ...)` in any single slot `i`.
+
+This is `IsPointwiseMultilinear` doing the work it was defined for: the value is
+linear in slot `i`, so substituting the orthonormal expansion of `w` and
+distributing gives the sum. -/
+theorem pointwiseValue_expand_slot (g : RiemannianMetric I M) {k : ℕ}
+    {A : CovTensorField I M k} {p : M} (hA : IsPointwiseMultilinear A p)
+    (i : Fin k) (v : Fin k → TangentSpace I p) (w : TangentSpace I p)
+    {ι : Type*} [Fintype ι]
+    (e : letI : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
+        ⟨g.toRiemannianMetric⟩
+      OrthonormalBasis ι ℝ (TangentSpace I p)) :
+    letI : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
+      ⟨g.toRiemannianMetric⟩
+    pointwiseValue A p (Function.update v i w)
+      = ∑ m, g.metricInner p (e m) w *
+          pointwiseValue A p (Function.update v i (e m)) := by
+  classical
+  letI : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
+    ⟨g.toRiemannianMetric⟩
+  have hexp : w = ∑ m, (inner ℝ (e m) w) • (e m : TangentSpace I p) := by
+    have hcoef : ∀ m, (inner ℝ (e m) w) • (e m : TangentSpace I p)
+        = (e.repr w).ofLp m • e m := fun m => by rw [e.repr_apply_apply w m]
+    rw [Finset.sum_congr rfl fun m _ => hcoef m]
+    exact (e.sum_repr w).symm
+  have hsum : ∀ (s : Finset _) (c : _ → ℝ),
+      pointwiseValue A p (Function.update v i (∑ m ∈ s, c m • (e m : TangentSpace I p)))
+        = ∑ m ∈ s, c m * pointwiseValue A p (Function.update v i (e m)) := by
+    intro s c
+    induction s using Finset.induction_on with
+    | empty =>
+        rw [Finset.sum_empty, Finset.sum_empty]
+        have h0 : pointwiseValue A p (Function.update v i (0 : TangentSpace I p))
+            = 0 := by
+          have h := hA.smul i v 0 (0 : TangentSpace I p)
+          rw [zero_smul] at h
+          simpa using h
+        exact h0
+    | insert a t ha IH =>
+        rw [Finset.sum_insert ha, hA.add i v _ _, IH, Finset.sum_insert ha,
+          hA.smul i v (c a) (e a)]
+  have hbridge : ∀ m, g.metricInner p (e m) w = inner ℝ (e m) w := fun m =>
+    (MorganTianLib.inner_tangentSpace_eq_metricInner g p (e m) w).symm
+  rw [Finset.sum_congr rfl (fun m (_ : m ∈ Finset.univ) => by rw [hbridge m])]
+  conv_lhs => rw [hexp]
+  rw [hsum Finset.univ (fun m => inner ℝ (e m) w)]
+
 /-! ### Frame independence of `|A|²`
 
 The square norm is not a single trace: it is a `k`-fold sum of squares. The
@@ -334,7 +387,8 @@ it.** For a pointwise multilinear covariant `k`-tensor field and any orthonormal
 basis `e` of `T_pM`,
 `|A|²(p) = Σ_{i₁…i_k} A(e_{i₁},…,e_{i_k})²`.
 
-This resolves the regularity obstruction in the curvature Bochner identity: `normSqAt`
+This is the theorem the maximum-principle lane asked for twice (I-0482, I-0496)
+and the recorded blocker of the curvature Bochner identity (I-0494): `normSqAt`
 is *defined* by `stdOrthonormalBasis`, a per-point choice, so `q ↦ |A|²(q)` was
 not visibly a sum of smooth functions. Composed with
 `MorganTianLib.exists_orthonormalFrame` — which gives *smooth* fields that are
@@ -372,7 +426,8 @@ provided `A` is pointwise multilinear at each point of that neighbourhood.
 The right-hand side is now a *fixed finite sum of the fields' component
 functions*, so its regularity is that of `A(F_{i₁},…,F_{i_k})` — no per-point
 basis remains. This is the statement that turns `HasSmoothComponents A` into
-smoothness of `|A|²`, as required by the curvature Bochner identity. -/
+smoothness of `|A|²`, which is what the curvature Bochner identity was blocked
+on (I-0494). -/
 theorem exists_smooth_frame_normSqAt (g : RiemannianMetric I M) [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     {k : ℕ} (A : CovTensorField I M k) (p : M) :

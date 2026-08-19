@@ -8,7 +8,7 @@ The weak maximum principle (`Topping.weak_maximum_principle`) concludes
 `u(·,t) ≤ φ(t)`. Topping's Remark 3.1.3 records the strengthening: the inequality is
 *strict* for `t ∈ (0,T]` unless `u ≡ φ` on all of `M × [0,T]`.
 
-This module does not rebuild the Hopf barrier. Morgan--Tian Chapter 2 proves
+This module does not rebuild the Hopf barrier. MT.CH02 proved
 `MorganTianLib.hopf_strong_maximum` — if `Δh ≥ 0` on a connected open `U` and `h`
 attains its supremum over `U`, then `h` is constant on `U` — and that is precisely
 the elliptic ingredient. What is added here is the reduction of Topping's

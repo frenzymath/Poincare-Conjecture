@@ -247,7 +247,7 @@ theorem exists_pairMap_hasStrictFDerivAt_equiv_ball
   have hcontf : ContinuousOn (fderiv ℝ G) S :=
     hGC1.continuousOn_fderiv_of_isOpen hSopen le_rfl
   -- the shear as a continuous linear equivalence
-  let shear := ContinuousLinearEquiv.shearAddRight ℝ E
+  let shear := ContinuousLinearEquiv.shearAddRight E
   have hshear_coe : (shear : (E × E) →L[ℝ] E × E)
       = (ContinuousLinearMap.fst ℝ E E).prod
           ((ContinuousLinearMap.fst ℝ E E) + (ContinuousLinearMap.snd ℝ E E)) :=
@@ -417,7 +417,7 @@ theorem exists_totallyNormal_c1_diffeo (g : RiemannianMetric I M) (p : M) :
     fun x => ((x.1 : E), (Z ((x.1, T⁻¹ • x.2) : E × E) T).1)
   have hTIcc : T ∈ Icc (-ε) ε := ⟨by linarith [hT, hε], hTε.le⟩
   -- the shear as a continuous linear equivalence
-  let shear := ContinuousLinearEquiv.shearAddRight ℝ E
+  let shear := ContinuousLinearEquiv.shearAddRight E
   have hshear_coe : (shear : (E × E) →L[ℝ] E × E)
       = (ContinuousLinearMap.fst ℝ E E).prod
           ((ContinuousLinearMap.fst ℝ E E) + (ContinuousLinearMap.snd ℝ E E)) :=

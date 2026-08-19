@@ -288,6 +288,7 @@ theorem isNonnegMinimizingExpPoint_of_mem_segmentDomain
   have hcut : ENNReal.ofReal r <
       cutTime (I := I) g hg p (u : TangentSpace I p) := by
     apply (smul_mem_segmentDomain_iff_lt_cutTime (I := I) g hg p hr).1
+    change (r • (u : TangentSpace I p)) ∈ segmentDomain (I := I) g hg p
     rw [← hvdecomp_tangent]
     exact hv
   rw [cutTime, lt_iSup_iff] at hcut
@@ -416,6 +417,87 @@ theorem riemannianEDist_expMapGlobal_le_affineChord_of_nonneg
   simpa using (expMapGlobal_dcShrinksMetricOn_segmentDomain_of_nonneg
     (I := I) g hg p hsec).riemannianEDist_comp_le_pathELength
       hexp hdiff hsegment (by norm_num)
+
+set_option backward.isDefEq.respectTransparency false in
+/-- **Math.** The affine chord in a fixed tangent metric has constant speed, so its
+length is the square root of the metric inner product of its endpoint difference. -/
+theorem pathELength_affineChord_tangentSpaceMetricAt
+    (g : RiemannianMetric I M) (p : M) (v w : E) :
+    letI : RiemannianBundle (fun x : E ↦ TangentSpace 𝓘(ℝ, E) x) :=
+      ⟨(tangentSpaceMetricAt g p).toRiemannianMetric⟩
+    pathELength 𝓘(ℝ, E) (fun t : ℝ => (1 - t) • v + t • w) 0 1 =
+      ENNReal.ofReal (Real.sqrt (g.metricInner p
+        ((w - v : E) : TangentSpace I p) ((w - v : E) : TangentSpace I p))) := by
+  letI : RiemannianBundle (fun x : E ↦ TangentSpace 𝓘(ℝ, E) x) :=
+    ⟨(tangentSpaceMetricAt g p).toRiemannianMetric⟩
+  rw [pathELength_eq_lintegral_mfderiv_Ioo]
+  have hderiv : ∀ t : ℝ,
+      mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) (fun t : ℝ => (1 - t) • v + t • w) t 1 = w - v := by
+    intro t
+    rw [mfderiv_eq_fderiv]
+    change (fderiv ℝ (fun t : ℝ => (1 - t) • v + t • w) t) (1 : ℝ) = (w - v : E)
+    rw [fderiv_apply_one_eq_deriv]
+    have h : HasDerivAt (fun t : ℝ => (1 - t) • v + t • w) (-v + w) t := by
+      convert (((hasDerivAt_const t (1 : ℝ)).sub (hasDerivAt_id t)).smul_const v).add
+        ((hasDerivAt_id t).smul_const w) using 1
+      · funext y
+        simp
+      · rw [zero_sub, neg_one_smul, one_smul]
+    calc
+      deriv (fun t : ℝ => (1 - t) • v + t • w) t = -v + w := h.deriv
+      _ = w - v := by abel
+  calc
+    ∫⁻ t in Ioo (0 : ℝ) 1,
+        ‖mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E)
+          (fun t : ℝ => (1 - t) • v + t • w) t 1‖ₑ =
+        ∫⁻ _ in Ioo (0 : ℝ) 1,
+          ENNReal.ofReal (Real.sqrt (g.metricInner p
+            ((w - v : E) : TangentSpace I p) ((w - v : E) : TangentSpace I p))) := by
+      apply setLIntegral_congr_fun measurableSet_Ioo
+      intro t ht
+      dsimp
+      rw [Riemannian.enorm_tangent_eq_sqrt_metricInner
+        (tangentSpaceMetricAt g p) ((1 - t) • v + t • w), hderiv t]
+      rfl
+    _ = ENNReal.ofReal (Real.sqrt (g.metricInner p
+        ((w - v : E) : TangentSpace I p) ((w - v : E) : TangentSpace I p))) := by
+      simp [Real.volume_Ioo]
+
+set_option backward.isDefEq.respectTransparency false in
+/-- **Math.** The local nonnegative-curvature affine-chord estimate in explicit
+tangent-metric form. The segment-domain hypothesis is retained because the global
+cut-locus and hinge arguments are separate parts of length comparison. -/
+theorem riemannianEDist_expMapGlobal_le_affineChord_metricInner_of_nonneg
+    (g : RiemannianMetric I M) (hg : g.IsRiemannianDist) [CompleteSpace M]
+    (p : M)
+    (hsec : ∀ q : M, ∀ z₁ z₂ : TangentSpace I q,
+      0 ≤ sectionalCurvatureAt g g.leviCivitaConnection q z₁ z₂)
+    (v w : E)
+    (hsegment : MapsTo (fun t : ℝ => (1 - t) • v + t • w) (Icc (0 : ℝ) 1)
+      (segmentDomain (I := I) g hg p)) :
+    letI : RiemannianBundle (fun x : E ↦ TangentSpace 𝓘(ℝ, E) x) :=
+      ⟨(tangentSpaceMetricAt g p).toRiemannianMetric⟩
+    letI : RiemannianBundle (fun x : M ↦ TangentSpace I x) :=
+      ⟨g.toRiemannianMetric⟩
+    riemannianEDist I
+        (expMapGlobal (I := I) g hg p v)
+        (expMapGlobal (I := I) g hg p w) ≤
+      ENNReal.ofReal (Real.sqrt (g.metricInner p
+        ((w - v : E) : TangentSpace I p) ((w - v : E) : TangentSpace I p))) := by
+  letI : RiemannianBundle (fun x : E ↦ TangentSpace 𝓘(ℝ, E) x) :=
+    ⟨(tangentSpaceMetricAt g p).toRiemannianMetric⟩
+  letI : RiemannianBundle (fun x : M ↦ TangentSpace I x) :=
+    ⟨g.toRiemannianMetric⟩
+  calc
+    riemannianEDist I
+        (expMapGlobal (I := I) g hg p v)
+        (expMapGlobal (I := I) g hg p w) ≤
+        pathELength 𝓘(ℝ, E) (fun t : ℝ => (1 - t) • v + t • w) 0 1 :=
+      riemannianEDist_expMapGlobal_le_affineChord_of_nonneg
+        (I := I) g hg p hsec v w hsegment
+    _ = ENNReal.ofReal (Real.sqrt (g.metricInner p
+        ((w - v : E) : TangentSpace I p) ((w - v : E) : TangentSpace I p))) :=
+      pathELength_affineChord_tangentSpaceMetricAt (I := I) g p v w
 
 end MorganTianLib
 

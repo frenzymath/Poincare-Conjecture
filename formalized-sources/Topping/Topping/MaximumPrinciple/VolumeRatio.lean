@@ -1,4 +1,6 @@
+import MorganTianLib.Ch01.RiemannianMeasure
 import Topping.MaximumPrinciple.Volume
+import Topping.RicciFlow.ScalarEvolutionUnconditional
 
 /-!
 # The volume ratio decreases (Topping, Cor. 3.2.7)
@@ -99,6 +101,31 @@ def IsVolumeOfMeasureOn (g : ℝ → RiemannianMetric I M) (V : ℝ → ℝ)
     (μ : ℝ → Measure M) (J : Set ℝ) : Prop :=
   ∀ t ∈ J, (μ t).real univ = V t ∧
     Integrable (fun p => scalarCurvatureAt (g t) p) (μ t)
+
+section CanonicalVolumeMeasure
+
+variable [MeasurableSpace E] [BorelSpace E] [CompactSpace M] [BorelSpace M]
+  [SecondCountableTopology M] [Nonempty M]
+
+/-- **Math.** On a closed manifold, the canonical Riemannian measure genuinely
+witnesses `IsVolumeOfMeasureOn`: its associated volume is its total mass, and
+scalar curvature is integrable because it is smooth. -/
+theorem isVolumeOfMeasureOn_riemannianMeasure
+    (g : ℝ → RiemannianMetric I M) (μ₀ : Measure E) (J : Set ℝ)
+    (hfinite : ∀ t : ℝ, IsFiniteMeasure
+      (MorganTianLib.riemannianMeasure (I := I) (g t) μ₀)) :
+    IsVolumeOfMeasureOn g
+      (fun t => (MorganTianLib.riemannianMeasure (I := I) (g t) μ₀).real univ)
+      (fun t => MorganTianLib.riemannianMeasure (I := I) (g t) μ₀) J := by
+  intro t _ht
+  letI := hfinite t
+  refine ⟨rfl, ?_⟩
+  exact (scalarCurvatureAt_contMDiff (g t)).continuous.integrable_of_hasCompactSupport
+    (HasCompactSupport.of_compactSpace _)
+
+#print axioms Topping.isVolumeOfMeasureOn_riemannianMeasure
+
+end CanonicalVolumeMeasure
 
 set_option linter.unusedSectionVars false in
 /-- **Math.** A pointwise lower bound on `R` integrates to `∫R\,dV ≥ c·V(t)`: the

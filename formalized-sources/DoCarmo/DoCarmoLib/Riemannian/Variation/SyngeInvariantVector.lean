@@ -118,6 +118,23 @@ theorem det_eq_neg_one_of_orientation_reversing (A : V ≃ₗᵢ[ℝ] V)
     (Orientation.map_eq_neg_iff_det_neg o A.toLinearEquiv (by simp)).mp hA
   nlinarith
 
+/-- **Math.** The parity-dependent orientation hypothesis in Synge--Weinstein
+is exactly the determinant identity needed by the invariant-vector lemma: an
+orthogonal map preserving orientation in even dimension and reversing it in
+odd dimension has determinant `(-1)^n`. -/
+theorem det_eq_neg_one_pow_of_orientation_parity {n : ℕ} (A : V ≃ₗᵢ[ℝ] V)
+    (o : Orientation ℝ V (Fin (Module.finrank ℝ V)))
+    (hpres : Even n →
+      Orientation.map (Fin (Module.finrank ℝ V)) A.toLinearEquiv o = o)
+    (hrev : Odd n →
+      Orientation.map (Fin (Module.finrank ℝ V)) A.toLinearEquiv o = -o) :
+    LinearMap.det (A : V →ₗ[ℝ] V) = (-1) ^ n := by
+  rcases Nat.even_or_odd n with hn | hn
+  · rw [hn.neg_one_pow]
+    exact det_eq_one_of_orientation_preserving A o (hpres hn)
+  · rw [hn.neg_one_pow]
+    exact det_eq_neg_one_of_orientation_reversing A o (hrev hn)
+
 /-- **Math.** do Carmo Ch. 9, **Lemma 3.8**: an orthogonal transformation `A` of `ℝ^{n-1}`
 with `det A = (-1)^n` leaves a non-zero vector invariant.
 
@@ -146,5 +163,19 @@ theorem exists_fixed_vector_of_det_eq {n : ℕ} (A : V ≃ₗᵢ[ℝ] V)
   refine ⟨v, hv0, ?_⟩
   have hsz : (A : V →ₗ[ℝ] V) v - v = 0 := by simpa using hv
   simpa using sub_eq_zero.mp hsz
+
+/-- **Math.** Synge--Weinstein's parity-dependent orientation hypothesis
+directly yields a nonzero invariant vector for an orthogonal map on the
+codimension-one space. -/
+theorem exists_fixed_vector_of_orientation_parity {n : ℕ} (A : V ≃ₗᵢ[ℝ] V)
+    (o : Orientation ℝ V (Fin (Module.finrank ℝ V)))
+    (hn : Module.finrank ℝ V + 1 = n)
+    (hpres : Even n →
+      Orientation.map (Fin (Module.finrank ℝ V)) A.toLinearEquiv o = o)
+    (hrev : Odd n →
+      Orientation.map (Fin (Module.finrank ℝ V)) A.toLinearEquiv o = -o) :
+    ∃ v : V, v ≠ 0 ∧ A v = v :=
+  exists_fixed_vector_of_det_eq A hn
+    (det_eq_neg_one_pow_of_orientation_parity A o hpres hrev)
 
 end Riemannian.Variation

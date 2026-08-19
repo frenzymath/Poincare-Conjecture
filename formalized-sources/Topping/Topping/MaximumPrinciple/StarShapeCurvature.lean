@@ -10,7 +10,7 @@ exhibiting the correction of Topping 2.5.1 — the eight `\Ric`-of-curvature and
 `B`-terms — as `eval` of one concrete shape, and recovering the `g`-uniform bound
 from the general theorem.
 
-The point is not a better constant. The direct theorem
+The point is not a better constant. TOP.CH02's
 `exists_uniform_normAt_curvatureEvolutionCorrection_le` already gives `12n` by a
 hand-built triangle-inequality argument over the eight terms, and that is the bound
 Proposition 3.2.10 consumes. The point is that the *same* conclusion now follows

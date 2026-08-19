@@ -21,17 +21,18 @@ into half 2's `DV/dt`.  Here it is carried as the **hypothesis** `hsymm`; see `#
 
 ## Scope — what is and is not claimed
 
-The conclusion is do Carmo's formula (1) **on a single segment carrying no breakpoint**:
+The first theorem below proves do Carmo's formula (1) **on a single segment carrying no
+breakpoint**:
 $$\frac{1}{2}E'(0)
   = -\int_a^b \Big\langle V, \frac{D}{dt}\frac{dc}{dt}\Big\rangle dt
     - \Big\langle V(a), \frac{dc}{dt}(a)\Big\rangle
     + \Big\langle V(b), \frac{dc}{dt}(b)\Big\rangle .$$
-do Carmo's jump sum `∑_i ⟨V(t_i), Δ(dc/dt)(t_i)⟩` arises by summing this over the segments
-`[t_i, t_{i+1}]` of his subdivision, where the boundary terms at the interior breakpoints
-telescope into the differences `dc/dt(t_i^+) − dc/dt(t_i^-)`.  That summation is **not**
-performed here, so `prop:dc-ch9-2-4` is **not** tagged by this file: what is proved is
-formula (1) for a variation of a curve that is differentiable across `[a, b]`, which is do
-Carmo's `k = 0` case.
+The two finite-subdivision theorems then sum this formula over the segments
+`[t_i, t_{i+1}]`.  Their boundary terms telescope into do Carmo's jump sum
+`∑_i ⟨V(t_i), dc/dt(t_i^+) − dc/dt(t_i^-)⟩`.  The geometric wrapper exposes the actual
+variational field, one-sided segment velocities, covariant accelerations, and integrals;
+extracting its per-segment hypotheses from an arbitrary `IsVariation` is a separate
+regularity step.
 
 `hsymm` is a hypothesis, not a theorem, in this file.  It is exactly do Carmo's "using the
 symmetry of the Riemannian connection" step, and — this matters for discharging it — it is
@@ -187,6 +188,144 @@ theorem hasDerivAt_dcEnergy_eq_piecewise_first_variation
   apply hsum.congr_of_eventuallyEq
   filter_upwards [hint] with s hs
   exact dcEnergy_eq_sum_subdivision (I := I) g (fun t => f (s, t)) tau (k + 1) hs
+
+set_option linter.overlappingInstances false in
+/-- **Math.** do Carmo Ch. 9, Prop. 2.4 (`prop:dc-ch9-2-4`), formula (1) over the finite
+subdivision in `def:dc-ch9-2-1`, with its geometric terms exposed.
+
+The field `V` is the common variational field.  On segment `i`, `W i` is the one-sided
+velocity field and `DW i` is its covariant derivative.  Consequently the interior term at
+`tau (i + 1)` is exactly
+`<V, W (i + 1) - W i>`, written as the difference of the two metric pairings so that no
+vector-space identification between different tangent fibers is hidden.
+
+Each hypothesis in `hsegment` is the smooth-segment formula supplied by
+`hasDerivAt_dcEnergy_eq_first_variation`.  Its `hsymm` hypothesis is precisely the symmetry
+of the Riemannian connection used by do Carmo, implemented by
+`covariant_sndFDeriv_symm` in `Geodesic/SymmetryLemma.lean`.  This theorem performs the
+remaining analytic assembly: finite additivity of energy, differentiation of the finite
+sum, and telescoping of the one-sided endpoint terms. -/
+theorem hasDerivAt_dcEnergy_eq_piecewise_first_variation_of_segment_formulas
+    {g : RiemannianMetric I M} {f : ℝ × ℝ → M} {tau : ℕ → ℝ} {k : ℕ} {s0 : ℝ}
+    {V : ℝ → E} {W DW : ℕ → ℝ → E}
+    (hint : ∀ᶠ s in nhds s0, ∀ i < k + 1, IntervalIntegrable
+      (fun t => g.metricInner (f (s, t))
+        (DCVelocity (I := I) (fun u => f (s, u)) t)
+        (DCVelocity (I := I) (fun u => f (s, u)) t))
+      volume (tau i) (tau (i + 1)))
+    (hsegment : ∀ i < k + 1,
+      HasDerivAt
+        (fun s => DCEnergy (I := I) g (fun t => f (s, t)) (tau i) (tau (i + 1)))
+        (2 * ((g.metricInner (f (s0, tau (i + 1)))
+                  (V (tau (i + 1)) : TangentSpace I (f (s0, tau (i + 1))))
+                  (W i (tau (i + 1)))
+                - g.metricInner (f (s0, tau i))
+                  (V (tau i) : TangentSpace I (f (s0, tau i))) (W i (tau i)))
+              - ∫ t in tau i..tau (i + 1), g.metricInner (f (s0, t))
+                  (V t : TangentSpace I (f (s0, t))) (DW i t))) s0) :
+    HasDerivAt
+      (fun s => DCEnergy (I := I) g (fun t => f (s, t)) (tau 0) (tau (k + 1)))
+      (2 * (g.metricInner (f (s0, tau (k + 1)))
+                (V (tau (k + 1)) : TangentSpace I (f (s0, tau (k + 1))))
+                (W k (tau (k + 1)))
+              - g.metricInner (f (s0, tau 0))
+                (V (tau 0) : TangentSpace I (f (s0, tau 0))) (W 0 (tau 0))
+            - ∑ i ∈ Finset.range k,
+                (g.metricInner (f (s0, tau (i + 1)))
+                    (V (tau (i + 1)) : TangentSpace I (f (s0, tau (i + 1))))
+                    (W (i + 1) (tau (i + 1)))
+                  - g.metricInner (f (s0, tau (i + 1)))
+                    (V (tau (i + 1)) : TangentSpace I (f (s0, tau (i + 1))))
+                    (W i (tau (i + 1))))
+            - ∑ i ∈ Finset.range (k + 1),
+                ∫ t in tau i..tau (i + 1), g.metricInner (f (s0, t))
+                  (V t : TangentSpace I (f (s0, t))) (DW i t))) s0 := by
+  let bulk : ℕ → ℝ := fun i =>
+    ∫ t in tau i..tau (i + 1), g.metricInner (f (s0, t))
+      (V t : TangentSpace I (f (s0, t))) (DW i t)
+  let minus : ℕ → ℝ := fun j =>
+    g.metricInner (f (s0, tau j))
+      (V (tau j) : TangentSpace I (f (s0, tau j))) (W (j - 1) (tau j))
+  let plus : ℕ → ℝ := fun j =>
+    g.metricInner (f (s0, tau j))
+      (V (tau j) : TangentSpace I (f (s0, tau j))) (W j (tau j))
+  have h := hasDerivAt_dcEnergy_eq_piecewise_first_variation
+    (I := I) (g := g) (f := f) (tau := tau) (k := k) (s0 := s0)
+    (bulk := bulk) (minus := minus) (plus := plus) hint (by
+      intro i hi
+      simpa [bulk, minus, plus] using hsegment i hi)
+  simpa [bulk, minus, plus] using h
+
+set_option linter.overlappingInstances false in
+/-- **Math.** do Carmo Ch. 9, Proposition 2.5, the finite-subdivision assembly of the
+forward implication: a geodesic is critical for energy under proper variations.
+
+On each smooth segment, `hsegment` is formula (1) from `prop:dc-ch9-2-4` after the
+covariant acceleration of the geodesic has been set to zero. Properness from
+`def:dc-ch9-2-1` supplies `hV0` and `hVend`. The remaining interior terms are the jumps
+of the one-sided velocity fields; `hmatch` says that these velocities agree at every
+breakpoint, as they do for a geodesic. The finite-subdivision formula
+`lem:dc-ch9-2-4-piecewise-assembly` then makes every contribution vanish. -/
+theorem hasDerivAt_dcEnergy_zero_of_piecewise_geodesic_segment_formulas
+    {g : RiemannianMetric I M} {f : ℝ × ℝ → M} {tau : ℕ → ℝ} {k : ℕ} {s0 : ℝ}
+    {V : ℝ → E} {W : ℕ → ℝ → E}
+    (hint : ∀ᶠ s in nhds s0, ∀ i < k + 1, IntervalIntegrable
+      (fun t => g.metricInner (f (s, t))
+        (DCVelocity (I := I) (fun u => f (s, u)) t)
+        (DCVelocity (I := I) (fun u => f (s, u)) t))
+      volume (tau i) (tau (i + 1)))
+    (hsegment : ∀ i < k + 1,
+      HasDerivAt
+        (fun s => DCEnergy (I := I) g (fun t => f (s, t)) (tau i) (tau (i + 1)))
+        (2 * (g.metricInner (f (s0, tau (i + 1)))
+                  (V (tau (i + 1)) : TangentSpace I (f (s0, tau (i + 1))))
+                  (W i (tau (i + 1)))
+              - g.metricInner (f (s0, tau i))
+                  (V (tau i) : TangentSpace I (f (s0, tau i))) (W i (tau i)))) s0)
+    (hV0 : V (tau 0) = 0)
+    (hVend : V (tau (k + 1)) = 0)
+    (hmatch : ∀ i < k,
+      W (i + 1) (tau (i + 1)) = W i (tau (i + 1))) :
+    HasDerivAt
+      (fun s => DCEnergy (I := I) g (fun t => f (s, t)) (tau 0) (tau (k + 1)))
+      0 s0 := by
+  have hzero : ∀ t, g.metricInner (f (s0, t))
+      (V t : TangentSpace I (f (s0, t))) (0 : E) = 0 :=
+    fun t => g.metricInner_zero_right _ _
+  have hassembled :=
+    hasDerivAt_dcEnergy_eq_piecewise_first_variation_of_segment_formulas
+      (I := I) (g := g) (f := f) (tau := tau) (k := k) (s0 := s0)
+      (V := V) (W := W) (DW := fun _ _ => 0) hint (by
+        intro i hi
+        simpa only [hzero, intervalIntegral.integral_zero, sub_zero] using hsegment i hi)
+  have hjump : ∑ i ∈ Finset.range k,
+      (g.metricInner (f (s0, tau (i + 1)))
+          (V (tau (i + 1)) : TangentSpace I (f (s0, tau (i + 1))))
+          (W (i + 1) (tau (i + 1)))
+        - g.metricInner (f (s0, tau (i + 1)))
+          (V (tau (i + 1)) : TangentSpace I (f (s0, tau (i + 1))))
+          (W i (tau (i + 1)))) = 0 := by
+    apply Finset.sum_eq_zero
+    intro i hi
+    rw [hmatch i (Finset.mem_range.mp hi)]
+    ring
+  have hbulk : ∑ i ∈ Finset.range (k + 1),
+      ∫ t in tau i..tau (i + 1), g.metricInner (f (s0, t))
+        (V t : TangentSpace I (f (s0, t))) (0 : E) = 0 := by
+    apply Finset.sum_eq_zero
+    intro i hi
+    simp only [hzero, intervalIntegral.integral_zero]
+  have hleft : g.metricInner (f (s0, tau 0))
+      (V (tau 0) : TangentSpace I (f (s0, tau 0))) (W 0 (tau 0)) = 0 := by
+    rw [hV0]
+    exact g.metricInner_zero_left _ _
+  have hright : g.metricInner (f (s0, tau (k + 1)))
+      (V (tau (k + 1)) : TangentSpace I (f (s0, tau (k + 1))))
+      (W k (tau (k + 1))) = 0 := by
+    rw [hVend]
+    exact g.metricInner_zero_left _ _
+  rw [hjump, hbulk, hleft, hright] at hassembled
+  simpa using hassembled
 
 /-- **Math.** do Carmo Ch. 9, Prop. 2.5, the direction
 *geodesic implies critical point of energy*, on a segment with no breakpoint.

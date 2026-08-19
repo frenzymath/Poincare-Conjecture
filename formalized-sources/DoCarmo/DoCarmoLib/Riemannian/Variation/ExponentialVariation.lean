@@ -68,9 +68,11 @@ theorem hasDerivAt_extChartAt_exponentialVariation_zero
     (c : ℝ → M) (V : ℝ → E) (t : ℝ) :
     HasDerivAt (fun s : ℝ => extChartAt I (c t)
       (exponentialVariation (I := I) g hg c V (s, t))) (V t) 0 := by
-  simpa only [exponentialVariation] using
-    Riemannian.Exponential.hasDerivAt_extChartAt_expMapGlobal_smul
-      (I := I) g hg (c t) ((V t : E) : TangentSpace I (c t))
+  change HasDerivAt (fun s : ℝ => extChartAt I (c t)
+    (Riemannian.Exponential.expMapGlobal (I := I) g hg (c t)
+      (s • ((V t : E) : TangentSpace I (c t))))) (V t) 0
+  exact Riemannian.Exponential.hasDerivAt_extChartAt_expMapGlobal_smul
+    (I := I) g hg (c t) ((V t : E) : TangentSpace I (c t))
 
 /-- **Math.** The intrinsic variational field of the exponential family is
 the prescribed field `V`. -/
@@ -116,6 +118,78 @@ theorem exponentialVariation_isVariationOfOrder_of_contMDiffOn
   exact IsDifferentiableVariationOfOrder.isVariationOfOrder hregular ha hε
     (fun t _ => exponentialVariation_zero (I := I) g hg c V t)
 
+/-- **Math.** Package finite-subdivision regularity of the complete-exponential
+family as an order-`r` variation.  The continuity hypothesis is stated
+separately because continuity at subdivision points is part of the variation
+definition, while the segment regularity is supplied by the finite-cover
+argument in do Carmo's proof. -/
+theorem exponentialVariation_isVariationOfOrder_of_piecewise_contMDiffOn
+    (g : RiemannianMetric I M) (hg : g.IsRiemannianDist) [CompleteSpace M]
+    (c : ℝ → M) (V : ℝ → E) {r : ℕ∞ω} {a ε : ℝ}
+    (ha : 0 < a) (hε : 0 < ε)
+    (hcontinuous : ContinuousOn
+      (exponentialVariation (I := I) g hg c V)
+      (Ioo (-ε) ε ×ˢ Icc 0 a))
+    (hpieces : ∃ (n : ℕ) (τ : ℕ → ℝ),
+      0 < n ∧ τ 0 = 0 ∧ τ n = a ∧
+        (∀ i < n, τ i < τ (i + 1)) ∧
+        ∀ i < n, ContMDiffOn 𝓘(ℝ, ℝ × ℝ) I r
+          (exponentialVariation (I := I) g hg c V)
+          (Ioo (-ε) ε ×ˢ Icc (τ i) (τ (i + 1)))) :
+    IsVariationOfOrder I r c a ε
+      (exponentialVariation (I := I) g hg c V) := by
+  refine ⟨hε, hcontinuous, ?_, hpieces⟩
+  intro t _
+  exact exponentialVariation_zero (I := I) g hg c V t
+
+/-- **Math.** Legacy `C¹` projection of the finite-subdivision packaging
+theorem for a complete-exponential family. -/
+theorem exponentialVariation_isVariation_of_piecewise_contMDiffOn
+    (g : RiemannianMetric I M) (hg : g.IsRiemannianDist) [CompleteSpace M]
+    (c : ℝ → M) (V : ℝ → E) {a ε : ℝ}
+    (ha : 0 < a) (hε : 0 < ε)
+    (hcontinuous : ContinuousOn
+      (exponentialVariation (I := I) g hg c V)
+      (Ioo (-ε) ε ×ˢ Icc 0 a))
+    (hpieces : ∃ (n : ℕ) (τ : ℕ → ℝ),
+      0 < n ∧ τ 0 = 0 ∧ τ n = a ∧
+        (∀ i < n, τ i < τ (i + 1)) ∧
+        ∀ i < n, ContMDiffOn 𝓘(ℝ, ℝ × ℝ) I 1
+          (exponentialVariation (I := I) g hg c V)
+          (Ioo (-ε) ε ×ˢ Icc (τ i) (τ (i + 1)))) :
+    IsVariation I c a ε
+      (exponentialVariation (I := I) g hg c V) := by
+  exact (exponentialVariation_isVariationOfOrder_of_piecewise_contMDiffOn
+    (I := I) g hg c V ha hε hcontinuous hpieces).isVariation (by norm_num)
+
+/-- **Math.** Finite-subdivision existence of a proper variation with a
+prescribed field, once continuity and segment regularity of the complete-
+exponential family have been extracted. -/
+theorem exists_properVariation_with_variationalField_of_piecewise_contMDiffOn
+    (g : RiemannianMetric I M) (hg : g.IsRiemannianDist) [CompleteSpace M]
+    (c : ℝ → M) (V : ℝ → E) {a ε : ℝ}
+    (ha : 0 < a) (hε : 0 < ε) (hV0 : V 0 = 0) (hVa : V a = 0)
+    (hcontinuous : ContinuousOn
+      (exponentialVariation (I := I) g hg c V)
+      (Ioo (-ε) ε ×ˢ Icc 0 a))
+    (hpieces : ∃ (n : ℕ) (τ : ℕ → ℝ),
+      0 < n ∧ τ 0 = 0 ∧ τ n = a ∧
+        (∀ i < n, τ i < τ (i + 1)) ∧
+        ∀ i < n, ContMDiffOn 𝓘(ℝ, ℝ × ℝ) I 1
+          (exponentialVariation (I := I) g hg c V)
+          (Ioo (-ε) ε ×ˢ Icc (τ i) (τ (i + 1)))) :
+    ∃ f : ℝ × ℝ → M,
+      IsVariation I c a ε f ∧
+      IsProperVariation c a ε f ∧
+      variationalField I f = V := by
+  let f : ℝ × ℝ → M := exponentialVariation (I := I) g hg c V
+  refine ⟨f, ?_, ?_, ?_⟩
+  · exact exponentialVariation_isVariation_of_piecewise_contMDiffOn
+      (I := I) g hg c V ha hε hcontinuous hpieces
+  · exact exponentialVariation_isProperVariation
+      (I := I) g hg c V hV0 hVa
+  · exact variationalField_exponentialVariation (I := I) g hg c V
+
 /-- **Math.** If the complete-exponential family has the regularity required
 by the legacy `C¹` interface on a strip, then it is a variation. -/
 theorem exponentialVariation_isVariation_of_contMDiffOn
@@ -150,6 +224,32 @@ theorem exists_properVariation_with_variationalField_of_contMDiffOn
   · exact exponentialVariation_isProperVariation
       (I := I) g hg c V hV0 hVa
   · exact variationalField_exponentialVariation (I := I) g hg c V
+
+/-! ### Public Proposition 2.2 wrapper -/
+
+/-- **Math.** do Carmo Ch. 9, Proposition 2.2 (`prop:dc-ch9-2-2`), in the
+regularity form exposed by the complete-exponential construction.
+
+The book obtains the strip regularity from a finite subdivision and a finite
+normal-neighborhood argument.  The present API makes that analytic input
+explicit: once the exponential family is `C¹` on the parameter strip, it is a
+variation with the prescribed variational field, and vanishing endpoint field
+values make it proper.  This wrapper gives downstream first- and second-
+variation arguments a stable proposition-level entry point while leaving the
+finite-cover extraction as a separate theorem. -/
+theorem exists_properVariation_with_variationalField
+    (g : RiemannianMetric I M) (hg : g.IsRiemannianDist) [CompleteSpace M]
+    (c : ℝ → M) (V : ℝ → E) {a ε : ℝ}
+    (ha : 0 < a) (hε : 0 < ε) (hV0 : V 0 = 0) (hVa : V a = 0)
+    (hregular : ContMDiffOn 𝓘(ℝ, ℝ × ℝ) I 1
+      (exponentialVariation (I := I) g hg c V)
+      (Ioo (-ε) ε ×ˢ Icc 0 a)) :
+    ∃ f : ℝ × ℝ → M,
+      IsVariation I c a ε f ∧
+      IsProperVariation c a ε f ∧
+      variationalField I f = V := by
+  exact exists_properVariation_with_variationalField_of_contMDiffOn
+    (I := I) g hg c V ha hε hV0 hVa hregular
 
 /-! ### Prescribed fields without endpoint constraints -/
 

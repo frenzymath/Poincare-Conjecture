@@ -308,12 +308,33 @@ def IsLocallyDistanceComparableOn {M : Type*} [TopologicalSpace M]
   ∀ t ∈ I, ∀ r, ∃ U ∈ nhds t, ∃ R,
     ∀ x s, s ∈ I → s ∈ U → flow.dist s x₀ x ≤ r → flow.dist t x₀ x ≤ R
 
-/-- Proper reference-time balls, joint distance continuity, and radial paths
-turn nearby moving balls into bounded reference-time balls. -/
-theorem HasRadialDistancePathsOn.isLocallyDistanceComparableOn
+/-- At each time in `I`, every point can be joined to `x₀` by a path staying in
+an arbitrarily small enlargement of its closed distance sublevel.
+
+This is the form supplied by a genuine length metric: the infimum defining the
+Riemannian distance need not be attained, so only *almost* minimizing paths are
+available without a Hopf--Rinow theorem. -/
+def HasAlmostRadialDistancePathsOn {M : Type*} [TopologicalSpace M]
+    (flow : RicciFlowData M) (x₀ : M) (I : Set ℝ) : Prop :=
+  ∀ s ∈ I, ∀ x, ∀ delta > (0 : ℝ), ∃ γ : Path x₀ x,
+    ∀ u, flow.dist s x₀ (γ u) ≤ flow.dist s x₀ x + delta
+
+/-- Exactly radial paths are in particular almost radial. -/
+theorem HasRadialDistancePathsOn.hasAlmostRadialDistancePathsOn
     {M : Type*} [TopologicalSpace M]
     {flow : RicciFlowData M} {x₀ : M} {I : Set ℝ}
-    (hpaths : flow.HasRadialDistancePathsOn x₀ I)
+    (hpaths : flow.HasRadialDistancePathsOn x₀ I) :
+    flow.HasAlmostRadialDistancePathsOn x₀ I := by
+  intro s hs x delta hdelta
+  obtain ⟨γ, hγ⟩ := hpaths s hs x
+  exact ⟨γ, fun u => (hγ u).trans (by linarith)⟩
+
+/-- Proper reference-time balls, joint distance continuity, and almost radial
+paths turn nearby moving balls into bounded reference-time balls. -/
+theorem HasAlmostRadialDistancePathsOn.isLocallyDistanceComparableOn
+    {M : Type*} [TopologicalSpace M]
+    {flow : RicciFlowData M} {x₀ : M} {I : Set ℝ}
+    (hpaths : flow.HasAlmostRadialDistancePathsOn x₀ I)
     (hproper : ∀ t ∈ I, flow.IsProperAt x₀ t)
     (hself : ∀ t ∈ I, flow.dist t x₀ x₀ = 0)
     (hcontinuous :
@@ -321,9 +342,9 @@ theorem HasRadialDistancePathsOn.isLocallyDistanceComparableOn
         (I ×ˢ Set.univ)) :
     flow.IsLocallyDistanceComparableOn x₀ I := by
   intro t ht r
-  let R : ℝ := max r 0 + 1
+  let R : ℝ := max r 0 + 2
   let sphere : Set M := {y | flow.dist t x₀ y = R}
-  have hrR : r < R := by
+  have hrR : r + 1 < R := by
     dsimp [R]
     linarith [le_max_left r 0]
   have hzeroR : 0 ≤ R := by
@@ -340,15 +361,15 @@ theorem HasRadialDistancePathsOn.isLocallyDistanceComparableOn
   have hsphere_compact : IsCompact sphere :=
     (hproper t ht R).of_isClosed_subset hsphere_closed hsphere_subset
   have hsphere_eventually :
-      ∀ᶠ s in nhds t, ∀ y ∈ sphere, s ∈ I → r < flow.dist s x₀ y := by
+      ∀ᶠ s in nhds t, ∀ y ∈ sphere, s ∈ I → r + 1 < flow.dist s x₀ y := by
     apply hsphere_compact.eventually_forall_of_forall_eventually
     intro y hy
     have hwithin :
-        {z : ℝ × M | r < flow.dist z.1 x₀ z.2} ∈
+        {z : ℝ × M | r + 1 < flow.dist z.1 x₀ z.2} ∈
           nhdsWithin (t, y) (I ×ˢ Set.univ) := by
       apply hcontinuous (t, y) ⟨ht, Set.mem_univ y⟩
       apply Ioi_mem_nhds
-      change r < flow.dist t x₀ y
+      change r + 1 < flow.dist t x₀ y
       rw [hy]
       exact hrR
     rw [mem_nhdsWithin_iff_exists_mem_nhds_inter] at hwithin
@@ -356,12 +377,12 @@ theorem HasRadialDistancePathsOn.isLocallyDistanceComparableOn
     filter_upwards [hV] with z hz
     intro hzI
     exact hVsub ⟨hz, ⟨hzI, Set.mem_univ z.2⟩⟩
-  refine ⟨{s | ∀ y ∈ sphere, s ∈ I → r < flow.dist s x₀ y},
+  refine ⟨{s | ∀ y ∈ sphere, s ∈ I → r + 1 < flow.dist s x₀ y},
     hsphere_eventually, R, ?_⟩
   intro x s hsI hsU hxs
   by_contra hx
   have hRx : R < flow.dist t x₀ x := lt_of_not_ge hx
-  obtain ⟨γ, hγ⟩ := hpaths s hsI x
+  obtain ⟨γ, hγ⟩ := hpaths s hsI x 1 one_pos
   have hpath_cont :
       Continuous (fun u : unitInterval => flow.dist t x₀ (γ u)) :=
     hdist_t.comp γ.continuous
@@ -376,7 +397,9 @@ theorem HasRadialDistancePathsOn.isLocallyDistanceComparableOn
   obtain ⟨u, hu⟩ := hRrange
   have hysphere : γ u ∈ sphere := hu
   have hlower := hsU (γ u) hysphere hsI
-  have hupper : flow.dist s x₀ (γ u) ≤ r := (hγ u).trans hxs
+  have hupper : flow.dist s x₀ (γ u) ≤ r + 1 := by
+    have := hγ u
+    linarith
   exact (not_lt_of_ge hupper) hlower
 
 /-- Moving metric balls over a time set stay in bounded balls for a fixed
@@ -679,6 +702,58 @@ theorem exists_point_selection_of_locally_distance_comparable
   exact hcontrol x' t' hx' ht'.2 hdist'
 
 /-- The point-selection claim for a jointly continuous proper distance family
+whose closed distance sublevels admit almost radial paths.
+
+This is the form a genuine length metric supplies: the length infimum need not
+be attained, so paths only stay in an arbitrarily small enlargement of the
+sublevel. -/
+theorem exists_point_selection_of_almost_radial_distance_family
+    {M : Type*} [TopologicalSpace M]
+    (flow : RicciFlowData M) (n : ℕ) {alpha A epsilon t : ℝ} {x₀ x : M}
+    (halpha : 0 < alpha) (hA : 0 < A) (hepsilon : 0 < epsilon)
+    (hAepsilon : A * epsilon < (100 * (n : ℝ))⁻¹)
+    (ht : t ∈ Set.Ioc 0 (epsilon ^ 2))
+    (hdist : flow.dist t x₀ x ≤ epsilon)
+    (hcurvature :
+      alpha * t⁻¹ + (epsilon⁻¹) ^ 2 ≤ flow.curvatureNorm x t)
+    (hcurvature_cont :
+      ContinuousOn (Function.uncurry flow.curvatureNorm)
+        (Set.univ ×ˢ Set.Icc 0 (epsilon ^ 2)))
+    (hproper :
+      ∀ s ∈ Set.Icc 0 (epsilon ^ 2), flow.IsProperAt x₀ s)
+    (hdist_self :
+      ∀ s ∈ Set.Icc 0 (epsilon ^ 2), flow.dist s x₀ x₀ = 0)
+    (hdist_cont :
+      ContinuousOn (Function.uncurry fun s y => flow.dist s x₀ y)
+        (Set.Icc 0 (epsilon ^ 2) ×ˢ Set.univ))
+    (hpaths :
+      flow.HasAlmostRadialDistancePathsOn x₀ (Set.Icc 0 (epsilon ^ 2))) :
+    ∃ xbar tbar,
+      (xbar, tbar) ∈ flow.highCurvatureRegion alpha ∧
+        tbar ∈ Set.Ioc 0 (epsilon ^ 2) ∧
+        flow.dist tbar x₀ xbar < (2 * A + 1) * epsilon ∧
+        ∀ x' t',
+          (x', t') ∈ flow.highCurvatureRegion alpha →
+            t' ∈ Set.Ioc 0 tbar →
+              flow.dist t' x₀ x' ≤
+                  flow.dist tbar x₀ xbar +
+                    A * (Real.sqrt (flow.curvatureNorm xbar tbar))⁻¹ →
+                flow.curvatureNorm x' t' ≤ 4 * flow.curvatureNorm xbar tbar := by
+  have hcompare :
+      flow.IsLocallyDistanceComparableOn x₀ (Set.Icc 0 (epsilon ^ 2)) :=
+    hpaths.isLocallyDistanceComparableOn hproper hdist_self hdist_cont
+  have hbounded :
+      flow.IsCurvatureBoundedOnMovingBalls x₀ (Set.Icc 0 (epsilon ^ 2)) :=
+    hcompare.isCurvatureBoundedOnMovingBalls_of_continuousOn hproper
+      isCompact_Icc hcurvature_cont
+  obtain ⟨xbar, tbar, hregion, htbar, hdistbar, hcontrol⟩ :=
+    exists_point_selection_of_bounded_moving_curvature flow n halpha hA hepsilon
+      hAepsilon ht hdist hcurvature hbounded
+  refine ⟨xbar, tbar, hregion, htbar, hdistbar, ?_⟩
+  intro x' t' hx' ht' hdist'
+  exact hcontrol x' t' hx' ht'.2 hdist'
+
+/-- The point-selection claim for a jointly continuous proper distance family
 whose closed distance sublevels admit radial paths. -/
 theorem exists_point_selection_of_continuous_proper_distance_family
     {M : Type*} [TopologicalSpace M]
@@ -711,20 +786,10 @@ theorem exists_point_selection_of_continuous_proper_distance_family
               flow.dist t' x₀ x' ≤
                   flow.dist tbar x₀ xbar +
                     A * (Real.sqrt (flow.curvatureNorm xbar tbar))⁻¹ →
-                flow.curvatureNorm x' t' ≤ 4 * flow.curvatureNorm xbar tbar := by
-  have hcompare :
-      flow.IsLocallyDistanceComparableOn x₀ (Set.Icc 0 (epsilon ^ 2)) :=
-    hpaths.isLocallyDistanceComparableOn hproper hdist_self hdist_cont
-  have hbounded :
-      flow.IsCurvatureBoundedOnMovingBalls x₀ (Set.Icc 0 (epsilon ^ 2)) :=
-    hcompare.isCurvatureBoundedOnMovingBalls_of_continuousOn hproper
-      isCompact_Icc hcurvature_cont
-  obtain ⟨xbar, tbar, hregion, htbar, hdistbar, hcontrol⟩ :=
-    exists_point_selection_of_bounded_moving_curvature flow n halpha hA hepsilon
-      hAepsilon ht hdist hcurvature hbounded
-  refine ⟨xbar, tbar, hregion, htbar, hdistbar, ?_⟩
-  intro x' t' hx' ht' hdist'
-  exact hcontrol x' t' hx' ht'.2 hdist'
+                flow.curvatureNorm x' t' ≤ 4 * flow.curvatureNorm xbar tbar :=
+  exists_point_selection_of_almost_radial_distance_family flow n halpha hA
+    hepsilon hAepsilon ht hdist hcurvature hcurvature_cont hproper hdist_self
+    hdist_cont hpaths.hasAlmostRadialDistancePathsOn
 
 /-- The point-selection claim for a compact flow with continuous curvature. -/
 theorem exists_point_selection_of_compactSpace

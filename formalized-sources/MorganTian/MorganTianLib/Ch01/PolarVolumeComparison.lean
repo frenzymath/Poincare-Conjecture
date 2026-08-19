@@ -265,7 +265,12 @@ theorem expDifferential_det_le_of_not_conjugate
     have hcolK := hcol K DK hK hK0 r ⟨hr.le, hrr₀.le⟩
     -- the frame vector of the datum `∇K(0) = r⁻¹·Z` is `r⁻¹·x`
     have hlift : (DK 0 : TangentSpace I (γ 0)) = frameLift (I := I) g γ e 0 (r⁻¹ • x) := by
-      rw [hDK0, frameLift_smul, hZdef]
+      calc
+        (DK 0 : TangentSpace I (γ 0)) = r⁻¹ • Z := hDK0
+        _ = r⁻¹ • frameLift (I := I) g γ e 0 x :=
+          congrArg (fun z : E => r⁻¹ • z) hZdef
+        _ = frameLift (I := I) g γ e 0 (r⁻¹ • x) :=
+          (frameLift_smul (I := I) g γ e 0 r⁻¹ x).symm
     have hfv0 : frameVec (I := I) g γ e DK 0 = r⁻¹ • x :=
       frameVec_frameLift (I := I) (horth 0 h0mem) (r⁻¹ • x) DK hlift
     -- assemble

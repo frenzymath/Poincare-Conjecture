@@ -110,6 +110,16 @@ theorem tendsto_busemannAux_atTop {γ : ℝ → M} (hγ : IsGeodesicRay γ) (x :
     (tendsto_atTop_ciInf (Set.antitoneOn_iff_antitone.mp (busemannAux_antitoneOn hγ x))
       (busemannAux_bddBelow hγ x))
 
+/-- **Math.** A minimizing ray's Busemann function is both the limit of its
+approximants at `+∞` and their infimum, with the statement quantified over
+every point of the manifold. -/
+theorem busemann_spec_of_ray {γ : ℝ → M} (hγ : IsGeodesicRay γ) :
+    ∀ x : M,
+      Tendsto (fun t => busemannAux γ t x) atTop (𝓝 (busemann γ x)) ∧
+        busemann γ x = ⨅ t : Set.Ici (0 : ℝ), busemannAux γ t x := by
+  intro x
+  exact ⟨tendsto_busemannAux_atTop hγ x, rfl⟩
+
 /-- The Busemann function `B_γ` is `1`-Lipschitz: for all `x, y` and `t ≥ 0`,
 `B_γ(x) ≤ B_{γ,t}(x) ≤ B_{γ,t}(y) + d(x,y)`, so taking the infimum over `t` on the right
 gives `B_γ(x) ≤ B_γ(y) + d(x,y)`; symmetrically for the other direction. -/

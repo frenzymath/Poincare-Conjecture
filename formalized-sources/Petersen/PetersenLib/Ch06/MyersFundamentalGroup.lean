@@ -92,6 +92,25 @@ theorem finite_fundamentalGroup_of_compact_simplyConnected_cover
     (fun γ : FundamentalGroup Y y => hp.monodromy γ ⟨x, hx⟩)
     (monodromy_at_injective hp x hx)
 
+/-- **Math.** Petersen Corollary 6.2.4 (p. 261), the group-action kernel of
+torsion-freeness.  Let a group `Γ` act freely on a space of the kind supplied by
+the universal-cover construction.  If every finite-order element has a fixed
+point (Cartan's theorem), then every finite-order element is the identity.
+
+The universal cover, its deck-group identification with `π₁`, and the proof that
+the deck action is free are deliberately explicit inputs here.  Those covering
+space constructions are not present in the project; this theorem isolates the
+short mathematical implication that remains once they are supplied. -/
+theorem fundamentalGroup_torsionFree_nonpositiveCurvature
+    {Γ X : Type*} [Group Γ] [MulAction Γ X]
+    (hfree : ∀ {γ : Γ} {x : X}, γ • x = x → γ = 1)
+    (hfixed : ∀ (γ : Γ) (n : ℕ), 0 < n → γ ^ n = 1 → ∃ x : X, γ • x = x) :
+    ∀ γ : Γ, (∃ n : ℕ, 0 < n ∧ γ ^ n = 1) → γ = 1 := by
+  intro γ hγ
+  obtain ⟨n, hn, hpow⟩ := hγ
+  obtain ⟨x, hx⟩ := hfixed γ n hn hpow
+  exact hfree hx
+
 /-! ## Myers' theorem on an explicitly supplied simply connected cover -/
 
 section RiemannianCover

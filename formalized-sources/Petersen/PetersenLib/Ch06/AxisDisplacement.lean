@@ -1,4 +1,5 @@
 import PetersenLib.Ch05.Geodesics
+import PetersenLib.Ch05.LocalIsometryGeodesics
 import PetersenLib.Ch05.MetricStructure
 
 /-!
@@ -155,5 +156,59 @@ theorem fixedPoint_of_reflectionAxis {F : M → M} {c : ℝ → M} {a : ℝ}
   rw [h (a / 2)]
   congr 1
   ring
+
+/-- **Math.** The geodesic-uniqueness step in Petersen's proof of Lemma 6.2.7.
+Suppose a global geodesic `c` joins `p = c(0)` to `F(p) = c(1)`, and the outgoing
+velocity of `F ∘ c` at `0` agrees with that of the translated geodesic `t ↦ c(t+1)`.
+Since a Riemannian isometry maps geodesics to geodesics, global uniqueness then gives
+`F(c(t)) = c(t+1)` for every `t`; thus `c` is a translation axis of period `1`.
+
+The velocity equality is written in the moving-foot chart expected by
+`geodesic_global_uniqueness`.  In the positive-minimal-displacement argument it is the
+first-variation/no-corner conclusion for the minimizing segment from `p` to `F(p)`. -/
+theorem axisPeriod_one_of_endpointVelocityMatch [I.Boundaryless] [T2Space M]
+    (g : RiemannianMetric I M) {F : M → M} (hF : IsRiemannianIsometry g g F)
+    {c : ℝ → M} (hc : Continuous c) (hgeo : IsGeodesic (I := I) g c)
+    (hend : F (c 0) = c 1)
+    (hvel : deriv (Geodesic.chartLocalCurve (I := I) (F ∘ c) 0) 0 =
+      deriv (fun s => extChartAt I ((F ∘ c) 0) (c (s + 1))) 0) :
+    IsAxisPeriod (I := I) g F c 1 := by
+  have hFloc : IsLocalRiemannianIsometry g g F := hF.isLocalRiemannianIsometry
+  have hFgeo : IsGeodesic (I := I) g (F ∘ c) :=
+    localIsometry_mapsGeodesicsToGeodesics hFloc hc hgeo
+  have hshiftGeo : IsGeodesic (I := I) g (fun s => c (s + 1)) :=
+    Geodesic.isGeodesic_comp_add hgeo 1
+  have hFcont : Continuous (F ∘ c) := hFloc.continuous.comp hc
+  have hshiftCont : Continuous (fun s => c (s + 1)) :=
+    hc.comp (continuous_id.add continuous_const)
+  have heq : Set.EqOn (F ∘ c) (fun s => c (s + 1)) (Set.univ ∩ Set.univ) :=
+    geodesic_global_uniqueness (I := I) g isOpen_univ ordConnected_univ
+      isOpen_univ ordConnected_univ hFcont.continuousOn hshiftCont.continuousOn
+      (fun t _ => hFgeo t) (fun t _ => hshiftGeo t) (by simp)
+      (by simpa only [Function.comp_apply, zero_add] using hend) hvel
+  refine ⟨hgeo, fun t => ?_⟩
+  simpa only [Function.comp_apply] using heq (by simp)
+
+/-- **Math.** Petersen Lemma 6.2.7, with its currently missing first-variation bridge
+made explicit.  A positive minimizer `c(0)` of the displacement function and a minimizing
+geodesic segment from `c(0)` to `F(c(0))` give an axis once the standard endpoint-velocity
+matching conclusion is available.  The latter is precisely `hvel`; after it, the proof is
+the geodesic-uniqueness kernel `axisPeriod_one_of_endpointVelocityMatch`.
+
+This theorem deliberately retains the positive-minimum and segment hypotheses even though
+their sole downstream use is to establish `hvel`.  That keeps the remaining gap localized
+to the first-variation statement instead of hiding it in a stronger axis hypothesis. -/
+theorem axis_of_positiveMinimalDisplacement [I.Boundaryless] [T2Space M]
+    (g : RiemannianMetric I M) {F : M → M} (hF : IsRiemannianIsometry g g F)
+    {c : ℝ → M} (hc : Continuous c) (hgeo : IsGeodesic (I := I) g c)
+    (_hseg : IsSegment (I := I) g c 0 1)
+    (_hpositive : 0 < displacementFunction (I := I) g F (c 0))
+    (_hminimum : ∀ x : M,
+      displacementFunction (I := I) g F (c 0) ≤ displacementFunction (I := I) g F x)
+    (hend : c 1 = F (c 0))
+    (hvel : deriv (Geodesic.chartLocalCurve (I := I) (F ∘ c) 0) 0 =
+      deriv (fun s => extChartAt I ((F ∘ c) 0) (c (s + 1))) 0) :
+    IsAxis (I := I) g F c :=
+  (axisPeriod_one_of_endpointVelocityMatch (I := I) g hF hc hgeo hend.symm hvel).isAxis
 
 end PetersenLib

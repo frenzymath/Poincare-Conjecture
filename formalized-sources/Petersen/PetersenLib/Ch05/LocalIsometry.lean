@@ -1,6 +1,7 @@
 import PetersenLib.Ch05.DistanceSegments
 import PetersenLib.Ch05.MetricTopology
 import PetersenLib.Ch01.RiemannianManifolds
+import PetersenLib.Riemannian.Manifold.DoCarmoCh0
 
 /-!
 # Petersen Ch. 5, §5.6.1 — local Riemannian isometries
@@ -92,6 +93,22 @@ theorem mdifferentiableAt (hF : IsLocalRiemannianIsometry gM gN F) (p : M) :
 
 theorem continuous (hF : IsLocalRiemannianIsometry gM gN F) : Continuous F :=
   hF.1.continuous
+
+/-- A local Riemannian isometry is a local diffeomorphism.  At each point its
+ differential is a bijective continuous linear map; finite dimensionality turns
+ this into a continuous linear equivalence, so the manifold inverse function
+ theorem applies. -/
+theorem isLocalDiffeomorph (hF : IsLocalRiemannianIsometry gM gN F) :
+    IsLocalDiffeomorph I I' ∞ F := by
+  rw [isLocalDiffeomorph_iff]
+  intro p
+  let e : E ≃L[ℝ] E' :=
+    (LinearEquiv.ofBijective (mfderiv I I' F p).toLinearMap
+      (hF.bijective_mfderiv p)).toContinuousLinearEquiv
+  apply isLocalDiffeomorphAt_of_mfderiv_equiv hF.contMDiff
+  change mfderiv I I' F p = (e : E →L[ℝ] E')
+  ext v
+  rfl
 
 end IsLocalRiemannianIsometry
 

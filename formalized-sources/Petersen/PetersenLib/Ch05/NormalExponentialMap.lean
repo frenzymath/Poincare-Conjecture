@@ -1,4 +1,5 @@
 import PetersenLib.Ch05.IsometryUniqueness
+import Mathlib.Topology.Algebra.Module.Complement
 
 /-!
 # Petersen Ch. 5, §5.5 — the normal exponential map of a submanifold
@@ -238,6 +239,34 @@ theorem isCompl_tangentSpaceImage_normalSpace (g : RiemannianMetric I M) (F : N 
   omega
 
 end Splitting
+
+/-! ### The nonsingular tangent/normal block at the zero section -/
+
+/-- **Math.** The linear model used in Petersen's tubular-neighborhood proof is
+the addition map from the tangent and normal summands to the ambient tangent
+space.  The orthogonal splitting proved above makes this map a continuous linear
+equivalence; its inverse is the pair of complementary projections.  This is the
+precise algebraic content of restricting the block derivative of `E` to
+`T_q N ⊕ T_q^⊥ N` at the zero section. -/
+theorem exists_tangentNormalSumEquiv (g : RiemannianMetric I M) (F : N → M) (q : N) :
+    ∃ e :
+        (tangentSpaceImage (I := I) (IN := IN) F q ×
+          normalSpace (I := I) (IN := IN) g F q) ≃L[ℝ] TangentSpace I (F q),
+      ∀ z, e z = (z.1 : TangentSpace I (F q)) + (z.2 : TangentSpace I (F q)) := by
+  let h := isCompl_tangentSpaceImage_normalSpace (I := I) (IN := IN) g F q
+  have htop : Submodule.IsTopCompl
+      (tangentSpaceImage (I := I) (IN := IN) F q)
+      (normalSpace (I := I) (IN := IN) g F q) :=
+    (Submodule.IsCompl.isTopCompl_iff h).mpr (LinearMap.continuous_of_finiteDimensional _)
+  let e :
+      (tangentSpaceImage (I := I) (IN := IN) F q ×
+        normalSpace (I := I) (IN := IN) g F q) ≃L[ℝ] TangentSpace I (F q) :=
+    Submodule.prodEquivOfIsTopCompl
+      (tangentSpaceImage (I := I) (IN := IN) F q)
+      (normalSpace (I := I) (IN := IN) g F q) htop
+  refine ⟨e, ?_⟩
+  intro z
+  exact Submodule.prodEquivOfIsTopCompl_apply htop z
 
 /-! ## The normal bundle and the normal exponential map -/
 

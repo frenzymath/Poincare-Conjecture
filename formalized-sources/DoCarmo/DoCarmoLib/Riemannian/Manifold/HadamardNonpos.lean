@@ -2,7 +2,7 @@ import DoCarmoLib.Riemannian.Jacobi.JacobiNonpositiveManifold
 import DoCarmoLib.Riemannian.Manifold.HadamardPoleClosure
 
 /-!
-# do Carmo Ch. 7 — the parameterized Cartan–Hadamard assembly
+# do Carmo Ch. 7 — the Cartan–Hadamard theorem, modulo global smoothness of `exp_p`
 
 `thm:dc-ch7-3-1` (Cartan–Hadamard) and the local-diffeomorphism half of `lem:dc-ch7-3-2`,
 assembled from the two already-landed halves of the Hadamard machine:
@@ -14,18 +14,24 @@ assembled from the two already-landed halves of the Hadamard machine:
   complete simply connected manifold to a diffeomorphism `T_pM ≃ M`
   (`expDiffeomorphOfPole_of_pole`, `HadamardPoleClosure.lean`, do Carmo `rem:dc-ch7-3-4`).
 
-## Smoothness input and unconditional wrapper
+## The one remaining input: global `C^∞` smoothness of `exp_p`
 
 The bridge between the two is the observation that a globally `C^∞` map whose differential is a
 linear isomorphism at a point is a `C^∞` local diffeomorphism there (the manifold inverse
 function theorem `isLocalDiffeomorphAt_of_mfderiv_equiv`, applied here through an arbitrary target
 chart via `isLocalDiffeomorphAt_of_hasFDerivAt_equiv`). The differential-isomorphism is supplied
-by `expDifferential_isEquiv_of_nonpos`. This module keeps global smoothness of the exponential map,
-`ContMDiff 𝓘(ℝ,E) I ∞ (expMapGlobal g hg p)`, as an explicit `hsmooth` parameter so that the
-geometric assembly remains reusable. DoCarmoLib now supplies that parameter with
-`Riemannian.Exponential.contMDiff_expMapGlobal`; `HadamardComplete.lean` applies it to obtain the
-fully unconditional Cartan–Hadamard diffeomorphism
-`hadamardDiffeomorphOfNonpos_complete`.
+by `expDifferential_isEquiv_of_nonpos`. The remaining ingredient is the **global `C^∞`
+smoothness** of the exponential map, `ContMDiff 𝓘(ℝ,E) I ∞ (expMapGlobal g hg p)`.
+
+This is a standard consequence of the smooth dependence of the geodesic flow on its initial
+conditions. That theorem is **not in mathlib** — mathlib's ODE library provides only *Lipschitz*
+dependence of the solution on the initial condition (`Mathlib.Analysis.ODE.PicardLindelof`) and
+`C^n` regularity in *time* (`ODE.contDiffOn_enat_Icc_of_hasDerivWithinAt`) — and DoCarmoLib
+currently establishes it only to `C¹`/`C²` on small balls (`FlowC1Dependence`, `FlowC2Dependence`,
+`C2LocalDiffeo`). We therefore carry it as an explicit hypothesis `hsmooth`, isolating it as the
+**sole** obstruction between the present state and a fully unconditional Cartan–Hadamard theorem:
+everything else — the differential isomorphism, the inverse function theorem, and the entire
+covering-space upgrade — is proved here.
 
 Blueprint: `lem:dc-ch7-3-2`, `thm:dc-ch7-3-1`, `rem:dc-ch7-3-4`.
 Reference: do Carmo, *Riemannian Geometry*, Ch. 7, §3.

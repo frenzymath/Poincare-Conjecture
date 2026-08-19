@@ -243,6 +243,45 @@ theorem contDiffOn_time_slice_of_contMDiffOn_spacetime
   have hct := hc t ht
   simpa [Function.comp_def] using hct.contDiffWithinAt
 
+/-- **Math.** Parabolic ODE comparison when the differential inequality is
+available only at strictly positive times. This is the natural endpoint
+interface for an evolution equation proved on the interior of a forward time
+interval: the contradiction argument never uses the equation at `t = 0`. -/
+theorem le_ode_solution_of_parabolic_inequality_of_pos
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    [I.Boundaryless] [FiniteDimensional ℝ E]
+    [SigmaCompactSpace M] [T2Space M] [CompactSpace M] [Nonempty M]
+    {g : ℝ → RiemannianMetric I M}
+    {X : ℝ → SmoothVectorField I M}
+    {u ut : M → ℝ → ℝ} {φ φ' : ℝ → ℝ}
+    {F : ℝ → ℝ → ℝ} {T K : ℝ}
+    (hT : 0 ≤ T)
+    (hcont : ContinuousOn (fun z : M × ℝ => u z.1 z.2)
+      ((Set.univ : Set M) ×ˢ Icc 0 T))
+    (hspace : ∀ t ∈ Icc 0 T,
+      ContMDiff I 𝓘(ℝ, ℝ) ∞ fun x => u x t)
+    (huderiv : ∀ x t, t ∈ Icc 0 T →
+      HasDerivWithinAt (u x) (ut x t) (Icc 0 T) t)
+    (hφderiv : ∀ t, t ∈ Icc 0 T →
+      HasDerivWithinAt φ (φ' t) (Icc 0 T) t)
+    (hode : ∀ t ∈ Icc 0 T, φ' t = F (φ t) t)
+    (hpde : ∀ t ∈ Icc 0 T, 0 < t → ∀ x,
+      ut x t ≤ metricLaplacianAt (g t) (fun y => u y t) x
+        + (X t).dir (fun y => u y t) x + F (u x t) t)
+    (hreaction : ∀ t ∈ Icc 0 T, ∀ x, φ t < u x t →
+      F (u x t) t - F (φ t) t ≤ K * (u x t - φ t))
+    (hzero : ∀ x, u x 0 ≤ φ 0) :
+    ∀ x t, t ∈ Icc 0 T → u x t ≤ φ t := by
+  apply le_ode_solution_of_forall_isMax_time_deriv_le_of_pos
+    hT hcont huderiv hφderiv hode ?_ hreaction hzero
+  intro t ht htpos x _hxpos hxmax
+  apply time_deriv_le_reaction_of_isLocalMax
+    (g t) (X t) (hspace t ht)
+    (hsub := hpde t ht htpos x)
+  exact Filter.Eventually.of_forall hxmax
+
 /-- **Math.** A scalar parabolic inequality on a compact Riemannian manifold
 reduces to nonlinear ODE comparison once the reaction has a one-sided
 Lipschitz bound along the compared values. -/
@@ -359,6 +398,102 @@ theorem le_ode_solution_of_parabolic_inequality_of_smooth_reaction
     hT hcont hspace huderiv hφderiv hode ?_ hu_range hφ_range hpde hzero
   exact hF.mono fun z hz => ⟨mem_univ z.1, hz.2⟩
 
+/-- **Math.** Smooth-reaction parabolic comparison when the differential
+inequality is available only at strictly positive times. Compactness supplies
+the same one-sided reaction bound as in the closed-interval theorem. -/
+theorem le_ode_solution_of_parabolic_inequality_of_smooth_reaction_of_pos
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    [I.Boundaryless] [FiniteDimensional ℝ E]
+    [SigmaCompactSpace M] [T2Space M] [CompactSpace M] [Nonempty M]
+    {g : ℝ → RiemannianMetric I M}
+    {X : ℝ → SmoothVectorField I M}
+    {u ut : M → ℝ → ℝ} {φ φ' : ℝ → ℝ}
+    {F : ℝ → ℝ → ℝ} {T : ℝ}
+    (hT : 0 ≤ T)
+    (hcont : ContinuousOn (fun z : M × ℝ => u z.1 z.2)
+      ((Set.univ : Set M) ×ˢ Icc 0 T))
+    (hspace : ∀ t ∈ Icc 0 T,
+      ContMDiff I 𝓘(ℝ, ℝ) ∞ fun x => u x t)
+    (huderiv : ∀ x t, t ∈ Icc 0 T →
+      HasDerivWithinAt (u x) (ut x t) (Icc 0 T) t)
+    (hφderiv : ∀ t, t ∈ Icc 0 T →
+      HasDerivWithinAt φ (φ' t) (Icc 0 T) t)
+    (hode : ∀ t ∈ Icc 0 T, φ' t = F (φ t) t)
+    (hF : ContDiffOn ℝ 1 (fun z : ℝ × ℝ => F z.1 z.2)
+      ((Set.univ : Set ℝ) ×ˢ Icc 0 T))
+    (hpde : ∀ t ∈ Icc 0 T, 0 < t → ∀ x,
+      ut x t ≤ metricLaplacianAt (g t) (fun y => u y t) x
+        + (X t).dir (fun y => u y t) x + F (u x t) t)
+    (hzero : ∀ x, u x 0 ≤ φ 0) :
+    ∀ x t, t ∈ Icc 0 T → u x t ≤ φ t := by
+  have hφcont : ContinuousOn φ (Icc 0 T) :=
+    fun t ht => (hφderiv t ht).continuousWithinAt
+  obtain ⟨a, b, hu_range, hφ_range⟩ :=
+    exists_common_value_interval hT hcont hφcont
+  have hF' : ContDiffOn ℝ 1 (fun z : ℝ × ℝ => F z.1 z.2)
+      (Icc a b ×ˢ Icc 0 T) :=
+    hF.mono fun z hz => ⟨mem_univ z.1, hz.2⟩
+  obtain ⟨K, _hK, hreaction⟩ :=
+    exists_nonneg_reaction_bound_on_rectangle hF'
+  apply le_ode_solution_of_parabolic_inequality_of_pos
+    (K := K) hT hcont hspace huderiv hφderiv hode hpde ?_ hzero
+  intro t ht x hφu
+  exact hreaction t ht (u x t) (hu_range x t ht)
+    (φ t) (hφ_range t ht) hφu.le
+
+/-- **Math.** Weak maximum principle on a closed manifold when the parabolic
+inequality is required only at strictly positive times. This is sufficient
+because a first positive maximum is never attained at the initial endpoint. -/
+theorem weak_maximum_principle_of_pos
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    [I.Boundaryless] [FiniteDimensional ℝ E]
+    [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    {g : ℝ → RiemannianMetric I M}
+    {X : ℝ → SmoothVectorField I M}
+    {u : M → ℝ → ℝ} {φ : ℝ → ℝ}
+    {F : ℝ → ℝ → ℝ} {T α : ℝ}
+    (hT : 0 < T)
+    (hF : ContDiffOn ℝ ∞ (fun z : ℝ × ℝ => F z.1 z.2)
+      ((Set.univ : Set ℝ) ×ˢ Icc 0 T))
+    (hu : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
+      (fun z : M × ℝ => u z.1 z.2)
+      ((Set.univ : Set M) ×ˢ Icc 0 T))
+    (hpde : ∀ t ∈ Icc 0 T, 0 < t → ∀ x,
+      derivWithin (u x) (Icc 0 T) t ≤
+        metricLaplacianAt (g t) (fun y => u y t) x
+          + (X t).dir (fun y => u y t) x + F (u x t) t)
+    (hφ : ∀ t ∈ Icc 0 T,
+      HasDerivWithinAt φ (F (φ t) t) (Icc 0 T) t)
+    (hφzero : φ 0 = α)
+    (hzero : ∀ x, u x 0 ≤ α) :
+    ∀ x t, t ∈ Icc 0 T → u x t ≤ φ t := by
+  cases isEmpty_or_nonempty M with
+  | inl hM =>
+      intro x
+      exact (hM.false x).elim
+  | inr hM =>
+      letI : Nonempty M := hM
+      have huderiv : ∀ x t, t ∈ Icc 0 T →
+          HasDerivWithinAt (u x) (derivWithin (u x) (Icc 0 T) t)
+            (Icc 0 T) t := by
+        intro x t ht
+        exact ((contDiffOn_time_slice_of_contMDiffOn_spacetime hu x t ht).differentiableWithinAt
+          (by norm_num)).hasDerivWithinAt
+      apply le_ode_solution_of_parabolic_inequality_of_smooth_reaction_of_pos
+        (ut := fun x t => derivWithin (u x) (Icc 0 T) t)
+        (φ' := fun t => F (φ t) t)
+        hT.le hu.continuousOn
+        (fun t ht => contMDiff_spatial_slice_of_contMDiffOn_spacetime hu ht)
+        huderiv hφ (fun _t _ht => rfl) (hF.of_le (by norm_num)) hpde
+      intro x
+      calc
+        u x 0 ≤ α := hzero x
+        _ = φ 0 := hφzero.symm
+
 /-- **Math.** Weak maximum principle for a scalar parabolic inequality on a
 closed manifold. A solution of the associated reaction ODE bounds the PDE
 solution for the whole closed time interval. -/
@@ -409,6 +544,79 @@ theorem weak_maximum_principle
       calc
         u x 0 ≤ α := hzero x
         _ = φ 0 := hφzero.symm
+
+/-- **Math.** Weak minimum principle with the parabolic inequality required
+only at strictly positive times, obtained by the same sign duality. -/
+theorem weak_minimum_principle_of_pos
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    [I.Boundaryless] [FiniteDimensional ℝ E]
+    [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    {g : ℝ → RiemannianMetric I M}
+    {X : ℝ → SmoothVectorField I M}
+    {u : M → ℝ → ℝ} {φ : ℝ → ℝ}
+    {F : ℝ → ℝ → ℝ} {T α : ℝ}
+    (hT : 0 < T)
+    (hF : ContDiffOn ℝ ∞ (fun z : ℝ × ℝ => F z.1 z.2)
+      ((Set.univ : Set ℝ) ×ˢ Icc 0 T))
+    (hu : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
+      (fun z : M × ℝ => u z.1 z.2)
+      ((Set.univ : Set M) ×ˢ Icc 0 T))
+    (hpde : ∀ t ∈ Icc 0 T, 0 < t → ∀ x,
+      metricLaplacianAt (g t) (fun y => u y t) x
+          + (X t).dir (fun y => u y t) x + F (u x t) t ≤
+        derivWithin (u x) (Icc 0 T) t)
+    (hφ : ∀ t ∈ Icc 0 T,
+      HasDerivWithinAt φ (F (φ t) t) (Icc 0 T) t)
+    (hφzero : φ 0 = α)
+    (hzero : ∀ x, α ≤ u x 0) :
+    ∀ x t, t ∈ Icc 0 T → φ t ≤ u x t := by
+  let v : M → ℝ → ℝ := fun x t => -u x t
+  let G : ℝ → ℝ → ℝ := fun s t => -F (-s) t
+  have hflip : ContDiff ℝ ∞ (fun z : ℝ × ℝ => (-z.1, z.2)) :=
+    contDiff_fst.neg.prodMk contDiff_snd
+  have hGcomp : ContDiffOn ℝ ∞ (fun z : ℝ × ℝ => F (-z.1) z.2)
+      ((Set.univ : Set ℝ) ×ˢ Icc 0 T) := by
+    simpa [Function.comp_def] using
+      hF.comp hflip.contDiffOn
+        (fun z hz => ⟨mem_univ (-z.1), hz.2⟩)
+  have hG : ContDiffOn ℝ ∞ (fun z : ℝ × ℝ => G z.1 z.2)
+      ((Set.univ : Set ℝ) ×ˢ Icc 0 T) := by
+    simpa [G] using hGcomp.neg
+  have hv : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
+      (fun z : M × ℝ => v z.1 z.2)
+      ((Set.univ : Set M) ×ˢ Icc 0 T) := by
+    simpa [v] using hu.neg
+  have hψ : ∀ t ∈ Icc 0 T,
+      HasDerivWithinAt (-φ) (G ((-φ) t) t) (Icc 0 T) t := by
+    intro t ht
+    simpa only [G, Pi.neg_apply, neg_neg] using (hφ t ht).neg
+  have hvpde : ∀ t ∈ Icc 0 T, 0 < t → ∀ x,
+      derivWithin (v x) (Icc 0 T) t ≤
+        metricLaplacianAt (g t) (fun y => v y t) x
+          + (X t).dir (fun y => v y t) x + G (v x t) t := by
+    intro t ht htpos x
+    have hdu : derivWithin (fun s => -u x s) (Icc 0 T) t =
+        -derivWithin (u x) (Icc 0 T) t := by
+      exact derivWithin.neg
+    have hdir : (X t).dir (fun y => -u y t) x =
+        -(X t).dir (fun y => u y t) x := by
+      simp only [SmoothVectorField.dir]
+      rw [show (fun y => -u y t) = -(fun y => u y t) by rfl, mfderiv_neg]
+      rfl
+    dsimp [v, G]
+    rw [hdu, metricLaplacianAt_neg, hdir]
+    simp only [neg_neg]
+    linarith [hpde t ht htpos x]
+  have hcomparison := weak_maximum_principle_of_pos
+    (g := g) (X := X) (u := v) (φ := -φ) (F := G) (T := T) (α := -α)
+    hT hG hv hvpde hψ (by simp [hφzero])
+    (fun x => by dsimp [v]; linarith [hzero x])
+  intro x t ht
+  have h := hcomparison x t ht
+  dsimp [v] at h
+  linarith
 
 /-- **Math.** Weak minimum principle for a scalar parabolic inequality on a
 closed manifold, obtained from the weak maximum principle by sign duality. -/

@@ -129,6 +129,51 @@ theorem curveVelocity_isParallelSolOn
   rw [derivAlongCurve_curveVelocity (I := I) g c t hc.continuousAt htone hu2]
   exact IsGeodesic.curveAcceleration_eq_zero hgeo t
 
+/-! ### The tangent Jacobi field -/
+
+set_option linter.overlappingInstances false in
+/-- **Math.** The velocity field of a geodesic is a Jacobi field.  Its first
+covariant derivative vanishes by `curveVelocity_isParallelSolOn`, so the
+second derivative is the derivative of the zero field; the curvature term is
+zero by antisymmetry in the first two slots. -/
+theorem curveVelocity_isJacobiFieldAlong
+    (g : RiemannianMetric I M) {c : ℝ → M}
+    (hc : Continuous c) (hgeo : Geodesic.IsGeodesic (I := I) g c) :
+    IsJacobiFieldAlong (I := I) g c (curveVelocity (I := I) c) := by
+  have hpar : ∀ t : ℝ,
+      derivAlongCurve (I := I) g c (curveVelocity (I := I) c) t = 0 := by
+    intro t
+    exact (curveVelocity_isParallelSolOn (I := I) g hc hgeo t (Set.mem_univ t)).2
+  have hzero :
+      (fun τ => derivAlongCurve (I := I) g c (curveVelocity (I := I) c) τ) =
+        (fun τ => (0 : TangentSpace I (c τ))) := by
+    funext τ
+    exact hpar τ
+  intro t
+  rw [jacobiEquation_def, hzero, derivAlongCurve_zero]
+  have hanti := curvatureTensorAt_antisymm_first (g.leviCivita).toAffineConnection
+    (c t) (curveVelocity (I := I) c t) (curveVelocity (I := I) c t)
+      (curveVelocity (I := I) c t)
+  have hdouble :
+      curvatureTensorAt (g.leviCivita).toAffineConnection (c t)
+          (curveVelocity (I := I) c t) (curveVelocity (I := I) c t)
+          (curveVelocity (I := I) c t)
+        + curvatureTensorAt (g.leviCivita).toAffineConnection (c t)
+          (curveVelocity (I := I) c t) (curveVelocity (I := I) c t)
+          (curveVelocity (I := I) c t) = 0 :=
+    (eq_neg_iff_add_eq_zero.mp hanti)
+  have htwo :
+      (2 : ℝ) • curvatureTensorAt (g.leviCivita).toAffineConnection (c t)
+          (curveVelocity (I := I) c t) (curveVelocity (I := I) c t)
+          (curveVelocity (I := I) c t) = 0 := by
+    simpa [two_smul] using hdouble
+  have hcurv :
+      curvatureTensorAt (g.leviCivita).toAffineConnection (c t)
+          (curveVelocity (I := I) c t) (curveVelocity (I := I) c t)
+          (curveVelocity (I := I) c t) = 0 := by
+    exact (smul_eq_zero.mp htwo).resolve_left (by norm_num)
+  simpa using hcurv
+
 /-- **Math.** A regular parallel field along a `C^∞` curve is `C^∞` in every
 fixed chart.  Its chart reading solves the smooth nonautonomous linear ODE
 `W' = -Γ(u',W)(u)`; adjoining time as a state variable turns this into an

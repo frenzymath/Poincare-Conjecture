@@ -1,4 +1,4 @@
-import Topping.Riemannian.CurvatureLaplacian
+import Topping.Riemannian.CurvatureLaplacianProducer
 import Topping.Riemannian.SmoothTensor
 import Topping.RicciFlow.CurvatureStarUniform
 
@@ -95,39 +95,35 @@ theorem secondCovDerivAlong_covTensorOfBilin_neg_two_ricci
 
 /-- **Math.** **Topping 2.5.1, derived.** If the Riemann tensor of the family `g`
 varies by Topping's first-variation formula 2.3.5 in the direction
-`h = -2\Ric`, and the rough Laplacian of the curvature is given by 2.4.1 at each
-time of `J`, then the curvature satisfies the component form of the evolution
-equation on `J`.
+`h = -2\Ric`, then the curvature satisfies the component form of the evolution
+equation on `J`. The rough-Laplacian formula 2.4.1 is supplied unconditionally
+by `hasCurvatureLaplacianFormula`.
 
 The proof is the substitution described in the module docstring: the four
 `∇²\Ric` terms produced by the variation formula are exactly those appearing in
 2.4.1, so replacing them by `Δ\Rm` and the remaining terms of 2.4.1 leaves
 precisely Topping's eight-term correction, with nothing unaccounted for.
 
-The two hypotheses are the only *time*-analytic inputs — nothing further is
+The variation hypothesis is the only *time*-analytic input — nothing further is
 assumed about the family `g`, and no derivative is computed here. One spatial
 regularity fact is used and is not a hypothesis because it is a theorem:
 smoothness of the components of `\Ric` (`hasSmoothComponents_ricciTensorField`),
 without which the `-2` could not leave `∇²`.
 
-**Status of the antecedents — read this before treating "derived" as "proved".**
-Neither hypothesis has a witness anywhere in the workspace: `HasRiemannVariationOn`
-(Topping 2.3.5) and `HasCurvatureLaplacianFormula` (2.4.1) are both stated and
-both unwitnessed. Thus this is a true implication whose antecedent remains open —
-worth having, because it fixes the shape Chapter 3
-consumes and makes the star witness explicit, but *not* a proof of the evolution
-equation. That is why the blueprint node carries no `\leanok`. -/
+**Status of the antecedent.** `HasCurvatureLaplacianFormula` (2.4.1) is now
+genuinely witnessed for every metric. The remaining input is
+`HasRiemannVariationOn` (Topping 2.3.5) in the `-2\Ric` direction, which has no
+arbitrary-field intrinsic producer in the workspace. -/
 theorem hasCurvatureEvolutionComponentsOn_of_variation
     {g : ℝ → RiemannianMetric I M} {J : Set ℝ}
     (hvar : HasRiemannVariationOn g
-      (fun t p (x y : TangentSpace I p) => -2 * ricciTensorAt (g t) p x y) J)
-    (hlap : ∀ t ∈ J, HasCurvatureLaplacianFormula (g t)) :
+      (fun t p (x y : TangentSpace I p) => -2 * ricciTensorAt (g t) p x y) J) :
     HasCurvatureEvolutionComponentsOn g J := by
   intro t ht Y p
   -- The variation formula, on the four entries of the tuple.
   have hv := hvar t ht (Y 0) (Y 1) (Y 2) (Y 3) p
   -- `Δ\Rm` by 2.4.1, on the same four entries.
-  have hL := hlap t ht (Y 0) (Y 1) (Y 2) (Y 3) p
+  have hL := hasCurvatureLaplacianFormula (g t) (Y 0) (Y 1) (Y 2) (Y 3) p
   rw [tuple_four_eta] at hL
   -- Pull the `-2` out of each of the four second-derivative terms.
   simp only [secondCovDerivAlong_covTensorOfBilin_neg_two_ricci] at hv
@@ -143,10 +139,10 @@ theorem hasCurvatureEvolutionComponentsOn_of_variation
   rw [curvatureEvolutionCorrection, hL]
   ring
 
-/-- **Math.** **Topping 2.5.1 in compact form, derived.** Under the same two
-hypotheses the curvature satisfies `∂_t\Rm = Δ\Rm + \Rm*\Rm`: the component form
-established above feeds `hasCurvatureEvolutionOn_of_components`, whose star
-witness is `curvatureEvolutionCorrection`.
+/-- **Math.** **Topping 2.5.1 in compact form, derived.** Under the same
+variation hypothesis the curvature satisfies `∂_t\Rm = Δ\Rm + \Rm*\Rm`: the
+component form established above feeds `hasCurvatureEvolutionOn_of_components`,
+whose star witness is `curvatureEvolutionCorrection`.
 
 This closes the chain the chapter is built around — first variation, Laplacian
 formula, evolution equation — with the star product's existential discharged by a
@@ -154,11 +150,13 @@ named tensor rather than left open. -/
 theorem hasCurvatureEvolutionOn_of_variation
     {g : ℝ → RiemannianMetric I M} {J : Set ℝ}
     (hvar : HasRiemannVariationOn g
-      (fun t p (x y : TangentSpace I p) => -2 * ricciTensorAt (g t) p x y) J)
-    (hlap : ∀ t ∈ J, HasCurvatureLaplacianFormula (g t)) :
+      (fun t p (x y : TangentSpace I p) => -2 * ricciTensorAt (g t) p x y) J) :
     HasCurvatureEvolutionOn g J :=
   hasCurvatureEvolutionOn_of_components
-    (hasCurvatureEvolutionComponentsOn_of_variation hvar hlap)
+    (hasCurvatureEvolutionComponentsOn_of_variation hvar)
+
+#print axioms Topping.hasCurvatureEvolutionComponentsOn_of_variation
+#print axioms Topping.hasCurvatureEvolutionOn_of_variation
 
 end Topping
 

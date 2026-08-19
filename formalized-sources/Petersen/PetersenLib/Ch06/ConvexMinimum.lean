@@ -1,5 +1,6 @@
 import PetersenLib.Ch06.ConvexFunctions
 import PetersenLib.Ch05.HopfRinowSegment
+import PetersenLib.Ch05.FixedPointTotallyGeodesic
 
 /-!
 # Petersen Ch. 6, §6.2 — maxima of convex functions and unique minima
@@ -146,6 +147,148 @@ theorem strictlyConvex_uniqueMinimum (g : RiemannianMetric I M) (hg : g.IsRieman
     Exponential.exists_minimizing_geodesic_unitInterval (I := I) g hg q hgeo p
   exact (strictlyConvexOn_univ_unique_min (I := I) hconv hq hp γ
     (Geodesic.IsGeodesic.isGeodesicOn hγgeo (Icc 0 1)) hγ0 hγ1)
+
+/-! ### The `L∞` center of mass -/
+
+/-- **Math.** Petersen §6.2 (pp. 259–260), `def:pet-ch6-linfty-center-of-mass`: the
+objective whose minimum is the `L∞` center of a nonempty finite set `s`. It is the maximum
+of the modified distance functions `f₀,p(x) = ½r(p,x)²` over `p ∈ s`.
+
+Minimizing this function is equivalent to minimizing the radius of a closed ball containing
+`s`, since `r ↦ ½r²` is strictly increasing on nonnegative radii. -/
+def linftyCenterObjective (g : RiemannianMetric I M) (s : Finset M) (hs : s.Nonempty)
+    (x : M) : ℝ :=
+  s.sup' hs fun p => (riemannianDistance (I := I) g p x) ^ 2 / 2
+
+open Classical in
+/-- **Math.** Petersen §6.2 (pp. 259–260), `def:pet-ch6-linfty-center-of-mass`: the
+`L∞` center of mass of a nonempty finite set, chosen as a minimizer of
+`linftyCenterObjective`.
+
+On the complete simply connected nonpositively curved manifolds of Petersen's statement, the
+objective is proper and strictly convex, so `strictlyConvex_uniqueMinimum` supplies a unique
+minimizer. The definition is total: before those geometric hypotheses are supplied, it falls
+back to an element of `s`. The specification theorem below shows that whenever the unique
+minimum exists, this choice is exactly that minimum. -/
+noncomputable def centerOfMassLinfty (g : RiemannianMetric I M) (s : Finset M)
+    (hs : s.Nonempty) : M :=
+  if h : ∃ p : M, IsMinOn (linftyCenterObjective (I := I) g s hs) Set.univ p then
+    h.choose
+  else
+    hs.choose
+
+/-- **Math.** The `L∞` center selector realizes the unique minimum whenever it exists. This
+is the interface used after properness and strict convexity have supplied the geometric
+existence-and-uniqueness result. -/
+theorem centerOfMassLinfty_isMin (g : RiemannianMetric I M) (s : Finset M)
+    (hs : s.Nonempty)
+    (hmin : ∃! p : M, IsMinOn (linftyCenterObjective (I := I) g s hs) Set.univ p) :
+    IsMinOn (linftyCenterObjective (I := I) g s hs) Set.univ
+      (centerOfMassLinfty (I := I) g s hs) := by
+  rw [centerOfMassLinfty, dif_pos hmin.exists]
+  exact hmin.exists.choose_spec
+
+/-- **Math.** Any point satisfying the unique-minimum characterization is the selected
+`L∞` center. -/
+theorem centerOfMassLinfty_eq_of_isMin (g : RiemannianMetric I M) (s : Finset M)
+    (hs : s.Nonempty)
+    (hmin : ∃! p : M, IsMinOn (linftyCenterObjective (I := I) g s hs) Set.univ p)
+    {p : M} (hp : IsMinOn (linftyCenterObjective (I := I) g s hs) Set.univ p) :
+    centerOfMassLinfty (I := I) g s hs = p :=
+  hmin.unique (centerOfMassLinfty_isMin (I := I) g s hs hmin) hp
+
+/-! ### Cartan's finite-orbit argument -/
+
+/- The curvature-to-properness/strict-convexity argument that supplies `hmin` is kept
+   explicit here.  This makes the fixed-point theorem useful as soon as that analytic
+   bridge is available, without turning the gap into an implicit or vacuous premise. -/
+
+open Classical in
+/-- **Math.** Petersen §6.2 (p. 260), `thm:pet-ch6-cartan-fixed-point`: the finite-orbit
+argument behind Cartan's center-of-mass theorem.  The orbit is supplied as a nonempty
+`Finset` `s`; `horbit` identifies it with the orbit of `p` under a finite-order isometry.
+The hypothesis `hmin` is the unique-minimum conclusion for the orbit objective.  On a
+complete simply connected nonpositively curved manifold it is supplied by the preceding
+convexity and properness argument; keeping it explicit records that remaining geometric
+bridge honestly. -/
+theorem cartan_finiteOrderIsometry_fixedPoint [ConnectedSpace M]
+    (g : RiemannianMetric I M) (F : M → M)
+    (hF : IsRiemannianIsometry g g F)
+    (n : ℕ) (hn : 0 < n) (horder : F^[n] = id) (p : M)
+    (s : Finset M) (hs : s.Nonempty)
+    (horbit : s = (Finset.range n).image (fun i => (F^[i]) p))
+    (hmin : ∃! z : M,
+      IsMinOn (linftyCenterObjective (I := I) g s hs) Set.univ z) :
+    ∃ x : M, F x = x := by
+  classical
+  have hinj : Function.Injective F := by
+    obtain ⟨⟨Φ, hΦ⟩, hpres⟩ := hF
+    intro x y hxy
+    have hxy' : Φ x = Φ y := by
+      simpa only [hΦ] using hxy
+    exact Φ.toEquiv.injective hxy'
+  have hsurj : Function.Surjective F := by
+    obtain ⟨⟨Φ, hΦ⟩, hpres⟩ := hF
+    intro y
+    obtain ⟨x, hx⟩ := Φ.toEquiv.surjective y
+    refine ⟨x, ?_⟩
+    have hx' : Φ x = y := hx
+    simpa only [hΦ] using hx'
+  have hdist : ∀ p q : M,
+      riemannianDistance (I := I) g (F p) (F q) =
+        riemannianDistance (I := I) g p q := by
+    have hFloc : IsLocalRiemannianIsometry g g F :=
+      hF.isLocalRiemannianIsometry
+    obtain ⟨G, hGloc, hGF⟩ :=
+      hF.exists_leftInverse_isLocalRiemannianIsometry
+    exact fun p q => localIsometry_distancePreserving hFloc hGloc hGF p q
+  have hsubset : s.image F ⊆ s := by
+    rw [horbit]
+    intro x hx
+    rcases Finset.mem_image.mp hx with ⟨y, hy, rfl⟩
+    rcases Finset.mem_image.mp hy with ⟨i, hi, rfl⟩
+    have hi_lt : i < n := Finset.mem_range.mp hi
+    by_cases hnext : i + 1 < n
+    · refine Finset.mem_image.mpr ⟨i + 1, Finset.mem_range.mpr hnext, ?_⟩
+      rw [Function.iterate_succ_apply']
+    · have hieq : i + 1 = n := by omega
+      refine Finset.mem_image.mpr ⟨0, Finset.mem_range.mpr hn, ?_⟩
+      have hperp : (F^[n]) p = p := by
+        rw [horder]
+        rfl
+      rw [show F ((F^[i]) p) = (F^[i + 1]) p by
+        rw [Function.iterate_succ_apply']]
+      rw [hieq, hperp]
+      simp
+  have hcard : (s.image F).card = s.card :=
+    Finset.card_image_of_injective s hinj
+  have himage : s.image F = s :=
+    Finset.eq_of_subset_of_card_le hsubset (by rw [hcard])
+  have hobj : ∀ x : M,
+      linftyCenterObjective (I := I) g s hs (F x) =
+        linftyCenterObjective (I := I) g s hs x := by
+    intro x
+    unfold linftyCenterObjective
+    have hsup := Finset.sup'_comp_eq_image (f := F) hs
+      (fun q : M => (riemannianDistance (I := I) g q (F x)) ^ 2 / 2)
+    have hrew : (s.image F).sup' (hs.image F)
+        (fun q : M => (riemannianDistance (I := I) g q (F x)) ^ 2 / 2) =
+        s.sup' hs (fun q : M =>
+          (riemannianDistance (I := I) g q (F x)) ^ 2 / 2) := by
+      simpa [himage]
+    rw [← hrew, ← hsup]
+    simp_rw [Function.comp_apply, hdist]
+  let c : M := centerOfMassLinfty (I := I) g s hs
+  have hcmin : IsMinOn (linftyCenterObjective (I := I) g s hs) Set.univ c := by
+    exact centerOfMassLinfty_isMin (I := I) g s hs hmin
+  have hFcmin : IsMinOn (linftyCenterObjective (I := I) g s hs) Set.univ (F c) := by
+    rw [isMinOn_iff]
+    intro y hy
+    obtain ⟨z, hz⟩ := hsurj y
+    rw [← hz, hobj c, hobj z]
+    exact isMinOn_iff.mp hcmin z (mem_univ _)
+  refine ⟨c, ?_⟩
+  exact (hmin.unique hcmin hFcmin).symm
 
 end PetersenLib
 

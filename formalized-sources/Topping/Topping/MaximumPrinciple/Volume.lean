@@ -1,3 +1,4 @@
+import Mathlib.Analysis.Calculus.ParametricIntegral
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Topping.MaximumPrinciple.ScalarConsequences
 
@@ -58,6 +59,69 @@ module assumes anything about `V` or `μ`. -/
 def HasVolumeDerivativeOn (g : ℝ → RiemannianMetric I M) (V : ℝ → ℝ)
     (μ : ℝ → Measure M) (J : Set ℝ) : Prop :=
   ∀ t ∈ J, HasDerivWithinAt V (-∫ p, scalarCurvatureAt (g t) p ∂(μ t)) J t
+
+set_option linter.unusedSectionVars false in
+/-- **Math.** A dominated pointwise density evolution integrates to the total
+volume evolution `V' = -∫ R dμ`.
+
+Here `ρ_t` is a nonnegative density with respect to a fixed reference measure
+`ν`, `μ_t = ρ_t ν`, and `V(t) = ∫ ρ_t dν`.  If `∂ₜρ = -Rρ` on an open
+neighborhood `U` of the target time set `K`, and the derivatives admit one
+integrable dominating function, differentiation under the integral sign gives
+`HasVolumeDerivativeOn` on all of `K`, including its endpoints.
+
+This is the analytic bridge from the pointwise volume-form producer to the
+global producer. Applying it to the canonical Riemannian measure still requires
+a global density representation and the stated domination bound. -/
+theorem hasVolumeDerivativeOn_of_weightedDensity
+    {g : ℝ → RiemannianMetric I M} (ν : Measure M)
+    (ρ : ℝ → M → NNReal) {K U : Set ℝ} (hU : IsOpen U) (hKU : K ⊆ U)
+    (hρmeas : ∀ t ∈ U, Measurable (ρ t))
+    (hρint : ∀ t ∈ U, Integrable (fun p => (ρ t p : ℝ)) ν)
+    (hderiv : ∀ t ∈ U, ∀ p,
+      HasDerivAt (fun s => (ρ s p : ℝ))
+        (-scalarCurvatureAt (g t) p * (ρ t p : ℝ)) t)
+    (hderivMeas : ∀ t ∈ U,
+      AEStronglyMeasurable
+        (fun p => -scalarCurvatureAt (g t) p * (ρ t p : ℝ)) ν)
+    (bound : M → ℝ) (hboundInt : Integrable bound ν)
+    (hbound : ∀ᵐ p ∂ν, ∀ t ∈ U,
+      ‖-scalarCurvatureAt (g t) p * (ρ t p : ℝ)‖ ≤ bound p) :
+    HasVolumeDerivativeOn g
+      (fun t => ∫ p, (ρ t p : ℝ) ∂ν)
+      (fun t => ν.withDensity (fun p => (ρ t p : ENNReal))) K := by
+  intro t ht
+  have htU := hKU ht
+  have hFmeas : ∀ᶠ s in 𝓝 t,
+      AEStronglyMeasurable (fun p => (ρ s p : ℝ)) ν := by
+    filter_upwards [hU.mem_nhds htU] with s hs
+    exact (hρint s hs).aestronglyMeasurable
+  have hparam :=
+    hasDerivAt_integral_of_dominated_loc_of_deriv_le
+      (μ := ν) (F := fun s p => (ρ s p : ℝ))
+      (F' := fun s p => -scalarCurvatureAt (g s) p * (ρ s p : ℝ))
+      (x₀ := t) (s := U) (bound := bound)
+      (hU.mem_nhds htU) hFmeas
+      (hρint t htU) (hderivMeas t htU) hbound hboundInt
+      (Filter.Eventually.of_forall fun p s hs => hderiv s hs p)
+  have hweighted :
+      (∫ p, scalarCurvatureAt (g t) p
+          ∂(ν.withDensity (fun p => (ρ t p : ENNReal)))) =
+        ∫ p, (ρ t p : ℝ) * scalarCurvatureAt (g t) p ∂ν := by
+    rw [integral_withDensity_eq_integral_smul (hρmeas t htU)]
+    congr 1
+  have htarget :
+      (∫ p, -scalarCurvatureAt (g t) p * (ρ t p : ℝ) ∂ν) =
+        -(∫ p, scalarCurvatureAt (g t) p
+          ∂(ν.withDensity (fun p => (ρ t p : ENNReal)))) := by
+    rw [hweighted, ← integral_neg]
+    congr 1
+    funext p
+    ring
+  rw [htarget] at hparam
+  exact hparam.2.hasDerivWithinAt
+
+#print axioms Topping.hasVolumeDerivativeOn_of_weightedDensity
 
 section
 

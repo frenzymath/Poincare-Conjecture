@@ -45,10 +45,12 @@ maximizes `w(·,t)` at a positive value, one has `wt(x,t) ≤ K w(x,t)`, then
 nonpositive initial data remain nonpositive.
 
 The proof maximizes `exp(-K t) w(x,t) - ε t` on spacetime. A positive value
-forces the maximizing time to be positive. The preceding endpoint lemma says
-that its time derivative is nonnegative, whereas the spatial-maximizer bound
-makes it strictly negative. -/
-theorem nonpos_of_forall_isMax_time_deriv_le
+forces the maximizing time to be positive. Consequently the spatial-maximizer
+bound is needed only at strictly positive times; no evolution equation is
+required at the initial endpoint. The preceding endpoint lemma says that its
+time derivative is nonnegative, whereas the spatial-maximizer bound makes it
+strictly negative. -/
+theorem nonpos_of_forall_isMax_time_deriv_le_of_pos
     {X : Type*} [TopologicalSpace X] [CompactSpace X] [Nonempty X]
     {w wt : X → ℝ → ℝ} {T K : ℝ}
     (hT : 0 ≤ T)
@@ -56,7 +58,7 @@ theorem nonpos_of_forall_isMax_time_deriv_le
       ((Set.univ : Set X) ×ˢ Icc 0 T))
     (hderiv : ∀ x t, t ∈ Icc 0 T →
       HasDerivWithinAt (w x) (wt x t) (Icc 0 T) t)
-    (hmax : ∀ t ∈ Icc 0 T, ∀ x, 0 < w x t → (∀ y, w y t ≤ w x t) →
+    (hmax : ∀ t ∈ Icc 0 T, 0 < t → ∀ x, 0 < w x t → (∀ y, w y t ≤ w x t) →
       wt x t ≤ K * w x t)
     (hzero : ∀ x, w x 0 ≤ 0) :
     ∀ x t, t ∈ Icc 0 T → w x t ≤ 0 := by
@@ -117,7 +119,7 @@ theorem nonpos_of_forall_isMax_time_deriv_le
     rw [hV] at hleV
     nlinarith [Real.exp_pos (-K * z.2)]
   have hrate : wt z.1 z.2 ≤ K * w z.1 z.2 :=
-    hmax z.2 hzt z.1 hwzpos hwmax
+    hmax z.2 hzt hztpos z.1 hwzpos hwmax
   set vtime : ℝ → ℝ :=
     (fun s => Real.exp (-K * s)) * w z.1 - fun s => ε * id s with hvtime
   have hvtime_eq (s : ℝ) : vtime s = V (z.1, s) := by
@@ -151,6 +153,23 @@ theorem nonpos_of_forall_isMax_time_deriv_le
         Real.exp (-K * z.2) * (K * w z.1 z.2) :=
     mul_le_mul_of_nonneg_left hrate (Real.exp_pos _).le
   nlinarith
+
+/-- **Math.** The all-times interface to the compact-space weak maximum
+principle. -/
+theorem nonpos_of_forall_isMax_time_deriv_le
+    {X : Type*} [TopologicalSpace X] [CompactSpace X] [Nonempty X]
+    {w wt : X → ℝ → ℝ} {T K : ℝ}
+    (hT : 0 ≤ T)
+    (hcont : ContinuousOn (fun z : X × ℝ => w z.1 z.2)
+      ((Set.univ : Set X) ×ˢ Icc 0 T))
+    (hderiv : ∀ x t, t ∈ Icc 0 T →
+      HasDerivWithinAt (w x) (wt x t) (Icc 0 T) t)
+    (hmax : ∀ t ∈ Icc 0 T, ∀ x, 0 < w x t → (∀ y, w y t ≤ w x t) →
+      wt x t ≤ K * w x t)
+    (hzero : ∀ x, w x 0 ≤ 0) :
+    ∀ x t, t ∈ Icc 0 T → w x t ≤ 0 :=
+  nonpos_of_forall_isMax_time_deriv_le_of_pos hT hcont hderiv
+    (fun t ht _htpos => hmax t ht) hzero
 
 /-- **Math.** A continuously differentiable reaction term has a uniform
 one-sided Lipschitz bound on a compact value-time rectangle. -/
@@ -216,8 +235,60 @@ theorem exists_common_value_interval
 `F` has one-sided Lipschitz constant `K` along the compared values. Then
 initial data below `φ` remain below `φ`.
 
-This is the reaction-term reduction used in the weak maximum principle: apply
-the linear compact-space comparison to `w = u - φ`. -/
+This positive-time form is the reaction-term reduction used when the evolution
+equation is known only away from the initial endpoint. -/
+theorem le_ode_solution_of_forall_isMax_time_deriv_le_of_pos
+    {X : Type*} [TopologicalSpace X] [CompactSpace X] [Nonempty X]
+    {u ut : X → ℝ → ℝ} {φ φ' : ℝ → ℝ} {F : ℝ → ℝ → ℝ} {T K : ℝ}
+    (hT : 0 ≤ T)
+    (hcont : ContinuousOn (fun z : X × ℝ => u z.1 z.2)
+      ((Set.univ : Set X) ×ˢ Icc 0 T))
+    (huderiv : ∀ x t, t ∈ Icc 0 T →
+      HasDerivWithinAt (u x) (ut x t) (Icc 0 T) t)
+    (hφderiv : ∀ t, t ∈ Icc 0 T →
+      HasDerivWithinAt φ (φ' t) (Icc 0 T) t)
+    (hode : ∀ t ∈ Icc 0 T, φ' t = F (φ t) t)
+    (hmax : ∀ t ∈ Icc 0 T, 0 < t → ∀ x, φ t < u x t →
+      (∀ y, u y t ≤ u x t) → ut x t ≤ F (u x t) t)
+    (hreaction : ∀ t ∈ Icc 0 T, ∀ x, φ t < u x t →
+      F (u x t) t - F (φ t) t ≤ K * (u x t - φ t))
+    (hzero : ∀ x, u x 0 ≤ φ 0) :
+    ∀ x t, t ∈ Icc 0 T → u x t ≤ φ t := by
+  let w : X → ℝ → ℝ := fun x t => u x t - φ t
+  let wt : X → ℝ → ℝ := fun x t => ut x t - φ' t
+  have hφcont : ContinuousOn φ (Icc 0 T) :=
+    fun t ht => (hφderiv t ht).continuousWithinAt
+  have hw := nonpos_of_forall_isMax_time_deriv_le_of_pos
+    (w := w) (wt := wt) (T := T) (K := K) hT
+    (by
+      change ContinuousOn (fun z : X × ℝ => u z.1 z.2 - φ z.2)
+        ((Set.univ : Set X) ×ˢ Icc 0 T)
+      exact hcont.sub (hφcont.comp continuous_snd.continuousOn
+        (fun z hz => hz.2)))
+    (fun x t ht => (huderiv x t ht).sub (hφderiv t ht))
+    (fun t ht htpos x hxpos hxmax => by
+      have hφu : φ t < u x t := by
+        simpa [w] using hxpos
+      have humax : ∀ y, u y t ≤ u x t := by
+        intro y
+        have hxy := hxmax y
+        dsimp [w] at hxy
+        linarith
+      have hut := hmax t ht htpos x hφu humax
+      have hr := hreaction t ht x hφu
+      dsimp [wt, w]
+      rw [hode t ht]
+      linarith)
+    (fun x => by
+      dsimp [w]
+      exact sub_nonpos.mpr (hzero x))
+  intro x t ht
+  have h := hw x t ht
+  dsimp [w] at h
+  exact sub_nonpos.mp h
+
+/-- **Math.** Nonlinear ODE comparison with the evolution inequality available
+on the whole closed interval. -/
 theorem le_ode_solution_of_forall_isMax_time_deriv_le
     {X : Type*} [TopologicalSpace X] [CompactSpace X] [Nonempty X]
     {u ut : X → ℝ → ℝ} {φ φ' : ℝ → ℝ} {F : ℝ → ℝ → ℝ} {T K : ℝ}
@@ -234,39 +305,9 @@ theorem le_ode_solution_of_forall_isMax_time_deriv_le
     (hreaction : ∀ t ∈ Icc 0 T, ∀ x, φ t < u x t →
       F (u x t) t - F (φ t) t ≤ K * (u x t - φ t))
     (hzero : ∀ x, u x 0 ≤ φ 0) :
-    ∀ x t, t ∈ Icc 0 T → u x t ≤ φ t := by
-  let w : X → ℝ → ℝ := fun x t => u x t - φ t
-  let wt : X → ℝ → ℝ := fun x t => ut x t - φ' t
-  have hφcont : ContinuousOn φ (Icc 0 T) :=
-    fun t ht => (hφderiv t ht).continuousWithinAt
-  have hw := nonpos_of_forall_isMax_time_deriv_le
-    (w := w) (wt := wt) (T := T) (K := K) hT
-    (by
-      change ContinuousOn (fun z : X × ℝ => u z.1 z.2 - φ z.2)
-        ((Set.univ : Set X) ×ˢ Icc 0 T)
-      exact hcont.sub (hφcont.comp continuous_snd.continuousOn
-        (fun z hz => hz.2)))
-    (fun x t ht => (huderiv x t ht).sub (hφderiv t ht))
-    (fun t ht x hxpos hxmax => by
-      have hφu : φ t < u x t := by
-        simpa [w] using hxpos
-      have humax : ∀ y, u y t ≤ u x t := by
-        intro y
-        have hxy := hxmax y
-        dsimp [w] at hxy
-        linarith
-      have hut := hmax t ht x hφu humax
-      have hr := hreaction t ht x hφu
-      dsimp [wt, w]
-      rw [hode t ht]
-      linarith)
-    (fun x => by
-      dsimp [w]
-      exact sub_nonpos.mpr (hzero x))
-  intro x t ht
-  have h := hw x t ht
-  dsimp [w] at h
-  exact sub_nonpos.mp h
+    ∀ x t, t ∈ Icc 0 T → u x t ≤ φ t :=
+  le_ode_solution_of_forall_isMax_time_deriv_le_of_pos hT hcont huderiv
+    hφderiv hode (fun t ht _htpos => hmax t ht) hreaction hzero
 
 /-- **Math.** The minimum-principle dual of
 `nonpos_of_forall_isMax_time_deriv_le`. -/

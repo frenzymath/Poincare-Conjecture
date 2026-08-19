@@ -158,6 +158,36 @@ theorem geodesicallyComplete_of_riemannianCovering
     simp only [add_zero]
   exact ⟨γ, hγcont, hγzero, hγvel, hγgeo⟩
 
+/-! The converse direction needs only surjectivity: a global geodesic upstairs
+projects to a global geodesic downstairs.  We keep this as a separate lemma so
+the covering-equivalence theorem below exposes the precise topological input. -/
+
+/-- **Math.** A surjective local Riemannian isometry pushes geodesic completeness
+from its source to its target.  Given a target initial datum, lift its foot and
+velocity through the value and differential of the local isometry, then project
+the resulting global source geodesic. -/
+theorem geodesicallyComplete_of_surjective_localIsometry
+    {gM : RiemannianMetric I M} {gN : RiemannianMetric I' M'} {F : M → M'}
+    (hF : IsLocalRiemannianIsometry gM gN F)
+    (hsurj : Function.Surjective F)
+    (hM : IsGeodesicallyComplete (I := I) gM) :
+    IsGeodesicallyComplete (I := I') gN := by
+  intro q w
+  obtain ⟨p, hp⟩ := hsurj q
+  subst q
+  obtain ⟨v, hv⟩ := (hF.bijective_mfderiv p).2 w
+  obtain ⟨γ, hγcont, hγ0, hγv, hγgeo⟩ := hM p v
+  have hγinit : IsGeodesicWithInitialOn (I := I) gM γ Set.univ 0 p v :=
+    ⟨hγcont.continuousOn, hγ0, hγv, fun t _ => hγgeo t⟩
+  have hFγ := localIsometry_isGeodesicWithInitialOn (I := I) (I' := I')
+    hF isOpen_univ (Set.mem_univ 0) hγinit
+  refine ⟨F ∘ γ, hF.continuous.comp hγcont, ?_, ?_, ?_⟩
+  · simpa only [Function.comp_apply, hγ0]
+  · have hvel := hFγ.2.2.1
+    rw [hv] at hvel
+    exact hvel
+  · exact fun t => hFγ.2.2.2 t (Set.mem_univ t)
+
 /-- **Math.** **Time reversal of a geodesic.**  A geodesic `γ` on an open, order-connected
 time set `J`, run backwards from the time `t₁`, is the maximal geodesic of a suitable
 initial datum at `m = γ t₁`: for every `s` with `t₁ - s ∈ J` the maximal geodesic of that
@@ -288,6 +318,22 @@ theorem completeLocalIsometry_surjective [Nonempty M] [PreconnectedSpace M']
     ⟨completeLocalIsometry_isClosed_range hF hM, completeLocalIsometry_isOpen_range hF hM⟩
   have : Set.range F = Set.univ := hclopen.eq_univ (Set.range_nonempty F)
   exact Set.range_eq_univ.mp this
+
+/-- **Math.** Petersen Ch. 5, Proposition 5.6.3 (`prop:pet-ch5-covering-completeness`):
+geodesic completeness is invariant under a Riemannian covering.  The forward
+direction uses the intrinsic lifting theorem and the preceding open/closed-range
+argument to obtain surjectivity; the reverse direction projects global geodesics
+through the covering. -/
+theorem riemannianCovering_completenessEquivalence [Nonempty M] [PreconnectedSpace M']
+    {gM : RiemannianMetric I M} {gN : RiemannianMetric I' M'} {F : M → M'}
+    (hF : IsLocalRiemannianIsometry gM gN F) (hcov : IsCoveringMap F) :
+    IsGeodesicallyComplete (I := I) gM ↔ IsGeodesicallyComplete (I := I') gN := by
+  constructor
+  · intro hM
+    exact geodesicallyComplete_of_surjective_localIsometry hF
+      (completeLocalIsometry_surjective hF hM) hM
+  · intro hN
+    exact geodesicallyComplete_of_riemannianCovering hF hcov hN
 
 end PetersenLib
 

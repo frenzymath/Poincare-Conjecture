@@ -25,7 +25,7 @@ The scalar case is carried out in full. Substituting `h = -2\Ric` into 2.3.9:
   divergence is `-½ΔR` in Topping's sign convention `δ = -\tr₁₂∇`.
 
 The three contributions add to `ΔR + 2|\Ric|^2`, which is
-`HasScalarCurvatureEvolutionOn`. Thus
+`HasScalarCurvatureEvolutionOn` — the shared statement of I-0450. So
 `hasScalarCurvatureEvolutionOn_of_hasScalarVariationOn` is a genuine derivation
 of Topping 2.5.4 from Topping 2.3.9, not a restatement, and it is what pins down
 that the project's `δ`, `Δ` and `⟨·,·⟩` conventions are mutually consistent: an

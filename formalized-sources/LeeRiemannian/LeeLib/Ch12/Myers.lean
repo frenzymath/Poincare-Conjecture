@@ -195,14 +195,11 @@ theorem finite_fundamentalGroup_of_coveringAut_equiv
 
 section RiemannianMyers
 
-variable
-  {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [Module.Finite ℝ E]
-    [NeZero (Module.finrank ℝ E)]
-  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
-  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [SigmaCompactSpace M] [T3Space M] [ConnectedSpace M]
+variable [InnerProductSpace ℝ E] [Module.Finite ℝ E]
+  [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+  [SigmaCompactSpace M] [T3Space M] [ConnectedSpace M]
 
-omit [Module.Finite ℝ E]
+omit [InnerProductSpace ℝ E] [Module.Finite ℝ E]
   [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem myersMetric_isRiemannianDist
     (g : LeeLib.Ch02.RiemannianMetric I M) :

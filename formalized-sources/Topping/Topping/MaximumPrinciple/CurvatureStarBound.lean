@@ -4,7 +4,7 @@ import Topping.RicciFlow.CurvatureStar
 /-!
 # Topping's `C(n)` for the actual curvature evolution correction
 
-`exists_normAt_le_of_isStarProduct` bounds *any* star product;
+`exists_normAt_le_of_isStarProduct` bounds *any* star product; TOP.CH02's
 `Topping.RicciFlow.CurvatureStar` supplies the one that actually appears in
 Topping's curvature evolution equation, as a **named** tensor rather than an
 existentially quantified one:
@@ -32,7 +32,7 @@ module's statements are the weaker per-metric ones kept for their named-tensor
 content:
 
 * `Topping.exists_uniform_normAt_curvatureEvolutionCorrection_le`
-  (`RicciFlow/CurvatureStarUniform.lean`) — a direct `g`-uniform bound on
+  (`RicciFlow/CurvatureStarUniform.lean`, TOP.CH02) — a direct `g`-uniform bound on
   `contract₂Perm` together with the eight explicit coefficients, giving `12n`;
 * `Topping.exists_uniform_normAt_eval_le` (`MaximumPrinciple/StarShape.lean`) — the
   general route: the constant produced as a function of the derivation *shape*, via
@@ -59,9 +59,9 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
 set_option linter.unusedSectionVars false in
 /-- **Math.** The two representations of the curvature `4`-tensor field agree.
-`riemannCovTensorField` (`MaximumPrinciple/CurvatureNorm.lean`) was restated
+`riemannCovTensorField` (mine, `MaximumPrinciple/CurvatureNorm.lean`) was restated
 locally to avoid an import cycle through the evolution-equation file;
-`riemannTensorField` is defined in `RicciFlow/Evolution.lean`. They are the
+`riemannTensorField` is TOP.CH02's in `RicciFlow/Evolution.lean`. They are the
 same function, so the duplication is harmless and this lemma is the bridge. -/
 theorem riemannCovTensorField_eq_riemannTensorField (g : RiemannianMetric I M) :
     riemannCovTensorField g = riemannTensorField g := rfl
@@ -77,7 +77,7 @@ set_option linter.unusedSectionVars false in
 /-- **Math.** **The quadratic term of the curvature evolution equation is bounded
 by `K|\Rm|^2`.**
 
-This is `exists_normAt_le_of_isStarProduct` applied to the explicit
+This is `exists_normAt_le_of_isStarProduct` applied to TOP.CH02's explicit
 `curvatureEvolutionCorrection`, i.e. to the four Ricci-of-curvature terms and
 four `B`-terms of Topping 2.5.1. So the estimate is about the correction the
 evolution equation actually has, not about an unnamed witness.

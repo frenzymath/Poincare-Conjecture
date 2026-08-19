@@ -70,6 +70,42 @@ theorem const_le_of_laplacian_le_time_deriv
   · rfl
   · exact hzero
 
+/-- **Math.** Constant lower-bound comparison when the heat inequality is
+required only at strictly positive times. -/
+theorem const_le_of_laplacian_le_time_deriv_of_pos
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    [I.Boundaryless] [FiniteDimensional ℝ E]
+    [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    {g : ℝ → RiemannianMetric I M} {u : M → ℝ → ℝ} {T alpha : ℝ}
+    (hT : 0 < T)
+    (hu : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
+      (fun z : M × ℝ => u z.1 z.2)
+      ((Set.univ : Set M) ×ˢ Icc 0 T))
+    (hpde : ∀ t ∈ Icc 0 T, 0 < t → ∀ x,
+      metricLaplacianAt (g t) (fun y => u y t) x ≤
+        derivWithin (u x) (Icc 0 T) t)
+    (hzero : ∀ x, alpha ≤ u x 0) :
+    ∀ x t, t ∈ Icc 0 T → alpha ≤ u x t := by
+  apply weak_minimum_principle_of_pos
+    (g := g) (X := fun _ => 0) (u := u)
+    (φ := fun _ => alpha) (F := fun _ _ => 0)
+    (T := T) (α := alpha) hT
+  · fun_prop
+  · exact hu
+  · intro t ht htpos x
+    have hdrift :
+        (0 : SmoothVectorField I M).dir (fun y => u y t) x = 0 := by
+      rw [SmoothVectorField.dir, SmoothVectorField.zero_apply]
+      exact map_zero _
+    rw [hdrift]
+    simpa using hpde t ht htpos x
+  · intro t _ht
+    simpa using hasDerivWithinAt_const t (Icc 0 T) alpha
+  · rfl
+  · exact hzero
+
 section ScalarCurvature
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -98,6 +134,26 @@ theorem laplacian_scalarCurvature_le_time_deriv_of_evolution
     mul_nonneg (by positivity) (sq_nonneg _)
   linarith
 
+omit [CompactSpace M] in
+/-- **Math.** On the closed consumer interval, scalar curvature is a heat
+supersolution at every strictly positive time when its genuine evolution is
+known on Ioc 0 T. -/
+theorem laplacian_scalarCurvature_le_time_deriv_of_evolution_on_Ioc
+    (hT : 0 < T) (hevolution : HasScalarCurvatureEvolutionOn g (Ioc 0 T)) :
+    ∀ t ∈ Icc 0 T, 0 < t → ∀ p,
+      metricLaplacianAt (g t) (fun q => scalarCurvatureAt (g t) q) p ≤
+        derivWithin (fun s => scalarCurvatureAt (g s) p) (Icc 0 T) t := by
+  intro t ht htpos p
+  have hquad :=
+    scalarCurvature_parabolic_inequality_of_evolution_on_Ioc
+      hT hevolution t ht htpos p
+  have hn : 0 < (Module.finrank ℝ E : ℝ) := by
+    exact_mod_cast Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E))
+  have hreaction :
+      0 ≤ (2 / (Module.finrank ℝ E : ℝ)) * scalarCurvatureAt (g t) p ^ 2 :=
+    mul_nonneg (by positivity) (sq_nonneg _)
+  linarith
+
 /-- **Math.** Topping, Corollary 3.2.2: a lower bound on the scalar curvature of
 a Ricci flow on a closed manifold is preserved for the whole time interval.
 Unlike the quadratic barrier, this needs no restriction on `T`, because the
@@ -115,6 +171,23 @@ theorem scalarCurvature_ge_of_initial_ge
   · exact laplacian_scalarCurvature_le_time_deriv_of_evolution hT hevolution
   · exact hzero
 
+/-- **Math.** A scalar lower bound is preserved on a closed consumer interval
+when the genuine scalar evolution is available on its positive-time part
+Ioc 0 T. -/
+theorem scalarCurvature_ge_of_initial_ge_of_evolution_on_Ioc
+    (hT : 0 < T)
+    (hR : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
+      (fun z : M × ℝ => scalarCurvatureAt (g z.2) z.1)
+      ((Set.univ : Set M) ×ˢ Icc 0 T))
+    (hevolution : HasScalarCurvatureEvolutionOn g (Ioc 0 T))
+    (hzero : ∀ p, alpha ≤ scalarCurvatureAt (g 0) p) :
+    ∀ p t, t ∈ Icc 0 T → alpha ≤ scalarCurvatureAt (g t) p := by
+  apply const_le_of_laplacian_le_time_deriv_of_pos
+    (g := g) (u := fun p t => scalarCurvatureAt (g t) p) hT hR
+  · exact laplacian_scalarCurvature_le_time_deriv_of_evolution_on_Ioc
+      hT hevolution
+  · exact hzero
+
 /-- **Math.** Topping, Corollary 3.2.3, weak half: weakly positive scalar
 curvature is preserved under Ricci flow on a closed manifold. -/
 theorem scalarCurvature_nonneg_of_initial_nonneg
@@ -126,6 +199,19 @@ theorem scalarCurvature_nonneg_of_initial_nonneg
     (hzero : ∀ p, 0 ≤ scalarCurvatureAt (g 0) p) :
     ∀ p t, t ∈ Icc 0 T → 0 ≤ scalarCurvatureAt (g t) p :=
   scalarCurvature_ge_of_initial_ge hT hR hevolution hzero
+
+/-- **Math.** Nonnegative scalar curvature is preserved with evolution known
+only on Ioc 0 T. -/
+theorem scalarCurvature_nonneg_of_initial_nonneg_on_Ioc
+    (hT : 0 < T)
+    (hR : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
+      (fun z : M × ℝ => scalarCurvatureAt (g z.2) z.1)
+      ((Set.univ : Set M) ×ˢ Icc 0 T))
+    (hevolution : HasScalarCurvatureEvolutionOn g (Ioc 0 T))
+    (hzero : ∀ p, 0 ≤ scalarCurvatureAt (g 0) p) :
+    ∀ p t, t ∈ Icc 0 T → 0 ≤ scalarCurvatureAt (g t) p :=
+  scalarCurvature_ge_of_initial_ge_of_evolution_on_Ioc
+    hT hR hevolution hzero
 
 /-- **Math.** Topping, Corollary 3.2.3, strict half: positive scalar curvature is
 preserved under Ricci flow on a closed manifold.  Compactness turns the
@@ -156,6 +242,57 @@ theorem scalarCurvature_pos_of_initial_pos
     intro p t ht
     exact lt_of_lt_of_le (hzero p₀) (hprop p t ht)
 
+/-- **Math.** Strictly positive scalar curvature is preserved with evolution
+known only on Ioc 0 T. -/
+theorem scalarCurvature_pos_of_initial_pos_on_Ioc
+    (hT : 0 < T)
+    (hR : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
+      (fun z : M × ℝ => scalarCurvatureAt (g z.2) z.1)
+      ((Set.univ : Set M) ×ˢ Icc 0 T))
+    (hevolution : HasScalarCurvatureEvolutionOn g (Ioc 0 T))
+    (hzero : ∀ p, 0 < scalarCurvatureAt (g 0) p) :
+    ∀ p t, t ∈ Icc 0 T → 0 < scalarCurvatureAt (g t) p := by
+  cases isEmpty_or_nonempty M with
+  | inl hM => intro p; exact (hM.false p).elim
+  | inr hM =>
+    have hcont : Continuous fun p : M => scalarCurvatureAt (g 0) p := by
+      have h := contMDiff_spatial_slice_of_contMDiffOn_spacetime
+        (u := fun p t => scalarCurvatureAt (g t) p) hR
+        (show (0 : ℝ) ∈ Icc 0 T from ⟨le_rfl, hT.le⟩)
+      exact h.continuous
+    obtain ⟨p₀, -, hp₀⟩ :=
+      isCompact_univ.exists_isMinOn (univ_nonempty) hcont.continuousOn
+    have hmin : ∀ p, scalarCurvatureAt (g 0) p₀ ≤ scalarCurvatureAt (g 0) p :=
+      fun p => hp₀ (mem_univ p)
+    have hprop := scalarCurvature_ge_of_initial_ge_of_evolution_on_Ioc
+      (alpha := scalarCurvatureAt (g 0) p₀) hT hR hevolution hmin
+    intro p t ht
+    exact lt_of_lt_of_le (hzero p₀) (hprop p t ht)
+
+/-- **Math.** The quadratic scalar barrier consumes genuine evolution on
+Ioc 0 T; only its positive-time parabolic inequality is needed. -/
+theorem scalarLowerBarrier_le_of_scalarCurvatureEvolution_on_Ioc
+    (hT : 0 < T)
+    (hR : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
+      (fun z : M × ℝ => scalarCurvatureAt (g z.2) z.1)
+      ((Set.univ : Set M) ×ˢ Icc 0 T))
+    (hevolution : HasScalarCurvatureEvolutionOn g (Ioc 0 T))
+    (hdenom : ∀ t ∈ Icc 0 T,
+      0 < 1 - (2 / (Module.finrank ℝ E : ℝ)) * alpha * t)
+    (hzero : ∀ p, alpha ≤ scalarCurvatureAt (g 0) p) :
+    ∀ p t, t ∈ Icc 0 T →
+      scalarLowerBarrier (Module.finrank ℝ E) alpha t ≤
+        scalarCurvatureAt (g t) p := by
+  have hn : 0 < Module.finrank ℝ E :=
+    Nat.pos_of_ne_zero (NeZero.ne _)
+  apply scalarLowerBarrier_le_of_parabolic_inequality_of_pos
+    (g := g) (R := fun p t => scalarCurvatureAt (g t) p)
+    (n := Module.finrank ℝ E) hn hT hR
+  · exact scalarCurvature_parabolic_inequality_of_evolution_on_Ioc
+      hT hevolution
+  · exact hdenom
+  · exact hzero
+
 omit [CompleteSpace E] [FiniteDimensional ℝ E] in
 /-- **Math.** For a nonpositive initial bound the quadratic barrier has positive
 denominator at every nonnegative time, so no restriction on the length of the
@@ -169,6 +306,23 @@ theorem scalarLowerBarrier_denom_pos_of_nonpos
     mul_nonpos_of_nonpos_of_nonneg
       (mul_nonpos_of_nonneg_of_nonpos (by positivity) halpha) ht
   linarith
+
+/-- **Math.** For a nonpositive initial lower bound, the quadratic barrier
+holds on the whole closed consumer interval even when evolution is known only
+on Ioc 0 T. -/
+theorem scalarLowerBarrier_le_of_initial_nonpos_on_Ioc
+    (hT : 0 < T)
+    (hR : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
+      (fun z : M × ℝ => scalarCurvatureAt (g z.2) z.1)
+      ((Set.univ : Set M) ×ˢ Icc 0 T))
+    (hevolution : HasScalarCurvatureEvolutionOn g (Ioc 0 T))
+    (halpha : alpha ≤ 0)
+    (hzero : ∀ p, alpha ≤ scalarCurvatureAt (g 0) p) :
+    ∀ p t, t ∈ Icc 0 T →
+      scalarLowerBarrier (Module.finrank ℝ E) alpha t ≤
+        scalarCurvatureAt (g t) p :=
+  scalarLowerBarrier_le_of_scalarCurvatureEvolution_on_Ioc hT hR hevolution
+    (fun _t ht => scalarLowerBarrier_denom_pos_of_nonpos halpha ht.1) hzero
 
 /-- **Math.** Topping, Theorem 3.2.1 for a nonpositive initial bound: the
 quadratic lower barrier then holds on the whole time interval of the flow. -/

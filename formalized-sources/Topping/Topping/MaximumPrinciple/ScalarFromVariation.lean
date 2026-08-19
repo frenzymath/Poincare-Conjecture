@@ -9,10 +9,10 @@ been stated from `HasScalarCurvatureEvolutionOn`, the hypothesis
 `∂_tR = ΔR + 2|\Ric|^2`. That was the right interface while the evolution equation
 was itself unproved, but it is one step short of the real dependency: Topping
 *derives* the evolution equation from his first-variation formula 2.3.9 under the
-substitution `h = -2\Ric`, and
+substitution `h = -2\Ric`, and TOP.CH02's
 `hasScalarCurvatureEvolutionOn_of_hasScalarVariationOn'` now does that derivation
-with **no side condition**. The Morgan--Tian theorem
-`MorganTianLib.scalarCurvatureAt_leviCivita_contMDiff` supplies the fixed-time smoothness that
+with **no side condition** — MT.CH03 supplied the fixed-time smoothness
+(`MorganTianLib.scalarCurvatureAt_leviCivita_contMDiff`, inbox I-0483/I-0484) that
 was the last thing standing between the two.
 
 So this module restates the scalar consequences from `HasScalarVariationOn`
@@ -23,7 +23,7 @@ structure, and it is threefold:
   assumed alongside the variation formula, it is derived from it;
 * the surviving antecedent is the one that is actually *open*. `HasScalarVariationOn`
   is Topping 2.3.9, whose remaining gap is the mixed time/space Christoffel-curvature
-  variation. Once that analytic input is available, every result
+  variation, and it is what MT.CH03 is working toward. When it lands, every result
   below becomes unconditional in one substitution rather than needing a rewire at
   each of seven call sites;
 * it records, in checkable form, that the two halves compose: an error in the sign
@@ -31,7 +31,7 @@ structure, and it is threefold:
   statements, not just the intermediate lemma.
 
 Chapter 3's scalar side therefore now rests on exactly one unproved geometric input,
-named explicitly below.
+named and shared with the lane that owns it.
 -/
 
 open scoped ContDiff Manifold Topology Bundle RealInnerProductSpace

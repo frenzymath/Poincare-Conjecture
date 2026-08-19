@@ -33,7 +33,7 @@ Consequence (`isStarProduct_curvatureEvolutionCorrection`): the entire
 component-form correction of Topping 2.5.1 is one `\Rm*\Rm`, so
 `HasCurvatureEvolutionOn` is witnessed by an explicit `C` rather than only
 asserted for some `C`. This is what a consumer needs in order to bound the
-correction in a concrete `|Rm|` estimate.
+correction — TOP.CH03's `|Rm|` estimate needs a concrete `C`, per inbox I-0472.
 -/
 
 open scoped ContDiff Manifold Topology Bundle RealInnerProductSpace

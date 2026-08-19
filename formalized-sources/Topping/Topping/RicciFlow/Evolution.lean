@@ -16,14 +16,15 @@ derivatives. Committing to one contraction would be a stronger and different
 claim than the book's.
 
 For the scalar equation the predicate already exists: `HasScalarCurvatureEvolutionOn`
-in `Topping.MaximumPrinciple.ScalarCurvature`, the shared statement of
-`∂_tR = ΔR + 2|\Ric|^2`.
+in `Topping.MaximumPrinciple.ScalarCurvature`, agreed with TOP.CH03 in inbox
+conversation I-0442 as the single shared statement of `∂_tR = ΔR + 2|\Ric|^2`.
 This module records that Topping's Chapter 2 node and the maximum-principle
 hypothesis are the same proposition, and derives what follows from the flow
 equation alone.
 
-Morgan--Tian Chapter 3 develops short-time existence, joint space-time smoothness,
-and the analytic derivation of these equations from the flow; the statements below are Topping's Chapter 2
+By the ownership split of conversations I-0441/I-0442, MorganTian Ch3 owns
+short-time existence, joint space-time smoothness, and the analytic derivation of
+these equations from the flow; the statements below are Topping's Chapter 2
 formulations of them.
 -/
 
@@ -121,7 +122,7 @@ def HasRicciEvolutionOn (g : ℝ → RiemannianMetric I M) (J : Set ℝ) : Prop 
 
 /-- **Math.** Topping's scalar-curvature evolution `∂_tR = ΔR + 2|\Ric|^2` is the
 predicate `HasScalarCurvatureEvolutionOn` already used by the maximum-principle
-work. -/
+work: one statement, shared, as agreed in conversation I-0442. -/
 theorem hasScalarCurvatureEvolutionOn_iff (g : ℝ → RiemannianMetric I M)
     (J : Set ℝ) :
     HasScalarCurvatureEvolutionOn g J ↔
