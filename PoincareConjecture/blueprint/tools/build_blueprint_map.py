@@ -127,6 +127,9 @@ def _heading_context() -> tuple[list[str], dict[str, dict[str, str]]]:
             context = labels.setdefault(label.group(1).strip(), {})
             context["number"] = f"{chapter_number}.{statement_number}"
             context["display_kind"] = environment.title()
+            dcref = re.search(r"\\dcref\{([^}]+)\}", block)
+            if dcref:
+                context["dcref"] = dcref.group(1).strip()
         # A label belongs to the latest heading before it in this file.  Walk
         # once more so labels inside nested theorem bodies get that context.
         chapter = None
@@ -192,7 +195,7 @@ def _build_data() -> dict:
             "kind": kind,
             "status": str(meta.get("lean_status") or "empty"),
             "order": int(meta.get("order") or 0),
-            "ref": _plain_tex(meta.get("ref")),
+            "ref": _plain_tex(context.get("dcref") or meta.get("ref")),
         }
 
     # Hgraph stores uses as consumer -> prerequisite.  The visual map reads

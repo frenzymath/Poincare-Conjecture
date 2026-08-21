@@ -42,6 +42,8 @@
     .map-select { padding: 0 8px; color: var(--ink); max-width: 230px; }
     .map-button { min-width: 32px; padding: 0 9px; cursor: pointer; }
     .map-button:hover { border-color: #92add7; background: var(--blue-soft); }
+    .map-toggle { display: inline-flex; align-items: center; gap: 5px; padding: 0 8px; color: var(--muted); font-size: 10px; white-space: nowrap; }
+    .map-toggle input { accent-color: var(--blue); }
     .map-spacer { flex: 1; }
     .map-legend { display: flex; gap: 9px; align-items: center; color: var(--muted); font-size: 10px; }
     .legend-dot { width: 8px; height: 8px; display: inline-block; border-radius: 50%; margin-right: 3px; }
@@ -64,6 +66,12 @@
     .edge-layer-focus path.edge-incoming { stroke: #7556a8; }
     .edge-layer-focus path.edge-outgoing { stroke: #168176; }
     .edge-layer-focus > .edge-arrowhead { opacity: 1; filter: drop-shadow(0 0 2px #fff); }
+    .edge-layer-focus path.edge-route { stroke: #111827; }
+    .edge-layer-focus path.edge-layer-1 { stroke: #2563eb; }
+    .edge-layer-focus path.edge-layer-2 { stroke: #0f766e; }
+    .edge-layer-focus path.edge-layer-3 { stroke: #b45309; }
+    .edge-layer-focus path.edge-layer-4 { stroke: #9333ea; }
+    path.edge-transitive { stroke-dasharray: 8 4; stroke-width: 2; opacity: .9; }
     .chapter-column { position: relative; z-index: 1; flex: 0 0 340px; min-height: 360px; border: 1px solid var(--chapter-line, #b8cbe7); border-radius: 8px; background: rgba(255,255,255,.64); box-shadow: 0 5px 16px rgba(30, 48, 75, .045); }
     .chapter-column:nth-of-type(2) { --chapter-line: #c6bde4; }
     .chapter-column:nth-of-type(3) { --chapter-line: #b4d2bd; }
@@ -101,6 +109,8 @@
     .detail-grid dt { color: var(--muted); }
     .detail-grid dd { margin: 0; color: var(--ink); }
     .detail-body { padding: 11px; border: 1px solid #e1e7ef; border-radius: 6px; background: #f8fafc; color: #44546b; font-size: 11px; line-height: 1.55; }
+    .detail-source-ref { margin-bottom: 9px; color: var(--muted); font-size: 10px; }
+    .detail-statement { white-space: pre-wrap; overflow-wrap: anywhere; }
     .detail-body .katex-display { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
     .detail-links { margin-top: 14px; }
     .detail-links h3 { margin: 0 0 6px; color: #43556f; font-size: 11px; }
@@ -138,6 +148,17 @@
       <select class="map-control map-select" id="map-chapter" aria-label="Focus a chapter">
         <option value="all">All chapters</option>
       </select>
+      <label class="map-control map-toggle" title="Show only important theorem-like route milestones">
+        <input id="map-minimized" type="checkbox" checked aria-label="Show important theorem nodes only">
+        <span>Important nodes</span>
+      </label>
+      <select class="map-control map-select" id="map-depth" aria-label="Dependency layers around selected node">
+        <option value="1">1 layer</option>
+        <option value="2">2 layers</option>
+        <option value="3" selected>3 layers</option>
+        <option value="4">4 layers</option>
+        <option value="all">All layers</option>
+      </select>
       <button class="map-control map-button" id="map-close" type="button" title="Return to the blueprint" aria-label="Return to the blueprint">×</button>
       <button class="map-control map-button" id="map-fit" type="button" title="Fit the map to the available width" aria-label="Fit map">Fit</button>
       <div class="map-legend" aria-label="Status legend">
@@ -145,6 +166,10 @@
         <span><i class="legend-dot legend-ok"></i>Lean</span>
         <span><i class="legend-dot legend-pending"></i>open</span>
         <span><i class="legend-dot legend-sorry"></i>sorry</span>
+        <span><i class="legend-dot" style="background:#2563eb"></i>1</span>
+        <span><i class="legend-dot" style="background:#0f766e"></i>2</span>
+        <span><i class="legend-dot" style="background:#b45309"></i>3</span>
+        <span><i class="legend-dot" style="background:#9333ea"></i>4</span>
       </div>
     </header>
     <section class="map-viewport" id="map-viewport" aria-label="Blueprint dependency map">
@@ -163,6 +188,7 @@
         <dt>Chapter</dt><dd id="detail-chapter"></dd>
         <dt>Section</dt><dd id="detail-section"></dd>
         <dt>Status</dt><dd id="detail-status"></dd>
+        <dt>Source / dcref</dt><dd id="detail-ref"></dd>
       </dl>
       <div class="detail-body" id="detail-body"></div>
       <div class="detail-links dependencies">
@@ -195,6 +221,8 @@
     const search = document.getElementById("map-search");
     const status = document.getElementById("map-status");
     const chapterSelect = document.getElementById("map-chapter");
+    const minimized = document.getElementById("map-minimized");
+    const depthSelect = document.getElementById("map-depth");
     const detail = document.getElementById("detail-panel");
     let zoom = 1;
     let baseWidth = 0;
@@ -210,24 +238,109 @@
     }[char]));
     const statusLabel = (value) => ({ lean_ok: "Lean OK", mathlib_ok: "Mathlib OK", sorry: "Sorry", empty: "Open" }[value] || value || "Open");
     const chapterColor = (index) => ["#3868ad", "#7556a8", "#35865a", "#b87923", "#2d8580"][index % 5];
+    const importantKinds = new Set(["theorem", "proposition", "corollary", "claim"]);
+    const importantNode = (node) => importantKinds.has(node?.kind);
+    const displayedNodes = () => minimized.checked ? DATA.nodes.filter(importantNode) : DATA.nodes;
+    function displayedEdges() {
+      if (!minimized.checked) return DATA.edges;
+      const ids = new Set(displayedNodes().map((node) => node.id));
+      const next = new Map();
+      for (const edge of DATA.edges) {
+        if (!next.has(edge.from)) next.set(edge.from, []);
+        next.get(edge.from).push(edge.to);
+      }
+      const result = [];
+      for (const from of ids) {
+        const queue = [...(next.get(from) || [])];
+        const seen = new Set();
+        while (queue.length) {
+          const current = queue.shift();
+          if (seen.has(current)) continue;
+          seen.add(current);
+          if (ids.has(current)) result.push({ from, to: current, transitive: true });
+          queue.push(...(next.get(current) || []));
+        }
+      }
+      return result.filter((edge) => !result.some((other) =>
+        other.from === edge.from && other.to !== edge.to &&
+        result.some((candidate) => candidate.from === other.to && candidate.to === edge.to)
+      ));
+    }
+    function dependencyLevels(id, edges, maxDepth) {
+      const levels = new Map([[id, 0]]);
+      const adjacent = new Map();
+      for (const edge of edges) {
+        if (!adjacent.has(edge.from)) adjacent.set(edge.from, []);
+        if (!adjacent.has(edge.to)) adjacent.set(edge.to, []);
+        adjacent.get(edge.from).push(edge.to);
+        adjacent.get(edge.to).push(edge.from);
+      }
+      const queue = [id];
+      while (queue.length) {
+        const current = queue.shift();
+        const level = levels.get(current);
+        if (level >= maxDepth) continue;
+        for (const next of adjacent.get(current) || []) {
+          if (levels.has(next)) continue;
+          levels.set(next, level + 1);
+          queue.push(next);
+        }
+      }
+      return levels;
+    }
+    function routeToFinal(id, edges) {
+      const finalNode = DATA.nodes.find((node) => node.label === "thm:poincare-conjecture")
+        || DATA.nodes.find((node) => node.title.toLowerCase() === "poincare conjecture");
+      if (!id || !finalNode) return { nodeIds: new Set(), edgeKeys: new Set() };
+      const next = new Map();
+      const previous = new Map();
+      for (const edge of edges) {
+        if (!next.has(edge.from)) next.set(edge.from, []);
+        if (!previous.has(edge.to)) previous.set(edge.to, []);
+        next.get(edge.from).push(edge.to);
+        previous.get(edge.to).push(edge.from);
+      }
+      const reachable = (start, adjacency) => {
+        const seen = new Set();
+        const queue = [start];
+        while (queue.length) {
+          const current = queue.shift();
+          if (seen.has(current)) continue;
+          seen.add(current);
+          queue.push(...(adjacency.get(current) || []));
+        }
+        return seen;
+      };
+      const forward = reachable(id, next);
+      const backward = reachable(finalNode.id, previous);
+      const nodeIds = new Set([...forward].filter((nodeId) => backward.has(nodeId)));
+      const edgeKeys = new Set(edges
+        .filter((edge) => nodeIds.has(edge.from) && nodeIds.has(edge.to))
+        .map((edge) => `${edge.from}\u0000${edge.to}`));
+      return { nodeIds, edgeKeys };
+    }
 
     function render() {
+      const visibleNodeIds = new Set(displayedNodes().map((node) => node.id));
       canvas.querySelectorAll(".chapter-column").forEach((node) => node.remove());
       for (const [index, chapter] of DATA.chapters.entries()) {
         const column = document.createElement("section");
         column.className = "chapter-column";
         column.dataset.chapter = chapter.title;
         column.style.setProperty("--chapter-color", chapterColor(index));
-        const count = chapter.sections.reduce((sum, section) => sum + section.nodes.length, 0);
+        const count = chapter.sections.reduce((sum, section) => sum + section.nodes.filter((node) => visibleNodeIds.has(node.id)).length, 0);
+        if (!count) continue;
         column.innerHTML = `<header class="chapter-head"><div class="chapter-kicker">Stage ${String(index + 1).padStart(2, "0")}</div><h2>${escapeHtml(chapter.title)}</h2><div class="chapter-count">${count} statement${count === 1 ? "" : "s"}</div></header><div class="chapter-body"></div>`;
         const body = column.querySelector(".chapter-body");
         for (const section of chapter.sections) {
           const group = document.createElement("section");
           group.className = "section-group";
           group.dataset.section = section.title;
-          group.innerHTML = `<header class="section-head"><h3>${escapeHtml(section.title)}</h3><span>${section.nodes.length}</span></header><div class="node-list"></div>`;
+          const sectionNodes = section.nodes.filter((node) => visibleNodeIds.has(node.id));
+          if (!sectionNodes.length) continue;
+          group.innerHTML = `<header class="section-head"><h3>${escapeHtml(section.title)}</h3><span>${sectionNodes.length}</span></header><div class="node-list"></div>`;
           const list = group.querySelector(".node-list");
-          for (const node of section.nodes) {
+          for (const node of sectionNodes) {
             const card = document.createElement("div");
             card.className = "node-card";
             card.tabIndex = 0;
@@ -254,13 +367,14 @@
         }
         canvas.appendChild(column);
       }
+      chapterSelect.querySelectorAll("option:not(:first-child)").forEach((option) => option.remove());
       for (const chapter of DATA.chapters) {
         const option = document.createElement("option");
         option.value = chapter.title;
         option.textContent = chapter.title;
         chapterSelect.appendChild(option);
       }
-      stat.textContent = `${DATA.stats.nodes} statements · ${DATA.stats.edges} dependency links`;
+      stat.textContent = `${visibleNodeIds.size}/${DATA.stats.nodes} statements · ${displayedEdges().length} dependency links`;
       requestAnimationFrame(() => {
         measure();
         fitMap(false);
@@ -307,7 +421,11 @@
       edgeLayer.querySelectorAll(".edge-path, .edge-arrowhead").forEach((element) => element.remove());
       focusEdgeLayer.querySelectorAll(".edge-path, .edge-arrowhead").forEach((element) => element.remove());
       edgeLayer.classList.toggle("muted", !!focusedId);
-      for (const edge of DATA.edges) {
+      const edges = displayedEdges();
+      const maxDepth = depthSelect.value === "all" ? Number.POSITIVE_INFINITY : Number(depthSelect.value);
+      const levels = focusedId ? dependencyLevels(focusedId, edges, maxDepth) : new Map();
+      const finalRoute = focusedId ? routeToFinal(focusedId, edges) : { nodeIds: new Set(), edgeKeys: new Set() };
+      for (const edge of edges) {
         const from = canvas.querySelector(`[data-node="${CSS.escape(edge.from)}"]`);
         const to = canvas.querySelector(`[data-node="${CSS.escape(edge.to)}"]`);
         if (!from || !to) continue;
@@ -330,22 +448,26 @@
         const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
         path.classList.add("edge-path");
         if (!sameChapter) path.classList.add("edge-cross");
+        if (edge.transitive) path.classList.add("edge-transitive");
         path.setAttribute("d", pathData);
-        edgeLayer.appendChild(path);
-        drawArrowhead(
-          edgeLayer,
-          path,
-          sameChapter ? "#8fb1df" : "#6f95cb",
-          sameChapter ? [] : ["edge-cross"]
-        );
-        if (focusedId && (edge.from === focusedId || edge.to === focusedId)) {
+        const edgeLevel = Math.max(levels.get(edge.from) ?? 0, levels.get(edge.to) ?? 0);
+        const inCursor = !focusedId || (levels.has(edge.from) && levels.has(edge.to) && edgeLevel <= maxDepth);
+        const onFinalRoute = finalRoute.edgeKeys.has(`${edge.from}\u0000${edge.to}`);
+        if (focusedId && (inCursor || onFinalRoute)) {
           const relation = edge.to === focusedId ? "incoming" : "outgoing";
-          const color = relation === "incoming" ? "#7556a8" : "#168176";
+          const palette = ["", "#2563eb", "#0f766e", "#b45309", "#9333ea"];
+          const color = palette[Math.min(edgeLevel, 4)] || (onFinalRoute ? "#111827" : relation === "incoming" ? "#7556a8" : "#168176");
           const focusPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
           focusPath.classList.add("edge-path", "edge-focus", `edge-${relation}`);
+          if (onFinalRoute) focusPath.classList.add("edge-route");
+          if (edgeLevel > 0 && edgeLevel <= 4) focusPath.classList.add(`edge-layer-${edgeLevel}`);
+          if (edge.transitive) focusPath.classList.add("edge-transitive");
           focusPath.setAttribute("d", pathData);
           focusEdgeLayer.appendChild(focusPath);
           drawArrowhead(focusEdgeLayer, focusPath, color, [`edge-${relation}`], true);
+        } else if (!focusedId || inCursor) {
+          edgeLayer.appendChild(path);
+          drawArrowhead(edgeLayer, path, sameChapter ? "#8fb1df" : "#6f95cb", sameChapter ? [] : ["edge-cross"]);
         }
       }
     }
@@ -369,7 +491,7 @@
       canvas.querySelectorAll(".chapter-column").forEach((column) => {
         column.style.opacity = selectedChapter === "all" || column.dataset.chapter === selectedChapter ? "1" : ".35";
       });
-      stat.textContent = `${visible}/${DATA.stats.nodes} statements · ${DATA.stats.edges} dependency links`;
+      stat.textContent = `${visible}/${displayedNodes().length} statements · ${displayedEdges().length} dependency links`;
       drawEdges();
     }
 
@@ -406,8 +528,17 @@
     }
 
     function typesetDetailBody(id, card) {
-      const body = document.getElementById("detail-body");
-      if (!body || !body.textContent.includes("$") && !body.textContent.includes("\\(")) return;
+      const body = document.querySelector("#detail-body .detail-statement");
+      if (!body || !body.textContent.includes("$") && !body.textContent.includes("\\(") && !body.textContent.includes("\\begin") && !body.textContent.includes("begin{")) return;
+      const normalizeMath = (value) => {
+        let text = String(value)
+          .replace(/\\?begin\{align\*?\s*[})]?/g, "\\begin{aligned}")
+          .replace(/\\?l?end\{align\*?\s*[})]?/g, "\\end{aligned}");
+        text = text.replace(/(?<!\\\[)\\begin\{aligned\}/g, "\\[\\begin{aligned}");
+        text = text.replace(/\\end\{aligned\}(?!\\\])/g, "\\end{aligned}\\]");
+        return text;
+      };
+      body.textContent = normalizeMath(body.textContent);
       loadKatex().then((render) => {
         if (!body.isConnected || previewId !== id) return;
         render(body, {
@@ -494,7 +625,9 @@
       document.getElementById("detail-chapter").textContent = node.chapter;
       document.getElementById("detail-section").textContent = node.section;
       document.getElementById("detail-status").textContent = statusLabel(node.status);
-      document.getElementById("detail-body").textContent = node.body || "No statement text was captured for this node.";
+      const sourceRef = node.ref || node.label || node.id;
+      document.getElementById("detail-ref").textContent = sourceRef;
+      document.getElementById("detail-body").innerHTML = `<div class="detail-source-ref">Original source / dcref: <code>${escapeHtml(sourceRef)}</code></div><div class="detail-statement">${escapeHtml(node.body || "No statement text was captured for this node.")}</div>`;
       document.getElementById("detail-deps").innerHTML = linkList(incoming.get(id) || [], "No prerequisites in the current blueprint.");
       document.getElementById("detail-used-by").innerHTML = linkList(outgoing.get(id) || [], "No downstream consumers in the current blueprint.");
       detail.classList.add("open");
@@ -528,10 +661,16 @@
 
     function selectNode(id) {
       focusedId = focusedId === id ? null : id;
+      const maxDepth = depthSelect.value === "all" ? Number.POSITIVE_INFINITY : Number(depthSelect.value);
+      const edges = displayedEdges();
+      const levels = focusedId ? dependencyLevels(focusedId, edges, maxDepth) : new Map();
+      const finalRoute = focusedId ? routeToFinal(focusedId, edges) : { nodeIds: new Set() };
       canvas.querySelectorAll(".node-card").forEach((card) => {
         const isSelected = card.dataset.node === focusedId;
         card.classList.toggle("selected", isSelected);
         card.setAttribute("aria-pressed", String(isSelected));
+        for (let level = 1; level <= 4; level += 1) card.classList.toggle(`layer-${level}`, levels.get(card.dataset.node) === level);
+        card.classList.toggle("dim", !!focusedId && !levels.has(card.dataset.node) && !finalRoute.nodeIds.has(card.dataset.node));
       });
       drawEdges();
     }
@@ -553,6 +692,8 @@
     search.addEventListener("input", applyFilters);
     status.addEventListener("change", applyFilters);
     chapterSelect.addEventListener("change", applyFilters);
+    minimized.addEventListener("change", () => { focusedId = null; render(); applyFilters(); });
+    depthSelect.addEventListener("change", () => { if (focusedId) { const id = focusedId; focusedId = null; selectNode(id); } else drawEdges(); });
     document.getElementById("map-close").addEventListener("click", () => {
       if (window.parent !== window) window.parent.location.reload();
     });
