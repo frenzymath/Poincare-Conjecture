@@ -14,6 +14,7 @@ import argparse
 import html
 import json
 import re
+import sys
 from collections import defaultdict
 from pathlib import Path
 
@@ -23,6 +24,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_TEMPLATE = ROOT / "blueprint" / "tools" / "blueprint_map_template.html"
 DEFAULT_OUTPUT = ROOT / "blueprint" / "blueprint-map-tab.html"
+DEFAULT_IMPORTANT = ROOT / "blueprint" / "important-statements.yaml"
 
 
 def _header(path: Path) -> dict:
@@ -46,7 +48,7 @@ def _plain_tex(value: str | None) -> str:
 
 
 def _blueprint_macros() -> dict[str, str]:
-    """Extract the small macro table needed by KaTeX in statement previews."""
+    """Extract the small macro table needed by KaTeX in hover statements."""
     path = ROOT / "blueprint" / "src" / "macros.tex"
     text = path.read_text(encoding="utf-8") if path.exists() else ""
     macros: dict[str, str] = {"\\mbox": "\\text", "\\hbox": "\\text"}
@@ -161,8 +163,40 @@ def _heading_context() -> tuple[list[str], dict[str, dict[str, str]]]:
     return chapters, labels
 
 
-def _build_data() -> dict:
+def _load_important_labels(path: Path = DEFAULT_IMPORTANT) -> list[str]:
+    """Read the curated important-statement labels from YAML.
+
+    Prefer ``chapters.*.labels`` (chapter-balanced authoring form).  Fall back
+    to a flat top-level ``labels`` list.  Unknown / duplicate labels are kept
+    here and filtered against live nodes in ``_build_data``.
+    """
+    if not path.exists():
+        return []
+    payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    labels: list[str] = []
+    seen: set[str] = set()
+    chapters = payload.get("chapters") or {}
+    if isinstance(chapters, dict):
+        for chapter_data in chapters.values():
+            if not isinstance(chapter_data, dict):
+                continue
+            for label in chapter_data.get("labels") or []:
+                text = str(label).strip()
+                if text and text not in seen:
+                    seen.add(text)
+                    labels.append(text)
+    if not labels:
+        for label in payload.get("labels") or []:
+            text = str(label).strip()
+            if text and text not in seen:
+                seen.add(text)
+                labels.append(text)
+    return labels
+
+
+def _build_data(*, important_path: Path = DEFAULT_IMPORTANT) -> dict:
     chapters, label_context = _heading_context()
+    important_labels = _load_important_labels(important_path)
     nodes: dict[str, dict] = {}
     for path in sorted((ROOT / "hgraph" / "nodes").glob("*.md")):
         meta = _header(path)
@@ -187,7 +221,7 @@ def _build_data() -> dict:
             "label": label,
             "title": title,
             "display_title": display_title,
-            # Keep the source TeX for the preview panel; the browser's KaTeX
+            # Keep the source TeX for the hover card; the browser's KaTeX
             # renderer makes it match the statement body in the blueprint.
             "body": raw_body,
             "chapter": chapter,
@@ -240,12 +274,30 @@ def _build_data() -> dict:
             "sections": sections,
         })
 
+    live_labels = {node["label"] for node in nodes.values()}
+    resolved_important = [label for label in important_labels if label in live_labels]
+    missing_important = [label for label in important_labels if label not in live_labels]
+    if missing_important:
+        print(
+            "warning: important-statements.yaml labels missing from live graph: "
+            + ", ".join(missing_important),
+            file=sys.stderr,
+        )
+
     return {
         "title": "The Poincare Conjecture",
         "chapters": chapter_payload,
         "nodes": list(nodes.values()),
         "edges": edges,
-        "stats": {"nodes": len(nodes), "edges": len(edges), "chapters": len(chapter_payload)},
+        # Curated milestone labels for the "Important nodes" toggle.  Empty
+        # means the toggle falls back to showing every node.
+        "important_labels": resolved_important,
+        "stats": {
+            "nodes": len(nodes),
+            "edges": len(edges),
+            "chapters": len(chapter_payload),
+            "important": len(resolved_important),
+        },
     }
 
 
@@ -253,10 +305,15 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--template", type=Path, default=DEFAULT_TEMPLATE)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--important", type=Path, default=DEFAULT_IMPORTANT)
     args = parser.parse_args()
 
     template = args.template.read_text(encoding="utf-8")
-    payload = json.dumps(_build_data(), ensure_ascii=False, separators=(",", ":"))
+    payload = json.dumps(
+        _build_data(important_path=args.important),
+        ensure_ascii=False,
+        separators=(",", ":"),
+    )
     macros = json.dumps(_blueprint_macros(), ensure_ascii=False, separators=(",", ":"))
     app = (
         template
