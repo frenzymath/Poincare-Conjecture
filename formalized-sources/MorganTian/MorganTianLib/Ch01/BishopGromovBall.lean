@@ -57,7 +57,9 @@ cancellation (which would need finiteness), and no positivity of the denominator
 
 * `lintegral_cross_le` — the `ℝ≥0∞` integral-ratio engine, cross-multiplied. This is the
   `ℝ≥0∞`, division-free counterpart of `antitoneOn_integral_ratio`.
-* `modelBallVolume_eq` — `Vol B_{H^n_k}(q_k,r) = ω_{n−1} · ∫₀ʳ sn_k^{n−1}`, blueprint gap (b),
+* `modelBallVolume_eq` — an abstract chart-integral identity
+  `ω_{n−1} · ∫₀ʳ sn_k^{n−1}`, retaining the reusable polar calculation without asserting a
+  model-manifold measure identification,
   from `setLIntegral_ball_radial`.
 * `bishop_gromov_ball` — the relative volume comparison, cross-multiplied.
 * `bishop_gromov_ball_ratio` — the same as monotonicity of the ratio, under the extra finiteness
@@ -151,18 +153,22 @@ the measure of a subset of `M` — see the "Honest scope" note in the module doc
 def expBallVolume (ρ : E → ℝ) (r : ℝ) : ℝ≥0∞ :=
   ∫⁻ x in ball (0 : E) r, ENNReal.ofReal (ρ x) ∂μ
 
-/-- The **volume of the model ball `B_{H^n_k}(q_k, r)`**, computed the same way. The volume
-density of `exp_{q_k}` on the model space `H^n_k` of constant curvature `−k` is the radial
-function `v ↦ (sn_k(|v|)/|v|)^{n−1}` (blueprint `lem:constant-curvature-jacobi`). -/
+/-- The abstract model density, totalized at the origin by its removable Jacobian value `1`.
+For nonzero `v`, it is `(sn_k(|v|)/|v|)^{n−1}`. -/
+def modelDensity (k : ℝ) (x : E) : ℝ :=
+  if ‖x‖ = 0 then 1 else (snK k ‖x‖ / ‖x‖) ^ (finrank ℝ E - 1)
+
+/-- The abstract model chart integral used as the comparison denominator. No identification with
+a Riemannian measure of a model-manifold ball is asserted here. -/
 def modelBallVolume (k : ℝ) (r : ℝ) : ℝ≥0∞ :=
   ∫⁻ x in ball (0 : E) r,
-    ENNReal.ofReal ((snK k ‖x‖ / ‖x‖) ^ (finrank ℝ E - 1)) ∂μ
+    ENNReal.ofReal (modelDensity (E := E) k x) ∂μ
 
 /-- **Math.** **The model polar volume identity** — blueprint gap (b) of `thm:bishop-gromov`:
 
-  `Vol B_{H^n_k}(q_k, r) = ω_{n−1} · ∫₀ʳ sn_k^{n−1}(t) dt`,
+  `ω_{n−1} · ∫₀ʳ sn_k^{n−1}(t) dt`,
 
-with `ω_{n−1} = μ.toSphere univ` the total mass of the unit sphere. This is
+with `ω_{n−1} = μ.toSphere univ` the total mass of the unit sphere. This abstract identity is
 `setLIntegral_ball_radial` applied to the model density, the point being that the radial weight
 `t^{n−1}` of polar coordinates cancels the `1/|v|^{n−1}` in the density:
 `t^{n−1} · (sn_k(t)/t)^{n−1} = sn_k(t)^{n−1}`.
@@ -173,12 +179,20 @@ theorem modelBallVolume_eq (k r : ℝ) :
       = μ.toSphere univ * ∫⁻ t in Ioo (0 : ℝ) r,
           ENNReal.ofReal (snK k t ^ (finrank ℝ E - 1)) := by
   have hcont : Continuous (snK k) := continuous_snK_right k
-  have hmeas : Measurable fun t : ℝ => ENNReal.ofReal ((snK k t / t) ^ (finrank ℝ E - 1)) := by
-    fun_prop
-  rw [modelBallVolume, setLIntegral_ball_radial μ hmeas r]
+  have hmeas : Measurable fun t : ℝ =>
+      ENNReal.ofReal (if t = 0 then 1 else (snK k t / t) ^ (finrank ℝ E - 1)) := by
+    apply ENNReal.measurable_ofReal.comp
+    apply Measurable.ite (measurableSet_singleton (0 : ℝ))
+    · fun_prop
+    · fun_prop
+  change (∫⁻ x in ball (0 : E) r,
+      ENNReal.ofReal (if ‖x‖ = 0 then 1 else
+        (snK k ‖x‖ / ‖x‖) ^ (finrank ℝ E - 1)) ∂μ) = _
+  rw [setLIntegral_ball_radial μ hmeas r]
   congr 1
   refine setLIntegral_congr_fun measurableSet_Ioo fun t ht => ?_
   have ht0 : t ≠ 0 := ne_of_gt ht.1
+  simp [ht0]
   rw [← ENNReal.ofReal_mul (pow_nonneg ht.1.le _), ← mul_pow, mul_div_cancel₀ _ ht0]
 
 /-! ### Step 3 — Bishop–Gromov for the ball -/
@@ -197,9 +211,10 @@ Let `ρ ≥ 0` be the volume density of `exp_p` on `T_pM` (extended by `0` past 
 suppose that in every unit direction `ω` the polar density `ν_ω(t) = t^{n−1} ρ(t·ω)` has
 non-increasing ratio to the model density `sn_k^{n−1}` on `(0,R)`. Then for `0 < r₁ ≤ r₂ < R`
 
-  `Vol B(p,r₂) · Vol B_{H^n_k}(q_k,r₁) ≤ Vol B(p,r₁) · Vol B_{H^n_k}(q_k,r₂)`,
+  `Vρ(r₂) · Vk(r₁) ≤ Vρ(r₁) · Vk(r₂)`,
 
-which is exactly the statement that `r ↦ Vol B(p,r) / Vol B_{H^n_k}(q_k,r)` is non-increasing.
+where `Vρ r = expBallVolume μ ρ r` and `Vk r = modelBallVolume μ k r`.  This is an
+abstract chart-integral comparison; no model-manifold Riemannian measure is used here.
 
 The hypothesis `hanti` is supplied, in each direction, by
 `antitoneOn_polarDensity_div_snK_pow` (equivalently `bishop_gromov_radial`'s pointwise input) under
@@ -377,13 +392,13 @@ theorem modelBallVolume_pos {k : ℝ} (hk : 0 ≤ k) {r : ℝ} (hr : 0 < r) :
     simp only [ne_eq, ENNReal.ofReal_eq_zero, not_le]
     linarith
 
-/-- **Math.** **Bishop–Gromov, as `thm:bishop-gromov` states it**: the relative volume
+/-- **Math.** **Bishop–Gromov for the abstract chart volumes**: the relative volume
 
-  `r ↦ Vol B(p,r) / Vol B_{H^n_k}(q_k, r)`
+  `r ↦ expBallVolume μ ρ r / modelBallVolume μ k r`
 
 is a **non-increasing** function of `r` on `(0, R)`.
 
-This is `bishop_gromov_ball` divided through, using that the model volume is positive
+This is `bishop_gromov_ball` divided through, using that the abstract model denominator is positive
 (`modelBallVolume_pos`) and finite (`modelBallVolume_ne_top`).
 
 Blueprint: `thm:bishop-gromov`. -/
@@ -406,25 +421,22 @@ theorem bishop_gromov_ball_ratio {ρ : E → ℝ} (hρmeas : Measurable ρ) (hρ
   rw [hrw, ENNReal.le_div_iff_mul_le (Or.inl hY₁0) (Or.inl hY₁t)]
   exact hcross
 
-/-! ### Step 5 — non-vacuity: the model space satisfies the hypotheses
+/-! ### Step 5 — non-vacuity: the model density satisfies the hypotheses
 
 A theorem whose hypotheses no caller can discharge is worthless, however green the build. The
 hypothesis `hanti` of `bishop_gromov_ball` is a statement about the density `ρ`, so it is worth
-exhibiting a `ρ` that satisfies it. The model space `H^n_k` does, with its own density
-`ρ_k(v) = (sn_k(|v|)/|v|)^{n−1}` — and there the polar ratio is *identically* `1`, so
-Bishop–Gromov degenerates to `Vol/Vol_k ≡ 1`, exactly as it must.
+exhibiting a `ρ` that satisfies it. The totalized comparison density
+`ρ_k(v) = (sn_k(|v|)/|v|)^{n−1}` away from the origin does: its polar ratio is *identically* `1`,
+so the abstract comparison degenerates to `expBallVolume/modelBallVolume ≡ 1`.
 
-This also pins down what `ρ` means for a general manifold: `ρ(v) = |det d(exp_p)_v|`, since
+This also records the intended comparison density (without constructing a model-manifold measure).
+For a general manifold, `ρ(v) = |det d(exp_p)_v|`, since
 `d(exp_p)_{t·ω}(w) = J_w(t)/t` gives `|det d(exp_p)_{t·ω}| = det 𝒥_ω(t)/t^n`, whence
 `polarBallDensity ρ ω t = t^{n−1}·ρ(t·ω) = det 𝒥_ω(t)/t = polarDensity 𝒥_ω t` — the density that
 `antitoneOn_polarDensity_div_snK_pow` already controls. -/
 
-/-- The model density on `T_qH^n_k`: `ρ_k(v) = (sn_k(|v|)/|v|)^{n−1}`, the Jacobian of the model
-exponential map. -/
-def modelDensity (k : ℝ) (x : E) : ℝ := (snK k ‖x‖ / ‖x‖) ^ (finrank ℝ E - 1)
-
-/-- **Math.** **Non-vacuity of `bishop_gromov_ball`.** The model density satisfies the antitone
-polar-ratio hypothesis: in the model space the polar density *equals* `sn_k^{n−1}`, so the ratio is
+/-- **Math.** **Non-vacuity of `bishop_gromov_ball`.** The totalized model density satisfies the
+antitone polar-ratio hypothesis: away from the origin its polar density *equals* `sn_k^{n−1}`, so the ratio is
 the constant `1`, which is (weakly) non-increasing. -/
 theorem modelDensity_polar_ratio_antitoneOn {k : ℝ} (hk : 0 ≤ k) (R : ℝ)
     {ω : E} (hω : ω ∈ sphere (0 : E) 1) :
@@ -439,29 +451,37 @@ theorem modelDensity_polar_ratio_antitoneOn {k : ℝ} (hk : 0 ≤ k) (R : ℝ)
     have hnorm : ‖t • ω‖ = t := by
       rw [norm_smul, hωn, mul_one, Real.norm_eq_abs, abs_of_pos ht.1]
     have hsn : (0 : ℝ) < snK k t ^ (finrank ℝ E - 1) := pow_pos (snK_pos k t hk ht.1) _
-    rw [polarBallDensity, modelDensity, hnorm, ← mul_pow, mul_div_cancel₀ _ ht0]
+    simp only [polarBallDensity, modelDensity, hnorm, if_neg ht0]
+    rw [← mul_pow, mul_div_cancel₀ _ ht0]
     exact div_self hsn.ne'
   intro t ht s hs hts
   simp only
   rw [hone t ht, hone s hs]
 
-/-- The model ball volume really is the `expBallVolume` of the model density — so the two sides of
-`bishop_gromov_ball` are the *same* construction applied to `ρ` and to `ρ_k`. -/
+/-- The abstract model denominator is the `expBallVolume` of the totalized model density. -/
 theorem expBallVolume_modelDensity (k r : ℝ) :
     expBallVolume μ (modelDensity (E := E) k) r = modelBallVolume μ k r := rfl
 
 theorem measurable_modelDensity (k : ℝ) : Measurable (modelDensity (E := E) k) := by
   have hcont : Continuous (snK k) := continuous_snK_right k
   unfold modelDensity
-  fun_prop
+  have hs : MeasurableSet {x : E | ‖x‖ = 0} :=
+    measurableSet_preimage measurable_norm (measurableSet_singleton (0 : ℝ))
+  apply Measurable.ite hs
+  · fun_prop
+  · fun_prop
 
 theorem modelDensity_nonneg {k : ℝ} (hk : 0 ≤ k) (x : E) : 0 ≤ modelDensity k x :=
-  pow_nonneg (div_nonneg (snK_nonneg k ‖x‖ hk (norm_nonneg x)) (norm_nonneg x)) _
+  by
+    unfold modelDensity
+    split
+    · positivity
+    · exact pow_nonneg (div_nonneg (snK_nonneg k ‖x‖ hk (norm_nonneg x)) (norm_nonneg x)) _
 
 /-- **Math.** **`bishop_gromov_ball_ratio` is not vacuous.** Every one of its hypotheses is
-dischargeable: here they are all discharged, at the model space `H^n_k` itself. The conclusion is
-then the (correct, and non-trivial to have arrived at) statement that `Vol/Vol_k ≡ 1` is
-non-increasing.
+dischargeable for the totalized comparison density itself. The conclusion is then the
+(correct, and non-trivial to have arrived at) statement that the abstract ratio
+`expBallVolume/modelBallVolume ≡ 1` is non-increasing.
 
 If any hypothesis of `bishop_gromov_ball` were unsatisfiable, this declaration would not
 typecheck. -/

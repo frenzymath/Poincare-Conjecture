@@ -4340,33 +4340,34 @@ $t>0$ one has $|t\omega|=t$, so the constraint $t\omega\in B(0,r)$ is exactly
 $t<r$; the inner integral therefore runs over $(0,r)$.
 \end{proof}
 
-\begin{lemma}[The model polar volume]
+\begin{lemma}[The abstract model polar volume]
 \label{lem:model-ball-volume}
 \lean{MorganTianLib.modelBallVolume_eq,MorganTianLib.model_polar_volume_identity}
 \uses{def:sinh-comparison-function, lem:polar-coordinates}
-\leanok
 
 
 
-Write $\rho_k(v)=\bigl(\sn_k(|v|)/|v|\bigr)^{n-1}$ for the volume density of the
-exponential map of the model space $H^n_k$ (Lemma~\ref{lem:constant-curvature-jacobi}),
-and $\Vol B_{H^n_k}(q_k,r)=\int_{B(0,r)}\rho_k\,d\mu$. Then
-$$\Vol B_{H^n_k}(q_k,r)=\omega_{n-1}\int_0^r\sn_k^{n-1}(t)\,dt,
+Write $\rho_k(v)=\bigl(\sn_k(|v|)/|v|\bigr)^{n-1}$ for the comparison
+density on the finite-dimensional chart $E$, and set
+$$\mathcal V_k(r):=\int_{B(0,r)}\rho_k\,d\mu.$$
+Then
+$$\mathcal V_k(r)=\omega_{n-1}\int_0^r\sn_k^{n-1}(t)\,dt,
 \qquad \omega_{n-1}:=\mu_S(S).$$
+This is only an abstract Haar chart integral; identifying it with a model-manifold
+ball volume via Lemma~\ref{lem:model-polar-isometry} remains open.
 \end{lemma}
 
 \begin{proof}
 \sketch
 \uses{lem:polar-coordinates}
-\leanok
 Apply Lemma~\ref{lem:polar-coordinates} to $f=\rho_k$. Since $\rho_k$ depends only
 on $|v|$, the inner integrand is $t^{n-1}\rho_k(t\omega)=t^{n-1}(\sn_k(t)/t)^{n-1}
 =\sn_k^{n-1}(t)$, independent of $\omega$: the radial weight $t^{n-1}$ of polar
 coordinates cancels the $|v|^{-(n-1)}$ in the density. The angular integral is then
-the constant $\mu_S(S)=\omega_{n-1}$.
+the constant $\mu_S(S)=\omega_{n-1}$, proving the chart-integral identity.
 \end{proof}
 
-\begin{lemma}[Bishop-Gromov for the volume of a ball]
+\begin{lemma}[Bishop-Gromov for an abstract ball integral]
 \label{lem:bishop-gromov-ball}
 \lean{MorganTianLib.bishop_gromov_ball,MorganTianLib.bishop_gromov_ball_ratio}
 \uses{lem:polar-coordinates, lem:model-ball-volume, def:sinh-comparison-function}
@@ -4374,30 +4375,32 @@ the constant $\mu_S(S)=\omega_{n-1}$.
 
 
 
-Let $k\ge0$ and $R>0$. Let $\rho\ge0$ be a measurable density on $T_pM$ (thought of
-as $\rho(v)=|\det d(\exp_p)_v|$, extended by $0$ past the cut time), and put
-$\Vol(r)=\int_{B(0,r)}\rho\,d\mu$. Suppose that in every unit direction
+Let $k\ge0$ and $R>0$. Let $\rho\ge0$ be a measurable density on a finite-dimensional
+Euclidean chart $E$, and put $V_\rho(r)=\int_{B(0,r)}\rho\,d\mu$ and
+$V_k(r)=\mathcal V_k(r)$. Suppose that in every unit direction
 $\omega\in S$ the polar density $\nu_\omega(t)=t^{n-1}\rho(t\omega)$ has
 non-increasing ratio to the model density,
 $$t\ \longmapsto\ \frac{\nu_\omega(t)}{\sn_k^{n-1}(t)}
 \quad\text{non-increasing on }(0,R).$$
 Then for $0<r_1\le r_2<R$
-$$\Vol(r_2)\cdot\Vol B_{H^n_k}(q_k,r_1)\ \le\
-\Vol(r_1)\cdot\Vol B_{H^n_k}(q_k,r_2),$$
-equivalently $r\mapsto\Vol(r)/\Vol B_{H^n_k}(q_k,r)$ is non-increasing on $(0,R)$.
+$$V_\rho(r_2)\cdot V_k(r_1)\ \le\
+V_\rho(r_1)\cdot V_k(r_2),$$
+equivalently $r\mapsto V_\rho(r)/V_k(r)$ is non-increasing on $(0,R)$.
+No model-manifold identification is used.
 \end{lemma}
 
 \begin{proof}
 \sketch
 \uses{lem:polar-coordinates,lem:model-ball-volume}
 \leanok
-Apply the radial Bishop--Gromov inequality direction by direction, extending each radial density by zero after its cut time. Integrating over the unit sphere and using polar coordinates converts the radial integrals into ball volumes. The ratio-of-integrals lemma then gives monotonicity of the quotient by the model ball volume.
+Apply the radial inequality in each direction and integrate over the sphere. Polar
+coordinates give $V_\rho$ and $V_k$; the ratio lemma gives their quotient's monotonicity.
 \end{proof}
 
 
 \begin{theorem}[Bishop-Gromov relative volume comparison]
 \label{thm:bishop-gromov}
-\lean{MorganTianLib.bishop_gromov_ball,MorganTianLib.bishop_gromov_ball_ratio}
+\lean{MorganTianLib.bishop_gromov_manifold_ratio,MorganTianLib.bishop_gromov_manifold_with_producers}
 \uses{def:ricci-curvature, thm:ricci-curvature-comparison, lem:bishop-gromov-ball, def:riemannian-measure}
 \label{BishopGromov}
 

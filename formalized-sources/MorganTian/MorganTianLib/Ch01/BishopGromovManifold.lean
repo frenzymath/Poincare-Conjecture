@@ -109,7 +109,7 @@ ball.
 
 Blueprint: `thm:bishop-gromov`. -/
 theorem antitoneOn_ratio_transportedJacobian
-    (g : RiemannianMetric I M) (hg : g.IsRiemannianDist) [CompleteSpace M]
+    (g : RiemannianMetric I M) (hg : g.IsRiemannianDist)
     (p : M) {k R : ℝ} (hk : 0 ≤ k) (hR : 0 < R) (hdim : 2 ≤ Module.finrank ℝ E)
     (hLC : (g.leviCivitaConnection).IsLeviCivita g)
     (hric : ∀ x ∈ Metric.closedBall p R, ∀ v : TangentSpace I x,
@@ -197,7 +197,9 @@ theorem antitoneOn_ratio_transportedJacobian
         have hct : cutTime (I := I) g hg p ((t • u : E) : TangentSpace I p)
             = ENNReal.ofReal (r₀ / t) := by
           have := cutTime_smul (I := I) g hg p (u : TangentSpace I p) h0 hr₀0 hc_eq
-          simpa using this
+          change cutTime (I := I) g hg p (t • (u : TangentSpace I p))
+            = ENNReal.ofReal (r₀ / t)
+          exact this
         rw [hct]
         calc ENNReal.ofReal (r₀ / t) ≤ ENNReal.ofReal 1 := by
               rw [ENNReal.ofReal_le_ofReal_iff (by norm_num)]
@@ -255,7 +257,9 @@ theorem antitoneOn_ratio_transportedJacobian
       -- the cut condition holds on `(0, r₀)`
       have hcut : 1 < cutTime (I := I) g hg p ((t • u : E) : TangentSpace I p) := by
         have hmimg : IsMinimizingUpTo (I := I) g hg p ((t • u : E) : TangentSpace I p) (r₀ / t) := by
-          rw [isMinimizingUpTo_smul (I := I) g hg p (u : TangentSpace I p) ht.1,
+          let v : TangentSpace I p := (u : TangentSpace I p)
+          change IsMinimizingUpTo (I := I) g hg p (t • v) (r₀ / t)
+          rw [isMinimizingUpTo_smul (I := I) g hg p v ht.1,
             mul_div_cancel₀ r₀ (ne_of_gt ht.1)]
           exact hminr₀
         have hle : ENNReal.ofReal (r₀ / t)
@@ -280,6 +284,169 @@ theorem antitoneOn_ratio_transportedJacobian
       rw [hval_pre t ht]
       exact mul_nonneg (Real.sqrt_nonneg _)
         (div_nonneg (le_of_lt (_hpos t ht)) (pow_nonneg (snK_nonneg k t hk ht.1.le) _))
+
+/-! ### The manifold-level relative volume comparison -/
+
+/-- **Math.** **Bishop--Gromov on the actual manifold.**  For a complete connected Riemannian
+manifold, a point `p`, and a ball with compact closure, a Ricci lower bound on that ball implies
+that the ratio of the *actual Riemannian ball volume* to the model ball volume is non-increasing.
+
+The only analytic side condition exposed here is measurability of the transported exponential
+Jacobian.  This is deliberately a producer obligation rather than an assumed radial comparison:
+`antitoneOn_ratio_transportedJacobian` derives the latter from the Ricci bound and minimality.
+The compact-closure hypothesis is retained in the source-faithful statement (the current global
+geodesic infrastructure also assumes completeness). -/
+theorem bishop_gromov_manifold_ratio
+    (g : RiemannianMetric I M) (hg : g.IsRiemannianDist) [ConnectedSpace M]
+    (p : M) {k R : ℝ} (hk : 0 ≤ k) (hR : 0 < R)
+    (_hcompact : IsCompact (closure (Metric.ball p R)))
+    (hdim : 2 ≤ Module.finrank ℝ E)
+    (hLC : (g.leviCivitaConnection).IsLeviCivita g)
+    (hric : ∀ x ∈ Metric.closedBall p R, ∀ v : TangentSpace I x,
+      -(((Module.finrank ℝ E : ℝ) - 1) * k) * g.metricInner x v v
+        ≤ ricciAt g g.leviCivitaConnection hLC x v v)
+    (hjac : Measurable (transportedJacobian (I := I) g hg p)) :
+    AntitoneOn
+      (fun r =>
+        riemannianMeasure (I := I) g (gpHaar (I := I) g p) (Metric.ball p r) /
+          modelBallVolume (volume : Measure 𝔼) k r)
+      (Ioo 0 R) := by
+  intro r₁ hr₁ r₂ hr₂ h₁₂
+  change
+    riemannianMeasure (I := I) g (gpHaar (I := I) g p) (Metric.ball p r₂) /
+        modelBallVolume (volume : Measure 𝔼) k r₂ ≤
+      riemannianMeasure (I := I) g (gpHaar (I := I) g p) (Metric.ball p r₁) /
+        modelBallVolume (volume : Measure 𝔼) k r₁
+  rw [riemannianMeasure_ball_eq_expBallVolume (I := I) g hg p r₁,
+    riemannianMeasure_ball_eq_expBallVolume (I := I) g hg p r₂]
+  exact (bishop_gromov_ball_ratio (μ := (volume : Measure 𝔼)) (E := 𝔼) (k := k) (R := R)
+    hjac (transportedJacobian_nonneg (I := I) g hg p) hk (by
+      intro w hw
+      simpa only [polarBallDensity, finrank_coeffSpace (E := E)] using
+        (antitoneOn_ratio_transportedJacobian (I := I) g hg p hk hR hdim hLC hric hw)))
+    hr₁ hr₂ h₁₂
+
+/-! ### Explicit producer obligations for the remaining source clauses -/
+
+/-- **Math.** The origin density of the transported exponential chart relative to the fixed
+`gpHaar = L_*volume` convention.  `MetricEuclideanEquiv` identifies this with
+`ENNReal.ofReal (sqrt (det (chartGramMatrix g p p)))`; it is the small-radius limit of the
+unscaled actual/model volume ratio.  A normalized Riemannian-measure convention makes this
+constant equal to `1` (equivalently, one may scale `gpHaar` by its inverse). -/
+def gpHaarOriginDensity (g : RiemannianMetric I M) (p : M) : ℝ≥0∞ :=
+  ENNReal.ofReal (Real.sqrt ((chartGramMatrix (I := I) g p p).det))
+
+/-- **Math.** The current library has all ingredients for the manifold ratio monotonicity, but does not yet
+contain the final small-radius integration theorem or the geometric identification of the flat
+model integral with a multiple of `r^n`.  This record names those exact missing producers.  Keeping
+them explicit makes the node conditional/not-ready instead of hiding either gap behind an
+abstract `hanti` assumption.  The normalization producer records the honest limit for the fixed
+`gpHaar` convention, namely `gpHaarOriginDensity`, rather than silently asserting that it is `1`.
+The source normalization is recovered below only under the explicit chart-normalization hypothesis
+that this constant is `1`; with the fixed `gpHaar` definition, a general normalization would
+instead use the scaled measure `C_p⁻¹ • gpHaar`. -/
+structure BishopGromovManifoldProducers
+    (g : RiemannianMetric I M) (hg : g.IsRiemannianDist) [ConnectedSpace M] (p : M)
+    (R : ℝ) : Prop where
+  transportedJacobian_measurable :
+    Measurable (transportedJacobian (I := I) g hg p)
+  small_radius_normalization :
+    Tendsto
+      (fun r =>
+        riemannianMeasure (I := I) g (gpHaar (I := I) g p) (Metric.ball p r) /
+          modelBallVolume (volume : Measure 𝔼) 0 r)
+      (𝓝[>] (0 : ℝ)) (𝓝 (gpHaarOriginDensity (I := I) g p))
+  flat_model_power_identification :
+    ∃ C : ℝ≥0∞, 0 < C ∧ C ≠ ⊤ ∧
+      ∀ r ∈ Ioo (0 : ℝ) R,
+        modelBallVolume (volume : Measure 𝔼) 0 r = C * ENNReal.ofReal (r ^ Module.finrank ℝ E)
+
+/-- **Math.** Conditional packaging of the source theorem's normalization and `k=0` consequence.
+The extra hypothesis `hCnorm` is the explicit chart-normalization condition
+`gpHaarOriginDensity = 1`; with the fixed `gpHaar` definition this is not an implicit rescaling.
+Without it the producer exposes the corresponding `gpHaarOriginDensity` limit instead. -/
+theorem bishop_gromov_manifold_with_producers
+    (g : RiemannianMetric I M) (hg : g.IsRiemannianDist) [ConnectedSpace M]
+    (p : M) {k R : ℝ} (hk : 0 ≤ k) (hR : 0 < R)
+    (hcompact : IsCompact (closure (Metric.ball p R)))
+    (hdim : 2 ≤ Module.finrank ℝ E)
+    (hLC : (g.leviCivitaConnection).IsLeviCivita g)
+    (hric : ∀ x ∈ Metric.closedBall p R, ∀ v : TangentSpace I x,
+      -(((Module.finrank ℝ E : ℝ) - 1) * k) * g.metricInner x v v
+        ≤ ricciAt g g.leviCivitaConnection hLC x v v)
+    (hric0 : ∀ x ∈ Metric.closedBall p R, ∀ v : TangentSpace I x,
+      0 ≤ ricciAt g g.leviCivitaConnection hLC x v v)
+    (hCnorm : gpHaarOriginDensity (I := I) g p = 1)
+    (hprod : BishopGromovManifoldProducers (I := I) g hg p R) :
+    AntitoneOn
+      (fun r =>
+        riemannianMeasure (I := I) g (gpHaar (I := I) g p) (Metric.ball p r) /
+          modelBallVolume (volume : Measure 𝔼) k r)
+      (Ioo 0 R) ∧
+    Tendsto
+      (fun r =>
+        riemannianMeasure (I := I) g (gpHaar (I := I) g p) (Metric.ball p r) /
+          modelBallVolume (volume : Measure 𝔼) 0 r)
+      (𝓝[>] (0 : ℝ)) (𝓝 1) ∧
+    AntitoneOn
+      (fun r =>
+        riemannianMeasure (I := I) g (gpHaar (I := I) g p) (Metric.ball p r) /
+          ENNReal.ofReal (r ^ Module.finrank ℝ E))
+      (Ioo 0 R) := by
+  have hratio := bishop_gromov_manifold_ratio (I := I) g hg p hk hR hcompact hdim hLC hric
+      hprod.transportedJacobian_measurable
+  have hratio0 := bishop_gromov_manifold_ratio (I := I) g hg p (k := 0) (by norm_num) hR hcompact
+      hdim hLC (by
+        intro x hx v
+        simpa using hric0 x hx v) hprod.transportedJacobian_measurable
+  rcases hprod.flat_model_power_identification with ⟨C, hCpos, hCtop, hCeq⟩
+  have hC0 : C ≠ 0 := ne_of_gt hCpos
+  have hsmall := hprod.small_radius_normalization
+  rw [hCnorm] at hsmall
+  refine ⟨hratio, hsmall, ?_⟩
+  intro r₁ hr₁ r₂ hr₂ h₁₂
+  have hbase := hratio0 hr₁ hr₂ h₁₂
+  change
+    riemannianMeasure (I := I) g (gpHaar (I := I) g p) (Metric.ball p r₂) /
+        modelBallVolume (volume : Measure 𝔼) 0 r₂ ≤
+      riemannianMeasure (I := I) g (gpHaar (I := I) g p) (Metric.ball p r₁) /
+        modelBallVolume (volume : Measure 𝔼) 0 r₁ at hbase
+  have hP₁pos : 0 < ENNReal.ofReal (r₁ ^ Module.finrank ℝ E) :=
+    ENNReal.ofReal_pos.mpr (pow_pos hr₁.1 _)
+  have hP₂pos : 0 < ENNReal.ofReal (r₂ ^ Module.finrank ℝ E) :=
+    ENNReal.ofReal_pos.mpr (pow_pos hr₂.1 _)
+  have hP₁0 : ENNReal.ofReal (r₁ ^ Module.finrank ℝ E) ≠ 0 := ne_of_gt hP₁pos
+  have hP₂0 : ENNReal.ofReal (r₂ ^ Module.finrank ℝ E) ≠ 0 := ne_of_gt hP₂pos
+  have hP₁top : ENNReal.ofReal (r₁ ^ Module.finrank ℝ E) ≠ ⊤ := ENNReal.ofReal_ne_top
+  have hP₂top : ENNReal.ofReal (r₂ ^ Module.finrank ℝ E) ≠ ⊤ := ENNReal.ofReal_ne_top
+  have hrewrite₁ :
+      riemannianMeasure (I := I) g (gpHaar (I := I) g p) (Metric.ball p r₁) /
+          (C * ENNReal.ofReal (r₁ ^ Module.finrank ℝ E)) =
+        (riemannianMeasure (I := I) g (gpHaar (I := I) g p) (Metric.ball p r₁) /
+          ENNReal.ofReal (r₁ ^ Module.finrank ℝ E)) / C := by
+    calc
+      _ = riemannianMeasure (I := I) g (gpHaar (I := I) g p) (Metric.ball p r₁) * 1 /
+          (ENNReal.ofReal (r₁ ^ Module.finrank ℝ E) * C) := by simp [mul_comm]
+      _ = riemannianMeasure (I := I) g (gpHaar (I := I) g p) (Metric.ball p r₁) /
+          ENNReal.ofReal (r₁ ^ Module.finrank ℝ E) * (1 / C) :=
+        ENNReal.mul_div_mul_comm (Or.inl hP₁0) (Or.inl hP₁top)
+      _ = _ := by simp [div_eq_mul_inv, mul_comm]
+  have hrewrite₂ :
+      riemannianMeasure (I := I) g (gpHaar (I := I) g p) (Metric.ball p r₂) /
+          (C * ENNReal.ofReal (r₂ ^ Module.finrank ℝ E)) =
+        (riemannianMeasure (I := I) g (gpHaar (I := I) g p) (Metric.ball p r₂) /
+          ENNReal.ofReal (r₂ ^ Module.finrank ℝ E)) / C := by
+    calc
+      _ = riemannianMeasure (I := I) g (gpHaar (I := I) g p) (Metric.ball p r₂) * 1 /
+          (ENNReal.ofReal (r₂ ^ Module.finrank ℝ E) * C) := by simp [mul_comm]
+      _ = riemannianMeasure (I := I) g (gpHaar (I := I) g p) (Metric.ball p r₂) /
+          ENNReal.ofReal (r₂ ^ Module.finrank ℝ E) * (1 / C) :=
+        ENNReal.mul_div_mul_comm (Or.inl hP₂0) (Or.inl hP₂top)
+      _ = _ := by simp [div_eq_mul_inv, mul_comm]
+  rw [hCeq r₁ hr₁, hCeq r₂ hr₂, hrewrite₁, hrewrite₂] at hbase
+  have hmul := (ENNReal.le_div_iff_mul_le (Or.inl hC0) (Or.inl hCtop)).mp hbase
+  rw [ENNReal.div_mul_cancel hC0 hCtop] at hmul
+  exact hmul
 
 end MorganTianLib
 
