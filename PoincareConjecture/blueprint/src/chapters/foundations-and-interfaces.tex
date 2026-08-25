@@ -16,6 +16,7 @@ $D^+f(t)\le c$ if
 \begin{lemma}[Right-Dini mean-value lemma]
 \label{lem:forward-dini-mean-value}
 \dcref{MT:ch2:2.22}
+\source{morgan-tian}
 \notready
 Let $q\colon[c,d]\to\mathbb R$ be continuous.  If $q(d)>q(c)$, then
 there is $s\in[c,d)$ such that $D^+q(s)>0$.
@@ -35,6 +36,7 @@ $D^+q(s)\ge\eta>0$.
 \begin{theorem}[Forward-Dini comparison principle]
 \label{thm:forward-dini-comparison}
 \dcref{MT:ch2:2.22}
+\source{morgan-tian}
 \notready
 Let $f\colon[a,b]\to\mathbb R$ be continuous, let
 $\psi\colon[a,b]\times\mathbb R\to\mathbb R$ be of class $C^1$, and
@@ -70,9 +72,49 @@ $D^+v(s)>0$.  This contradicts $v(s)\ge0$ and the inequality above.
 Thus $v\le0$, and hence $f\le G$.
 \end{proof}
 
+\begin{lemma}[Forward-Dini comparison with finitely many downward jumps]
+\label{lem:forward-dini-comparison-with-downward-jumps}
+\dcref{MT:ch2:2.22,MT:ch18:18.9}
+\source{morgan-tian}
+\uses{thm:forward-dini-comparison}
+\notready
+Let
+\[
+ a=\tau_0<\tau_1<\cdots<\tau_N=b
+\]
+be a finite partition.  Suppose that $f\colon[a,b]\to\mathbb R$ is
+continuous on every half-open interval $[\tau_j,\tau_{j+1})$, has a finite
+left lower limit at each interior partition time, and satisfies
+\[
+ f(\tau_j)\le\liminf_{s\uparrow\tau_j}f(s)\qquad(1\le j<N).
+\]
+Let $\psi\in C^1([a,b]\times\mathbb R)$ and assume
+\[
+ D^+f(t)\le\psi(t,f(t))
+ \qquad(\tau_j\le t<\tau_{j+1})
+\]
+for every $j$.  If $G\in C^1([a,b])$ solves
+$G'=\psi(t,G)$ and $f(a)\le G(a)$, then $f(t)\le G(t)$ on all of $[a,b]$.
+\end{lemma}
+
+\begin{proof}
+On a fixed interval $[\tau_j,\tau_{j+1})$, apply
+\ref{thm:forward-dini-comparison} on $[\tau_j,c]$ for every
+$c<\tau_{j+1}$; the assumed right-continuity and the differential inequality
+give $f(c)\le G(c)$.  Letting $c\uparrow\tau_{j+1}$ gives
+\[
+ \liminf_{s\uparrow\tau_{j+1}}f(s)\le G(\tau_{j+1}).
+\]
+At the partition time the downward-jump hypothesis therefore gives
+$f(\tau_{j+1})\le G(\tau_{j+1})$.  This is the initial inequality for the
+next half-open interval.  Induction over the finite partition proves the
+claim, including the final endpoint.
+\end{proof}
+
 \begin{lemma}[Uniform transport of time-slice maxima]
 \label{lem:uniform-time-slice-transport}
 \dcref{MT:ch2:2.23}
+\source{morgan-tian}
 \notready
 Let $X$ be a set with functions $\tau,F,V\colon X\to\mathbb R$, let
 $Z\subset X$, and let $m\colon[a,b]\to\mathbb R$.  Suppose that for every
@@ -83,7 +125,8 @@ $|h|<\rho$, and $\tau(x)+h\in[a,b]$, such that
 \[
  \tau(\Phi_h(x))=\tau(x)+h,
  \qquad
- \sup_{x\in Z}|F(\Phi_h(x))-F(x)|\longrightarrow0
+ \sup_{\substack{x\in Z\\ \tau(x)+h\in[a,b]}}
+ |F(\Phi_h(x))-F(x)|\longrightarrow0
  \quad(h\to0).
 \]
 Assume moreover that, for every $\eta>0$, there is $h_0>0$ such that
@@ -123,12 +166,18 @@ upper forward-derivative bound.
 \begin{theorem}[Time-slice maximum comparison]
 \label{thm:time-slice-maximum-comparison}
 \dcref{MT:ch2:2.23}
+\source{morgan-tian}
 \notready
-Let $M$ be a smooth manifold, let $\chi$ be a smooth vector field, and let
-$\mathbf t\colon M\to[a,b]$ be smooth with $\chi(\mathbf t)=1$.  Let
-$F\colon M\to\mathbb R$ be smooth, suppose that $F$ attains a maximum on
-every level set of $\mathbf t$, and suppose that the set $\mathcal Z$ of all
-levelwise maximizers is compact.  If
+Let $M$ be a smooth manifold without boundary, let $\chi$ be a smooth vector
+field, and let $\mathbf t\colon M\to\mathbb R$ be smooth with
+$\chi(\mathbf t)=1$.  Let $F\colon M\to\mathbb R$ be smooth and suppose that,
+for every $t\in[a,b]$, $F$ attains a maximum on
+$\mathbf t^{-1}(t)$.  Suppose that the set
+\[
+ \mathcal Z=\{x\in M:\mathbf t(x)\in[a,b]\text{ and }
+ F(x)=\max_{\mathbf t^{-1}(\mathbf t(x))}F\}
+\]
+of maximizers in the closed slab is compact.  If
 $\psi\in C^1([a,b]\times\mathbb R)$ and
 \[
  \chi(F)(x)\le\psi(\mathbf t(x),F(x))
@@ -171,13 +220,18 @@ forward-difference inequality.  The comparison with $G$ follows from
 \begin{definition}[Epsilon-closeness, neck, and scale]
 \label{def:epsilon-neck-and-scale}
 \dcref{MT:ch2:2.16,MT:ch2:2.18}
+\source{morgan-tian}
 \notready
 Fix $0<\epsilon<1/2$ and put $k=\lfloor\epsilon^{-1}\rfloor$.  A metric
-$g$ is \emph{$\epsilon$-close to $g_0$ in $C^k$} on a common domain if
-the $g_0$-norms of $g-g_0$ and its first $k$ covariant derivatives are
-uniformly less than $\epsilon$.
+$g$ is \emph{$\epsilon$-close to $g_0$ in $C^k$} on a common domain $X$ if
+\[
+ \sup_{x\in X}\left(
+ |g-g_0|_{g_0}^2+\sum_{\ell=1}^k
+ |\nabla_{g_0}^{\ell}g|_{g_0}^2\right)<\epsilon^2.
+\]
 
-An \emph{$\epsilon$-neck} centered at $x$ in a Riemannian three-manifold
+An \emph{$\epsilon$-neck} centered at a point $x$ with $R(x)>0$ in a
+Riemannian three-manifold
 $(M,g)$ is the image $N$ of a diffeomorphism
 \[
  \varphi\colon S^2\times(-\epsilon^{-1},\epsilon^{-1})\longrightarrow N
@@ -203,11 +257,14 @@ reverses the neck.  Its positive and negative ends are respectively
 \begin{definition}[Maximal extension of a generalized Ricci flow]
 \label{def:maximal-ricci-flow-extension}
 \dcref{MT:ch11:11.22}
+\source{morgan-tian}
 \notready
-Here a \emph{generalized Ricci flow} consists of a manifold with a time
-function $\mathbf t$, a time vector field $\chi$ satisfying
-$\chi(\mathbf t)=1$, and metrics on $\ker(d\mathbf t)$ which evolve by
-the Ricci-flow equation along $\chi$.  Let $(\mathcal M,G)$ be such a
+Here a \emph{generalized Ricci flow} consists of a manifold with a
+continuous time function $\mathbf t$ which is a smooth submersion on every
+ordinary or one-sided flow chart, a time vector field $\chi$ smooth on those
+charts and satisfying $\chi(\mathbf t)=1$, and metrics on
+$\ker(d\mathbf t)$ which evolve by the Ricci-flow equation along $\chi$.
+Let $(\mathcal M,G)$ be such a
 flow on a terminal interval
 $[T^-,T)$, identify this part of the flow with $M\times[T^-,T)$, and set
 \[
@@ -232,6 +289,7 @@ $(\Omega,g(T))$, which need not be complete.
 \begin{definition}[Standard surgery-cap model]
 \label{def:standard-surgery-cap-model}
 \dcref{MT:ch12:12.2,MT:ch12:12.3}
+\source{morgan-tian}
 \uses{def:epsilon-neck-and-scale}
 \notready
 Fix a complete rotationally symmetric metric $g_0$ on $\mathbb R^3$ with
@@ -252,6 +310,7 @@ It is smooth away from $p_0$ and has round two-sphere level sets.
 \begin{definition}[Local neck-surgery data]
 \label{def:local-neck-surgery-data}
 \dcref{MT:ch13:13.1,MT:ch13:13.2}
+\source{morgan-tian}
 \uses{def:epsilon-neck-and-scale,def:standard-surgery-cap-model}
 \notready
 Let $(N,g)$ be a $\delta$-neck centered at $x_0$, let
@@ -270,7 +329,7 @@ Fix smooth cutoffs $\alpha\colon[1,2]\to[0,1]$ and
 $\beta\colon[A_0+4-r_0,A_0+4]\to[0,1]$, equal to $1$ near their left
 endpoints and $0$ near their right endpoints.  Put
 \[
- \eta=1-2\delta,
+ \eta=1-\delta,
  \qquad
  f(s)=\begin{cases}
  0,&s\le0,\\
@@ -279,9 +338,20 @@ endpoints and $0$ near their right endpoints.  Put
 \]
 \end{definition}
 
+\paragraph{Metric-convention correction for the surgery factor.}
+With the explicit operator-norm convention in
+\ref{def:epsilon-neck-and-scale}, the quadratic-form estimate is
+$Q\rho^*g\ge(1-\delta)(h_0+ds^2)$.  Thus the factor used in the
+Blueprint is $\eta=1-\delta$.  Morgan--Tian's printed
+$\sqrt{1-\delta}$ is the equivalent choice under their implicit squared
+quadratic-form tolerance; using it with the displayed norm would reverse
+the inequality.  All subsequent surgery estimates only require
+$0<\eta<1$ and $\eta\to1$.
+
 \begin{definition}[Interpolating surgery metric]
 \label{def:interpolating-surgery-metric}
 \dcref{MT:ch13:13.2}
+\source{morgan-tian}
 \uses{def:local-neck-surgery-data}
 \notready
 Set $A_r=A_0+4-r_0$ and $A'=A_0+4$.  On $\mathcal S$, define
@@ -305,6 +375,7 @@ The metric at the original scale is
 \begin{lemma}[Smoothness of the interpolating surgery metric]
 \label{lem:interpolating-surgery-metric-smooth}
 \dcref{MT:ch13:13.2}
+\source{morgan-tian}
 \notready
 The piecewise tensor $\widehat g$ of
 \ref{def:interpolating-surgery-metric} is a smooth Riemannian metric on
@@ -328,6 +399,7 @@ $s\le0$, which gives the asserted agreement with the normalized neck.
 \begin{lemma}[Nonexpansion of the standard radial collapse]
 \label{lem:standard-cap-radial-collapse-nonexpanding}
 \dcref{MT:ch12:12.37,MT:ch13:13.1}
+\source{morgan-tian}
 \notready
 In the data of \ref{def:local-neck-surgery-data}, define
 $\xi\colon N\to\mathbb R^3$ by preserving the angular coordinate,
@@ -342,7 +414,8 @@ is distance nonincreasing.
 
 \begin{proof}
 \uses{def:local-neck-surgery-data}
-The $\delta$-neck estimate and $\eta=1-2\delta$ give
+The $\delta$-neck estimate and the convention-corrected
+$\eta=1-\delta$ give
 \[
  Q\rho^*g\ge\eta(h_0+ds^2)
 \]
@@ -362,6 +435,7 @@ piecewise $C^1$ curves and taking infima proves the claim.
 \begin{lemma}[The radial surgery map is nonexpanding]
 \label{lem:radial-surgery-map-nonexpanding}
 \dcref{MT:ch13:13.2}
+\source{morgan-tian}
 \notready
 Regard the map $\xi$ of
 \ref{lem:standard-cap-radial-collapse-nonexpanding} as a map from $N$
@@ -385,9 +459,32 @@ $\xi\colon(N,Qg)\to(\mathcal S,\widehat g)$ is nonexpanding.  Multiplying
 both metrics by $Q^{-1}$ gives the statement.
 \end{proof}
 
+\begin{lemma}[A null-homotopic embedded sphere separates]
+\label{lem:nullhomotopic-embedded-sphere-separates}
+\dcref{MT:ch15:15.12}
+\source{morgan-tian}
+\notready
+Let $M$ be a connected closed smooth $3$-manifold and let
+$S\subset M$ be a smoothly embedded two-sphere.  If the inclusion
+$S\hookrightarrow M$ is null-homotopic, then $M\setminus S$ is disconnected;
+equivalently, $S$ separates $M$.
+\end{lemma}
+
+\begin{proof}
+The sphere is two-sided, so a transverse loop has a mod-$2$ intersection number
+with $S$.  If $S$ were nonseparating, choose a loop crossing from one side to
+the other and close it through a product collar; its mod-$2$ intersection with
+$S$ is one.  This intersection number is invariant under homotopy of the
+loop and is the evaluation of the mod-$2$ Poincare-dual class of $S$.  A
+null-homotopic inclusion makes that dual class zero, so every loop must have
+intersection number zero, a contradiction.  Hence $S$ separates.  The same
+argument works without orientability because it uses mod-$2$ coefficients.
+\end{proof}
+
 \begin{lemma}[Conformal curvature comparison on the neck side]
 \label{lem:conformal-surgery-curvature-comparison}
 \dcref{MT:ch13:13.5,MT:ch13:13.6,MT:ch13:13.7,MT:ch13:13.8,MT:ch13:13.9,MT:ch13:13.10,MT:ch13:13.11,MT:ch13:13.12}
+\source{morgan-tian}
 \notready
 Let $h$ be a metric $C^{\lfloor1/\delta\rfloor}$-close to
 $h_0+ds^2$ on $S^2\times I$, and put $\widehat h=e^{-2f}h$ with
@@ -445,6 +542,7 @@ increase strictly.  Hence the least eigenvalue increases.
 \begin{lemma}[Curvature and pinching on the retained neck]
 \label{lem:retained-neck-surgery-pinching}
 \dcref{MT:ch13:13.13,MT:ch13:13.14}
+\source{morgan-tian}
 \notready
 For the universal choices in
 \ref{lem:conformal-surgery-curvature-comparison} and all sufficiently
@@ -490,6 +588,7 @@ $X_{\widetilde g}=0$, so both pinching inequalities hold there as well.
 \begin{lemma}[Curvature and pinching on the standard-cap side]
 \label{lem:standard-cap-surgery-curvature}
 \dcref{MT:ch13:13.2}
+\source{morgan-tian}
 \notready
 For the same universal choices and all sufficiently small $\delta$, the
 metric $\widetilde g$ has positive sectional curvature on
@@ -516,6 +615,7 @@ scalar curvature, which implies both pinching inequalities.
 \begin{lemma}[Convergence of the surgery cap to the standard cap]
 \label{lem:local-surgery-standard-cap-convergence}
 \dcref{MT:ch13:13.2}
+\source{morgan-tian}
 \notready
 For every $\delta''>0$ there is $\delta_1'(\delta'')>0$ such that, if
 $\delta\le\delta_1'(\delta'')$, then $\widehat g$ on
@@ -540,6 +640,7 @@ stated closeness.
 \begin{theorem}[Local surgery on a delta-neck]
 \label{thm:local-neck-surgery}
 \dcref{MT:ch13:13.2}
+\source{morgan-tian}
 \notready
 There are universal constants $C_0,q,R_0<\infty$ and $\delta_0'>0$ such
 that, whenever $Q=R_g(x_0)\ge R_0$ and
@@ -581,11 +682,13 @@ by \ref{lem:interpolating-surgery-metric-smooth}.
 \begin{definition}[Canonical cap]
 \label{def:canonical-cap}
 \dcref{MT:ch9:9.72}
+\source{morgan-tian}
 \uses{def:epsilon-neck-and-scale}
 \notready
 For $C<\infty$, a \emph{$(C,\epsilon)$-cap} is an open submanifold
-$\mathcal C$ of a Riemannian three-manifold with an open
-$\epsilon$-neck $N\subset\mathcal C$ such that:
+$\mathcal C$ of a smooth boundaryless Riemannian three-manifold with an open
+$\epsilon$-neck $N\subset\mathcal C$ whose complement in $\mathcal C$ is
+compact, such that:
 \begin{enumerate}
 \item $\mathcal C$ is diffeomorphic to an open three-ball or to
       $\mathbb{RP}^3$ minus a point;
@@ -593,15 +696,78 @@ $\epsilon$-neck $N\subset\mathcal C$ such that:
       boundary, its interior $Y$ is the \emph{core}, and
       $\partial\overline Y$ is a central sphere of an $\epsilon$-neck;
 \item $R>0$ on $\mathcal C$,
-      $\sup_{x,y\in\mathcal C}R(y)/R(x)<C$, and
       $\operatorname{diam}(\mathcal C)
        <C(\sup_{\mathcal C}R)^{-1/2}$.
+\item $\sup_{x,y\in\mathcal C}R(y)/R(x)<C$ and
+      $\operatorname{Vol}(\mathcal C)
+      <C(\sup_{\mathcal C}R)^{-3/2}$.
+\item For $y\in Y$, let $r_y>0$ satisfy
+      $\sup_{B(y,r_y)}R=r_y^{-2}$.  Then
+      $B(y,r_y)\Subset\mathcal C$ and
+      \[
+       \inf_{y\in Y}\frac{\operatorname{Vol}B(y,r_y)}{r_y^3}>C^{-1}.
+      \]
+\item The scale-invariant derivative bounds
+      \[
+       \sup_{\mathcal C}\frac{|\nabla R|}{R^{3/2}}<C,
+       \qquad
+       \sup_{\mathcal C}
+       \frac{|\Delta R+2|\operatorname{Ric}|^2|}{R^2}<C
+      \]
+      hold.
 \end{enumerate}
+The neck orientation is fixed so that the closure of its negative end meets
+the core; reversing this orientation is not a new cap structure.
+\end{definition}
+
+\begin{definition}[Embedded horn frontier and cross-sectional sphere]
+\label{def:embedded-horn-frontier}
+\dcref{MT:ch9:9.72,MT:app:A.21}
+\source{morgan-tian}
+\uses{def:epsilon-neck-and-scale,def:canonical-cap}
+\notready
+For an embedded neck chart $\varphi_N$ as in
+\ref{def:epsilon-neck-and-scale}, write
+\[
+ S_N(\sigma)=\varphi_N(S^2\times\{\sigma\}),\qquad
+ H_N^+=\varphi_N(S^2\times(0,\epsilon^{-1})),\qquad
+ H_N^-=\varphi_N(S^2\times(-\epsilon^{-1},0)).
+\]
+The \emph{horn frontier} of a cap is the embedded central sphere
+$S_N(0)=\partial\overline Y$ of its neck end, with the side containing the
+compact core designated the core side.  For any open region $U\subset M$,
+\(\operatorname{Fr}_M(U)=\overline U^{\,M}\setminus U\) denotes its ambient
+frontier.  Thus every frontier point below is a point of this specified
+embedded sphere (or of an exposed end frontier), and every
+cross-sectional sphere is one of the displayed $S_N(\sigma)$.
+\end{definition}
+
+\begin{definition}[Embedded epsilon-horn and end convention]
+\label{def:epsilon-horn-terminology}
+\dcref{KL:II:Definition2}
+\source{kleiner-lott}
+\uses{def:epsilon-neck-and-scale}
+\notready
+Let $(M^3,g)$ be a smooth boundaryless Riemannian three-manifold and let
+$I\subset\mathbb R$ be a nonempty open interval.  An \emph{embedded
+$\epsilon$-horn} is an open embedded submanifold
+$\mathcal H\cong S^2\times I$ such that every point of $\mathcal H$ lies in
+an $\epsilon$-neck and, for one end of $I$, the scalar curvature remains
+bounded along that end while it tends to $+\infty$ along the other end.  The
+chosen product coordinate is proper toward the divergent end; its compact
+cross-sectional spheres are the embedded frontier spheres used for truncation.
+Reversing the product coordinate exchanges the two ends but does not change
+the horn.  A capped $\epsilon$-horn is obtained by adjoining one canonical cap
+along the bounded end; a double $\epsilon$-horn has divergent ends at both
+sides.  In a Ricci-flow terminal slice, the bounded-end condition means
+bounded curvature on the terminal domain, and the divergent-end condition means
+$\bar R\to+\infty$ along the end.
 \end{definition}
 
 \begin{definition}[Tubes, capped tubes, and neck fibrations]
 \label{def:canonical-neck-cap-regions}
 \dcref{MT:ch9:9.81,MT:app:A.21,MT:app:A.25}
+\source{morgan-tian}
 \uses{def:epsilon-neck-and-scale,def:canonical-cap}
 \notready
 An \emph{$\epsilon$-tube} is a submanifold diffeomorphic to
@@ -619,26 +785,27 @@ the fibers.
 \begin{definition}[Balanced chain of epsilon-necks]
 \label{def:balanced-neck-chain}
 \dcref{MT:app:A.12,MT:app:A.17}
+\source{morgan-tian}
 \uses{def:epsilon-neck-and-scale}
 \notready
 A finite \emph{chain of $\epsilon$-necks} is a sequence
-$N_a,\ldots,N_b$ with oriented axial coordinates such that
-$N_i\cap N_{i+1}$ contains both
+$N_a,\ldots,N_b$ with oriented axial coordinates such that, for each
+$a\le i<b$,
 \[
- \{s_{N_i}>\tfrac12\epsilon^{-1}\}
- \quad\hbox{and}\quad
- \{s_{N_{i+1}}<-\tfrac12\epsilon^{-1}\},
+ \{s_{N_i}>\tfrac12\epsilon^{-1}\}\subset N_i\cap N_{i+1},
+ \qquad
+ \{s_{N_{i+1}}<-\tfrac12\epsilon^{-1}\}\subset N_i\cap N_{i+1},
 \]
-is contained in
+while
 \[
+ N_i\cap N_{i+1}\subset
  \{s_{N_i}>-\tfrac12\epsilon^{-1}\}
- \cap
- \{s_{N_{i+1}}<\tfrac12\epsilon^{-1}\},
+ \cap\{s_{N_{i+1}}<\tfrac12\epsilon^{-1}\},
 \]
-and $N_i\cap E_{N_a}^-=\varnothing$ for $i>a$.  An infinite chain indexed
-by an interval in $\mathbb Z$ is one whose restriction to every finite
-subinterval is a chain.  The chain is \emph{balanced} if consecutive
-centers $x_j,x_{j+1}$ satisfy
+and $N_i\cap E_{N_a}^-=\varnothing$ for
+$i>a$.  An infinite chain indexed by an interval in $\mathbb Z$ is one
+whose restriction to every finite subinterval is a chain.  The chain is
+\emph{balanced} if consecutive centers $x_j,x_{j+1}$ satisfy
 \[
  0.99\,r_{N_j}\epsilon^{-1}
  \le d(x_j,x_{j+1})
@@ -649,6 +816,7 @@ centers $x_j,x_{j+1}$ satisfy
 \begin{lemma}[Metric control in a small epsilon-neck]
 \label{lem:epsilon-neck-metric-control}
 \dcref{MT:app:A.2,MT:app:A.5}
+\source{morgan-tian}
 \notready
 Write $d_N$ for the intrinsic distance induced by the restriction of the
 ambient metric to $N$.  The estimates below are intrinsic to the neck; no
@@ -666,8 +834,9 @@ $d_N(p,q)\ge r_N\epsilon^{-1}/100$, satisfy
  \le d_N(p,q)
  \le(1+\alpha)r_N|s_N(q)-s_N(p)|.
 \]
-In particular, every path contained in $N$ and joining its two end regions has length at least
-$2(1-\alpha)r_N\epsilon^{-1}$.
+In particular, every path contained in $N$ and joining its two end regions
+has length at least
+$\frac95(1-\alpha)r_N\epsilon^{-1}$.
 \end{lemma}
 
 \begin{proof}
@@ -682,25 +851,28 @@ spherical error is absorbed into the factor $1\pm\alpha$.  The same
 argument applies to intrinsic distance in $N$ when a large intrinsic
 distance, rather than a large axial displacement, is assumed, since the
 spherical diameter is bounded.
-Rescaling by $r_N$ proves the distance estimate.  A path exiting both ends
-has axial displacement $2\epsilon^{-1}$, which gives the last assertion.
+Rescaling by $r_N$ proves the distance estimate.  A path joining the two end
+regions has axial displacement at least $1.8\epsilon^{-1}$, which gives the
+last assertion.
 \end{proof}
 
 \begin{proposition}[Overlap control for small epsilon-necks]
 \label{prop:overlapping-epsilon-necks}
 \dcref{MT:app:A.11}
+\source{morgan-tian}
 \notready
 For every $0<\alpha\le10^{-2}$, all sufficiently small $\epsilon$ have
-the following property.  If two $\epsilon$-necks $N,N'$ intersect in a region
-meeting the middle nine-tenths of each neck, then
+the following property.  If two $\epsilon$-necks $N,N'$ intersect, then
 their scales differ by a factor in $(1-\alpha,1+\alpha)$, their neck-sphere
 tangent planes make angle less than $\alpha$ on the overlap, and their
 oriented axial directions agree up to sign and an error less than
 $\alpha$.  A neck sphere of one neck contained in the other is isotopic
-there to a neck sphere.  If the overlap meets the middle nine-tenths of one
-neck, then $N\cap N'$ contains neck spheres from both structures which are
-isotopic within the overlap, and the relevant component of the overlap is
-diffeomorphic to $S^2\times(0,1)$.
+there to a neck sphere.  If the overlap contains a point in the middle
+nine-tenths of one neck, then there is a point in the overlap lying in the
+middle $0.96\epsilon^{-1}$ of both neck coordinates; the corresponding
+cross-sectional spheres are contained in the opposite necks, isotopic in the
+overlap, and the relevant overlap component is diffeomorphic to
+$S^2\times(0,1)$.
 \end{proposition}
 
 \begin{proof}
@@ -723,15 +895,47 @@ isotopy between them, together with their collars, supplies the asserted
 product structure on the overlap.
 \end{proof}
 
+\begin{lemma}[Separation type is constant on a connected neck-center set]
+\label{lem:neck-separation-type-locally-constant}
+\dcref{MT:app:A.11}
+\source{morgan-tian}
+\uses{def:epsilon-neck-and-scale,prop:overlapping-epsilon-necks}
+\notready
+For sufficiently small $\epsilon$, let $X$ be a connected subset of a
+smooth boundaryless Riemannian three-manifold $M$ such that every point of
+$X$ is the center of an embedded $\epsilon$-neck.  Then either every central
+neck sphere arising from points of $X$ separates $M$, or none does.  More
+precisely, if two centers are sufficiently close that their necks meet in
+the middle nine-tenths, their central spheres are ambiently isotopic and
+therefore have the same separation predicate; these neighborhoods form an
+open cover of $X$.
+\end{lemma}
+
+\begin{proof}
+\uses{prop:overlapping-epsilon-necks}
+The middle-overlap clause of
+\ref{prop:overlapping-epsilon-necks} supplies an isotopy between the two
+central spheres inside the overlap.  Ambient isotopy preserves whether the
+complement has one or two components.  Neck charts vary continuously with
+their centers, so a sufficiently small neighborhood of each center has this
+middle-overlap property; hence the separating and nonseparating loci in $X$
+are both open.  Since $X$ is connected, at most one is nonempty.
+\end{proof}
+
 \subsection{Chains of necks}
 
 \begin{lemma}[A neck chain is a product]
 \label{lem:neck-chain-product}
 \dcref{MT:app:A.13}
+\source{morgan-tian}
 \notready
-The union $U$ of a finite or infinite chain of sufficiently small
-$\epsilon$-necks is diffeomorphic to $S^2\times(0,1)$, compatibly with
-the isotopy classes of all neck spheres.
+Let $N_j$ be a balanced, non-returning chain of sufficiently small
+$\epsilon$-necks, with $N_i\cap N_j=\varnothing$ whenever
+$|i-j|\ge3$.  For an infinite chain assume the positive-end frontier
+condition stated below; for a finite chain assume
+the two exposed ends are distinct.  Then the union
+$U=\bigcup_jN_j$ is diffeomorphic to $S^2\times(0,1)$, compatibly with the
+isotopy classes of all neck spheres.
 \end{lemma}
 
 \begin{proof}
@@ -741,14 +945,18 @@ adjoined, \ref{prop:overlapping-epsilon-necks} identifies the overlap with
 $S^2\times(0,1)$ and identifies a cross-sectional sphere with the factor
 sphere in both pieces.  Gluing the corresponding collars therefore extends
 the product coordinate across the new neck.  The construction can be made
-compatible under inclusion.  Exhausting an infinite chain by finite
-subchains then gives a proper interval coordinate on the union and hence a
-diffeomorphism $U\cong S^2\times(0,1)$.
+compatible under inclusion.  For an infinite chain, the
+nonconsecutive-disjointness and the stated positive-end frontier condition
+exclude returns and
+accumulation at the positive end.  The compatible finite product coordinates
+therefore exhaust a proper interval coordinate on $U$, giving
+$U\cong S^2\times(0,1)$.
 \end{proof}
 
 \begin{lemma}[An infinite neck-chain end has no frontier]
 \label{lem:infinite-neck-chain-frontier}
 \dcref{MT:app:A.15}
+\source{morgan-tian}
 \notready
 Let $N_0,N_1,\ldots$ be a chain of sufficiently small
 $\epsilon$-necks in $M$, and put $U=\bigcup_{j\ge0}N_j$.  Then the
@@ -776,6 +984,7 @@ no frontier.
 \begin{lemma}[Extension of a balanced neck chain]
 \label{lem:balanced-neck-chain-extension}
 \dcref{MT:app:A.17,MT:app:A.18}
+\source{morgan-tian}
 \notready
 For all sufficiently small $\epsilon$, let
 $N_a,\ldots,N_b$ be a balanced chain whose central spheres separate $M$.
@@ -798,40 +1007,193 @@ exactly once.  Thus all defining conditions of a balanced chain remain
 valid.
 \end{proof}
 
+\begin{lemma}[Finite neck-chain frontier extension dichotomy]
+\label{lem:finite-neck-chain-frontier-dichotomy}
+\dcref{MT:app:A.17,MT:app:A.18,MT:app:A.21}
+\source{morgan-tian}
+\uses{def:balanced-neck-chain,lem:epsilon-neck-metric-control,
+  prop:overlapping-epsilon-necks,lem:balanced-neck-chain-extension}
+\notready
+Let $X$ be connected in a boundaryless smooth Riemannian three-manifold $M$,
+and let $U$ be the compact closure of the union of a finite balanced chain of
+sufficiently small $\epsilon$-necks.  Assume
+$X\cap\operatorname{int}U\ne\varnothing$ and
+$X\cap(M\setminus\overline U)\ne\varnothing$, and that every point of
+$X\setminus\operatorname{int}U$ is the center of an $\epsilon$-neck whose
+central sphere separates $M$.  Then $X$ meets the frontier of one exposed end
+of $U$ at a neck center, and that neck extends the balanced chain after an
+axial reorientation.
+\end{lemma}
+
+\begin{proof}
+The sets $X\cap\operatorname{int}U$ and
+$X\cap(M\setminus\overline U)$ are disjoint relatively open subsets of $X$.
+Since $X$ is connected and meets both, the remaining set
+$X\cap\operatorname{Fr}_M(U)$ is nonempty.  A frontier point cannot lie in
+the interior of a chain neck, so it lies in the exposed end region of the
+first or last neck.  The overlap and metric-control estimates in
+\ref{prop:overlapping-epsilon-necks} and
+\ref{lem:epsilon-neck-metric-control} identify its neck with that end and
+give the scale and axial alignment hypotheses of
+\ref{lem:balanced-neck-chain-extension}.  The separating-sphere assumption
+is precisely the nonreturn condition in that extension lemma, so adjoining
+the neck extends $U$ at the relevant end.
+\end{proof}
+
 \begin{theorem}[Separating neck centers lie in an epsilon-tube]
 \label{thm:separating-neck-centers-form-tube}
-\dcref{MT:app:A.19}
+\dcref{MT:app:A.12,MT:app:A.15,MT:app:A.17,MT:app:A.18,MT:app:A.19}
+\source{morgan-tian}
 \notready
 There is $\epsilon_0>0$ such that the following holds for
-$0<\epsilon\le\epsilon_0$.  Let $X$ be a connected subset of a Riemannian
-three-manifold $M$.  Suppose every $x\in X$ is the center of an
-$\epsilon$-neck and every corresponding central sphere separates $M$.
+$0<\epsilon\le\epsilon_0$.  Let $X$ be a connected subset of a smooth
+Riemannian three-manifold $M$ without boundary.  Suppose every $x\in X$ is
+the center of an embedded $\epsilon$-neck and every corresponding central
+sphere separates $M$.
 Then a subcollection of these necks, after reversing axial coordinates when
 necessary, is a balanced chain whose union contains $X$.  Consequently
 $X$ lies in an $\epsilon$-tube.
 \end{theorem}
 
 \begin{proof}
-\uses{def:canonical-neck-cap-regions,lem:neck-chain-product,lem:infinite-neck-chain-frontier,lem:balanced-neck-chain-extension}
-Start with one neck centered in $X$.  If a finite balanced chain does not
-contain $X$, connectedness supplies a point of $X$ on the frontier of one
-of its two ends.  By \ref{lem:balanced-neck-chain-extension}, a neck
-centered there extends the chain.  Repeat at both ends.
+\uses{def:canonical-neck-cap-regions,lem:neck-chain-product,
+  lem:infinite-neck-chain-frontier,lem:balanced-neck-chain-extension,
+  lem:finite-neck-chain-frontier-dichotomy}
+Start with one neck centered in $X$.  The finite-chain frontier lemma and its
+balanced extension clause are the source's no-branching construction: at each
+exposed end, every center of $X$ is forced into the same end overlap, and the
+separating central sphere prevents a return through the opposite side.  Thus
+the successive necks form one ordered chain rather than a branching tree.
+Iterating the extension gives either a finite chain containing $X$, a
+one-sided infinite chain, or a two-sided chain.  The infinite-chain frontier
+lemma excludes a frontier at an infinite end; if an end remains finite,
+connectedness and the explicit exterior hypothesis in
+\ref{lem:finite-neck-chain-frontier-dichotomy} force the next extension.
+  Consequently the chain union contains $X$ (or is the ambient component in the
+  two-sided case).  The product lemma identifies it with
+  $S^2\times(0,1)$, hence an $\epsilon$-tube.  The separating hypothesis is
+  used at every extension step, while the nonseparating case is handled by the
+  separate return/fibration dichotomy below.
+\end{proof}
 
-If the process terminates, the union contains $X$.  For a half-infinite
-chain, \ref{lem:infinite-neck-chain-frontier} says that only its finite end
-has frontier; if this end cannot be extended, connectedness again forces
-$X$ into the union.  A chain infinite in both directions has no frontier
-and its union is an ambient component.  In every case
-\ref{lem:neck-chain-product} identifies the union with
-$S^2\times(0,1)$, so it is an $\epsilon$-tube.
+\begin{lemma}[Nonseparating neck chains: tube or closed fibration]
+\label{lem:nonseparating-neck-chain-or-bundle}
+\dcref{MT:app:A.20,MT:app:A.24}
+\source{morgan-tian}
+\uses{def:balanced-neck-chain,prop:overlapping-epsilon-necks,
+  lem:epsilon-neck-metric-control,lem:neck-chain-product,
+  lem:infinite-neck-chain-frontier}
+\notready
+For sufficiently small $\epsilon$, let $X$ be a connected subset of a
+boundaryless Riemannian three-manifold $M$ such that every point of $X$ is the
+center of an embedded $\epsilon$-neck and no corresponding central sphere
+separates $M$.  Then either
+\begin{enumerate}
+\item there is a balanced chain of these necks, with axial coordinates
+      possibly reversed, whose union $U\cong S^2\times(0,1)$ contains $X$; or
+\item $X$ is contained in a connected component $M_0\subset M$ all of whose
+      points are $\epsilon$-neck centers, and $M_0$ is a closed
+      $S^2$-bundle over $S^1$ (an $\epsilon$-fibration).
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Start with one neck centered in $X$ and extend a finite balanced chain whenever
+an exposed end meets another center of $X$.  The overlap proposition and the
+metric-control estimate give the next balanced neck unless it meets the
+negative end of the first neck; that is the only new possibility because the
+central spheres are nonseparating.  If no return occurs, the extension process
+is finite or one- or two-sided infinite.  The infinite-chain frontier lemma,
+together with connectedness of $X$, then shows that the resulting chain union
+contains $X$, and the neck-chain product lemma gives
+$U\cong S^2\times(0,1)$.
+
+Suppose instead that the chain returns to its first negative end.  If the
+return overlap reaches the middle nine-tenths of that first neck, the overlap
+proposition makes the finite closed chain a whole connected component.  If the
+return lies only in the far negative end, use connectedness of $X$ exactly as
+in the source's Case~II: either replace the first center by a center in the
+positive part of the first neck, producing a chain containing $X$, or retain a
+center in the far negative part, in which case the closed chain is a whole
+component.  In the latter case its universal cover is the bi-infinite neck
+chain $S^2\times\mathbb R$; the deck action preserves the neck foliation and
+is a nontrivial translation on the interval coordinate, so the quotient is a
+closed $S^2$-bundle over $S^1$.  This is the return/fibration argument in
+Appendix~A.20; the cap-gluing return claim used in the far-negative case is
+Appendix~A.24, while the containment alternatives are recorded separately in
+A.21.
+
+The printed statement of Appendix~A.19 has the same nonseparating hypothesis
+but its proof invokes the separating-sphere extension lemma A.17--A.18; that
+polarity mismatch is why this is a repaired, non-literal import.  The closed
+product $S^2\times S^1$ is already a counterexample to the printed
+unconditional tube conclusion.  The Blueprint therefore uses the A.20
+return/fibration classification (and only its A.24 cap-gluing subclaim where
+appropriate) and retains the fibration alternative.
+\end{proof}
+
+\begin{lemma}[All-neck components are tubes or sphere bundles]
+\label{lem:all-neck-component-tube-or-bundle}
+\dcref{MT:app:A.20}
+\source{morgan-tian}
+\uses{thm:separating-neck-centers-form-tube,lem:neck-chain-product}
+\notready
+For sufficiently small $\epsilon$, let $Y$ be a connected Riemannian
+three-manifold without boundary such that every point of $Y$ is the center of
+an embedded $\epsilon$-neck.  Then either $Y$ is diffeomorphic to
+$S^2\times(0,1)$ and is an $\epsilon$-tube, or $Y$ is diffeomorphic to an
+$S^2$-bundle over $S^1$.
+\end{lemma}
+
+\begin{proof}
+Lift the neck cover to the universal cover $\widetilde Y$.  Every lifted neck
+center is still a neck center.  A lifted central sphere separates
+$\widetilde Y$: otherwise a path crossing it once, closed using a collar,
+would give a nontrivial loop in the simply connected cover.  The separating
+neck theorem and the neck-chain product lemma therefore identify
+$\widetilde Y$ with $S^2\times(0,1)$, with its neck spheres as the interval
+fibers.  If the deck group is trivial, $Y$ is the open tube.  Otherwise
+proper discontinuity and the disjointness of sufficiently small translated
+neck charts force the induced action on the interval coordinate to be a
+nontrivial cyclic translation action; its quotient is a closed
+$S^2$-bundle over $S^1$.  This is the source's Appendix~A.20 universal-cover
+dichotomy and does not use the polarity-ambiguous printed A.19 proof.
 \end{proof}
 
 \subsection{Caps and classification}
 
+\begin{lemma}[Uniform scale in a nested cap chain]
+\label{lem:nested-cap-scale-comparison}
+\dcref{MT:app:A.22}
+\source{morgan-tian}
+\uses{def:canonical-cap,prop:overlapping-epsilon-necks,
+  lem:epsilon-neck-metric-control}
+\notready
+Fix $C$ and sufficiently small $\epsilon$.  Let
+$C_0\subset C_1\subset\cdots$ be canonical caps whose successive core
+closures meet the preceding frontier.  If $Q_0$ is the scalar
+curvature at a fixed point of the first core, then every neck scale exposed by
+the chain is at least $c(C,\epsilon)Q_0^{-1/2}$, and every noncontradictory
+enlargement increases the distance from that point to the complement by at
+least $c(C,\epsilon)Q_0^{-1/2}$.
+\end{lemma}
+
+\begin{proof}
+The cap curvature-ratio bound compares each core scale with the scale at the
+point where the preceding cap meets its frontier.  The overlap proposition
+then compares that scale with the next neck scale, while neck metric control
+converts it to an axial-width lower bound.  Induction along the nested chain
+gives the displayed uniform bound and distance increment.  This is the
+quantitative estimate in the proof of Morgan--Tian Appendix~A.22; it is
+recorded separately so the no-infinite-chain conclusion does not silently
+assume a cross-cap curvature bound.
+\end{proof}
+
 \begin{lemma}[No infinite nested chain of canonical caps]
 \label{lem:no-infinite-nested-canonical-caps}
 \dcref{MT:app:A.22}
+\source{morgan-tian}
+\uses{def:canonical-cap,lem:nested-cap-scale-comparison}
 \notready
 For fixed $C$ and sufficiently small $\epsilon$, there is no chain of
 $(C,\epsilon)$-caps
@@ -843,23 +1205,24 @@ $\operatorname{Fr}_M(C_{i-1})$ for every $i\ge1$.
 \end{lemma}
 
 \begin{proof}
-\uses{def:canonical-cap,lem:epsilon-neck-metric-control,prop:overlapping-epsilon-necks}
+\uses{def:canonical-cap,lem:epsilon-neck-metric-control,prop:overlapping-epsilon-necks,
+  lem:nested-cap-scale-comparison}
 Fix $x_0\in C_0$ and put $Q_0=R(x_0)$.  Let $S_i'$ be the boundary of
 the core of $C_i$, realized as the central sphere of a neck $N_i'$, and
-let $N_i$ be the neck end of $C_i$.  Curvature comparability in a cap
-gives every $N_i$ scale at least
-$C^{-1/2}Q_0^{-1/2}$.
+let $N_i$ be the neck end of $C_i$.  The uniform scale contract
+\ref{lem:nested-cap-scale-comparison} gives every $N_i$ scale at least
+$c(C,\epsilon)Q_0^{-1/2}$.
 
 If $S_i'$ is disjoint from $C_{i-1}$, the component of
 $M\setminus S_i'$ containing $C_{i-1}$ must be the core side; otherwise
 $C_{i-1}\cap C_i$ would lie entirely in the neck end, contrary to
 $C_{i-1}\subset C_i$.  Hence the core of $C_i$ contains $C_{i-1}$, and
-\ref{lem:epsilon-neck-metric-control} gives
+\ref{lem:nested-cap-scale-comparison} gives
 \[
  d(x_0,M\setminus C_i)-d(x_0,M\setminus C_{i-1})
- \ge c\epsilon^{-1}C^{-1/2}Q_0^{-1/2}
+  \ge c(C,\epsilon)Q_0^{-1/2}
 \]
-for a universal $c>0$.  If $S_i'\subset C_{i-1}$, the component of its
+for the same $c(C,\epsilon)$.  If $S_i'\subset C_{i-1}$, the component of its
 complement whose closure lies in $C_{i-1}$ cannot be the core side, since
 that core meets $\operatorname{Fr}(C_{i-1})$.  It would therefore contain
 the neck end of $C_i$ while having only one boundary sphere, contradicting
@@ -869,7 +1232,7 @@ In the remaining case $S_i'$ crosses $N_{i-1}$.
 By \ref{prop:overlapping-epsilon-necks}, the cylinder directions almost
 agree or almost oppose.  Separation forces the agreeing orientation, so
 the central sphere of $N_i$ lies beyond the positive end of $N_{i-1}$.
-The same neck-width estimate gives the displayed increase.  Thus every
+  The same comparison lemma gives the displayed increase.  Thus every
 noncontradictory step raises the distance to the complement by a fixed
 positive amount.  But \ref{def:canonical-cap} bounds
 $\operatorname{diam}(C_i)$ by $CQ_0^{-1/2}$.  This is impossible for
@@ -879,6 +1242,7 @@ arbitrarily large $i$.
 \begin{lemma}[An isotopic cap-gluing sphere determines a component]
 \label{lem:isotopic-cap-gluing-sphere}
 \dcref{MT:app:A.24}
+\source{morgan-tian}
 \notready
 Let $X\subset M$ be connected.  Let $\widetilde C$ be a cap or a finite
 capped tube containing a point of $X$, and let $C'$ be a
@@ -907,6 +1271,7 @@ of $X$ in it.
 \begin{lemma}[Adjacent canonical caps form an ambient component]
 \label{lem:adjacent-canonical-caps-form-component}
 \dcref{MT:app:A.23}
+\source{morgan-tian}
 \notready
 Let $X\subset M$ be connected, and let $\widetilde C$ be obtained from a
 $(C,\epsilon)$-cap $C_0$ by adjoining a finite balanced chain to its neck
@@ -940,12 +1305,113 @@ then supplies that half-neck as well, forcing $C_0\subset C'$, a
 contradiction.  These cases are exhaustive.
 \end{proof}
 
+\begin{lemma}[Frontier localization for a capped finite neck chain]
+\label{lem:capped-chain-exposed-frontier}
+\dcref{MT:app:A.17,MT:app:A.21}
+\source{morgan-tian}
+\uses{def:canonical-cap,def:balanced-neck-chain,
+  lem:neck-chain-product,prop:overlapping-epsilon-necks,
+  lem:balanced-neck-chain-extension}
+\notready
+Let $C_0$ be a $(C,\epsilon)$-cap and let
+$N_a,\ldots,N_b$ be a finite balanced chain whose negative end is attached to
+$C_0$, with the positive end of $N_b$ the only uncapped end.  More precisely,
+after the cap orientation of \ref{def:canonical-cap} is fixed, assume that
+$E_{N_a}^-\subset C_0$ and that all other cap/neck intersections are the
+overlaps in \ref{def:balanced-neck-chain}.  Assume that
+\[
+U=\overline{C_0\cup N_a\cup\cdots\cup N_b}
+\]
+is compact.  Then every point of
+$\operatorname{Fr}_M(U)$ lies in the exposed positive-end region of $N_b$.
+Consequently, if such a frontier point is the center of an
+$\epsilon$-neck, that neck can be axially oriented to extend the chain.
+\end{lemma}
+
+\begin{proof}
+The neck-chain product lemma identifies the union of the overlapping necks
+with $S^2\times I$ and shows that its only frontier components are the two
+axial end fibers.  The negative end fiber is contained in the cap core by the
+attachment hypothesis, so it is not in the frontier of the capped union.
+Thus every ambient frontier point lies at the positive end of $N_b$.  The
+overlap proposition compares any neck centered there with $N_b$, and the
+balanced-chain extension lemma supplies the orientation and the new chain
+conditions.  This is the exposed-end localization used in Appendix~A.21.
+\end{proof}
+
+\begin{lemma}[Finite cap-chain frontier dichotomy]
+\label{lem:finite-cap-chain-frontier-dichotomy}
+\dcref{MT:app:A.21}
+\source{morgan-tian}
+\uses{def:canonical-neck-cap-regions,def:balanced-neck-chain,
+  prop:overlapping-epsilon-necks,lem:capped-chain-exposed-frontier}
+\notready
+Let $X$ be connected and let $U$ be the compact closure of a connected union
+of one $(C,\epsilon)$-cap and a finite balanced chain of $\epsilon$-necks,
+attached at the negative end with only the positive end exposed as in
+\ref{lem:capped-chain-exposed-frontier}.
+Assume $X\cap\operatorname{int}U\ne\varnothing$ and
+$X\cap(M\setminus\overline U)\ne\varnothing$, and every point of
+$X\setminus\operatorname{int}U$ is either an $\epsilon$-neck center or lies in
+the core of a $(C,\epsilon)$-cap.  If $X\not\subset U$, then
+$X\cap\operatorname{Fr}_M(U)$ contains either a neck center whose neck extends
+the balanced chain or a point in the core of a second cap.
+\end{lemma}
+
+\begin{proof}
+If $X$ meets both $\operatorname{int}U$ and $M\setminus U$, then a connected
+set cannot avoid $\operatorname{Fr}_M(U)$: otherwise its intersections with
+$\operatorname{int}U$ and with $M\setminus\overline U$ would be a separation
+of $X$.  Thus $X\cap\operatorname{Fr}_M(U)\ne\varnothing$.  By the
+covering hypothesis it is either a neck center or belongs to a cap core.  In
+the neck case, \ref{lem:capped-chain-exposed-frontier} localizes the frontier
+point to the positive end of the last neck and supplies the overlap and
+balanced extension.  In the cap case it is, by definition, a distinct second
+cap core meeting the frontier.  The
+two cases are exhaustive.  This is the finite-chain frontier step in
+Morgan--Tian Appendix A.21, stated without assuming the classification
+conclusion.
+\end{proof}
+
+\begin{lemma}[Maximal cap selection along a connected covered set]
+\label{lem:maximal-cap-selection}
+\dcref{MT:app:A.21,MT:app:A.22,MT:app:A.23}
+\source{morgan-tian}
+\uses{def:canonical-cap,lem:no-infinite-nested-canonical-caps,
+  lem:finite-cap-chain-frontier-dichotomy,prop:overlapping-epsilon-necks,
+  lem:adjacent-canonical-caps-form-component}
+\notready
+Let $X$ be connected and suppose every point of $X$ is a neck center or lies
+in a $(C,\epsilon)$-cap core.  If $X$ meets a cap core, then there is a cap
+$C_0$ meeting $X$ such that no finite balanced neck extension from $C_0$ has a
+frontier point of $X$ in the core of a strictly larger cap.  The choice is
+made along the ordered cap/neck incidence relation; it is not an arbitrary
+maximal element of an unproved partial order.
+\end{lemma}
+
+\begin{proof}
+Start with any cap whose core meets $X$ and follow only extensions through a
+frontier point of $X$.  The overlap proposition gives a unique axial
+orientation for each extension, so the extensions form a nested chain.  An
+infinite sequence of strict enlargements would be the nested-cap chain
+excluded by \ref{lem:no-infinite-nested-canonical-caps}; hence the extension
+process stops after finitely many steps.  At its terminal cap, the finite-cap
+frontier dichotomy says that every remaining frontier point is either a neck
+center (which would extend the chain) or a distinct second-cap point $C'$.
+If $C_0\subseteq C'$, then $C'$ is a strictly larger cap reachable by the same
+frontier extension, contradicting terminality.  Hence $C_0\nsubseteq C'$ and
+\ref{lem:adjacent-canonical-caps-form-component} applies.  This is exactly the
+stated maximal selection and is the cap-selection step in Appendix~A.21.
+\end{proof}
+
 \begin{theorem}[Connected sets covered by canonical cap cores and neck centers]
 \label{thm:cap-and-neck-cover-classification}
 \dcref{MT:app:A.21}
+\source{morgan-tian}
 \notready
 For every $C<\infty$ and all sufficiently small $\epsilon>0$, let $X$ be
-a connected subset of a Riemannian three-manifold $M$.  Suppose every
+a connected subset of a smooth Riemannian three-manifold $M$ without
+boundary.  Suppose every
 point of $X$ is either the center of an $\epsilon$-neck or lies in the core
 of a $(C,\epsilon)$-cap.  Then at least one of the following holds:
 \begin{enumerate}
@@ -964,51 +1430,70 @@ of a $(C,\epsilon)$-cap.  Then at least one of the following holds:
 \end{theorem}
 
 \begin{proof}
-\uses{def:canonical-neck-cap-regions,lem:neck-chain-product,lem:infinite-neck-chain-frontier,thm:separating-neck-centers-form-tube,lem:no-infinite-nested-canonical-caps,lem:adjacent-canonical-caps-form-component,prop:overlapping-epsilon-necks}
-Suppose first that $x_0\in X$ lies in a cap core.  Starting with a cap
-containing $x_0$, enlarge it whenever a larger cap has core meeting the
-relevant frontier.  By
-\ref{lem:no-infinite-nested-canonical-caps}, this process reaches a cap
-$C_0$ for which no further enlargement is possible.
+\uses{def:canonical-neck-cap-regions,lem:neck-chain-product,lem:balanced-neck-chain-extension,lem:infinite-neck-chain-frontier,lem:finite-cap-chain-frontier-dichotomy,thm:separating-neck-centers-form-tube,lem:nonseparating-neck-chain-or-bundle,lem:all-neck-component-tube-or-bundle,lem:neck-separation-type-locally-constant,lem:maximal-cap-selection,lem:adjacent-canonical-caps-form-component,prop:overlapping-epsilon-necks}
+We first treat the case in which some $x_0\in X$ lies in the core of a cap.
+Choose a cap $C_0$ containing $x_0$ using the ordered maximal-cap contract
+\ref{lem:maximal-cap-selection}; this choice is not an appeal to an
+unproved global maximality principle.  We now follow the component
+of $X$ starting at $C_0$, keeping the cap orientation fixed so that the
+negative end points toward its core.
 
-If $X$ misses the frontier of $C_0$, connectedness puts $X$ in $C_0$,
-giving alternative (3).  If the frontier points of $X$ are neck centers,
-adjoin a balanced chain.  A finite chain which stops, or a chain with an
-infinite end, forms with $C_0$ a capped tube containing $X$ by
-\ref{lem:infinite-neck-chain-frontier}; this is alternative (4).
+There are three mutually exclusive possibilities.  If $X$ is disjoint from
+$\operatorname{Fr}_M(C_0)$, then the connected set $X$, which meets $C_0$,
+is contained in $C_0$; this is alternative (3).  Otherwise suppose every
+point of $X\cap\operatorname{Fr}_M(C_0)$ is a neck center.  At a frontier
+point of the positive end, the overlap proposition and the balanced-chain
+extension lemma adjoin a neck (after reversing its axial coordinate if
+necessary).  Iterating produces a finite or infinite balanced chain
+  $N_1,N_2,\ldots$ attached to $C_0$.  A finite chain which stops contains
+  $X$, by \ref{lem:finite-cap-chain-frontier-dichotomy}: a frontier neck would
+  extend the chain, while a frontier cap is the second-cap case below.  If one end
+is infinite, \ref{lem:infinite-neck-chain-frontier} says that this end has no
+frontier; if the finite end cannot be extended, connectedness again puts all
+of $X$ in the capped chain.  If both ends are infinite, the same lemma says
+that the chain is an ambient component.  In every subcase the product lemma
+identifies the neck union with $S^2\times(0,1)$, so we obtain alternative
+(4).
 
-The remaining possibility is that a cap $C'$ has core meeting the frontier
-of the capped chain.  Maximality of $C_0$ gives $C_0\nsubseteq C'$, so
-\ref{lem:adjacent-canonical-caps-form-component} shows that the union is
-an entire component containing $X$.  The product structure from
-\ref{lem:neck-chain-product} reduces its topology to gluing two cap cores
-along a two-sphere.  Each core is a three-ball or a punctured
-$\mathbb{RP}^3$, so the result is $S^3$, $\mathbb{RP}^3$, or
-$\mathbb{RP}^3\#\mathbb{RP}^3$.  According as the intervening neck chain
-is absorbed into the two cap descriptions or retained, this gives
-alternative (1) or (2).
+It remains that a point of $X\cap\operatorname{Fr}_M(C_0)$ lies in the core
+of another cap.  During the preceding extension, take the finite terminal
+chain whose frontier contains that point (an infinite end cannot contribute a
+frontier point).  Call the resulting capped tube $\widetilde C$ and the
+second cap $C'$.  Maximality of $C_0$ gives $C_0\nsubseteq C'$, so
+\ref{lem:adjacent-canonical-caps-form-component} shows that
+$\widetilde C\cup C'$ is an entire component of $M$ containing $X$.
+The intervening necks have product structure by
+\ref{lem:neck-chain-product}; consequently this component is obtained by
+gluing the compact core of $C_0$ to the compact core of $C'$ along one
+two-sphere.  Each compact core is either a $3$-ball or
+$\mathbb{RP}^3\setminus\operatorname{int}(B^3)$.  The four possible
+gluings therefore reduce to $S^3$, $\mathbb{RP}^3$, and
+$\mathbb{RP}^3\#\mathbb{RP}^3$.  Keeping the intervening product as a tube
+gives alternative (2), while absorbing it into the two cap descriptions
+gives alternative (1).
 
-Now suppose every point of $X$ is a neck center.  If all central spheres
-separate $M$, \ref{thm:separating-neck-centers-form-tube} gives
-alternative (5).  Otherwise extend a balanced chain of necks centered on
-$X$.  A chain which terminates or has an infinite product end contains
-$X$, by \ref{lem:infinite-neck-chain-frontier}, and gives (5).  The only
-remaining case is that a finite chain returns to its first end.
-By \ref{prop:overlapping-epsilon-necks}, the returning overlap closes the
-sphere product, directly or after lifting to the universal cover.  The deck
-transformation preserves the isotopy classes of the cross-sectional
-spheres, so the component is an $S^2$-bundle over $S^1$ covered by necks.
-This is alternative (6).
+Finally assume that every point of $X$ is a neck center.  By
+\ref{lem:neck-separation-type-locally-constant}, the central spheres are
+either all separating or all nonseparating.  In the separating case,
+\ref{thm:separating-neck-centers-form-tube} supplies a balanced chain whose
+union contains $X$, giving alternative (5).  In the nonseparating case,
+  \ref{lem:all-neck-component-tube-or-bundle} gives either the same product
+  tube (again alternative (5)) or an $S^2$-bundle over $S^1$ (alternative
+  (6)).  These cases exhaust the cap and neck hypotheses.
 \end{proof}
 
 \begin{theorem}[Topology of a manifold covered by canonical caps and necks]
 \label{thm:canonical-neck-cap-topology}
 \dcref{MT:app:A.25}
+\source{morgan-tian}
 \notready
-Let $(M,g)$ be a connected Riemannian three-manifold.  For fixed
+Let $(M,g)$ be a connected smooth Riemannian three-manifold without boundary.
+For fixed
 $C<\infty$ and sufficiently small $\epsilon>0$, suppose each point of
 $M$ is either the center of an $\epsilon$-neck or belongs to the core of a
-$(C,\epsilon)$-cap.  Exactly one of the following types occurs:
+$(C,\epsilon)$-cap.  At least one of the following source alternatives
+occurs (their displayed diffeomorphism types are separated by compactness
+and end structure):
 \begin{enumerate}
 \item $M$ is diffeomorphic to $S^3$, $\mathbb{RP}^3$, or
       $\mathbb{RP}^3\#\mathbb{RP}^3$, and is the union of two caps or a
