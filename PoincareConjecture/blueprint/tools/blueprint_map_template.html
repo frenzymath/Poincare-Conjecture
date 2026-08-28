@@ -16,6 +16,22 @@
       --green: #28845e;
       --amber: #ba6d18;
       --gray: #9aa7b7;
+      --layer-in-1: #dc2626;
+      --layer-in-2: #ea580c;
+      --layer-in-3: #ca8a04;
+      --layer-in-4: #65a30d;
+      --layer-in-5: #0f766e;
+      --layer-in-6: #2563eb;
+      --layer-in-7: #4f46e5;
+      --layer-in-8: #7c3aed;
+      --layer-out-1: #0f766e;
+      --layer-out-2: #0891b2;
+      --layer-out-3: #2563eb;
+      --layer-out-4: #4f46e5;
+      --layer-out-5: #7c3aed;
+      --layer-out-6: #a21caf;
+      --layer-out-7: #be185d;
+      --layer-out-8: #9f1239;
       --shadow: 0 12px 28px rgba(30, 48, 75, .08);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--ink);
@@ -57,8 +73,29 @@
     .legend-ok { background: var(--green); }
     .legend-pending { background: var(--gray); }
     .legend-sorry { background: var(--amber); }
-    .legend-in { background: #6b46c1; }
-    .legend-out { background: #0f766e; }
+    .map-depth-legend { gap: 7px; }
+    .layer-legend-label { color: #43556f; font-weight: 750; }
+    .layer-legend-group { display: inline-flex; align-items: center; gap: 3px; }
+    .layer-legend-direction { margin-right: 1px; font-weight: 800; }
+    .layer-legend-direction.in { color: #9f1239; }
+    .layer-legend-direction.out { color: #0f766e; }
+    .layer-swatch { width: 17px; height: 17px; display: inline-grid; place-items: center; border: 1px solid var(--layer-color); border-radius: 50%; background: color-mix(in srgb, var(--layer-color) 13%, #fff); color: var(--layer-color); font-size: 8px; font-weight: 800; line-height: 1; }
+    .layer-in-1 { --layer-color: var(--layer-in-1); }
+    .layer-in-2 { --layer-color: var(--layer-in-2); }
+    .layer-in-3 { --layer-color: var(--layer-in-3); }
+    .layer-in-4 { --layer-color: var(--layer-in-4); }
+    .layer-in-5 { --layer-color: var(--layer-in-5); }
+    .layer-in-6 { --layer-color: var(--layer-in-6); }
+    .layer-in-7 { --layer-color: var(--layer-in-7); }
+    .layer-in-8 { --layer-color: var(--layer-in-8); }
+    .layer-out-1 { --layer-color: var(--layer-out-1); }
+    .layer-out-2 { --layer-color: var(--layer-out-2); }
+    .layer-out-3 { --layer-color: var(--layer-out-3); }
+    .layer-out-4 { --layer-color: var(--layer-out-4); }
+    .layer-out-5 { --layer-color: var(--layer-out-5); }
+    .layer-out-6 { --layer-color: var(--layer-out-6); }
+    .layer-out-7 { --layer-color: var(--layer-out-7); }
+    .layer-out-8 { --layer-color: var(--layer-out-8); }
     .map-viewport { position: relative; flex: 1; overflow: auto; cursor: grab; overscroll-behavior: contain; }
     .map-viewport.dragging { cursor: grabbing; user-select: none; }
     .map-scene { position: relative; min-width: 100%; min-height: 100%; }
@@ -95,9 +132,11 @@
     .node-card[data-status="lean_ok"] { --node-border: #28845e; --node-fill: #e6f4ec; --node-text: #175c40; }
     .node-card[data-status="sorry"] { --node-border: #ba6d18; --node-fill: #fff1df; --node-text: #82470c; }
     .node-card.selected { border-color: #2c5b9f; box-shadow: 0 0 0 2px rgba(53,104,184,.28), 0 4px 12px rgba(38,82,144,.17); }
-    .node-card.layer-dep:not(.selected) { box-shadow: 0 0 0 2px color-mix(in srgb, #6b46c1 calc(var(--layer-strength, 70) * 1%), transparent); }
-    .node-card.layer-use:not(.selected) { box-shadow: 0 0 0 2px color-mix(in srgb, #0f766e calc(var(--layer-strength, 70) * 1%), transparent); }
-    .node-card.layer-dep.layer-use:not(.selected) { box-shadow: 0 0 0 2px color-mix(in srgb, #6b46c1 45%, #0f766e); }
+    .node-card.layer-active:not(.selected) { border-color: color-mix(in srgb, var(--layer-color) 76%, var(--node-border)); border-left-color: var(--layer-color); background: color-mix(in srgb, var(--node-fill) 86%, var(--layer-color)); box-shadow: 0 0 0 2px color-mix(in srgb, var(--layer-color) calc(var(--layer-strength, 70) * 1%), transparent), 0 3px 8px color-mix(in srgb, var(--layer-color) 16%, transparent); }
+    .node-card.layer-active:not(.selected)::before { content: ""; position: absolute; left: -4px; top: 5px; bottom: 5px; width: 4px; border-radius: 0 3px 3px 0; background: var(--layer-color); opacity: .92; }
+    .node-card.layer-active .node-title { padding-right: 43px; }
+    .node-depth-badge { display: none; position: absolute; top: 5px; right: 35px; min-width: 32px; padding: 2px 4px; border: 1px solid color-mix(in srgb, var(--layer-color) 72%, #fff); border-radius: 4px; background: color-mix(in srgb, var(--layer-color) 12%, #fff); color: var(--layer-color); font-size: 8px; font-weight: 850; line-height: 1.1; text-align: center; }
+    .node-card.layer-active .node-depth-badge { display: inline-block; }
     .node-card:focus-visible { outline: 2px solid #2c5b9f; outline-offset: 2px; }
     .node-card.dim { opacity: .17; }
     .node-card.match { border-color: #2c5b9f; box-shadow: 0 0 0 2px rgba(53,104,184,.17); }
@@ -162,6 +201,8 @@
         <option value="2">2 layers</option>
         <option value="3" selected>3 layers</option>
         <option value="4">4 layers</option>
+        <option value="5">5 layers</option>
+        <option value="6">6 layers</option>
         <option value="all">All layers</option>
       </select>
       <button class="map-control map-button" id="map-close" type="button" title="Return to the blueprint" aria-label="Return to the blueprint">×</button>
@@ -171,8 +212,11 @@
         <span><i class="legend-dot legend-ok"></i>Lean</span>
         <span><i class="legend-dot legend-pending"></i>open</span>
         <span><i class="legend-dot legend-sorry"></i>sorry</span>
-        <span><i class="legend-dot legend-in"></i>in</span>
-        <span><i class="legend-dot legend-out"></i>out</span>
+      </div>
+      <div class="map-legend map-depth-legend" aria-label="Dependency depth legend">
+        <span class="layer-legend-label">depth</span>
+        <span class="layer-legend-group"><span class="layer-legend-direction in">in</span><i class="layer-swatch layer-in-1">1</i><i class="layer-swatch layer-in-2">2</i><i class="layer-swatch layer-in-3">3</i><i class="layer-swatch layer-in-4">4</i><i class="layer-swatch layer-in-5">5</i><i class="layer-swatch layer-in-6">6</i><i class="layer-swatch layer-in-7">7</i><i class="layer-swatch layer-in-8">8+</i></span>
+        <span class="layer-legend-group"><span class="layer-legend-direction out">out</span><i class="layer-swatch layer-out-1">1</i><i class="layer-swatch layer-out-2">2</i><i class="layer-swatch layer-out-3">3</i><i class="layer-swatch layer-out-4">4</i><i class="layer-swatch layer-out-5">5</i><i class="layer-swatch layer-out-6">6</i><i class="layer-swatch layer-out-7">7</i><i class="layer-swatch layer-out-8">8+</i></span>
       </div>
     </header>
     <section class="map-viewport" id="map-viewport" aria-label="Blueprint dependency map">
@@ -241,6 +285,14 @@
     }[char]));
     const statusLabel = (value) => ({ lean_ok: "Lean OK", mathlib_ok: "Mathlib OK", sorry: "Sorry", empty: "Open" }[value] || value || "Open");
     const chapterColor = (index) => ["#3868ad", "#7556a8", "#35865a", "#b87923", "#2d8580"][index % 5];
+    const layerPalettes = {
+      incoming: ["#dc2626", "#ea580c", "#ca8a04", "#65a30d", "#0f766e", "#2563eb", "#4f46e5", "#7c3aed"],
+      outgoing: ["#0f766e", "#0891b2", "#2563eb", "#4f46e5", "#7c3aed", "#a21caf", "#be185d", "#9f1239"],
+    };
+    const layerColor = (relation, level) => {
+      const palette = layerPalettes[relation] || layerPalettes.incoming;
+      return palette[Math.min(Math.max(level, 1), palette.length) - 1];
+    };
     // Curated milestones from blueprint/important-statements.yaml (embedded at build).
     const importantLabels = new Set(DATA.important_labels || []);
     const importantNode = (node) => importantLabels.size ? importantLabels.has(node?.label) : true;
@@ -310,17 +362,22 @@
       visit(downstream, "out");
       return { levels, dirs };
     }
-    function layerOpacity(level, maxDepth) {
-      const span = Number.isFinite(maxDepth) && maxDepth > 1 ? maxDepth : 4;
+    function layerSpan(maxDepth, levels) {
+      if (Number.isFinite(maxDepth)) return Math.max(1, maxDepth);
+      const observed = [...levels.values()];
+      return Math.max(1, ...observed);
+    }
+    function layerOpacity(level, maxDepth, levels) {
+      const span = layerSpan(maxDepth, levels);
       if (span <= 1 || level <= 1) return 1;
       const t = Math.max(0, Math.min(1, (level - 1) / Math.max(1, span - 1)));
-      return Math.max(0.28, 1 - t * 0.62);
+      return Math.max(0.42, 1 - t * 0.54);
     }
-    function layerStrength(level, maxDepth) {
-      const span = Number.isFinite(maxDepth) && maxDepth > 1 ? maxDepth : 4;
+    function layerStrength(level, maxDepth, levels) {
+      const span = layerSpan(maxDepth, levels);
       if (span <= 1 || level <= 1) return 80;
       const t = Math.max(0, Math.min(1, (level - 1) / Math.max(1, span - 1)));
-      return Math.round(85 - t * 45);
+      return Math.round(92 - t * 38);
     }
     function focusEdgeStyle(edge, focusedId, levels, dirs) {
       const fromLevel = levels.get(edge.from);
@@ -339,7 +396,7 @@
       } else {
         relation = "incoming";
       }
-      const color = relation === "incoming" ? "#6b46c1" : "#0f766e";
+      const color = layerColor(relation, edgeLevel);
       return { relation, color, edgeLevel };
     }
 
@@ -373,7 +430,7 @@
             card.dataset.chapter = chapter.title;
             card.dataset.status = node.status;
             card.dataset.search = `${node.title} ${node.label} ${node.kind}`.toLowerCase();
-            card.innerHTML = `<span class="node-title">${escapeHtml(node.display_title || node.title)}</span><button class="node-preview-toggle" type="button" title="Show statement preview" aria-label="Show statement preview" aria-expanded="false">›</button>`;
+            card.innerHTML = `<span class="node-title">${escapeHtml(node.display_title || node.title)}</span><span class="node-depth-badge" aria-hidden="true"></span><button class="node-preview-toggle" type="button" title="Show statement preview" aria-label="Show statement preview" aria-expanded="false">›</button>`;
             card.addEventListener("click", () => selectNode(node.id));
             card.addEventListener("keydown", (event) => {
               if (event.target !== card || event.key !== "Enter" && event.key !== " ") return;
@@ -474,9 +531,11 @@
         }
         const focusStyle = focusedId ? focusEdgeStyle(edge, focusedId, levels, dirs) : null;
         if (focusStyle) {
-          const opacity = layerOpacity(focusStyle.edgeLevel, maxDepth);
+          const opacity = layerOpacity(focusStyle.edgeLevel, maxDepth, levels);
           const focusPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
           focusPath.classList.add("edge-path", "edge-focus", `edge-${focusStyle.relation}`);
+          focusPath.dataset.layer = String(focusStyle.edgeLevel);
+          focusPath.dataset.relation = focusStyle.relation;
           focusPath.setAttribute("d", pathData);
           focusPath.setAttribute("stroke", focusStyle.color);
           focusPath.setAttribute("stroke-opacity", String(opacity));
@@ -527,9 +586,23 @@
         card.style.visibility = hideForDepth ? "hidden" : "";
         card.style.pointerEvents = hideForDepth ? "none" : "";
         card.classList.toggle("dim", hideForDepth || !filterMatch);
+        const layerActive = !!focusedId && level != null && level > 0 && !hideForDepth;
+        const depthBadge = card.querySelector(".node-depth-badge");
+        card.classList.toggle("layer-active", layerActive);
+        if (layerActive) {
+          const relation = dir === "out" ? "outgoing" : "incoming";
+          const color = layerColor(relation, level);
+          depthBadge.textContent = `${dir === "out" ? "out" : "in"} ${level}`;
+          depthBadge.title = `${dir === "out" ? "Downstream" : "Prerequisite"}, layer ${level}`;
+          card.style.setProperty("--layer-color", color);
+        } else {
+          depthBadge.textContent = "";
+          depthBadge.removeAttribute("title");
+          card.style.removeProperty("--layer-color");
+        }
         if (level != null && level > 0 && filterMatch && !hideForDepth) {
-          card.style.setProperty("--layer-strength", String(layerStrength(level, maxDepth)));
-          card.style.opacity = String(Math.max(0.42, layerOpacity(level, maxDepth)));
+          card.style.setProperty("--layer-strength", String(layerStrength(level, maxDepth, levels)));
+          card.style.opacity = String(layerOpacity(level, maxDepth, levels));
         } else {
           card.style.removeProperty("--layer-strength");
           card.style.opacity = "";
