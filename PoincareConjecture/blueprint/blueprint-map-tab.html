@@ -132,10 +132,9 @@
     .node-card[data-status=&quot;lean_ok&quot;] { --node-border: #28845e; --node-fill: #e6f4ec; --node-text: #175c40; }
     .node-card[data-status=&quot;sorry&quot;] { --node-border: #ba6d18; --node-fill: #fff1df; --node-text: #82470c; }
     .node-card.selected { border-color: #2c5b9f; box-shadow: 0 0 0 2px rgba(53,104,184,.28), 0 4px 12px rgba(38,82,144,.17); }
-    .node-card.layer-active:not(.selected) { border-color: color-mix(in srgb, var(--layer-color) 76%, var(--node-border)); border-left-color: var(--layer-color); background: color-mix(in srgb, var(--node-fill) 86%, var(--layer-color)); box-shadow: 0 0 0 2px color-mix(in srgb, var(--layer-color) calc(var(--layer-strength, 70) * 1%), transparent), 0 3px 8px color-mix(in srgb, var(--layer-color) 16%, transparent); }
-    .node-card.layer-active:not(.selected)::before { content: &quot;&quot;; position: absolute; left: -4px; top: 5px; bottom: 5px; width: 4px; border-radius: 0 3px 3px 0; background: var(--layer-color); opacity: .92; }
-    .node-card.layer-active .node-title { padding-right: 43px; }
-    .node-depth-badge { display: none; position: absolute; top: 5px; right: 35px; min-width: 32px; padding: 2px 4px; border: 1px solid color-mix(in srgb, var(--layer-color) 72%, #fff); border-radius: 4px; background: color-mix(in srgb, var(--layer-color) 12%, #fff); color: var(--layer-color); font-size: 8px; font-weight: 850; line-height: 1.1; text-align: center; }
+    .node-card.layer-active .node-title { padding-right: 58px; }
+    /* Dependency depth is carried by the badge only; the node keeps its Lean status colors. */
+    .node-depth-badge { display: none; position: absolute; top: 5px; right: 35px; min-width: 48px; padding: 2px 5px; border: 1px solid color-mix(in srgb, var(--layer-color) 72%, #fff); border-radius: 4px; background: color-mix(in srgb, var(--layer-color) 12%, #fff); color: var(--layer-color); font-size: 8px; font-weight: 850; line-height: 1.1; text-align: center; white-space: nowrap; }
     .node-card.layer-active .node-depth-badge { display: inline-block; }
     .node-card:focus-visible { outline: 2px solid #2c5b9f; outline-offset: 2px; }
     .node-card.dim { opacity: .17; }
@@ -373,12 +372,6 @@
       const t = Math.max(0, Math.min(1, (level - 1) / Math.max(1, span - 1)));
       return Math.max(0.42, 1 - t * 0.54);
     }
-    function layerStrength(level, maxDepth, levels) {
-      const span = layerSpan(maxDepth, levels);
-      if (span &lt;= 1 || level &lt;= 1) return 80;
-      const t = Math.max(0, Math.min(1, (level - 1) / Math.max(1, span - 1)));
-      return Math.round(92 - t * 38);
-    }
     function focusEdgeStyle(edge, focusedId, levels, dirs) {
       const fromLevel = levels.get(edge.from);
       const toLevel = levels.get(edge.to);
@@ -592,20 +585,13 @@
         if (layerActive) {
           const relation = dir === &quot;out&quot; ? &quot;outgoing&quot; : &quot;incoming&quot;;
           const color = layerColor(relation, level);
-          depthBadge.textContent = `${dir === &quot;out&quot; ? &quot;out&quot; : &quot;in&quot;} ${level}`;
+          depthBadge.textContent = dir === &quot;out&quot; ? `${level} out →` : `← ${level} in`;
           depthBadge.title = `${dir === &quot;out&quot; ? &quot;Downstream&quot; : &quot;Prerequisite&quot;}, layer ${level}`;
           card.style.setProperty(&quot;--layer-color&quot;, color);
         } else {
           depthBadge.textContent = &quot;&quot;;
           depthBadge.removeAttribute(&quot;title&quot;);
           card.style.removeProperty(&quot;--layer-color&quot;);
-        }
-        if (level != null &amp;&amp; level &gt; 0 &amp;&amp; filterMatch &amp;&amp; !hideForDepth) {
-          card.style.setProperty(&quot;--layer-strength&quot;, String(layerStrength(level, maxDepth, levels)));
-          card.style.opacity = String(layerOpacity(level, maxDepth, levels));
-        } else {
-          card.style.removeProperty(&quot;--layer-strength&quot;);
-          card.style.opacity = &quot;&quot;;
         }
         if (filterMatch &amp;&amp; !hideForDepth) visible += 1;
         if (node) card.setAttribute(&quot;aria-label&quot;, `${node.title}, ${statusLabel(node.status)}`);
