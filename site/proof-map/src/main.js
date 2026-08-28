@@ -5,23 +5,6 @@ import { edges, nodes, stages, theoremHref } from "./proof-data.js";
 const appRoot = document.querySelector("#app");
 const nodeById = new Map(nodes.map((node) => [node.id, node]));
 const stageById = new Map(stages.map((stage) => [stage.id, stage]));
-const dependencyParents = new Map(nodes.map((node) => [node.id, []]));
-
-edges.forEach((edge) => dependencyParents.get(edge.to)?.push(edge.from));
-
-function longestDependencyDepth(nodeId, visited = new Set()) {
-  if (visited.has(nodeId)) return 0;
-  const nextVisited = new Set(visited);
-  nextVisited.add(nodeId);
-  return Math.max(
-    0,
-    ...(dependencyParents.get(nodeId) ?? []).map((parentId) =>
-      1 + longestDependencyDepth(parentId, nextVisited),
-    ),
-  );
-}
-
-const dependencyDepthLimit = Math.max(1, ...nodes.map((node) => longestDependencyDepth(node.id)));
 
 function escapeHtml(value) {
   return String(value)
@@ -77,14 +60,6 @@ const stageMarkup = stages
   })
   .join("");
 
-const dependencyLegend = Array.from({ length: dependencyDepthLimit }, (_, index) => {
-  const depth = index + 1;
-  return `
-    <span class="dependency-legend-item" data-depth="${depth}" title="${depth} prerequisite layer${depth === 1 ? "" : "s"}">
-      <span class="dependency-swatch" aria-hidden="true">${depth}</span>
-    </span>`;
-}).join("");
-
 appRoot.innerHTML = `
   <main class="proof-app">
     <header class="proof-header">
@@ -93,13 +68,7 @@ appRoot.innerHTML = `
       <p>From metric evolution to singularity models, controlled surgery, extinction, and the topological conclusion.</p>
     </header>
 
-    <div class="map-summary">
-      <span><strong>${nodes.length} steps</strong> across ${stages.length} stages</span>
-      <div class="dependency-legend" aria-label="Prerequisite depth">
-        <span class="dependency-legend-label">Prerequisite depth</span>
-        <span class="dependency-legend-items">${dependencyLegend}</span>
-      </div>
-    </div>
+    <div class="map-summary"><strong>${nodes.length} steps</strong> across ${stages.length} stages</div>
 
     <div class="proof-map" aria-label="Dependency map for the proof">
       <svg class="edge-layer" aria-hidden="true">
@@ -193,47 +162,6 @@ function stageIndex(nodeId) {
   return stages.findIndex((stage) => stage.id === nodeById.get(nodeId)?.stage);
 }
 
-function dependencyDepths(nodeId) {
-  const depths = new Map();
-  const queue = [{ id: nodeId, depth: 0 }];
-
-  while (queue.length > 0) {
-    const { id, depth } = queue.shift();
-    if (depth >= dependencyDepthLimit) continue;
-
-    dependencyParents.get(id)?.forEach((parentId) => {
-      const parentDepth = depth + 1;
-      const previousDepth = depths.get(parentId);
-      if (previousDepth !== undefined && previousDepth <= parentDepth) return;
-      depths.set(parentId, parentDepth);
-      queue.push({ id: parentId, depth: parentDepth });
-    });
-  }
-
-  return depths;
-}
-
-function clearDependencyState() {
-  nodeElements.forEach((element) => {
-    element.classList.remove("is-ancestor");
-    element.removeAttribute("data-dependency-depth");
-  });
-}
-
-function applyDependencyState() {
-  clearDependencyState();
-  if (!selectedId) return new Map();
-
-  const depths = dependencyDepths(selectedId);
-  depths.forEach((depth, nodeId) => {
-    const element = nodeElements.get(nodeId);
-    if (!element) return;
-    element.classList.add("is-ancestor");
-    element.dataset.dependencyDepth = String(depth);
-  });
-  return depths;
-}
-
 function usesSideChannel(edge) {
   const fromStageIndex = stageIndex(edge.from);
   const toStageIndex = stageIndex(edge.to);
@@ -294,7 +222,6 @@ function drawEdges() {
     const height = proofMap.clientHeight;
     edgeSvg.setAttribute("viewBox", `0 0 ${width} ${height}`);
 
-    const selectedDependencies = selectedId ? dependencyDepths(selectedId) : new Map();
     edges.forEach((edge, index) => {
       const path = svgElement("path", {
         d: pathForEdge(edge, index, mapRect),
@@ -303,19 +230,7 @@ function drawEdges() {
         "data-to": edge.to,
         "marker-end": "url(#arrowhead)",
       });
-      const sourceDepth = selectedDependencies.get(edge.from);
-      const targetDepth = selectedDependencies.get(edge.to);
-      const isDependencyEdge = Boolean(
-        selectedId &&
-          sourceDepth !== undefined &&
-          (edge.to === selectedId || targetDepth !== undefined),
-      );
-
-      if (isDependencyEdge) {
-        const depth = sourceDepth;
-        path.classList.add("is-dependency", `is-dependency-depth-${depth}`);
-        path.dataset.dependencyDepth = String(depth);
-      } else if (selectedId && edge.from !== selectedId && edge.to !== selectedId) {
+      if (selectedId && edge.from !== selectedId && edge.to !== selectedId) {
         path.classList.add("is-muted");
       }
       if (selectedId && (edge.from === selectedId || edge.to === selectedId)) {
@@ -402,7 +317,6 @@ function selectNode(id) {
   }
 
   selectedId = id;
-  applyDependencyState();
   nodeElements.forEach((element, nodeId) => {
     const selected = nodeId === id;
     element.classList.toggle("is-selected", selected);
@@ -420,7 +334,6 @@ function selectNode(id) {
 function clearSelection({ restoreFocus = false } = {}) {
   const previous = selectedId;
   selectedId = null;
-  applyDependencyState();
   disposeInteractiveFigure();
   detail.hidden = true;
   nodeElements.forEach((element) => {
