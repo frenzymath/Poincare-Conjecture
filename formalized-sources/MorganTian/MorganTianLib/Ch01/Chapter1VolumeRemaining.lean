@@ -14,7 +14,7 @@ that a sphere atlas or a global normal-ball theorem has been formalized.
 
 The Rauch statement is the vector Sturm comparison in its natural form. The
 last section gives the algebraic block model for a cone curvature operator and
-the radial model-volume identity. The global injectivity-radius/volume
+the abstract radial chart-integral identity. The global injectivity-radius/volume
 theorems require additional manifold measure and Cheeger--Gromov--Taylor
 infrastructure and are therefore not asserted here.
 -/
@@ -276,9 +276,11 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
 variable (μ : Measure E) [μ.IsAddHaarMeasure]
 
-/-- **Math.** Radial polar volume of the nonpositive-constant-curvature model.
-This is the volume consequence of `lem:model-polar-isometry`: the model ball
-volume is the spherical factor times the integral of `snK^(n-1)`.
+/-- **Math.** Abstract radial chart-integral identity for the comparison density.
+It is the spherical factor times the integral of `snK^(n-1)`. This records the
+reusable polar calculation; it does not identify `modelBallVolume` with the
+Riemannian measure of a ball in a model manifold. The geometric identification
+from `lem:model-polar-isometry` remains a separate obligation.
 -/
 theorem model_polar_volume_identity (k r : ℝ) :
     modelBallVolume μ k r =
