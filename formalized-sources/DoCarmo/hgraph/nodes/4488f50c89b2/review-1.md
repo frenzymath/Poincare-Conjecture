@@ -1,46 +1,49 @@
 ---
-author: Ezreal88
-created: '2026-07-30T11:15:07Z'
-date: '2026-07-30T11:15:07Z'
+author: JxChen24
+created: '2026-07-22T15:09:23Z'
+date: '2026-07-22T15:09:23Z'
 label: def:dc-ch3-3-3
-lean_comment: '**1. $C^r$ vs differentiable.** Same issue as `def:dc-ch3-3-1` #1.
-  do Carmo says "differentiable," the Lean uses `ContMDiffOn ... r` ($C^r$). Affects
-  `IsParametrizedSurfaceOfOrder`, `IsExtendedParametrizedSurfaceOfOrder`, and `IsVectorFieldAlong`.
-  Replace with `MDifferentiableOn` or justify the upgrade.
+lean_comment: 'def:dc-ch3-3-3` — parametrized surface
 
 
-  **2. Vertex angle on $M$ not defined.** `IsNonPiAngle` handles only $\mathbb{R}^2$
-  vectors. The manifold-level vertex angle of a piecewise differentiable curve in
-  $M$ is not defined. For Hopf-Rinow this is not blocking (corner rigidity uses length,
-  not angle). Add `-- TODO:
+  **M:** ⚠️ issue &nbsp; **L:** ⚠️ issue
 
 
-  […truncated…]'
+  ### TeX (current)
+
+
+  > **Definition (parametrized surface).** Let $A$ be a connected set in $\mathbb{R}^2$,
+  $U\subset A\subset\overline{U}$, $U$ open, such that $\partial A$ is a piecewise
+  differentiable curve with vertex angles different from $\pi$. A *parametrized surface*
+  in $M$ is a differentiable map $s:A\subset\mathbb{R}^2\to M$'
 lean_verdict: bad
 mark: problem
-maths_comment: '**1. $C^r$ vs differentiable.** Same issue as `def:dc-ch3-3-1` #1.
-  do Carmo says "differentiable," the Lean uses `ContMDiffOn ... r` ($C^r$). Affects
-  `IsParametrizedSurfaceOfOrder`, `IsExtendedParametrizedSurfaceOfOrder`, and `IsVectorFieldAlong`.
-  Replace with `MDifferentiableOn` or justify the upgrade.
+maths_comment: 'def:dc-ch3-3-3` — parametrized surface
 
 
-  **2. Vertex angle on $M$ not defined.** `IsNonPiAngle` handles only $\mathbb{R}^2$
-  vectors. The manifold-level vertex angle of a piecewise differentiable curve in
-  $M$ is not defined. For Hopf-Rinow this is not blocking (corner rigidity uses length,
-  not angle). Add `-- TODO:
+  **M:** ⚠️ issue &nbsp; **L:** ⚠️ issue
 
 
-  […truncated…]'
+  ### TeX (current)
+
+
+  > **Definition (parametrized surface).** Let $A$ be a connected set in $\mathbb{R}^2$,
+  $U\subset A\subset\overline{U}$, $U$ open, such that $\partial A$ is a piecewise
+  differentiable curve with vertex angles different from $\pi$. A *parametrized surface*
+  in $M$ is a differentiable map $s:A\subset\mathbb{R}^2\to M$'
 maths_verdict: bad
 role: human-reviewer
 scope: statement-correspondence
-source: https://github.com/frenzymath/Poincare-Conjecture/issues/9
-updated: '2026-07-30T11:15:07Z'
+source: https://github.com/frenzymath/Poincare-Conjecture/issues/6
+title: 'issue #6: def:dc-ch3-3-3'
+updated: '2026-07-22T15:09:23Z'
 ---
-**def:dc-ch3-3-3**
+**def:dc-ch3-3-3** — from issue #6: Issue on Hopf-Rinow Formalization #2
 
-**1. $C^r$ vs differentiable.** Same issue as `def:dc-ch3-3-1` #1. do Carmo says "differentiable," the Lean uses `ContMDiffOn ... r` ($C^r$). Affects `IsParametrizedSurfaceOfOrder`, `IsExtendedParametrizedSurfaceOfOrder`, and `IsVectorFieldAlong`. Replace with `MDifferentiableOn` or justify the upgrade.
+def:dc-ch3-3-3` — parametrized surface
 
-**2. Vertex angle on $M$ not defined.** `IsNonPiAngle` handles only $\mathbb{R}^2$ vectors. The manifold-level vertex angle of a piecewise differentiable curve in $M$ is not defined. For Hopf-Rinow this is not blocking (corner rigidity uses length, not angle). Add `-- TODO:
+**M:** ⚠️ issue &nbsp; **L:** ⚠️ issue
 
-[…truncated…]
+### TeX (current)
+
+> **Definition (parametrized surface).** Let $A$ be a connected set in $\mathbb{R}^2$, $U\subset A\subset\overline{U}$, $U$ open, such that $\partial A$ is a piecewise differentiable curve with vertex angles different from $\pi$. A *parametrized surface* in $M$ is a differentiable map $s:A\subset\mathbb{R}^2\to M$

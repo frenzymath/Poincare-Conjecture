@@ -1,31 +1,73 @@
 ---
-author: Ezreal88
-created: '2026-07-30T11:15:07Z'
-date: '2026-07-30T11:15:07Z'
+author: JxChen24
+created: '2026-07-22T15:09:23Z'
+date: '2026-07-22T15:09:23Z'
 label: lem:dc-ch3-3-4
-lean_comment: '**1. `c` maps into `E`, not `M`.** The theorem is about chart readings,
-  not about surfaces on the manifold.
+lean_comment: 'lem:dc-ch3-3-4` — symmetry lemma
 
 
-  **2. `D/∂v`, `D/∂u` are not defined.** The book uses intrinsic covariant derivatives;
-  the Lean uses Christoffel symbols in coordinates.
+  **M:** ✅ verified &nbsp; **L:** ⚠️ issue
 
 
-  **3. No bridge lemma.** The equivalence between chart computation and manifold covariant
-  derivative is not stated.'
+  ### TeX
+
+
+  do Carmo Ch.3 Lemma 3.4: For a symmetric connection and a parametrized surface $s:
+  A \to M$,
+
+
+  $$\frac{D}{\partial v}\frac{\partial s}{\partial u} = \frac{D}{\partial u}\frac{\partial
+  s}{\partial v}.$$
+
+
+  ### Lean (current)
+
+
+  The existing theorem `covariant_sndFDeriv_symm_of_eventually` is stated for `c :
+  (ℝ × ℝ) → E` (the chart re'
 lean_verdict: bad
-mark: partial
-maths_comment: See lean_comment / issue body.
-maths_verdict: good
+mark: problem
+maths_comment: 'lem:dc-ch3-3-4` — symmetry lemma
+
+
+  **M:** ✅ verified &nbsp; **L:** ⚠️ issue
+
+
+  ### TeX
+
+
+  do Carmo Ch.3 Lemma 3.4: For a symmetric connection and a parametrized surface $s:
+  A \to M$,
+
+
+  $$\frac{D}{\partial v}\frac{\partial s}{\partial u} = \frac{D}{\partial u}\frac{\partial
+  s}{\partial v}.$$
+
+
+  ### Lean (current)
+
+
+  The existing theorem `covariant_sndFDeriv_symm_of_eventually` is stated for `c :
+  (ℝ × ℝ) → E` (the chart re'
+maths_verdict: bad
 role: human-reviewer
 scope: statement-correspondence
-source: https://github.com/frenzymath/Poincare-Conjecture/issues/9
-updated: '2026-07-30T11:15:07Z'
+source: https://github.com/frenzymath/Poincare-Conjecture/issues/6
+title: 'issue #6: lem:dc-ch3-3-4'
+updated: '2026-07-22T15:09:23Z'
 ---
-**lem:dc-ch3-3-4**
+**lem:dc-ch3-3-4** — from issue #6: Issue on Hopf-Rinow Formalization #2
 
-**1. `c` maps into `E`, not `M`.** The theorem is about chart readings, not about surfaces on the manifold.
+lem:dc-ch3-3-4` — symmetry lemma
 
-**2. `D/∂v`, `D/∂u` are not defined.** The book uses intrinsic covariant derivatives; the Lean uses Christoffel symbols in coordinates.
+**M:** ✅ verified &nbsp; **L:** ⚠️ issue
 
-**3. No bridge lemma.** The equivalence between chart computation and manifold covariant derivative is not stated.
+### TeX
+
+do Carmo Ch.3 Lemma 3.4: For a symmetric connection and a parametrized surface $s: A \to M$,
+
+$$\frac{D}{\partial v}\frac{\partial s}{\partial u} = \frac{D}{\partial u}\frac{\partial s}{\partial v}.$$
+
+### Lean (current)
+
+The existing theorem `covariant_sndFDeriv_symm_of_eventually` is stated for `c : (ℝ × ℝ) → E` (the chart re

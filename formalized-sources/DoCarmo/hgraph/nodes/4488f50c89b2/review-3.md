@@ -1,49 +1,23 @@
 ---
 author: JxChen24
-created: '2026-07-22T15:09:23Z'
-date: '2026-07-22T15:09:23Z'
+created: '2026-08-09T03:30:43Z'
+date: '2026-08-09T03:30:43Z'
 label: def:dc-ch3-3-3
-lean_comment: 'def:dc-ch3-3-3` — parametrized surface
-
-
-  **M:** ⚠️ issue &nbsp; **L:** ⚠️ issue
-
-
-  ### TeX (current)
-
-
-  > **Definition (parametrized surface).** Let $A$ be a connected set in $\mathbb{R}^2$,
-  $U\subset A\subset\overline{U}$, $U$ open, such that $\partial A$ is a piecewise
-  differentiable curve with vertex angles different from $\pi$. A *parametrized surface*
-  in $M$ is a differentiable map $s:A\subset\mathbb{R}^2\to M$'
+lean_comment: 'def:dc-ch3-3-3` (parametrized surface) | Ch. 3, Lemma 3.4: `D/∂s (∂f/∂t)
+  = D/∂t (∂f/∂s)` for a parametrized surface `f : A → M`, with the Levi-Civita `D/dt`
+  | [`covariant_sndFDeriv_symm`](https://github.com/frenzymath/Poincare-Conjecture/blob/8ac3d5725509fbdd3d29a48d7aadd1f8ac19f409/formalized-sources/DoCarmo/DoCarmoLib/Riemannian/Geodesic/SymmetryLemma.lean#L36)
+  | The anchor is the chart-coordinate core (a sur'
 lean_verdict: bad
 mark: problem
-maths_comment: 'def:dc-ch3-3-3` — parametrized surface
-
-
-  **M:** ⚠️ issue &nbsp; **L:** ⚠️ issue
-
-
-  ### TeX (current)
-
-
-  > **Definition (parametrized surface).** Let $A$ be a connected set in $\mathbb{R}^2$,
-  $U\subset A\subset\overline{U}$, $U$ open, such that $\partial A$ is a piecewise
-  differentiable curve with vertex angles different from $\pi$. A *parametrized surface*
-  in $M$ is a differentiable map $s:A\subset\mathbb{R}^2\to M$'
-maths_verdict: bad
+maths_comment: 'Review Issues — Hopf–Rinow Formalization: connecting the covariant-derivative
+  / geodesic layer to the Levi-Civita connection'
+maths_verdict: good
 role: human-reviewer
 scope: statement-correspondence
-source: https://github.com/frenzymath/Poincare-Conjecture/issues/6
-title: 'issue #6: def:dc-ch3-3-3'
-updated: '2026-07-22T15:09:23Z'
+source: https://github.com/frenzymath/Poincare-Conjecture/issues/11
+title: 'issue #11: def:dc-ch3-3-3'
+updated: '2026-08-09T03:30:43Z'
 ---
-**def:dc-ch3-3-3** — from issue #6: Issue on Hopf-Rinow Formalization #2
+**def:dc-ch3-3-3** — from issue #11: Review Issues — Hopf–Rinow Formalization: connecting the covariant-derivative / geodesic layer to the Levi-Civita connection
 
-def:dc-ch3-3-3` — parametrized surface
-
-**M:** ⚠️ issue &nbsp; **L:** ⚠️ issue
-
-### TeX (current)
-
-> **Definition (parametrized surface).** Let $A$ be a connected set in $\mathbb{R}^2$, $U\subset A\subset\overline{U}$, $U$ open, such that $\partial A$ is a piecewise differentiable curve with vertex angles different from $\pi$. A *parametrized surface* in $M$ is a differentiable map $s:A\subset\mathbb{R}^2\to M$
+def:dc-ch3-3-3` (parametrized surface) | Ch. 3, Lemma 3.4: `D/∂s (∂f/∂t) = D/∂t (∂f/∂s)` for a parametrized surface `f : A → M`, with the Levi-Civita `D/dt` | [`covariant_sndFDeriv_symm`](https://github.com/frenzymath/Poincare-Conjecture/blob/8ac3d5725509fbdd3d29a48d7aadd1f8ac19f409/formalized-sources/DoCarmo/DoCarmoLib/Riemannian/Geodesic/SymmetryLemma.lean#L36) | The anchor is the chart-coordinate core (a sur

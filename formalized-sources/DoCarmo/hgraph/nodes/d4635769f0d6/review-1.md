@@ -1,27 +1,27 @@
 ---
 author: JxChen24
-created: '2026-08-09T03:30:43Z'
-date: '2026-08-09T03:30:43Z'
+created: '2026-07-22T15:09:23Z'
+date: '2026-07-22T15:09:23Z'
 label: def:dc-ch1-2-1
-lean_comment: "def:dc-ch1-2-1`), curves,\n  velocity, fields along curves and arc\
-  \ length (`def:dc-ch1-2-8`, `def:dc-ch1-2-9`\n  → [`DCVelocity`, `DCIsVectorFieldAlong`,\
-  \ `DCArcLength` in\n  `Manifold/DoCarmoCh1.lean`](https://github.com/frenzymath/Poincare-Conjecture/blob/8ac3d5725509fbdd3d29a48d7aadd1f8ac19f409/formalized-sources/DoCarmo/DoCarmoLib/Riemannian/Manifold/DoCarmoCh1.lean#L107)),\n\
-  \  the exponential map and geodesic co"
+lean_comment: def:dc-ch1-2-1` is a *definition* node whose `\lean{}` anchor is `Riemannian.RiemannianMetric`,
+  and that definition faithfully captures do Carmo's — the "equivalently, ⟨X,Y⟩ differentiable"
+  clause is his standard chart-independence remark about the definition, not a second
+  thing being defined. The converse is a theorem *about* the definition, so its absence
+  is a missing lemma, not an unfaithful definition. Narr
 lean_verdict: bad
 mark: problem
-maths_comment: 'Review Issues — Hopf–Rinow Formalization: connecting the covariant-derivative
-  / geodesic layer to the Levi-Civita connection'
-maths_verdict: good
+maths_comment: def:dc-ch1-2-1` is a *definition* node whose `\lean{}` anchor is `Riemannian.RiemannianMetric`,
+  and that definition faithfully captures do Carmo's — the "equivalently, ⟨X,Y⟩ differentiable"
+  clause is his standard chart-independence remark about the definition, not a second
+  thing being defined. The converse is a theorem *about* the definition, so its absence
+  is a missing lemma, not an unfaithful definition. Narr
+maths_verdict: bad
 role: human-reviewer
 scope: statement-correspondence
-source: https://github.com/frenzymath/Poincare-Conjecture/issues/11
-title: 'issue #11: def:dc-ch1-2-1'
-updated: '2026-08-09T03:30:43Z'
+source: https://github.com/frenzymath/Poincare-Conjecture/issues/6
+title: 'issue #6: def:dc-ch1-2-1'
+updated: '2026-07-22T15:09:23Z'
 ---
-**def:dc-ch1-2-1** — from issue #11: Review Issues — Hopf–Rinow Formalization: connecting the covariant-derivative / geodesic layer to the Levi-Civita connection
+**def:dc-ch1-2-1** — from issue #6: Issue on Hopf-Rinow Formalization #2
 
-def:dc-ch1-2-1`), curves,
-  velocity, fields along curves and arc length (`def:dc-ch1-2-8`, `def:dc-ch1-2-9`
-  → [`DCVelocity`, `DCIsVectorFieldAlong`, `DCArcLength` in
-  `Manifold/DoCarmoCh1.lean`](https://github.com/frenzymath/Poincare-Conjecture/blob/8ac3d5725509fbdd3d29a48d7aadd1f8ac19f409/formalized-sources/DoCarmo/DoCarmoLib/Riemannian/Manifold/DoCarmoCh1.lean#L107)),
-  the exponential map and geodesic co
+def:dc-ch1-2-1` is a *definition* node whose `\lean{}` anchor is `Riemannian.RiemannianMetric`, and that definition faithfully captures do Carmo's — the "equivalently, ⟨X,Y⟩ differentiable" clause is his standard chart-independence remark about the definition, not a second thing being defined. The converse is a theorem *about* the definition, so its absence is a missing lemma, not an unfaithful definition. Narr

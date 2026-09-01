@@ -34,4 +34,4 @@ updated: '2026-07-22T15:09:23Z'
 
 def:dc-ch3-3-1-piecewise-transport`. So the `TODO` markers would be inaccurate.
 
-Worth qualifying rather than claiming more than we have: for transport, what exists is the *definition* plus thin lemmas (`isPiecewiseParallelTransport_iff` is `Iff.rfl`). There's no existence/uniqueness theorem for transport along an arbitrary piecewise curve, and the predicate has no use sites outside its own file — the file docstring says as much. 
+Worth qualifying rather than claiming more than we have: for transport, what exists is the *definition* plus thin lemmas (`isPiecewiseParallelTransport_iff` is `Iff.rfl`). There's no existence/uniqueness theorem for transport along an arbitrary piecewise curve, and the predicate has no use sites outside its own file — the file docstring says as much.

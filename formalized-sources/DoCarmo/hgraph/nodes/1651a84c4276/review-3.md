@@ -1,73 +1,23 @@
 ---
 author: JxChen24
-created: '2026-07-22T15:09:23Z'
-date: '2026-07-22T15:09:23Z'
+created: '2026-08-09T03:30:43Z'
+date: '2026-08-09T03:30:43Z'
 label: lem:dc-ch3-3-4
-lean_comment: 'lem:dc-ch3-3-4` — symmetry lemma
-
-
-  **M:** ✅ verified &nbsp; **L:** ⚠️ issue
-
-
-  ### TeX
-
-
-  do Carmo Ch.3 Lemma 3.4: For a symmetric connection and a parametrized surface $s:
-  A \to M$,
-
-
-  $$\frac{D}{\partial v}\frac{\partial s}{\partial u} = \frac{D}{\partial u}\frac{\partial
-  s}{\partial v}.$$
-
-
-  ### Lean (current)
-
-
-  The existing theorem `covariant_sndFDeriv_symm_of_eventually` is stated for `c :
-  (ℝ × ℝ) → E` (the chart re'
+lean_comment: 'lem:dc-ch3-3-4` (symmetry lemma); `def:dc-ch3-3-3` (parametrized surface)
+  | Ch. 3, Lemma 3.4: `D/∂s (∂f/∂t) = D/∂t (∂f/∂s)` for a parametrized surface `f
+  : A → M`, with the Levi-Civita `D/dt` | [`covariant_sndFDeriv_symm`](https://github.com/frenzymath/Poincare-Conjecture/blob/8ac3d5725509fbdd3d29a48d7aadd1f8ac19f409/formalized-sources/DoCarmo/DoCarmoLib/Riemannian/Geodesic/SymmetryLemma.lean#L36)
+  | The anchor'
 lean_verdict: bad
 mark: problem
-maths_comment: 'lem:dc-ch3-3-4` — symmetry lemma
-
-
-  **M:** ✅ verified &nbsp; **L:** ⚠️ issue
-
-
-  ### TeX
-
-
-  do Carmo Ch.3 Lemma 3.4: For a symmetric connection and a parametrized surface $s:
-  A \to M$,
-
-
-  $$\frac{D}{\partial v}\frac{\partial s}{\partial u} = \frac{D}{\partial u}\frac{\partial
-  s}{\partial v}.$$
-
-
-  ### Lean (current)
-
-
-  The existing theorem `covariant_sndFDeriv_symm_of_eventually` is stated for `c :
-  (ℝ × ℝ) → E` (the chart re'
-maths_verdict: bad
+maths_comment: 'Review Issues — Hopf–Rinow Formalization: connecting the covariant-derivative
+  / geodesic layer to the Levi-Civita connection'
+maths_verdict: good
 role: human-reviewer
 scope: statement-correspondence
-source: https://github.com/frenzymath/Poincare-Conjecture/issues/6
-title: 'issue #6: lem:dc-ch3-3-4'
-updated: '2026-07-22T15:09:23Z'
+source: https://github.com/frenzymath/Poincare-Conjecture/issues/11
+title: 'issue #11: lem:dc-ch3-3-4'
+updated: '2026-08-09T03:30:43Z'
 ---
-**lem:dc-ch3-3-4** — from issue #6: Issue on Hopf-Rinow Formalization #2
+**lem:dc-ch3-3-4** — from issue #11: Review Issues — Hopf–Rinow Formalization: connecting the covariant-derivative / geodesic layer to the Levi-Civita connection
 
-lem:dc-ch3-3-4` — symmetry lemma
-
-**M:** ✅ verified &nbsp; **L:** ⚠️ issue
-
-### TeX
-
-do Carmo Ch.3 Lemma 3.4: For a symmetric connection and a parametrized surface $s: A \to M$,
-
-$$\frac{D}{\partial v}\frac{\partial s}{\partial u} = \frac{D}{\partial u}\frac{\partial s}{\partial v}.$$
-
-### Lean (current)
-
-The existing theorem `covariant_sndFDeriv_symm_of_eventually` is stated for `c : (ℝ × ℝ) → E` (the chart re
+lem:dc-ch3-3-4` (symmetry lemma); `def:dc-ch3-3-3` (parametrized surface) | Ch. 3, Lemma 3.4: `D/∂s (∂f/∂t) = D/∂t (∂f/∂s)` for a parametrized surface `f : A → M`, with the Levi-Civita `D/dt` | [`covariant_sndFDeriv_symm`](https://github.com/frenzymath/Poincare-Conjecture/blob/8ac3d5725509fbdd3d29a48d7aadd1f8ac19f409/formalized-sources/DoCarmo/DoCarmoLib/Riemannian/Geodesic/SymmetryLemma.lean#L36) | The anchor

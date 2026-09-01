@@ -4,7 +4,8 @@ Imported from `frenzymath/Poincare-Conjecture` GitHub issues into hgraph
 attachments (`nodes/<id>/review-*.md` and `comment-*.md`).
 
 Each attachment records at least: `author` (GitHub login), `role:
-human-reviewer`, `date`, `scope`, `mark`, maths/lean verdicts when applicable.
+human-reviewer`, `date`, `scope`, `mark`, and the stable blueprint `label` and/or
+`blueprint_number` when available. Maths/Lean verdicts are present on reviews.
 `source` is an **optional** single issue/PR URL (omitted for offline reviews).
 
 ## Coverage
@@ -37,6 +38,10 @@ human-reviewer`, `date`, `scope`, `mark`, maths/lean verdicts when applicable.
 - Agents must not use `role: human-reviewer`
 - Multiple reviews on one node accumulate (history); latest human mark is current intent
 
+The importer preserves the overall table mark. Its two verdict fields are a
+statement-correspondence convention (`✓` = good/good, `△` = good/bad, `✗` =
+bad/bad), not an automated proof or mathematical correctness claim.
+
 ## Regenerating
 
 ```bash
@@ -47,7 +52,21 @@ python3 scripts/import-hgraph-human-reviews.py \
   --hgraph formalized-sources/MorganTian/hgraph \
   --number-map path/to/number-map.json
 
+# If no checked-in number map is available, run `hgraph sync` first and use the
+# conservative title/order fallback. Ambiguous rows fail instead of guessing.
+python3 scripts/import-hgraph-human-reviews.py \
+  --issue-json /tmp/issue.json \
+  --hgraph formalized-sources/MorganTian/hgraph \
+  --labels-from-hgraph
+
 # Full history re-import is done from the corpus under /tmp/pc_review_corpus
-# (see commit message / OpenGA scripts); attachments are idempotent by
-# author+source+label|blueprint_number.
+# (see commit message / OpenGA scripts). Re-imports are idempotent by
+# author+role+source plus the node's label or blueprint number; distinct issue
+# sources on the same node remain separate history entries.
 ```
+
+Reviews attached to generated Lean declarations are retained in hgraph and are
+available through `hgraph get`/the JSON API. The current blueprint website only
+renders attachments on `generated: blueprint` nodes; this is a limitation of
+the pinned hgraph frontend, not a reason to move a Lean review onto a different
+mathematical statement.

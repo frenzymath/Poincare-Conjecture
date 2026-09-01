@@ -1,49 +1,45 @@
 ---
-author: JxChen24
-created: '2026-07-22T15:09:23Z'
-date: '2026-07-22T15:09:23Z'
+author: Ezreal88
+created: '2026-07-30T11:15:07Z'
+date: '2026-07-30T11:15:07Z'
 label: def:dc-ch3-3-1
-lean_comment: 'def:dc-ch3-3-1` — piecewise differentiable curve
-
-
-  **M:** ⚠️ issue &nbsp; **L:** ⚠️ issue
-
-
-  ### TeX (current)
-
-
-  > **Definition (piecewise differentiable curve).** A *piecewise differentiable curve*
-  is a continuous map $c:[a,b]\to M$ for which there is a partition $a=t_0<t_1<\dots<t_k=b$
-  such that each restriction $c|_{[t_i,t_{i+1}]}$ is differentiable; $c$ *joins* $c(a)$
-  and $c(b)$. $c(t_i)$ is a *vertex* of $c$, '
+lean_comment: "**1. `ContMDiffOn ... 1` (C¹) should be `MDifferentiableOn` (differentiable).**\
+  \ do Carmo says \"differentiable,\" not \"C¹.\" Replace `ContMDiffOn \U0001D4D8\
+  (ℝ, ℝ) I 1` with `MDifferentiableOn \U0001D4D8(ℝ, ℝ) I`.\n\n**2. Vertex is not defined.**\
+  \ do Carmo names the partition points as vertices. Add:\n\n```lean\ndef IsPiecewiseDifferentiableCurve.vertexAt\
+  \ {c : ℝ → M} {a b : ℝ}\n    (h : IsPiecewiseDifferentiableCurve (I := I) c a b)\
+  \ (i : ℕ) : M :=\n  let ⟨_, _, τ, _, _, _, _, _⟩ := h.2\n  c (τ i)\n```\n\n**3.\
+  \ Vertex angle — deferred.** Not used in the Hopf-Rinow proof chain. Add `-- TODO:\
+  \ define vertex angl\n\n[…truncated…]"
 lean_verdict: bad
 mark: problem
-maths_comment: 'def:dc-ch3-3-1` — piecewise differentiable curve
-
-
-  **M:** ⚠️ issue &nbsp; **L:** ⚠️ issue
-
-
-  ### TeX (current)
-
-
-  > **Definition (piecewise differentiable curve).** A *piecewise differentiable curve*
-  is a continuous map $c:[a,b]\to M$ for which there is a partition $a=t_0<t_1<\dots<t_k=b$
-  such that each restriction $c|_{[t_i,t_{i+1}]}$ is differentiable; $c$ *joins* $c(a)$
-  and $c(b)$. $c(t_i)$ is a *vertex* of $c$, '
+maths_comment: "**1. `ContMDiffOn ... 1` (C¹) should be `MDifferentiableOn` (differentiable).**\
+  \ do Carmo says \"differentiable,\" not \"C¹.\" Replace `ContMDiffOn \U0001D4D8\
+  (ℝ, ℝ) I 1` with `MDifferentiableOn \U0001D4D8(ℝ, ℝ) I`.\n\n**2. Vertex is not defined.**\
+  \ do Carmo names the partition points as vertices. Add:\n\n```lean\ndef IsPiecewiseDifferentiableCurve.vertexAt\
+  \ {c : ℝ → M} {a b : ℝ}\n    (h : IsPiecewiseDifferentiableCurve (I := I) c a b)\
+  \ (i : ℕ) : M :=\n  let ⟨_, _, τ, _, _, _, _, _⟩ := h.2\n  c (τ i)\n```\n\n**3.\
+  \ Vertex angle — deferred.** Not used in the Hopf-Rinow proof chain. Add `-- TODO:\
+  \ define vertex angl\n\n[…truncated…]"
 maths_verdict: bad
 role: human-reviewer
 scope: statement-correspondence
-source: https://github.com/frenzymath/Poincare-Conjecture/issues/6
-title: 'issue #6: def:dc-ch3-3-1'
-updated: '2026-07-22T15:09:23Z'
+source: https://github.com/frenzymath/Poincare-Conjecture/issues/9
+updated: '2026-07-30T11:15:07Z'
 ---
-**def:dc-ch3-3-1** — from issue #6: Issue on Hopf-Rinow Formalization #2
+**def:dc-ch3-3-1**
 
-def:dc-ch3-3-1` — piecewise differentiable curve
+**1. `ContMDiffOn ... 1` (C¹) should be `MDifferentiableOn` (differentiable).** do Carmo says "differentiable," not "C¹." Replace `ContMDiffOn 𝓘(ℝ, ℝ) I 1` with `MDifferentiableOn 𝓘(ℝ, ℝ) I`.
 
-**M:** ⚠️ issue &nbsp; **L:** ⚠️ issue
+**2. Vertex is not defined.** do Carmo names the partition points as vertices. Add:
 
-### TeX (current)
+```lean
+def IsPiecewiseDifferentiableCurve.vertexAt {c : ℝ → M} {a b : ℝ}
+    (h : IsPiecewiseDifferentiableCurve (I := I) c a b) (i : ℕ) : M :=
+  let ⟨_, _, τ, _, _, _, _, _⟩ := h.2
+  c (τ i)
+```
 
-> **Definition (piecewise differentiable curve).** A *piecewise differentiable curve* is a continuous map $c:[a,b]\to M$ for which there is a partition $a=t_0<t_1<\dots<t_k=b$ such that each restriction $c|_{[t_i,t_{i+1}]}$ is differentiable; $c$ *joins* $c(a)$ and $c(b)$. $c(t_i)$ is a *vertex* of $c$, 
+**3. Vertex angle — deferred.** Not used in the Hopf-Rinow proof chain. Add `-- TODO: define vertex angl
+
+[…truncated…]
