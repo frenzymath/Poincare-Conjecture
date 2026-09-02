@@ -1,94 +1,92 @@
-# Explicit review verdicts
+# Review verdicts
 
-This repository keeps a minimal verdict layer on top of hgraph. Hgraph supplies
-stable blueprint-node and Lean-declaration identity plus attachment storage; its
-default `maths`/`lean` review vocabulary does not constrain this layer.
+Review verdicts are small YAML attachments kept with the hgraph node they
+describe. Hgraph still supplies the node identity and attachment location, but
+its default `maths`/`lean` review fields are not involved.
 
-The layer records only a reviewer's current verdict on a target. It is not an
-issue importer, a review transcript, or a per-node change history.
+There is no importer, issue-history database, or CI job for verdicts. A verdict
+is a reviewer's deliberate mark, recorded by editing the YAML attachment after
+the reviewer has issued a clear add-mark instruction in an issue. Issue prose,
+issue tables, merged pull requests, and CI results never create marks on their
+own.
 
-## Issuing a verdict
+## Minimal format
 
-A verdict is created only by a reviewer writing a complete instruction line in
-a GitHub issue body or comment:
+Each node has at most one `verdicts.yaml` attachment. The keys are reviewer
+logins and the values are the reviewer's current state for that node:
+
+```yaml
+verdicts:
+  alice: satisfactory
+  bob: unsatisfactory
+```
+
+The only useful positive state is `satisfactory`. `unsatisfactory` is optional
+guidance for other reviewers; it means that the node needs attention, but does
+not prevent another reviewer from checking it. A reviewer can be absent from
+the map, which means no verdict has been recorded for that reviewer.
+
+Multiple reviewers are represented by multiple keys. There is only one current
+value per reviewer; the YAML is not a history of that reviewer's past actions.
+A later satisfactory mark replaces that reviewer's unsatisfactory value.
+
+## Direct revisions
+
+When the node's blueprint statement or Lean declaration is directly revised,
+append ` (outdated)` to every existing satisfactory value:
+
+```yaml
+verdicts:
+  alice: satisfactory (outdated)
+  bob: unsatisfactory
+  carol: satisfactory
+```
+
+The outdated sign is deliberately visible in the attachment. It does not erase
+the reviewer name or the fact that the earlier version was marked satisfactory.
+An unsatisfactory value is not automatically cleared by a revision, and a mark
+from another reviewer does not clear it. Only that same reviewer can replace it
+with a new satisfactory value after re-review.
+
+Whether an existing satisfactory mark is enough to reduce a new reviewer's
+work remains a per-case decision. No automatic re-review skipping rule is
+encoded here.
+
+## Blueprint example
+
+For a blueprint node such as `label:lem:geodesic-no-trivial-embedded-loop`, the
+attachment lives beside the generated node file:
 
 ```text
-/add-mark satisfactory label:thm:example
-/add-mark unsatisfactory decl:Project.example
+formalized-sources/MorganTian/hgraph/nodes/e87da812fc4a/verdicts.yaml
 ```
 
-`label:` selects a blueprint (`type: tex`) node. `decl:` selects a Lean
-declaration (`type: lean`) node. The selector must resolve uniquely in the
-project's generated `hgraph/nodes/*.md` files.
+Its contents could be:
 
-Ordinary issue prose, issue tables, comments without this instruction, merged
-pull requests, and CI results never create verdicts. In particular, the
-reviews previously discussed in issues #5--#18 are not seeded as verdicts:
-they contain findings and table marks, not explicit `/add-mark` instructions.
-
-## Semantics
-
-- A target may have marks from any number of reviewers.
-- Each reviewer has one current verdict per target, stored in
-  `nodes/<node-id>/verdict-<github-login>.md`.
-- A later explicit instruction from the same reviewer replaces that reviewer's
-  current verdict. Other reviewers' verdicts are unaffected.
-- Absence of a mark means no verdict from that reviewer.
-- `unsatisfactory` exposes a target that still needs attention. It remains
-  unsatisfactory until that reviewer explicitly marks the target satisfactory.
-- `satisfactory` records positive review evidence; it is not a rule to skip
-  re-review. Each future reviewer decides how much existing evidence is enough.
-
-Verdict files contain only structured metadata: reviewer, verdict, target,
-node id, review date, semantic digest, and the issue or comment URL. They never
-copy issue text or review notes.
-
-## Revisions and outdated marks
-
-At marking time, the script records a SHA-256 digest of the target's semantic
-content. The digest covers the statement/declaration body and stable fields
-such as its label or declaration name, title, content type, and docstring. It
-deliberately excludes sync metadata such as `created`, `updated`, `file`,
-`order`, and `lean_status`.
-
-After a direct semantic revision:
-
-- a previous satisfactory mark displays as `satisfactory (outdated)`;
-- an unsatisfactory mark remains `unsatisfactory`, with `target_changed: true`
-  in status output, until that reviewer explicitly issues a satisfactory mark;
-- the mark is retained rather than deleted, so its provenance remains visible.
-
-## Commands
-
-Run `hgraph sync` for the project before importing or checking marks. Fetch an
-issue together with its comments, then apply only its explicit instructions:
-
-```bash
-gh issue view 20 --repo frenzymath/Poincare-Conjecture \
-  --json number,url,author,createdAt,body,comments > /tmp/issue-20.json
-
-python scripts/hgraph-verdicts.py import-issue \
-  --issue-json /tmp/issue-20.json \
-  --hgraph formalized-sources/MorganTian/hgraph \
-  --repo frenzymath/Poincare-Conjecture
+```yaml
+verdicts:
+  reviewer-a: satisfactory
+  reviewer-b: satisfactory (outdated)
 ```
 
-All instructions and target selectors are validated before any file is
-written. Use `--dry-run` to inspect planned paths or `--source` to override the
-recorded issue/comment URL.
+The node path supplies the target, so the YAML needs no repeated label, title,
+issue text, source URL, date, or review explanation.
 
-Show every mark and its revision state:
+## Lean declaration example
 
-```bash
-python scripts/hgraph-verdicts.py status \
-  --hgraph formalized-sources/MorganTian/hgraph
+The same format applies to a Lean node such as
+`decl:MorganTianLib.fderiv_neg_fieldChartRep_gradientField_of_bochner`:
 
-python scripts/hgraph-verdicts.py status \
-  --hgraph formalized-sources/MorganTian/hgraph \
-  --target decl:Project.example \
-  --json
+```text
+formalized-sources/MorganTian/hgraph/nodes/9f680e664d06/verdicts.yaml
 ```
 
-The custom command is necessary because the pinned hgraph dashboard does not
-yet interpret `verdict-*.md`. The verdict files nonetheless remain attached to
-the same hgraph nodes and can be consumed by later dashboard integration.
+```yaml
+verdicts:
+  reviewer-a: satisfactory
+  reviewer-c: unsatisfactory
+```
+
+These examples illustrate the attachment shape; they are not inferred from the
+old issue reviews. Existing issue discussions remain discussion until a
+reviewer explicitly adds a mark.
