@@ -10,7 +10,7 @@ or support this development, but they do not define its organization.
 
 ## Status
 
-The evolving six-chapter Morgan--Tian Blueprint currently contains 279
+The evolving six-chapter, seven-stage Morgan--Tian Blueprint currently contains 279
 mathematical declarations and 854 direct prerequisite edges. The live structural
 audit reports one terminal sink (`thm:poincare-conjecture`), all 279 declarations
 reach it, and no cycles, forward edges, duplicate edges, unresolved references,
@@ -32,6 +32,12 @@ Perelman locations and all hypotheses consumed by later nodes; their classical
 source proofs remain part of the human review boundary. Live nodes remain
 marked `\notready`: this project makes no claim of Lean formalization or expert
 approval.
+
+Chapter 3 is organized into two implementation stages: Stage 3, **Blow-Up
+Limits, Kappa-Solutions, and Canonical Neighborhoods**, and Stage 4,
+**Continuation of Controlled Ricci Flow with Surgery**.  The handoff is before
+the first-failure extension argument; the remaining chapters retain their
+existing order and roles.
 
 ## Build
 
