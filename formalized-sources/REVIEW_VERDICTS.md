@@ -10,6 +10,19 @@ the reviewer has issued a clear add-mark instruction in an issue. Issue prose,
 issue tables, merged pull requests, and CI results never create marks on their
 own.
 
+## Issuing a mark
+
+A reviewer makes the action explicit in an issue body or comment, for example:
+
+```text
+/add-mark satisfactory label:lem:geodesic-no-trivial-embedded-loop
+/add-mark unsatisfactory decl:MorganTianLib.fderiv_neg_fieldChartRep_gradientField_of_bochner
+```
+
+The reviewer then records the corresponding value in that node's
+`verdicts.yaml`. This is a human instruction and a small convention, not an
+automated importer.
+
 ## Minimal format
 
 Each node has at most one `verdicts.yaml` attachment. The keys are reviewer
