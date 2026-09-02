@@ -43,13 +43,16 @@ A reviewer makes the action explicit in an issue body or comment, for example:
 /add-mark unsatisfactory label:thm:bishop-gromov
 ```
 
-The YAML is then edited by hand with the reviewer's GitHub login, the UTC date,
-and the source URL. There is no process that infers a satisfactory mark from a
-sentence such as "verified" or from an accepted PR.
+The reviewer may edit the YAML directly, or ask a maintainer or AI agent to do
+it. The updater reads the explicit instruction, resolves the named hgraph node,
+and edits that reviewer's current item with the GitHub login, UTC date, and
+source URL. This is a small reviewed repository change, not an automated
+importer. In particular, no process infers a satisfactory mark from a sentence
+such as "verified" or from an accepted PR.
 
-When the blueprint statement or Lean declaration is directly revised, append
-` (outdated)` to each existing satisfactory value while retaining its date and
-source:
+When the reviewed content of a blueprint statement or Lean declaration is
+directly revised, append ` (outdated)` to each existing satisfactory value while
+retaining its date and source:
 
 ```yaml
 verdicts:
@@ -63,6 +66,33 @@ After re-review, that same reviewer replaces the item with a fresh
 `satisfactory` value and a new date/source. An unsatisfactory item is not
 automatically cleared by a revision. Whether any existing satisfactory mark is
 enough to reduce a new reviewer's work remains a per-case decision.
+
+## Renaming a node or Lean declaration
+
+The verdict attachment belongs to the reviewed node, not permanently to its
+opaque hgraph hash. Renaming a Lean declaration or blueprint label can create a
+new node directory, so the attachment must be moved to the new directory. It
+must not be left on the stale node or replaced with a fresh, empty file.
+
+For a rename:
+
+1. Record the old node path, perform the rename, update any blueprint
+   `\lean{...}` attachment, and run hgraph sync.
+2. Confirm that the old and new nodes are the same mathematical or Lean object,
+   rather than a split, merge, or replacement with different content.
+3. Move `verdicts.yaml` from the old hash directory to the new hash directory
+   with `git mv`. Keep every reviewer, verdict, date, and source unchanged.
+4. Check that the old directory no longer has a verdict attachment and the new
+   node has exactly one. Record the old and new declaration names or labels in
+   the commit message so `git log --follow` provides the rename history.
+
+A name-only rename does not invalidate satisfactory marks because the reviewed
+content did not change. If the statement, type, definition, or proof changes at
+the same time, first move the attachment and then mark its satisfactory entries
+`satisfactory (outdated)` under the direct-revision rule above. If the identity
+is ambiguous, especially after a declaration is split or several declarations
+are merged, do not copy satisfactory marks to the new nodes without a reviewer
+or maintainer deciding where they belong.
 
 ## Real records
 
