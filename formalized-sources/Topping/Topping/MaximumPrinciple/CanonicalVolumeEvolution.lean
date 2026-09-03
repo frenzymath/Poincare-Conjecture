@@ -124,6 +124,28 @@ theorem continuousOn_relativeVolumeDerivativeIntegrand_of_isRicciFlowOn
   exact hscalar.neg.mul hrho
 
 set_option linter.unusedSectionVars false in
+/-- **Math.** For a genuine Ricci flow, the derivative integrand is jointly
+continuous on the whole prescribed flow set, including endpoint times. -/
+theorem continuousOn_relativeVolumeDerivativeIntegrand_of_isRicciFlowOn_full
+    (g₀ : RiemannianMetric I M) {g : ℝ → RiemannianMetric I M} {J : Set ℝ}
+    (hflow : MorganTianLib.IsRicciFlowOn g J) :
+    ContinuousOn
+      (fun z : M × ℝ =>
+        -scalarCurvatureAt (g z.2) z.1 *
+          relativeSelfChartVolumeDensity (I := I) g₀ g z.2 z.1)
+      ((Set.univ : Set M) ×ˢ J) := by
+  have hscalar :=
+    (scalarCurvature_contMDiffOn_of_isRicciFlowOn
+      (I := I) hflow).continuousOn
+  have hrho : ContinuousOn
+      (fun z : M × ℝ =>
+        relativeSelfChartVolumeDensity (I := I) g₀ g z.2 z.1)
+      ((Set.univ : Set M) ×ˢ J) :=
+    continuousOn_relativeSelfChartVolumeDensity_timeSpace
+      (I := I) g₀ hflow.smooth
+  exact hscalar.neg.mul hrho
+
+set_option linter.unusedSectionVars false in
 /-- **Math.** On a compact manifold, the canonical Riemannian volume of a
 genuine Ricci flow satisfies
 `V'(t) = -∫ R(t,p) dV_t` on every compact time set contained in the interior of
@@ -202,6 +224,81 @@ theorem hasVolumeDerivativeOn_riemannianMeasure_of_isRicciFlowOn
     (g := g) nu rho hU hKU hrhoMeas hrhoInt hderiv hderivMeas
       (fun _ : M => C) hboundInt hbound hmeasure
 
+set_option linter.unusedSectionVars false in
+/-- **Math.** On a compact convex time set inside the flow domain, the canonical
+Riemannian volume has its genuine within-set derivative, with no interior buffer.
+The full-set density derivative and compact space-time domination discharge the
+endpoint obligation. -/
+theorem hasVolumeDerivativeOn_riemannianMeasure_of_isRicciFlowOn_of_compact_convex
+    [CompactSpace M] (g₀ : RiemannianMetric I M)
+    (mu : Measure E) [mu.IsAddHaarMeasure]
+    {g : ℝ → RiemannianMetric I M} {J K : Set ℝ}
+    (hflow : MorganTianLib.IsRicciFlowOn g J)
+    (hK : IsCompact K) (hKconv : Convex ℝ K) (hKJ : K ⊆ J) :
+    HasVolumeDerivativeOn g
+      (fun t => (MorganTianLib.riemannianMeasure (I := I) (g t) mu).real univ)
+      (fun t => MorganTianLib.riemannianMeasure (I := I) (g t) mu) K := by
+  let nu : Measure M := MorganTianLib.riemannianMeasure (I := I) g₀ mu
+  let rho : ℝ → M → NNReal :=
+    relativeSelfChartVolumeDensityNNReal (I := I) g₀ g
+  have hcompact : IsCompact ((Set.univ : Set M) ×ˢ K) :=
+    isCompact_univ.prod hK
+  have hcontinuous : ContinuousOn
+      (fun z : M × ℝ =>
+        -scalarCurvatureAt (g z.2) z.1 *
+          relativeSelfChartVolumeDensity (I := I) g₀ g z.2 z.1)
+      ((Set.univ : Set M) ×ˢ K) :=
+    (continuousOn_relativeVolumeDerivativeIntegrand_of_isRicciFlowOn_full
+      (I := I) g₀ hflow).mono (Set.prod_mono Subset.rfl hKJ)
+  obtain ⟨C, hC⟩ := hcompact.exists_bound_of_continuousOn hcontinuous
+  have hrhoMeas : ∀ t ∈ K, Measurable (rho t) := by
+    intro t _
+    exact measurable_relativeSelfChartVolumeDensityNNReal
+      (I := I) g₀ g t
+  have hrhoInt : ∀ t ∈ K, Integrable (fun p => (rho t p : ℝ)) nu := by
+    intro t _
+    exact integrable_relativeSelfChartVolumeDensityNNReal
+      (I := I) g₀ g nu t
+  have hflowTop : Topping.IsRicciFlowOn g J :=
+    isRicciFlowOn_of_morganTian_isRicciFlowOn hflow
+  have hderiv : ∀ t ∈ K, ∀ p,
+      HasDerivWithinAt (fun s => (rho s p : ℝ))
+        (-scalarCurvatureAt (g t) p * (rho t p : ℝ)) K t := by
+    intro t ht p
+    exact
+      (hasDerivWithinAt_relativeSelfChartVolumeDensityNNReal_of_isRicciFlowOn
+        (I := I) g₀ hflowTop (hKJ ht) p).mono hKJ
+  have hboundInt : Integrable (fun _ : M => C) nu := by
+    exact continuous_const.integrable_of_hasCompactSupport
+      (HasCompactSupport.of_compactSpace _)
+  have hbound : ∀ᵐ p ∂nu, ∀ t ∈ K,
+      ‖-scalarCurvatureAt (g t) p * (rho t p : ℝ)‖ ≤ C :=
+    Filter.Eventually.of_forall fun p t ht => by
+      simpa only [rho, coe_relativeSelfChartVolumeDensityNNReal] using
+        hC (p, t) ⟨mem_univ p, ht⟩
+  have hmeasure : ∀ t ∈ K,
+      nu.withDensity (fun p => (rho t p : ENNReal)) =
+        MorganTianLib.riemannianMeasure (I := I) (g t) mu := by
+    intro t _
+    exact riemannianMeasure_eq_withDensity_relativeSelfChartVolumeDensityNNReal
+      (I := I) g₀ g mu t
+  exact hasVolumeDerivativeOn_of_weightedDensityWithin_eq_measure
+    (g := g) nu rho hKconv hrhoMeas hrhoInt hderiv
+      (fun _ : M => C) hboundInt hbound hmeasure
+
+/-- **Math.** If the entire compact flow domain is used as the target set, the
+canonical volume producer is endpoint-capable without an interior assumption. -/
+theorem hasVolumeDerivativeOn_riemannianMeasure_of_isRicciFlowOn_of_isCompact
+    [CompactSpace M] (g₀ : RiemannianMetric I M)
+    (mu : Measure E) [mu.IsAddHaarMeasure]
+    {g : ℝ → RiemannianMetric I M} {J : Set ℝ}
+    (hflow : MorganTianLib.IsRicciFlowOn g J) (hJ : IsCompact J) :
+    HasVolumeDerivativeOn g
+      (fun t => (MorganTianLib.riemannianMeasure (I := I) (g t) mu).real univ)
+      (fun t => MorganTianLib.riemannianMeasure (I := I) (g t) mu) J := by
+  exact hasVolumeDerivativeOn_riemannianMeasure_of_isRicciFlowOn_of_compact_convex
+    (I := I) g₀ mu hflow hJ hflow.ordConnected.convex Subset.rfl
+
 /-- **Math.** On an open flow domain, the canonical volume derivative is
 available on every compact target set contained in that domain. -/
 theorem hasVolumeDerivativeOn_riemannianMeasure_of_isRicciFlowOn_of_isOpen
@@ -250,6 +347,57 @@ theorem riemannianVolume_antitoneOn_of_isRicciFlowOn
       g₀ mu hflow isCompact_Icc hIcc
 
 set_option linter.unusedSectionVars false in
+/-- **Math.** If the ambient Ricci-flow domain is the closed interval itself,
+canonical volume is still weakly decreasing.  Scalar evolution is only needed
+at interior times: for each such time, the scalar minimum principle is applied
+on its own initial subinterval.  The endpoint-capable volume derivative then
+supplies continuity on all of `[0,T]`. -/
+theorem riemannianVolume_antitoneOn_of_isRicciFlowOn_Icc
+    [CompactSpace M] (g₀ : RiemannianMetric I M)
+    (mu : Measure E) [mu.IsAddHaarMeasure]
+    {g : ℝ → RiemannianMetric I M} {T : ℝ}
+    (hflow : MorganTianLib.IsRicciFlowOn g (Icc 0 T))
+    (hzero : ∀ p, 0 ≤ scalarCurvatureAt (g 0) p) :
+    AntitoneOn
+      (fun t => (MorganTianLib.riemannianMeasure (I := I) (g t) mu).real univ)
+      (Icc 0 T) := by
+  have hRsmooth :=
+    scalarCurvature_contMDiffOn_of_isRicciFlowOn hflow
+  have hV :=
+    hasVolumeDerivativeOn_riemannianMeasure_of_isRicciFlowOn_of_isCompact
+      g₀ mu hflow isCompact_Icc
+  have hR : ∀ t ∈ interior (Icc 0 T), ∀ p,
+      0 ≤ scalarCurvatureAt (g t) p := by
+    intro t ht p
+    rw [interior_Icc] at ht
+    have hK : Ioc (0 : ℝ) t ⊆ interior (Icc 0 T) := by
+      intro s hs
+      rw [interior_Icc]
+      exact ⟨hs.1, hs.2.trans_lt ht.2⟩
+    have hevolution :=
+      hasScalarCurvatureEvolutionOn_of_isRicciFlowOn_of_subset_interior
+        hflow hK
+    have hRt : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
+        (fun z : M × ℝ => scalarCurvatureAt (g z.2) z.1)
+        ((Set.univ : Set M) ×ˢ Icc 0 t) :=
+      hRsmooth.mono (by
+        intro z hz
+        exact ⟨hz.1, hz.2.1, hz.2.2.trans ht.2.le⟩)
+    exact
+      scalarCurvature_nonneg_of_initial_nonneg_on_Ioc
+        ht.1 hRt hevolution hzero p t ⟨ht.1.le, le_rfl⟩
+  refine antitoneOn_of_hasDerivWithinAt_nonpos (convex_Icc 0 T)
+    (fun t ht => (hV t ht).continuousWithinAt)
+    (f' := fun t => -∫ p, scalarCurvatureAt (g t) p
+      ∂(MorganTianLib.riemannianMeasure (I := I) (g t) mu))
+    (fun t ht => ?_) (fun t ht => ?_)
+  · exact (hV t (interior_subset ht)).mono interior_subset
+  · have hint : 0 ≤ ∫ p, scalarCurvatureAt (g t) p
+        ∂(MorganTianLib.riemannianMeasure (I := I) (g t) mu) :=
+      integral_nonneg (fun p => hR t ht p)
+    linarith
+
+set_option linter.unusedSectionVars false in
 /-- **Math.** On an open Ricci-flow time domain, initial nonnegative scalar
 curvature makes canonical volume antitone on every contained compact interval. -/
 theorem riemannianVolume_antitoneOn_of_isRicciFlowOn_of_isOpen
@@ -268,9 +416,13 @@ theorem riemannianVolume_antitoneOn_of_isRicciFlowOn_of_isOpen
 #print axioms Topping.continuousOn_chartVolumeDensityAt_timeSpace
 #print axioms Topping.continuousOn_relativeSelfChartVolumeDensity_timeSpace
 #print axioms Topping.continuousOn_relativeVolumeDerivativeIntegrand_of_isRicciFlowOn
+#print axioms Topping.continuousOn_relativeVolumeDerivativeIntegrand_of_isRicciFlowOn_full
 #print axioms Topping.hasVolumeDerivativeOn_riemannianMeasure_of_isRicciFlowOn
+#print axioms Topping.hasVolumeDerivativeOn_riemannianMeasure_of_isRicciFlowOn_of_compact_convex
+#print axioms Topping.hasVolumeDerivativeOn_riemannianMeasure_of_isRicciFlowOn_of_isCompact
 #print axioms Topping.hasVolumeDerivativeOn_riemannianMeasure_of_isRicciFlowOn_of_isOpen
 #print axioms Topping.riemannianVolume_antitoneOn_of_isRicciFlowOn
+#print axioms Topping.riemannianVolume_antitoneOn_of_isRicciFlowOn_Icc
 #print axioms Topping.riemannianVolume_antitoneOn_of_isRicciFlowOn_of_isOpen
 
 end Topping

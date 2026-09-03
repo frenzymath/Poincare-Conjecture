@@ -102,10 +102,12 @@ By `hasRiemannianJacobianOn_expMapGlobal` this value is chart-independent, i.e. 
 the density `BishopGromovBall.expBallVolume` integrates. -/
 def expRiemannianJacobian (g : RiemannianMetric I M) (hg : g.IsRiemannianDist) (p : M)
     (v : E) : ℝ :=
-  |(fderiv ℝ (fun w : E => extChartAt I (expMapGlobal (I := I) g hg p v)
-      (expMapGlobal (I := I) g hg p w)) v).det|
-    * chartVolumeDensity (I := I) g (expMapGlobal (I := I) g hg p v)
-        (extChartAt I (expMapGlobal (I := I) g hg p v) (expMapGlobal (I := I) g hg p v))
+  |(fderiv ℝ (fun w : E => extChartAt I
+      (expMapGlobal (I := I) g hg p (v : TangentSpace I p))
+      (expMapGlobal (I := I) g hg p (w : TangentSpace I p))) v).det|
+    * chartVolumeDensity (I := I) g (expMapGlobal (I := I) g hg p (v : TangentSpace I p))
+        (extChartAt I (expMapGlobal (I := I) g hg p (v : TangentSpace I p))
+          (expMapGlobal (I := I) g hg p (v : TangentSpace I p)))
 
 /-- **Math.** **`exp_p` has Riemannian Jacobian `expRiemannianJacobian g hg p` on all of `T_pM`.**
 

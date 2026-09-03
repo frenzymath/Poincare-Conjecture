@@ -22,26 +22,6 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [CompleteS
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [SigmaCompactSpace M] [T2Space M]
 
-/-- **Math.** The corrected second covariant derivative preserves the symmetry
-of the Ricci tensor in its two tensor slots. -/
-theorem secondCovDerivAlong_ricciTensorField_symm
-    (g : RiemannianMetric I M) (U V X Y : SmoothVectorField I M) (p : M) :
-    secondCovDerivAlong g.leviCivitaConnection U V (ricciTensorField g)
-        ![X, Y] p =
-      secondCovDerivAlong g.leviCivitaConnection U V (ricciTensorField g)
-        ![Y, X] p := by
-  classical
-  letI : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
-    ⟨g.toRiemannianMetric⟩
-  rw [secondCovDerivAlong_ricciTensorField_eq_stdOrthonormalBasis_sum,
-    secondCovDerivAlong_ricciTensorField_eq_stdOrthonormalBasis_sum]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  exact secondCovDerivAlong_riemannTensorField_pairSwap g U V X
-    (MorganTianLib.extendVector p
-      (stdOrthonormalBasis ℝ (TangentSpace I p) i)) Y
-    (MorganTianLib.extendVector p
-      (stdOrthonormalBasis ℝ (TangentSpace I p) i)) p
-
 /-- **Math.** A field-level curvature action evaluated at a point is the
 pointwise Riemann tensor applied to the pointwise curvature operator. -/
 theorem curvatureForm_curvature_eq_riemannCurvatureAt_curvatureOperatorAt

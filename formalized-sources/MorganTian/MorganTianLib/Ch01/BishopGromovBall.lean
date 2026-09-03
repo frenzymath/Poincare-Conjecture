@@ -392,6 +392,67 @@ theorem modelBallVolume_pos {k : ℝ} (hk : 0 ≤ k) {r : ℝ} (hr : 0 < r) :
     simp only [ne_eq, ENNReal.ofReal_eq_zero, not_le]
     linarith
 
+ /-- **Math.** The model ball volume is strictly increasing with the radius on positive
+ radii.  This denominator-side fact complements `modelBallVolume_pos` and is useful when
+ passing from the cross-multiplied Bishop--Gromov inequality to a genuine ratio. -/
+ theorem modelBallVolume_strictMonoOn {k : ℝ} (hk : 0 ≤ k) :
+    StrictMonoOn (modelBallVolume μ k) (Ioi (0 : ℝ)) := by
+  intro r₁ hr₁ r₂ hr₂ h12
+  change 0 < r₁ at hr₁
+  change 0 < r₂ at hr₂
+  rw [modelBallVolume_eq μ k r₁, modelBallVolume_eq μ k r₂]
+  have hsplit : ∀ F : ℝ → ℝ≥0∞,
+      (∫⁻ t in Ioo (0 : ℝ) r₂, F t)
+        = (∫⁻ t in Ioo (0 : ℝ) r₁, F t) + ∫⁻ t in Ioo r₁ r₂, F t := by
+    intro F
+    have hset : Ioo (0 : ℝ) r₁ ∪ Ico r₁ r₂ = Ioo (0 : ℝ) r₂ :=
+      Set.Ioo_union_Ico_eq_Ioo hr₁ h12.le
+    have hdisj : Disjoint (Ioo (0 : ℝ) r₁) (Ico r₁ r₂) :=
+      Set.disjoint_left.2 fun x hx hx' => absurd hx'.1 (not_le.2 hx.2)
+    rw [← hset, lintegral_union measurableSet_Ico hdisj]
+    congr 1
+    exact setLIntegral_congr (Ioo_ae_eq_Ico (a := r₁) (b := r₂)).symm
+  set A : ℝ≥0∞ := ∫⁻ t in Ioo (0 : ℝ) r₁,
+      ENNReal.ofReal (snK k t ^ (finrank ℝ E - 1))
+  set B : ℝ≥0∞ := ∫⁻ t in Ioo r₁ r₂,
+      ENNReal.ofReal (snK k t ^ (finrank ℝ E - 1))
+  have hA_top : A ≠ ⊤ := by
+    have hbound : A ≤ ENNReal.ofReal (snK k r₁ ^ (finrank ℝ E - 1)) *
+        volume (Ioo (0 : ℝ) r₁) := by
+      rw [← setLIntegral_const (Ioo (0 : ℝ) r₁)]
+      refine setLIntegral_mono' measurableSet_Ioo fun t ht => ?_
+      exact ENNReal.ofReal_le_ofReal
+        (pow_le_pow_left₀ (snK_nonneg k t hk ht.1.le)
+          ((snK_strictMono k hk).monotone ht.2.le) _)
+    exact ne_top_of_le_ne_top (ENNReal.mul_ne_top ENNReal.ofReal_ne_top
+      (by simp [Real.volume_Ioo])) hbound
+  have hB_pos : 0 < B := by
+    have hsub : Ioo ((r₁ + r₂) / 2) r₂ ⊆ Ioo r₁ r₂ := by
+      intro t ht
+      constructor
+      · linarith [h12, ht.1]
+      · exact ht.2
+    have hlow : ENNReal.ofReal (snK k ((r₁ + r₂) / 2) ^ (finrank ℝ E - 1)) *
+        volume (Ioo ((r₁ + r₂) / 2) r₂) ≤ B := by
+      refine le_trans ?_ (lintegral_mono_set hsub)
+      rw [← setLIntegral_const (Ioo ((r₁ + r₂) / 2) r₂)]
+      refine setLIntegral_mono' measurableSet_Ioo fun t ht => ?_
+      exact ENNReal.ofReal_le_ofReal
+        (pow_le_pow_left₀ (snK_nonneg k ((r₁ + r₂) / 2) hk (by linarith))
+          ((snK_strictMono k hk).monotone ht.1.le) _)
+    refine lt_of_lt_of_le ?_ hlow
+    refine ENNReal.mul_pos ?_ ?_
+    · exact (ENNReal.ofReal_pos.mpr (pow_pos
+        (snK_pos k ((r₁ + r₂) / 2) hk (by linarith [hr₁, hr₂])) _)).ne'
+    · rw [Real.volume_Ioo]
+      simp only [ne_eq, ENNReal.ofReal_eq_zero, not_le]
+      linarith [h12]
+  rw [hsplit (fun t => ENNReal.ofReal (snK k t ^ (finrank ℝ E - 1)))]
+  have hmpos : 0 < μ.toSphere univ := toSphere_univ_pos μ
+  have hmtop : μ.toSphere univ ≠ ⊤ := measure_ne_top _ _
+  exact ENNReal.mul_lt_mul_right hmpos.ne' hmtop
+    (ENNReal.lt_add_right hA_top hB_pos.ne')
+
 /-- **Math.** **Bishop–Gromov for the abstract chart volumes**: the relative volume
 
   `r ↦ expBallVolume μ ρ r / modelBallVolume μ k r`

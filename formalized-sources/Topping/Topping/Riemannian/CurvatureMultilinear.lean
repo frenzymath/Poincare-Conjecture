@@ -469,6 +469,165 @@ theorem isCovariantTensor2_covariantDifferential2
 
 omit [CompleteSpace E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
     [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] in
+/-- **Math.** The covariant differential of a two-tensor with smooth components
+again has smooth components. -/
+theorem covariantDifferential2_contMDiff
+    (nabla : AffineConnection I M)
+    (T : SmoothVectorField I M → SmoothVectorField I M → (M → ℝ))
+    (hsm : ∀ X Y, ContMDiff I 𝓘(ℝ, ℝ) ∞ (T X Y))
+    (X Y U : SmoothVectorField I M) :
+    ContMDiff I 𝓘(ℝ, ℝ) ∞ (nabla.covariantDifferential2 T X Y U) := by
+  exact ((U.dir_contMDiff (hsm X Y)).sub
+    (hsm (nabla.cov U X) Y)).sub (hsm X (nabla.cov U Y))
+
+omit [CompleteSpace E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] in
+/-- **Math.** The covariant differential of a smooth covariant two-tensor is a
+covariant three-tensor, including tensoriality in its derivative direction. -/
+theorem isCovariantTensor3_covariantDifferential2
+    (nabla : AffineConnection I M)
+    (T : SmoothVectorField I M → SmoothVectorField I M → (M → ℝ))
+    (hT : IsCovariantTensor2 T)
+    (hsm : ∀ X Y, ContMDiff I 𝓘(ℝ, ℝ) ∞ (T X Y)) :
+    IsCovariantTensor3
+      (fun X Y U => nabla.covariantDifferential2 T X Y U) := by
+  have hXY := isCovariantTensor2_covariantDifferential2 nabla T hT hsm
+  refine ⟨fun X₁ X₂ Y U p => (hXY U).add_left X₁ X₂ Y p,
+    fun X Y₁ Y₂ U p => (hXY U).add_right X Y₁ Y₂ p, ?_,
+    fun f hf X Y U p => (hXY U).smul_left f hf X Y p,
+    fun f hf X Y U p => (hXY U).smul_right f hf X Y p, ?_⟩
+  · intro X Y U₁ U₂ p
+    simp only [AffineConnection.covariantDifferential2]
+    rw [SmoothVectorField.dir_add_field U₁ U₂ (T X Y) p,
+      nabla.add_left U₁ U₂ X, nabla.add_left U₁ U₂ Y]
+    simp only [hT.add_left, hT.add_right]
+    ring
+  · intro f hf X Y U p
+    simp only [AffineConnection.covariantDifferential2]
+    rw [SmoothVectorField.dir_smul_field hf U (T X Y) p,
+      nabla.smul_left f hf U X, nabla.smul_left f hf U Y]
+    simp only [hT.smul_left, hT.smul_right]
+    ring
+
+omit [CompleteSpace E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] in
+/-- **Math.** The covariant differential of a covariant three-tensor, with the
+derivative direction in its fourth slot. -/
+def covariantDifferential3 (nabla : AffineConnection I M)
+    (T : SmoothVectorField I M → SmoothVectorField I M → SmoothVectorField I M →
+      (M → ℝ))
+    (X Y Z U : SmoothVectorField I M) : M → ℝ :=
+  fun p => U.dir (T X Y Z) p
+    - T (nabla.cov U X) Y Z p
+    - T X (nabla.cov U Y) Z p
+    - T X Y (nabla.cov U Z) p
+
+omit [CompleteSpace E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] in
+/-- **Math.** The covariant differential of a three-tensor with smooth
+components again has smooth components. -/
+theorem covariantDifferential3_contMDiff
+    (nabla : AffineConnection I M)
+    (T : SmoothVectorField I M → SmoothVectorField I M → SmoothVectorField I M →
+      (M → ℝ))
+    (hsm : ∀ X Y Z, ContMDiff I 𝓘(ℝ, ℝ) ∞ (T X Y Z))
+    (X Y Z U : SmoothVectorField I M) :
+    ContMDiff I 𝓘(ℝ, ℝ) ∞ (covariantDifferential3 nabla T X Y Z U) := by
+  exact (((U.dir_contMDiff (hsm X Y Z)).sub
+    (hsm (nabla.cov U X) Y Z)).sub
+    (hsm X (nabla.cov U Y) Z)).sub
+    (hsm X Y (nabla.cov U Z))
+
+omit [CompleteSpace E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] in
+/-- **Math.** The covariant differential of a smooth covariant three-tensor is
+a covariant four-tensor.  In each tensor slot the scalar-derivative term cancels
+the connection Leibniz correction; the derivative slot is pointwise linear. -/
+theorem isCovariantTensor4_covariantDifferential3
+    (nabla : AffineConnection I M)
+    (T : SmoothVectorField I M → SmoothVectorField I M → SmoothVectorField I M →
+      (M → ℝ))
+    (hT : IsCovariantTensor3 T)
+    (hsm : ∀ X Y Z, ContMDiff I 𝓘(ℝ, ℝ) ∞ (T X Y Z)) :
+    IsCovariantTensor4 (covariantDifferential3 nabla T) := by
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro X₁ X₂ Y Z U p
+    have hfun : T (X₁ + X₂) Y Z =
+        fun q => T X₁ Y Z q + T X₂ Y Z q := by
+      funext q
+      exact hT.add₁ X₁ X₂ Y Z q
+    simp only [covariantDifferential3]
+    rw [hfun, U.dir_add p ((hsm X₁ Y Z).mdifferentiableAt (by simp))
+      ((hsm X₂ Y Z).mdifferentiableAt (by simp)), nabla.add_right U X₁ X₂]
+    simp only [hT.add₁]
+    ring
+  · intro X Y₁ Y₂ Z U p
+    have hfun : T X (Y₁ + Y₂) Z =
+        fun q => T X Y₁ Z q + T X Y₂ Z q := by
+      funext q
+      exact hT.add₂ X Y₁ Y₂ Z q
+    simp only [covariantDifferential3]
+    rw [hfun, U.dir_add p ((hsm X Y₁ Z).mdifferentiableAt (by simp))
+      ((hsm X Y₂ Z).mdifferentiableAt (by simp)), nabla.add_right U Y₁ Y₂]
+    simp only [hT.add₂]
+    ring
+  · intro X Y Z₁ Z₂ U p
+    have hfun : T X Y (Z₁ + Z₂) =
+        fun q => T X Y Z₁ q + T X Y Z₂ q := by
+      funext q
+      exact hT.add₃ X Y Z₁ Z₂ q
+    simp only [covariantDifferential3]
+    rw [hfun, U.dir_add p ((hsm X Y Z₁).mdifferentiableAt (by simp))
+      ((hsm X Y Z₂).mdifferentiableAt (by simp)), nabla.add_right U Z₁ Z₂]
+    simp only [hT.add₃]
+    ring
+  · intro X Y Z U₁ U₂ p
+    simp only [covariantDifferential3]
+    rw [SmoothVectorField.dir_add_field U₁ U₂ (T X Y Z) p,
+      nabla.add_left U₁ U₂ X, nabla.add_left U₁ U₂ Y,
+      nabla.add_left U₁ U₂ Z]
+    simp only [hT.add₁, hT.add₂, hT.add₃]
+    ring
+  · intro f hf X Y Z U p
+    have hfun : T (SmoothVectorField.smul f hf X) Y Z =
+        fun q => f q * T X Y Z q := by
+      funext q
+      exact hT.smul₁ f hf X Y Z q
+    simp only [covariantDifferential3]
+    rw [hfun, U.dir_mul p (hf.mdifferentiableAt (by simp))
+      ((hsm X Y Z).mdifferentiableAt (by simp)), nabla.cov_smul_right hf U X]
+    simp only [hT.add₁, hT.smul₁]
+    ring
+  · intro f hf X Y Z U p
+    have hfun : T X (SmoothVectorField.smul f hf Y) Z =
+        fun q => f q * T X Y Z q := by
+      funext q
+      exact hT.smul₂ f hf X Y Z q
+    simp only [covariantDifferential3]
+    rw [hfun, U.dir_mul p (hf.mdifferentiableAt (by simp))
+      ((hsm X Y Z).mdifferentiableAt (by simp)), nabla.cov_smul_right hf U Y]
+    simp only [hT.add₂, hT.smul₂]
+    ring
+  · intro f hf X Y Z U p
+    have hfun : T X Y (SmoothVectorField.smul f hf Z) =
+        fun q => f q * T X Y Z q := by
+      funext q
+      exact hT.smul₃ f hf X Y Z q
+    simp only [covariantDifferential3]
+    rw [hfun, U.dir_mul p (hf.mdifferentiableAt (by simp))
+      ((hsm X Y Z).mdifferentiableAt (by simp)), nabla.cov_smul_right hf U Z]
+    simp only [hT.add₃, hT.smul₃]
+    ring
+  · intro f hf X Y Z U p
+    simp only [covariantDifferential3]
+    rw [SmoothVectorField.dir_smul_field hf U (T X Y Z) p,
+      nabla.smul_left f hf U X, nabla.smul_left f hf U Y,
+      nabla.smul_left f hf U Z]
+    simp only [hT.smul₁, hT.smul₂, hT.smul₃]
+    ring
+
+omit [CompleteSpace E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] in
 /-- **Math.** Topping's tuple-based `covDerivAlong` agrees with the standard
 two-slot covariant differential whenever the tuple field represents `T`. -/
 theorem covDerivAlong_eq_covariantDifferential2
@@ -535,6 +694,26 @@ theorem secondCovDerivAlong_eq_iteratedCovariantDifferential2
       (covDerivAlong nabla V A) hV U Y p,
     covDerivAlong_eq_covariantDifferential2 nabla T A hA
       (nabla.cov U V) Y p]
+
+omit [CompleteSpace E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] in
+/-- **Math.** Topping's corrected second covariant derivative agrees with the
+three-slot covariant differential of the first covariant derivative. -/
+theorem secondCovDerivAlong_eq_covariantDifferential3
+    (nabla : AffineConnection I M)
+    (T : SmoothVectorField I M → SmoothVectorField I M → (M → ℝ))
+    (A : CovTensorField I M 2)
+    (hA : ∀ (Y : Fin 2 → SmoothVectorField I M) (q : M),
+      A Y q = T (Y 0) (Y 1) q)
+    (U V : SmoothVectorField I M)
+    (Y : Fin 2 → SmoothVectorField I M) (p : M) :
+    secondCovDerivAlong nabla U V A Y p =
+      covariantDifferential3 nabla
+        (fun X Y V => nabla.covariantDifferential2 T X Y V)
+        (Y 0) (Y 1) V U p := by
+  rw [secondCovDerivAlong_eq_iteratedCovariantDifferential2
+    nabla T A hA U V Y p]
+  rfl
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
     [SigmaCompactSpace M] [T2Space M] in
@@ -977,6 +1156,101 @@ theorem secondCovDerivAlong_ricciTensorField_eq_iteratedCovariantDifferential2
     (fun A B q => ricciTensorAt g q (A q) (B q))
     (ricciTensorField g) (fun Z q => rfl) U V Y p
 
+/-- **Math.** The corrected second covariant derivative preserves the symmetry
+of the Ricci tensor in its two tensor slots. -/
+theorem secondCovDerivAlong_ricciTensorField_symm
+    (g : RiemannianMetric I M) (U V X Y : SmoothVectorField I M) (p : M) :
+    secondCovDerivAlong g.leviCivitaConnection U V (ricciTensorField g)
+        ![X, Y] p =
+      secondCovDerivAlong g.leviCivitaConnection U V (ricciTensorField g)
+        ![Y, X] p := by
+  let nabla := g.leviCivitaConnection
+  let T : SmoothVectorField I M → SmoothVectorField I M → (M → ℝ) :=
+    fun A B q => ricciTensorAt g q (A q) (B q)
+  have hT (A B : SmoothVectorField I M) : T A B = T B A := by
+    funext q
+    exact ricciTensorAt_symm g q (A q) (B q)
+  have hCDsymm
+      (S : SmoothVectorField I M → SmoothVectorField I M → (M → ℝ))
+      (hS : ∀ A B, S A B = S B A)
+      (A B R : SmoothVectorField I M) :
+      nabla.covariantDifferential2 S A B R =
+        nabla.covariantDifferential2 S B A R := by
+    funext q
+    simp only [AffineConnection.covariantDifferential2]
+    rw [hS A B, hS (nabla.cov R A) B, hS A (nabla.cov R B)]
+    ring
+  rw [secondCovDerivAlong_ricciTensorField_eq_iteratedCovariantDifferential2,
+    secondCovDerivAlong_ricciTensorField_eq_iteratedCovariantDifferential2]
+  change nabla.covariantDifferential2
+        (fun A B => nabla.covariantDifferential2 T A B V) X Y U p
+      - nabla.covariantDifferential2 T X Y (nabla.cov U V) p =
+    nabla.covariantDifferential2
+        (fun A B => nabla.covariantDifferential2 T A B V) Y X U p
+      - nabla.covariantDifferential2 T Y X (nabla.cov U V) p
+  rw [hCDsymm (fun A B => nabla.covariantDifferential2 T A B V)
+      (fun A B => hCDsymm T hT A B V) X Y U,
+    hCDsymm T hT X Y (nabla.cov U V)]
+
+/-- **Math.** The corrected second derivative of Ricci is pointwise
+multilinear in all four variables. The tuple slots are ordered
+(U, V, A, B), representing the two derivative directions followed by the two
+Ricci slots. -/
+theorem isPointwiseMultilinear_secondCovDerivAlong_ricciTensorField
+    (g : RiemannianMetric I M) (p : M) :
+    IsPointwiseMultilinear
+      (fun Y : Fin 4 → SmoothVectorField I M => fun q =>
+        secondCovDerivAlong g.leviCivitaConnection (Y 0) (Y 1)
+          (ricciTensorField g) ![Y 2, Y 3] q) p := by
+  let nabla := g.leviCivitaConnection
+  let T : SmoothVectorField I M → SmoothVectorField I M → (M → ℝ) :=
+    fun X Y q => ricciTensorAt g q (X q) (Y q)
+  have hT : IsCovariantTensor2 T := by
+    simpa only [T] using isCovariantTensor2_ricciTensorField g
+  have hsm : ∀ X Y, ContMDiff I 𝓘(ℝ, ℝ) ∞ (T X Y) := by
+    intro X Y
+    have h := hasSmoothComponents_ricciTensorField g
+      (fun i => if i = 0 then X else Y)
+    have hfun : ricciTensorField g (fun i => if i = 0 then X else Y) =
+        fun q => T X Y q := by
+      funext q
+      rw [ricciTensorField]
+      simp [T]
+    rw [hfun] at h
+    exact h
+  let dT : SmoothVectorField I M → SmoothVectorField I M →
+      SmoothVectorField I M → (M → ℝ) :=
+    fun X Y V => nabla.covariantDifferential2 T X Y V
+  have hdT : IsCovariantTensor3 dT := by
+    simpa only [dT] using
+      isCovariantTensor3_covariantDifferential2 nabla T hT hsm
+  have hdsm : ∀ X Y V, ContMDiff I 𝓘(ℝ, ℝ) ∞ (dT X Y V) := by
+    intro X Y V
+    exact covariantDifferential2_contMDiff nabla T hsm X Y V
+  have hbase : IsCovariantTensor4 (covariantDifferential3 nabla dT) :=
+    isCovariantTensor4_covariantDifferential3 nabla dT hdT hdsm
+  let ddT : SmoothVectorField I M → SmoothVectorField I M →
+      SmoothVectorField I M → SmoothVectorField I M → (M → ℝ) :=
+    fun U V X Y => covariantDifferential3 nabla dT X Y V U
+  have hddT : IsCovariantTensor4 ddT := {
+    add₁ := fun U₁ U₂ V X Y q => hbase.add₄ X Y V U₁ U₂ q
+    add₂ := fun U V₁ V₂ X Y q => hbase.add₃ X Y V₁ V₂ U q
+    add₃ := fun U V X₁ X₂ Y q => hbase.add₁ X₁ X₂ Y V U q
+    add₄ := fun U V X Y₁ Y₂ q => hbase.add₂ X Y₁ Y₂ V U q
+    smul₁ := fun f hf U V X Y q => hbase.smul₄ f hf X Y V U q
+    smul₂ := fun f hf U V X Y q => hbase.smul₃ f hf X Y V U q
+    smul₃ := fun f hf U V X Y q => hbase.smul₁ f hf X Y V U q
+    smul₄ := fun f hf U V X Y q => hbase.smul₂ f hf X Y V U q }
+  refine isPointwiseMultilinear_of_isCovariantTensor4 ddT hddT
+    (fun Y : Fin 4 → SmoothVectorField I M => fun q =>
+      secondCovDerivAlong nabla (Y 0) (Y 1)
+        (ricciTensorField g) ![Y 2, Y 3] q) ?_ p
+  intro Y q
+  have hrep := secondCovDerivAlong_eq_covariantDifferential3
+    nabla T (ricciTensorField g) (fun Z r => rfl)
+    (Y 0) (Y 1) ![Y 2, Y 3] q
+  simpa [ddT, dT] using hrep
+
 /-- **Math.** The corrected second covariant derivatives of `Ric` commute up to
 the two positive curvature actions in its covariant slots. -/
 theorem secondCovDerivAlong_ricciTensorField_sub_swap
@@ -1062,6 +1336,8 @@ theorem exists_smooth_frame_ricciNormSq (g : RiemannianMetric I M) (p : M) :
 #print axioms Topping.secondCovDerivAlong_riemannTensorField_sub_swap
 #print axioms Topping.isCovariantTensor2_ricciTensorField
 #print axioms Topping.isPointwiseMultilinear_covDerivAlong_ricciTensorField
+#print axioms Topping.secondCovDerivAlong_ricciTensorField_symm
+#print axioms Topping.isPointwiseMultilinear_secondCovDerivAlong_ricciTensorField
 #print axioms Topping.correctedIteratedCovariantDifferential2_sub_swap
 #print axioms Topping.secondCovDerivAlong_ricciTensorField_sub_swap
 
