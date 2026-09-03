@@ -17,7 +17,7 @@ in the root `PoincareConjecture/` project.
 | `MorganTianLib/Ch05/` | Geometric-limit, packing, and pointed-GH convergence infrastructure |
 | `MorganTianLib.lean` | Aggregate Lean import |
 | `blueprint/src/chapters/` | Distilled mathematical chapters and Lean status annotations |
-| `hgraph/` | Graph configuration plus nested human review attachments |
+| `hgraph/` | Graph configuration plus nested human verdict attachments |
 
 The package uses `DoCarmoLib` through the sibling `../DoCarmo` path dependency.
 
@@ -33,7 +33,6 @@ Workspace-wide website and review instructions are in the root
 
 ## Human statement reviews
 
-External reviewers mark blueprint nodes via nested hgraph attachments under
-`hgraph/nodes/<id>/review-N.md`. On this public repository, only nested
-`review-*.md` / `comment-*.md` attachments are committed; generated node and
-edge bodies are regenerated in CI.
+External reviewers record statement status in nested hgraph attachments under
+`hgraph/nodes/<id>/verdicts.yaml`. Generated node and edge bodies are
+regenerated in CI and are not committed.
