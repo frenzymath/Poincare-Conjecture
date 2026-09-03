@@ -2,12 +2,13 @@
 
 This project is building a formalization-oriented proof architecture for the
 statement that every closed smooth simply connected three-manifold is
-diffeomorphic to the three-sphere. Its six chapters follow logical role rather
-than the chapter order of Morgan--Tian or another single source.
+diffeomorphic to the three-sphere. Its six chapters and seven implementation
+stages follow logical role rather than the chapter order of Morgan--Tian or
+another single source.
 
 ## Current status
 
-- **Semantic graph:** the live six-chapter route has 279 declarations and 854
+- **Semantic graph:** the live six-chapter, seven-stage route has 279 declarations and 854
   direct prerequisite edges. Every declaration reaches the unique terminal
   theorem; the audit finds no cycle, forward edge, duplicate edge, unresolved
   reference, or isolated node.
@@ -33,14 +34,16 @@ The detailed current-source findings and imported-interface inventory are in
 
 The foundations chapter fixes the comparison principles and neck-and-cap
 topology used throughout. The analytic-control chapter develops reduced
-geometry, local estimates, compactness, and noncollapsing. The surgery
-continuation chapter classifies kappa-solutions, establishes canonical
-neighborhoods, and constructs the controlled all-time flow. The curve-shrinking
-chapter develops the corrected estimates needed to deform loop families without
-losing uniform control. The extinction chapter uses two-sphere and loop-space
-widths to show that no component survives indefinitely. The final chapter
-reconstructs the initial manifold backward from the empty terminal slice and
-specializes its connected-sum classification to the simply connected case.
+geometry, local estimates, compactness, and noncollapsing. Chapter 3 is split
+into Stage 3, **Blow-Up Limits, Kappa-Solutions, and Canonical Neighborhoods**,
+and Stage 4, **Continuation of Controlled Ricci Flow with Surgery**. Stage 3
+classifies the blow-up models and proves the canonical-neighborhood interfaces;
+Stage 4 carries out first-failure extension, surgery restart, finite surgery
+count, and all-time continuation. Stage 5 develops the corrected curve-shrinking
+estimates. Stage 6 uses two-sphere and loop-space widths to show that no
+component survives indefinitely. Stage 7 reconstructs the initial manifold
+backward from the empty terminal slice and specializes its connected-sum
+classification to the simply connected case.
 
 The semantic DAG is the complete working inventory beneath this route. The
 project-local blueprint map collapses it into a concise reader view; it does

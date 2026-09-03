@@ -210,7 +210,7 @@ def _build_data(*, important_path: Path = DEFAULT_IMPORTANT) -> dict:
         display_kind = context.get("display_kind") or kind.title()
         display_number = context.get("number")
         display_title = f"{display_kind} {display_number}: {title}" if display_number else f"{display_kind}: {title}"
-        chapter = str(meta.get("chapter") or context.get("chapter") or "Other results")
+        chapter = str(context.get("chapter") or meta.get("chapter") or "Other results")
         # Older generated records spell ampersands differently.  They are
         # normally stale, but normalising here keeps hand-authored records in
         # the correct column if one survives a partial sync.
