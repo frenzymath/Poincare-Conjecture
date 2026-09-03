@@ -1,6 +1,9 @@
 import MorganTianLib.Ch01.ExpJacobiDensity
 import MorganTianLib.Ch01.MetricEuclideanEquiv
 import MorganTianLib.Ch01.BishopGromovBall
+import Mathlib.Analysis.SpecialFunctions.Integrability.Basic
+import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
+import Mathlib.MeasureTheory.Constructions.HaarToSphere
 
 /-!
 # Poincaré Ch. 1, §1.4 — Bishop–Gromov on the manifold: assembling `hanti`
@@ -336,6 +339,111 @@ constant equal to `1` (equivalently, one may scale `gpHaar` by its inverse). -/
 def gpHaarOriginDensity (g : RiemannianMetric I M) (p : M) : ℝ≥0∞ :=
   ENNReal.ofReal (Real.sqrt ((chartGramMatrix (I := I) g p p).det))
 
+/-- **Math.** The fixed `gpHaar` origin density is the metric density read in the preferred
+`p`-chart at its own coordinate.  This identifies the normalization constant used by the
+small-radius producer with the pointwise exponential-Jacobian normalization datum. -/
+theorem gpHaarOriginDensity_eq_chartVolumeDensity_origin
+    (g : RiemannianMetric I M) (p : M) :
+    gpHaarOriginDensity (I := I) g p =
+      ENNReal.ofReal (chartVolumeDensity (I := I) g p (extChartAt I p p)) := by
+  unfold gpHaarOriginDensity chartVolumeDensity
+  have hp : p ∈ (extChartAt I p).source := mem_extChartAt_source (I := I) p
+  rw [show (extChartAt I p).symm (extChartAt I p p) = p from
+    (extChartAt I p).left_inv hp]
+
+/-- **Math.** The origin density of the fixed `gpHaar` convention is strictly positive.  Thus its
+inverse is a legitimate scalar for an explicit Haar normalization. -/
+theorem gpHaarOriginDensity_pos
+    (g : RiemannianMetric I M) (p : M) :
+    0 < gpHaarOriginDensity (I := I) g p := by
+  unfold gpHaarOriginDensity
+  apply ENNReal.ofReal_pos.mpr
+  apply Real.sqrt_pos.mpr
+  apply Riemannian.Tensor.chartGramMatrix_det_pos (I := I) g p
+  rw [TangentBundle.trivializationAt_baseSet, ← extChartAt_source I]
+  exact mem_extChartAt_source (I := I) p
+
+/-! ### Measurability producer for the transported density -/
+
+/-- **Math.** Measurability of the transported Jacobian follows from measurability of the
+untransported Jacobian: the linear equivalence is continuous, and the transported segment domain
+is the measurable cut-time superlevel set pulled back along that equivalence.  The remaining
+unconditional producer is therefore isolated precisely as measurability of
+`expRiemannianJacobian`; this implication does not hide it behind an axiom or alter the density. -/
+theorem measurable_transportedJacobian_of_measurable_expRiemannianJacobian
+    (g : RiemannianMetric I M) (hg : g.IsRiemannianDist) (p : M)
+    (hjac : Measurable (expRiemannianJacobian (I := I) g hg p)) :
+    Measurable (transportedJacobian (I := I) g hg p) := by
+  let L := gpEuclideanEquivL (I := I) g p
+  have hL : Measurable (L : 𝔼 → E) := L.continuous.measurable
+  have hcut : Measurable (fun x : 𝔼 =>
+      cutTime (I := I) g hg p (L x : TangentSpace I p)) := by
+    exact (measurable_cutTime (I := I) g hg p).comp hL
+  have hdomain : MeasurableSet {x : 𝔼 |
+      1 < cutTime (I := I) g hg p (L x : TangentSpace I p)} :=
+    hcut (measurableSet_Ioi (a := (1 : ℝ≥0∞)))
+  have hvalue : Measurable (fun x : 𝔼 =>
+      expRiemannianJacobian (I := I) g hg p (L x)) := hjac.comp hL
+  change Measurable (fun x : 𝔼 =>
+    {y : 𝔼 | 1 < cutTime (I := I) g hg p (L y : TangentSpace I p)}.indicator
+      (fun y => expRiemannianJacobian (I := I) g hg p (L y)) x)
+  exact hvalue.indicator hdomain
+
+/-! ### The flat model power producer -/
+
+private theorem flat_model_radial_integral (m : ℕ) (r : ℝ) (hr : 0 ≤ r) :
+    (∫⁻ t in Ioo (0 : ℝ) r,
+      ENNReal.ofReal (t ^ m)) =
+      ENNReal.ofReal (r ^ (m + 1) / (m + 1)) := by
+  rw [Measure.restrict_congr_set Ioo_ae_eq_Ioc]
+  rw [← ofReal_integral_eq_lintegral_ofReal (intervalIntegral.intervalIntegrable_pow _).1]
+  · rw [← intervalIntegral.integral_of_le hr, integral_pow]
+    simp
+  · filter_upwards [ae_restrict_mem measurableSet_Ioc] with t ht
+    exact pow_nonneg ht.1.le _
+
+/-- **Math.** In the flat model `k = 0`, the radial density is `t^(n-1)`, so the
+model chart volume is exactly a fixed positive multiple of `r^n`.  The constant is
+the spherical Haar mass divided by the dimension, with no normalization hidden. -/
+theorem flat_modelBallVolume_power {R : ℝ} (_hR : 0 < R) :
+    ∃ C : ℝ≥0∞, 0 < C ∧ C ≠ ⊤ ∧
+      ∀ r ∈ Ioo (0 : ℝ) R,
+        modelBallVolume (volume : Measure 𝔼) 0 r =
+          C * ENNReal.ofReal (r ^ Module.finrank ℝ E) := by
+  let n : ℝ≥0∞ := Module.finrank ℝ E
+  let C : ℝ≥0∞ := (Measure.toSphere (volume : Measure 𝔼) univ) / n
+  have hfinrank : 0 < Module.finrank ℝ E := Nat.pos_of_ne_zero (NeZero.ne _)
+  letI : Nontrivial E := Module.nontrivial_of_finrank_pos (R := ℝ) hfinrank
+  have hn_top : n ≠ ⊤ := ENNReal.natCast_ne_top _
+  have hnpos : 0 < n := by
+    dsimp [n]
+    exact_mod_cast (Module.finrank_pos : 0 < Module.finrank ℝ E)
+  have hωpos : 0 < Measure.toSphere (volume : Measure 𝔼) univ :=
+    toSphere_univ_pos (volume : Measure 𝔼)
+  have hCpos : 0 < C := ENNReal.div_pos hωpos.ne' hn_top
+  have hCtop : C ≠ ⊤ := ENNReal.div_ne_top (measure_ne_top _ _) hnpos.ne'
+  refine ⟨C, hCpos, hCtop, ?_⟩
+  intro r hr
+  rw [modelBallVolume_eq (volume : Measure 𝔼) 0 r]
+  have hdim : Module.finrank ℝ 𝔼 = Module.finrank ℝ E := finrank_coeffSpace (E := E)
+  have hsn : snK 0 = id := by
+    funext t
+    exact snK_zero_left t
+  rw [hsn, hdim]
+  simp only [id_eq]
+  have hrad := flat_model_radial_integral (Module.finrank ℝ E - 1) r hr.1.le
+  have hrad' :
+      (∫⁻ t in Ioo (0 : ℝ) r, ENNReal.ofReal (t ^ (Module.finrank ℝ E - 1))) =
+        ENNReal.ofReal (r ^ Module.finrank ℝ E / Module.finrank ℝ E) := by
+    have hN : 1 ≤ Module.finrank ℝ E := Nat.one_le_iff_ne_zero.mpr Module.finrank_pos.ne'
+    simpa [Nat.sub_add_cancel hN, Nat.cast_sub hN] using hrad
+  rw [hrad']
+  dsimp [C, n]
+  rw [ENNReal.ofReal_div_of_pos (by positivity : (0 : ℝ) < Module.finrank ℝ E)]
+  rw [ENNReal.ofReal_natCast]
+  rw [div_eq_mul_inv, div_eq_mul_inv]
+  ac_rfl
+
 /-- **Math.** The current library has all ingredients for the manifold ratio monotonicity, but does not yet
 contain the final small-radius integration theorem or the geometric identification of the flat
 model integral with a multiple of `r^n`.  This record names those exact missing producers.  Keeping
@@ -360,6 +468,49 @@ structure BishopGromovManifoldProducers
     ∃ C : ℝ≥0∞, 0 < C ∧ C ≠ ⊤ ∧
       ∀ r ∈ Ioo (0 : ℝ) R,
         modelBallVolume (volume : Measure 𝔼) 0 r = C * ENNReal.ofReal (r ^ Module.finrank ℝ E)
+
+/-- **Math.** Rescaling the fixed Haar reference by the inverse origin density turns the honest
+small-radius limit supplied by `BishopGromovManifoldProducers` into the source normalization `1`.
+The unscaled limit remains an explicit producer obligation; this theorem only performs its
+measure-theoretic normalization, with no hidden chart-normalization assumption. -/
+theorem bishop_gromov_manifold_small_radius_normalization_smul
+    (g : RiemannianMetric I M) (hg : g.IsRiemannianDist) [ConnectedSpace M]
+    (p : M) {R : ℝ}
+    (hprod : BishopGromovManifoldProducers (I := I) g hg p R) :
+    Tendsto
+      (fun r =>
+        riemannianMeasure (I := I) g
+            ((gpHaarOriginDensity (I := I) g p)⁻¹ • gpHaar (I := I) g p)
+            (Metric.ball p r) /
+          modelBallVolume (volume : Measure 𝔼) 0 r)
+      (𝓝[>] (0 : ℝ)) (𝓝 1) := by
+  have hCpos : 0 < gpHaarOriginDensity (I := I) g p :=
+    gpHaarOriginDensity_pos (I := I) g p
+  have hCtop : gpHaarOriginDensity (I := I) g p ≠ (⊤ : ℝ≥0∞) := by
+    rw [gpHaarOriginDensity]
+    exact ENNReal.ofReal_ne_top
+  have hC0 : gpHaarOriginDensity (I := I) g p ≠ 0 := ne_of_gt hCpos
+  have hlim := hprod.small_radius_normalization
+  have hscaled := ENNReal.Tendsto.const_mul hlim
+      (a := (gpHaarOriginDensity (I := I) g p)⁻¹)
+      (b := gpHaarOriginDensity (I := I) g p)
+      (Or.inr (ENNReal.inv_ne_top.mpr hC0))
+  have heq :
+      (fun r =>
+        riemannianMeasure (I := I) g
+            ((gpHaarOriginDensity (I := I) g p)⁻¹ • gpHaar (I := I) g p)
+            (Metric.ball p r) /
+          modelBallVolume (volume : Measure 𝔼) 0 r) =
+      (fun r => (gpHaarOriginDensity (I := I) g p)⁻¹ *
+        (riemannianMeasure (I := I) g (gpHaar (I := I) g p)
+            (Metric.ball p r) /
+          modelBallVolume (volume : Measure 𝔼) 0 r)) := by
+    funext r
+    rw [riemannianMeasure_smul, MeasureTheory.Measure.smul_apply]
+    simp only [smul_eq_mul]
+    rw [mul_div_assoc]
+  rw [heq]
+  simpa [ENNReal.inv_mul_cancel hC0 hCtop] using hscaled
 
 /-- **Math.** Conditional packaging of the source theorem's normalization and `k=0` consequence.
 The extra hypothesis `hCnorm` is the explicit chart-normalization condition

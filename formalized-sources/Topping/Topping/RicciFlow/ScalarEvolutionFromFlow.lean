@@ -9,9 +9,9 @@ import Topping.RicciFlow.ScalarSpacetimeSmooth
 
 Morgan--Tian's coordinate calculation proves the scalar evolution equation at
 every interior time of a smooth Ricci flow.  This file transports that theorem
-across Topping's scalar curvature, Laplacian, and Ricci-norm conventions.  The
-restriction to `interior J` is genuine: the imported theorem gives an ordinary
-derivative there, not a one-sided derivative at an endpoint of `J`.
+across Topping's scalar curvature, Laplacian, and Ricci-norm conventions.  Full
+space-time regularity then extends that interior identity to the one-sided
+within-derivatives at endpoints of the prescribed flow time set.
 -/
 
 open scoped ContDiff Manifold Topology Bundle RealInnerProductSpace
@@ -80,6 +80,83 @@ theorem hasDerivWithinAt_selfChartVolumeDensityAt_of_morganTian_isRicciFlowOn
   hasDerivWithinAt_selfChartVolumeDensityAt_of_isRicciFlowOn
     (isRicciFlowOn_of_morganTian_isRicciFlowOn hflow) ht p
 
+/-- **Math.** At a fixed point, scalar curvature is a smooth function of time
+on the whole prescribed time set of a smooth Ricci flow. -/
+theorem contDiffOn_scalarCurvature_timeSlice_of_isRicciFlowOn
+    {g : ℝ → RiemannianMetric I M} {J : Set ℝ}
+    (hflow : MorganTianLib.IsRicciFlowOn g J) (p : M) :
+    ContDiffOn ℝ ∞ (fun t => scalarCurvatureAt (g t) p) J := by
+  intro t ht
+  have hread : ContMDiff 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, ℝ)) ∞
+      (fun s : ℝ => (p, s)) :=
+    contMDiff_const.prodMk contMDiff_id
+  have hcomp :=
+    (scalarCurvature_contMDiffOn_of_isRicciFlowOn hflow).comp
+      (s := J) hread.contMDiffOn (fun s hs => ⟨mem_univ p, hs⟩)
+  have hcompAt := hcomp t ht
+  simpa only [Function.comp_def] using hcompAt.contDiffWithinAt
+
+/-- **Math.** The intrinsic right-hand side `Delta R + 2 |Ric|²` is smooth in
+time on the whole prescribed time set of a smooth Ricci flow. -/
+theorem contDiffOn_scalarCurvatureEvolutionRHS_of_isRicciFlowOn
+    {g : ℝ → RiemannianMetric I M} {J : Set ℝ}
+    (hflow : MorganTianLib.IsRicciFlowOn g J) (p : M) :
+    ContDiffOn ℝ ∞
+      (fun t => metricLaplacianAt (g t)
+          (fun q => scalarCurvatureAt (g t) q) p +
+        2 * ricciNormSqAt (g t) p) J := by
+  let y := extChartAt I p p
+  have hy : y ∈ (extChartAt I p).target := mem_extChartAt_target p
+  have hpoint : (extChartAt I p).symm y = p :=
+    (extChartAt I p).left_inv (mem_extChartAt_source p)
+  have hread : ContDiffOn ℝ ∞ (fun t : ℝ => (t, y)) J :=
+    contDiffOn_id.prodMk contDiffOn_const
+  have hlapCoord : ContDiffOn ℝ ∞
+      (fun t => ∑ j, ∑ k,
+        chartInvGramOnE (I := I) (g t) p j k y *
+          (partialDeriv (E := E) j (fun z => partialDeriv (E := E) k
+              (MorganTianLib.chartScalarCurvatureOnE (I := I) (g t) p) z) y -
+            ∑ s, chartChristoffel (I := I) (g t) p j k s y *
+              partialDeriv (E := E) s
+                (MorganTianLib.chartScalarCurvatureOnE (I := I) (g t) p) y)) J := by
+    simpa only [Function.comp_def] using
+      (contDiffOn_chartScalarLaplacianOnE_timeSpace hflow.smooth p).comp
+        hread (fun t ht => ⟨ht, hy⟩)
+  have hnormCoord : ContDiffOn ℝ ∞
+      (fun t => MorganTianLib.chartRicciNormSqOnE (I := I) (g t) p y) J := by
+    simpa only [Function.comp_def] using
+      (contDiffOn_chartRicciNormSqOnE_timeSpace hflow.smooth p).comp
+        hread (fun t ht => ⟨ht, hy⟩)
+  have hcoord : ContDiffOn ℝ ∞
+      (fun t =>
+        (∑ j, ∑ k,
+          chartInvGramOnE (I := I) (g t) p j k y *
+            (partialDeriv (E := E) j (fun z => partialDeriv (E := E) k
+                (MorganTianLib.chartScalarCurvatureOnE (I := I) (g t) p) z) y -
+              ∑ s, chartChristoffel (I := I) (g t) p j k s y *
+                partialDeriv (E := E) s
+                  (MorganTianLib.chartScalarCurvatureOnE (I := I) (g t) p) y)) +
+          2 * MorganTianLib.chartRicciNormSqOnE (I := I) (g t) p y) J :=
+    hlapCoord.add (contDiffOn_const.mul hnormCoord)
+  refine hcoord.congr ?_
+  intro t ht
+  have hlap :=
+    MorganTianLib.chartScalarCurvatureOnE_coordinate_laplacian_eq_laplacianAt
+      (g t) p hy (isLeviCivita_leviCivitaConnection (g t))
+  have hnorm :=
+    MorganTianLib.chartRicciNormSqOnE_eq_ricciNormSqAt (g t) p hy
+  rw [hpoint] at hlap hnorm
+  have hspaceFunction :
+      (fun q => MorganTianLib.scalarCurvatureAt (g t)
+        (g t).leviCivitaConnection (isLeviCivita_leviCivitaConnection (g t)) q) =
+        fun q => scalarCurvatureAt (g t) q := by
+    funext q
+    exact (scalarCurvatureAt_eq_scalarCurvatureAt (g t) q).symm
+  have hdim : Module.finrank ℝ E ≠ 0 := NeZero.ne _
+  unfold metricLaplacianAt
+  simp only [hdim, ↓reduceDIte]
+  rw [← hspaceFunction, ← hlap, ricciNormSqAt_eq_mtRicciNormSqAt, ← hnorm]
+
 /-- **Math.** A smooth Ricci flow satisfies
 `partial_t R = Delta R + 2 |Ric|^2` at every interior time. -/
 theorem hasScalarCurvatureEvolutionOn_interior_of_isRicciFlowOn
@@ -122,10 +199,80 @@ theorem hasScalarCurvatureEvolutionOn_interior_of_isRicciFlowOn
   exact hderiv.hasDerivWithinAt
 
 /-! The coordinate calculation is stated on `interior J` because it uses an
-ordinary time derivative.  Restricting that result to a smaller set is the
-endpoint adapter needed by the maximum-principle consumers: a closed interval
-`K` gets a genuine within-derivative at both endpoints whenever it sits inside
-the ambient flow interval's interior. -/
+ordinary time derivative.  Since both scalar curvature and the calculated
+right-hand side are smooth on `J`, their within-derivatives agree on the dense
+interior and hence on all of the convex flow time set. -/
+
+/-- **Math.** A smooth Ricci flow satisfies
+`partial_t R = Delta R + 2 |Ric|^2` on its whole prescribed time set, with
+one-sided within-derivatives at boundary times. -/
+theorem hasScalarCurvatureEvolutionOn_of_isRicciFlowOn
+    {g : ℝ → RiemannianMetric I M} {J : Set ℝ}
+    (hflow : MorganTianLib.IsRicciFlowOn g J) :
+    HasScalarCurvatureEvolutionOn g J := by
+  intro t ht p
+  let f : ℝ → ℝ := fun s => scalarCurvatureAt (g s) p
+  let rhs : ℝ → ℝ := fun s =>
+    metricLaplacianAt (g s) (fun q => scalarCurvatureAt (g s) q) p +
+      2 * ricciNormSqAt (g s) p
+  have hf : ContDiffOn ℝ ∞ f J := by
+    simpa only [f] using
+      contDiffOn_scalarCurvature_timeSlice_of_isRicciFlowOn hflow p
+  have hrhs : ContDiffOn ℝ ∞ rhs J := by
+    simpa only [rhs] using
+      contDiffOn_scalarCurvatureEvolutionRHS_of_isRicciFlowOn hflow p
+  have hconv : Convex ℝ J := hflow.ordConnected.convex
+  have hinterior : (interior J).Nonempty :=
+    hconv.nontrivial_iff_nonempty_interior.mp hflow.nontrivial
+  have hunique : UniqueDiffOn ℝ J := uniqueDiffOn_convex hconv hinterior
+  have hclosure : J ⊆ closure (interior J) := by
+    rw [hconv.closure_interior_eq_closure_of_nonempty_interior hinterior]
+    exact subset_closure
+  have heqInterior : Set.EqOn (derivWithin f J) rhs (interior J) := by
+    intro s hs
+    have hderiv :=
+      hasScalarCurvatureEvolutionOn_interior_of_isRicciFlowOn hflow s hs p
+    have hderivAt := hderiv.hasDerivAt (isOpen_interior.mem_nhds hs)
+    have hderivWithin : HasDerivWithinAt f (rhs s) J s := by
+      simpa only [f, rhs] using hderivAt.hasDerivWithinAt
+    exact hderivWithin.derivWithin
+      (hunique.uniqueDiffWithinAt (interior_subset hs))
+  have heq : Set.EqOn (derivWithin f J) rhs J :=
+    heqInterior.of_subset_closure
+      (hf.continuousOn_derivWithin hunique (by simp))
+      hrhs.continuousOn interior_subset hclosure
+  have hdiff : DifferentiableWithinAt ℝ f J t :=
+    (hf t ht).differentiableWithinAt (by simp)
+  simpa only [f, rhs] using
+    hdiff.hasDerivWithinAt.congr_deriv (heq ht)
+
+/-- **Math.** The same genuine Ricci flow supplies Topping's scalar
+first-variation formula on its whole time set. -/
+theorem hasScalarVariationOn_of_isRicciFlowOn
+    {g : ℝ → RiemannianMetric I M} {J : Set ℝ}
+    (hflow : MorganTianLib.IsRicciFlowOn g J) :
+    HasScalarVariationOn g
+      (fun t p x y => -2 * ricciTensorAt (g t) p x y) J :=
+  hasScalarVariationOn_of_hasScalarCurvatureEvolutionOn
+    (hasScalarCurvatureEvolutionOn_of_isRicciFlowOn hflow)
+
+/-- **Math.** Scalar evolution restricts from a genuine flow to every smaller
+time set. -/
+theorem hasScalarCurvatureEvolutionOn_of_isRicciFlowOn_of_subset
+    {g : ℝ → RiemannianMetric I M} {J K : Set ℝ}
+    (hflow : MorganTianLib.IsRicciFlowOn g J) (hK : K ⊆ J) :
+    HasScalarCurvatureEvolutionOn g K :=
+  (hasScalarCurvatureEvolutionOn_of_isRicciFlowOn hflow).mono hK
+
+/-- **Math.** Scalar first variation restricts from a genuine flow to every
+smaller time set. -/
+theorem hasScalarVariationOn_of_isRicciFlowOn_of_subset
+    {g : ℝ → RiemannianMetric I M} {J K : Set ℝ}
+    (hflow : MorganTianLib.IsRicciFlowOn g J) (hK : K ⊆ J) :
+    HasScalarVariationOn g
+      (fun t p x y => -2 * ricciTensorAt (g t) p x y) K :=
+  hasScalarVariationOn_of_hasScalarCurvatureEvolutionOn
+    (hasScalarCurvatureEvolutionOn_of_isRicciFlowOn_of_subset hflow hK)
 
 /-- **Math.** A Ricci flow witnesses Topping's scalar evolution on every time
 set contained in the interior of its ambient flow interval. -/
@@ -262,8 +409,12 @@ theorem scalarLowerBarrier_le_of_initial_nonpos_of_isRicciFlowOn_Ico
         p t ⟨htpos.le, le_rfl⟩
 
 #print axioms Topping.hasScalarCurvatureEvolutionOn_interior_of_isRicciFlowOn
+#print axioms Topping.hasScalarCurvatureEvolutionOn_of_isRicciFlowOn
+#print axioms Topping.hasScalarCurvatureEvolutionOn_of_isRicciFlowOn_of_subset
 #print axioms Topping.hasScalarCurvatureEvolutionOn_of_isRicciFlowOn_of_subset_interior
 #print axioms Topping.hasScalarCurvatureEvolutionOn_of_isRicciFlowOn_of_isOpen
+#print axioms Topping.hasScalarVariationOn_of_isRicciFlowOn
+#print axioms Topping.hasScalarVariationOn_of_isRicciFlowOn_of_subset
 #print axioms Topping.hasScalarVariationOn_interior_of_isRicciFlowOn
 #print axioms Topping.hasScalarVariationOn_of_isRicciFlowOn_of_subset_interior
 #print axioms Topping.hasScalarVariationOn_of_isRicciFlowOn_of_isOpen

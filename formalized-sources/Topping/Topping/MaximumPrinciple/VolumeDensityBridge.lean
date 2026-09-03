@@ -78,8 +78,44 @@ theorem hasVolumeDerivativeOn_of_weightedDensity_eq_measure
     (fun s hs => hmass s hs) (hmass t ht)
   simpa only [hμ t ht] using hderivMass
 
+set_option linter.unusedSectionVars false in
+/-- **Math.** Endpoint-capable density-to-volume adapter.
+
+The within-set differentiation theorem supplies the derivative on a convex
+target set; the explicit measure equality then transports the derivative to the
+total mass of the requested measure family. -/
+theorem hasVolumeDerivativeOn_of_weightedDensityWithin_eq_measure
+    {g : ℝ → RiemannianMetric I M} (ν : Measure M)
+    [SFinite ν] (ρ : ℝ → M → NNReal) {K : Set ℝ}
+    (hK : Convex ℝ K)
+    (hρmeas : ∀ t ∈ K, Measurable (ρ t))
+    (hρint : ∀ t ∈ K, Integrable (fun p => (ρ t p : ℝ)) ν)
+    (hderiv : ∀ t ∈ K, ∀ p,
+      HasDerivWithinAt (fun s => (ρ s p : ℝ))
+        (-scalarCurvatureAt (g t) p * (ρ t p : ℝ)) K t)
+    (bound : M → ℝ) (hboundInt : Integrable bound ν)
+    (hbound : ∀ᵐ p ∂ν, ∀ t ∈ K,
+      ‖-scalarCurvatureAt (g t) p * (ρ t p : ℝ)‖ ≤ bound p)
+    {μ : ℝ → Measure M}
+    (hμ : ∀ t ∈ K,
+      ν.withDensity (fun p => (ρ t p : ENNReal)) = μ t) :
+    HasVolumeDerivativeOn g
+      (fun t => (μ t).real univ) μ K := by
+  have hbase := hasVolumeDerivativeOn_of_weightedDensityWithin ν ρ hK
+    hρmeas hρint hderiv bound hboundInt hbound
+  intro t ht
+  have hmass (s : ℝ) (hs : s ∈ K) :
+      (μ s).real univ = ∫ p, (ρ s p : ℝ) ∂ν := by
+    rw [← hμ s hs]
+    exact real_univ_withDensity_nnreal_eq_integral ν (ρ s)
+      (hρint s hs)
+  have hderivMass := (hbase t ht).congr (f₁ := fun s => (μ s).real univ)
+    (fun s hs => hmass s hs) (hmass t ht)
+  simpa only [hμ t ht] using hderivMass
+
 #print axioms Topping.real_univ_withDensity_nnreal_eq_integral
 #print axioms Topping.hasVolumeDerivativeOn_of_weightedDensity_eq_measure
+#print axioms Topping.hasVolumeDerivativeOn_of_weightedDensityWithin_eq_measure
 
 end Topping
 

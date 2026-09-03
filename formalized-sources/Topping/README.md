@@ -1,24 +1,21 @@
 # Topping - Lectures on the Ricci Flow
 
-A Lean 4 reference project and source-faithful blueprint following Peter
-Topping, *Lectures on the Ricci Flow* (London Mathematical Society Lecture
-Note Series 325).
+A Lean 4 formalization and source-based dependency blueprint following Peter
+Topping, *Lectures on the Ricci Flow* (LMS Lecture Note Series 325).
 
-The blueprint covers the complete text: ten chapters, the connected-sum
-appendix, and supporting front and end matter. Its mathematical development
-runs from Riemannian and parabolic preliminaries through Perelman entropy and
-three-dimensional curvature pinching. The Lean library is an initial scaffold
-for declarations following that dependency graph.
+This is a reference project. The repository's custom proof architecture lives
+in the root `PoincareConjecture/` project.
 
 ## Layout
 
-- `Topping/` - Lean source modules.
+- `Topping/` - Lean library modules (Riemannian, Ricci flow, maximum principle,
+  parabolic PDE infrastructure).
 - `Topping.lean` - root library module.
-- `blueprint/src/chapters/` - source-faithful chapter files.
-- `blueprint/src/content.tex` - blueprint entry point.
+- `blueprint/src/` - source-based mathematical blueprint.
 - `hgraph/config.yaml` - graph synchronization configuration.
 
-The package uses `DoCarmoLib` through the sibling `../DoCarmo` path dependency.
+The package depends on `DoCarmoLib` and `MorganTianLib` through the sibling
+paths `../DoCarmo` and `../MorganTian`.
 
 ## Build
 

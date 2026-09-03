@@ -35,7 +35,7 @@ where the geometry lives.
 -/
 
 open scoped ContDiff Manifold Topology Bundle
-open Set Riemannian MeasureTheory
+open Set Riemannian MeasureTheory Filter
 
 noncomputable section
 
@@ -121,7 +121,105 @@ theorem hasVolumeDerivativeOn_of_weightedDensity
   rw [htarget] at hparam
   exact hparam.2.hasDerivWithinAt
 
+set_option linter.unusedSectionVars false in
+/-- **Math.** Differentiation under an integral on a convex time set.
+
+The within-set slope formulation is what permits endpoint times: the pointwise
+derivative is only required along `K`, and the convex mean-value estimate gives
+an integrable majorant for the difference quotients. -/
+theorem hasDerivWithinAt_integral_of_dominated_of_derivWithin_le
+    (ν : Measure M) {F F' : ℝ → M → ℝ} {K : Set ℝ}
+    (hK : Convex ℝ K)
+    (hFint : ∀ s ∈ K, Integrable (F s) ν)
+    (hderiv : ∀ s ∈ K, ∀ p,
+      HasDerivWithinAt (fun r => F r p) (F' s p) K s)
+    (bound : M → ℝ) (hboundInt : Integrable bound ν)
+    (hbound : ∀ᵐ p ∂ν, ∀ s ∈ K, ‖F' s p‖ ≤ bound p)
+    {t : ℝ} (ht : t ∈ K) :
+    HasDerivWithinAt (fun s => ∫ p, F s p ∂ν)
+      (∫ p, F' t p ∂ν) K t := by
+  rw [hasDerivWithinAt_iff_tendsto_slope]
+  have hparam :
+      Tendsto
+        (fun s => ∫ p, slope (fun r => F r p) t s ∂ν)
+        (𝓝[K \ {t}] t) (𝓝 (∫ p, F' t p ∂ν)) := by
+    apply tendsto_integral_filter_of_dominated_convergence bound
+    · filter_upwards [eventually_mem_nhdsWithin] with s hs
+      have hsK : s ∈ K := hs.1
+      have hnum := (hFint s hsK).aestronglyMeasurable.sub
+        (hFint t ht).aestronglyMeasurable
+      have hmeas := hnum.div₀
+        (aestronglyMeasurable_const :
+          AEStronglyMeasurable (fun _ : M => s - t) ν)
+      have hmeas' : AEStronglyMeasurable
+          (fun p => (F s p - F t p) / (s - t)) ν := by
+        apply hmeas.congr
+        exact Filter.Eventually.of_forall fun p => by
+          simp only [Pi.div_apply, Pi.sub_apply]
+      simpa only [slope_def_field] using hmeas'
+    · filter_upwards [eventually_mem_nhdsWithin] with s hs
+      filter_upwards [hbound] with p hp
+      have hlip : ‖F s p - F t p‖ ≤ bound p * ‖s - t‖ :=
+        hK.norm_image_sub_le_of_norm_hasDerivWithin_le
+          (fun u hu => hderiv u hu p)
+          (fun u hu => hp u hu) ht hs.1
+      have hne : s - t ≠ 0 := sub_ne_zero.mpr (by simpa using hs.2)
+      rw [slope_def_field, norm_div,
+        div_le_iff₀ (norm_pos_iff.mpr hne)]
+      exact hlip
+    · exact hboundInt
+    · exact Filter.Eventually.of_forall fun p =>
+        (hasDerivWithinAt_iff_tendsto_slope.mp (hderiv t ht p))
+  refine hparam.congr' ?_
+  filter_upwards [eventually_mem_nhdsWithin] with s hs
+  have hsK : s ∈ K := hs.1
+  simp only [slope_def_field]
+  rw [integral_div, integral_sub (hFint s hsK) (hFint t ht)]
+
+set_option linter.unusedSectionVars false in
+/-- **Math.** A dominated within-set evolution of a nonnegative density produces
+the canonical volume derivative, including endpoint times. -/
+theorem hasVolumeDerivativeOn_of_weightedDensityWithin
+    {g : ℝ → RiemannianMetric I M} (ν : Measure M)
+    (ρ : ℝ → M → NNReal) {K : Set ℝ} (hK : Convex ℝ K)
+    (hρmeas : ∀ t ∈ K, Measurable (ρ t))
+    (hρint : ∀ t ∈ K, Integrable (fun p => (ρ t p : ℝ)) ν)
+    (hderiv : ∀ t ∈ K, ∀ p,
+      HasDerivWithinAt (fun s => (ρ s p : ℝ))
+        (-scalarCurvatureAt (g t) p * (ρ t p : ℝ)) K t)
+    (bound : M → ℝ) (hboundInt : Integrable bound ν)
+    (hbound : ∀ᵐ p ∂ν, ∀ t ∈ K,
+      ‖-scalarCurvatureAt (g t) p * (ρ t p : ℝ)‖ ≤ bound p) :
+    HasVolumeDerivativeOn g
+      (fun t => ∫ p, (ρ t p : ℝ) ∂ν)
+      (fun t => ν.withDensity (fun p => (ρ t p : ENNReal))) K := by
+  intro t ht
+  have hparam :=
+    hasDerivWithinAt_integral_of_dominated_of_derivWithin_le
+      (ν := ν) (F := fun s p => (ρ s p : ℝ))
+      (F' := fun s p =>
+        -scalarCurvatureAt (g s) p * (ρ s p : ℝ))
+      (K := K) hK hρint hderiv bound hboundInt hbound ht
+  have hweighted :
+      (∫ p, scalarCurvatureAt (g t) p
+          ∂(ν.withDensity (fun p => (ρ t p : ENNReal)))) =
+        ∫ p, (ρ t p : ℝ) * scalarCurvatureAt (g t) p ∂ν := by
+    rw [integral_withDensity_eq_integral_smul (hρmeas t ht)]
+    congr 1
+  have htarget :
+      (∫ p, -scalarCurvatureAt (g t) p * (ρ t p : ℝ) ∂ν) =
+        -(∫ p, scalarCurvatureAt (g t) p
+          ∂(ν.withDensity (fun p => (ρ t p : ENNReal)))) := by
+    rw [hweighted, ← integral_neg]
+    congr 1
+    funext p
+    ring
+  rw [htarget] at hparam
+  exact hparam
+
 #print axioms Topping.hasVolumeDerivativeOn_of_weightedDensity
+#print axioms Topping.hasDerivWithinAt_integral_of_dominated_of_derivWithin_le
+#print axioms Topping.hasVolumeDerivativeOn_of_weightedDensityWithin
 
 section
 

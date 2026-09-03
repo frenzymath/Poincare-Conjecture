@@ -350,6 +350,51 @@ def riemannianMeasure (g : RiemannianMetric I M) (μ : Measure E) : Measure M :=
     (chartMeasure (I := I) g μ (chartCover (I := I) (M := M) n)).restrict
       (chartPiece (I := I) (M := M) n)
 
+/-- **Math.** A chart measure is linear in the additive Haar reference measure. -/
+theorem chartMeasure_smul (g : RiemannianMetric I M) (μ : Measure E)
+    [μ.IsAddHaarMeasure] (α : M) (c : ℝ≥0∞) :
+    chartMeasure (I := I) g (c • μ) α = c • chartMeasure (I := I) g μ α := by
+  unfold chartMeasure
+  rw [Measure.restrict_smul, MeasureTheory.withDensity_smul_measure, Measure.map_smul]
+
+/-- **Math.** The global Riemannian measure is linear in the additive Haar reference measure.
+
+The identity is useful when changing the tangent-space normalization: every chart restriction and
+density pushforward commutes with a scalar, and the countable atlas sum does as well.  In
+particular, scalar normalization can be performed before or after assembling the manifold
+measure; no normalization is hidden in the definition of `riemannianMeasure`. -/
+theorem riemannianMeasure_smul (g : RiemannianMetric I M) (μ : Measure E)
+    [μ.IsAddHaarMeasure] (c : ℝ≥0∞) :
+    riemannianMeasure (I := I) g (c • μ) = c • riemannianMeasure (I := I) g μ := by
+  have hchart (n : ℕ) :
+      chartMeasure (I := I) g (c • μ)
+          (chartCover (I := I) (M := M) n) =
+        c • chartMeasure (I := I) g μ
+          (chartCover (I := I) (M := M) n) := by
+    exact chartMeasure_smul (I := I) g μ
+      (chartCover (I := I) (M := M) n) c
+  have hrestrict (n : ℕ) :
+      (chartMeasure (I := I) g (c • μ)
+          (chartCover (I := I) (M := M) n)).restrict
+          (chartPiece (I := I) (M := M) n) =
+        c • (chartMeasure (I := I) g μ
+          (chartCover (I := I) (M := M) n)).restrict
+          (chartPiece (I := I) (M := M) n) := by
+    rw [hchart, Measure.restrict_smul]
+  apply Measure.ext
+  intro s hs
+  change (Measure.sum fun n =>
+      (chartMeasure (I := I) g (c • μ)
+        (chartCover (I := I) (M := M) n)).restrict
+        (chartPiece (I := I) (M := M) n)) s =
+    (c • Measure.sum fun n =>
+      (chartMeasure (I := I) g μ
+        (chartCover (I := I) (M := M) n)).restrict
+        (chartPiece (I := I) (M := M) n)) s
+  rw [Measure.sum_apply _ hs, Measure.smul_apply, Measure.sum_apply _ hs]
+  simp_rw [hrestrict, Measure.smul_apply, smul_eq_mul]
+  rw [ENNReal.tsum_mul_left]
+
 /-- **Math.** The **interface theorem**: the Riemannian measure of a measurable set contained in
 *any* chart is the integral of `√(det gᵢⱼ)` over its coordinate image in that chart. The atlas
 chosen to build `riemannianMeasure` is invisible here — this is what makes the definition the

@@ -1,5 +1,6 @@
 import Topping.Riemannian.CurvatureLaplacianProducer
 import Topping.Riemannian.SmoothTensor
+import Topping.RicciFlow.CurvatureVariationArbitrary
 import Topping.RicciFlow.CurvatureStarUniform
 
 /-!
@@ -110,10 +111,11 @@ regularity fact is used and is not a hypothesis because it is a theorem:
 smoothness of the components of `\Ric` (`hasSmoothComponents_ricciTensorField`),
 without which the `-2` could not leave `∇²`.
 
-**Status of the antecedent.** `HasCurvatureLaplacianFormula` (2.4.1) is now
-genuinely witnessed for every metric. The remaining input is
-`HasRiemannVariationOn` (Topping 2.3.5) in the `-2\Ric` direction, which has no
-arbitrary-field intrinsic producer in the workspace. -/
+**Status of the antecedent.** `HasCurvatureLaplacianFormula` (2.4.1) is
+genuinely witnessed for every metric, and
+`hasRiemannVariationOn_of_isRicciFlowOn` witnesses the variation input for a
+Ricci flow on its whole prescribed time set. The conditional theorem remains
+useful for other metric variations. -/
 theorem hasCurvatureEvolutionComponentsOn_of_variation
     {g : ℝ → RiemannianMetric I M} {J : Set ℝ}
     (hvar : HasRiemannVariationOn g
@@ -155,8 +157,111 @@ theorem hasCurvatureEvolutionOn_of_variation
   hasCurvatureEvolutionOn_of_components
     (hasCurvatureEvolutionComponentsOn_of_variation hvar)
 
+/-! ### Unconditional Ricci-flow producers -/
+
+/-- **Math.** A genuine Ricci flow satisfies the component curvature evolution
+equation on its whole prescribed time set. -/
+theorem hasCurvatureEvolutionComponentsOn_of_isRicciFlowOn
+    {g : ℝ → RiemannianMetric I M} {J : Set ℝ}
+    (hflow : MorganTianLib.IsRicciFlowOn g J) :
+    HasCurvatureEvolutionComponentsOn g J :=
+  hasCurvatureEvolutionComponentsOn_of_variation
+    (hasRiemannVariationOn_of_isRicciFlowOn hflow)
+
+/-- **Math.** Component curvature evolution restricts from a genuine Ricci flow
+to every target time set contained in its prescribed domain. -/
+theorem hasCurvatureEvolutionComponentsOn_of_isRicciFlowOn_of_subset
+    {g : ℝ → RiemannianMetric I M} {J K : Set ℝ}
+    (hflow : MorganTianLib.IsRicciFlowOn g J) (hK : K ⊆ J) :
+    HasCurvatureEvolutionComponentsOn g K := by
+  intro t ht Y p
+  exact
+    (hasCurvatureEvolutionComponentsOn_of_isRicciFlowOn hflow t (hK ht) Y p).mono hK
+
+/-- **Math.** A genuine Ricci flow satisfies the component curvature evolution
+equation at every interior time of its flow domain. -/
+theorem hasCurvatureEvolutionComponentsOn_interior_of_isRicciFlowOn
+    {g : ℝ → RiemannianMetric I M} {J : Set ℝ}
+    (hflow : MorganTianLib.IsRicciFlowOn g J) :
+    HasCurvatureEvolutionComponentsOn g (interior J) :=
+  hasCurvatureEvolutionComponentsOn_of_variation
+    (hasRiemannVariationOn_interior_of_isRicciFlowOn hflow)
+
+/-- **Math.** Component curvature evolution restricts to any target time set
+contained in the interior of a Ricci-flow domain. -/
+theorem hasCurvatureEvolutionComponentsOn_of_isRicciFlowOn_of_subset_interior
+    {g : ℝ → RiemannianMetric I M} {J K : Set ℝ}
+    (hflow : MorganTianLib.IsRicciFlowOn g J) (hK : K ⊆ interior J) :
+    HasCurvatureEvolutionComponentsOn g K :=
+  hasCurvatureEvolutionComponentsOn_of_variation
+    (hasRiemannVariationOn_of_isRicciFlowOn_of_subset_interior hflow hK)
+
+/-- **Math.** On an open flow domain, component curvature evolution holds on
+every contained target time set. -/
+theorem hasCurvatureEvolutionComponentsOn_of_isRicciFlowOn_of_isOpen
+    {g : ℝ → RiemannianMetric I M} {J K : Set ℝ}
+    (hflow : MorganTianLib.IsRicciFlowOn g J) (hJ : IsOpen J) (hK : K ⊆ J) :
+    HasCurvatureEvolutionComponentsOn g K :=
+  hasCurvatureEvolutionComponentsOn_of_variation
+    (hasRiemannVariationOn_of_isRicciFlowOn_of_isOpen hflow hJ hK)
+
+/-- **Math.** A genuine Ricci flow satisfies the compact tensor equation
+`∂ₜ Rm = Δ Rm + Rm * Rm` at every interior time. -/
+theorem hasCurvatureEvolutionOn_interior_of_isRicciFlowOn
+    {g : ℝ → RiemannianMetric I M} {J : Set ℝ}
+    (hflow : MorganTianLib.IsRicciFlowOn g J) :
+    HasCurvatureEvolutionOn g (interior J) :=
+  hasCurvatureEvolutionOn_of_components
+    (hasCurvatureEvolutionComponentsOn_interior_of_isRicciFlowOn hflow)
+
+/-- **Math.** A genuine Ricci flow satisfies the compact curvature evolution
+equation on its whole prescribed time set. -/
+theorem hasCurvatureEvolutionOn_of_isRicciFlowOn
+    {g : ℝ → RiemannianMetric I M} {J : Set ℝ}
+    (hflow : MorganTianLib.IsRicciFlowOn g J) :
+    HasCurvatureEvolutionOn g J :=
+  hasCurvatureEvolutionOn_of_components
+    (hasCurvatureEvolutionComponentsOn_of_isRicciFlowOn hflow)
+
+/-- **Math.** Compact curvature evolution restricts from a genuine Ricci flow
+to every target time set contained in its prescribed domain. -/
+theorem hasCurvatureEvolutionOn_of_isRicciFlowOn_of_subset
+    {g : ℝ → RiemannianMetric I M} {J K : Set ℝ}
+    (hflow : MorganTianLib.IsRicciFlowOn g J) (hK : K ⊆ J) :
+    HasCurvatureEvolutionOn g K :=
+  hasCurvatureEvolutionOn_of_components
+    (hasCurvatureEvolutionComponentsOn_of_isRicciFlowOn_of_subset hflow hK)
+
+/-- **Math.** The compact curvature evolution equation restricts to any target
+time set contained in the interior of a Ricci-flow domain. -/
+theorem hasCurvatureEvolutionOn_of_isRicciFlowOn_of_subset_interior
+    {g : ℝ → RiemannianMetric I M} {J K : Set ℝ}
+    (hflow : MorganTianLib.IsRicciFlowOn g J) (hK : K ⊆ interior J) :
+    HasCurvatureEvolutionOn g K :=
+  hasCurvatureEvolutionOn_of_components
+    (hasCurvatureEvolutionComponentsOn_of_isRicciFlowOn_of_subset_interior
+      hflow hK)
+
+/-- **Math.** On an open flow domain, the compact curvature evolution equation
+holds on every contained target time set. -/
+theorem hasCurvatureEvolutionOn_of_isRicciFlowOn_of_isOpen
+    {g : ℝ → RiemannianMetric I M} {J K : Set ℝ}
+    (hflow : MorganTianLib.IsRicciFlowOn g J) (hJ : IsOpen J) (hK : K ⊆ J) :
+    HasCurvatureEvolutionOn g K :=
+  hasCurvatureEvolutionOn_of_components
+    (hasCurvatureEvolutionComponentsOn_of_isRicciFlowOn_of_isOpen
+      hflow hJ hK)
+
 #print axioms Topping.hasCurvatureEvolutionComponentsOn_of_variation
 #print axioms Topping.hasCurvatureEvolutionOn_of_variation
+#print axioms Topping.hasCurvatureEvolutionComponentsOn_of_isRicciFlowOn
+#print axioms Topping.hasCurvatureEvolutionComponentsOn_of_isRicciFlowOn_of_subset
+#print axioms Topping.hasCurvatureEvolutionComponentsOn_interior_of_isRicciFlowOn
+#print axioms Topping.hasCurvatureEvolutionComponentsOn_of_isRicciFlowOn_of_subset_interior
+#print axioms Topping.hasCurvatureEvolutionOn_of_isRicciFlowOn
+#print axioms Topping.hasCurvatureEvolutionOn_of_isRicciFlowOn_of_subset
+#print axioms Topping.hasCurvatureEvolutionOn_interior_of_isRicciFlowOn
+#print axioms Topping.hasCurvatureEvolutionOn_of_isRicciFlowOn_of_subset_interior
 
 end Topping
 

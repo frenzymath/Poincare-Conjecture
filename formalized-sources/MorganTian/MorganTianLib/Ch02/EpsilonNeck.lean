@@ -137,6 +137,22 @@ noncomputable def roundSphereMetric :
     RiemannianMetric (𝓡 2) EpsilonNeckSphere :=
   rescaledMetric unitRoundSphereMetric 2 (by norm_num)
 
+/-!
+The bundled constant-curvature producer for the induced unit-sphere metric is
+not yet available in this project.  This adapter isolates that missing input:
+once the unit-sphere statement is supplied, the curvature of the declared
+radius-`sqrt 2` round metric follows from the checked rescaling law.
+-/
+
+theorem roundSphereMetric_isConstantCurvature_of_unitRoundSphereMetric
+    (hunit : unitRoundSphereMetric.leviCivitaConnection.IsConstantCurvature
+      unitRoundSphereMetric (1 : ℝ)) :
+    roundSphereMetric.leviCivitaConnection.IsConstantCurvature
+      roundSphereMetric (1 / 2 : ℝ) := by
+  simpa [roundSphereMetric] using
+    (rescaledMetric_isConstantCurvature unitRoundSphereMetric 2 (by norm_num)
+      1 hunit)
+
 /-- **Math.** A metric on the finite cylinder is the product of the round sphere metric
 of curvature `1 / 2` and the Euclidean metric on the axis. -/
 def IsRoundCylinderMetric (epsilon : ℝ)

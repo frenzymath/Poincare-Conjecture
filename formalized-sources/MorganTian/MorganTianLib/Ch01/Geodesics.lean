@@ -11,8 +11,11 @@ DoCarmoLib's geodesic and exponential-map interfaces.
 
 Morgan–Tian define a geodesic on an open interval `I ⊆ ℝ` by
 `∇_{γ̇} γ̇ = 0`; DoCarmoLib's `IsGeodesicOn g γ s` is the analogous
-set-relativised notion (for `s` an interval this matches the blueprint
-exactly), while `IsGeodesic g γ` is the special case `s = Set.univ`.
+set-relativised equation predicate.  It does not itself encode the curve
+regularity in the prose definition; `IsGeodesicCurve` and
+`IsGeodesicCurveOn` add continuity, and the regularity lemmas below expose
+the further chart hypotheses needed for smoothness.  `IsGeodesic g γ` is
+the special case `s = Set.univ`.
 
 Reference: Morgan–Tian, *Ricci Flow and the Poincaré Conjecture*, §1.2
 (blueprint `def:geodesic`, `def:exponential-map`).
@@ -41,13 +44,25 @@ abbrev IsGeodesic (g : Riemannian.RiemannianMetric I M) (γ : ℝ → M) : Prop 
 /-- **Math.** A curve `γ : ℝ → M` is a **geodesic** of `g` on the set `s ⊆ ℝ`
 if it satisfies `∇_{γ̇} γ̇ = 0` at every time `t ∈ s`. Alias of
 `Riemannian.Geodesic.IsGeodesicOn`. Taking `s` to be an open interval `J`
-recovers Morgan–Tian's `def:geodesic` verbatim: "let `J` be an open interval;
-a smooth curve `γ : J → M` is a geodesic if `∇_{γ̇} γ̇ = 0`."
+records only the geodesic equation. Pair it with `IsGeodesicCurveOn` below for
+the source-faithful continuous curve predicate.  Smoothness is supplied by the
+regularity lemmas in `GeodesicRegularity` under their stated chart hypotheses.
 
 Blueprint: `def:geodesic`. -/
 abbrev IsGeodesicOn (g : Riemannian.RiemannianMetric I M) (γ : ℝ → M)
     (s : Set ℝ) : Prop :=
   Riemannian.Geodesic.IsGeodesicOn (I := I) g γ s
+
+/-- **Math.** A **continuous geodesic curve** on `s ⊆ ℝ`: the public
+correspondence for Morgan--Tian's "smooth curve `γ` satisfying
+`∇_{γ̇}γ̇ = 0`".  This is the DoCarmo predicate
+`ContinuousOn γ s ∧ IsGeodesicOn g γ s`; use its second projection when only
+the equation is needed.
+
+Blueprint: `def:geodesic`. -/
+abbrev IsGeodesicCurveOn (g : Riemannian.RiemannianMetric I M) (γ : ℝ → M)
+    (s : Set ℝ) : Prop :=
+  Riemannian.Geodesic.IsGeodesicCurveOn (I := I) g γ s
 
 /-- **Math.** The **exponential map** at `p ∈ M`, `exp_p(v) = γ_v(1)`, the
 endpoint of the unique geodesic `γ_v` starting at `p` with initial velocity
@@ -66,6 +81,19 @@ Blueprint: `def:exponential-map`. -/
 abbrev expDomain (g : Riemannian.RiemannianMetric I M) (p : M) :
     Set (TangentSpace I p) :=
   Riemannian.Exponential.expDomain (I := I) g p
+
+/-- **Math.** The zero tangent vector belongs to the maximal exponential
+domain.  This local facade exposes the imported stationary-geodesic theorem
+to the Morgan--Tian graph. -/
+theorem zero_mem_expDomain (g : Riemannian.RiemannianMetric I M) (p : M) :
+    (0 : TangentSpace I p) ∈ expDomain (I := I) g p :=
+  Riemannian.Exponential.zero_mem_expDomain (I := I) g p
+
+/-- **Math.** The maximal exponential domain is nonempty (it contains zero).
+This is the corresponding local facade for the imported theorem. -/
+theorem expDomain_nonempty (g : Riemannian.RiemannianMetric I M) (p : M) :
+    (expDomain (I := I) g p).Nonempty :=
+  Riemannian.Exponential.expDomain_nonempty (I := I) g p
 
 end MorganTianLib
 

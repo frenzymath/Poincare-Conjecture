@@ -930,10 +930,10 @@ theorem exists_uniform_curvatureNormEvolution_const_of_components :
   exact hasCurvatureNormSqNamedPairingBoundOn_of_isRicciFlowOn_of_components
     hflow hcurv hJ
 
-/-- **Math.** Substituting the derived component evolution isolates the exact
-remaining Chapter 2 inputs for the uniform curvature-norm inequality: the
-Riemann first-variation formula. The curvature Laplacian formula is now
-unconditional. -/
+/-- **Math.** Substituting the derived component evolution records the
+conditional compatibility theorem for a supplied Riemann first variation. The
+Ricci-flow specialization below now supplies that variation unconditionally on
+interior target sets. -/
 theorem exists_uniform_curvatureNormEvolution_const_of_variation :
     ∃ c : ℝ, 0 ≤ c ∧ ∀ (g : ℝ → RiemannianMetric I M) (J : Set ℝ),
       IsRicciFlowOn g J →
@@ -947,6 +947,57 @@ theorem exists_uniform_curvatureNormEvolution_const_of_variation :
       (I := I) (M := M)
   refine ⟨c, hc, fun g J hflow hvar hJ => hbound g J hflow ?_ hJ⟩
   exact hasCurvatureEvolutionComponentsOn_of_variation hvar
+
+/-- **Math.** A Morgan--Tian Ricci flow on `J` supplies Topping's metric
+evolution equation on every smaller time set `K ⊆ J`. Restricting the within
+derivative is essential when `K` has endpoints. -/
+theorem isRicciFlowOn_of_morganTian_isRicciFlowOn_of_subset
+    {g : ℝ → RiemannianMetric I M} {J K : Set ℝ}
+    (hflow : MorganTianLib.IsRicciFlowOn g J) (hK : K ⊆ J) :
+    Topping.IsRicciFlowOn g K := by
+  intro t ht p x y
+  simpa only [mtRicciTensorAt_eq_ricciTensorAt] using
+    (hflow.equation t (hK ht) p x y).mono hK
+
+/-- **Math.** There is a dimension-only curvature-norm evolution constant for
+every genuine Ricci flow, on every target time set contained in the interior
+of its ambient flow domain. All named analytic antecedents are produced here. -/
+theorem exists_uniform_curvatureNormEvolution_const_of_morganTian_isRicciFlowOn :
+    ∃ c : ℝ, 0 ≤ c ∧
+      ∀ (g : ℝ → RiemannianMetric I M) (J K : Set ℝ),
+        MorganTianLib.IsRicciFlowOn g J →
+        K ⊆ interior J →
+        (∀ t ∈ K, UniqueDiffWithinAt ℝ K t) →
+        HasCurvatureNormEvolutionInequalityOn g c K := by
+  obtain ⟨c, hc, hbound⟩ :=
+    exists_uniform_curvatureNormEvolution_const_of_components
+      (I := I) (M := M)
+  refine ⟨c, hc, fun g J K hflow hK hunique => ?_⟩
+  exact hbound g K
+    (isRicciFlowOn_of_morganTian_isRicciFlowOn_of_subset hflow
+      (fun t ht => interior_subset (hK ht)))
+    (hasCurvatureEvolutionComponentsOn_of_isRicciFlowOn_of_subset_interior
+      hflow hK)
+    hunique
+
+/-- **Math.** There is the same dimension-only curvature-norm evolution
+constant on every target set `K ⊆ J`; the full-set Riemann producer removes the
+old interior-buffer requirement. -/
+theorem exists_uniform_curvatureNormEvolution_const_of_morganTian_isRicciFlowOn_of_subset :
+    ∃ c : ℝ, 0 ≤ c ∧
+      ∀ (g : ℝ → RiemannianMetric I M) (J K : Set ℝ),
+        MorganTianLib.IsRicciFlowOn g J →
+        K ⊆ J →
+        (∀ t ∈ K, UniqueDiffWithinAt ℝ K t) →
+        HasCurvatureNormEvolutionInequalityOn g c K := by
+  obtain ⟨c, hc, hbound⟩ :=
+    exists_uniform_curvatureNormEvolution_const_of_components
+      (I := I) (M := M)
+  refine ⟨c, hc, fun g J K hflow hK hunique => ?_⟩
+  exact hbound g K
+    (isRicciFlowOn_of_morganTian_isRicciFlowOn_of_subset hflow hK)
+    (hasCurvatureEvolutionComponentsOn_of_isRicciFlowOn_of_subset hflow hK)
+    hunique
 
 /-- **Math.** The component curvature evolution also feeds the final uniform
 curvature bound.  The denominator condition is retained: it is the genuine
@@ -974,6 +1025,58 @@ theorem exists_uniform_riemannNormAt_le_of_components [CompactSpace M] :
   · exact hasCurvatureNormSqNamedPairingBoundOn_of_isRicciFlowOn_of_components
       hflow hcurv hJ
 
+/-- **Math.** The final uniform curvature bound is unconditional for a genuine
+Ricci flow defined on an ambient interval whose interior contains `[0,T]`.
+The denominator hypothesis is retained verbatim: without it the printed
+comparison expression need not be a valid upper bound. -/
+theorem exists_uniform_riemannNormAt_le_of_morganTian_isRicciFlowOn
+    [CompactSpace M] :
+    ∃ c : ℝ, 0 ≤ c ∧
+      ∀ (g : ℝ → RiemannianMetric I M) (J : Set ℝ) (m T : ℝ),
+        0 ≤ T → 0 < m →
+        ContinuousOn (fun z : M × ℝ => riemannNormAt (g z.2) z.1 ^ 2)
+          ((Set.univ : Set M) ×ˢ Icc 0 T) →
+        MorganTianLib.IsRicciFlowOn g J →
+        Icc 0 T ⊆ interior J →
+        (∀ t ∈ Icc 0 T, UniqueDiffWithinAt ℝ (Icc 0 T) t) →
+        (∀ t ∈ Icc 0 T, 0 < 1 - c * m * t / 2) →
+        (∀ p, riemannNormAt (g 0) p ≤ m) →
+        ∀ p t, t ∈ Icc 0 T →
+          riemannNormAt (g t) p ≤ m / (1 - c * m * t / 2) := by
+  obtain ⟨c, hc, hbound⟩ :=
+    exists_uniform_riemannNormAt_le_of_components (I := I) (M := M)
+  refine ⟨c, hc, fun g J m T hT hm hcont hflow hIcc hunique hdenom hzero => ?_⟩
+  exact hbound g m T hT hm hcont
+    (isRicciFlowOn_of_morganTian_isRicciFlowOn_of_subset hflow
+      (fun t ht => interior_subset (hIcc ht)))
+    (hasCurvatureEvolutionComponentsOn_of_isRicciFlowOn_of_subset_interior
+      hflow hIcc)
+    hunique hdenom hzero
+
+/-- **Math.** The final uniform curvature bound only needs the ambient flow to
+contain `[0,T]`; the required positive denominator hypothesis is unchanged. -/
+theorem exists_uniform_riemannNormAt_le_of_morganTian_isRicciFlowOn_of_subset
+    [CompactSpace M] :
+    ∃ c : ℝ, 0 ≤ c ∧
+      ∀ (g : ℝ → RiemannianMetric I M) (J : Set ℝ) (m T : ℝ),
+        0 ≤ T → 0 < m →
+        ContinuousOn (fun z : M × ℝ => riemannNormAt (g z.2) z.1 ^ 2)
+          ((Set.univ : Set M) ×ˢ Icc 0 T) →
+        MorganTianLib.IsRicciFlowOn g J →
+        Icc 0 T ⊆ J →
+        (∀ t ∈ Icc 0 T, UniqueDiffWithinAt ℝ (Icc 0 T) t) →
+        (∀ t ∈ Icc 0 T, 0 < 1 - c * m * t / 2) →
+        (∀ p, riemannNormAt (g 0) p ≤ m) →
+        ∀ p t, t ∈ Icc 0 T →
+          riemannNormAt (g t) p ≤ m / (1 - c * m * t / 2) := by
+  obtain ⟨c, hc, hbound⟩ :=
+    exists_uniform_riemannNormAt_le_of_components (I := I) (M := M)
+  refine ⟨c, hc, fun g J m T hT hm hcont hflow hIcc hunique hdenom hzero => ?_⟩
+  exact hbound g m T hT hm hcont
+    (isRicciFlowOn_of_morganTian_isRicciFlowOn_of_subset hflow hIcc)
+    (hasCurvatureEvolutionComponentsOn_of_isRicciFlowOn_of_subset hflow hIcc)
+    hunique hdenom hzero
+
 #print axioms Topping.curvatureComponentVariation_eq_tensorInnerAt
 #print axioms Topping.curvatureMetricLastSlot_eq_tensorInnerAt
 #print axioms Topping.curvatureMetricSlotVariation_eq_tensorInnerAt
@@ -985,6 +1088,11 @@ theorem exists_uniform_riemannNormAt_le_of_components [CompactSpace M] :
 #print axioms Topping.exists_uniform_curvatureNormEvolution_const_of_components
 #print axioms Topping.exists_uniform_curvatureNormEvolution_const_of_variation
 #print axioms Topping.exists_uniform_riemannNormAt_le_of_components
+#print axioms Topping.isRicciFlowOn_of_morganTian_isRicciFlowOn_of_subset
+#print axioms Topping.exists_uniform_curvatureNormEvolution_const_of_morganTian_isRicciFlowOn
+#print axioms Topping.exists_uniform_curvatureNormEvolution_const_of_morganTian_isRicciFlowOn_of_subset
+#print axioms Topping.exists_uniform_riemannNormAt_le_of_morganTian_isRicciFlowOn
+#print axioms Topping.exists_uniform_riemannNormAt_le_of_morganTian_isRicciFlowOn_of_subset
 
 end Topping
 

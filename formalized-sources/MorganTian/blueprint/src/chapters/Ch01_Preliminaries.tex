@@ -813,16 +813,16 @@ the exponential map.
 
 \begin{definition}[Geodesic]
 \label{def:geodesic}
-\lean{MorganTianLib.IsGeodesic,MorganTianLib.IsGeodesicOn}
+\lean{MorganTianLib.IsGeodesicCurveOn,MorganTianLib.IsGeodesicOn}
 \uses{thm:levi-civita-connection}
-\leanok
 
 
 
- Let $I$ be an open interval.
-A smooth curve $\gamma\colon I \rightarrow M$ is called a
-\textit{geodesic} if $\nabla_{\dot \gamma}\dot
-\gamma =0$.
+Let $I$ be an open interval. A smooth curve $\gamma\colon I\to M$ whose
+covariant acceleration vanishes, $\nabla_{\dot\gamma}\dot\gamma=0$, is a
+geodesic. On a fixed parameter interval one may instead use the
+continuous-on-the-interval equation predicate; when the usual chart ODE
+regularity hypotheses are supplied, its solutions are smooth geodesics.
 \end{definition}
 
 In local coordinates, we write $\gamma(t)=(x^1(t),\ldots,x^n(t))$
@@ -1010,11 +1010,11 @@ system, and the basic solvability theory follows.
 \label{lem:jacobi-field-coordinates}
 \lean{MorganTianLib.chartCurvatureEndo,MorganTianLib.JacobiFieldOn,MorganTianLib.jacobiPairCoeffCoord,MorganTianLib.exists_isJacobiFieldOn_Icc,MorganTianLib.exists_isJacobiFieldOn_Icc_of_curve,MorganTianLib.continuousOn_jacobiPairCoeffCoord,MorganTianLib.IsJacobiFieldOn.eqOn_of_left,MorganTianLib.IsJacobiFieldOn.eqOn_of_right,MorganTianLib.IsJacobiFieldOn.add,MorganTianLib.IsJacobiFieldOn.const_smul,MorganTianLib.IsJacobiFieldOn.eqOn_zero}
 \uses{lem:covariant-commutation-jacobi, def:riemann-curvature-tensor, thm:levi-civita-connection, lem:second-order-linear-ode}
-\leanok
 
 
 
-Let $u\colon[a,b]\to U$ be a $C^1$ curve in a coordinate chart $U$,
+Let $u\colon[a,b]\to U$ be a coordinate curve in a coordinate chart $U$.
+Assume that $u$ and its coordinate derivative are continuous on $[a,b]$,
 with $\Gamma$ and ${\mathcal R}$ as in
 Lemma~\ref{lem:covariant-commutation-jacobi}, the coefficient
 functions being continuous along $u$. Say that a pair of curves
@@ -1039,7 +1039,6 @@ data does not vanish identically.
 
 \begin{proof}
 \sketch
-\leanok
 \uses{lem:covariant-commutation-jacobi,lem:second-order-linear-ode}
 Combine $J$ and its covariant derivative into one vector $W=(J,DJ)$. The coordinate Jacobi equation is a first-order linear system $W'=A(t)W$ with continuous operator coefficient. The preceding ODE lemma gives existence and two-sided uniqueness, while linearity of $A(t)$ gives superposition and the zero-data conclusion.
 \end{proof}
@@ -1107,20 +1106,20 @@ lemma.
 
 \begin{lemma}[Parallel transport and parallel frames]
 \label{lem:parallel-frame}
-\lean{MorganTianLib.IsParallelSolOn,MorganTianLib.exists_parallelFrame_Icc,MorganTianLib.IsParallelSolOn.eqOn_of_left,MorganTianLib.IsParallelSolOn.chartMetricInner_eq,MorganTianLib.chartMetricInner_parallelFrame_eq}
+\lean{MorganTianLib.exists_parallelFrameAlong,MorganTianLib.IsParallelAlongOn.metricInner_eq}
 \uses{def:riemannian-metric, thm:levi-civita-connection}
-\leanok
 
 
 
 Let $(M,g)$ be a Riemannian manifold with Levi-Civita connection
-$\nabla$, and let $\gamma\colon[a,b]\to M$ be a smooth curve whose
-image lies in the domain of a single coordinate chart. A vector field
+$\nabla$, and let $\gamma\colon[a,b]\to M$ be a geodesic with $a<b$,
+continuous on $[a,b]$. A vector field
 $V$ along $\gamma$ is {\em parallel} if $\nabla_{\gamma'}V=0$ on
 $[a,b]$ (one-sided derivatives at the endpoints). Then:
 \begin{enumerate}
-\item for every $v\in T_{\gamma(a)}M$ there is a unique parallel
-field $V$ along $\gamma$ with $V(a)=v$; more generally, for any
+\item for every $v\in T_{\gamma(a)}M$ there is a parallel
+field $V$ along $\gamma$ with $V(a)=v$; under the usual chart-level
+regularity hypotheses the ODE gives uniqueness; more generally, for any
 family $(v_i)_i$ of vectors in $T_{\gamma(a)}M$ there is a family
 $(e_i)_i$ of parallel fields with $e_i(a)=v_i$;
 \item the inner product of two parallel fields is constant:
@@ -1135,7 +1134,6 @@ of $T_{\gamma(t)}M$ for every $t$.
 \begin{proof}
 \sketch
 \uses{thm:levi-civita-connection}
-\leanok
 In a coordinate trivialization, parallel transport is a linear first-order ODE with continuous coefficients, so existence and uniqueness hold for every initial vector. Metric compatibility makes inner products of parallel fields constant. Transporting an orthonormal basis therefore yields a parallel orthonormal frame, and uniqueness gives linearity, endpoint inversion, and compatibility under restriction and concatenation.
 \end{proof}
 
@@ -1184,7 +1182,6 @@ Rewrite the second-order equation as a first-order linear system on the product 
 \label{def:conjugate-point}
 \lean{MorganTianLib.chartVectorRep,MorganTianLib.IsJacobiFieldAlongOn,MorganTianLib.IsConjugatePointAt}
 \uses{def:geodesic, lem:jacobi-field-coordinates}
-\leanok
 
 
 
@@ -1217,11 +1214,18 @@ Lemma~\ref{lem:conjugate-sturm} — and we make it explicit.)
 
 
 
-Suppose that $\gamma\colon [0,1]\to M$ is a minimal geodesic. Then
-for any $t<1$ the restriction of $\gamma$ to $[0,t]$ is the unique
-minimal geodesic between its endpoints and there are no conjugate
-points on $\gamma([0,1))$, i.e., there is no non-zero Jacobi field
-along $\gamma$ vanishing at any $t\in [0,1)$.
+On a complete Riemannian manifold with its distance induced by the metric,
+suppose that $\gamma\colon [0,1]\to M$ is a minimal geodesic. Then
+for every $0<t<1$ the restriction of $\gamma$ to $[0,t]$ is the unique
+minimal geodesic between its endpoints, and there is no non-zero Jacobi
+field $J$ along $\gamma$ with both $J(0)=0$ and $J(t)=0$. Equivalently,
+there are no conjugate points on $\gamma((0,1))$.
+
+To make the hypotheses explicit, take a real-parameter extension of $\gamma$
+that is geodesic on an interval $[a,b]$ with $a<0<1<b$, is continuous at
+each point of that interval, and satisfies
+$\sqrt{\operatorname{speedSq}(\gamma,0)}\le d(\gamma(0),\gamma(1))$;
+retain also the complete-space and metric-distance assumptions above.
 \end{proposition}
 
 \begin{proof}
@@ -1292,38 +1296,19 @@ $u>0$, and therefore $L(c_u)\le\sqrt{2E(c_u)}<d(p,q)$ for such $u$
 --- a contradiction, since $c_u$ is a path from $p$ to $q$. Thus no
 such $\mu$ exists, proving Part 1.
 
-\begin{remark}[Deviation from Morgan--Tian: Part 1 is formalized by corner rigidity,
-not by the first variation]
+\begin{remark}[Corner-rigidity formulation of the uniqueness argument]
 \label{rem:part1-corner-rigidity-route}
 \lean{MorganTianLib.minimalGeodesic_restrict_unique, MorganTianLib.globalGeodesic_eqOn_of_minimizing}
 \leanok
 
-The argument just given for Part 1 is Morgan--Tian's, and it is complete.  It is
-\emph{not}, however, the route taken in the formalization
-(\texttt{MorganTianLib.minimalGeodesic\_restrict\_unique}), for a structural reason: the
-broken-chart-variation machinery built for Part 2
-(\texttt{exists\_brokenVariationData}) varies a \emph{single} geodesic, whereas the
-competitor $c=\mu\star\gamma|_{[t_0,1]}$ above is only \emph{piecewise} geodesic, so the
-first variation with a corner would have required rebuilding that machinery over a broken
-base curve.
-
-The formalized proof instead observes that the very same conclusion is do Carmo's
-Corollary 3.9 (\emph{a minimizing broken geodesic has no corner}), of which the first
-variation above is one proof.  Concretely: $c$ is piecewise $C^1$, is parameterized
-proportionally to arc length with speed $L$ (both legs are geodesics of speed $L$: $\mu$
-because it is minimal on $[0,t_0]$ with the same endpoints as $\gamma|_{[0,t_0]}$, whose
-length is $t_0L$ by the triangle inequality), and realizes $d(p,q)=L$.  Hence $c$
-satisfies the geodesic equation at \emph{every} interior time, including the vertex
-$t_0$ --- there is no corner.  So $c$ is a genuine geodesic on $(0,1)$; it agrees with
-$\gamma$ on $(t_0,1)$, hence in position and velocity at any interior time there, and
-uniqueness for the geodesic ODE propagates the agreement backwards across $t_0$: $c=\gamma$
-on $(0,1)$, i.e. $\mu=\gamma$ on $[0,t_0]$.
-
-The two routes prove the same statement from the same inputs; the corner-rigidity one
-simply reuses infrastructure that already exists.  (Its engine, do Carmo's equality case,
-is itself a strict-triangle-inequality argument in $T_xM$ --- see
-\texttt{Riemannian.Exponential.eq\_neg\_of\_forall\_edist\_expMap\_eq} --- so no appeal to
-the calculus of variations is made anywhere.)
+The same conclusion can be phrased as corner rigidity.  The broken curve
+$c=\mu\star\gamma|_{[t_0,1]}$ is piecewise $C^1$, has constant speed $L$
+on both legs, and realizes $d(p,q)=L$.  A minimizing broken geodesic has
+no corner, so $c$ satisfies the geodesic equation at the vertex $t_0$ as
+well.  It is therefore a genuine geodesic on $(0,1)$.  Since it agrees
+with $\gamma$ on $(t_0,1)$, uniqueness for the geodesic initial-value
+problem propagates the agreement across the vertex and gives
+$\mu=\gamma$ on $[0,t_0]$.
 \end{remark}
 
 For the second assertion of the proposition we shall use the
@@ -1332,35 +1317,33 @@ formula valid for piecewise smooth variations.
 
 \begin{lemma}[Second variation is zero iff Jacobi field]
 \label{claim:second-variation-minimal-geodesic}
+\lean{MorganTianLib.indexForm_self_eq_zero_iff_isJacobiFieldAlongOn_of_minimizing,MorganTianLib.metricIndexIntegral_frameLift_eq,MorganTianLib.deriv_deriv_dcEnergy_eq_zero_iff_isJacobiFieldAlongOn_of_minimizing,MorganTianLib.variationalField_endpoints_eq_zero_of_proper}
 \uses{def:geodesic}
 
-Suppose that $\gamma$ is a minimal geodesic and $Y$ is a field
-vanishing at both endpoints. Let $\tilde\gamma(t,u)$ be any
-one-parameter family of curves parameterized by $[0,1]$, with
-$\gamma_0=\gamma$ and with $\gamma_u(0)=\gamma_0(0)$ and
-$\gamma_u(1)=\gamma_0(1)$ for all $u$.
-Suppose that the first-order variation of $\tilde \gamma$ at $u=0$
-is given by $Y$. Then
+Let $\gamma$ be a minimizing geodesic on $[0,1]$ in a complete
+Riemannian manifold whose metric induces the distance. Extend it as a
+geodesic to $[a,b]$ with $a<0<1<b$, and choose a parallel orthonormal
+frame on this interval. Let $\tilde\gamma(t,u)$ be a proper $C^3$
+fixed-endpoint variation of $\gamma$ whose second-variation data satisfy
+the energy--index identity and whose variation field and covariant
+$t$-derivative are represented in that frame by coefficient fields
+$W$ and $W'$, with $W\in C^3$ and $W(0)=W(1)=0$. Then
 $$\frac{d^2E(\gamma_u)}{du^2}\Bigl|_{u=0}\Bigr.=0$$
-if and only if $Y$ is a Jacobi field.
+if and only if the represented variation field is a Jacobi field along
+$\gamma$.
 \end{lemma}
 
 \begin{proof}
 \sketch
 \uses{def:geodesic}
-Suppose that $\tilde\gamma(u,t)$ is a one-parameter family of curves
-from $\gamma(0)$ to $\gamma(1)$ with $\gamma_0=\gamma$ and $Y$ is
-the first-order variation of this family along $\gamma$.  Since
-$\gamma$ is a minimal geodesic we have
-$$-\int_0^1\langle \Jac(Y),Y\rangle dt=\frac{d^2E(\gamma_u)}{du^2}\Bigl|_{u=0}\Bigr.\ge 0.$$
- The associated symmetric bilinear form is
-$$B_\gamma(Y_1,Y_2)=-\int_\gamma\langle \Jac(Y_1),Y_2\rangle dt$$
-is symmetric when $Y_1$ and $Y_2$ are constrained to vanish at both
-endpoints. Since the associated quadratic form is non-negative, we
-see by the usual argument for symmetric bilinear forms that
-$B_\gamma(Y,Y)=0$ if and only if $B_\gamma(Y,\cdot)=0$ as a linear
-functional on the space of vector fields along $\gamma$ vanishing at
-point endpoints. This of course occurs if and only if $\Jac(Y)=0$.
+The assumed energy--index identity identifies the second derivative of
+energy with the index form of the frame coefficient field $W$. Since
+$\gamma$ is minimizing, this quadratic form is nonnegative on
+endpoint-zero fields. Polarization shows that a zero value is
+equivalent to vanishing pairing with every endpoint-zero test field;
+the second-order ODE lemma then identifies this null space with the
+Jacobi solutions. The parallel-frame identities transfer the resulting
+solution back to the represented variation field along $\gamma$.
 \end{proof}
 
 
@@ -1422,34 +1405,19 @@ Claim~\ref{claim:second-variation-minimal-geodesic} recovers the
 statement that the null space of $I$ on smooth fields is the space
 of Jacobi fields.)
 
-\begin{remark}[Deviation from Morgan--Tian: the variation is built in charts, not
-from $\exp$]
+\begin{remark}[Chart-local construction of the second variation]
 \label{rem:second-variation-chart-route}
 \lean{MorganTianLib.isMetricCompatibleAt_chartMetricBilin, MorganTianLib.secondVariation_energyDensity, MorganTianLib.exists_brokenVariationData, MorganTianLib.hasDerivAt_pieceEnergy_chartMetricBilin}
 \leanok
-The derivation of Equation~(\ref{secvarindex}) just given follows Morgan--Tian in
-taking the variation $\tilde\gamma(t,u)=\exp_{\gamma(t)}(uY(t))$.  That choice is
-convenient on paper but is \emph{not} the route taken in the formalization, for a
-concrete reason: $\exp_{\gamma(t)}(uY(t))$ varies the \emph{basepoint} as well as
-the vector, so writing it down as a $C^2$ two-parameter map presupposes that
-$\exp$ is $C^2$ jointly in $(p,v)$ — i.e. smooth dependence of the geodesic ODE on
-its initial conditions, which is a substantial theorem in its own right.
-
-It is however not needed.  The second variation is a purely \emph{local} identity
-between derivatives of the energy density, and every point of $M$ lies in a chart.
-Read in a chart, a two-parameter family is just a map $u\colon P\to E$ into the
-model space, the connection is the Christoffel contraction
-$\Gamma\colon E\to E\to E\to E$, and the metric is the Gram form
-$G\colon E\to E\times E\to\mathbb R$; the identity below is then an identity of
-Fréchet derivatives, proved from three ingredients only: torsion-freeness
-$\nabla_s\partial_t u=\nabla_t\partial_s u$, curvature commutation
-$\nabla_s\nabla_t V-\nabla_t\nabla_s V={\mathcal R}(\partial_su,\partial_tu)V$, and
-metric compatibility $\nabla G=0$ (Lemma~\ref{lem:chart-metric-compatibility}).
-\emph{Any} $C^3$ family with the prescribed first-order variation field may be
-used; the exponential map plays no role.  Consequently the variation of a curve
-that leaves every chart is assembled piecewise, one chart per piece — and, because
-$\nabla_s\partial_s u$ at a junction depends only on the (single-valued) curve
-$s\mapsto u(s,t_i)$, the boundary terms of adjacent pieces telescope.
+The second variation is a local identity between derivatives of the energy
+density.  In a chart, a two-parameter family is a map into the model
+space, the connection is expressed by the Christoffel contraction
+$\Gamma$, and the metric by its Gram form $G$.  The identity follows from
+torsion-freeness, curvature commutation, and metric compatibility
+(Lemma~\ref{lem:chart-metric-compatibility}).  Any $C^3$ family with the
+prescribed first-order variation field may be used.  For a curve crossing
+several charts, construct the variation piecewise; the boundary terms at
+adjacent pieces telescope because the covariant acceleration is intrinsic.
 \end{remark}
 
 \begin{lemma}[Metric compatibility in a chart]
@@ -1517,17 +1485,20 @@ symmetry of the curvature tensor, and integration by parts.
 
 \begin{lemma}[A conjugate point makes the index form indefinite]
 \label{lem:index-form-negative-at-conjugate}
-\lean{MorganTianLib.exists_indexForm_neg_of_isConjugatePointAt}
+\lean{MorganTianLib.exists_indexForm_neg_smooth_of_isConjugatePointAt}
 \uses{def:conjugate-point, def:geodesic, lem:second-order-linear-ode, lem:parallel-frame, claim:curvature-symmetries-bianchi}
 \leanok
 
 
 
-Let $\gamma$ be a geodesic defined on an interval $[a,b]\supseteq [0,1]$ with
-$a<0$ and $1<b$, and suppose that for some $t_0\in(0,1)$ the point $\gamma(t_0)$
-is conjugate to $\gamma(0)$ along $\gamma$. Then there is a piecewise smooth
-vector field $W$ along $\gamma|_{[0,1]}$, vanishing at both endpoints, with
-$$I(W,W)<0 .$$
+Let $\gamma$ be a geodesic defined on an interval $[a,b]\supseteq[0,1]$,
+with $a<0$ and $1<b$, and suppose that for some $t_0\in(0,1)$ the point
+$\gamma(t_0)$ is conjugate to $\gamma(0)$ along $\gamma$. Then there is a
+parallel orthonormal frame along $\gamma$ and coefficient fields $W_0,W_1$
+which are $C^3$ on the two open pieces, satisfy
+$W_0(0)=0$, $W_1(1)=0$, and agree at $t_0$, such that the sum of the two
+index-form integrals on $[0,t_0]$ and $[t_0,1]$ is negative. Thus the
+resulting piecewise-smooth field has negative index form.
 \end{lemma}
 
 \begin{proof}
@@ -1556,20 +1527,19 @@ definition, conjugate points occurring only at parameters $t>0$.)
 
 \begin{definition}[Exponential map]
 \label{def:exponential-map}
-\lean{MorganTianLib.expMap,MorganTianLib.expDomain}
+\lean{MorganTianLib.expMap,MorganTianLib.expDomain,MorganTianLib.zero_mem_expDomain,MorganTianLib.expDomain_nonempty}
 \uses{def:geodesic}
-\leanok
 
 
 
 For any $p\in M$, we can define the \textit{exponential
-map} at $p$, $\exp_{p}$. It is
-defined on an open neighborhood $O_{p}$ of the origin in $T_{p}M$
-and is defined by $\exp_{p}(v)=\gamma_v(1)$, the endpoint of
+map} at $p$, $\exp_{p}$. Its natural domain $O_p$ contains the origin,
+and on that domain $\exp_{p}(v)=\gamma_v(1)$, the endpoint of
 the unique geodesic $\gamma_v\colon [0,1]\rightarrow M$ starting
 from $p$ with initial velocity vector $v$. We always take
-$O_{p}\subset T_{p}M$ to be the maximal domain on which $\exp_p$ is defined, so that $O_{p}$ is a star-shaped open
-neighborhood of $0\in T_pM$.
+$O_{p}\subset T_{p}M$ to be the maximal domain on which $\exp_p$ is
+defined, so that $O_p$ is a star-shaped open neighborhood of
+$0\in T_pM$.
 \end{definition}
 
 By the Hopf--Rinow Theorem (Theorem~\ref{thm:hopf-rinow} below),
@@ -1587,6 +1557,7 @@ Section~2.)
 \begin{lemma}[Normal balls, uniformly on compact sets]
 \label{lem:normal-ball}
 \uses{def:exponential-map, def:geodesic}
+\notready
 
 Let $(M,g)$ be a Riemannian manifold, not assumed complete, and let
 $K\subset M$ be compact. There is $\delta=\delta(K)>0$ such that
@@ -1625,26 +1596,29 @@ fields, as follows.
 
 \begin{lemma}[The differential of the exponential map via Jacobi fields]
 \label{lem:exponential-differential-jacobi}
-\lean{MorganTianLib.IsJacobiFieldOn.transfer,MorganTianLib.chartCurvature_coordChange,MorganTianLib.exists_isJacobiFieldAlongOn,MorganTianLib.IsJacobiFieldAlongOn.eqOn_of_initial,MorganTianLib.IsJacobiFieldAlongOn.isJacobiFieldOn_of_mem_source,MorganTianLib.exists_geodesic_chart_partition,MorganTianLib.hasStrictFDerivAt_comp_chain,MorganTianLib.hasStrictFDerivAt_comp_chain',MorganTianLib.jacobiVarPair_of_left_eq_zero,MorganTianLib.exists_geodesic_flow_step_jacobiTransport,MorganTianLib.exists_geodesic_flow_step_jacobiTransport_manifold,MorganTianLib.IsGeodesicOn.comp_const_add,MorganTianLib.exists_geodesic_flow_step_jacobiTransport_manifold_at,MorganTianLib.exists_geodesic_flow_step_jacobiTransport_manifold_ball,MorganTianLib.exists_geodesic_flowstep_partition,MorganTianLib.exists_geodesic_junction_step,MorganTianLib.IsJacobiFieldAlongOn.mono,MorganTianLib.exists_geodesic_jacobiTransport_chain,MorganTianLib.sprayFlow_eq_chartState,MorganTianLib.hasStrictFDerivAt_comp_chain_nbhd,MorganTianLib.exists_geodesic_chartState,MorganTianLib.eq_of_chartState_eq,MorganTianLib.stateTransition_chartState,MorganTianLib.exists_geodesic_jacobiTransport_chain_nbhd,MorganTianLib.globalGeodesic,MorganTianLib.globalGeodesic_eq,MorganTianLib.expMapGlobal,MorganTianLib.expMapGlobal_eq_of_isGeodesic,MorganTianLib.hasFDerivAt_chartReading_expMapGlobal,MorganTianLib.expDifferential_eq_jacobiField}
+\lean{MorganTianLib.expDifferential_eq_jacobiField,MorganTianLib.expDifferential_injective_iff_not_conjugate}
 \uses{def:exponential-map, def:geodesic, def:conjugate-point}
-\leanok
 
 
 
-Let $p\in M$ and let $v\in O_p$, the maximal domain of $\exp_p$.
-Let $\gamma=\gamma_v\colon[0,1]\to M$ and $X=\gamma'$. For
-$Z\in T_pM$ let $Y_Z$ be the unique Jacobi field along $\gamma$
-with $Y_Z(0)=0$ and $\nabla_XY_Z(0)=Z$. Then, under the natural
-identification of $T_v(T_pM)$ with $T_pM$,
-$$d(\exp_p)_v(Z)=Y_Z(1)\qquad\text{for all }Z\in T_pM.$$
-In particular, $d(\exp_p)_v$ is singular if and only if
-$\exp_p(v)$ is a conjugate point along $\gamma_v$.
+Assume the complete Riemannian-distance setting used for the global
+exponential map. For $p\in M$ and $v\in T_pM$, choose a terminal chart
+$\zeta$ around $\exp_p(v)$. The chart differential $D$ of
+$w\mapsto\operatorname{extChartAt}(\zeta)(\exp_p(w))$ and the Jacobi field
+$Y_Z$ with $Y_Z(0)=0$ and $\nabla_XY_Z(0)=Z$ satisfy, in that chart,
+\[
+D Z=[Y_Z(1)]_\zeta,
+\]
+where $[\,\cdot\,]_\zeta$ denotes the coordinate representative in the
+chosen terminal chart.
+Under the usual tangent-space/chart identifications this is the intrinsic
+formula $d(\exp_p)_v(Z)=Y_Z(1)$. In these coordinates, $D$ is injective if
+and only if $\exp_p(v)$ is not conjugate to $p$ along $\gamma_v$.
 \end{lemma}
 
 \begin{proof}
 \sketch
 \uses{def:conjugate-point,def:geodesic,thm:levi-civita-connection,def:exponential-map,lem:second-order-linear-ode,lem:parallel-frame,lem:covariant-commutation-jacobi,lem:jacobi-field-coordinates}
-\leanok
 Vary the initial vector by $v+sw$ and differentiate the corresponding geodesic family. The variation field is Jacobi, vanishes at time zero, and has initial covariant derivative $w$. Evaluating at time one identifies it with $d(\exp_p)_v(w)$. The converse follows from uniqueness of the Jacobi initial-value problem, and the radial direction is obtained by varying the speed of the same geodesic.
 \end{proof}
 
@@ -1656,11 +1630,12 @@ Vary the initial vector by $v+sw$ and differentiate the corresponding geodesic f
 
 
 
-Suppose that $\gamma$ is a minimal geodesic parameterized by $[0,1]$
-starting at $p$. Let $X(0)=\gamma'(0)\in T_pM$. Then for each
-$t_0<1$ the restriction $\gamma|_{[0,t_0]}$ is a minimal geodesic
-and $\exp_p\colon T_pM\to M$ is a local diffeomorphism near
-$t_0X(0)$.
+Suppose that $\gamma$ is a non-constant minimal geodesic parameterized by
+$[0,1]$ starting at $p$, and write $X(0)=\gamma'(0)$. For each
+$0<t_0<1$, the restriction $\gamma|_{[0,t_0]}$ is minimizing and the
+exponential map is locally a diffeomorphism near $t_0X(0)$. Assume in
+addition that $X(0)\ne0$, that $M$ is complete, and that the metric distance
+is the Riemannian distance induced by $g$.
 \end{corollary}
 
 \begin{proof}
@@ -1685,6 +1660,7 @@ existence of minimizing geodesics and the Hopf--Rinow theorem.
 \begin{lemma}[Existence of minimizing geodesics]
 \label{lem:minimizing-geodesic-exists}
 \uses{def:geodesic, def:exponential-map}
+\notready
 
 Let $(M,g)$ be a Riemannian manifold, not assumed complete or
 connected (with the convention that $d(p,q)=\infty$ when there is
@@ -1785,15 +1761,19 @@ $\R^n$ and of $H^n_k$.
 
 \begin{lemma}[The minimizing times form an interval]
 \label{lem:minimizing-downward-closed}
-\lean{MorganTianLib.IsMinimizingUpTo.mono,MorganTianLib.minimizingTimes_ordConnected}
+\lean{MorganTianLib.IsMinimizingUpTo.mono,MorganTianLib.minimizingTimes_ordConnected,MorganTianLib.le_cutTime_iff,MorganTianLib.cutTime_radial_interval}
 \uses{def:cut-time}
 \leanok
 
 
 
 If $\gamma_v$ is minimizing up to $t$ and $0\le s\le t$, then $\gamma_v$ is minimizing up
-to $s$. Hence $T_v$ is an interval containing $0$, and $c(v)=\sup T_v$ is a genuine
-\emph{cut}: $\gamma_v$ is minimizing before $c(v)$ and not after it.
+to $s$. Hence $T_v$ is downward closed and order-connected. The endpoint
+criterion is attained: for $t\ge0$, $\gamma_v$ is minimizing up to $t$ exactly
+when $t\le c(v)$; equivalently, for $t>0$, the radial vector $t v$ lies in
+the segment domain exactly when $t<c(v)$ (with the usual $\mathbb{R}_{\ge0}^{\infty}$
+interpretation). Thus the strict interval is open at the cut time, while
+minimizing at the endpoint itself is recorded by the non-strict criterion.
 \end{lemma}
 
 \begin{proof}
@@ -2094,18 +2074,26 @@ Homogeneity of the cut time gives the radial description of $U_p$. Downward clos
 
 \begin{definition}[Injectivity radius]
 \label{def:injectivity-radius}
-\lean{MorganTianLib.metricExpBallDiffeomorph, MorganTianLib.metricBookInjectivityRadius}
+\lean{MorganTianLib.metricExpBallDiffeomorph, MorganTianLib.metricBookInjectivityRadius,MorganTianLib.injectivityRadius_eq_segmentDomainFrontierDistance,MorganTianLib.injectivityRadius_eq_cutLocusDistance}
 \uses{def:exponential-map, def:cut-locus}
-\leanok
 
-The {\sl injectivity radius $\inj_M(p)$ of $M$ at $p$} is the
-supremum of the $r> 0$ for which the restriction of $\exp_p\colon T_pM\to M$ to the ball $B(0,r)$ of radius $r$ in $T_pM$
-is a diffeomorphism into $M$. Clearly, $\inj_M(p)$ is the
-distance in $T_pM$ from $0$ to the frontier of $U_p$. It is also the
-distance in $M$ from $p$ to the cut locus ${\mathcal C}_p$.
+Under the completeness hypotheses needed for the distance identities below
+(and connectedness for the frontier identity), the ball-based injectivity
+radius is the supremum of the $r>0$ for which
+the restriction of $\exp_p$ to the $g_p$-metric tangent ball $B(0,r)$ is a
+diffeomorphism into $M$; denote this radius by
+$\operatorname{inj}^{\rm ball}_M(p)$. Independently, the cut-time radius
+$\inj_M^{\rm cut}(p)$ is the infimum of the cut times in unit directions.
+For this latter radius, the frontier and cut-locus identities give
+\[
+\inj_M^{\rm cut}(p)=d_{T_pM}(0,\partial U_p)
+  =d_M(p,{\mathcal C}_p).
+\]
+No equality between the ball-based and cut-time radii is assumed in this
+definition.
 \end{definition}
 
-Suppose that  $\inj_M(p)=r$. There are two possibilities:
+Suppose that  $\inj_M^{\rm cut}(p)=r$. There are two possibilities:
 Either there is a broken, closed geodesic through $p$, broken only
 at $p$, of length $2r$, or there is a geodesic $\gamma$ of length
 $r$ emanating from $p$ whose endpoint is a conjugate point along
@@ -2119,6 +2107,7 @@ following lemma.
 \begin{lemma}[Klingenberg: short geodesic loop at the injectivity radius]
 \label{lem:klingenberg-loop}
 \uses{def:injectivity-radius, def:exponential-map, def:conjugate-point, def:geodesic, thm:hopf-rinow}
+\notready
 
 Let $M$ be complete and connected, $p\in M$, and suppose
 $\rho:=\inj_M(p)<\infty$. If no geodesic from $p$ has a conjugate point at distance
@@ -2202,6 +2191,7 @@ uniform scale over any compact set, an isometry of metric balls.
 \begin{lemma}[Local isometries on normal balls]
 \label{lem:local-isometry-normal-balls}
 \uses{def:local-isometry, def:exponential-map}
+\notready
 
 Let $F\colon(N,h)\to(M,g)$ be a local isometry and let $K\subset
 N$ be compact. Then there is $\delta>0$ such that:
@@ -2263,8 +2253,10 @@ $A=N$.
 \lean{MorganTianLib.LocalIsometry.IsLocalIsometry.surjectiveCovering}
 \uses{def:local-isometry}
 
-Let $F\colon N\to M$ be a local isometry, where $N$ is complete and
-$M$ is connected. Then $F$ is a surjective covering map.
+Let $F\colon N\to M$ be a local isometry. If the source $N$ is connected
+and complete, the target $M$ is connected, and the source metric distance
+agrees with the Riemannian distance induced by its metric, then $F$ is a
+surjective covering map.
 \end{lemma}
 
 \begin{proof}
@@ -2276,22 +2268,19 @@ Completeness of the source and preservation of lengths let every short geodesic 
 We shall also need the classical Gauss formula identifying the
 Levi-Civita connection of a submanifold of Euclidean space.
 
-\begin{lemma}[Levi-Civita connection of a Euclidean submanifold]
+\begin{lemma}[Levi-Civita connection in an identified Euclidean patch]
 \label{lem:submanifold-connection}
 \lean{MorganTianLib.euclideanSubmanifold_connection_and_geodesic,MorganTianLib.IsEuclideanSubmanifoldGeodesic}
 \uses{def:riemannian-metric, thm:levi-civita-connection, def:geodesic}
-\leanok
 
-Let $M\subset\Ar^N$ be an embedded smooth submanifold with the
-induced Riemannian metric, and for $x\in M$ let
-$P_x\colon\Ar^N\to T_xM$ denote the orthogonal projection. Then
-the Levi-Civita connection of $M$ is given by
-$$\nabla_XY(x)=P_x\left(D_XY(x)\right),$$
-where $D_XY$ is the directional derivative in $\Ar^N$ of (any
-smooth extension of) $Y$ along $X$. Consequently, a smooth curve
-$\gamma$ in $M$ is a geodesic if and only if its Euclidean second
-derivative $\gamma''(t)$ is normal to $T_{\gamma(t)}M$ for all
-$t$.
+Let $D$ be the identified immersed-patch structure on an open subset of a
+Euclidean space, with its tangent projection and normal spaces. For tangent
+fields $X,Y$, the induced covariant term is the tangential projection of the
+ambient flat derivative. For a curve whose velocity has the required local
+smooth tangent extensions, its induced geodesic condition is equivalent to
+its Euclidean second derivative lying in the corresponding normal space. This
+is the local $D$-patch formulation; an embedded-submanifold version also
+specifies an embedding and the induced tangent and normal spaces.
 \end{lemma}
 
 \begin{proof}
@@ -2316,6 +2305,7 @@ so that $s_\lambda>0$ on $(0,D_\lambda)$.
 \begin{lemma}[Jacobi fields and the exponential map in constant curvature]
 \label{lem:constant-curvature-jacobi}
 \uses{lem:constant-curvature-tensor, def:geodesic, def:exponential-map, thm:hopf-rinow}
+\notready
 
 Let $(M,g)$ be a complete Riemannian $n$-manifold of constant
 sectional curvature $\lambda$ and let $p\in M$.
@@ -2422,6 +2412,7 @@ preceding lemma for repeated use.
 \begin{lemma}[Polar model of nonpositive constant curvature]
 \label{lem:model-polar-isometry}
 \uses{def:sectional-curvature, def:exponential-map, def:local-isometry, lem:constant-curvature-jacobi}
+\notready
 
 Let $(M,g)$ be a complete, simply-connected Riemannian $n$-manifold
 of constant sectional curvature $\lambda\le0$ and let $p\in M$.
@@ -2443,6 +2434,7 @@ after Definition~\ref{def:sectional-curvature}.
 \begin{lemma}[The model spaces]
 \label{lem:model-spaces}
 \uses{def:sectional-curvature, def:geodesic, lem:constant-curvature-tensor}
+\notready
 
 Let $n\ge2$.
 \begin{enumerate}
@@ -2605,6 +2597,7 @@ derive from the Jacobi equation.
 \begin{lemma}[Leading terms of the metric in normal coordinates]
 \label{lem:normal-coordinates-expansion}
 \uses{def:exponential-map, def:riemann-curvature-tensor}
+\notready
 
 In Gaussian normal coordinates $(x^1,\ldots,x^n)$ centered at $p$,
 $$g_{ij}(x)=\delta_{ij}+\frac13R_{iklj}x^kx^l
@@ -2656,10 +2649,7 @@ satisfies
    \qquad b^k:=-g^{ij}\Gamma^k_{ij}, \]
 where $(g^{ij})$ is the inverse of the Gram matrix $(g_{ij})$ of the
 metric in the chart and $\Gamma^k_{ij}$ are the Christoffel symbols of
-the Levi-Civita connection. In particular, in a chart the Laplacian is
-a second-order operator whose leading coefficient matrix $(g^{ij})$ is
-symmetric positive definite and whose coefficients $g^{ij}$, $b^k$ are
-smooth.
+the Levi-Civita connection.
 \end{lemma}
 
 \begin{proof}
@@ -4400,16 +4390,34 @@ Apply the radial Bishop--Gromov inequality direction by direction, extending eac
 \label{BishopGromov}
 
 
-(Relative Volume Comparison, Bishop-Gromov 1964-1980) Suppose $(M,
-g)$ is a Riemannian manifold. Fix a point $p\in M$, and suppose that
-$B(p,R)$ has compact closure in $M$. Suppose that for some $k\ge 0$
-we have $\Ric \geq -(n-1)k$ on $B(p,R)$. Recall that $H^n_k$ is
-the simply connected, complete manifold of constant curvature $-k$
-and $q_k\in H^n_k$ is a point. Then
-\[ \frac{\Vol\,B(p,r)}{\Vol\, B_{H^n_k}(q_k,r)} \]
-is a non-increasing function of $r$ for $r<R$, whose limit as $r\rightarrow 0$
-is 1. In particular, if the Ricci curvature of $(M,g)$ is $\ge 0$ on $B(p,R)$,
-then $\Vol\,B(p,r)/r^n$ is a non-increasing function of $r$ for $r<R$.
+(Relative Volume Comparison, Bishop-Gromov 1964-1980) Let $(M,g)$ be a
+connected Riemannian manifold and fix $p\in M$. Put $n=\dim M$, assume
+$n\ge2$, and suppose that $B(p,R)$ has compact closure in $M$ for some
+$R>0$. Assume that the metric distance is the Riemannian distance induced
+by $g$ and that $(M,g)$ is complete. Assume that
+\[
+\Ric_x(v,v)\ge -(n-1)k\,g_x(v,v)
+\quad(x\in\overline{B(p,R)},\ v\in T_xM),
+\]
+and that the transported exponential Jacobian is measurable. Then the
+genuine manifold ratio
+\[
+r\longmapsto
+\frac{\mu_g(B(p,r))}{\operatorname{ModelVol}_k(r)},
+\qquad
+\operatorname{ModelVol}_k(r):=\operatorname{modelBallVolume}
+ (\operatorname{volume},k,r),
+\]
+is non-increasing on $(0,R)$, where $\mu_g$ is the Riemannian measure
+constructed from the metric and the chosen tangent Haar measure.
+
+For the source normalization and its flat-model corollary, additionally
+assume that the small-radius ratio tends to the origin density, that the
+flat model volume is a constant multiple of $r^n$, and that the origin
+density is $1$. If moreover $\Ric\ge0$
+on the closed ball, the ratio has limit $1$ at $0$ and
+$r\mapsto\mu_g(B(p,r))/r^n$ is non-increasing.
+
 \end{theorem}
 
 \begin{proof}
@@ -4429,8 +4437,7 @@ quantities in play is recorded in the following lemma.
 
 \begin{lemma}[Rescaling the metric]
 \label{lem:metric-rescaling}
-\lean{MorganTianLib.metricRescalingLaws}
-\leanok
+\lean{MorganTianLib.metricRescalingLaws,MorganTianLib.rescaledMetric_intrinsicMetricBookInjectivityRadius,MorganTianLib.rescaledMetric_canonicalMetricBookInjectivityRadius,MorganTianLib.canonicalMetricBookInjectivityRadius_eq}
 \uses{def:riemannian-metric, def:sectional-curvature, def:curvature-operator-norm, def:ricci-curvature, def:injectivity-radius, def:exponential-map}
 
 Let $(M,g)$ be a Riemannian manifold and let $c>0$ be a constant;
@@ -4449,7 +4456,16 @@ $\Ric'\ge(n-1)(k/c)\,g'$;
 \item $d'=\sqrt{c}\,d$; hence $B_{g'}(p,\sqrt{c}\,r)=B_g(p,r)$,
 and $(M,g')$ is complete if and only if $(M,g)$ is;
 \item $\Vol_{g'}=c^{n/2}\Vol_g$;
-\item $\inj_{(M,g')}(p)=\sqrt{c}\,\inj_{(M,g)}(p)$.
+\item The intrinsic exponential-ball radius scales by
+$\sqrt{c}$:
+\[
+\operatorname{inj}^{\rm int}_{(M,g')}(p)=
+\sqrt{c}\,\operatorname{inj}^{\rm int}_{(M,g)}(p).
+\]
+For the canonical metric-ball radius the same scaling is available under
+the completeness hypothesis, and that canonical radius is definitionally
+the metric-ball radius used above. These ball-based radii are distinguished
+from the cut-time radius $\inj_M^{\rm cut}(p)$ of Definition~\ref{def:injectivity-radius}.
 \end{enumerate}
 \end{lemma}
 
@@ -4463,6 +4479,7 @@ For $\tilde g=cg$, the inverse metric contributes $c^{-1}$ and derivatives of th
 \begin{proposition}[Bounded curvature implies volume-injectivity relation]
 \label{prop:injectivity-radius-volume}
 \uses{def:injectivity-radius, def:curvature-operator-norm}
+\notready
 \label{injvol}
 
 Fix an integer $n>0$. For every $\epsilon>0$ there is $\delta>0$
@@ -4506,6 +4523,7 @@ then forces the volume downstairs to be small.
 \label{lem:pullback-ball}
 \source{cheeger-gromov-taylor:page-0032}
 \uses{def:exponential-map, def:geodesic, lem:geodesic-polar-form, def:local-isometry}
+\notready
 
 
 Let $p\in M$, let $0<\rho_*\le\infty$, and suppose that
@@ -4576,6 +4594,7 @@ Use the exponential map as a local isometry on the pulled-back metric ball. Shor
 \begin{lemma}[Unique minimizers and convexity in the pulled-back ball]
 \label{lem:pullback-unique-minimizers}
 \uses{lem:pullback-ball, def:sectional-curvature, lem:rauch-lower, lem:conjugate-sturm}
+\notready
 
 In the setting of Lemma~\ref{lem:pullback-ball} with $\rho_*=1$,
 suppose in addition that $|K(P)|\le1$ for every $2$-plane tangent
@@ -4899,6 +4918,7 @@ Hence the $x_m$, $0\le m\le N$, are pairwise distinct.
 \begin{theorem}[Volume lower bound implies injectivity radius lower bound]
 \label{thm:volume-injectivity-radius}
 \uses{def:injectivity-radius, def:curvature-operator-norm}
+\notready
 \label{volinj}
 
 Fix an integer $n>0$. For every $\epsilon>0$ there is $\delta>0$

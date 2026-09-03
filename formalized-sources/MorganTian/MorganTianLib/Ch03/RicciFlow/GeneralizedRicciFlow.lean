@@ -24,6 +24,18 @@ variable (n : ℕ)
 
 private abbrev SpatialModel (n : ℕ) := EuclideanSpace ℝ (Fin n)
 
+noncomputable local instance (n : ℕ) [NeZero n] :
+    NeZero (Module.finrank ℝ (SpatialModel n)) :=
+  ⟨by simpa using (NeZero.out : n ≠ 0)⟩
+
+noncomputable local instance (n : ℕ) (U : Opens (SpatialModel n)) :
+    LocallyCompactSpace U :=
+  U.isOpen.locallyCompactSpace
+
+noncomputable local instance (n : ℕ) (U : Opens (SpatialModel n)) :
+    SigmaCompactSpace U :=
+  sigmaCompactSpace_of_locallyCompact_secondCountable
+
 /-- **Math.** The open spatial coordinate domain of an adapted chart, regarded
 as a manifold modelled on `R^n`. -/
 def GeneralizedSpaceTimeLocalChart.spatialOpens
@@ -76,6 +88,15 @@ def spatialRicciTensorAt (U : Opens (SpatialModel n))
     letI : SigmaCompactSpace U := sigmaCompactSpace_of_locallyCompact_secondCountable
     ricciTensorAt g p
 
+/-- **Math.** In positive spatial dimension, the chartwise Ricci tensor used
+by generalized Ricci flows is the ordinary canonical Ricci tensor. -/
+theorem spatialRicciTensorAt_eq_ricciTensorAt [NeZero n]
+    (U : Opens (SpatialModel n))
+    (g : RiemannianMetric (modelWithCornersSelf ℝ (SpatialModel n)) U)
+    (p : U) :
+    spatialRicciTensorAt n U g p = ricciTensorAt g p := by
+  rw [spatialRicciTensorAt, dif_neg (NeZero.ne _)]
+
 /-- **Math.** The ordinary Ricci flow equation on the spatial part `V` of an
 adapted chart and on its time interval `J`.  The within-derivative gives the
 one-sided equation at endpoints of `J`. -/
@@ -112,6 +133,37 @@ structure GeneralizedRicciFlow where
   metric : spaceTime.HorizontalMetric n
   /-- The generalized Ricci flow equation. -/
   equation : spaceTime.IsRicciFlowEquation n metric
+
+/-- **Math.** The ordinary Ricci flow obtained by pulling a generalized Ricci
+flow back to one adapted product chart.  The realization field identifies the
+metric family with the horizontal metric, while `equation` is the ordinary
+Chapter 3 Ricci-flow equation on the chart's time interval. -/
+structure GeneralizedRicciFlow.LocalOrdinaryRicciFlowAt [NeZero n]
+    (F : GeneralizedRicciFlow n (N := N)) (x : N) where
+  /-- The metric family on the fixed open spatial chart. -/
+  metric : ℝ → RiemannianMetric
+    (modelWithCornersSelf ℝ (SpatialModel n))
+    ((F.spaceTime.localProduct x).spatialOpens n)
+  /-- The metric family is exactly the pullback of the horizontal metric. -/
+  realizes : (F.spaceTime.localProduct x).RealizesHorizontalMetric n
+    F.metric metric
+  /-- The pulled-back family satisfies the ordinary Ricci-flow equation. -/
+  equation : MorganTianLib.IsRicciFlowEquationOn metric
+    (F.spaceTime.localProduct x).timeSource
+
+/-- **Math.** Every positive-dimensional generalized Ricci flow is locally an
+ordinary Ricci flow in each adapted product chart. -/
+noncomputable def GeneralizedRicciFlow.localOrdinaryRicciFlowAt [NeZero n]
+    (F : GeneralizedRicciFlow n (N := N)) (x : N) :
+    F.LocalOrdinaryRicciFlowAt n x := by
+  let g := Classical.choose (F.equation x)
+  have hchosen := Classical.choose_spec (F.equation x)
+  obtain ⟨hrealizes, hequation⟩ := hchosen
+  refine ⟨g, hrealizes, ?_⟩
+  intro t ht p v w
+  have h := hequation t ht p v w
+  rw [spatialRicciTensorAt_eq_ricciTensorAt] at h
+  exact h
 
 end MorganTianLib
 

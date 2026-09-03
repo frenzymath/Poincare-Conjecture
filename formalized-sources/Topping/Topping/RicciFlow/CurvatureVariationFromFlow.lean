@@ -1,4 +1,7 @@
 import Topping.Riemannian.VariationCurvature
+import Topping.Riemannian.VariationScalar
+import Topping.Riemannian.CurvatureMultilinear
+import Topping.RicciFlow.ScalarSpacetimeSmooth
 import MorganTianLib.Ch03.RicciFlow.CurvatureCoordinateVariation
 import MorganTianLib.Ch03.RicciFlow.ScalarTraceEvolution
 import MorganTianLib.Ch02.CovDerivAlongCurve
@@ -15,7 +18,7 @@ antecedents have already been discharged.
 -/
 
 open scoped ContDiff Manifold Topology Bundle RealInnerProductSpace
-open Set Riemannian Riemannian.Geodesic
+open Set Riemannian Riemannian.Geodesic Filter
 
 noncomputable section
 
@@ -68,6 +71,41 @@ theorem riemannCurvatureAt_chartBasis_expansion
           g.metricInner_smul_left, ih, Finset.sum_insert ha]
   rw [hsum]
   rfl
+
+/-- **Math.** The canonical Ricci tensor used by Morgan--Tian is the same
+pointwise bilinear form as Topping's Ricci tensor. -/
+theorem mtRicciTensorAt_eq_ricciTensorAt
+    (g : RiemannianMetric I M) (p : M) (x y : TangentSpace I p) :
+    MorganTianLib.ricciTensorAt g p x y = ricciTensorAt g p x y := by
+  rw [ricciTensorAt_eq_ricciAt]
+  exact (MorganTianLib.ricciAt_leviCivita_eq_ricciTensorAt
+    g (isLeviCivita_leviCivitaConnection g) p x y).symm
+
+/-- **Math.** The metric-variation summand in the lowered coordinate curvature
+formula is `-2 Ric(R(partial_i,partial_j)partial_k,partial_l)`. -/
+theorem sum_chartCurvatureCoef_mul_neg_two_mtRicci_eq
+    (g : RiemannianMetric I M) (alpha p : M)
+    (i j k l : Fin (Module.finrank ℝ E))
+    (hp : p ∈ (chartAt H alpha).source) :
+    (∑ m, Riemannian.Jacobi.chartCurvatureCoef (I := I) g alpha i j k m
+          (extChartAt I alpha p) *
+        (-2 * MorganTianLib.ricciTensorAt g p
+          (Tensor.chartBasisVecFiber (I := I) alpha m p)
+          (Tensor.chartBasisVecFiber (I := I) alpha l p))) =
+      -2 * ricciTensorAt g p
+        (g.leviCivitaConnection.curvatureOperatorAt p
+          (Tensor.chartBasisVecFiber (I := I) alpha i p)
+          (Tensor.chartBasisVecFiber (I := I) alpha j p)
+          (Tensor.chartBasisVecFiber (I := I) alpha k p))
+        (Tensor.chartBasisVecFiber (I := I) alpha l p) := by
+  simp_rw [mtRicciTensorAt_eq_ricciTensorAt]
+  rw [Riemannian.curvatureOperatorAt_chartBasis_expansion
+    (I := I) g alpha i j k hp]
+  rw [map_sum, LinearMap.sum_apply]
+  simp_rw [map_smul, LinearMap.smul_apply, smul_eq_mul]
+  rw [Finset.mul_sum]
+  unfold Riemannian.Jacobi.chartCurvatureCoef
+  ring_nf
 
 /-- **Math.** At an interior time, the fixed-chart `(0,4)` curvature component
 has the derivative obtained by the product rule: differentiate the mixed-index
@@ -162,6 +200,121 @@ theorem riemannCurvatureAt_eq_chartBasis_sum
   conv_lhs =>
     rw [← hdecomp x, ← hdecomp y, ← hdecomp z, ← hdecomp w]
   simp only [halg.sum_left, halg.sum_two, halg.sum_three, halg.sum_four]
+
+omit [CompleteSpace E] in
+/-- **Math.** A genuinely pointwise four-linear covariant tensor expands in a
+chart basis with the same nested coefficient convention as the coordinate
+Riemann-variation producer below. -/
+theorem pointwiseValue_eq_chartBasis_sum_four
+    {A : CovTensorField I M 4} {p : M}
+    (hA : IsPointwiseMultilinear A p) (alpha : M)
+    (x y z w : TangentSpace I p)
+    (hp : p ∈ (chartAt H alpha).source) :
+    pointwiseValue A p ![x, y, z, w] =
+      ∑ i, chartTangentCoeff (I := I) alpha p i x *
+        ∑ j, chartTangentCoeff (I := I) alpha p j y *
+          ∑ k, chartTangentCoeff (I := I) alpha p k z *
+            ∑ l, chartTangentCoeff (I := I) alpha p l w *
+              pointwiseValue A p ![
+                Tensor.chartBasisVecFiber (I := I) alpha i p,
+                Tensor.chartBasisVecFiber (I := I) alpha j p,
+                Tensor.chartBasisVecFiber (I := I) alpha k p,
+                Tensor.chartBasisVecFiber (I := I) alpha l p] := by
+  classical
+  let e : Fin (Module.finrank ℝ E) → TangentSpace I p :=
+    fun i => Tensor.chartBasisVecFiber (I := I) alpha i p
+  let c : TangentSpace I p → Fin (Module.finrank ℝ E) → ℝ :=
+    fun v i => chartTangentCoeff (I := I) alpha p i v
+  let F : MultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I p) ℝ := {
+    toFun := pointwiseValue A p
+    map_update_add' := by
+      intro hDecEq v i a b
+      cases Subsingleton.elim hDecEq (instDecidableEqFin 4)
+      exact hA.add i v a b
+    map_update_smul' := by
+      intro hDecEq v i a b
+      cases Subsingleton.elim hDecEq (instDecidableEqFin 4)
+      simpa only [smul_eq_mul] using hA.smul i v a b }
+  have hdecomp (v : TangentSpace I p) : ∑ i, c v i • e i = v := by
+    simpa only [c, e, chartTangentCoeff] using
+      (MorganTianLib.sum_chartCoord_smul_chartBasisVecFiber
+        (I := I) alpha hp v)
+  have hexpand (r : Fin 4) (v : Fin 4 → TangentSpace I p)
+      (a : Fin (Module.finrank ℝ E) → ℝ) :
+      F (Function.update v r (∑ i, a i • e i)) =
+        ∑ i, a i * F (Function.update v r (e i)) := by
+    rw [F.map_update_sum Finset.univ r (fun i => a i • e i) v]
+    apply Finset.sum_congr rfl
+    intro i hi
+    rw [F.map_update_smul]
+    rfl
+  have hupdates (i j k l : Fin (Module.finrank ℝ E)) :
+      Function.update
+        (Function.update
+          (Function.update (Function.update ![x, y, z, w] 0 (e i)) 1 (e j))
+          2 (e k)) 3 (e l) = ![e i, e j, e k, e l] := by
+    funext r
+    fin_cases r <;> rfl
+  calc
+    pointwiseValue A p ![x, y, z, w] = F ![x, y, z, w] := rfl
+    _ = F (Function.update ![x, y, z, w] 0 (∑ i, c x i • e i)) := by
+      rw [hdecomp x]
+      congr 1
+      funext r
+      fin_cases r <;> rfl
+    _ = ∑ i, c x i * F (Function.update ![x, y, z, w] 0 (e i)) :=
+      hexpand 0 ![x, y, z, w] (c x)
+    _ = ∑ i, c x i * ∑ j, c y j *
+          F (Function.update (Function.update ![x, y, z, w] 0 (e i)) 1 (e j)) := by
+      apply Finset.sum_congr rfl
+      intro i hi
+      congr 1
+      rw [← hexpand 1 (Function.update ![x, y, z, w] 0 (e i)) (c y)]
+      rw [hdecomp y]
+      congr 1
+      funext r
+      fin_cases r <;> rfl
+    _ = ∑ i, c x i * ∑ j, c y j * ∑ k, c z k *
+          F (Function.update
+            (Function.update (Function.update ![x, y, z, w] 0 (e i)) 1 (e j))
+            2 (e k)) := by
+      apply Finset.sum_congr rfl
+      intro i hi
+      congr 1
+      apply Finset.sum_congr rfl
+      intro j hj
+      congr 1
+      rw [← hexpand 2
+        (Function.update (Function.update ![x, y, z, w] 0 (e i)) 1 (e j)) (c z)]
+      rw [hdecomp z]
+      congr 1
+      funext r
+      fin_cases r <;> rfl
+    _ = ∑ i, c x i * ∑ j, c y j * ∑ k, c z k * ∑ l, c w l *
+          F (Function.update
+            (Function.update
+              (Function.update (Function.update ![x, y, z, w] 0 (e i)) 1 (e j))
+              2 (e k)) 3 (e l)) := by
+      apply Finset.sum_congr rfl
+      intro i hi
+      congr 1
+      apply Finset.sum_congr rfl
+      intro j hj
+      congr 1
+      apply Finset.sum_congr rfl
+      intro k hk
+      congr 1
+      rw [← hexpand 3
+        (Function.update
+          (Function.update (Function.update ![x, y, z, w] 0 (e i)) 1 (e j))
+          2 (e k)) (c w)]
+      rw [hdecomp w]
+      congr 1
+      funext r
+      fin_cases r <;> rfl
+    _ = _ := by
+      simp_rw [hupdates]
+      rfl
 
 /-- **Math.** The derivative of a fixed chart-frame `(0,4)` curvature
 component along a metric variation. -/
@@ -402,6 +555,104 @@ theorem sum_chartCovariantDerivativeConnectionVariationOnE_mul_chartGram_eq
   simp only [mul_assoc]
   ring_nf
 
+/-- **Math.** Lowering the output index in the genuine Ricci-flow
+Christoffel variation removes the inverse metric and gives the three
+covariant-Ricci terms directly. -/
+theorem sum_chartChristoffelVariationOnE_neg_two_ricci_mul_chartGram_eq
+    (g : ℝ → RiemannianMetric I M) (t : ℝ) (alpha : M)
+    (i j l : Fin (Module.finrank ℝ E)) {y : E}
+    (hy : y ∈ (extChartAt I alpha).target) :
+    (∑ k, MorganTianLib.chartChristoffelVariationOnE (I := I) g
+        (fun s p x z => -2 * MorganTianLib.ricciTensorAt (g s) p x z)
+        t alpha i j k y * chartGramOnE (I := I) (g t) alpha k l y) =
+      - (MorganTianLib.chartCovRicciOnE (I := I) (g t) alpha i l j y +
+          MorganTianLib.chartCovRicciOnE (I := I) (g t) alpha j l i y -
+          MorganTianLib.chartCovRicciOnE (I := I) (g t) alpha l i j y) := by
+  classical
+  have hsource : (extChartAt I alpha).symm y ∈ (chartAt H alpha).source := by
+    rw [← extChartAt_source (𝕜 := ℝ) (E := E) I alpha]
+    exact (extChartAt I alpha).map_target hy
+  have hbase : (extChartAt I alpha).symm y ∈
+      (trivializationAt E (TangentSpace I) alpha).baseSet := by
+    rw [trivializationAt_baseSet_eq_chartAt_source]
+    exact hsource
+  have hGinvG (a : Fin (Module.finrank ℝ E)) :
+      (∑ k, chartInvGramOnE (I := I) (g t) alpha a k y *
+        chartGramOnE (I := I) (g t) alpha k l y) =
+        if a = l then (1 : ℝ) else 0 := by
+    have h :
+        (∑ k, chartInvGramOnE (I := I) (g t) alpha a k y *
+          chartGramOnE (I := I) (g t) alpha k l y) =
+          (Tensor.chartInvGramMatrix (I := I) (g t) alpha
+            ((extChartAt I alpha).symm y) *
+           Tensor.chartGramMatrix (I := I) (g t) alpha
+            ((extChartAt I alpha).symm y)) a l := by
+      rw [Matrix.mul_apply]
+      exact Finset.sum_congr rfl fun k _ => by
+        rw [chartInvGramOnE_def, chartGramOnE_def]
+    rw [h, Tensor.chartInvGramMatrix_mul_chartGramMatrix
+      (I := I) (g t) alpha hbase, Matrix.one_apply]
+  let C : Fin (Module.finrank ℝ E) → ℝ := fun a =>
+    MorganTianLib.chartCovRicciOnE (I := I) (g t) alpha i a j y +
+      MorganTianLib.chartCovRicciOnE (I := I) (g t) alpha j a i y -
+      MorganTianLib.chartCovRicciOnE (I := I) (g t) alpha a i j y
+  simp_rw [MorganTianLib.chartChristoffelVariationOnE_neg_two_ricci_eq_covRicci
+    g t alpha i j _ hy]
+  change (∑ k, (-∑ a, chartInvGramOnE (I := I) (g t) alpha k a y * C a) *
+      chartGramOnE (I := I) (g t) alpha k l y) = - C l
+  calc
+    (∑ k, (-∑ a, chartInvGramOnE (I := I) (g t) alpha k a y * C a) *
+        chartGramOnE (I := I) (g t) alpha k l y) =
+      - ∑ a, (∑ k, chartInvGramOnE (I := I) (g t) alpha a k y *
+        chartGramOnE (I := I) (g t) alpha k l y) * C a := by
+      simp only [neg_mul, Finset.sum_neg_distrib]
+      congr 1
+      calc
+        (∑ k, (∑ a, chartInvGramOnE (I := I) (g t) alpha k a y * C a) *
+            chartGramOnE (I := I) (g t) alpha k l y) =
+          ∑ k, ∑ a, chartInvGramOnE (I := I) (g t) alpha k a y * C a *
+            chartGramOnE (I := I) (g t) alpha k l y := by
+              apply Finset.sum_congr rfl
+              intro k hk
+              rw [Finset.sum_mul]
+        _ = ∑ a, ∑ k, chartInvGramOnE (I := I) (g t) alpha a k y *
+            chartGramOnE (I := I) (g t) alpha k l y * C a := by
+              rw [Finset.sum_comm]
+              apply Finset.sum_congr rfl
+              intro a ha
+              apply Finset.sum_congr rfl
+              intro k hk
+              rw [MorganTianLib.chartInvGramOnE_symm (g t) alpha hy k a]
+              ring
+        _ = ∑ a, (∑ k, chartInvGramOnE (I := I) (g t) alpha a k y *
+            chartGramOnE (I := I) (g t) alpha k l y) * C a := by
+              apply Finset.sum_congr rfl
+              intro a ha
+              rw [Finset.sum_mul]
+    _ = - C l := by
+      rw [Finset.sum_eq_single l]
+      · rw [hGinvG]
+        simp
+      · intro b hb hbl
+        rw [hGinvG]
+        simp [hbl]
+      · simp
+
+/-- **Math.** The chart component of the corrected second covariant derivative
+`(nabla^2_{r,a} Ric)_{bc}`: differentiate the `nabla Ric` component and subtract
+the Christoffel action in the derivative slot and both Ricci tensor slots. -/
+noncomputable def chartSecondCovRicciOnE
+    (g : RiemannianMetric I M) (alpha : M)
+    (r a b c : Fin (Module.finrank ℝ E)) (y : E) : ℝ :=
+  partialDeriv (E := E) r
+      (MorganTianLib.chartCovRicciOnE (I := I) g alpha a b c) y
+    - ∑ s, Riemannian.chartChristoffel g alpha r a s y *
+        MorganTianLib.chartCovRicciOnE g alpha s b c y
+    - ∑ s, Riemannian.chartChristoffel g alpha r b s y *
+        MorganTianLib.chartCovRicciOnE g alpha a s c y
+    - ∑ s, Riemannian.chartChristoffel g alpha r c s y *
+        MorganTianLib.chartCovRicciOnE g alpha a b s y
+
 /-! The next local frame identity isolates one of the three Christoffel
 corrections which remain when the coordinate producer is compared with the
 intrinsic Hessian formula. -/
@@ -481,26 +732,28 @@ Christoffel corrections in the derivative slot and both Ricci tensor slots of
 their later assembly into the intrinsic corrected Ricci Hessian. -/
 theorem exists_chartFrame_covRicciAt_connection_corrections_eq_chartSums
     (g : RiemannianMetric I M) (alpha : M) (y : E)
-    (hy : y ∈ (extChartAt I alpha).target)
-    (r a b c : Fin (Module.finrank ℝ E)) :
+    (hy : y ∈ (extChartAt I alpha).target) :
     let p : M := (extChartAt I alpha).symm y
     let hLC := g.leviCivitaConnection.isLeviCivita_of_koszulDual g
       (fun X Y W q => g.koszulDualSection_dual X Y W q)
     ∃ X : Fin (Module.finrank ℝ E) → SmoothVectorField I M,
+      (∀ i, ∀ᶠ q in 𝓝 p,
+        X i q = Tensor.chartBasisVecFiber (I := I) alpha i q) ∧
       (∀ i j, (g.leviCivitaConnection.cov (X i) (X j)).toFun p =
         ∑ m, Riemannian.chartChristoffel g alpha i j m y • (X m).toFun p) ∧
-      MorganTianLib.covRicciAt g g.leviCivitaConnection hLC p
-          ((g.leviCivitaConnection.cov (X r) (X a)) p) (X b p) (X c p) =
-        ∑ s, Riemannian.chartChristoffel g alpha r a s y *
-          MorganTianLib.chartCovRicciOnE g alpha s b c y ∧
-      MorganTianLib.covRicciAt g g.leviCivitaConnection hLC p (X a p)
-          ((g.leviCivitaConnection.cov (X r) (X b)) p) (X c p) =
-        ∑ s, Riemannian.chartChristoffel g alpha r b s y *
-          MorganTianLib.chartCovRicciOnE g alpha a s c y ∧
-      MorganTianLib.covRicciAt g g.leviCivitaConnection hLC p
-          (X a p) (X b p) ((g.leviCivitaConnection.cov (X r) (X c)) p) =
-        ∑ s, Riemannian.chartChristoffel g alpha r c s y *
-          MorganTianLib.chartCovRicciOnE g alpha a b s y := by
+      ∀ r a b c,
+        MorganTianLib.covRicciAt g g.leviCivitaConnection hLC p
+            ((g.leviCivitaConnection.cov (X r) (X a)) p) (X b p) (X c p) =
+          ∑ s, Riemannian.chartChristoffel g alpha r a s y *
+            MorganTianLib.chartCovRicciOnE g alpha s b c y ∧
+        MorganTianLib.covRicciAt g g.leviCivitaConnection hLC p (X a p)
+            ((g.leviCivitaConnection.cov (X r) (X b)) p) (X c p) =
+          ∑ s, Riemannian.chartChristoffel g alpha r b s y *
+            MorganTianLib.chartCovRicciOnE g alpha a s c y ∧
+        MorganTianLib.covRicciAt g g.leviCivitaConnection hLC p
+            (X a p) (X b p) ((g.leviCivitaConnection.cov (X r) (X c)) p) =
+          ∑ s, Riemannian.chartChristoffel g alpha r c s y *
+            MorganTianLib.chartCovRicciOnE g alpha a b s y := by
   let p : M := (extChartAt I alpha).symm y
   have hp : p ∈ (chartAt H alpha).source := by
     rw [← extChartAt_source (𝕜 := ℝ) (E := E) I alpha]
@@ -523,7 +776,8 @@ theorem exists_chartFrame_covRicciAt_connection_corrections_eq_chartSums
       g alpha u v w hy
     rw [hXval u, hXval v, hXval w]
     rw [← hchart]
-  have hsumDir (s0 : Finset (Fin (Module.finrank ℝ E)))
+  have hsumDir (b c : Fin (Module.finrank ℝ E))
+      (s0 : Finset (Fin (Module.finrank ℝ E)))
       (coef : Fin (Module.finrank ℝ E) → ℝ) :
       MorganTianLib.covRicciAt g g.leviCivitaConnection hLC p
           (∑ i ∈ s0, coef i • (X i p)) (X b p) (X c p) =
@@ -540,7 +794,8 @@ theorem exists_chartFrame_covRicciAt_connection_corrections_eq_chartSums
         rw [Finset.sum_insert hi, Finset.sum_insert hi,
           MorganTianLib.covRicciAt_add_dir,
           MorganTianLib.covRicciAt_smul_dir, ih]
-  have hsumFst (s0 : Finset (Fin (Module.finrank ℝ E)))
+  have hsumFst (a c : Fin (Module.finrank ℝ E))
+      (s0 : Finset (Fin (Module.finrank ℝ E)))
       (coef : Fin (Module.finrank ℝ E) → ℝ) :
       MorganTianLib.covRicciAt g g.leviCivitaConnection hLC p (X a p)
           (∑ i ∈ s0, coef i • (X i p)) (X c p) =
@@ -557,7 +812,8 @@ theorem exists_chartFrame_covRicciAt_connection_corrections_eq_chartSums
         rw [Finset.sum_insert hi, Finset.sum_insert hi,
           MorganTianLib.covRicciAt_add_fst,
           MorganTianLib.covRicciAt_smul_fst, ih]
-  have hsumSnd (s0 : Finset (Fin (Module.finrank ℝ E)))
+  have hsumSnd (a b : Fin (Module.finrank ℝ E))
+      (s0 : Finset (Fin (Module.finrank ℝ E)))
       (coef : Fin (Module.finrank ℝ E) → ℝ) :
       MorganTianLib.covRicciAt g g.leviCivitaConnection hLC p
           (X a p) (X b p) (∑ i ∈ s0, coef i • (X i p)) =
@@ -574,21 +830,249 @@ theorem exists_chartFrame_covRicciAt_connection_corrections_eq_chartSums
         rw [Finset.sum_insert hi, Finset.sum_insert hi,
           MorganTianLib.covRicciAt_add_snd,
           MorganTianLib.covRicciAt_smul_snd, ih]
-  refine ⟨X, ?_, ?_, ?_, ?_⟩
+  refine ⟨X, hX, ?_, ?_⟩
   · intro i j
     simpa [p] using hcov i j
-  · rw [hcov r a, hsumDir]
-    apply Finset.sum_congr rfl
-    intro s hs
-    rw [hcomponent s b c]
-  · rw [hcov r b, hsumFst]
-    apply Finset.sum_congr rfl
-    intro s hs
-    rw [hcomponent a s c]
-  · rw [hcov r c, hsumSnd]
-    apply Finset.sum_congr rfl
-    intro s hs
-    rw [hcomponent a b s]
+  · intro r a b c
+    refine ⟨?_, ?_, ?_⟩
+    · rw [hcov r a, hsumDir b c]
+      apply Finset.sum_congr rfl
+      intro s hs
+      rw [hcomponent s b c]
+    · rw [hcov r b, hsumFst a c]
+      apply Finset.sum_congr rfl
+      intro s hs
+      rw [hcomponent a s c]
+    · rw [hcov r c, hsumSnd a b]
+      apply Finset.sum_congr rfl
+      intro s hs
+      rw [hcomponent a b s]
+
+/-- **Math.** In a single germ-local chart frame, the corrected second
+covariant derivative of `Ric` is the coordinate derivative of `nabla Ric`
+minus the Christoffel corrections in its direction slot and its two tensor
+slots.  This is the intrinsic Hessian expression needed to differentiate the
+lowered Ricci-flow connection variation. -/
+theorem exists_chartFrame_secondCovDerivAlong_ricciTensorField_eq_chart
+    (g : RiemannianMetric I M) (alpha : M) (y : E)
+    (hy : y ∈ (extChartAt I alpha).target) :
+    let p : M := (extChartAt I alpha).symm y
+    ∃ X : Fin (Module.finrank ℝ E) → SmoothVectorField I M,
+      (∀ i, ∀ᶠ q in 𝓝 p,
+        X i q = Tensor.chartBasisVecFiber (I := I) alpha i q) ∧
+      ∀ r a b c,
+        secondCovDerivAlong g.leviCivitaConnection (X r) (X a)
+            (ricciTensorField g) ![X b, X c] p =
+          partialDeriv (E := E) r
+              (MorganTianLib.chartCovRicciOnE (I := I) g alpha a b c) y
+            - ∑ s, Riemannian.chartChristoffel g alpha r a s y *
+                MorganTianLib.chartCovRicciOnE g alpha s b c y
+            - ∑ s, Riemannian.chartChristoffel g alpha r b s y *
+                MorganTianLib.chartCovRicciOnE g alpha a s c y
+            - ∑ s, Riemannian.chartChristoffel g alpha r c s y *
+                MorganTianLib.chartCovRicciOnE g alpha a b s y := by
+  classical
+  let p : M := (extChartAt I alpha).symm y
+  let nabla := g.leviCivitaConnection
+  let hLC := g.leviCivitaConnection.isLeviCivita_of_koszulDual g
+    (fun X Y W q => g.koszulDualSection_dual X Y W q)
+  obtain ⟨X, hX, hcov, hcorr⟩ :=
+    exists_chartFrame_covRicciAt_connection_corrections_eq_chartSums
+      g alpha y hy
+  have hp : p ∈ (chartAt H alpha).source := by
+    rw [← extChartAt_source (𝕜 := ℝ) (E := E) I alpha]
+    exact (extChartAt I alpha).map_target hy
+  have hpy : (extChartAt I alpha) p = y :=
+    (extChartAt I alpha).right_inv hy
+  have hXval (i : Fin (Module.finrank ℝ E)) :
+      X i p = Tensor.chartBasisVecFiber (I := I) alpha i p :=
+    (hX i).self_of_nhds
+  have hcovAt (U A B : SmoothVectorField I M) (q : M) :
+      covDerivAlong nabla U (ricciTensorField g) ![A, B] q =
+        MorganTianLib.covRicciAt g nabla hLC q (U q) (A q) (B q) := by
+    rw [show ![A, B] = (fun i => if i = 0 then A else B) by
+      funext i
+      fin_cases i <;> simp]
+    rw [covDerivAlong_ricciTensorField]
+    exact (MorganTianLib.covRicciAt_eq g nabla hLC U A B q).symm
+  have hsymm : Tendsto (extChartAt I alpha).symm (𝓝 y) (𝓝 p) := by
+    have hs : ContMDiffAt 𝓘(ℝ, E) I ∞ (extChartAt I alpha).symm y :=
+      (contMDiffOn_extChartAt_symm alpha y hy).contMDiffAt
+        (extChartAt_target_mem_nhds' hy)
+    exact hs.continuousAt
+  have hcoord (a b c : Fin (Module.finrank ℝ E)) :
+      (covDerivAlong nabla (X a) (ricciTensorField g) ![X b, X c] ∘
+          (extChartAt I alpha).symm) =ᶠ[𝓝 y]
+        MorganTianLib.chartCovRicciOnE (I := I) g alpha a b c := by
+    filter_upwards [extChartAt_target_mem_nhds' hy,
+      hsymm.eventually (hX a), hsymm.eventually (hX b),
+      hsymm.eventually (hX c)] with z hz ha hb hc
+    simp only [Function.comp_apply]
+    rw [hcovAt, ha, hb, hc]
+    exact (MorganTianLib.chartCovRicciOnE_eq_covRicciAt_chartBasis
+      g alpha a b c hz).symm
+  have hdir (r a b c : Fin (Module.finrank ℝ E)) :
+      (X r).dir
+          (covDerivAlong nabla (X a) (ricciTensorField g) ![X b, X c]) p =
+        partialDeriv (E := E) r
+          (MorganTianLib.chartCovRicciOnE (I := I) g alpha a b c) y := by
+    show mfderiv I 𝓘(ℝ, ℝ)
+      (covDerivAlong nabla (X a) (ricciTensorField g) ![X b, X c]) p
+        (X r p) = _
+    rw [hXval r, MorganTianLib.mfderiv_apply_chartBasisVecFiber
+      (((hasSmoothComponents_ricciTensorField g).covDerivAlong
+        nabla (X a) ![X b, X c]).contMDiffAt) alpha hp r, hpy]
+    exact MorganTianLib.partialDeriv_congr_of_eventuallyEq (hcoord a b c) r
+  refine ⟨X, hX, ?_⟩
+  intro r a b c
+  have hupdate0 :
+      Function.update ![X b, X c] 0 (nabla.cov (X r) (X b)) =
+        ![nabla.cov (X r) (X b), X c] := by
+    funext i
+    fin_cases i <;> simp
+  have hupdate1 :
+      Function.update ![X b, X c] 1 (nabla.cov (X r) (X c)) =
+        ![X b, nabla.cov (X r) (X c)] := by
+    funext i
+    fin_cases i <;> simp
+  unfold secondCovDerivAlong
+  rw [covDerivAlong_apply, Fin.sum_univ_two]
+  simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
+  rw [hupdate0, hupdate1, hdir r a b c,
+    hcovAt, hcovAt, hcovAt, (hcorr r a b c).1,
+    (hcorr r a b c).2.1, (hcorr r a b c).2.2]
+  ring
+
+set_option maxHeartbeats 1600000 in
+/-- **Math.** The lowered covariant derivative of the genuine Ricci-flow
+connection variation is the three-term corrected Ricci Hessian combination
+`-nabla^2_{r,i} Ric_{lj} - nabla^2_{r,j} Ric_{li}
++ nabla^2_{r,l} Ric_{ij}`. -/
+theorem sum_chartCovariantDerivativeConnectionVariationOnE_neg_two_ricci_mul_chartGram_eq
+    (g : ℝ → RiemannianMetric I M) (t : ℝ) (alpha : M)
+    (r i j l : Fin (Module.finrank ℝ E)) {y : E}
+    (hy : y ∈ (extChartAt I alpha).target) :
+    (∑ k, MorganTianLib.chartCovariantDerivativeConnectionVariationOnE
+        (I := I) g
+        (fun s p x z => -2 * MorganTianLib.ricciTensorAt (g s) p x z)
+        t alpha r i j k y * chartGramOnE (I := I) (g t) alpha k l y) =
+      -chartSecondCovRicciOnE (I := I) (g t) alpha r i l j y
+        - chartSecondCovRicciOnE (I := I) (g t) alpha r j l i y
+        + chartSecondCovRicciOnE (I := I) (g t) alpha r l i j y := by
+  classical
+  have htarget : (extChartAt I alpha).target ∈ 𝓝 y :=
+    (isOpen_extChartAt_target alpha).mem_nhds hy
+  have hdelta (a b c : Fin (Module.finrank ℝ E)) :
+      DifferentiableAt ℝ
+        (MorganTianLib.chartChristoffelVariationOnE (I := I) g
+          (fun s p x z => -2 * MorganTianLib.ricciTensorAt (g s) p x z)
+          t alpha a b c) y :=
+    ((MorganTianLib.chartChristoffelVariationOnE_neg_two_ricci_contDiffOn
+      g t alpha a b c).contDiffAt htarget).differentiableAt (by norm_num)
+  have hC (a b c : Fin (Module.finrank ℝ E)) :
+      DifferentiableAt ℝ
+        (MorganTianLib.chartCovRicciOnE (I := I) (g t) alpha a b c) y :=
+    ((MorganTianLib.chartCovRicciOnE_contDiffOn
+      (I := I) (g t) alpha a b c).contDiffAt htarget).differentiableAt
+        (by norm_num)
+  have hpartial_add {u v : E → ℝ}
+      (hu : DifferentiableAt ℝ u y) (hv : DifferentiableAt ℝ v y) :
+      partialDeriv (E := E) r (fun z => u z + v z) y =
+        partialDeriv (E := E) r u y + partialDeriv (E := E) r v y := by
+    unfold partialDeriv
+    rw [fderiv_fun_add hu hv, add_apply]
+  have hpartial_sub {u v : E → ℝ}
+      (hu : DifferentiableAt ℝ u y) (hv : DifferentiableAt ℝ v y) :
+      partialDeriv (E := E) r (fun z => u z - v z) y =
+        partialDeriv (E := E) r u y - partialDeriv (E := E) r v y := by
+    unfold partialDeriv
+    rw [fderiv_fun_sub hu hv, sub_apply]
+  have hpartial_neg {u : E → ℝ} :
+      partialDeriv (E := E) r (fun z => -u z) y =
+        -partialDeriv (E := E) r u y := by
+    unfold partialDeriv
+    rw [show (fun z => -u z) = -u by rfl, fderiv_neg,
+      neg_apply]
+  let C₁ : E → ℝ :=
+    MorganTianLib.chartCovRicciOnE (I := I) (g t) alpha i l j
+  let C₂ : E → ℝ :=
+    MorganTianLib.chartCovRicciOnE (I := I) (g t) alpha j l i
+  let C₃ : E → ℝ :=
+    MorganTianLib.chartCovRicciOnE (I := I) (g t) alpha l i j
+  have hC₁ : DifferentiableAt ℝ C₁ y := hC i l j
+  have hC₂ : DifferentiableAt ℝ C₂ y := hC j l i
+  have hC₃ : DifferentiableAt ℝ C₃ y := hC l i j
+  have hlowerNear :
+      (fun z => ∑ k,
+          MorganTianLib.chartChristoffelVariationOnE (I := I) g
+              (fun s p x w => -2 * MorganTianLib.ricciTensorAt (g s) p x w)
+              t alpha i j k z *
+            chartGramOnE (I := I) (g t) alpha k l z) =ᶠ[𝓝 y]
+        (fun z => -(C₁ z + C₂ z - C₃ z)) := by
+    filter_upwards [htarget] with z hz
+    exact sum_chartChristoffelVariationOnE_neg_two_ricci_mul_chartGram_eq
+      g t alpha i j l hz
+  have hpartialLower :=
+    MorganTianLib.partialDeriv_congr_of_eventuallyEq hlowerNear r
+  have hpartial :
+      partialDeriv (E := E) r (fun z => -(C₁ z + C₂ z - C₃ z)) y =
+        -(partialDeriv (E := E) r C₁ y + partialDeriv (E := E) r C₂ y -
+          partialDeriv (E := E) r C₃ y) := by
+    rw [hpartial_neg,
+      hpartial_sub (u := fun z => C₁ z + C₂ z) (v := C₃)
+        (hC₁.add hC₂) hC₃,
+      hpartial_add hC₁ hC₂]
+  have hsum_three (A B C : Fin (Module.finrank ℝ E) → ℝ) :
+      (∑ x, (-A x - B x + C x)) =
+        -(∑ x, A x) - ∑ x, B x + ∑ x, C x := by
+    rw [Finset.sum_add_distrib, Finset.sum_sub_distrib,
+      Finset.sum_neg_distrib]
+  rw [sum_chartCovariantDerivativeConnectionVariationOnE_mul_chartGram_eq
+    g (fun s p x z => -2 * MorganTianLib.ricciTensorAt (g s) p x z)
+      t alpha r i j l hy hdelta]
+  rw [hpartialLower, hpartial]
+  simp_rw [sum_chartChristoffelVariationOnE_neg_two_ricci_mul_chartGram_eq
+    g t alpha _ _ _ hy]
+  simp only [chartSecondCovRicciOnE, C₁, C₂, C₃]
+  ring_nf
+  simp_rw [hsum_three]
+  ring
+
+/-- **Math.** The coordinate identity above is genuinely intrinsic: one
+germ-local chart frame witnesses all three corrected Ricci Hessians in the
+lowered covariant derivative of the Ricci-flow connection variation. -/
+theorem exists_chartFrame_sum_chartCovariantDerivativeConnectionVariationOnE_eq_secondCovRicci
+    (g : ℝ → RiemannianMetric I M) (t : ℝ) (alpha : M)
+    {y : E} (hy : y ∈ (extChartAt I alpha).target) :
+    let p : M := (extChartAt I alpha).symm y
+    ∃ X : Fin (Module.finrank ℝ E) → SmoothVectorField I M,
+      (∀ i, ∀ᶠ q in 𝓝 p,
+        X i q = Tensor.chartBasisVecFiber (I := I) alpha i q) ∧
+      ∀ r i j l,
+        (∑ k, MorganTianLib.chartCovariantDerivativeConnectionVariationOnE
+            (I := I) g
+            (fun s q x z => -2 * MorganTianLib.ricciTensorAt (g s) q x z)
+            t alpha r i j k y * chartGramOnE (I := I) (g t) alpha k l y) =
+          -secondCovDerivAlong (g t).leviCivitaConnection (X r) (X i)
+              (ricciTensorField (g t)) ![X l, X j] p
+            - secondCovDerivAlong (g t).leviCivitaConnection (X r) (X j)
+              (ricciTensorField (g t)) ![X l, X i] p
+            + secondCovDerivAlong (g t).leviCivitaConnection (X r) (X l)
+              (ricciTensorField (g t)) ![X i, X j] p := by
+  obtain ⟨X, hX, hsecond⟩ :=
+    exists_chartFrame_secondCovDerivAlong_ricciTensorField_eq_chart
+      (g t) alpha y hy
+  refine ⟨X, hX, ?_⟩
+  intro r i j l
+  have hsecond' (u a b c : Fin (Module.finrank ℝ E)) :
+      secondCovDerivAlong (g t).leviCivitaConnection (X u) (X a)
+          (ricciTensorField (g t)) ![X b, X c]
+          ((extChartAt I alpha).symm y) =
+        chartSecondCovRicciOnE (I := I) (g t) alpha u a b c y := by
+    simpa only [chartSecondCovRicciOnE] using hsecond u a b c
+  rw [sum_chartCovariantDerivativeConnectionVariationOnE_neg_two_ricci_mul_chartGram_eq
+    g t alpha r i j l hy, ← hsecond' r i l j, ← hsecond' r j l i,
+    ← hsecond' r l i j]
 
 /-- **Math.** The coordinate expression for the derivative of the Riemann
 tensor on four arbitrary tangent vectors. -/
@@ -601,6 +1085,222 @@ noncomputable def chartRiemannVariationAt
       ∑ k, chartTangentCoeff (I := I) alpha p k z *
         ∑ l, chartTangentCoeff (I := I) alpha p l w *
           chartRiemannBasisVariation (I := I) g h t alpha p i j k l
+
+/-- **Math.** A fixed four-tensor component of a smooth metric family is smooth
+in time on the whole prescribed time set. -/
+theorem contDiffOn_riemannCurvatureAt_timeSlice_of_isSmoothMetricFamilyOn
+    {g : ℝ → RiemannianMetric I M} {J : Set ℝ}
+    (hg : MorganTianLib.IsSmoothMetricFamilyOn g J) (p : M)
+    (x y z w : TangentSpace I p) :
+    ContDiffOn ℝ ∞
+      (fun t => riemannCurvatureAt (g t) p x y z w) J := by
+  classical
+  have hp : p ∈ (chartAt H p).source := mem_chart_source H p
+  have hy : (extChartAt I p) p ∈ (extChartAt I p).target :=
+    mem_extChartAt_target p
+  have hread : ContDiffOn ℝ ∞
+      (fun t : ℝ => (t, (extChartAt I p) p)) J :=
+    contDiffOn_id.prodMk contDiffOn_const
+  have hbasis (i j k l : Fin (Module.finrank ℝ E)) :
+      ContDiffOn ℝ ∞
+        (fun t => riemannCurvatureAt (g t) p
+          (Tensor.chartBasisVecFiber (I := I) p i p)
+          (Tensor.chartBasisVecFiber (I := I) p j p)
+          (Tensor.chartBasisVecFiber (I := I) p k p)
+          (Tensor.chartBasisVecFiber (I := I) p l p)) J := by
+    have hcoef : ∀ m, ContDiffOn ℝ ∞
+        (fun t => Riemannian.Jacobi.chartCurvatureCoef (I := I) (g t)
+          p i j k m ((extChartAt I p) p)) J := by
+      intro m
+      simpa only [Function.comp_def] using
+        (contDiffOn_chartCurvatureCoef_timeSpace hg p i j k m).comp
+          hread (fun t ht => ⟨ht, hy⟩)
+    have hgram (m : Fin (Module.finrank ℝ E)) : ContDiffOn ℝ ∞
+        (fun t => chartGramOnE (I := I) (g t) p m l
+          ((extChartAt I p) p)) J := by
+      simpa only [Function.comp_def] using
+        (MorganTianLib.contDiffOn_chartGramOnE_timeSpace hg p m l).comp
+          hread (fun t ht => ⟨ht, hy⟩)
+    have hsum : ContDiffOn ℝ ∞
+        (fun t => ∑ m,
+          Riemannian.Jacobi.chartCurvatureCoef (I := I) (g t)
+            p i j k m ((extChartAt I p) p) *
+            chartGramOnE (I := I) (g t) p m l ((extChartAt I p) p)) J := by
+      exact ContDiffOn.sum fun m _ =>
+        (hcoef m).mul (hgram m)
+    refine hsum.congr ?_
+    intro t ht
+    rw [riemannCurvatureAt_chartBasis_expansion (g := g t) p p i j k l hp]
+    apply Finset.sum_congr rfl
+    intro m hm
+    congr 1
+    simp only [chartGramOnE_def, Riemannian.Tensor.chartGramMatrix_apply]
+    rw [(extChartAt I p).left_inv (mem_extChartAt_source p)]
+    rfl
+  have hL (i j k : Fin (Module.finrank ℝ E)) :
+      ContDiffOn ℝ ∞
+        (fun t => ∑ l, chartTangentCoeff (I := I) p p l w *
+          riemannCurvatureAt (g t) p
+            (Tensor.chartBasisVecFiber (I := I) p i p)
+            (Tensor.chartBasisVecFiber (I := I) p j p)
+            (Tensor.chartBasisVecFiber (I := I) p k p)
+            (Tensor.chartBasisVecFiber (I := I) p l p)) J := by
+    exact ContDiffOn.sum fun l _ =>
+      contDiffOn_const.mul (hbasis i j k l)
+  have hK (i j : Fin (Module.finrank ℝ E)) :
+      ContDiffOn ℝ ∞
+        (fun t => ∑ k, chartTangentCoeff (I := I) p p k z *
+          ∑ l, chartTangentCoeff (I := I) p p l w *
+            riemannCurvatureAt (g t) p
+              (Tensor.chartBasisVecFiber (I := I) p i p)
+              (Tensor.chartBasisVecFiber (I := I) p j p)
+              (Tensor.chartBasisVecFiber (I := I) p k p)
+              (Tensor.chartBasisVecFiber (I := I) p l p)) J := by
+    exact ContDiffOn.sum fun k _ =>
+      contDiffOn_const.mul (hL i j k)
+  have hJ (i : Fin (Module.finrank ℝ E)) :
+      ContDiffOn ℝ ∞
+        (fun t => ∑ j, chartTangentCoeff (I := I) p p j y *
+          ∑ k, chartTangentCoeff (I := I) p p k z *
+            ∑ l, chartTangentCoeff (I := I) p p l w *
+              riemannCurvatureAt (g t) p
+                (Tensor.chartBasisVecFiber (I := I) p i p)
+                (Tensor.chartBasisVecFiber (I := I) p j p)
+                (Tensor.chartBasisVecFiber (I := I) p k p)
+                (Tensor.chartBasisVecFiber (I := I) p l p)) J := by
+    exact ContDiffOn.sum fun j _ =>
+      contDiffOn_const.mul (hK i j)
+  have hI : ContDiffOn ℝ ∞
+      (fun t => ∑ i, chartTangentCoeff (I := I) p p i x *
+        ∑ j, chartTangentCoeff (I := I) p p j y *
+          ∑ k, chartTangentCoeff (I := I) p p k z *
+            ∑ l, chartTangentCoeff (I := I) p p l w *
+              riemannCurvatureAt (g t) p
+                (Tensor.chartBasisVecFiber (I := I) p i p)
+                (Tensor.chartBasisVecFiber (I := I) p j p)
+                (Tensor.chartBasisVecFiber (I := I) p k p)
+                (Tensor.chartBasisVecFiber (I := I) p l p)) J := by
+    exact ContDiffOn.sum fun i _ =>
+      contDiffOn_const.mul (hJ i)
+  refine hI.congr ?_
+  intro t ht
+  exact riemannCurvatureAt_eq_chartBasis_sum (g := g t) p p x y z w hp
+
+/-- **Math.** The Ricci-flow chart expression for the derivative of a fixed
+four-tensor component is smooth in time on the whole prescribed time set. -/
+theorem contDiffOn_chartRiemannVariationAt_neg_two_ricci_timeSlice
+    {g : ℝ → RiemannianMetric I M} {J : Set ℝ}
+    (hg : MorganTianLib.IsSmoothMetricFamilyOn g J) (p : M)
+    (x y z w : TangentSpace I p) :
+    ContDiffOn ℝ ∞
+      (fun t => chartRiemannVariationAt (I := I) g
+        (fun s q u v => -2 * ricciTensorAt (g s) q u v) t p p x y z w) J := by
+  classical
+  have hy : (extChartAt I p) p ∈ (extChartAt I p).target :=
+    mem_extChartAt_target p
+  have hline : ContDiffOn ℝ ∞
+      (fun t : ℝ => (t, (extChartAt I p) p)) J :=
+    contDiffOn_id.prodMk contDiffOn_const
+  have hcoefvar (i j k m : Fin (Module.finrank ℝ E)) :
+      ContDiffOn ℝ ∞
+        (fun t => MorganTianLib.chartCurvatureCoefVariationOnE (I := I) g
+          (fun s q u v => -2 * MorganTianLib.ricciTensorAt (g s) q u v)
+          t p i j k m (extChartAt I p p)) J := by
+    simpa only [Function.comp_def] using
+      (contDiffOn_chartCurvatureCoefVariationOnE_neg_two_ricci_timeSpace
+        hg p i j k m).comp hline (fun t ht => ⟨ht, hy⟩)
+  have hcoef (i j k m : Fin (Module.finrank ℝ E)) :
+      ContDiffOn ℝ ∞
+        (fun t => Riemannian.Jacobi.chartCurvatureCoef (I := I) (g t)
+          p i j k m (extChartAt I p p)) J := by
+    simpa only [Function.comp_def] using
+      (contDiffOn_chartCurvatureCoef_timeSpace hg p i j k m).comp hline
+        (fun t ht => ⟨ht, hy⟩)
+  have hgram (m l : Fin (Module.finrank ℝ E)) :
+      ContDiffOn ℝ ∞
+        (fun t => (g t).metricInner p
+          (Tensor.chartBasisVecFiber (I := I) p m p)
+          (Tensor.chartBasisVecFiber (I := I) p l p)) J := by
+    have h :=
+      (MorganTianLib.contDiffOn_chartGramOnE_timeSpace hg p m l).comp hline
+        (fun t ht => ⟨ht, hy⟩)
+    have h' : ContDiffOn ℝ ∞
+        (fun t => chartGramOnE (I := I) (g t) p m l (extChartAt I p p)) J := by
+      simpa only [Function.comp_def] using h
+    refine h'.congr ?_
+    intro t ht
+    simp only [chartGramOnE_def, Riemannian.Tensor.chartGramMatrix_apply]
+    rw [(extChartAt I p).left_inv (mem_extChartAt_source p)]
+    rfl
+  have hricci (m l : Fin (Module.finrank ℝ E)) :
+      ContDiffOn ℝ ∞
+        (fun t => -2 * MorganTianLib.ricciTensorAt (g t) p
+          (Tensor.chartBasisVecFiber (I := I) p m p)
+          (Tensor.chartBasisVecFiber (I := I) p l p)) J := by
+    have h :=
+      (contDiffOn_chartRicciCoefOnE_timeSpace hg p m l).comp hline
+        (fun t ht => ⟨ht, hy⟩)
+    have h' : ContDiffOn ℝ ∞
+        (fun t => -2 * MorganTianLib.chartRicciCoefOnE (I := I) (g t)
+          p m l (extChartAt I p p)) J := by
+      simpa only [Function.comp_def] using
+        (contDiffOn_const (c := (-2 : ℝ))).mul h
+    refine h'.congr ?_
+    intro t ht
+    rw [MorganTianLib.chartRicciCoefOnE_eq_ricciTensorAt_chartBasis
+      (g t) p m l hy]
+    rw [(extChartAt I p).left_inv (mem_extChartAt_source p)]
+  have hbasis (i j k l : Fin (Module.finrank ℝ E)) :
+      ContDiffOn ℝ ∞
+        (fun t => chartRiemannBasisVariation (I := I) g
+          (fun s q u v => -2 * MorganTianLib.ricciTensorAt (g s) q u v)
+          t p p i j k l) J := by
+    unfold chartRiemannBasisVariation
+    exact ContDiffOn.sum fun m _ =>
+      (hcoefvar i j k m).mul (hgram m l) |>.add
+        ((hcoef i j k m).mul (hricci m l))
+  have hL (i j k : Fin (Module.finrank ℝ E)) :
+      ContDiffOn ℝ ∞
+        (fun t => ∑ l, chartTangentCoeff (I := I) p p l w *
+          chartRiemannBasisVariation (I := I) g
+            (fun s q u v => -2 * MorganTianLib.ricciTensorAt (g s) q u v)
+            t p p i j k l) J := by
+    exact ContDiffOn.sum fun l _ => contDiffOn_const.mul (hbasis i j k l)
+  have hK (i j : Fin (Module.finrank ℝ E)) :
+      ContDiffOn ℝ ∞
+        (fun t => ∑ k, chartTangentCoeff (I := I) p p k z *
+          ∑ l, chartTangentCoeff (I := I) p p l w *
+            chartRiemannBasisVariation (I := I) g
+              (fun s q u v => -2 * MorganTianLib.ricciTensorAt (g s) q u v)
+              t p p i j k l) J := by
+    exact ContDiffOn.sum fun k _ => contDiffOn_const.mul (hL i j k)
+  have hJ (i : Fin (Module.finrank ℝ E)) :
+      ContDiffOn ℝ ∞
+        (fun t => ∑ j, chartTangentCoeff (I := I) p p j y *
+          ∑ k, chartTangentCoeff (I := I) p p k z *
+            ∑ l, chartTangentCoeff (I := I) p p l w *
+              chartRiemannBasisVariation (I := I) g
+                (fun s q u v => -2 * MorganTianLib.ricciTensorAt (g s) q u v)
+                t p p i j k l) J := by
+    exact ContDiffOn.sum fun j _ => contDiffOn_const.mul (hK i j)
+  have hI : ContDiffOn ℝ ∞
+      (fun t => ∑ i, chartTangentCoeff (I := I) p p i x *
+        ∑ j, chartTangentCoeff (I := I) p p j y *
+          ∑ k, chartTangentCoeff (I := I) p p k z *
+            ∑ l, chartTangentCoeff (I := I) p p l w *
+              chartRiemannBasisVariation (I := I) g
+                (fun s q u v => -2 * MorganTianLib.ricciTensorAt (g s) q u v)
+                t p p i j k l) J := by
+    exact ContDiffOn.sum fun i _ => contDiffOn_const.mul (hJ i)
+  have hR : ContDiffOn ℝ ∞
+      (fun t => chartRiemannVariationAt (I := I) g
+        (fun s q u v => -2 * MorganTianLib.ricciTensorAt (g s) q u v)
+        t p p x y z w) J := by
+    simpa only [chartRiemannVariationAt] using hI
+  refine hR.congr ?_
+  intro t ht
+  simp [chartRiemannVariationAt, chartRiemannBasisVariation,
+    mtRicciTensorAt_eq_ricciTensorAt]
 
 /-- **Math.** At an interior time, the `(0,4)` Riemann tensor evaluated on any
 four fixed tangent vectors differentiates to its finite coordinate expansion.
@@ -736,6 +1436,13 @@ theorem hasDerivAt_riemannCurvatureAt_selfChart_of_isRicciFlowOn
 #print axioms Topping.hasDerivAt_riemannCurvatureAt_chartBasis_of_isRicciFlowOn
 #print axioms Topping.hasDerivAt_riemannCurvatureAt_selfChart
 #print axioms Topping.hasDerivAt_riemannCurvatureAt_selfChart_of_isRicciFlowOn
+#print axioms Topping.contDiffOn_riemannCurvatureAt_timeSlice_of_isSmoothMetricFamilyOn
+#print axioms Topping.contDiffOn_chartRiemannVariationAt_neg_two_ricci_timeSlice
+#print axioms Topping.sum_chartChristoffelVariationOnE_neg_two_ricci_mul_chartGram_eq
+#print axioms Topping.exists_chartFrame_covRicciAt_connection_corrections_eq_chartSums
+#print axioms Topping.exists_chartFrame_secondCovDerivAlong_ricciTensorField_eq_chart
+#print axioms Topping.sum_chartCovariantDerivativeConnectionVariationOnE_neg_two_ricci_mul_chartGram_eq
+#print axioms Topping.exists_chartFrame_sum_chartCovariantDerivativeConnectionVariationOnE_eq_secondCovRicci
 
 end Topping
 
