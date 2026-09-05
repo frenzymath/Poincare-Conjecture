@@ -60,6 +60,16 @@ noncomputable def metricIntrinsicEDist (g : RiemannianMetric I M)
     (x y : M) : ℝ≥0∞ :=
   ⨅ (γ : Path x y) (_ : CMDiff 1 γ), metricPathIntegral g γ
 
+/-- **Math.** The intrinsic distance is bounded by the length of every
+admissible `C¹` path.  This is the competitor inequality needed when a fixed
+minimizing geodesic is compared with nearby-time distances. -/
+theorem metricIntrinsicEDist_le_metricPathIntegral_of_cmdiff
+    (g : RiemannianMetric I M) {x y : M}
+    (γ : Path x y) (hγ : CMDiff 1 γ) :
+    metricIntrinsicEDist g x y ≤ metricPathIntegral g γ := by
+  unfold metricIntrinsicEDist
+  exact iInf_le_of_le γ (iInf_le_of_le hγ (le_refl _))
+
 /-- **Math.** The fibre `ENorm` associated with an explicitly supplied metric,
 used only to bridge the explicit length to Mathlib's path length. -/
 @[reducible] noncomputable def metricENorm (g : RiemannianMetric I M) :
@@ -74,7 +84,8 @@ theorem metricInnerLE_identity_differential
     {g₀ g₁ : RiemannianMetric I M} (h : MetricInnerLE g₀ g₁) :
     Riemannian.DCShrinksMetricOn g₀ g₁ id (Set.univ : Set M) := by
   intro p hp v
-  simpa only [mfderiv_id, id_eq, ContinuousLinearMap.id_apply] using h p v
+  rw [mfderiv_id]
+  exact h p v
 
 /-- **Math.** Along a Ricci flow with nonnegative Ricci curvature, a later
 metric is no larger than an earlier metric as a quadratic form. -/
