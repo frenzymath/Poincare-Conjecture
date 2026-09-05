@@ -40,12 +40,18 @@ import MorganTianLib.Ch03.RicciFlow.ScalarCurvatureSmooth
 import MorganTianLib.Ch03.RicciFlow.RicciEvolutionEquation
 import MorganTianLib.Ch03.RicciFlow.RiemannVariationTensorial
 import MorganTianLib.Ch03.RicciFlow.CurvatureEvolution
+import MorganTianLib.Ch03.RicciFlow.CurvatureVariationArbitrary
+import MorganTianLib.Ch03.RicciFlow.CurvatureBOrthonormalBasis
+import MorganTianLib.Ch03.RicciFlow.CurvatureEvolvingFrameEquation
 import MorganTianLib.Ch03.RicciFlow.CurvatureEvolutionTensorial
 import MorganTianLib.Ch03.RicciFlow.CurvatureEvolutionEnergy
 import MorganTianLib.Ch03.RicciFlow.MetricDistortion
 import MorganTianLib.Ch03.RicciFlow.MetricDistanceDistortion
+import MorganTianLib.Ch03.RicciFlow.DistanceContinuity
 import MorganTianLib.Ch03.RicciFlow.DistanceVariation
 import MorganTianLib.Ch03.RicciFlow.DistanceVariationInterface
+import MorganTianLib.Ch03.RicciFlow.DistanceIntegralBound
+import MorganTianLib.Ch03.RicciFlow.DistanceVariationCutoff
 import MorganTianLib.Ch03.RicciFlow.EvolvingEpsilonNeck
 import MorganTianLib.Ch03.RicciFlow.EvolvingEpsilonNeckConsequences
 import MorganTianLib.Ch03.RicciFlow.ExactSolutions
@@ -86,6 +92,8 @@ import MorganTianLib.Ch03.RicciFlow.ShiBochner
 import MorganTianLib.Ch03.RicciFlow.ShiBochnerDirectional
 import MorganTianLib.Ch03.RicciFlow.ShiCurvatureNormZero
 import MorganTianLib.Ch03.RicciFlow.ShiKZeroBridge
+import MorganTianLib.Ch03.RicciFlow.ShiFirstDerivative
+import MorganTianLib.Ch03.RicciFlow.ShiSquaredNormBridge
 import MorganTianLib.Ch03.RicciFlow.ShiNormBounds
 import MorganTianLib.Ch03.RicciFlow.ShiAllOrderUniformComponents
 import MorganTianLib.Ch03.RicciFlow.RicciDeTurckSymbol

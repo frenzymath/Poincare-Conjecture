@@ -277,4 +277,51 @@ theorem abs_curvatureOperatorEnergy_deriv_sub_laplacianPairing_le
   exact abs_two_mul_curvatureOperatorReactionPairing_le_of_entrywise_bound
     c (T t) hB hC hT hc
 
+/-! ## Scalar differential inequalities for the Shi maximum principle -/
+
+/-- **Math.** The curvature-operator energy satisfies an upper differential
+inequality once the Laplacian pairing and the reaction terms are separated.
+This is the scalar interface consumed at a spatial maximum: the Laplacian
+pairing remains visible as an input, while the quadratic reaction is replaced
+by the explicit cubic bound above. -/
+theorem curvatureOperatorEnergy_deriv_le_of_entrywise_bound
+    {ι : Type*} [Fintype ι]
+    {T lap : ℝ → Matrix ι ι ℝ} {c : ι → ι → ι → ℝ} {t B C : ℝ}
+    (hdiff : ∀ a b, DifferentiableAt ℝ (fun s => T s a b) t)
+    (hevol : IsCurvatureOperatorEvolution T lap c)
+    (hB : 0 ≤ B) (hC : 0 ≤ C)
+    (hT : ∀ a b, |T t a b| ≤ B)
+    (hc : ∀ a b d, |c a b d| ≤ C) :
+    deriv (fun s => curvatureOperatorEnergy (T s)) t ≤
+      2 * ∑ a, ∑ b, T t a b * lap t a b +
+        2 * (Fintype.card ι : ℝ) ^ 2 * B ^ 3 *
+          ((Fintype.card ι : ℝ) + (Fintype.card ι : ℝ) ^ 4 * C ^ 2) := by
+  have hsub := abs_curvatureOperatorEnergy_deriv_sub_laplacianPairing_le
+    hdiff hevol hB hC hT hc
+  have hreaction :
+      deriv (fun s => curvatureOperatorEnergy (T s)) t -
+          2 * ∑ a, ∑ b, T t a b * lap t a b ≤
+        2 * (Fintype.card ι : ℝ) ^ 2 * B ^ 3 *
+          ((Fintype.card ι : ℝ) + (Fintype.card ι : ℝ) ^ 4 * C ^ 2) :=
+    (le_abs_self _).trans hsub
+  linarith
+
+/-- **Math.** At a point where the Laplacian pairing is nonpositive, the
+curvature-operator energy has a purely reaction-controlled upper derivative. -/
+theorem curvatureOperatorEnergy_deriv_le_of_laplacianPairing_nonpos
+    {ι : Type*} [Fintype ι]
+    {T lap : ℝ → Matrix ι ι ℝ} {c : ι → ι → ι → ℝ} {t B C : ℝ}
+    (hdiff : ∀ a b, DifferentiableAt ℝ (fun s => T s a b) t)
+    (hevol : IsCurvatureOperatorEvolution T lap c)
+    (hB : 0 ≤ B) (hC : 0 ≤ C)
+    (hT : ∀ a b, |T t a b| ≤ B)
+    (hc : ∀ a b d, |c a b d| ≤ C)
+    (hlap : 2 * ∑ a, ∑ b, T t a b * lap t a b ≤ 0) :
+    deriv (fun s => curvatureOperatorEnergy (T s)) t ≤
+      2 * (Fintype.card ι : ℝ) ^ 2 * B ^ 3 *
+        ((Fintype.card ι : ℝ) + (Fintype.card ι : ℝ) ^ 4 * C ^ 2) := by
+  have hmain := curvatureOperatorEnergy_deriv_le_of_entrywise_bound
+    hdiff hevol hB hC hT hc
+  linarith
+
 end MorganTianLib
