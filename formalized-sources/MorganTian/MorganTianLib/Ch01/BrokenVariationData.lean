@@ -2,6 +2,7 @@
 Copyright (c) 2026 Archon Horizon. All rights reserved.
 Released under Apache 2.0 license.
 -/
+import MorganTianLib.Ch01.GlobalExpBridge
 import MorganTianLib.Ch01.BrokenVariationGlue
 import MorganTianLib.Ch01.ChartPartitionCorner
 import MorganTianLib.Ch01.PieceEnergyDeriv
@@ -260,7 +261,7 @@ itself the two fields agree, which is all a consumer needs (`glueCoeff_eq_half_o
 `frameVec_frameLift_apply` turns the piece field's frame coordinates back into `W₀`/`W₁`).
 
 Blueprint: `prop:minimal-geodesic-no-conjugate`. -/
-theorem exists_brokenVariationData [CompleteSpace M]
+theorem exists_brokenVariationData [CompleteSpace M] [T2Space (TangentBundle I M)]
     (g : RiemannianMetric I M) (hg : g.IsRiemannianDist) {γ : ℝ → M} {a b c : ℝ}
     {e : Fin (finrank ℝ E) → ℝ → E} {W₀ W₁ : ℝ → 𝔼}
     (ha : a < 0) (hb : 1 < b) (hc₀ : 0 < c) (hc₁ : c < 1)
@@ -283,10 +284,10 @@ theorem exists_brokenVariationData [CompleteSpace M]
         ∀ᶠ s in 𝓝 t, u i ((0 : ℝ), s) = extChartAt I (β i) (γ s)) ∧
       -- the junction curves are the global geodesics with the prescribed initial data
       (∀ i < N, ∀ᶠ σ in 𝓝 (0 : ℝ), u i (σ, τ i) = extChartAt I (β i)
-        (globalGeodesic (I := I) g hg (γ (τ i))
+        (maximalGeodesic (I := I) g (γ (τ i))
           ((frameFieldOf (I := I) g γ e (glueCoeff c W₀ W₁) (τ i) : E)) σ)) ∧
       (∀ i < N, ∀ᶠ σ in 𝓝 (0 : ℝ), u i (σ, τ (i + 1)) = extChartAt I (β i)
-        (globalGeodesic (I := I) g hg (γ (τ (i + 1)))
+        (maximalGeodesic (I := I) g (γ (τ (i + 1)))
           ((frameFieldOf (I := I) g γ e (glueCoeff c W₀ W₁) (τ (i + 1)) : E)) σ)) ∧
       -- the `∂_s`-field of the unvaried line is the piece field, read in the chart
       (∀ i < N, ∀ t ∈ Icc (τ i) (τ (i + 1)), ∀ᶠ s in 𝓝 t,
@@ -296,11 +297,11 @@ theorem exists_brokenVariationData [CompleteSpace M]
       -- the junction geodesics stay in the chart source for small `σ` (so the chart readings
       -- above may be read *back* into `M`)
       (∀ i < N, ∀ᶠ σ in 𝓝 (0 : ℝ),
-        globalGeodesic (I := I) g hg (γ (τ i))
+        maximalGeodesic (I := I) g (γ (τ i))
           ((frameFieldOf (I := I) g γ e (glueCoeff c W₀ W₁) (τ i) : E)) σ
             ∈ (chartAt H (β i)).source) ∧
       (∀ i < N, ∀ᶠ σ in 𝓝 (0 : ℝ),
-        globalGeodesic (I := I) g hg (γ (τ (i + 1)))
+        maximalGeodesic (I := I) g (γ (τ (i + 1)))
           ((frameFieldOf (I := I) g γ e (glueCoeff c W₀ W₁) (τ (i + 1)) : E)) σ
             ∈ (chartAt H (β i)).source) ∧
       -- `γ`'s foot stays in `(a, b)` and in the chart source over the enlarged **closed** piece
@@ -328,17 +329,17 @@ theorem exists_brokenVariationData [CompleteSpace M]
         (∀ t ∈ Icc (τ i) (τ (i + 1)),
           ∀ᶠ s in 𝓝 t, uu ((0 : ℝ), s) = extChartAt I (β i) (γ s)) ∧
         (∀ᶠ σ in 𝓝 (0 : ℝ), uu (σ, τ i)
-          = extChartAt I (β i) (globalGeodesic (I := I) g hg (γ (τ i)) (V (τ i)) σ)) ∧
+          = extChartAt I (β i) (maximalGeodesic (I := I) g (γ (τ i)) (V (τ i)) σ)) ∧
         (∀ᶠ σ in 𝓝 (0 : ℝ), uu (σ, τ (i + 1))
           = extChartAt I (β i)
-              (globalGeodesic (I := I) g hg (γ (τ (i + 1))) (V (τ (i + 1))) σ)) ∧
+              (maximalGeodesic (I := I) g (γ (τ (i + 1))) (V (τ (i + 1))) σ)) ∧
         (∀ t ∈ Icc (τ i) (τ (i + 1)), ∀ᶠ s in 𝓝 t,
           fderiv ℝ uu ((0 : ℝ), s) ((1 : ℝ), (0 : ℝ))
             = chartVectorRep (I := I) γ (β i)
                 (frameFieldOf (I := I) g γ e (if i < k then W₀ else W₁)) s) ∧
-        (∀ᶠ σ in 𝓝 (0 : ℝ), globalGeodesic (I := I) g hg (γ (τ i)) (V (τ i)) σ
+        (∀ᶠ σ in 𝓝 (0 : ℝ), maximalGeodesic (I := I) g (γ (τ i)) (V (τ i)) σ
           ∈ (chartAt H (β i)).source) ∧
-        (∀ᶠ σ in 𝓝 (0 : ℝ), globalGeodesic (I := I) g hg (γ (τ (i + 1))) (V (τ (i + 1))) σ
+        (∀ᶠ σ in 𝓝 (0 : ℝ), maximalGeodesic (I := I) g (γ (τ (i + 1))) (V (τ (i + 1))) σ
           ∈ (chartAt H (β i)).source)) := by
     intro i
     by_cases hi : i < N
@@ -393,26 +394,60 @@ theorem exists_brokenVariationData [CompleteSpace M]
     have hjunc : ∀ (T : ℝ), T ∈ Ioo (L - r) (R + r) →
         ∃ (ĉ : ℝ → E) (Vc : Set ℝ), ContDiff ℝ 3 ĉ ∧ IsOpen Vc ∧ (0 : ℝ) ∈ Vc ∧
           EqOn ĉ (fun σ => extChartAt I (β i)
-            (globalGeodesic (I := I) g hg (γ T) (V T) σ)) Vc ∧
-          (∀ σ ∈ Vc, globalGeodesic (I := I) g hg (γ T) (V T) σ
+            (maximalGeodesic (I := I) g (γ T) (V T) σ)) Vc ∧
+          (∀ σ ∈ Vc, maximalGeodesic (I := I) g (γ T) (V T) σ
             ∈ (chartAt H (β i)).source) := by
       intro T hT
       have hTsrc : γ T ∈ (chartAt H (β i)).source := (hEnl T hT).2.1
-      set cT : ℝ → M := globalGeodesic (I := I) g hg (γ T) (V T) with hcT
-      have hcT0 : cT 0 = γ T := globalGeodesic_zero (I := I) g hg (γ T) (V T)
-      have hcTcont : Continuous cT := continuous_globalGeodesic (I := I) g hg (γ T) (V T)
+      set cT : ℝ → M := maximalGeodesic (I := I) g (γ T) (V T) with hcT
+      have hcT0 : cT 0 = γ T := maximalGeodesic_zero (I := I) g (γ T) (V T)
+      have hev : cT =ᶠ[𝓝 (0 : ℝ)] MorganTianLib.globalGeodesic (I := I) g hg (γ T) (V T) := by
+        simpa [cT] using maximalGeodesic_eventuallyEq_globalGeodesic (I := I) hg (γ T) (V T)
+      have hcT_cont0 : ContinuousAt cT 0 := by
+        have hca : ContinuousAt (MorganTianLib.globalGeodesic (I := I) g hg (γ T) (V T)) 0 :=
+          (MorganTianLib.continuous_globalGeodesic g hg (γ T) (V T)).continuousAt
+        exact hca.congr_of_eventuallyEq hev
       have hpre : cT ⁻¹' (chartAt H (β i)).source ∈ 𝓝 (0 : ℝ) :=
-        (((chartAt H (β i)).open_source).preimage hcTcont).mem_nhds
-          (show cT 0 ∈ (chartAt H (β i)).source by rw [hcT0]; exact hTsrc)
-      obtain ⟨δ, hδ, hball⟩ := Metric.mem_nhds_iff.mp hpre
+        hcT_cont0.preimage_mem_nhds
+          ((chartAt H (β i)).open_source.mem_nhds (by rw [hcT0]; exact hTsrc))
+      obtain ⟨δ₁, hδ₁, hball⟩ := Metric.mem_nhds_iff.mp hpre
+      -- `cT = global` near 0（hev），取更小半径 min δ₁ δ₂ 使二者都成立
+      obtain ⟨δ₂, hδ₂, hevs⟩ : ∃ δ₂ : ℝ, 0 < δ₂ ∧
+          ∀ σ, σ ∈ Metric.ball (0 : ℝ) δ₂ → cT σ = MorganTianLib.globalGeodesic (I := I) g hg (γ T) (V T) σ := by
+        have : {σ | cT σ = MorganTianLib.globalGeodesic (I := I) g hg (γ T) (V T) σ} ∈ 𝓝 (0 : ℝ) := by
+          simpa [Filter.EventuallyEq, Filter.Eventually] using hev
+        obtain ⟨δ₂, hδ₂, hball₂⟩ := Metric.mem_nhds_iff.mp this
+        exact ⟨δ₂, hδ₂, fun σ hσ => hball₂ hσ⟩
+      let δ : ℝ := min δ₁ δ₂
+      have hδ : 0 < δ := lt_min hδ₁ hδ₂
+      have heq_ball : ∀ σ ∈ Metric.ball (0 : ℝ) δ, cT σ = MorganTianLib.globalGeodesic (I := I) g hg (γ T) (V T) σ :=
+        fun σ hσ => hevs σ (by
+          have := (abs_lt.mp (Metric.mem_ball.mp hσ))
+          exact (by
+            have hσ₂ : dist σ 0 < δ₂ := lt_of_lt_of_le (Metric.mem_ball.mp hσ) (min_le_right _ _)
+            exact hσ₂))
       have hballIoo : Ioo (-δ) δ ⊆ cT ⁻¹' (chartAt H (β i)).source := by
         intro σ hσ
         refine hball ?_
         rw [Metric.mem_ball, Real.dist_eq, sub_zero, abs_lt]
-        exact ⟨hσ.1, hσ.2⟩
-      have hsm : ContDiffOn ℝ 3 (fun σ => extChartAt I (β i) (cT σ)) (Ioo (-δ) δ) :=
-        contDiffOn_chartReading_globalGeodesic (I := I) g hg (γ T) (V T) isOpen_Ioo
-          (fun σ hσ => hballIoo hσ) 3
+        exact ⟨lt_of_le_of_lt (neg_le_neg (min_le_left δ₁ δ₂)) hσ.1,
+          lt_of_lt_of_le hσ.2 (min_le_left δ₁ δ₂)⟩
+      have hsrc_gl : ∀ σ ∈ Ioo (-δ) δ, MorganTianLib.globalGeodesic (I := I) g hg (γ T) (V T) σ
+          ∈ (chartAt H (β i)).source := by
+        intro σ hσ
+        have hσb : σ ∈ Metric.ball (0 : ℝ) δ := by
+          rw [Metric.mem_ball, Real.dist_eq, sub_zero, abs_lt]; exact ⟨hσ.1, hσ.2⟩
+        rw [← heq_ball σ hσb]
+        exact hballIoo hσ
+      have hsm : ContDiffOn ℝ 3 (fun σ => extChartAt I (β i) (cT σ)) (Ioo (-δ) δ) := by
+        have hsm_glob : ContDiffOn ℝ 3 (fun σ => extChartAt I (β i)
+            (MorganTianLib.globalGeodesic (I := I) g hg (γ T) (V T) σ)) (Ioo (-δ) δ) :=
+          MorganTianLib.contDiffOn_chartReading_globalGeodesic (I := I) g hg (γ T) (V T) isOpen_Ioo
+            (fun σ hσ => hsrc_gl σ hσ) 3
+        exact hsm_glob.congr (fun σ hσ => by
+          have hσb : σ ∈ Metric.ball (0 : ℝ) δ := by
+            rw [Metric.mem_ball, Real.dist_eq, sub_zero, abs_lt]; exact ⟨hσ.1, hσ.2⟩
+          exact congrArg (extChartAt I (β i)) (heq_ball σ hσb))
       obtain ⟨ĉ, Vc, hĉ, hVcopen, hIccVc, hVcsub, hEqc⟩ :=
         exists_contDiff_eqOn_of_contDiffOn_Ioo (n := 3) hsm
           (by linarith : -δ < (0 : ℝ)) (le_refl (0 : ℝ)) (by linarith : (0 : ℝ) < δ)
@@ -442,22 +477,29 @@ theorem exists_brokenVariationData [CompleteSpace M]
     have hjunc0 : ∀ (T : ℝ), T ∈ Icc L R → T ∈ Ioo (L - r) (R + r) → ∀ (ĉ : ℝ → E)
         (Vc : Set ℝ), IsOpen Vc → (0 : ℝ) ∈ Vc →
         EqOn ĉ (fun σ => extChartAt I (β i)
-          (globalGeodesic (I := I) g hg (γ T) (V T) σ)) Vc →
+          (maximalGeodesic (I := I) g (γ T) (V T) σ)) Vc →
         ĉ 0 = extChartAt I (β i) (γ T) ∧
           HasDerivAt ĉ (chartVectorRep (I := I) γ (β i) V T) 0 := by
       intro T _ hTe ĉ Vc hVcopen hVc0 hEqc
       have hTsrc : γ T ∈ (chartAt H (β i)).source := (hEnl T hTe).2.1
-      set cT : ℝ → M := globalGeodesic (I := I) g hg (γ T) (V T) with hcT
-      have hcT0 : cT 0 = γ T := globalGeodesic_zero (I := I) g hg (γ T) (V T)
+      set cT : ℝ → M := maximalGeodesic (I := I) g (γ T) (V T) with hcT
+      have hcT0 : cT 0 = γ T := maximalGeodesic_zero (I := I) g (γ T) (V T)
       have hev : ĉ =ᶠ[𝓝 (0 : ℝ)] fun σ => extChartAt I (β i) (cT σ) := by
         filter_upwards [hVcopen.mem_nhds hVc0] with σ hσ using hEqc hσ
       constructor
       · rw [hev.eq_of_nhds, hcT0]
       · -- the chart-`β i` velocity of the junction geodesic at `σ = 0`
-        have hgeoT : HasGeodesicEquationAt (I := I) g cT 0 :=
-          (isGeodesic_globalGeodesic (I := I) g hg (γ T) (V T)).hasGeodesicEquationAt 0
-        have hcont : ContinuousAt cT 0 :=
-          (continuous_globalGeodesic (I := I) g hg (γ T) (V T)).continuousAt
+        have hev0 : cT =ᶠ[𝓝 (0 : ℝ)] MorganTianLib.globalGeodesic (I := I) g hg (γ T) (V T) := by
+          simpa [cT] using maximalGeodesic_eventuallyEq_globalGeodesic (I := I) hg (γ T) (V T)
+        have hgeoT : HasGeodesicEquationAt (I := I) g cT 0 := by
+          have hglob : HasGeodesicEquationAt (I := I) g
+              (MorganTianLib.globalGeodesic (I := I) g hg (γ T) (V T)) 0 :=
+            (MorganTianLib.isGeodesic_globalGeodesic g hg (γ T) (V T)).hasGeodesicEquationAt 0
+          exact hasGeodesicEquationAt_congr_of_eventuallyEq (I := I) hev0 hglob
+        have hcont : ContinuousAt cT 0 := by
+          have hca : ContinuousAt (MorganTianLib.globalGeodesic (I := I) g hg (γ T) (V T)) 0 :=
+            (MorganTianLib.continuous_globalGeodesic g hg (γ T) (V T)).continuousAt
+          exact hca.congr_of_eventuallyEq hev0
         have hsrc0 : cT 0 ∈ (chartAt H (β i)).source := by rw [hcT0]; exact hTsrc
         have hD := (hgeoT.eventually_hasDerivAt_extChartAt hcont hsrc0).self_of_nhds
         have hlocal : deriv (chartLocalCurve (I := I) cT 0) 0 = V T := by
@@ -466,7 +508,12 @@ theorem exists_brokenVariationData [CompleteSpace M]
             funext σ
             simp only [chartLocalCurve, chartReading, hcT0]
           rw [hread]
-          exact (hasDerivAt_chartReading_globalGeodesic (I := I) g hg (γ T) (V T)).deriv
+          have hdv : HasDerivAt (chartReading (I := I) (γ T)
+              (MorganTianLib.globalGeodesic (I := I) g hg (γ T) (V T))) (V T) 0 :=
+            MorganTianLib.hasDerivAt_chartReading_globalGeodesic g hg (γ T) (V T)
+          exact ((hdv.congr_of_eventuallyEq (by
+            filter_upwards [hev0] with s hs
+            simpa only [chartReading] using (congrArg (extChartAt I (γ T)) hs))).deriv)
         rw [hlocal, hcT0] at hD
         have hrep : tangentCoordChange I (γ T) (β i) (γ T) (V T)
             = chartVectorRep (I := I) γ (β i) V T := (chartVectorRep_apply _ _ _ _).symm

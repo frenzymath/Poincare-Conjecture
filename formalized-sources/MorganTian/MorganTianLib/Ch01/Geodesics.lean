@@ -95,6 +95,20 @@ theorem expDomain_nonempty (g : Riemannian.RiemannianMetric I M) (p : M) :
     (expDomain (I := I) g p).Nonempty :=
   Riemannian.Exponential.expDomain_nonempty (I := I) g p
 
+/-- **Math.** A curve satisfying the geodesic equation on `s` that is also continuous on `s`
+is a **continuous geodesic curve** `IsGeodesicCurveOn` — the source-faithful public
+correspondence of Morgan--Tian's "smooth curve `γ` satisfying `∇_{γ̇}γ̇ = 0`".
+
+The morphological predicate `IsGeodesicOn` alone records only the moving-foot equation and
+does not, by itself, assert continuity; this lemma makes explicit that the continuity
+hypothesis upgrades it to `IsGeodesicCurveOn`.  (Smoothness then follows from the chart
+regularity lemmas in `GeodesicRegularity`.) -/
+lemma isGeodesicCurveOn_of_isGeodesicOn_of_continuousOn
+    {g : Riemannian.RiemannianMetric I M} {γ : ℝ → M} {s : Set ℝ}
+    (hgeo : IsGeodesicOn (I := I) g γ s) (hcont : ContinuousOn γ s) :
+    IsGeodesicCurveOn (I := I) g γ s := by
+  exact ⟨hcont, hgeo⟩
+
 end MorganTianLib
 
 end

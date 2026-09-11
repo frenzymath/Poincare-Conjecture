@@ -376,6 +376,28 @@ theorem maximalGeodesic_structure_of_footInSource
 
 end MaximalGeodesicMain
 
+section IsGeodesicOnWithInitialContinuity
+
+variable [Module.Finite ℝ E]
+
+/-- **Math.** An initial-data geodesic (as recorded by `IsGeodesicOnWithInitial`) is
+continuous on its interval.  This is the local-geodesic analogue of
+`continuous_globalGeodesic` (which needs `[CompleteSpace M]`); it holds without any
+completeness assumption, because `IsGeodesicOnWithInitial` asserts an integral curve whose
+projection is continuous via `IsMIntegralCurveOn.continuousOn`. -/
+theorem isGeodesicOnWithInitial_continuousOn
+    {g : RiemannianMetric I M} {γ : ℝ → M} {J : Set ℝ} {p : M} {v : TangentSpace I p}
+    (hγ : IsGeodesicOnWithInitial (I := I) g γ J p v) :
+    ContinuousOn γ J := by
+  obtain ⟨f, hproj, _hf0, hInt⟩ := hγ
+  rw [show γ = fun x => (f x).proj by funext x; exact (hproj x).symm]
+  have hproj_cont : Continuous (fun e : TangentBundle I M => e.proj) :=
+    FiberBundle.continuous_proj (F := E) (E := fun _ : M => TangentSpace I _)
+  simpa [Function.comp_def] using
+    hproj_cont.continuousOn.comp (IsMIntegralCurveOn.continuousOn hInt) (Set.mapsTo_univ f J)
+
+end IsGeodesicOnWithInitialContinuity
+
 
 
 end Geodesic

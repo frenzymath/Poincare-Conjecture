@@ -222,10 +222,10 @@ theorem indexForm_nonneg_of_minimizing [CompleteSpace M]
       (hEnlε i hi (τ i) ⟨by linarith, by linarith [hmono i]⟩).2
     have hsrc₁ : γ (τ (i + 1)) ∈ (chartAt H (β i)).source :=
       (hEnlε i hi (τ (i + 1)) ⟨by linarith [hmono i], by linarith⟩).2
-    have hj₀ := covDerivAlong_fst_eq_zero_of_globalGeodesic_junction (I := I) (α := β i)
-      (u := u i) g hg ((hCD i hi).of_le (by norm_num)) hsrc₀ (hjL i hi)
-    have hj₁ := covDerivAlong_fst_eq_zero_of_globalGeodesic_junction (I := I) (α := β i)
-      (u := u i) g hg ((hCD i hi).of_le (by norm_num)) hsrc₁ (hjR i hi)
+    have hj₀ := covDerivAlong_fst_eq_zero_of_maximalGeodesic_junction (I := I) hg
+      (u := u i) (α := β i) ((hCD i hi).of_le (by norm_num)) hsrc₀ (hjL i hi)
+    have hj₁ := covDerivAlong_fst_eq_zero_of_maximalGeodesic_junction (I := I) hg
+      (u := u i) (α := β i) ((hCD i hi).of_le (by norm_num)) hsrc₁ (hjR i hi)
     have hkey := hasDerivAt_deriv_pieceEnergy_indexIntegrand (I := I) g (α := β i)
       (u := u i) (W := if i < k then W₀ else W₁) hgeo hγc hPar horth (hmono i) hε
       (fun t ht => ⟨Ioo_subset_Icc_self (hEnlε i hi t ht).1, (hEnlε i hi t ht).2⟩)
@@ -241,30 +241,30 @@ theorem indexForm_nonneg_of_minimizing [CompleteSpace M]
   have hV1 : (frameFieldOf (I := I) g γ e (glueCoeff c W₀ W₁) (τ N) : E) = 0 := by
     refine frameFieldOf_eq_zero (I := I) ?_
     rw [hτN, glueCoeff_of_lt hc₁, hW₁1]
-  have hgg0 : ∀ s : ℝ, globalGeodesic (I := I) g hg (γ (τ 0))
+  have hgg0 : ∀ s : ℝ, maximalGeodesic (I := I) g (γ (τ 0))
       ((frameFieldOf (I := I) g γ e (glueCoeff c W₀ W₁) (τ 0) : E)) s = γ (τ 0) := by
-    have hconst : globalGeodesic (I := I) g hg (γ (τ 0))
+    have hconst : maximalGeodesic (I := I) g (γ (τ 0))
         ((frameFieldOf (I := I) g γ e (glueCoeff c W₀ W₁) (τ 0) : E)) = fun _ => γ (τ 0) := by
       rw [show ((frameFieldOf (I := I) g γ e (glueCoeff c W₀ W₁) (τ 0) : E)) = 0 from hV0]
-      exact globalGeodesic_zero_velocity (I := I) g hg (γ (τ 0))
+      exact maximalGeodesic_zero_velocity (I := I) (γ (τ 0))
     intro s; rw [hconst]
-  have hggN : ∀ s : ℝ, globalGeodesic (I := I) g hg (γ (τ N))
+  have hggN : ∀ s : ℝ, maximalGeodesic (I := I) g (γ (τ N))
       ((frameFieldOf (I := I) g γ e (glueCoeff c W₀ W₁) (τ N) : E)) s = γ (τ N) := by
-    have hconst : globalGeodesic (I := I) g hg (γ (τ N))
+    have hconst : maximalGeodesic (I := I) g (γ (τ N))
         ((frameFieldOf (I := I) g γ e (glueCoeff c W₀ W₁) (τ N) : E)) = fun _ => γ (τ N) := by
       rw [show ((frameFieldOf (I := I) g γ e (glueCoeff c W₀ W₁) (τ N) : E)) = 0 from hV1]
-      exact globalGeodesic_zero_velocity (I := I) g hg (γ (τ N))
+      exact maximalGeodesic_zero_velocity (I := I) (γ (τ N))
     intro s; rw [hconst]
   -- ### the finitely many junction neighbourhoods, intersected
   have hEv : ∀ᶠ s in 𝓝 (0 : ℝ), ∀ i ∈ Finset.range N,
-      (u i (s, τ i) = extChartAt I (β i) (globalGeodesic (I := I) g hg (γ (τ i))
+      (u i (s, τ i) = extChartAt I (β i) (maximalGeodesic (I := I) g (γ (τ i))
         ((frameFieldOf (I := I) g γ e (glueCoeff c W₀ W₁) (τ i) : E)) s)) ∧
-      (u i (s, τ (i + 1)) = extChartAt I (β i) (globalGeodesic (I := I) g hg (γ (τ (i + 1)))
+      (u i (s, τ (i + 1)) = extChartAt I (β i) (maximalGeodesic (I := I) g (γ (τ (i + 1)))
         ((frameFieldOf (I := I) g γ e (glueCoeff c W₀ W₁) (τ (i + 1)) : E)) s)) ∧
-      (globalGeodesic (I := I) g hg (γ (τ i))
+      (maximalGeodesic (I := I) g (γ (τ i))
         ((frameFieldOf (I := I) g γ e (glueCoeff c W₀ W₁) (τ i) : E)) s
           ∈ (chartAt H (β i)).source) ∧
-      (globalGeodesic (I := I) g hg (γ (τ (i + 1)))
+      (maximalGeodesic (I := I) g (γ (τ (i + 1)))
         ((frameFieldOf (I := I) g γ e (glueCoeff c W₀ W₁) (τ (i + 1)) : E)) s
           ∈ (chartAt H (β i)).source) := by
     rw [Filter.eventually_all_finset]
@@ -287,14 +287,14 @@ theorem indexForm_nonneg_of_minimizing [CompleteSpace M]
       ⟨by linarith [hmono (N - 1)], by linarith⟩).2
     rwa [hm] at this
   have hEnergy : ∀ s ∈ Ioo (-ε) ε, (∀ i ∈ Finset.range N,
-      (u i (s, τ i) = extChartAt I (β i) (globalGeodesic (I := I) g hg (γ (τ i))
+      (u i (s, τ i) = extChartAt I (β i) (maximalGeodesic (I := I) g (γ (τ i))
         ((frameFieldOf (I := I) g γ e (glueCoeff c W₀ W₁) (τ i) : E)) s)) ∧
-      (u i (s, τ (i + 1)) = extChartAt I (β i) (globalGeodesic (I := I) g hg (γ (τ (i + 1)))
+      (u i (s, τ (i + 1)) = extChartAt I (β i) (maximalGeodesic (I := I) g (γ (τ (i + 1)))
         ((frameFieldOf (I := I) g γ e (glueCoeff c W₀ W₁) (τ (i + 1)) : E)) s)) ∧
-      (globalGeodesic (I := I) g hg (γ (τ i))
+      (maximalGeodesic (I := I) g (γ (τ i))
         ((frameFieldOf (I := I) g γ e (glueCoeff c W₀ W₁) (τ i) : E)) s
           ∈ (chartAt H (β i)).source) ∧
-      (globalGeodesic (I := I) g hg (γ (τ (i + 1)))
+      (maximalGeodesic (I := I) g (γ (τ (i + 1)))
         ((frameFieldOf (I := I) g γ e (glueCoeff c W₀ W₁) (τ (i + 1)) : E)) s
           ∈ (chartAt H (β i)).source)) →
       dist (γ 0) (γ 1) ^ 2 ≤ 2 * ∑ i ∈ Finset.range N, f i s := by
