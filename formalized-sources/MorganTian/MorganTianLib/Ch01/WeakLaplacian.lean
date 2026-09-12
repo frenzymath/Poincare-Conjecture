@@ -43,9 +43,12 @@ compactly supported smooth function `phi`:
 
 The additive Haar measure `mu` fixes the normalization of the Riemannian
 measure.  Rescaling it by a positive constant rescales both integrals equally.
+The `g.IsRiemannianDist` hypothesis links the `LocallyLipschitz` condition to
+the Riemannian distance of `g`, so that the weak Laplacian bound is stated
+with respect to the metric `g` (not an arbitrary distance on `M`).
 Blueprint: `rem:laplacian-weak-sense`. -/
 def WeakLaplacianLE (mu : Measure E) [mu.IsAddHaarMeasure]
-    (g : RiemannianMetric I M) (f h : M → ℝ) : Prop :=
+    (g : RiemannianMetric I M) (hg : g.IsRiemannianDist) (f h : M → ℝ) : Prop :=
   LocallyLipschitz f ∧
     LocallyIntegrable h (riemannianMeasure (I := I) g mu) ∧
     ∀ phi : M → ℝ,

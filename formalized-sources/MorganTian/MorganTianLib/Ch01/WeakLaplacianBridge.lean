@@ -32,8 +32,8 @@ This theorem is deliberately an iff rather than a reducibility promise: callers
 can use the semantic formulation without unfolding the implementation name. -/
 theorem weakLaplacianLE_iff_test_integral
     (mu : Measure E) [mu.IsAddHaarMeasure]
-    (g : RiemannianMetric I M) (f h : M → ℝ) :
-    WeakLaplacianLE (I := I) mu g f h ↔
+    (g : RiemannianMetric I M) (hg : g.IsRiemannianDist) (f h : M → ℝ) :
+    WeakLaplacianLE (I := I) mu g hg f h ↔
       LocallyLipschitz f ∧
         LocallyIntegrable h (riemannianMeasure (I := I) g mu) ∧
         ∀ phi : M → ℝ,
@@ -48,11 +48,11 @@ theorem weakLaplacianLE_iff_test_integral
 /-- **Math.** Increasing the comparison function preserves a weak upper-Laplacian bound. -/
 theorem WeakLaplacianLE.mono
     (mu : Measure E) [mu.IsAddHaarMeasure]
-    (g : RiemannianMetric I M) {f h h' : M → ℝ}
-    (hf : WeakLaplacianLE (I := I) mu g f h)
+    (g : RiemannianMetric I M) (hg : g.IsRiemannianDist) {f h h' : M → ℝ}
+    (hf : WeakLaplacianLE (I := I) mu g hg f h)
     (hh' : ∀ x, h x ≤ h' x)
     (h'h : LocallyIntegrable h' (riemannianMeasure (I := I) g mu)) :
-    WeakLaplacianLE (I := I) mu g f h' := by
+    WeakLaplacianLE (I := I) mu g hg f h' := by
   rcases hf with ⟨hLip, hInt, htest⟩
   refine ⟨hLip, h'h, ?_⟩
   intro phi hphi hcompact hsmooth

@@ -88,14 +88,14 @@ definition of the two identities above.
 -/
 theorem weakLaplacianLE_distanceFrom_of_green_and_polar
     (mu : Measure E) [mu.IsAddHaarMeasure]
-    (g : RiemannianMetric I M) (p : M) (n : ℕ)
+    (g : RiemannianMetric I M) (hg : g.IsRiemannianDist) (p : M) (n : ℕ)
     (pairing : (M → ℝ) → M → ℝ)
     (hInt : LocallyIntegrable
       (fun x : M => ((n : ℝ) - 1) / dist p x)
       (riemannianMeasure (I := I) g mu))
     (hGreen : DistanceWeakGreenIdentity (I := I) mu g p pairing)
     (hPolar : DistancePolarTestInequality (I := I) mu g p n pairing) :
-    WeakLaplacianLE (I := I) mu g
+    WeakLaplacianLE (I := I) mu g hg
       (fun x : M => dist p x)
       (fun x : M => ((n : ℝ) - 1) / dist p x) := by
   refine ⟨locallyLipschitz_distanceFrom p, hInt, ?_⟩

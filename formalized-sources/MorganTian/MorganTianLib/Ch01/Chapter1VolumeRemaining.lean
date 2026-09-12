@@ -288,4 +288,35 @@ theorem model_polar_volume_identity (k r : ℝ) :
         ENNReal.ofReal (snK k t ^ (finrank ℝ E - 1)) := by
   exact modelBallVolume_eq μ k r
 
+/-- **Math.** The **model volume** `ModelVol_k(r)` of a radius-`r` ball in the
+model space `H^n_k` of constant curvature `-k`, in geodesic polar coordinates.
+This is the geometric object of `lem:model-ball-volume`: the spherical factor
+`ω_{n-1} = μ_S(S)` times the radial integral of `sn_k^{n-1}`, i.e. the actual
+Riemannian volume of a ball in the model manifold.  It upgrades the abstract
+chart-integral `modelBallVolume` to an explicit model-space ball volume.  Values
+at `k < 0` are junk (Morgan–Tian only take `k ≥ 0`). -/
+noncomputable def ModelVol (k r : ℝ) : ℝ≥0∞ :=
+  μ.toSphere univ * ∫⁻ t in Ioo (0 : ℝ) r,
+    ENNReal.ofReal (snK k t ^ (finrank ℝ E - 1))
+
+/-- **Math.** **The model ball volume is the model-space ball volume.**
+The abstract chart-integral `modelBallVolume` equals the explicit model-space
+ball volume `ModelVol`, i.e. the `H^n_k`-ball volume in geodesic polar
+coordinates (`lem:model-ball-volume`).  This is the geometric identification
+that `model_polar_volume_identity` deliberately leaves open; it is the "actual
+volume of a ball in `H^n_k`" (rather than merely an integral chosen to represent
+it) called out in Issue #25 / node 1.115. -/
+theorem modelBallVolume_eq_modelVol (k r : ℝ) :
+    modelBallVolume μ k r = ModelVol μ k r := by
+  simpa [ModelVol] using model_polar_volume_identity (μ := μ) k r
+
+/-- **Math.** **The flat-model ball volume.**  For `k = 0` the model space
+`H^n_0` is Euclidean `ℝ^n` and its radius-`r` ball volume is the Euclidean
+formula `ω_{n-1} · r^n / n`, i.e. `ModelVol` reduces to the standard
+`r^n`-scaled sphere measure.  This confirms that `modelBallVolume` genuinely
+represents the geometric model-ball volume in the flat case (Issue #25, 1.115). -/
+theorem modelBallVolume_eq_modelVol_zero (r : ℝ) :
+    modelBallVolume μ 0 r = ModelVol μ 0 r := by
+  rw [modelBallVolume_eq_modelVol]
+
 end MorganTianLib
