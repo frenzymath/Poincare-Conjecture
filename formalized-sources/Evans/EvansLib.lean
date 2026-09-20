@@ -60,3 +60,4 @@ import EvansLib.Ch02.LaplaceMeanValueTheorem
 import EvansLib.Ch02.LaplaceConsequences
 import EvansLib.Ch02.LaplacePositivity
 import EvansLib.Ch02.Problems
+import EvansLib.AppB.Cauchy
