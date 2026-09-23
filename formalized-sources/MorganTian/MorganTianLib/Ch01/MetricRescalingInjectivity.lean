@@ -1,3 +1,4 @@
+import MorganTianLib.Ch01.CanonicalMetric
 import MorganTianLib.Ch01.MetricRescaling
 import MorganTianLib.Ch01.CutTimeMeasurable
 import MorganTianLib.Ch01.InjectivityRadiusAgreement
@@ -17,24 +18,6 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [I.Boundaryless] [SigmaCompactSpace M] [T2Space (TangentBundle I M)]
   [T3Space M] [PreconnectedSpace M]
-
-/-- **Math.** The genuine metric-space structure canonically induced by `g`. -/
-@[reducible] noncomputable def canonicalMetricSpace
-    (g : RiemannianMetric I M) : MetricSpace M :=
-  letI : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
-    ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (TangentSpace I : M → Type _) :=
-    riemannianMetric_isContinuousRiemannianBundle g
-  MetricSpace.ofRiemannianMetric I M
-
-/-- **Math.** The canonical metric space has Riemannian distance induced by `g`. -/
-theorem canonicalMetricSpace_isRiemannianDist (g : RiemannianMetric I M) :
-    letI : MetricSpace M := canonicalMetricSpace g
-    g.IsRiemannianDist := by
-  letI : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
-    ⟨g.toRiemannianMetric⟩
-  letI : MetricSpace M := canonicalMetricSpace g
-  exact ⟨fun _ _ => rfl⟩
 
 /-- **Math.** Completeness of the canonical metric is invariant under constant rescaling. -/
 theorem rescaledMetric_canonicalCompleteSpace_iff
