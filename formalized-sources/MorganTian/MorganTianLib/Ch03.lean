@@ -24,6 +24,7 @@ import MorganTianLib.Ch03.RicciFlow.ShiNormEnergy
 import MorganTianLib.Ch03.RicciFlow.ShiCutoffBounds
 import MorganTianLib.Ch03.RicciFlow.MetricVariation
 import MorganTianLib.Ch03.RicciFlow.ForwardDifference
+import MorganTianLib.Ch03.RicciFlow.GeodesicLengthSuffices
 import MorganTianLib.Ch03.RicciFlow.MetricCoordinateVariation
 import MorganTianLib.Ch03.RicciFlow.CurvatureCoordinateVariation
 import MorganTianLib.Ch03.RicciFlow.ScalarEvolution
@@ -53,6 +54,7 @@ import MorganTianLib.Ch03.RicciFlow.DistanceVariationInterface
 import MorganTianLib.Ch03.RicciFlow.DistanceIntegralBound
 import MorganTianLib.Ch03.RicciFlow.DistanceVariationCutoff
 import MorganTianLib.Ch03.RicciFlow.DistanceVariationCutoffFlow
+import MorganTianLib.Ch03.RicciFlow.MinimalGeodesicTimeDerivative
 import MorganTianLib.Ch03.RicciFlow.ScalarSpacetimeSmooth
 import MorganTianLib.Ch03.RicciFlow.ScalarTimeDerivative
 import MorganTianLib.Ch03.RicciFlow.EvolvingEpsilonNeck

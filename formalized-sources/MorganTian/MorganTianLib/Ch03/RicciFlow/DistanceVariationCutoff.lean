@@ -1,4 +1,3 @@
-import MorganTianLib.Ch03.RicciFlow.DistanceIntegralBound
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 
 /-!
@@ -281,6 +280,64 @@ theorem lowerBound_of_cutoff_secondVariation
           rightDistanceCutoffWeight d r u * q u + N / r ^ 2)
         ≤ 2 * N * (2 / 3 * K * r + r⁻¹) := by
     linarith
+  linarith
+
+/-- **Math.** Recombine the three pieces of the traced index integral into
+the two endpoint corrections to the full Ricci integral. -/
+theorem cutoff_secondVariation_of_threePieceIndex
+    {q : ℝ → ℝ} {N r : ℝ} (hr : 0 < r) (hr1 : 2 * r ≤ 1)
+    (hq : ContinuousOn q (Icc (0 : ℝ) 1))
+    (hindex : 0 ≤ (∫ t in (0 : ℝ)..r, N / r ^ 2 - t ^ 2 / r ^ 2 * q t)
+      + (∫ t in r..(1 - r), -q t)
+      + (∫ t in (1 - r)..1, N / r ^ 2 - (1 - t) ^ 2 / r ^ 2 * q t)) :
+    0 ≤ -(∫ t in (0 : ℝ)..1, q t)
+      + (∫ t in (0 : ℝ)..r, leftDistanceCutoffWeight r t * q t + N / r ^ 2)
+      + (∫ t in (1 - r)..1, rightDistanceCutoffWeight 1 r t * q t + N / r ^ 2) := by
+  have hr01 : r ≤ 1 := by linarith
+  have hrr : r ≤ 1 - r := by linarith
+  have hrR : 1 - r ≤ 1 := by linarith
+  have hqL : ContinuousOn q (uIcc (0 : ℝ) r) := by
+    rw [uIcc_of_le hr.le]
+    exact hq.mono (Icc_subset_Icc le_rfl hr01)
+  have hqM : ContinuousOn q (uIcc r (1 - r)) := by
+    rw [uIcc_of_le hrr]
+    exact hq.mono (Icc_subset_Icc hr.le hrR)
+  have hqR : ContinuousOn q (uIcc (1 - r) 1) := by
+    rw [uIcc_of_le hrR]
+    exact hq.mono (Icc_subset_Icc (by linarith) le_rfl)
+  have hL : (∫ t in (0 : ℝ)..r, N / r ^ 2 - t ^ 2 / r ^ 2 * q t) =
+      (∫ t in (0 : ℝ)..r, leftDistanceCutoffWeight r t * q t + N / r ^ 2)
+        - ∫ t in (0 : ℝ)..r, q t := by
+    calc
+      _ = ∫ t in (0 : ℝ)..r, (leftDistanceCutoffWeight r t * q t + N / r ^ 2) - q t := by
+        apply intervalIntegral.integral_congr
+        intro t _
+        unfold leftDistanceCutoffWeight
+        ring
+      _ = _ := intervalIntegral.integral_sub
+        (show IntervalIntegrable (fun t => leftDistanceCutoffWeight r t * q t + N / r ^ 2)
+          volume 0 r from (((show Continuous (leftDistanceCutoffWeight r) by
+            unfold leftDistanceCutoffWeight; fun_prop).continuousOn.mul hqL).add
+              continuousOn_const).intervalIntegrable) hqL.intervalIntegrable
+  have hR : (∫ t in (1 - r)..1, N / r ^ 2 - (1 - t) ^ 2 / r ^ 2 * q t) =
+      (∫ t in (1 - r)..1, rightDistanceCutoffWeight 1 r t * q t + N / r ^ 2)
+        - ∫ t in (1 - r)..1, q t := by
+    calc
+      _ = ∫ t in (1 - r)..1, (rightDistanceCutoffWeight 1 r t * q t + N / r ^ 2) - q t := by
+        apply intervalIntegral.integral_congr
+        intro t _
+        unfold rightDistanceCutoffWeight
+        ring
+      _ = _ := intervalIntegral.integral_sub
+        (show IntervalIntegrable (fun t => rightDistanceCutoffWeight 1 r t * q t + N / r ^ 2)
+          volume (1 - r) 1 from (((show Continuous (rightDistanceCutoffWeight 1 r) by
+            unfold rightDistanceCutoffWeight; fun_prop).continuousOn.mul hqR).add
+              continuousOn_const).intervalIntegrable) hqR.intervalIntegrable
+  have hsplit := intervalIntegral.integral_add_adjacent_intervals (μ := volume)
+    (hqL.intervalIntegrable.trans hqM.intervalIntegrable) hqR.intervalIntegrable
+  have hsplitL := intervalIntegral.integral_add_adjacent_intervals (μ := volume)
+    hqL.intervalIntegrable hqM.intervalIntegrable
+  rw [hL, hR, intervalIntegral.integral_neg] at hindex
   linarith
 
 end MorganTianLib
