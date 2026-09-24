@@ -54,6 +54,7 @@ import MorganTianLib.Ch03.RicciFlow.DistanceVariationInterface
 import MorganTianLib.Ch03.RicciFlow.DistanceIntegralBound
 import MorganTianLib.Ch03.RicciFlow.DistanceVariationCutoff
 import MorganTianLib.Ch03.RicciFlow.DistanceVariationCutoffFlow
+import MorganTianLib.Ch03.RicciFlow.MinimalGeodesicTimeDerivative
 import MorganTianLib.Ch03.RicciFlow.ScalarSpacetimeSmooth
 import MorganTianLib.Ch03.RicciFlow.ScalarTimeDerivative
 import MorganTianLib.Ch03.RicciFlow.EvolvingEpsilonNeck
