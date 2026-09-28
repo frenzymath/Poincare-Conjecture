@@ -1,3 +1,7 @@
+> This reference is now blueprint-only. Its Lean sources and Lake package have
+> been removed; earlier formalization and build notes below are historical.
+> The active proof library is in `../../PoincareConjecture/`.
+
 # Gilbarg--Trudinger - Elliptic PDE of Second Order
 
 This Lean 4 project carries a source-faithful blueprint of David Gilbarg and

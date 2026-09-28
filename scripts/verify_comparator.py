@@ -33,7 +33,7 @@ def executable(value):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--project', type=Path, default=Path('PoincareConjecture'))
-    parser.add_argument('--config', type=Path, default=Path('comparator/comparator.json'),
+    parser.add_argument('--config', type=Path, default=Path('Comparator/config.json'),
                         help='path relative to the Lean project')
     parser.add_argument('--comparator', default='.lake/packages/Comparator/.lake/build/bin/comparator',
                         help='executable path relative to the Lean project')
@@ -69,7 +69,7 @@ def main():
     command = [str(binaries['systemd-run']), '--user', '--wait', '--pipe', '--collect',
                '--property=RestrictAddressFamilies=~AF_UNIX', f'--working-directory={project}',
                '-E', 'PATH', '-E', 'COMPARATOR_LANDRUN', '-E', 'COMPARATOR_LEAN4EXPORT',
-               '-E', 'COMPARATOR_NANODA', str(binaries['lake']), 'env',
+               '-E', 'COMPARATOR_NANODA', '-E', 'TMPDIR', str(binaries['lake']), 'env',
                str(binaries['comparator']), str(config)]
     inputs = {str(path.relative_to(repo)): sha256(path)
               for path in [project / 'lean-toolchain', project / 'lake-manifest.json',

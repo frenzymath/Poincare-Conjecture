@@ -57,6 +57,15 @@ public axiom assumption : Prop
 
 
 class SiteStagingTests(unittest.TestCase):
+    def test_reference_configs_disable_lean_and_packages_are_removed(self):
+        import yaml
+        repo = SCRIPTS.parent
+        for config in (repo / 'site/projects/references').glob('*/config.yaml'):
+            self.assertEqual(yaml.safe_load(config.read_text())['lean'], [], str(config))
+        self.assertFalse(list((repo / 'references').rglob('*.lean')))
+        self.assertFalse(list((repo / 'references').rglob('lean-toolchain')))
+        self.assertFalse(list((repo / 'references').rglob('lake-manifest.json')))
+
     def test_legacy_routes_are_injected_before_the_page_loads(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

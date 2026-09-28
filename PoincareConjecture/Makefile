@@ -18,13 +18,13 @@ endpoint-axioms:
 	$(LEAN_CHECK) scripts/check_poincare_endpoints.lean
 
 comparator-source-check:
-	python3 comparator/check.py
+	python3 Comparator/check.py
 
 comparator-build: comparator-source-check
 	$(LEAN_BUILD) Challenge @Comparator/comparator @lean4export/lean4export
 
 comparator-setup:
-	python3 comparator/setup.py
+	python3 Comparator/setup.py
 
 comparator:
-	bash comparator/run.sh
+	bash Comparator/run.sh

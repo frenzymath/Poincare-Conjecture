@@ -1,3 +1,7 @@
+> This reference is now blueprint-only. Its Lean sources and Lake package have
+> been removed; earlier formalization and build notes below are historical.
+> The active proof library is in `../../PoincareConjecture/`.
+
 <h1 align="center">LeeRiemannian — Introduction to Riemannian Manifolds</h1>
 
 <p align="center"><em>Active formalization across Chapters 1, 2, 4, 6, and 10-12.</em></p>

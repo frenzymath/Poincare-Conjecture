@@ -5,7 +5,7 @@ the dependency architecture of the Poincare conjecture rather than reproducing
 the chapter order of a particular source.
 
 The projects under `../references/` collect book and article blueprints with
-their earlier Lean developments retained. They provide mathematical references;
+their mathematical dependency graphs. They provide blueprint-only references;
 completing those books is not an objective of this formalization.
 
 ## Status

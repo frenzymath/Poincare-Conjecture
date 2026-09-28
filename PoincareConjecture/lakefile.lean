@@ -26,7 +26,7 @@ require Comparator from git
 
 -- Challenge and Solution redeclare names and must remain separate environments.
 lean_lib Challenge where
-  srcDir := "comparator"
+  srcDir := "Comparator"
 
 lean_lib Solution where
-  srcDir := "comparator"
+  srcDir := "Comparator"

@@ -18,13 +18,13 @@ The public module `PoincareLib.Topology.Manifold.Poincare` exports
 `PoincareMT.smoothPoincareSkeleton` and
 `PoincareMT.topologicalPoincareSkeleton`. The existing `PoincareConjecture`
 root now forwards the imported library. Existing blueprint and reference-book
-projects remain in place; matching their nodes to these declarations remains
+blueprints remain in place; matching their nodes to these declarations remains
 review work and their existing readiness labels are not upgraded by this import.
 
 The primary package adopts the imported Lean toolchain and Mathlib pin so the
 proof sources retain their verified dependency context. Its previous package
-options are scoped to the existing `PoincareConjecture` target. Reference-book
-package pins are unchanged.
+options are scoped to the existing `PoincareConjecture` target. Reference books
+are blueprint-only and no longer contain Lean packages.
 
 ## Verification boundary
 
@@ -45,10 +45,11 @@ make check
 Then execute the repository's manual comparator workflow or the instructions
 in [verification](../site/verification.md) on an external verification host with
 sufficient disk space and disk-backed `TMPDIR`. No comparator, Nanoda or
-environment export was run during this draft preparation or on run12 workers.
+environment export was run during initial draft preparation or on run12 workers.
+Local host verification of the updated comparator is tracked separately.
 
 Routine CI scans the package but explicitly excludes historical `references/`,
-frozen `contracts/`, and `comparator/Challenge.lean`. The challenge deliberately
+frozen `contracts/`, and `Comparator/Challenge.lean`. The challenge deliberately
 contains two admissions and is checked separately from the production Solution.
 The source report lists these exclusions and still scans Solution and all
 production library sources. It does not certify compilation or proof fidelity.

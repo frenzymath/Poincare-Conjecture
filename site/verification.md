@@ -25,7 +25,7 @@ and memory. Use an isolated account without unrelated credentials.
 
 The primary proof import must supply these inputs before this workflow can run:
 
-- `PoincareConjecture/comparator/comparator.json`, its Challenge and Solution modules.
+- `PoincareConjecture/Comparator/config.json`, its Challenge and Solution modules.
 - Pinned Comparator and lean4export dependencies in the project's Lake manifest.
 - Exactly `propext`, `Classical.choice`, and `Quot.sound` as permitted axioms,
   nonempty theorem targets, and `enable_nanoda: true`.

@@ -1,3 +1,7 @@
+> This reference is now blueprint-only. Its Lean sources and Lake package have
+> been removed; earlier formalization and build notes below are historical.
+> The active proof library is in `../../PoincareConjecture/`.
+
 <h1 align="center">LeeSmooth — Introduction to Smooth Manifolds</h1>
 
 <p align="center"><em>Chapters 1–8 imported from an upstream formalization. Builds clean; substantially incomplete. See <code>UPSTREAM_LEAN_AUDIT.md</code>.</em></p>
