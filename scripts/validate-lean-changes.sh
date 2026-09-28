@@ -130,6 +130,13 @@ elif (( $# == 1 || $# == 2 )); then
 
   for path in "${changed_files[@]}"; do
     case "$path" in
+      *.lean|lakefile.toml|*/lakefile.toml|lake-manifest.json|*/lake-manifest.json|lean-toolchain|*/lean-toolchain)
+        ;;
+      *)
+        continue
+        ;;
+    esac
+    case "$path" in
       PoincareConjecture/*)
         select_project PoincareConjecture
         ;;

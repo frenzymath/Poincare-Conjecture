@@ -1,0 +1,73 @@
+name: Manual Lean build
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Lake build (${{ matrix.name }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: PoincareConjecture
+            path: PoincareConjecture
+          - name: Shared
+            path: shared
+          - name: CaoZhu
+            path: formalized-sources/CaoZhu
+          - name: CheegerGromovTaylor
+            path: formalized-sources/CheegerGromovTaylor
+          - name: ChowEtAl
+            path: formalized-sources/ChowEtAl
+          - name: ChowKnopf
+            path: formalized-sources/ChowKnopf
+          - name: DoCarmo
+            path: formalized-sources/DoCarmo
+          - name: Evans
+            path: formalized-sources/Evans
+          - name: GilbargTrudinger
+            path: formalized-sources/GilbargTrudinger
+          - name: HanLinLectureNotes
+            path: formalized-sources/HanLinLectureNotes
+          - name: Hatcher
+            path: formalized-sources/Hatcher
+          - name: KleinerLott
+            path: formalized-sources/KleinerLott
+          - name: LeeRiemannian
+            path: formalized-sources/LeeRiemannian
+          - name: LeeSmooth
+            path: formalized-sources/LeeSmooth
+          - name: MorganTian
+            path: formalized-sources/MorganTian
+          - name: Petersen
+            path: formalized-sources/Petersen
+          - name: Topping
+            path: formalized-sources/Topping
+          - name: Thurston
+            path: formalized-sources/Thurston
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install elan
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Print Lean version
+        working-directory: ${{ matrix.path }}
+        run: lean --version
+
+      - name: Fetch Mathlib cache
+        working-directory: ${{ matrix.path }}
+        run: lake exe cache get
+
+      - name: Lake build
+        working-directory: ${{ matrix.path }}
+        run: lake build

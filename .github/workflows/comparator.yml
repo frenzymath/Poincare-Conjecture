@@ -1,0 +1,47 @@
+name: Comparator verification
+
+on:
+  workflow_dispatch:
+
+# Provision a dedicated Linux runner with this label and the pinned verification
+# tools. Never run pull_request code automatically on this runner.
+jobs:
+  verify:
+    runs-on: [self-hosted, linux, lean-verification]
+    timeout-minutes: 1440
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Build pinned verification tools
+        working-directory: PoincareConjecture
+        run: lake build @Comparator/comparator @lean4export/lean4export
+      - name: Run comparator with Nanoda
+        env:
+          COMPARATOR_LEAN4EXPORT: ${{ github.workspace }}/PoincareConjecture/.lake/packages/lean4export/.lake/build/bin/lean4export
+        run: python3 scripts/verify_comparator.py --output "$RUNNER_TEMP/comparator-evidence"
+      - name: Publish verification summary
+        if: always()
+        run: |
+          if [ -f "$RUNNER_TEMP/comparator-evidence/summary.md" ]; then
+            cat "$RUNNER_TEMP/comparator-evidence/summary.md" >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Package successful evidence
+        run: tar -czf "$RUNNER_TEMP/comparator-evidence.tar.gz" -C "$RUNNER_TEMP/comparator-evidence" .
+      - uses: actions/attest@v4
+        with:
+          subject-path: ${{ runner.temp }}/comparator-evidence.tar.gz
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: comparator-evidence-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/comparator-evidence
+            ${{ runner.temp }}/comparator-evidence.tar.gz
+          retention-days: 30
+          if-no-files-found: warn

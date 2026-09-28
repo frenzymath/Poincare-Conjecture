@@ -1,122 +1,44 @@
-name: CI
+name: Source checks
 
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: source-checks-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build:
-    name: Lake build (${{ matrix.name }})
+  source:
+    name: Lean source statistics and admissions
     runs-on: ubuntu-latest
-    timeout-minutes: 90
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - name: PoincareConjecture
-            path: PoincareConjecture
-            sorry_baseline: 0
-          - name: Shared
-            path: shared
-            sorry_baseline: 0
-          - name: CaoZhu
-            path: formalized-sources/CaoZhu
-            sorry_baseline: 0
-          - name: CheegerGromovTaylor
-            path: formalized-sources/CheegerGromovTaylor
-            sorry_baseline: 0
-          - name: ChowEtAl
-            path: formalized-sources/ChowEtAl
-            sorry_baseline: 0
-          - name: ChowKnopf
-            path: formalized-sources/ChowKnopf
-            sorry_baseline: 0
-          - name: DoCarmo
-            path: formalized-sources/DoCarmo
-            sorry_baseline: 0
-          - name: Evans
-            path: formalized-sources/Evans
-            sorry_baseline: 0
-          - name: GilbargTrudinger
-            path: formalized-sources/GilbargTrudinger
-            sorry_baseline: 0
-          - name: HanLinLectureNotes
-            path: formalized-sources/HanLinLectureNotes
-            sorry_baseline: 0
-          - name: Hatcher
-            path: formalized-sources/Hatcher
-            sorry_baseline: 0
-          - name: KleinerLott
-            path: formalized-sources/KleinerLott
-            sorry_baseline: 0
-          - name: LeeRiemannian
-            path: formalized-sources/LeeRiemannian
-            sorry_baseline: 0
-          - name: LeeSmooth
-            path: formalized-sources/LeeSmooth
-            sorry_baseline: 280
-          - name: MorganTian
-            path: formalized-sources/MorganTian
-            sorry_baseline: 0
-          - name: Petersen
-            path: formalized-sources/Petersen
-            sorry_baseline: 0
-          - name: Topping
-            path: formalized-sources/Topping
-            sorry_baseline: 0
-          - name: Thurston
-            path: formalized-sources/Thurston
-            sorry_baseline: 0
-
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install elan
-        run: |
-          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
-          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-
-      - name: Print Lean version
-        working-directory: ${{ matrix.path }}
-        run: lean --version
-
-      - name: Cache Lake build artifacts
-        uses: actions/cache@v4
+      - uses: actions/setup-python@v5
         with:
-          path: |
-            ${{ matrix.path }}/.lake/build
-            ${{ matrix.path }}/.lake/packages
-          key: lake-${{ runner.os }}-${{ matrix.name }}-${{ hashFiles(format('{0}/lake-manifest.json', matrix.path), format('{0}/lean-toolchain', matrix.path)) }}
-          restore-keys: |
-            lake-${{ runner.os }}-${{ matrix.name }}-
-
-      - name: Fetch Mathlib cache
-        working-directory: ${{ matrix.path }}
-        run: lake exe cache get
-
-      - name: Lake build
-        working-directory: ${{ matrix.path }}
-        run: lake build
-
-      - name: Check sorry and axiom counts
-        env:
-          PROJECT: ${{ matrix.path }}
-          SORRY_BASELINE: ${{ matrix.sorry_baseline }}
+          python-version: '3.12'
+      - run: pip install -r requirements-site.txt
+      - name: Test source and site tooling
+        run: python -m unittest discover -s scripts/tests
+      - name: Scan primary formalization
+        run: python scripts/lean_stats.py PoincareConjecture --output "$RUNNER_TEMP/lean-statistics" --check
+      - name: Publish statistics table
+        if: always()
         run: |
-          sorry_count=$({ git grep -nE "^[[:space:]]*sorry[[:space:]]*$|by sorry|:= sorry" \
-            -- ":(glob)$PROJECT/**/*.lean" 2>/dev/null || true; } | wc -l | tr -d ' ')
-          if [ "$sorry_count" -gt "$SORRY_BASELINE" ]; then
-            echo "::error::$PROJECT: sorry count increased ($sorry_count > $SORRY_BASELINE)"
-            exit 1
+          if [ -f "$RUNNER_TEMP/lean-statistics/summary.md" ]; then
+            cat "$RUNNER_TEMP/lean-statistics/summary.md" >> "$GITHUB_STEP_SUMMARY"
           fi
-          echo "$PROJECT: sorry count $sorry_count (baseline $SORRY_BASELINE)"
-
-          axiom_count=$({ git grep -nE "^axiom[[:space:]]+[a-zA-Z_][a-zA-Z0-9_']*[[:space:]]*$" \
-            -- ":(glob)$PROJECT/**/*.lean" 2>/dev/null || true; } | wc -l | tr -d ' ')
-          if [ "$axiom_count" -ne 0 ]; then
-            echo "::error::$PROJECT: found $axiom_count axiom declaration(s), expected 0"
-            exit 1
-          fi
-          echo "$PROJECT: axiom count 0"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lean-source-statistics
+          path: ${{ runner.temp }}/lean-statistics
+          retention-days: 7
+          if-no-files-found: error

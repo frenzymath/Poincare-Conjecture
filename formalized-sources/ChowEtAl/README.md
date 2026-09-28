@@ -14,7 +14,7 @@ declarations following the blueprint's dependency graph.
 - `ChowEtAl.lean` - root library module.
 - `blueprint/src/parts/` - source chapters grouped by published volume.
 - `blueprint/src/content.tex` - blueprint entry point.
-- `hgraph/config.yaml` - graph synchronization configuration.
+- `../../site/projects/formalized-sources/ChowEtAl/config.yaml` - graph synchronization configuration.
 
 The package uses `DoCarmoLib` through the sibling `../DoCarmo` path dependency.
 

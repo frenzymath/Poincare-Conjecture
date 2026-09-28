@@ -11,7 +11,7 @@ the revised second-edition reprint.
 - `blueprint/src/content.tex`: ordered blueprint entry point.
 - `blueprint/src/chapters/`: canonical chapter sources.
 - `blueprint/src/macros/`: shared print and web macros.
-- `hgraph/config.yaml`: project-local graph inputs.
+- `../../site/projects/formalized-sources/GilbargTrudinger/config.yaml`: graph inputs.
 
 The repository publishes canonical chapter files directly under `chapters/`;
 generated merge directories, graph records, and TeX build output are omitted.

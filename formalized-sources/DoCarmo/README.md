@@ -13,7 +13,7 @@ the separate root `shared/` package.
 - `DoCarmoLib/` - Lean source modules.
 - `DoCarmoLib.lean` - root library module.
 - `blueprint/src/` - source-faithful mathematical blueprint.
-- `hgraph/config.yaml` - graph synchronization configuration.
+- `../../site/projects/formalized-sources/DoCarmo/config.yaml` - graph synchronization configuration.
 
 ## Build
 

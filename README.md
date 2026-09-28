@@ -38,7 +38,7 @@ PoincareConjecture/    primary custom blueprint and Lean library
 formalized-sources/    book- and article-based reference projects
 shared/                book-independent Lean infrastructure
 config.yaml            hgraph workspace and website manifest
-site/                  authored website content and assets
+site/                  authored website content, graph settings, reviews and assets
 ```
 
 ## Formalization projects
@@ -80,7 +80,12 @@ site/                  authored website content and assets
 
 ## Contributing
 
-Contributions are welcome through [issues](https://github.com/frenzymath/Poincare-Conjecture/issues) and focused [pull requests](https://github.com/frenzymath/Poincare-Conjecture/pulls). Build instructions, local website preview, and the hgraph review/comment workflow are documented in [CONTRIBUTING.md](CONTRIBUTING.md).
+Contributions are welcome through [issues](https://github.com/frenzymath/Poincare-Conjecture/issues) and focused [pull requests](https://github.com/frenzymath/Poincare-Conjecture/pulls). Build instructions, local website preview, and the review/comment workflow are documented in [CONTRIBUTING.md](CONTRIBUTING.md).
+
+Automatic CI reports Lean source statistics and admissions without compiling the
+proof. Full builds and comparator verification are explicit workflows; their
+evidence and trust assumptions are described in [Verification](site/verification.md).
+Generated graph directories and website output are never committed.
 
 Active work is coordinated on the [Poincare Conjecture Formalization Library project board](https://github.com/orgs/frenzymath/projects/1).
 

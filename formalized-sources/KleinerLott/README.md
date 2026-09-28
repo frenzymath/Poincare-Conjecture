@@ -14,7 +14,7 @@ early scaffold stage.
 - `KleinerLott/` - Lean source modules.
 - `blueprint/src/content.tex` - blueprint entry point.
 - `blueprint/src/chapters/` - the authoritative source chapter files.
-- `hgraph/config.yaml` - graph synchronization configuration.
+- `../../site/projects/formalized-sources/KleinerLott/config.yaml` - graph synchronization configuration.
 
 ## Build
 
