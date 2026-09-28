@@ -14,7 +14,7 @@
 
 <p align="center">
   A custom Lean 4 formalization of the Poincare conjecture,<br>
-  supported by source-faithful formalizations of its mathematical references.
+  with a custom proof blueprint and annotated blueprints of mathematical references.
 </p>
 
 > [!IMPORTANT]
@@ -27,41 +27,42 @@
 
 The primary [`PoincareConjecture`](PoincareConjecture/) project is organized by
 the mathematical dependency structure of the proof, independently of any one
-book's chapter order. Formalizations following individual books and articles
-are maintained as supporting source projects under
-[`formalized-sources/`](formalized-sources/).
+book's chapter order. Blueprints following individual books and articles are
+collected under [`references/`](references/), together with their earlier Lean
+developments. These references are not separate formalization objectives for
+the primary proof.
 
 ## Repository structure
 
 ```text
-PoincareConjecture/    primary custom blueprint and Lean library
-formalized-sources/    book- and article-based reference projects
-shared/                book-independent Lean infrastructure
+PoincareConjecture/     primary custom blueprint and Lean library
+references/            book and article blueprints with retained Lean developments
+references/shared/     shared Lean infrastructure used by the reference packages
 config.yaml            hgraph workspace and website manifest
 site/                  authored website content, graph settings, reviews and assets
 ```
 
-## Formalization projects
+## Primary project and references
 
 | Project | Role |
 |---|---|
 | [PoincareConjecture](https://frenzymath.github.io/Poincare-Conjecture/#/PoincareConjecture) | Primary custom proof architecture |
-| [Morgan-Tian](https://frenzymath.github.io/Poincare-Conjecture/#/formalized-sources/MorganTian) | Ricci flow and the Poincare conjecture |
-| [Kleiner-Lott](https://frenzymath.github.io/Poincare-Conjecture/#/formalized-sources/KleinerLott) | Notes on Perelman's papers |
-| [Cao-Zhu](https://frenzymath.github.io/Poincare-Conjecture/#/formalized-sources/CaoZhu) | Hamilton-Perelman proof and geometrization |
-| [Chow et al.](https://frenzymath.github.io/Poincare-Conjecture/#/formalized-sources/ChowEtAl) | Ricci flow techniques and applications, Parts II-IV |
-| [Chow-Knopf](https://frenzymath.github.io/Poincare-Conjecture/#/formalized-sources/ChowKnopf) | Introduction to Ricci flow |
-| [Topping](https://frenzymath.github.io/Poincare-Conjecture/#/formalized-sources/Topping) | Lectures on Ricci flow |
-| [do Carmo](https://frenzymath.github.io/Poincare-Conjecture/#/formalized-sources/DoCarmo) | Riemannian geometry |
-| [Petersen](https://frenzymath.github.io/Poincare-Conjecture/#/formalized-sources/Petersen) | Riemannian geometry |
-| [Lee, Riemannian Manifolds](https://frenzymath.github.io/Poincare-Conjecture/#/formalized-sources/LeeRiemannian) | Riemannian geometry |
-| [Lee, Smooth Manifolds](https://frenzymath.github.io/Poincare-Conjecture/#/formalized-sources/LeeSmooth) | Smooth-manifold foundations |
-| [Cheeger-Gromov-Taylor](https://frenzymath.github.io/Poincare-Conjecture/#/formalized-sources/CheegerGromovTaylor) | Kernel estimates on complete Riemannian manifolds |
-| [Hatcher](https://frenzymath.github.io/Poincare-Conjecture/#/formalized-sources/Hatcher) | Algebraic topology |
-| [Thurston](https://frenzymath.github.io/Poincare-Conjecture/#/formalized-sources/Thurston) | Three-manifold topology and hyperbolic geometry |
-| [Evans](https://frenzymath.github.io/Poincare-Conjecture/#/formalized-sources/Evans) | Partial differential equations |
-| [Gilbarg-Trudinger](https://frenzymath.github.io/Poincare-Conjecture/#/formalized-sources/GilbargTrudinger) | Second-order elliptic partial differential equations |
-| [Han-Lin](https://frenzymath.github.io/Poincare-Conjecture/#/formalized-sources/HanLinLectureNotes) | Elliptic differential equations |
+| [Morgan-Tian](https://frenzymath.github.io/Poincare-Conjecture/#/references/MorganTian) | Ricci flow and the Poincare conjecture |
+| [Kleiner-Lott](https://frenzymath.github.io/Poincare-Conjecture/#/references/KleinerLott) | Notes on Perelman's papers |
+| [Cao-Zhu](https://frenzymath.github.io/Poincare-Conjecture/#/references/CaoZhu) | Hamilton-Perelman proof and geometrization |
+| [Chow et al.](https://frenzymath.github.io/Poincare-Conjecture/#/references/ChowEtAl) | Ricci flow techniques and applications, Parts II-IV |
+| [Chow-Knopf](https://frenzymath.github.io/Poincare-Conjecture/#/references/ChowKnopf) | Introduction to Ricci flow |
+| [Topping](https://frenzymath.github.io/Poincare-Conjecture/#/references/Topping) | Lectures on Ricci flow |
+| [do Carmo](https://frenzymath.github.io/Poincare-Conjecture/#/references/DoCarmo) | Riemannian geometry |
+| [Petersen](https://frenzymath.github.io/Poincare-Conjecture/#/references/Petersen) | Riemannian geometry |
+| [Lee, Riemannian Manifolds](https://frenzymath.github.io/Poincare-Conjecture/#/references/LeeRiemannian) | Riemannian geometry |
+| [Lee, Smooth Manifolds](https://frenzymath.github.io/Poincare-Conjecture/#/references/LeeSmooth) | Smooth-manifold foundations |
+| [Cheeger-Gromov-Taylor](https://frenzymath.github.io/Poincare-Conjecture/#/references/CheegerGromovTaylor) | Kernel estimates on complete Riemannian manifolds |
+| [Hatcher](https://frenzymath.github.io/Poincare-Conjecture/#/references/Hatcher) | Algebraic topology |
+| [Thurston](https://frenzymath.github.io/Poincare-Conjecture/#/references/Thurston) | Three-manifold topology and hyperbolic geometry |
+| [Evans](https://frenzymath.github.io/Poincare-Conjecture/#/references/Evans) | Partial differential equations |
+| [Gilbarg-Trudinger](https://frenzymath.github.io/Poincare-Conjecture/#/references/GilbargTrudinger) | Second-order elliptic partial differential equations |
+| [Han-Lin](https://frenzymath.github.io/Poincare-Conjecture/#/references/HanLinLectureNotes) | Elliptic differential equations |
 
 ## Current review milestones
 

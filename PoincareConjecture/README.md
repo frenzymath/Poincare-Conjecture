@@ -4,9 +4,9 @@ This is the repository's primary formalization project. Its blueprint follows
 the dependency architecture of the Poincare conjecture rather than reproducing
 the chapter order of a particular source.
 
-The projects under `../formalized-sources/` remain faithful reference
-formalizations of books and articles. Results from those projects may inform
-or support this development, but they do not define its organization.
+The projects under `../references/` collect book and article blueprints with
+their earlier Lean developments retained. They provide mathematical references;
+completing those books is not an objective of this formalization.
 
 ## Status
 

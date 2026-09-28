@@ -28,23 +28,23 @@ declare -a project_order=(
 
 declare -A project_path=(
   [PoincareConjecture]="PoincareConjecture"
-  [Shared]="shared"
-  [CaoZhu]="formalized-sources/CaoZhu"
-  [CheegerGromovTaylor]="formalized-sources/CheegerGromovTaylor"
-  [ChowEtAl]="formalized-sources/ChowEtAl"
-  [ChowKnopf]="formalized-sources/ChowKnopf"
-  [DoCarmo]="formalized-sources/DoCarmo"
-  [Evans]="formalized-sources/Evans"
-  [GilbargTrudinger]="formalized-sources/GilbargTrudinger"
-  [HanLinLectureNotes]="formalized-sources/HanLinLectureNotes"
-  [Hatcher]="formalized-sources/Hatcher"
-  [KleinerLott]="formalized-sources/KleinerLott"
-  [LeeRiemannian]="formalized-sources/LeeRiemannian"
-  [LeeSmooth]="formalized-sources/LeeSmooth"
-  [MorganTian]="formalized-sources/MorganTian"
-  [Petersen]="formalized-sources/Petersen"
-  [Thurston]="formalized-sources/Thurston"
-  [Topping]="formalized-sources/Topping"
+  [Shared]="references/shared"
+  [CaoZhu]="references/CaoZhu"
+  [CheegerGromovTaylor]="references/CheegerGromovTaylor"
+  [ChowEtAl]="references/ChowEtAl"
+  [ChowKnopf]="references/ChowKnopf"
+  [DoCarmo]="references/DoCarmo"
+  [Evans]="references/Evans"
+  [GilbargTrudinger]="references/GilbargTrudinger"
+  [HanLinLectureNotes]="references/HanLinLectureNotes"
+  [Hatcher]="references/Hatcher"
+  [KleinerLott]="references/KleinerLott"
+  [LeeRiemannian]="references/LeeRiemannian"
+  [LeeSmooth]="references/LeeSmooth"
+  [MorganTian]="references/MorganTian"
+  [Petersen]="references/Petersen"
+  [Thurston]="references/Thurston"
+  [Topping]="references/Topping"
 )
 
 declare -A sorry_baseline=(
@@ -140,11 +140,11 @@ elif (( $# == 1 || $# == 2 )); then
       PoincareConjecture/*)
         select_project PoincareConjecture
         ;;
-      shared/*)
+      references/shared/*)
         select_project Shared
         ;;
-      formalized-sources/*/*)
-        project=${path#formalized-sources/}
+      references/*/*)
+        project=${path#references/}
         project=${project%%/*}
         if [[ -n ${project_path[$project]:-} ]]; then
           select_project "$project"
@@ -169,7 +169,7 @@ if (( ${#selected[@]} == 0 )); then
 fi
 
 mapfile -t scratch_files < <(
-  find PoincareConjecture shared formalized-sources -type f \
+  find PoincareConjecture references -type f \
     -iname '*scratch*.lean' -not -path '*/.lake/*' -print | sort
 )
 if (( ${#scratch_files[@]} != 0 )); then

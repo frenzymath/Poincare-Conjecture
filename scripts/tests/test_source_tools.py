@@ -7,7 +7,7 @@ import unittest
 SCRIPTS = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(SCRIPTS))
 from lean_stats import count_source, scan_tree
-from build_site import stage_workspace
+from build_site import preserve_legacy_routes, stage_workspace
 
 
 class StatisticsTests(unittest.TestCase):
@@ -42,6 +42,16 @@ public axiom assumption : Prop
 
 
 class SiteStagingTests(unittest.TestCase):
+    def test_legacy_routes_are_injected_before_the_page_loads(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'site').mkdir()
+            (root / 'site/legacy-routes.js').write_text('/* route migration */')
+            (root / 'index.html').write_text('<html><head></head><body>Site</body></html>')
+            preserve_legacy_routes(root, root)
+            self.assertIn('<script>/* route migration */</script>\n</head>',
+                          (root / 'index.html').read_text())
+
     def test_generated_graphs_are_outside_source_and_feedback_is_preserved(self):
         with tempfile.TemporaryDirectory() as directory:
             repo, stage = Path(directory) / 'repo', Path(directory) / 'stage'

@@ -26,13 +26,22 @@ class BuildSelectionTests(unittest.TestCase):
             self.assertIn('No Lean package changes', result.stdout)
 
     def test_lean_changes_still_select_a_build(self):
+        self.check_selected_package('PoincareConjecture', 'PoincareConjecture')
+
+    def test_reference_changes_select_the_relocated_package(self):
+        self.check_selected_package('references/MorganTian', 'MorganTian')
+
+    def test_shared_changes_select_the_relocated_package(self):
+        self.check_selected_package('references/shared', 'Shared')
+
+    def check_selected_package(self, package_path, package_name):
         with tempfile.TemporaryDirectory() as directory:
             repo = Path(directory)
             subprocess.run(['git', 'init', '-q', str(repo)], check=True)
             (repo / 'PoincareConjecture').mkdir()
-            (repo / 'formalized-sources').mkdir()
-            (repo / 'shared').mkdir()
-            source = repo / 'PoincareConjecture/Main.lean'
+            (repo / 'references').mkdir()
+            (repo / package_path).mkdir(parents=True, exist_ok=True)
+            source = repo / package_path / 'Main.lean'
             source.write_text('theorem t : True := by trivial')
             subprocess.run(['git', '-C', str(repo), 'add', '.'], check=True)
             subprocess.run(['git', '-C', str(repo), '-c', 'user.name=Test',
@@ -47,5 +56,5 @@ class BuildSelectionTests(unittest.TestCase):
             result = subprocess.run(['bash', str(SCRIPT), 'HEAD'], cwd=repo,
                                     env=env, capture_output=True, text=True)
             self.assertEqual(result.returncode, 7)
-            self.assertIn('Building PoincareConjecture', result.stdout)
+            self.assertIn(f'Building {package_name} ({package_path})', result.stdout)
             self.assertIn('LAKE_SELECTED', result.stdout)

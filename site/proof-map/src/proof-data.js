@@ -31,7 +31,7 @@ export const stages = [
   },
 ];
 
-const morganTian = "formalized-sources/MorganTian";
+const morganTian = "references/MorganTian";
 
 export const nodes = [
   {

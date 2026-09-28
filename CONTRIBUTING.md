@@ -1,8 +1,9 @@
 # Contributing
 
 `PoincareConjecture/` contains the primary proof, organized by mathematical
-dependency. `formalized-sources/` follows the cited books and articles.
-`shared/` contains book-independent infrastructure. Keep changes focused and
+dependency. `references/` holds book and article blueprints and retained Lean
+developments. `references/shared/` contains their common infrastructure.
+Keep changes focused and
 preserve the pinned Lean toolchains and mathlib revisions.
 
 ## Lean checks
@@ -81,6 +82,8 @@ next site build. Temporary generated data must not be used to store new reviews.
 
 The Proof Map's authored data lives in `site/proof-map/src/proof-data.js` and
 its figures in `site/proof-map/public/figures/`.
+The site build includes `site/legacy-routes.js` to preserve bookmarks from
+before the reference-directory rename.
 
 ## Pull requests
 

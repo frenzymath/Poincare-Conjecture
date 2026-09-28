@@ -33,6 +33,16 @@ def stage_workspace(repo, stage):
     return manifest
 
 
+def preserve_legacy_routes(repo, output):
+    index = output / 'index.html'
+    html = index.read_text(encoding='utf-8')
+    script = (repo / 'site/legacy-routes.js').read_text(encoding='utf-8')
+    if '</head>' not in html:
+        raise ValueError('Generated site has no head for route compatibility script')
+    index.write_text(html.replace('</head>', f'<script>{script}</script>\n</head>', 1),
+                     encoding='utf-8')
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--out', type=Path, default=Path('_site'))
@@ -46,6 +56,7 @@ def main():
         for project in manifest['projects']:
             subprocess.run(['hgraph', '--root', str(stage / project['root']), 'sync'], check=True)
         subprocess.run(['hgraph', 'site', '--out', str(output / 'index.html')], cwd=stage, check=True)
+    preserve_legacy_routes(repo, output)
     subprocess.run(['npm', 'ci', '--prefix', str(repo / 'site/proof-map')], check=True)
     subprocess.run(['npm', '--prefix', str(repo / 'site/proof-map'), 'run', 'build', '--',
                     '--outDir', str(output / 'proof-map'), '--emptyOutDir'], check=True)
