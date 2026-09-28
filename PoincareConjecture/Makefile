@@ -22,6 +22,8 @@ comparator-source-check:
 
 comparator-build: comparator-source-check
 	$(LEAN_BUILD) Challenge Solution @Comparator/comparator @lean4export/lean4export
+	python3 Comparator/prepare.py
+	$(LEAN_BUILD) @Comparator/comparator
 	$(LEAN_CHECK) --run scripts/check_comparator_statements.lean
 
 comparator-setup:

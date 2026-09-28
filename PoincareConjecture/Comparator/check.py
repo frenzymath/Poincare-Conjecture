@@ -11,6 +11,10 @@ for name, entry in provenance["files"].items():
     if digest != entry["sha256"]:
         raise SystemExit(f"Comparator source hash mismatch: {name}")
 
+patch = provenance["comparator_patch"]
+if hashlib.sha256((directory / patch["file"]).read_bytes()).hexdigest() != patch["sha256"]:
+    raise SystemExit("Comparator execution-order patch hash mismatch")
+
 expected = {
     "challenge_module": "Challenge",
     "solution_module": "Solution",

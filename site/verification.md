@@ -30,20 +30,24 @@ The primary proof import must supply these inputs before this workflow can run:
 - Exactly `propext`, `Classical.choice`, and `Quot.sound` as permitted axioms,
   nonempty theorem targets, and `enable_nanoda: true`.
 
-The draft import supplies these targets and pins. Comparator has not yet been
-run on this repository's integrated revision. Historical Horizon build and
+The draft import supplies these targets and pins. No passing comparator evidence
+has been recorded for the integrated revision yet. Historical Horizon build and
 recursive endpoint axiom evidence is retained in
 `PoincareConjecture/references/ricci-flow/mapher/production-cleanup/`;
 it is not a comparator result or a build of the final PR revision.
-The workflow builds the pinned verification tools, then invokes comparator;
-comparator builds its target dependencies as needed.
+The workflow builds the pinned verification tools with the reviewed
+[`nanoda-before-parse.patch`](../PoincareConjecture/Comparator/nanoda-before-parse.patch),
+then invokes comparator. This execution-order patch avoids retaining both
+kernels' proof representations concurrently. It preserves statement comparison,
+axiom validation, both kernel checks, and all success conditions. Source and
+patch hashes are recorded in `Comparator/provenance.json`.
 
 For a local run, start from a clean checkout of the intended commit. Build
 the pinned tools in the primary Lean project:
 
 ```bash
 cd PoincareConjecture
-lake build @Comparator/comparator @lean4export/lean4export
+make comparator-build
 cd ..
 export COMPARATOR_LANDRUN=/absolute/path/to/landrun
 export COMPARATOR_NANODA=/absolute/path/to/nanoda_bin

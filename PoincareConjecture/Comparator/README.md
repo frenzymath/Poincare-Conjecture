@@ -30,6 +30,14 @@ Landlock, a working user systemd manager, sufficient disk space and a
 disk-backed TMPDIR. The stock Nanoda executable is built from the same upstream
 revision documented by the public snapshot; no checks are disabled.
 
+The pinned comparator driver receives the small, hash-checked
+`nanoda-before-parse.patch` during `make comparator-build`. It runs Nanoda before
+parsing the exported Lean environments. The original order exceeded a 52 GiB
+memory limit by retaining both kernels' proof representations simultaneously.
+Statement comparison, permitted-axiom validation, both kernel checks, and the
+conditions for success are unchanged. `provenance.json` records both driver
+hashes and the patch hash; `prepare.py` refuses to patch an unknown source.
+
 For commit-bound logs and executable hashes, use the repository-level
 [verification runner](../../site/verification.md). Success requires
 `Nanoda kernel accepts the solution`, `Lean default kernel accepts the solution`,
