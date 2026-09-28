@@ -13,12 +13,12 @@
 </div>
 
 <p align="center">
-  A custom Lean 4 formalization of the Poincare conjecture,<br>
-  with a custom proof blueprint and annotated blueprints of mathematical references.
+  A subject-organized Lean 4 proof library for the Poincare conjecture,<br>
+  with a proof blueprint and blueprint-only mathematical references.
 </p>
 
 > [!IMPORTANT]
-> This is an active, incomplete formalization. The website distinguishes verified Lean declarations from statements still in progress.
+> The imported proof library is under integration review. See [Verification](site/verification.md) for the status of checks on this revision.
 
 This draft adds the [subject-organized Poincare library](PoincareConjecture/IMPORT.md).
 Its historical Horizon build and endpoint audits passed; a fresh build and
