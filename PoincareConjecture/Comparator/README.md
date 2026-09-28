@@ -2,15 +2,19 @@
 
 The layout, Challenge and config.json come from
 [frenzymath/PoincareConjecture](https://github.com/frenzymath/PoincareConjecture/tree/99148d28f5607a908b90c3aa1908b0c5529df9d4/Comparator).
-Challenge and configuration are byte-for-byte copies. The solution imports
-PoincareLib.Topology.Manifold.Poincare, reproduces the unchanged public
-definitions in the PoincareConjecture namespace, and applies the imported
-PoincareMT endpoint proofs. No hypothesis or conclusion is changed.
+Challenge and configuration are byte-for-byte copies. Statements.lean reproduces
+the public definitions in the PoincareConjecture namespace using only Mathlib.
+This separate module prevents proof-library instances from changing statement
+elaboration. Solution imports these definitions and
+PoincareLib.Topology.Manifold.Poincare, then applies the PoincareMT endpoint
+proofs. No hypothesis or conclusion is changed.
 
 Challenge imports only Mathlib and intentionally admits its two targets.
 Challenge and Solution must be compiled separately. The configuration permits
 only propext, Classical.choice and Quot.sound, has no definition holes, and
 requires Nanoda. Exact source hashes and tool pins are in provenance.json.
+The comparator build also checks exact identity of the elaborated statement
+definitions and theorem types before the full proof export and kernel replay.
 
 From the primary package directory:
 

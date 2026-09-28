@@ -28,5 +28,8 @@ require Comparator from git
 lean_lib Challenge where
   srcDir := "Comparator"
 
+lean_lib Statements where
+  srcDir := "Comparator"
+
 lean_lib Solution where
   srcDir := "Comparator"
