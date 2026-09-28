@@ -14,6 +14,11 @@ statistics table in the Actions summary. JSON and per-file CSV are available
 as a seven-day artifact. Comments and string literals do not count as admissions.
 The scanner is lexical, not a Lean parser or transitive proof audit.
 
+The primary-package scan explicitly excludes its historical `references/`,
+frozen `contracts/`, and `comparator/Challenge.lean`. The challenge contains
+intentional admissions; Solution and all production sources remain scanned.
+The report records these exclusions.
+
 Run the same check locally:
 
 ```bash

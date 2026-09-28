@@ -20,6 +20,11 @@
 > [!IMPORTANT]
 > This is an active, incomplete formalization. The website distinguishes verified Lean declarations from statements still in progress.
 
+This draft adds the [subject-organized Poincare library](PoincareConjecture/IMPORT.md).
+Its historical Horizon build and endpoint audits passed; a fresh build and
+comparator verification of this repository revision remain pending. Existing
+blueprint readiness labels have not been upgraded by the import.
+
 ## The conjecture
 
 > [!NOTE]
@@ -92,10 +97,15 @@ Active work is coordinated on the [Poincare Conjecture Formalization Library pro
 
 ## Provenance
 
-This is an independent formalization. A limited part of the Riemannian
+The draft primary proof library is adapted from
+[LehengChen/PoincareConjecture](https://github.com/LehengChen/PoincareConjecture/tree/60de1a94ca7038d04ed123b490a3229f8aa5fa75)
+through the subject reorganization and dependency cleanup recorded in
+[the import provenance](PoincareConjecture/IMPORT.md). Source notices and
+attributions are preserved with those records. The existing custom blueprint
+remains a separate authored development. A limited part of the earlier Riemannian
 geometry infrastructure was originally derived from
 [OpenGA](https://github.com/MathNetwork/OpenGA) and has since been substantially
 extended and rewritten. The project is built on
-[Mathlib](https://github.com/leanprover-community/mathlib4/tree/520045ab14e26149ee970e2e617ca04b09bde5d6).
+[Mathlib](https://github.com/leanprover-community/mathlib4/tree/0df444a360eaa60ab8c11dca51a86af692955474).
 
 Licensed under [Apache 2.0](LICENSE).
