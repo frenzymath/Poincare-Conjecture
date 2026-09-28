@@ -35,7 +35,14 @@ contains commands, source hashes and compressed logs. Historical paths and
 Horizon API links in those records refer to the original workspace. These
 records do not assert a fresh build of this relocated package.
 
-Before marking the PR ready, build this exact branch and run its endpoint audit:
+A fresh local `make check` passed at `516badd1`, including both endpoint audits
+with exactly the three standard axioms. Comparator subsequently passed at
+`1876d7dc2c85325a3f62ce9776af98f910c5db04`, after isolating the public statement
+definitions from proof-library instances. The production library remained
+byte-for-byte unchanged. The [integration evidence](references/ricci-flow/mapher/integration-verification/README.md)
+records both runs, the verifier's memory-order patch, and their scope.
+
+To reproduce the build and endpoint audit:
 
 ```sh
 cd PoincareConjecture
@@ -46,7 +53,7 @@ Then execute the repository's manual comparator workflow or the instructions
 in [verification](../site/verification.md) on an external verification host with
 sufficient disk space and disk-backed `TMPDIR`. No comparator, Nanoda or
 environment export was run during initial draft preparation or on run12 workers.
-Local host verification of the updated comparator is tracked separately.
+The subsequent successful verification ran locally on the host.
 
 Routine CI scans the package but explicitly excludes historical `references/`,
 frozen `contracts/`, and `Comparator/Challenge.lean`. The challenge deliberately

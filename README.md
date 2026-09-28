@@ -21,9 +21,10 @@
 > The imported proof library is under integration review. See [Verification](site/verification.md) for the status of checks on this revision.
 
 This draft adds the [subject-organized Poincare library](PoincareConjecture/IMPORT.md).
-Its historical Horizon build and endpoint audits passed; a fresh build and
-comparator verification of this repository revision remain pending. Existing
-blueprint readiness labels have not been upgraded by the import.
+A fresh local build and endpoint audits passed, and comparator accepted both
+public targets at commit `1876d7dc`. See the [verification evidence](PoincareConjecture/references/ricci-flow/mapher/integration-verification/README.md)
+for the exact revisions, verifier patch and logs. Existing blueprint readiness
+labels have not been upgraded by the import.
 
 ## The conjecture
 

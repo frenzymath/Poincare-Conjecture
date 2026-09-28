@@ -44,5 +44,8 @@ For commit-bound logs and executable hashes, use the repository-level
 `Your solution is okay!`, and exit code zero.
 
 Historical Horizon build and axiom evidence is not comparator evidence.
+The local run at `1876d7dc` passed both kernels and the complete comparator;
+its [report and logs](../references/ricci-flow/mapher/integration-verification/README.md)
+record the exact revision and execution context.
 The earlier restriction against heavy verification on run12 workers remains;
 the operator has authorized local verification on the host separately.
