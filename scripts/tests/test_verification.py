@@ -13,7 +13,7 @@ import verify_comparator
 
 
 class VerificationTests(unittest.TestCase):
-    def run_simulated_verifier(self, exit_code, mutate=False):
+    def run_simulated_verifier(self, exit_code, mutate=False, complete=True):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             repo, output = root / 'repo', root / 'evidence'
@@ -27,7 +27,11 @@ class VerificationTests(unittest.TestCase):
                             '-c', 'user.email=test@example.invalid', 'commit', '-qm', 'fixture'], check=True)
 
             class SimulatedProcess:
-                stdout = io.StringIO('simulated comparator output\n')
+                stdout = io.StringIO(
+                    'Nanoda kernel accepts the solution\n'
+                    'Lean default kernel accepts the solution\n'
+                    'Your solution is okay!\n' if complete else
+                    'Building Solution\nMain processes terminated: status=15/TERM\n')
 
                 def wait(self):
                     if mutate:
@@ -67,3 +71,9 @@ class VerificationTests(unittest.TestCase):
         result, evidence = self.run_simulated_verifier(0, mutate=True)
         self.assertEqual(result, 1)
         self.assertFalse(evidence['source_unchanged'])
+
+    def test_stopped_service_with_zero_exit_is_not_success(self):
+        result, evidence = self.run_simulated_verifier(0, complete=False)
+        self.assertEqual(result, 1)
+        self.assertEqual(evidence['status'], 'failed')
+        self.assertEqual(len(evidence['missing_success_messages']), 3)
