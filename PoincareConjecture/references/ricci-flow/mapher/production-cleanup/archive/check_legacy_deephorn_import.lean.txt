@@ -1,0 +1,38 @@
+import PoincareLib.Geometry.RicciFlow.Surgery.Singular.DeepHorn.Blowup.Horns
+import PoincareLib.Geometry.RicciFlow.Surgery.Singular.DeepHorn.Blowup.Ancient.Horns
+import PoincareLib.Geometry.RicciFlow.Surgery.Singular.DeepHorn.Geometry.Uniform
+import PoincareLib.Geometry.RicciFlow.Surgery.Singular.DeepHorn.Providers
+import Lean.Util.CollectAxioms
+
+/-! Check legacy graph helpers against the concrete imported providers. -/
+
+set_option autoImplicit false
+
+universe u
+
+example : PoincareMT.RepairedControlledBlowupLimitTheory.{u} :=
+  PoincareMT.m30ControlledGeneralizedBlowupLimitsFromMilestones.{u}
+
+example : PoincareMT.RepairedHornSelectionPredecessors.{u} :=
+  PoincareMT.m32HornSelectionPredecessors.{u}
+
+set_option pp.universes true in
+#check PoincareMT.DeepHorn.terminalBlowupSequence_short_limit_of_hornBoundaryBelow
+
+set_option pp.universes true in
+#check PoincareMT.DeepHorn.terminalBlowupSequence_ancient_limit_of_short_limit
+
+set_option pp.universes true in
+#check PoincareMT.DeepHorn.uniformContainedNecks
+
+open Lean Elab Command in
+run_cmd do
+  let standard := #[``propext, ``Classical.choice, ``Quot.sound]
+  for root in #[
+      ``PoincareMT.DeepHorn.terminalBlowupSequence_short_limit_of_hornBoundaryBelow,
+      ``PoincareMT.DeepHorn.terminalBlowupSequence_ancient_limit_of_short_limit,
+      ``PoincareMT.DeepHorn.uniformContainedNecks] do
+    let axioms ← collectAxioms root
+    logInfo m!"{root}: recursive axioms: {axioms}"
+    unless axioms.all standard.contains do
+      throwError "{root}: recursive axiom outside propext, Classical.choice, Quot.sound"

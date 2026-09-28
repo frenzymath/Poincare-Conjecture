@@ -1,0 +1,318 @@
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Cap
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Replacement.Terminal
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Replacement.Simultaneous
+import Lean.Util.CollectAxioms
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Replacement.Geometry
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Geometry.NormalizedBoundary
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Geometry.ProtectedRegion
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.PairReplacement.Curved
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.PairReplacement.Canonical
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Ends.CommonPreparation.PairedNormalization
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Ends.CommonPreparation.BandAvoidance
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Ends.ClosingBall
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Ends.ClosingDisk
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Ends.LabelCount
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Ends.CommonPreparation.FiniteCylindrical
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Ends.CommonPreparation.TerminalFamily
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Geometry.CommonExterior
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Geometry.CurvedCapFamily
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Geometry.DisjointClosingBalls
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Geometry.NestedClosingBalls
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Geometry.Upper
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Rounded
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.ModelComplement
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Geometry.UpperBall.Complement
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Terminal
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.TerminalCollars
+import PoincareLib.Topology.Manifold.Schoenflies.Isotopy.GraphTransport
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Collar.TerminalTransport
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.EndBall.TerminalHeight
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Collar.SurfaceGerm
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Collar.CapGerm
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.EndBall.TerminalCylinder
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Collar.Composition
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.EndBall.TerminalAnnulus
+import PoincareLib.Topology.Manifold.Schoenflies.Isotopy.Relative.HalfSpace
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Ends.ModelCriticalCount
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Ends.SupportedNormalization
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Ends.TerminalNormalizationUpper
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Ends.CylindricalPreparationUpper
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Ends.CanonicalAlignment
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Ends.QuadraticAlignment
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Ends.QuadraticScaling
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Ends.Model.Coordinates
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Ends.Model.TerminalAnnulus
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Ends.Model.Straightening
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Ends.Model.Preparation
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Lift.HalfSpace
+import PoincareLib.Topology.Manifold.Schoenflies.Plane.Graph.RelativeGraphTransport
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.TerminalHorizontalProjection
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Collar.HorizontalTransport
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Collar.LiftPreparation
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Collar.TerminalLiftPreparation
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Ends.Model.TerminalNormalization
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Ends.Actual.TerminalNormalization
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Ends.RelativeAlignment
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Ends.Family.SlabNormalization
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Collar.HorizontalComposition
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Ends.Actual.OrientedNormalization
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Ends.CommonPreparation.ActualNormalization
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Ends.CommonPreparation.ModelNormalization
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Ends.CommonPreparation.LowerReplacement
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Ends.LabelAlignment
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.CriticalGraph.RelativeCylinderEnd
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.Closing.Ends.CommonPreparation.IndividualReplacement
+
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_flat_closing_disk
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_lower_family_replacement_of_prepared
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_upper_family_replacement_of_prepared
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_supported_terminal_curved_collar_transport
+
+open Lean Elab Command in
+run_cmd do
+  let name := ``Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_supported_terminal_curved_collar_transport
+  let axioms ← collectAxioms name
+  unless axioms.all (#[``propext, ``Classical.choice, ``Quot.sound].contains) do
+    throwError "Nonstandard axiom in the terminal curved-collar producer: {axioms}"
+
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_lower_family_common_preparation_of_prepared
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_buffered_terminal_model_normalization_with_common_preparation
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_lower_family_matched_normalizations_of_prepared
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_lower_family_matched_normalizations
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_lower_prepared_modelBand_coverage
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_lower_band_avoidance
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_supported_moving_pair_replacement
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_ordered_canonical_closing_balls
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_supported_cap_pair_replacement_of_canonical_normalizations
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_band_and_halfspace_avoidance
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.disjoint_projected_cylindrical_rims
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_upper_prepared_modelBand_coverage
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_upper_band_avoidance
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_simultaneous_curved_lower_cap_pair_replacement
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.normalized_curved_closing_boundary_projection
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.normalized_cap_terminal_slice_subset_closing_disk
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.normalized_curved_closing_ball_inter_band
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.terminal_lower_cap_height
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.terminal_upper_cap_height
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.terminal_prepared_caps_disjoint
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.terminal_physical_modelCaps_disjoint
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.terminal_lower_model_domain_height
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.terminal_upper_model_domain_height
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_simultaneous_terminal_replacement_of_side_replacements
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_simultaneous_flat_terminal_replacement_of_prepared
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.boundary_union_closing_disk
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.not_boundary_union_eq_filled_ball
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_common_closing_disk_replacement
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.lower_cap_target_eq
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.upper_cap_target_eq
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_lower_cap_replacement
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_upper_cap_replacement
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_flat_cap_replacement
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.upperCap_closedBall_terminal_inter
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.upperCap_interior_height_gt
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.upperCap_closedBall_not_subset_terminal_plane
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.upperCap_open_disjoint_of_terminal_plane
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.upperCap_flat_union_isCompact
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_flat_closing_disk_of_rounded_transport
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_common_closing_disk_replacement_of_rounded_transport
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_flat_cap_replacement_with_support
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_model_ball_with_complement_of_scaled_marking
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_lower_model_cap_complement
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_upper_model_rounded_complement
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_actual_terminal_cap_complement
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_model_terminal_cap_complement
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.terminal_band_image
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.terminal_cap_band_inter_image
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_boundary_reparametrization
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.exists_ball_along_sphere_disk_with_boundary_intersection
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.exists_ball_with_closing_disk_of_sphere_disk_with_boundary_intersection
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.isCompact_terminal_modelBand
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.actual_terminal_cap_interior_disjoint_band
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.model_terminal_cap_interior_disjoint_band
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_actual_terminal_outer_annulus
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_model_terminal_outer_annulus
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_band_neighborhood_in_outer_annulus
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_common_outer_collar
+#print axioms Poincare.Manifold.Schoenflies.exists_supported_graph_transport_within
+#print axioms Poincare.Manifold.Schoenflies.exists_supported_local_graph_flattening
+#print axioms Poincare.Manifold.Schoenflies.exists_supported_partial_chart_transport
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_surface_neighborhood_in_chart
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.fderiv_eq_of_eqOn_outer_annulus
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.injective_mfderiv_sphereProjection_comp
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.localDiffeomorphAt_projection_chart_on_rim
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_actual_terminal_projection_chart
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_actual_terminal_radial_graph
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.radialDiskChart
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_supported_radial_graph_flattening
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_relative_terminal_collar_transport
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_supported_radial_graph_flattening_within
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_relative_terminal_collar_transport_within
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.exists_physical_height_interval_of_germ
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryCoreCap.AnnularEndFamily.exists_lower_terminal_physical_height
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryCoreCap.AnnularEndFamily.exists_upper_terminal_physical_height
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.isCompact_actual_terminal_cap
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.isCompact_model_terminal_cap
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_rim_neighborhood_avoiding_other_caps
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_separated_terminal_collar_transport
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_common_surface_neighborhood_of_eqOn_charts
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_separated_terminal_surface_germ
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_separated_terminal_cap_germ
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.exists_jointly_injective_chart_slices
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.exists_projected_terminal_slice_family
+#print axioms Poincare.Manifold.Schoenflies.exists_supported_ambient_cylinder_family_within
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.exists_terminal_cylinder_straightening
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryCoreCap.AnnularEndFamily.exists_lower_terminal_cylinder_straightening
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryCoreCap.AnnularEndFamily.exists_upper_terminal_cylinder_straightening
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_simultaneous_relative_cap_germs
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_simultaneous_terminal_cap_germs
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryCoreCap.LowerAnnularEnd.exists_physical_annulus_at_terminal
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryCoreCap.UpperAnnularEnd.exists_physical_annulus_at_terminal
+#print axioms Poincare.Manifold.Schoenflies.exists_supported_relative_family_localization
+#print axioms Poincare.Manifold.Schoenflies.exists_supported_agreement_of_fixed_halfspace
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_critical_in_terminal_model_cap
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.terminal_model_height_eventually_quadratic
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_critical_in_terminal_model_band_interior
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.terminal_model_critical_iff
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.finite_terminal_model_critical_points
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.existsUnique_critical_in_terminal_model_cap
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_lower_terminal_end_normalization
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_upper_terminal_end_normalization
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_supported_lower_terminal_end_normalization
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_supported_upper_terminal_end_normalization
+#print axioms Poincare.Topology.exists_open_neighborhood_sublevel_component
+#print axioms Poincare.Manifold.Schoenflies.exists_height_extension_above_sublevel_component
+#print axioms Poincare.Manifold.Schoenflies.Saddle.exists_parametric_lift_fixed_below
+#print axioms Poincare.Manifold.Schoenflies.Saddle.exists_parametric_lift_fixed_above
+#print axioms Poincare.Manifold.Schoenflies.Plane.exists_relative_curveAnnularTube_graph_transport
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_supported_vertical_cap_alignment
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_supported_complete_lower_cap_alignment
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_supported_cylindrical_lower_terminal_end_normalization
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_lower_terminal_cylindrical_preparation
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_prepared_cylindrical_lower_terminal_end_normalization
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_prepared_cylindrical_upper_terminal_end_normalization
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.terminal_model_cut_regular
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.terminal_model_domain_component
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.terminal_model_domain_extremum
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_model_critical_coordinates
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_model_extremum_coordinates
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_model_oriented_morse_cap
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_model_physical_annulus
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_morse_disk_and_physical_annulus_cover
+#print axioms Poincare.Manifold.Schoenflies.exists_capped_minimum_disk_band_straightening_of_physical_annulus_cover
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_component_minimum_disk_straightening
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_model_cylindrical_preparation
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_relative_radial_lower_cap_transport
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_relative_quadratic_lower_profile_transport
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_relative_scaled_quadratic_lower_transport
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_model_height_projection
+#print axioms Poincare.Manifold.Schoenflies.exists_supported_graph_transport_within_preserving_base
+#print axioms Poincare.Manifold.Schoenflies.exists_supported_local_graph_flattening_preserving_base
+#print axioms Poincare.Manifold.Schoenflies.exists_supported_correction_of_halfspace_agreement
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_horizontal_fiber_chart
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_model_horizontal_chart
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_fst_projection_chart
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.actualCapPhysicalCoordinates_eq
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_actual_horizontal_projection_in_chart
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_actual_terminal_horizontal_graph
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_supported_horizontal_graph_flattening_within
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_relative_horizontal_terminal_collar_transport_within
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_supported_lower_lift_preparation
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_supported_upper_lift_preparation
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_supported_slab_lift_preparation
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_lift_preserving_inserted_caps
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_relative_component_minimum_disk_normalization
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_model_canonical_normalization
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_actual_canonical_normalization_of_height_preserving_map
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_actual_canonical_normalization
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_relative_cap_alignment_of_compatible_normalizations
+#print axioms Poincare.Manifold.Schoenflies.exists_finite_circle_family_flattening_with_constant_ends
+#print axioms Poincare.Manifold.Schoenflies.exists_finite_actual_band_flattening_with_constant_ends
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryCoreCap.AnnularEndFamily.exists_lower_common_physical_annuli
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryCoreCap.AnnularEndFamily.exists_upper_common_physical_annuli
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_finite_annulus_endpoint_preparation
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_finite_physical_annulus_slab_normalization
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryCoreCap.AnnularEndFamily.exists_lower_common_slab_normalization
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryCoreCap.AnnularEndFamily.exists_upper_common_slab_normalization
+#print axioms Poincare.Geometry.Euclidean.axisNegPlaneDiffeomorph_image_sphere
+#print axioms Poincare.Geometry.Euclidean.liftPlaneDiffeomorph_axis_neg
+#print axioms Poincare.Manifold.Schoenflies.image_liftPlaneDiffeomorph_axis_neg
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.complete_canonical_cap_axis_neg
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_actual_oriented_canonical_normalization
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_horizontal_zero_section_chart
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.terminal_surface_germ_of_horizontal_collar_matching
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_relative_horizontal_terminal_surface_germ_within
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_slab_avoiding_inserted_caps
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_core_free_slabs
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_horizontal_terminal_separation_neighborhood
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_separated_horizontal_terminal_surface_germ_within
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_separated_horizontal_terminal_cap_germ_within
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_simultaneous_relative_cap_germs_preserving_height
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_simultaneous_horizontal_terminal_cap_germs
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_surface_germ_of_cap_germ
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_simultaneous_horizontal_terminal_germs
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_prepared_horizontal_terminal_germs
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_equal_physical_slices_of_surface_germ
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_common_cylindrical_preparation_of_surface_germ
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_supported_cylindrical_upper_terminal_end_normalization
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_actual_normalization_with_common_preparation
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_model_normalization_with_common_preparation
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_relative_lower_end_replacement_of_surface_germ
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.terminal_actual_cutCircle_band_range
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.terminal_labeled_cutCircle_range
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.terminal_labeled_physical_cutCircle_range
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.terminal_labeled_model_rim_height
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.terminal_labeled_model_lower_boundary
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.terminal_labeled_model_upper_boundary
+#print axioms Poincare.Manifold.Schoenflies.exists_supported_relative_family_localization_preserving_linear
+#print axioms Poincare.Manifold.Schoenflies.exists_supported_agreement_of_fixed_halfspace_preserving_linear
+#print axioms Poincare.Manifold.Schoenflies.exists_supported_correction_of_halfspace_agreement_preserving_linear
+#print axioms Poincare.Manifold.Schoenflies.exists_relative_quadratic_minimum_cylindrical_end_with_profile
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_relative_upper_end_replacement_of_surface_germ
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.prepared_terminal_labeled_physical_cutCircle_range
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_prepared_terminal_lower_cap_replacement
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_prepared_terminal_upper_cap_replacement
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.physical_modelBand_subset_terminalCapProtectedHalfspace
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_flat_terminal_cap_replacement_of_prepared
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_prepared_terminal_cap_replacements
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_curved_closing_ball_of_lower_cap_normalization
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_common_curved_closing_balls_of_lower_cap_normalizations
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.image_closing_ball_of_cap_image
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.transported_inner_closing_ball_subset
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_finite_common_cylindrical_preparation_of_surface_germs
+#print axioms Poincare.Manifold.Schoenflies.closedBall_image_subset_openBall_of_disjoint_boundaries
+#print axioms Poincare.Manifold.Schoenflies.disjoint_closedBall_images_of_exterior_boundary_points
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.curved_closing_cap_height_of_interior_projection
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.disjoint_curved_closing_caps_of_disjoint_fillings
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.disjoint_curved_closing_caps_of_nested_fillings
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_disjoint_curved_closing_cap_family
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.disjoint_closed_cap_boundaries
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.closing_ball_subset_of_one_interior_point
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.curved_closing_ball_height_le
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.closing_ball_projection_mem_filling
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.prepared_closing_ball_projection_mem_filling
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.closing_ball_inter_band_subset_closing_disk
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_prepared_curved_closing_cap_point
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.disjoint_closing_balls_of_disjoint_prepared_fillings
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.open_cylinder_subset_of_frontier
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.open_cylinder_subset_ball_image_of_boundary
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.mem_capped_cylinder_ball_of_upper_collar
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_strictly_nested_curved_closing_balls
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_common_exterior_of_fixed_neighborhood_matching
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_supported_boundary_replacement_of_fixed_neighborhood_matching
+#print axioms Poincare.Manifold.Schoenflies.exists_buffered_capped_minimum_disk_band_straightening_of_physical_annulus_cover
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_buffered_component_minimum_disk_straightening
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_buffered_relative_component_minimum_disk_normalization
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_buffered_relative_cap_alignment_of_compatible_normalizations
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_buffered_relative_lower_end_replacement_of_surface_germ
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_buffered_prepared_terminal_lower_cap_replacement
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_buffered_relative_upper_end_replacement_of_surface_germ
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_buffered_prepared_terminal_upper_cap_replacement
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.terminalCapProtectedHalfspace_subset_buffered
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_buffered_prepared_terminal_cap_replacements
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_common_enlarged_curved_closing_disk
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_lower_family_common_preparation
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.terminal_cut_indices_nonempty
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.terminal_cap_label_counts
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_lower_cap_replacement_of_surface_germ
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_terminal_upper_cap_replacement_of_surface_germ
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Caps.Closing.exists_individual_terminal_cap_replacements

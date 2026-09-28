@@ -1,0 +1,27 @@
+import PoincareLib.Topology.Manifold.Schoenflies.Plane.Rounding.Ambient
+import PoincareLib.Topology.Manifold.Schoenflies.Plane.Rounding.VertexMotion
+import PoincareLib.Topology.Manifold.Schoenflies.Plane.Graph.Radial
+import PoincareLib.Topology.Manifold.Schoenflies.Plane.Rounding.Triangle.Normalization
+import PoincareLib.Topology.Manifold.Schoenflies.Plane.Rounding.Profile
+import PoincareLib.Topology.Manifold.Schoenflies.Plane.Rounding.Cyclic
+import PoincareLib.Topology.Manifold.Schoenflies.Plane.Rounding.Deletion.Interpolation
+import PoincareLib.Topology.Manifold.Schoenflies.Plane.Disk
+
+/-! Axiom audits for the smooth planar approximation and ambient motions. -/
+
+#print axioms Poincare.Manifold.Schoenflies.Plane.exists_smooth_normal_graph_of_positive_tube_projection
+#print axioms Poincare.Manifold.Schoenflies.Plane.exists_ambient_diffeomorph_of_positive_tube_projection
+#print axioms Poincare.Manifold.Schoenflies.Plane.exists_ambient_rounded_polygon_of_smooth_circle
+#print axioms Poincare.Manifold.Schoenflies.Plane.exists_ambient_isotopy_of_smooth_circle_family
+#print axioms Poincare.Manifold.Schoenflies.Plane.exists_ambient_isotopy_of_periodic_family
+#print axioms Poincare.Manifold.Schoenflies.Plane.exists_uniform_rounding_tolerance
+#print axioms Poincare.Manifold.Schoenflies.Plane.exists_uniform_ambient_isotopy_of_polygon_family
+#print axioms Poincare.Manifold.Schoenflies.Plane.exists_uniform_ambient_rounded_vertex_push
+#print axioms Poincare.Manifold.Schoenflies.Plane.exists_ambient_diffeomorph_of_positive_radial_graph
+#print axioms Poincare.Manifold.Schoenflies.Plane.exists_ambient_diffeomorph_rounded_triangle
+#print axioms Poincare.Manifold.Schoenflies.Plane.exists_ambient_rounding_profile_change
+#print axioms Poincare.Manifold.Schoenflies.Plane.exists_ambient_polygon_interpolation_tolerance
+#print axioms Poincare.Manifold.Schoenflies.Plane.exists_uniform_ambient_delete_last_midpoint
+#print axioms Poincare.Manifold.Schoenflies.Plane.exists_uniform_ambient_diffeomorph_rounded_polygon
+#print axioms Poincare.Manifold.Schoenflies.exists_ambient_diffeomorph_of_smooth_circle
+#print axioms Poincare.Manifold.Schoenflies.exists_smooth_disk_of_smooth_circle

@@ -1,0 +1,19 @@
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.GeometryImports
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Analysis.Geometry.LastClosedVisit
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.PartialLimits.RegularSets.CompactBallRestriction
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.PartialLimits.RegularSets.PathCapture
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.PartialLimits.RegularSets.CapturedPathDistance
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.SourceGeometry.InitialGeometry.SourceInitialGraphSuffix
+
+/-! # Direct audits for the source-suffix topology and capture interfaces -/
+
+set_option autoImplicit false
+
+#print axioms Poincare.exists_last_visit_of_isClosed
+#print axioms Poincare.exists_last_visit_component
+#print axioms PoincareMT.M28.mem_regularPoints_intrinsicOpenMetric_of_compact_ball
+open PoincareMT.M28.RegularPointedMetricConvergence in
+#print axioms exists_eventually_regular_path_capture
+open PoincareMT.M28.RegularPointedMetricConvergence in
+#print axioms eventually_edist_le_twice_captured_path_length
+#print axioms PoincareMT.M28.SourceTubeData.exists_final_initial_graph_subarc

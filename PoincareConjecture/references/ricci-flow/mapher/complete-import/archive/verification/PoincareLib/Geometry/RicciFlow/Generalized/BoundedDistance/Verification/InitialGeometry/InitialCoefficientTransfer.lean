@@ -1,0 +1,45 @@
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.GeometryImports
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Persistence.NeckGeometry.CoreCoefficientReadout
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Persistence.NeckGeometry.CapturedCylinderErrors
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.SourceGeometry.CriticalBall.SourceCriticalBallInitialCoefficients
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.SourceGeometry.CriticalBall.SourceCriticalBallRawChartBounds
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.SourceGeometry.CriticalBall.SourceCriticalBallInitialNeck
+
+/-!
+# Direct audit of the actual initial coefficient transfer
+
+These declarations read frozen scalar errors from smooth geometry cores,
+derive normalized source bounds, and transfer actual finite atlas errors.
+Source: Morgan--Tian Proposition 10.7, p. 253; M28 derivation 106.
+-/
+
+set_option autoImplicit false
+
+open PoincareMT.M28.tube PoincareMT.M28.CounterexampleNeckFamily
+open PoincareMT.Proofs.M28.NeckTransfer
+
+#print axioms contMDiffAt_cylinderMap
+#print axioms cylinderMap_mfderiv_apply
+#print axioms cylinderMapCoefficients_eq_frozen
+#print axioms cylinderMapCoefficients_frozen_germ
+#print axioms cylinderMapCoefficients_inverse_frozen_germ
+#print axioms regularRawStage_coefficients_eq
+#print axioms regularRawStage_coefficients_germ
+#print axioms cylinderScalarCoordinateEquiv_norm_sq
+#print axioms cylinderNeckCoefficients_quadratic_bounds
+#print axioms scaleSmoothMetric_cylinderNeckCoefficients
+#print axioms ContinuousLinearEquiv.norm_iteratedFDeriv_affine_le
+#print axioms norm_iteratedFDeriv_bilinear_apply_const
+#print axioms ContinuousLinearEquiv.norm_iteratedFDeriv_affine_bilinear_smul_le
+#print axioms normalizedSlice_initial_scale_sq
+#print axioms normalizedSlice_initial_coefficients
+#print axioms normalizedSlice_initial_coefficient_lower
+#print axioms hasUniformJetBoundsAt_normalizedSlice_initial_coefficients
+#print axioms NeckGeometryCore.frozen_difference_germ
+#print axioms NeckGeometryCore.norm_frozen_difference_jet_le
+#print axioms capturedCylinderCoordinates_error_germ
+#print axioms exists_capturedCylinder_metric_error_tail
+#print axioms exists_eventual_regularRawStage_finite_chart_bounds
+#print axioms eventually_regularRawStage_finite_chart_jet_error
+#print axioms exists_retained_initial_metric_error_accuracy
+#print axioms exists_retained_initial_neck_accuracy

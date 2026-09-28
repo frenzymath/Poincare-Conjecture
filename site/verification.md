@@ -30,8 +30,11 @@ The primary proof import must supply these inputs before this workflow can run:
 - Exactly `propext`, `Classical.choice`, and `Quot.sound` as permitted axioms,
   nonempty theorem targets, and `enable_nanoda: true`.
 
-The public repository does not yet contain those imported proof targets.
-This tooling therefore makes no claim that comparator has already passed.
+The draft import supplies these targets and pins. Comparator has not yet been
+run on this repository's integrated revision. Historical Horizon build and
+recursive endpoint axiom evidence is retained in
+`PoincareConjecture/references/ricci-flow/mapher/production-cleanup/`;
+it is not a comparator result or a build of the final PR revision.
 The workflow builds the pinned verification tools, then invokes comparator;
 comparator builds its target dependencies as needed.
 

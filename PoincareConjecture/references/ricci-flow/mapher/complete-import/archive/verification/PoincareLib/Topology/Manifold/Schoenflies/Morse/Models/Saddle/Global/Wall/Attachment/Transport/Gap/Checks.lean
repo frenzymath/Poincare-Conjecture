@@ -1,0 +1,65 @@
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.Transport.Gap.SupportedClock
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.Transport.Gap.Matching
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.Transport.Gap.Neck
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.Transport.Gap.ModelCompression
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.Transport.Gap.RoundedTransport
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.Transport.Gap.Filling
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.Transport.Gap.PlaneBounds
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.Transport.Gap.CapStationary
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.Transport.Gap.ActualJoin
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.Transport.Gap.NeighborhoodFilling
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.Transport.Gap.Localization
+
+open Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.Transport
+
+#print axioms exists_positive_energy_compression
+#print axioms energyClockSpacetime
+#print axioms exists_supported_energy_compression
+#print axioms energyClockIsotopy_mem_Icc
+#print axioms isCompact_closedProfileGap
+#print axioms exists_profile_gap_subset_edge_neighborhood
+#print axioms compressed_matching_image
+#print axioms compressed_matching_fixed
+#print axioms exists_pair_matching_fixing_profile_gap
+#print axioms image_diff_of_fixed_removed_part
+#print axioms filled_diff_of_protected_removed_part
+#print axioms closure_inserted_neck_subset_profile_gap
+#print axioms closure_removed_neck_subset_profile_gap
+#print axioms exists_thin_supported_profile_gap_compression
+#print axioms profileGapAmplitude_lt_of_energy_lt
+#print axioms exists_profile_gap_support_clearance
+#print axioms circularEnergy_regular
+#print axioms circularEnergy_zero_smooth_circle
+#print axioms exists_circularEnergy_collar
+#print axioms image_eq_of_supported_predicate
+#print axioms profile_model_balls_preserved_by_gap_compression
+#print axioms exists_model_ball_gap_compression
+#print axioms image_eq_of_supported_body_agreement
+#print axioms matching_agreeing_on_compressed_region
+#print axioms exists_model_pair_matching_retaining_finite_gap
+#print axioms image_union_of_agreeing_added_part
+#print axioms image_subset_of_agreeing_removed_part
+#print axioms exists_transported_rounded_pair
+#print axioms exists_transported_rounded_removal
+#print axioms joined_wall_finite_energy_bounds
+#print axioms finite_wall_transport_transverse_bound
+#print axioms finite_wall_transport_upper_cap_energy
+#print axioms circularProfileMark_image_wall
+#print axioms exists_initial_disjoint_profile_pair_matching
+#print axioms nested_balls_strict_off_common_boundary
+#print axioms reflected_circularProfileMark_subset_outer_sphere
+#print axioms exists_initial_nested_profile_pair_matching
+#print axioms exists_rounded_union_of_profile_body_comparisons
+#print axioms exists_rounded_removal_of_profile_body_comparisons
+#print axioms selected_finite_cap_stationary_germ
+#print axioms selected_finite_cap_profile_germ
+#print axioms actual_side_body_join_germ_at_finite_front
+#print axioms exists_thickened_profile_gap_subset
+#print axioms exists_model_ball_gap_compression_supported_in
+#print axioms exists_model_pair_matching_of_gap_neighborhood
+#print axioms exists_rounded_union_of_gap_neighborhood
+#print axioms exists_rounded_removal_of_gap_neighborhood
+#print axioms profileGapAmplitude_le_tail_width
+#print axioms transported_finite_gap_height_bounds
+#print axioms modification_germs_outside_closed_region
+#print axioms modification_diff_eq_outside_region

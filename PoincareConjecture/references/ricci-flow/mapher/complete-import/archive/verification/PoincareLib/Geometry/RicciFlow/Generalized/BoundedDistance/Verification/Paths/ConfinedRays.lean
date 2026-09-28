@@ -1,0 +1,65 @@
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.GeometryImports
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Analysis.CompactGeometry.CompactPrefixRay
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.Limits.SelectedInteriorWall
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.Geometry.InteriorEndpointNeckConfinement
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.SourceGeometry.CriticalBall.SourceCriticalBallRecut
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Spacetime.StrongNecks.Geometry.StrongNeckCenterCharts
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.PartialLimits.Geometry.NormalChartJetBounds
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.PartialLimits.RegularSets.CompactImageRegularity
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.PartialLimits.RegularSets.LocalIntrinsicDistance
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Analysis.Geometry.VanishingTailCompletion
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.Geometry.FixedWallInteriorConfinement
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.Limits.SelectedNeckVanishingTail
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.PartialLimits.Geometry.OpenImageDiffeomorph
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.PartialLimits.RegularSets.EuclideanImageBuffer
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.Limits.SelectedCylinderCompletion
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.Geometry.FixedWallIntrinsicSegments
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.PartialLimits.RegularSets.EuclideanImageDistance
+
+/-! # Direct audits of fixed-wall confinement and source center charts
+
+These declarations follow the separately reviewed arguments in M28
+derivations 129-131. Actual completion and cone construction remain separate.
+-/
+
+set_option autoImplicit false
+
+#print axioms exists_pointwise_metric_limit_of_eventually_compact
+#print axioms exists_isometric_finite_ray_of_compact_prefixes
+#print axioms finite_ray_radius_eq_of_source_bounds
+#print axioms PoincareMT.M28.exists_selected_chain_neck_above_cylinder_level
+#print axioms PoincareMT.M28.exists_fixed_positive_side_above_cylinder_level
+#print axioms PoincareMT.M28.exists_interior_endpoint_neck_confinement
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.exists_retained_smooth_recut_ambient_accuracy
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.exists_retained_smooth_recut_accuracy
+#print axioms PoincareMT.M28.exists_strongNeck_source_center_charts_accuracy
+#print axioms PoincareMT.M28.exists_uniform_normal_chart_metric_jet_bound
+#print axioms PoincareMT.M28.mem_intrinsicImage_regularPoints_of_compact_inverse_buffer
+#print axioms PoincareMT.M28.intrinsicOpenMetric_edist_eq_of_ambient_ball_subset
+#print axioms PoincareMT.M28.intrinsicOpenMetric_edist_eq_of_intrinsic_regular
+#print axioms PoincareMT.M28.intrinsicOpenMetric_edist_eq_on_nested_regular_image
+#print axioms UniformSpace.Completion.tendsto_of_uniform_height_tail
+#print axioms UniformSpace.Completion.exists_unique_of_vanishing_height_tails
+#print axioms PoincareMT.M28.exists_selected_chain_tail_above_cylinder_level
+#print axioms PoincareMT.M28.intrinsicOpenMetricSpace
+#print axioms PoincareMT.M28.intrinsicOpenMetricSpace_topology
+#print axioms PoincareMT.M28.intrinsicOpenMetricSpace_edist
+#print axioms PoincareMT.M28.intrinsicOpenMetricSpace_dist
+#print axioms PoincareMT.RiemannianMetric.edist_add_escape_le_add_shortcut_of_path_crossing
+#print axioms PoincareMT.M28.intrinsicEDist_central_sphere_le
+#print axioms PoincareMT.M28.intrinsicOpenMetric_edist_neck_to_sphere_le
+#print axioms PoincareMT.M28.exists_selected_chain_tail_with_scale_lt
+#print axioms PoincareMT.M28.exists_vanishing_selected_cylinder_tail
+#print axioms PoincareMT.M28.exists_fixed_wall_interior_confinement
+#print axioms PartialDiffeomorph.diffeomorphOnOpens
+#print axioms PartialDiffeomorph.diffeomorphOnOpens_apply
+#print axioms PartialDiffeomorph.diffeomorphOnOpens_symm_apply
+#print axioms PartialDiffeomorph.diffeomorphOnCanonicalSource
+#print axioms PartialDiffeomorph.diffeomorphOnCanonicalSource_apply
+#print axioms PoincareMT.M28.edist_eq_intrinsicOpenMetric_of_diffeomorph_pullback
+#print axioms PoincareMT.M28.diffeomorph_openImageMap_isLocalDiffeomorph
+#print axioms PoincareMT.M28.pullbackOfLocalDiffeomorph_edist_openImage
+#print axioms PoincareMT.M28.mem_intrinsicImage_regularPoints_of_euclidean_buffer
+#print axioms PoincareMT.M28.exists_unique_selected_cylinder_completion
+#print axioms PoincareMT.M28.exists_fixed_wall_intrinsic_segments
+#print axioms PoincareMT.M28.originalOpen_edist_eq_openImagePullback_of_euclidean_bounds

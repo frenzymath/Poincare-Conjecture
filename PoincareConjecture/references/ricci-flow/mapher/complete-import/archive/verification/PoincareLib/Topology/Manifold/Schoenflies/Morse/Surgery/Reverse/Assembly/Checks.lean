@@ -1,0 +1,37 @@
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Surgery.Reverse.Assembly.CapStretch
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Surgery.Reverse.Assembly.Contact.Rounding
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Surgery.Reverse.Assembly.Compression
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Surgery.Reverse.Assembly.Replacement.Localization
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Surgery.Reverse.Assembly.Replacement.Protected
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Surgery.Reverse.Assembly.Replacement.LensNesting
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Surgery.Reverse.Assembly.Replacement.LensEquivalence
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Surgery.Reverse.Assembly.Replacement.Germ.Localization
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Surgery.Reverse.Assembly.Replacement.Germ.Normal
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Surgery.Reverse.Assembly.Reconstruction
+
+/-! # Admission audits for the reverse-surgery assembly constructions -/
+
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryStep.exists_capMinus_stretch
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryStep.exists_cap_common_disk
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryStep.exists_marked_child_contact
+#print axioms Poincare.Manifold.Schoenflies.Reverse.filled_balls_common_disk_alternatives
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryStep.exists_rounded_child_contact
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryStep.exists_innermost_child_compression
+#print axioms Poincare.Manifold.Schoenflies.Reverse.exists_supported_ball_equivalence_of_fixed_disk_neighborhood
+#print axioms Poincare.Manifold.Schoenflies.Rounding.exists_marked_ball_compression_away_disk
+#print axioms Poincare.Manifold.Schoenflies.Reverse.exists_supported_flat_disk_germ
+#print axioms Poincare.Manifold.Schoenflies.Reverse.exists_ball_equivalence_fixing_disk_neighborhood
+#print axioms Poincare.Manifold.Schoenflies.Reverse.exists_supported_nested_ball_equivalence
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryStep.exists_capMinus_lens_equivalence
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryStep.capMinus_lens_subset_filling
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryStep.capPlus_lens_subset_filling
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryStep.exists_protected_lower_replacement
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryStep.exists_protected_upper_replacement
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryStep.image_prepared_range_of_lower_replacement
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryStep.image_prepared_range_of_upper_replacement
+#print axioms Poincare.Manifold.Schoenflies.Reverse.exists_asymmetric_cap_lens
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryStep.exists_explicit_lower_replacement
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryStep.exists_explicit_upper_replacement
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryStep.exists_capPlus_transport_across
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryStep.exists_capMinus_transport_across
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryStep.exists_ambient_ball_of_children

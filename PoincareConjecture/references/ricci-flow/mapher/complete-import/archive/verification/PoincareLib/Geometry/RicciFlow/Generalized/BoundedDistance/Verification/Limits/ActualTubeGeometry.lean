@@ -1,0 +1,56 @@
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.GeometryImports
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.SourceGeometry.Ends.SourceTubeCriticalRadius
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.SourceGeometry.CapGeometry.SourceCapBoundaryEntry
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.SourceGeometry.CapGeometry.SourceCapWholePathBarrier
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.SourceGeometry.Ends.SourceTubeVolume
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.SourceGeometry.Geometry.SourceFrontierBuffers
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.NeckGeometry.NeckMinimizerTraversal
+
+/-! Kernel audits for the actual fixed-carrier critical selection and cap entry. -/
+
+set_option autoImplicit false
+-- Printing kernel dependencies is the purpose of this audit module.
+set_option linter.hashCommand false
+
+#print axioms PoincareMT.M28.exists_source_tube_data_accuracy
+#print axioms PoincareMT.M28.SourceTubeData.path_mem
+#print axioms PoincareMT.M28.SourceTubeData.exists_initial_neck
+#print axioms PoincareMT.M28.SourceTubeData.preconnected
+#print axioms PoincareMT.M28.exists_source_tube_family_accuracy
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.tube_scalar_eq
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.tube_edist_ne_top
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.tube_base_regular
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.tube_high_distance_lt
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.tube_high_scalar_tendsto
+#print axioms PoincareMT.M28.exists_source_tube_initial_bound_accuracy
+#print axioms PoincareMT.M28.exists_actual_source_tube_critical_radius_accuracy
+#print axioms
+  PoincareMT.M28.SourceEdgeCommonOrientationPacket.anchor_prefix_mem_and_not_mem_successor
+#print axioms PoincareMT.M28.SourceEdgeCommonOrientationPacket.exists_anchored_entry_below_cap_graph
+#print axioms PoincareMT.M28.exists_source_anchored_entry_below_cap_graph_accuracy
+#print axioms PoincareMT.M28.exists_source_cap_whole_path_avoidance_accuracy
+#print axioms PoincareMT.M28.full_neck_chart_speed_upper
+#print axioms PoincareMT.M28.full_neck_chart_density_upper
+#print axioms PoincareMT.M28.full_neck_chart_image_volume_upper
+#print axioms PoincareMT.M28.exists_full_neck_volume_upper_constant
+#print axioms PoincareMT.M28.euclideanVolumeCalibration_eq_addHaarScalarFactor
+#print axioms PoincareMT.M28.volumeMeasure_eq_calibratedMetricVolume
+#print axioms PoincareMT.M28.volumeMeasure_homothety_image
+#print axioms PoincareMT.M28.volumeMeasure_scaleSmoothMetric
+#print axioms PoincareMT.M28.intrinsicOpenMetric_volumeMeasure
+#print axioms PoincareMT.M28.intrinsicOpenMetric_volumeMeasure_apply
+#print axioms PoincareMT.M28.intrinsicOpenMetric_volumeMeasure_univ
+#print axioms PoincareMT.M28.intrinsicOpenMetric_scaleSmoothMetric_volumeMeasure_univ
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.tubeNodeScale_pos
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.tubeNodeScale_le
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.tube_edge_scale_cost_le
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.tube_prefix_scale_cost_le
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.tube_scale_sum_bound
+#print axioms PoincareMT.M28.SourceTubeData.carrier_eq_iUnion_nodes
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.tube_cubic_scale_sum_bound
+#print axioms PoincareMT.M28.exists_actual_source_tube_volume_constant
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.exists_tube_volume_bound
+#print axioms PoincareMT.M28.exists_source_closure_necks_accuracy
+#print axioms PoincareMT.M28.exists_source_frontier_buffers_accuracy
+#print axioms PoincareMT.M28.exists_neck_minimizer_opposite_levels
+#print axioms PoincareMT.M28.exists_neck_minimizer_graph_crossing

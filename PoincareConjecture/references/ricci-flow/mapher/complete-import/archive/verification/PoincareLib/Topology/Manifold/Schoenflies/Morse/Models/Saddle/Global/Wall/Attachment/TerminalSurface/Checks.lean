@@ -1,0 +1,42 @@
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalSurface.LowerSphere
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalSurface.Graph
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalSurface.CommonWall
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalSurface.FinitePatch
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalSurface.GlobalLower
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalSurface.PairCoverage
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalSurface.ActualLower
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalSurface.Calibration
+
+open Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface
+
+#print axioms roundedPatch_mem_actual_or_transition
+#print axioms pastedRoundedAnchor_mem_actual_or_transition
+#print axioms normalized_selected_point_actual_or_transition
+#print axioms side_sphere_below_cut_actual_or_transition
+#print axioms profileLift_saddle_point_eq_normalized
+#print axioms profileLift_saddle_point_mem_normalized
+#print axioms lower_profile_transition_mem_gap_or_wall
+#print axioms lower_profile_transition_mem_gap_or_open_wall
+#print axioms normalized_profile_transition_mem_gap_or_open_wall
+#print axioms lower_open_wall_mem_lifted_open_disk
+#print axioms model_bodies_germs_inside_common_wall
+#print axioms model_raw_frontiers_avoid_common_wall_interior
+#print axioms actual_union_frontier_avoids_open_wall
+#print axioms actual_shell_frontier_avoids_open_wall
+#print axioms inserted_frontier_point_mem_actual
+#print axioms removed_frontier_point_mem_actual
+#print axioms finite_gap_below_cut_point_data
+#print axioms inserted_frontier_on_finite_gap_below_cut
+#print axioms removed_frontier_on_finite_gap_below_cut
+#print axioms inserted_frontier_of_localized_side_boundaries
+#print axioms removed_frontier_of_localized_side_boundaries
+#print axioms side_sphere_below_cut_mem_actual_or_gap_or_wall
+#print axioms reflectedEnergyTransport_lower_formula
+#print axioms profileLift_halfTurn
+#print axioms wallPlaneLift_reflected_halfTurn
+#print axioms halfTurn_conjugate_lower_formula
+#print axioms side_localization_of_halfTurn
+#print axioms opposite_side_sphere_below_cut_mem_actual_or_gap_or_wall
+#print axioms actual_inserted_frontier_below_cut
+#print axioms actual_removed_frontier_below_cut
+#print axioms exists_selected_lower_cut

@@ -11,6 +11,21 @@ from build_site import preserve_legacy_routes, stage_workspace
 
 
 class StatisticsTests(unittest.TestCase):
+    def test_explicit_exclusions_keep_solution_and_nested_production_sources(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for name in ('comparator', 'references', 'Library/references'):
+                (root / name).mkdir(parents=True)
+            for name in ('comparator/Challenge.lean', 'comparator/Solution.lean',
+                         'references/Audit.lean', 'Library/references/Proof.lean'):
+                (root / name).write_text('theorem gap : True := by sorry\n')
+            total, _, files, findings = scan_tree(
+                root, ['references', 'comparator/Challenge.lean'])
+            self.assertEqual((total.files, total.sorry), (2, 2))
+            self.assertEqual({entry['path'] for entry in files},
+                             {'comparator/Solution.lean', 'Library/references/Proof.lean'})
+            self.assertEqual(len(findings), 2)
+
     def test_nested_docs_and_literals(self):
         counts = count_source('''/-- Documentation
 with /- nested -/ sorry -/

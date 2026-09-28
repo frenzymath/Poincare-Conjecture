@@ -1,0 +1,445 @@
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.TerminalData
+
+/-!
+# Constructive blueprint for the terminal saddle leaves
+
+These are statement candidates for operator review, not proved geometry.
+Choices below are outputs of named construction obligations, never extra
+assumptions on the planar leaf. The cap branch retains the universal planar
+inputs of the existing cap leaf; it does not restrict that leaf to our choice.
+
+Whole level circles are NOT required to bound disks outside the protected
+patch. Regular matching must use exterior arcs relative to their endpoint
+germs. See `PlaneArcs.not_forall_disk_covers_of_terminal_slices`.
+
+Reference: Hatcher, Notes on Basic 3-Manifold Topology (2014), Theorem 1.1,
+proof pp. 2-5. These construction obligations are not numbered there.
+-/
+
+noncomputable section
+set_option autoImplicit false
+open Set Metric Function
+open scoped Manifold ContDiff Topology
+
+namespace Poincare.Manifold.Schoenflies.SaddleLevel
+
+private abbrev E2 := EuclideanSpace Real (Fin 2)
+private abbrev E3 := EuclideanSpace Real (Fin 3)
+private abbrev S2 := sphere (0 : E3) 1
+private abbrev PlaneDiff := Diffeomorph (𝓡 2) (𝓡 2) E2 E2 ∞
+private abbrev SpaceDiff := Diffeomorph (𝓡 3) (𝓡 3) E3 E3 ∞
+
+namespace Blueprint
+
+/-- The geometric output of endpoint matching, including the disk-chart
+construction and the correspondence of the three attaching circles. -/
+structure Seed {f : S2 → E3} (M : SphereMorseReduction f) {g : S2 → E3}
+    (P : SphereSurgeryPath (M.v : E3) (fun q => M.D (f q)) g)
+    (p : S2) (e : OpenPartialHomeomorph E2 S2) where
+  data : TerminalSaddleData M P p e
+  rho : Real
+  rho_pos : 0 < rho
+  square_source : closedSquare rho ⊆ e.source
+  square_match : ∀ x ∈ closedSquare rho,
+    (Real.sqrt data.scale)⁻¹ • x ∈ closedBall (0 : E2) data.matchingRadius
+  U : Set E3
+  open_U : IsOpen U
+  square_U : (data.toTerminalSaddleGeometry.flatten ∘ g ∘ e) '' closedSquare rho ⊆ U
+  anchor : Fin 2 → Real → PlaneDiff
+  anchor_zero : ∀ n x, anchor n 0 x = x
+  anchor_smooth : ∀ n, ContDiff Real ∞ (fun q : Real × E2 => anchor n q.1 q.2)
+  anchor_inverse : ∀ n, ContDiff Real ∞ (fun q : Real × E2 => (anchor n q.1).symm q.2)
+  anchorK : Fin 2 → Set E2
+  anchor_compact : ∀ n, IsCompact (anchorK n)
+  anchor_support : ∀ n t x, x ∉ anchorK n → anchor n t x = x
+  anchor_fixed : ∀ n t y, y ∈ U →
+    Saddle.toE3 (anchor n t (Saddle.toE2 y)) (y 2) = y
+  capEnd : Fin 3 → Fin 2
+  boundary_height : ∀ i y,
+    y ∈ data.toTerminalSaddleGeometry.C i ∩ data.toTerminalSaddleGeometry.actualBand →
+    y 2 = if capEnd i = 0 then data.ends.lowerCut else data.ends.upperCut
+  anchor_slices : ∀ n,
+    let z := if n = 0 then data.ends.lowerCut else data.ends.upperCut
+    anchor n 1 '' data.toTerminalSaddleGeometry.A z = data.toTerminalSaddleGeometry.B z
+  anchor_labels : ∀ i,
+    (fun y => Saddle.toE3 (anchor (capEnd i) 1 (Saddle.toE2 y)) (y 2)) ''
+      (data.toTerminalSaddleGeometry.C i ∩ data.toTerminalSaddleGeometry.actualBand) =
+      data.toTerminalSaddleGeometry.modelCaps i ∩ data.toTerminalSaddleGeometry.modelBand
+
+/-- Regular-height transport retains the endpoint isotopies. Smoothness is
+only asserted off the critical height; no limit at that height is assumed. -/
+structure Regular {f : S2 → E3} {M : SphereMorseReduction f} {g : S2 → E3}
+    {P : SphereSurgeryPath (M.v : E3) (fun q => M.D (f q)) g}
+    {p : S2} {e : OpenPartialHomeomorph E2 S2} (s : Seed M P p e) where
+  family : Real → Real → PlaneDiff
+  zero : ∀ z x, family 0 z x = x
+  smooth : ContDiffOn Real ∞ (fun q : Real × Real × E2 => family q.1 q.2.1 q.2.2)
+    {q | q.2.1 ≠ inner Real (M.v : E3) (g p)}
+  inverse : ContDiffOn Real ∞ (fun q : Real × Real × E2 => (family q.1 q.2.1).symm q.2.2)
+    {q | q.2.1 ≠ inner Real (M.v : E3) (g p)}
+  fixed : ∀ t, EqOn (planarHeightMap family t) id s.U
+  matching : ∀ z ∈ s.data.toTerminalSaddleGeometry.I,
+    z ≠ inner Real (M.v : E3) (g p) →
+    family 1 z '' s.data.toTerminalSaddleGeometry.A z = s.data.toTerminalSaddleGeometry.B z
+  endpoint : ∀ n t,
+    family t (if n = 0 then s.data.ends.lowerCut else s.data.ends.upperCut) = s.anchor n t
+
+/-- A smooth through-zero interpolation, still without a support assertion. -/
+structure Glued {f : S2 → E3} {M : SphereMorseReduction f} {g : S2 → E3}
+    {P : SphereSurgeryPath (M.v : E3) (fun q => M.D (f q)) g}
+    {p : S2} {e : OpenPartialHomeomorph E2 S2} (s : Seed M P p e)
+    (r : Regular s) where
+  family : Real → Real → PlaneDiff
+  zero : ∀ z x, family 0 z x = x
+  smooth : ContDiff Real ∞ (fun q : Real × Real × E2 => family q.1 q.2.1 q.2.2)
+  inverse : ContDiff Real ∞ (fun q : Real × Real × E2 => (family q.1 q.2.1).symm q.2.2)
+  fixed : ∀ t, EqOn (planarHeightMap family t) id s.U
+  matching : ∀ z ∈ s.data.toTerminalSaddleGeometry.I,
+    family 1 z '' s.data.toTerminalSaddleGeometry.A z = s.data.toTerminalSaddleGeometry.B z
+  endpoint : ∀ n t,
+    family t (if n = 0 then s.data.ends.lowerCut else s.data.ends.upperCut) =
+      r.family t (if n = 0 then s.data.ends.lowerCut else s.data.ends.upperCut)
+
+/-- Localization preserves the time-one map on the actual band. -/
+structure Localized {f : S2 → E3} {M : SphereMorseReduction f} {g : S2 → E3}
+    {P : SphereSurgeryPath (M.v : E3) (fun q => M.D (f q)) g}
+    {p : S2} {e : OpenPartialHomeomorph E2 S2} (s : Seed M P p e)
+    (r : Regular s) (h : Glued s r) where
+  family : Real → Real → PlaneDiff
+  K : Set E2
+  compact : IsCompact K
+  support : ∀ t z x, x ∉ K → family t z x = x
+  zero : ∀ z x, family 0 z x = x
+  smooth : ContDiff Real ∞ (fun q : Real × Real × E2 => family q.1 q.2.1 q.2.2)
+  inverse : ContDiff Real ∞ (fun q : Real × Real × E2 => (family q.1 q.2.1).symm q.2.2)
+  fixed : ∀ t, EqOn (planarHeightMap family t) id s.U
+  matching : ∀ z ∈ s.data.toTerminalSaddleGeometry.I,
+    family 1 z '' s.data.toTerminalSaddleGeometry.A z = s.data.toTerminalSaddleGeometry.B z
+  agrees : EqOn (planarHeightMap family 1) (planarHeightMap h.family 1)
+    s.data.toTerminalSaddleGeometry.actualBand
+
+end Blueprint
+
+section Planar
+
+variable {f : S2 → E3} (M : SphereMorseReduction f)
+    {g : S2 → E3} (hg : g ∈ M.tree.leaves)
+    (P : SphereSurgeryPath (M.v : E3) (fun p => M.D (f p)) g)
+    (hP : P.Protects ((fun p => inner Real (M.v : E3) (M.D (f p))) ''
+      {p | mfderiv (𝓡 2) 𝓘(Real, Real)
+        (fun q => inner Real (M.v : E3) (M.D (f q))) p = 0}))
+    (hcaps : P.PreservesCaps)
+    {p : S2} (hp : p ∈ interior P.core)
+    (hc : mfderiv (𝓡 2) 𝓘(Real, Real)
+      (fun q => inner Real (M.v : E3) (g q)) p = 0)
+    (hunique : ∀ q ∈ P.core, mfderiv (𝓡 2) 𝓘(Real, Real)
+      (fun y => inner Real (M.v : E3) (g y)) q = 0 → q = p)
+    (e : OpenPartialHomeomorph E2 S2) (he0 : 0 ∈ e.source)
+    (hep : e 0 = p)
+    (he : ContMDiffOn (𝓡 2) (𝓡 2) ∞ e e.source)
+    (hei : ContMDiffOn (𝓡 2) (𝓡 2) ∞ e.symm e.target)
+    (het : e.target ⊆ interior P.core)
+    (hform : ∀ x ∈ e.source, inner Real (M.v : E3) (g (e x)) =
+      inner Real (M.v : E3) (g p) - x 0 ^ 2 + x 1 ^ 2)
+
+include hg hP hcaps hp hc hunique he0 hep he hei het hform in
+/-- Construct the disk charts, correctly nested model, and relative endpoint isotopies.
+Use `exists_terminal_saddle_cut_resolution` and `exists_supported_disjoint_disk_pair_isotopy_of_common_arcs`. -/
+theorem exists_terminal_planar_matching_seed : Nonempty (Blueprint.Seed M P p e) := by
+  sorry
+
+def terminalSeed := Classical.choice
+  (exists_terminal_planar_matching_seed M hg P hP hcaps hp hc hunique e he0 hep he hei het hform)
+
+local notation "s" => terminalSeed M hg P hP hcaps hp hc hunique e he0 hep he hei het hform
+
+/-- Transport the constructed endpoint matches through both open regular-height regimes.
+Use `exists_matching_extension_of_regular_circle_pairs`, with relative endpoint-germ control. -/
+theorem exists_terminal_planar_matching_transport : Nonempty (Blueprint.Regular s) := by
+  sorry
+
+def terminalRegular := Classical.choice
+  (exists_terminal_planar_matching_transport M hg P hP hcaps hp hc hunique e he0 hep he hei het hform)
+
+local notation "r" => terminalRegular M hg P hP hcaps hp hc hunique e he0 hep he hei het hform
+
+/-- Interpolate across the singular level while retaining the two endpoint transports.
+Use `exists_nested_slab_family` and `exists_relative_ambient_isotopy_of_interval_isotopy_within_of_contDiffOn`. -/
+theorem exists_terminal_planar_glued_family : Nonempty (Blueprint.Glued s r) := by
+  sorry
+
+def terminalGlued := Classical.choice
+  (exists_terminal_planar_glued_family M hg P hP hcaps hp hc hunique e he0 hep he hei het hform)
+
+local notation "h" => terminalGlued M hg P hP hcaps hp hc hunique e he0 hep he hei het hform
+
+/-- Cut off the velocity field around the compact track of the actual band.
+Use `exists_relative_ambient_isotopy_of_interval_isotopy_within_of_contDiffOn` and smooth cutoffs. -/
+theorem exists_terminal_planar_localized_family : Nonempty (Blueprint.Localized s r h) := by
+  sorry
+
+def terminalLocalized := Classical.choice
+  (exists_terminal_planar_localized_family M hg P hP hcaps hp hc hunique e he0 hep he hei het hform)
+
+local notation "l" => terminalLocalized M hg P hP hcaps hp hc hunique e he0 hep he hei het hform
+
+/-- Recover each labeled boundary image from its endpoint height and anchor correspondence.
+Use `Set.image_congr`, the terminal cap-boundary identities, and the retained endpoint equalities. -/
+theorem exists_terminal_planar_labels :
+    let seed := s
+    let loc := l
+    ∀ i, planarHeightMap loc.family 1 ''
+      (seed.data.toTerminalSaddleGeometry.C i ∩ seed.data.toTerminalSaddleGeometry.actualBand) =
+      seed.data.toTerminalSaddleGeometry.modelCaps i ∩ seed.data.toTerminalSaddleGeometry.modelBand := by
+  dsimp only
+  let seed := s
+  let loc := l
+  let glued := terminalGlued M hg P hP hcaps hp hc hunique e he0 hep he hei het hform
+  let regular := terminalRegular M hg P hP hcaps hp hc hunique e he0 hep he hei het hform
+  intro i
+  rw [← seed.anchor_labels i]
+  apply Set.image_congr
+  intro y hy
+  have hheight := seed.boundary_height i y hy
+  have hcut : glued.family 1 (y 2) = seed.anchor (seed.capEnd i) 1 := by
+    calc
+      glued.family 1 (y 2) = glued.family 1
+          (if seed.capEnd i = 0 then seed.data.ends.lowerCut else seed.data.ends.upperCut) := by
+            rw [hheight]
+      _ = regular.family 1
+          (if seed.capEnd i = 0 then seed.data.ends.lowerCut else seed.data.ends.upperCut) := by
+            simpa [seed] using glued.endpoint (seed.capEnd i) 1
+      _ = seed.anchor (seed.capEnd i) 1 := by
+            simpa [seed] using regular.endpoint (seed.capEnd i) 1
+  rw [loc.agrees hy.2]
+  change Saddle.toE3 (glued.family 1 (y 2) (Saddle.toE2 y)) (y 2) = _
+  rw [hcut]
+
+include hg hP hcaps hp hc hunique he0 hep he hei het hform in
+/-- The exact planar leaf conclusion, obtained only from blueprint constructions. -/
+theorem saddle_planar_family_leaf_of_blueprint :
+    ∃ data : TerminalSaddleData M P p e,
+      let d := data.toTerminalSaddleGeometry
+      ∃ (Φ : Real → Real → PlaneDiff) (K : Set E2) (χ : Real → Real),
+        (∀ z x, Φ 0 z x = x) ∧
+        ContDiff Real ∞ (fun q : Real × Real × E2 => Φ q.1 q.2.1 q.2.2) ∧
+        ContDiff Real ∞ (fun q : Real × Real × E2 => (Φ q.1 q.2.1).symm q.2.2) ∧
+        IsCompact K ∧ (∀ t z x, x ∉ K → Φ t z x = x) ∧
+        ContDiff Real ∞ χ ∧ (∀ z ∈ d.I, χ z = 1) ∧
+        (∀ z ∈ d.I, Φ 1 z '' d.A z = d.B z) ∧
+        (∀ i, planarHeightMap Φ 1 '' (d.C i ∩ d.actualBand) =
+          d.modelCaps i ∩ d.modelBand) ∧
+        ∃ ρ > 0, ∃ U : Set E3, IsOpen U ∧ closedSquare ρ ⊆ e.source ∧
+          (∀ x ∈ closedSquare ρ,
+            (Real.sqrt d.scale)⁻¹ • x ∈ closedBall (0 : E2) d.matchingRadius) ∧
+          (d.flatten ∘ g ∘ e) '' closedSquare ρ ⊆ U ∧
+          ∀ t, EqOn (planarHeightMap Φ t) id U := by
+  let seed := s
+  let loc := l
+  exact ⟨seed.data, loc.family, loc.K, fun _ => 1, loc.zero, loc.smooth, loc.inverse,
+    loc.compact, loc.support, contDiff_const, fun _ _ => rfl, loc.matching,
+    exists_terminal_planar_labels M hg P hP hcaps hp hc hunique e he0 hep he hei het hform,
+    seed.rho, seed.rho_pos, seed.U, seed.open_U, seed.square_source, seed.square_match,
+    seed.square_U, loc.fixed⟩
+
+end Planar
+
+namespace Blueprint
+
+/-- A smooth ball with the prescribed cap as the complementary boundary disk.
+The closing disk may be curved; its enlarged collar lies on the same sphere. -/
+structure CapBall (E W : Set E3) where
+  filling : SpaceDiff
+  closing : E2 → E3
+  smooth : ContDiff Real ∞ closing
+  injective : Injective closing
+  immersion : ∀ x, Injective (fderiv Real closing x)
+  radius : Real
+  radius_gt : 1 < radius
+  collar : closing '' closedBall (0 : E2) radius ⊆ filling '' sphere (0 : E3) 1
+  cap : E = (filling '' sphere (0 : E3) 1) \ (closing '' ball (0 : E2) 1)
+  avoids : (filling '' closedBall (0 : E3) 1) ∩ W ⊆ closing '' closedBall (0 : E2) 1
+
+/-- Successive replacements protect the band and previously matched caps.
+No pairwise disjointness of the three support sets is asserted. -/
+structure Replacements (E F : Fin 3 → Set E3) (W : Set E3) where
+  first : SpaceDiff
+  second : SpaceDiff
+  third : SpaceDiff
+  K : Fin 3 → Set E3
+  compact : ∀ i, IsCompact (K i)
+  fixed_first : EqOn first id W
+  fixed_second : EqOn second id W
+  fixed_third : EqOn third id W
+  support_first : ∀ y ∉ K 0, first y = y
+  support_second : ∀ y ∉ K 1, second y = y
+  support_third : ∀ y ∉ K 2, third y = y
+  first_cap : first '' E 0 = F 0
+  second_cap : second '' (first '' E 1) = F 1
+  third_cap : third '' (second '' (first '' E 2)) = F 2
+  second_preserves : EqOn second id (F 0)
+  third_preserves : EqOn third id (F 0 ∪ F 1)
+
+end Blueprint
+
+section Caps
+
+variable {f : S2 → E3} (M : SphereMorseReduction f)
+    {g : S2 → E3} (hg : g ∈ M.tree.leaves)
+    {P : SphereSurgeryPath (M.v : E3) (fun p => M.D (f p)) g}
+    {p : S2} {e : OpenPartialHomeomorph E2 S2}
+    (data : TerminalSaddleData M P p e)
+
+include hg in
+/-- Close each actual capped end by a curved disk, retaining an enlarged smooth collar.
+Use `exists_ball_along_sphere_disk` and the upper-end reflection, in common flattened coordinates. -/
+theorem exists_terminal_actual_cap_ball : ∀ i,
+    Nonempty (Blueprint.CapBall (data.toTerminalSaddleGeometry.C i)
+      data.toTerminalSaddleGeometry.actualBand) := by
+  sorry
+
+include hg in
+/-- Close each transformed model component by a curved disk with a smooth collar.
+Use `exists_transported_lower_model_cap_ball` and `exists_transported_upper_model_cap_ball`. -/
+theorem exists_terminal_model_cap_ball : ∀ i,
+    Nonempty (Blueprint.CapBall (data.toTerminalSaddleGeometry.modelCaps i)
+      data.toTerminalSaddleGeometry.modelBand) := by
+  sorry
+
+def actualCapBall (i : Fin 3) := Classical.choice
+  (exists_terminal_actual_cap_ball M hg data i)
+
+def modelCapBall (i : Fin 3) := Classical.choice
+  (exists_terminal_model_cap_ball M hg data i)
+
+local notation "actual" => actualCapBall M hg data
+local notation "model" => modelCapBall M hg data
+
+variable (Φ : Real → Real → PlaneDiff) (K : Set E2) (χ : Real → Real)
+    (hzero : ∀ z x, Φ 0 z x = x)
+    (hΦ : ContDiff Real ∞ (fun q : Real × Real × E2 => Φ q.1 q.2.1 q.2.2))
+    (hΦinv : ContDiff Real ∞ (fun q : Real × Real × E2 => (Φ q.1 q.2.1).symm q.2.2))
+    (hK : IsCompact K) (hfix : ∀ t z x, x ∉ K → Φ t z x = x)
+    (hχ : ContDiff Real ∞ χ) (hχone : ∀ z ∈ data.toTerminalSaddleGeometry.I, χ z = 1)
+    (hplanar : ∀ z ∈ data.toTerminalSaddleGeometry.I,
+      Φ 1 z '' data.toTerminalSaddleGeometry.A z = data.toTerminalSaddleGeometry.B z)
+    (hlabels : ∀ i, planarHeightMap Φ 1 ''
+      (data.toTerminalSaddleGeometry.C i ∩ data.toTerminalSaddleGeometry.actualBand) =
+      data.toTerminalSaddleGeometry.modelCaps i ∩ data.toTerminalSaddleGeometry.modelBand)
+
+include hg hzero hΦ hΦinv hK hfix hχ hχone hplanar hlabels in
+/-- Straighten matching boundary collars and perform the three relative disk replacements in order.
+Construct the common collars, then use `exists_supported_boundary_replacement_of_shared_exterior`. -/
+theorem exists_terminal_cap_replacement :
+    ∀ H₁ : SpaceDiff, (∀ y, H₁ y = planarHeightMap Φ (χ (y 2)) y) →
+    Nonempty (Blueprint.Replacements
+      (fun i => H₁ '' ((actual i).filling '' sphere (0 : E3) 1 \
+        (actual i).closing '' ball (0 : E2) 1))
+      (fun i => (model i).filling '' sphere (0 : E3) 1 \
+        (model i).closing '' ball (0 : E2) 1)
+      data.toTerminalSaddleGeometry.modelBand) := by
+  sorry
+
+def terminalReplacements (H₁ : SpaceDiff)
+    (hH₁ : ∀ y, H₁ y = planarHeightMap Φ (χ (y 2)) y) := Classical.choice
+  (exists_terminal_cap_replacement M hg data Φ K χ hzero hΦ hΦinv hK hfix hχ hχone
+    hplanar hlabels H₁ hH₁)
+
+/-- Compose the three supported replacements; later maps fix all earlier target caps.
+Use `Set.image_image` and `Set.image_congr` with the explicit preservation equalities. -/
+theorem exists_terminal_cap_assembly
+    (H₁ : SpaceDiff) (hH₁ : ∀ y, H₁ y = planarHeightMap Φ (χ (y 2)) y) :
+    let R := terminalReplacements M hg data Φ K χ hzero hΦ hΦinv hK hfix hχ hχone
+      hplanar hlabels H₁ hH₁
+    let H₂ := R.first.trans (R.second.trans R.third)
+    EqOn H₂ id data.toTerminalSaddleGeometry.modelBand ∧
+      ∀ i, H₂ '' (H₁ '' data.toTerminalSaddleGeometry.C i) =
+        data.toTerminalSaddleGeometry.modelCaps i := by
+  let R := terminalReplacements M hg data Φ K χ hzero hΦ hΦinv hK hfix hχ hχone
+    hplanar hlabels H₁ hH₁
+  change EqOn (R.first.trans (R.second.trans R.third)) id
+    data.toTerminalSaddleGeometry.modelBand ∧ _
+  have image_fixed {D : SpaceDiff} {A : Set E3} (hD : EqOn D id A) : D '' A = A := by
+    calc
+      D '' A = id '' A := Set.image_congr hD
+      _ = A := Set.image_id A
+  have hfirst : R.first '' (H₁ '' data.toTerminalSaddleGeometry.C 0) =
+      data.toTerminalSaddleGeometry.modelCaps 0 := by
+    simpa only [← (actual 0).cap, ← (model 0).cap] using R.first_cap
+  have hsecond : R.second '' (R.first '' (H₁ '' data.toTerminalSaddleGeometry.C 1)) =
+      data.toTerminalSaddleGeometry.modelCaps 1 := by
+    simpa only [← (actual 1).cap, ← (model 1).cap] using R.second_cap
+  have hthird : R.third '' (R.second '' (R.first ''
+      (H₁ '' data.toTerminalSaddleGeometry.C 2))) =
+      data.toTerminalSaddleGeometry.modelCaps 2 := by
+    simpa only [← (actual 2).cap, ← (model 2).cap] using R.third_cap
+  have hsecond_fixed : R.second '' data.toTerminalSaddleGeometry.modelCaps 0 =
+      data.toTerminalSaddleGeometry.modelCaps 0 := by
+    apply image_fixed
+    simpa only [← (model 0).cap] using R.second_preserves
+  have hthird_fixed : ∀ i : Fin 3, i = 0 ∨ i = 1 →
+      R.third '' data.toTerminalSaddleGeometry.modelCaps i =
+        data.toTerminalSaddleGeometry.modelCaps i := by
+    intro i hi
+    apply image_fixed
+    intro y hy
+    apply R.third_preserves
+    rcases hi with rfl | rfl
+    · exact Or.inl (by simpa only [← (model 0).cap] using hy)
+    · exact Or.inr (by simpa only [← (model 1).cap] using hy)
+  constructor
+  · intro y hy
+    change R.third (R.second (R.first y)) = y
+    calc
+      R.third (R.second (R.first y)) = R.third (R.second y) := by
+        simpa only [id_eq] using
+          congrArg R.third (congrArg R.second (R.fixed_first hy))
+      _ = R.third y := by
+        simpa only [id_eq] using congrArg R.third (R.fixed_second hy)
+      _ = y := by simpa only [id_eq] using R.fixed_third hy
+  · intro i
+    have htrans (A : Set E3) :
+        (R.first.trans (R.second.trans R.third)) '' A =
+          R.third '' (R.second '' (R.first '' A)) := by
+      change (fun x => R.third (R.second (R.first x))) '' A = _
+      ext y
+      constructor
+      · rintro ⟨x, hx, rfl⟩
+        exact ⟨R.second (R.first x),
+          ⟨R.first x, ⟨x, hx, rfl⟩, rfl⟩, rfl⟩
+      · rintro ⟨_, ⟨_, ⟨x, hx, rfl⟩, rfl⟩, rfl⟩
+        exact ⟨x, hx, rfl⟩
+    fin_cases i
+    · rw [htrans]
+      have h0 : R.first '' (H₁ '' data.toTerminalSaddleGeometry.C 0) =
+          data.toTerminalSaddleGeometry.modelCaps 0 := by simpa using hfirst
+      have hfinal : R.third '' (R.second '' (R.first ''
+          (H₁ '' data.toTerminalSaddleGeometry.C 0))) =
+          data.toTerminalSaddleGeometry.modelCaps 0 := by
+        rw [h0, hsecond_fixed, hthird_fixed 0 (Or.inl rfl)]
+      simpa using hfinal
+    · rw [htrans]
+      have h : R.third '' (R.second '' (R.first ''
+          (H₁ '' data.toTerminalSaddleGeometry.C 1))) =
+          data.toTerminalSaddleGeometry.modelCaps 1 := by
+        rw [hsecond, hthird_fixed 1 (Or.inr rfl)]
+      simpa using h
+    · rw [htrans]
+      simpa using hthird
+
+include hg hzero hΦ hΦinv hK hfix hχ hχone hplanar hlabels in
+/-- The exact universally quantified cap leaf, with no direct admission. -/
+theorem saddle_cap_replacement_leaf_of_blueprint :
+    ∀ H₁ : SpaceDiff, (∀ y, H₁ y = planarHeightMap Φ (χ (y 2)) y) →
+      ∃ H₂ : SpaceDiff, EqOn H₂ id data.toTerminalSaddleGeometry.modelBand ∧
+        ∀ i, H₂ '' (H₁ '' data.toTerminalSaddleGeometry.C i) =
+          data.toTerminalSaddleGeometry.modelCaps i := by
+  intro H₁ hH₁
+  let R := terminalReplacements M hg data Φ K χ hzero hΦ hΦinv hK hfix hχ hχone
+    hplanar hlabels H₁ hH₁
+  exact ⟨R.first.trans (R.second.trans R.third),
+    exists_terminal_cap_assembly M hg data Φ K χ hzero hΦ hΦinv hK hfix hχ hχone
+      hplanar hlabels H₁ hH₁⟩
+
+end Caps
+end Poincare.Manifold.Schoenflies.SaddleLevel

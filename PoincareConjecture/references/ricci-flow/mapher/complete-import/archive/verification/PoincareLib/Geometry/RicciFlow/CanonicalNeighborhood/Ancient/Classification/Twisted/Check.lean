@@ -1,0 +1,9 @@
+import PoincareLib.Geometry.RicciFlow.CanonicalNeighborhood.Ancient.Classification.Twisted.Alternatives
+
+#print axioms PoincareMT.M27KappaAlternativePredecessors.capServices
+#print axioms PoincareMT.AncientKappaCapServices.scalarEvolution_bound
+#print axioms PoincareMT.AncientKappaCapServices.scalarRadius_volume_lower_bound_of_noncollapsed
+#print axioms PoincareMT.AncientKappaCapServices.calibratedVolume_le_of_subset_ball
+#print axioms PoincareMT.AncientKappaCapServices.slabCap
+#print axioms PoincareMT.AncientKappaCapServices.exists_strongCappedTube_coverage
+#print axioms PoincareMT.m27TwistedAlternatives

@@ -1,0 +1,47 @@
+import PoincareLib.Geometry.RicciFlow.CanonicalNeighborhood.Ancient.Noncompact.Core.Producer
+import PoincareLib.Geometry.RicciFlow.CanonicalNeighborhood.Ancient.Noncompact.Core.Topology.Check
+import PoincareLib.Geometry.RicciFlow.CanonicalNeighborhood.Ancient.Noncompact.Core.Bounds.SectionalConvergenceBounds
+import PoincareLib.Geometry.RicciFlow.CanonicalNeighborhood.Ancient.Noncompact.Core.Normalization.EscapingDistance
+
+/-!
+# Axiom audit for Proposition 9.85(1)
+
+The universal producer combines the original-flow trichotomy with the
+strong-neck radius, projective-model exclusions, compact sectional convergence,
+upper curvature and volume bounds audited below.
+-/
+
+#print axioms PoincareMT.noncompactKappaUniformCoreEstimates
+#print axioms PoincareMT.noncompactKappaUniformCoreEstimates_of_services
+#print axioms PoincareMT.M27KappaAlternativePredecessors.noncompactServices
+#print axioms PoincareMT.noncompact_uniform_scalar_bound_of_normalized
+#print axioms PoincareMT.SoulCenteredCoreEstimate
+#print axioms PoincareMT.AncientKappaSolution.not_isRound_of_noncompact
+#print axioms PoincareMT.RiemannianMetric.PointSoulData.center_not_mem_neck_sphere
+#print axioms PoincareMT.RiemannianMetric.PointSoulData.not_strongEvolvingNeck_center
+#print axioms PoincareMT.M23TerminalExtension.not_strongEvolvingNeck_at_soul_limit
+#print axioms PoincareMT.M23TerminalExtension.not_isCompact_of_noncompact_sources
+#print axioms PoincareMT.nonround_uniform_core_curvature_upper
+#print axioms PoincareMT.nonround_uniform_core_scalar_upper
+#print axioms PoincareMT.nonround_uniform_curvature_scale_separation
+#print axioms PoincareMT.nonround_uniform_core_sectional_upper
+#print axioms PoincareMT.noncompact_core_uniform_unit_volume_lower
+#print axioms PoincareMT.noncompact_core_uniform_normalized_volume_bounds
+#print axioms PoincareMT.AncientKappaNormalization.core_volume_zero
+#print axioms PoincareMT.noncompact_core_uniform_scaled_volume_bounds
+#print axioms PoincareMT.noncompact_uniform_core_upper_and_volume
+#print axioms PoincareMT.M23TerminalExtension.exists_minimizing_line_of_nearby_necks
+#print axioms PoincareMT.AncientKappaSolution.exists_round_factor_of_line_m26
+#print axioms PoincareMT.exists_strongEvolvingNeck_of_round_factor
+#print axioms PoincareMT.M23TerminalExtension.eventually_strongEvolvingNeck_of_nearby_necks
+#print axioms PoincareMT.uniform_strongNeck_of_nearby_neck_and_distant_soul
+#print axioms PoincareMT.AncientKappaSolution.exists_strongNeck_far_from_soul
+#print axioms PoincareMT.noncompact_uniform_strongNeck_of_nearby_neck
+#print axioms PoincareMT.nonround_uniform_relative_curvature_scale_separation
+#print axioms PoincareMT.noncompact_uniform_strongNeck_radius
+#print axioms PoincareMT.M23TerminalExtension.exists_pos_eventually_source_ball_sectional_lower_bound
+#print axioms PoincareMT.nonround_normalized_soul_distance_tendsto_atTop
+#print axioms PoincareMT.M23TerminalExtension.positiveSectionalCurvature_of_pointSouls
+#print axioms PoincareMT.noncompact_uniform_soul_core_sectional_lower
+#print axioms PoincareMT.noncompactKappaUniformCoreEstimates_of_trichotomy
+#print axioms PoincareMT.coreNormalizedCurvatureTrichotomy_of_originalFlow

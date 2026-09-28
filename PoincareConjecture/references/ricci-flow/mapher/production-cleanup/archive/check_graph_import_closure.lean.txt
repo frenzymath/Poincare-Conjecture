@@ -1,0 +1,39 @@
+import PoincareLib.Topology.Manifold.NeckCap.LocalRegions.Compatible
+import PoincareLib.Topology.Manifold.NeckCap.Cap.Closing.Models
+import PoincareLib.Geometry.RicciFlow.CanonicalNeighborhood.Ancient.Noncompact.Positive.Producer
+import PoincareLib.Geometry.RicciFlow.CanonicalNeighborhood.Ancient.Noncompact.Producer
+import PoincareLib.Geometry.RicciFlow.CanonicalNeighborhood.Ancient.Compact.Producer
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Main
+import PoincareLib.Topology.Manifold.Schoenflies.Neighborhood
+import PoincareLib.Topology.Manifold.Diffeomorph.SphereIsotopy.Plane
+import Lean.Util.CollectAxioms
+
+/-! Scoped checks for graph claims affected by the complete import. -/
+
+set_option autoImplicit false
+
+universe u
+
+example (P : PoincareMT.M28BoundedDistancePredecessors.{u}) :
+    PoincareMT.DenseTime.BoundedDistanceTheory.{u} :=
+  PoincareMT.m28BoundedDistance P
+
+#check Poincare.Manifold.SmoothDomain.exists_ball_neighborhood
+#check Poincare.Manifold.SphereIsotopy.exists_compactly_supported_plane_isotopy
+#check PoincareMT.generalizedHamiltonIveyPinched.weak
+
+open Lean Elab Command in
+run_cmd do
+  let standard := #[``propext, ``Classical.choice, ``Quot.sound]
+  for root in #[
+      ``PoincareMT.ConnectedNeckCapCover.exists_compatible_local_region_threshold,
+      ``PoincareMT.CapCertificate.exists_two_cap_closed_model_threshold,
+      ``PoincareMT.CapCertificate.exists_double_capped_tube_closed_model_threshold,
+      ``PoincareMT.positiveCurvatureStrongCappedTubes,
+      ``PoincareMT.noncompactKappaSolutionAlternatives,
+      ``PoincareMT.compactKappaSolutionAlternatives,
+      ``PoincareMT.m28BoundedDistance] do
+    let axioms ← collectAxioms root
+    logInfo m!"{root}: recursive axioms: {axioms}"
+    unless axioms.all standard.contains do
+      throwError "{root}: recursive axiom outside propext, Classical.choice, Quot.sound"

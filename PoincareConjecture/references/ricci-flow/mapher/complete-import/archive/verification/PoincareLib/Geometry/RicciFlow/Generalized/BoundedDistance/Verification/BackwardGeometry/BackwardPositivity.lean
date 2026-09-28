@@ -1,0 +1,56 @@
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.GeometryImports
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.SourceGeometry.CriticalBall.SourceCriticalBallLocalBackwardModels
+
+/-!
+# Axiom audit for actual backward-limit curvature positivity
+
+These declarations implement the original physical readout, vanishing
+source pinching error, actual tensor convergence and nonnegative operator
+of the same extracted flow in M28 derivation 78.
+-/
+
+set_option autoImplicit false
+-- This verification module intentionally prints kernel dependency reports.
+set_option linter.hashCommand false
+
+open PoincareMT.M28
+
+#print axioms GeneralizedStrongNeck.global_time_mem_backward
+#print axioms GeneralizedStrongNeck.global_original_map
+#print axioms GeneralizedStrongNeck.global_original_map_smooth
+#print axioms GeneralizedStrongNeck.global_flow_metric_original
+#print axioms GeneralizedStrongNeck.global_flow_scalar_original
+#print axioms GeneralizedStrongNeck.global_flow_curvatureTensor_original
+#print axioms GeneralizedStrongNeck.global_original_point
+#print axioms GeneralizedStrongNeck.global_original_point_time_mem
+#print axioms GeneralizedStrongNeck.global_flow_plane_lower
+#print axioms GeneralizedStrongNeck.global_original_scalar_le_of_curvature_bound
+#print axioms GeneralizedStrongNeck.global_original_negativePart_lt
+#print axioms PoincareMT.LeviCivitaData.curvatureTensor_plane_ge_leastSectional_mul_gram
+#print axioms PoincareMT.LeviCivitaData.curvatureTensor_plane_ge_negativePart_mul_gram
+#print axioms skew_curvature_contraction_eq_four_rayleigh
+#print axioms PoincareMT.LeviCivitaData.nonnegativeCurvatureOperator_of_plane_nonneg
+#print axioms tendsto_curvatureTensor_of_pullback_jets
+#print axioms Poincare.isLocalDiffeomorph_canonicalDomainInclusion
+#print axioms Poincare.mfderiv_canonicalDomainInclusion
+#print axioms exists_localNonnegativeBackwardModel_of_chart_flow
+
+open CounterexampleNeckFamily
+
+#print axioms exists_source_criticalBall_positive_backward_limit_accuracy
+#print axioms exists_source_criticalBall_local_backward_models_accuracy
+
+open CriticalBallBackwardChartData
+
+#print axioms sourceBaseScalar
+#print axioms sourceBaseScalar_pos
+#print axioms sourceBaseScalar_tendsto_atTop
+#print axioms originalPoint
+#print axioms pinchingError
+#print axioms pinchingError_tendsto_zero
+#print axioms sourceFlow_plane_lower
+#print axioms limitParametrization_smooth
+#print axioms limitParametrization_invertible
+#print axioms BackwardChartLimit.spatial_twoJets
+#print axioms BackwardChartLimit.curvatureTensor_tendsto
+#print axioms BackwardChartLimit.nonnegativeCurvatureOperator

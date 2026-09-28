@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "primary_source_commit": "60de1a94ca7038d04ed123b490a3229f8aa5fa75",
+  "historical_source_commit": "a27691488baa6c690f50afc23376abb51abd2f9c",
+  "candidate_inventory": {
+    "modules": 28377,
+    "public_declaration_entries": 90363,
+    "duplicate_names": 42,
+    "interpretation": "Duplicate-name candidates, not 42 errors. Lean permits duplicate theorem declarations with identical types and universe parameter lists; private names and reference uses were excluded.",
+    "compiler_rule": "Lean/Environment.lean:2248-2283, subsumesInfo; .ilean decls schema: Lean/Server/References.lean:206-218."
+  },
+  "verification": {
+    "reproducer": "references/ricci-flow/mapher/complete-import/check-root-name-collisions.lean",
+    "before": "Narrow LSP import pairs failed at transportedTensorCoordinateSection and exists_supported_graph_shift. Graph-transport pair was blocked by the graph-shift dependency collision; its distinct existential conclusions violate the compiler subsumesInfo type-equality criterion independently.",
+    "focused_lsp": "TransportCoordinates.lean and singular-limit GraphShift.lean passed complete LSP checks after repair, with no errors or failed dependencies.",
+    "after": "Passed: managed ten-target repair build (10932 jobs, 323.5 seconds), complete narrow import-pair LSP checks, and final integrated root build (37084 jobs). See verification/results.json. No comparator or environment export run."
+  },
+  "repairs": [
+    {
+      "target": "PoincareLib/Geometry/RicciFlow/Pinching/GeometricPreservation/TransportCoordinates.lean",
+      "before_sha256": "a67c088f1567bfe2fd79265e5d74d7453170fabee44bb926e66e921a8189af7b",
+      "workspace_base": "6a6637f3732aa69ca351a3bc31844a626222eddb",
+      "workspace_base_sha256": "a67c088f1567bfe2fd79265e5d74d7453170fabee44bb926e66e921a8189af7b",
+      "reason": "The compiler rejects the repeated public definition; both modules have identical declarations and proofs after removing documentation.",
+      "transformation": {
+        "kind": "import-only facade",
+        "provider": "PoincareLib/Geometry/RicciFlow/Pinching/GeometricPreservation/Coordinates.lean",
+        "provider_sha256": "86bd6fc92c09049ba5e56ea5556f1d3b838efdcd8df24afc86b136b823aa4b68"
+      },
+      "target_sha256": "0806e5e258ec66757fdc06670c87ae042ffa5d58f851ddfb461fc543a1a5b00a"
+    },
+    {
+      "target": "PoincareLib/Geometry/RicciFlow/Surgery/Singular/RegularLimit/Ends/Cylinder/GraphShift.lean",
+      "before_sha256": "a3562a245394da87b2e4e3f71a08d08cc6cdca60c063bd5723a27a58eac5cfa7",
+      "source": "PoincareMT/Proofs/Horizon/Geometry/RicciFlow/Surgery/Singular/RegularLimit/Ends/Cylinder/GraphShift.lean",
+      "source_sha256": "09cdc71dce7284176cedbbf324d2197eeff584983d97b86e43a05855b72fe250",
+      "source_commit": "60de1a94ca7038d04ed123b490a3229f8aa5fa75",
+      "reason": "The singular-limit strict-bound theorem and the neck-gluing collar theorem have different hypotheses and conclusions but shared a public name.",
+      "transformation": {
+        "kind": "identifier-only rename",
+        "from": "exists_supported_graph_shift",
+        "to": "exists_supported_graph_shift_of_strict_bounds"
+      },
+      "target_sha256": "9a1ae6792dde55ee7006a6016946ba21a9efa9bc4a13110f4d0ceec061292792"
+    },
+    {
+      "target": "PoincareLib/Geometry/RicciFlow/Surgery/Singular/RegularLimit/Ends/Cylinder/SmoothGraphTransport.lean",
+      "before_sha256": "fc4528dfa609a5b10871cd22612fa06e567b74894088d47b4dc71582e022e6e7",
+      "source": "PoincareMT/Proofs/Horizon/Geometry/RicciFlow/Surgery/Singular/RegularLimit/Ends/Cylinder/SmoothGraphTransport.lean",
+      "source_sha256": "85c38153f41332c7166cd0edf229bc4db0a2f745bccc41fa91f789349f80cc9f",
+      "source_commit": "60de1a94ca7038d04ed123b490a3229f8aa5fa75",
+      "reason": "The singular-limit strict-bound theorem and the neck-gluing collar theorem have different hypotheses and conclusions but shared a public name.",
+      "transformation": {
+        "kind": "identifier-only rename",
+        "from": "exists_supported_graph_shift",
+        "to": "exists_supported_graph_shift_of_strict_bounds"
+      },
+      "target_sha256": "199f48163170b8d26ad0e1febd8e54bc889faf07f18e48724b3eb0692866b9dd",
+      "additional_transformations": [
+        {
+          "kind": "identifier-only rename",
+          "from": "exists_smooth_graph_transport",
+          "to": "exists_compactly_supported_smooth_graph_transport"
+        }
+      ],
+      "additional_reasons": [
+        "The compact-support transport and the neck-overlap collar transport have distinct conclusions. Compiled reference metadata identifies these consumers with the singular-limit provider."
+      ]
+    },
+    {
+      "target": "PoincareLib/Geometry/RicciFlow/Surgery/Singular/RegularLimit/Ends/Cylinder/SmoothSliceTransport.lean",
+      "before_sha256": "ea2437ac823864fa76653cdbc1d3aa94e99e3e365a2ca221f98563e0b46b8180",
+      "source": "PoincareMT/Proofs/Horizon/Geometry/RicciFlow/Surgery/Singular/RegularLimit/Ends/Cylinder/SmoothSliceTransport.lean",
+      "source_sha256": "3222c8b906e0fa44435ba6ad9f3bcbcf0c53c9e449b21b7c1bf135cf70b77663",
+      "source_commit": "60de1a94ca7038d04ed123b490a3229f8aa5fa75",
+      "reason": "The compact-support transport and the neck-overlap collar transport have distinct conclusions. Compiled reference metadata identifies these consumers with the singular-limit provider.",
+      "transformation": {
+        "kind": "identifier-only rename",
+        "from": "exists_smooth_graph_transport",
+        "to": "exists_compactly_supported_smooth_graph_transport"
+      },
+      "target_sha256": "cc005557642cf46fe219a290873c7d884bda32cab6fe7be624457fc9e08d5939"
+    },
+    {
+      "target": "PoincareLib/Geometry/RicciFlow/Surgery/Singular/RegularLimit/Ends/Cylinder/NeckNormalization.lean",
+      "before_sha256": "afe9f69e65f217397e248a6103f2872263ea22e462021bdca8a020e521aafc28",
+      "source": "PoincareMT/Proofs/Horizon/Geometry/RicciFlow/Surgery/Singular/RegularLimit/Ends/Cylinder/NeckNormalization.lean",
+      "source_sha256": "4a7c896e5cde58c9847164c7e896bb5b5d997a3da4f1edb000017e4abcdb41a5",
+      "source_commit": "60de1a94ca7038d04ed123b490a3229f8aa5fa75",
+      "reason": "The compact-support transport and the neck-overlap collar transport have distinct conclusions. Compiled reference metadata identifies these consumers with the singular-limit provider.",
+      "transformation": {
+        "kind": "identifier-only rename",
+        "from": "exists_smooth_graph_transport",
+        "to": "exists_compactly_supported_smooth_graph_transport"
+      },
+      "target_sha256": "fae6212a8eddb638e29f39c55389eda83b72f649082f964904de5ac8858460f2"
+    },
+    {
+      "target": "PoincareLib/Geometry/RicciFlow/Surgery/Continuation/Construction/Terminal/Ends/CalibratedHorn/RicciComparison/SphereTransport.lean",
+      "before_sha256": "d01917c65c7ca74348f74f943a741b8f7513e3286dbab26e586fca794d866c84",
+      "source": "PoincareMT/Proofs/Horizon/Geometry/RicciFlow/Surgery/Continuation/Construction/Terminal/Ends/CalibratedHorn/RicciComparison/SphereTransport.lean",
+      "source_sha256": "ec880e436f7cdb553990b04fabe3f1db7ca3a122062d171cf51770f4ee747e10",
+      "source_commit": "60de1a94ca7038d04ed123b490a3229f8aa5fa75",
+      "reason": "The compact-support transport and the neck-overlap collar transport have distinct conclusions. Compiled reference metadata identifies these consumers with the singular-limit provider.",
+      "transformation": {
+        "kind": "identifier-only rename",
+        "from": "exists_smooth_graph_transport",
+        "to": "exists_compactly_supported_smooth_graph_transport"
+      },
+      "target_sha256": "0dca122d2f93e331d260b88c08697729b03248efd3b9d7a408e4fc94ec7ab659"
+    },
+    {
+      "target": "PoincareLib/Geometry/RicciFlow/Surgery/Continuation/Construction/Terminal/Ends/CalibratedHorn/Capped/CoreTube.lean",
+      "before_sha256": "62705edce10be16938945f3cd7da72a3ee8fb0c57d173b64a10b50893113af45",
+      "source": "PoincareMT/Proofs/Horizon/Geometry/RicciFlow/Surgery/Continuation/Construction/Terminal/Ends/CalibratedHorn/Capped/CoreTube.lean",
+      "source_sha256": "00487bc97b2373c6da2ef610620a5005ca07d9b77ade0adc5bc621dee8a2187e",
+      "source_commit": "60de1a94ca7038d04ed123b490a3229f8aa5fa75",
+      "reason": "The compact-support transport and the neck-overlap collar transport have distinct conclusions. Compiled reference metadata identifies these consumers with the singular-limit provider.",
+      "transformation": {
+        "kind": "identifier-only rename",
+        "from": "exists_smooth_graph_transport",
+        "to": "exists_compactly_supported_smooth_graph_transport"
+      },
+      "target_sha256": "a165dfac48c31861b03adaefaf4a27b82aa9e80457439ed39372a96b21249ca0"
+    },
+    {
+      "target": "PoincareLib/Geometry/RicciFlow/Surgery/Continuation/Construction/Terminal/Ends/CalibratedHorn/CapBoundary.lean",
+      "before_sha256": "0bc2057c7a0b0775b668118b0bbb04aeb30c4efcd7917cc9fc2180fe1e7d2275",
+      "source": "PoincareMT/Proofs/Horizon/Geometry/RicciFlow/Surgery/Continuation/Construction/Terminal/Ends/CalibratedHorn/CapBoundary.lean",
+      "source_sha256": "989720dfd52dbad6da2d3938ac633cc6f8bfbeaa41ec2c6b28a031acc4da6569",
+      "source_commit": "60de1a94ca7038d04ed123b490a3229f8aa5fa75",
+      "reason": "The compact-support transport and the neck-overlap collar transport have distinct conclusions. Compiled reference metadata identifies these consumers with the singular-limit provider.",
+      "transformation": {
+        "kind": "identifier-only rename",
+        "from": "exists_smooth_graph_transport",
+        "to": "exists_compactly_supported_smooth_graph_transport"
+      },
+      "target_sha256": "138beb14850a6bb691668e862014eb7dced459691662b5f425a67ce7e32450a0"
+    },
+    {
+      "target": "PoincareLib/Geometry/RicciFlow/Surgery/Continuation/Construction/Terminal/Ends/CalibratedHorn/Cylinder/NeckNormalization.lean",
+      "before_sha256": "252b9a15c423e887cc5d8f0c83909e4f361499891d9276f0015cffb86de7bfbe",
+      "source": "PoincareMT/Proofs/Horizon/Geometry/RicciFlow/Surgery/Continuation/Construction/Terminal/Ends/CalibratedHorn/Cylinder/NeckNormalization.lean",
+      "source_sha256": "28b6b4e9f389b3c890622157309bc84cf3cf276dc67c2108f99e284e6211f78f",
+      "source_commit": "60de1a94ca7038d04ed123b490a3229f8aa5fa75",
+      "reason": "The compact-support transport and the neck-overlap collar transport have distinct conclusions. Compiled reference metadata identifies these consumers with the singular-limit provider.",
+      "transformation": {
+        "kind": "identifier-only rename",
+        "from": "exists_smooth_graph_transport",
+        "to": "exists_compactly_supported_smooth_graph_transport"
+      },
+      "target_sha256": "c1a32e490accb222b0956989c5aa5883a33f81ddcfa38d64d425decd8863964d"
+    }
+  ]
+}

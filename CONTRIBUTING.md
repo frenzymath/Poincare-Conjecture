@@ -18,7 +18,7 @@ Run the same check locally:
 
 ```bash
 pip install -r requirements-site.txt
-python scripts/lean_stats.py PoincareConjecture --output .verification/statistics --check
+python scripts/lean_stats.py PoincareConjecture --exclude references --exclude contracts --exclude comparator/Challenge.lean --output .verification/statistics --check
 ```
 
 Statistics distinguish physical LOC, nonblank LOC, nonblank LOC after removing

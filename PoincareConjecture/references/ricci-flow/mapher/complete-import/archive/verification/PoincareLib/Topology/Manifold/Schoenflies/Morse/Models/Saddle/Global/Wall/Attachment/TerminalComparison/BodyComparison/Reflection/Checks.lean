@@ -1,0 +1,12 @@
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.BodyComparison.Reflection.Frame
+
+open Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.BodyComparison.Reflection
+
+#print axioms reflectedEnergyTransport_energy
+#print axioms joining_lifts_halfTurn_conjugate
+#print axioms physicalProfileNormalizer_opposite_frame
+#print axioms ambientHalfTurn_continuation
+#print axioms reflected_planar_matching_filled
+#print axioms ambientHalfTurn_closedProfileGap
+#print axioms ambientHalfTurn_mem_model_iff
+#print axioms longitudinalProfileCapFiniteData

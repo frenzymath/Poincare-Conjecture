@@ -1,0 +1,3 @@
+import PoincareLib.Geometry.RicciFlow.CanonicalNeighborhood.Ancient.Noncompact.Convergence.Stability
+
+#print axioms PoincareMT.M23TerminalExtension.eventually_strongEvolvingNeck

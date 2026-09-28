@@ -10,6 +10,12 @@ completing those books is not an objective of this formalization.
 
 ## Status
 
+The draft [subject-library import](IMPORT.md) adds the reduced Poincare proof
+library and comparator inputs. Historical Horizon build and endpoint axiom
+checks passed; verification of this PR revision and comparator remain pending.
+The blueprint status below describes the separately authored blueprint, whose
+declaration links still require reconciliation with the imported library.
+
 The evolving six-chapter, seven-stage Morgan--Tian Blueprint currently contains 279
 mathematical declarations and 854 direct prerequisite edges. The live structural
 audit reports one terminal sink (`thm:poincare-conjecture`), all 279 declarations

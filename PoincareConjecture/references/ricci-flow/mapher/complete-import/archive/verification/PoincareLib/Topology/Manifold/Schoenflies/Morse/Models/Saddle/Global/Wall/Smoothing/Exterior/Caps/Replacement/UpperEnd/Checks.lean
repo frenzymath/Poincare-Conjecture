@@ -1,0 +1,7 @@
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Smoothing.Exterior.Caps.Replacement.UpperEnd.Relative
+
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Smoothing.Exterior.Caps.exists_upper_terminal_collar_straightening_with_support
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Smoothing.Exterior.Caps.exists_upper_end_normalization_with_fixed_lower_halfspace
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Smoothing.Exterior.Caps.exists_upper_cap_cylinder_compression
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Smoothing.Exterior.Caps.exists_relative_entire_upper_end_normalization
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Smoothing.Exterior.Caps.exists_relative_entire_upper_end_normalization_with_filling

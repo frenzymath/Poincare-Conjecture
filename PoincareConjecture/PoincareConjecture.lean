@@ -1,4 +1,5 @@
 import PoincareConjecture.Basic
+import PoincareLib
 
 /-!
 # PoincareConjecture

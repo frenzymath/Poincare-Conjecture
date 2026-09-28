@@ -1,0 +1,15 @@
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.RelativePair.Pair.Disjoint
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.RelativePair.Pair.Transport
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.RelativePair.Pair.Physical
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.RelativePair.Nested.Matching
+
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.RelativePair.exists_open_fixed_neighborhood_of_disjoint_support
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.RelativePair.eventually_closed_body_of_open_body
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.RelativePair.exists_compression_into_ball_of_shared_body_germs
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.RelativePair.exists_common_matching_of_disjoint_pair_germs
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.RelativePair.Nested.exists_relative_nested_ball_pair_matching
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.RelativePair.image_local_union_replacement
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.RelativePair.image_local_removal_replacement
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.RelativePair.exists_sharedMarkedBodyGerm_of_closed_body_germs
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.RelativePair.exists_disjoint_pair_matching_of_closed_body_germs
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.RelativePair.exists_nested_pair_matching_of_closed_body_germs
