@@ -1,5 +1,3 @@
-import Mathlib
-
 /-!
 # Poincare Conjecture
 

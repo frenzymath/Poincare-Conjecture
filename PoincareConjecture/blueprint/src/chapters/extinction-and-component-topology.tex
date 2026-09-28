@@ -1931,6 +1931,51 @@ Hempel assertions are the explicit source-backed import in
 \ref{lem:projective-plane-prime-factor-contract}.
 \end{proof}
 
+\begin{lemma}[Scalar width lifetime bound]
+\label{lem:scalar-width-lifetime-bound}
+\dcref{MT:ch18:18.1}
+\source{morgan-tian}
+\uses{lem:forward-dini-comparison-with-downward-jumps}
+\lean{PoincareConjecture.extinctionBarrier_initial,
+  PoincareConjecture.hasDerivAt_extinctionBarrier,
+  PoincareConjecture.extinctionBarrier_eventually_neg,
+  PoincareConjecture.width_le_extinctionBarrier,
+  PoincareConjecture.exists_width_lifetime_bound}
+\leanok
+For $s\ge0$ and $A\in\mathbb R$, put
+\[
+ w_{s,A}(t)=
+ \frac{A+2\pi(1+4s)}{(1+4s)^{3/4}}(1+4t)^{3/4}-2\pi(1+4t).
+\]
+Then $w_{s,A}(s)=A$ and, for $t\ge0$,
+\[
+ w_{s,A}'(t)=-2\pi+\frac{3w_{s,A}(t)}{1+4t}.
+\]
+There is a $T>s$, depending only on $s$ and $A$, with the following property.
+For every finite strict partition $s=\tau_0<\cdots<\tau_N=b$ with $b\ge T$,
+suppose $W$ is continuous on each $[\tau_j,\tau_{j+1})$, has no upward
+jump at every right endpoint including $b$, satisfies $W(s)\le A$, and obeys
+\[
+ D^+W(t)\le-2\pi+\frac{3W(t)}{1+4t}\qquad(s\le t<b).
+\]
+Then $W(t)\le w_{s,A}(t)$ on $[s,b]$ and $W(b)<0$.
+Consequently a nonnegative width with these properties cannot survive to $T$.
+\end{lemma}
+
+\begin{proof}
+The initial value and the differential equation follow by direct
+differentiation.  Write $C=(A+2\pi(1+4s))/(1+4s)^{3/4}$.  For $t\ge0$,
+\[
+ w_{s,A}(t)=(1+4t)\bigl(C(1+4t)^{-1/4}-2\pi\bigr).
+\]
+Since $(1+4t)^{-1/4}\to0$, the bracket is eventually negative.  Choose
+$T>s$ after which it is negative.  The right-hand side of the comparison
+equation is $C^1$ on $[s,b]\times\mathbb R$, since $1+4t>0$ there.
+Apply \ref{lem:forward-dini-comparison-with-downward-jumps} with the
+explicit solution $w_{s,A}$.  This gives
+$W(b)\le w_{s,A}(b)<0$, independently of the partition.
+\end{proof}
+
 \begin{theorem}[Finite-time extinction]
 \label{thm:finite-time-extinction}
 \dcref{MT:ch18:18.1}
@@ -1944,6 +1989,7 @@ Hempel assertions are the explicit source-backed import in
   thm:late-component-nontrivial-pi3,
   thm:loop-width-forward-inequality,
   lem:extinction-scalar-curvature-lower-bound,
+  lem:scalar-width-lifetime-bound,
   lem:forward-dini-comparison-with-downward-jumps}
 \notready
 Let $(M,g_0)$ be a compact connected normalized Riemannian three-manifold
@@ -1986,6 +2032,11 @@ $0\le W_\xi(t)\le w(t)$ while the path survives.  The negative linear
 term in $w$ dominates its $t^{3/4}$ terms, so $w$ becomes negative after a
 finite time depending only on $T_1$ and $W_\xi(T_1)$.  Thus this component
 path must end before that time.
+The terminal endpoint is controlled by regular-time continuity when it is
+not a surgery time, and by the downward surgery liminf otherwise.
+The checked scalar implication, including independence from the partition,
+is \ref{lem:scalar-width-lifetime-bound}; the geometric hypotheses needed
+to apply it remain separate, unformalized obligations of this theorem.
 
 The compact time slice $M_{T_1}$ has finitely many components.  Every
 component at a later time has an ancestor among them, represented by a path of

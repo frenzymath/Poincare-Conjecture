@@ -37,7 +37,8 @@ $D^+q(s)\ge\eta>0$.
 \label{thm:forward-dini-comparison}
 \dcref{MT:ch2:2.22}
 \source{morgan-tian}
-\notready
+\lean{PoincareConjecture.dini_le_of_contDiffOn}
+\leanok
 Let $f\colon[a,b]\to\mathbb R$ be continuous, let
 $\psi\colon[a,b]\times\mathbb R\to\mathbb R$ be of class $C^1$, and
 suppose
@@ -72,22 +73,35 @@ $D^+v(s)>0$.  This contradicts $v(s)\ge0$ and the inequality above.
 Thus $v\le0$, and hence $f\le G$.
 \end{proof}
 
+\noindent\textit{Lean interface.}
+\texttt{UpperRightDiniLE} states that every strict upper bound on the Dini
+derivative eventually bounds the right-hand secant slopes.  It does not
+require differentiability of $f$.  The Lean proof obtains a Lipschitz constant
+on a compact rectangle containing the graphs of $f$ and $G$, applies mathlib's
+one-sided fencing theorem to
+$G(t)+\varepsilon e^{(L+1)(t-a)}$, and lets $\varepsilon\downarrow0$.
+Only continuity and right derivatives are required of $G$, so the displayed
+$C^1$ statement is included.
+
 \begin{lemma}[Forward-Dini comparison with finitely many downward jumps]
 \label{lem:forward-dini-comparison-with-downward-jumps}
 \dcref{MT:ch2:2.22,MT:ch18:18.9}
 \source{morgan-tian}
 \uses{thm:forward-dini-comparison}
-\notready
+\lean{PoincareConjecture.dini_le_of_finite_jumps}
+\leanok
 Let
 \[
  a=\tau_0<\tau_1<\cdots<\tau_N=b
 \]
 be a finite partition.  Suppose that $f\colon[a,b]\to\mathbb R$ is
-continuous on every half-open interval $[\tau_j,\tau_{j+1})$, has a finite
-left lower limit at each interior partition time, and satisfies
+continuous on every half-open interval $[\tau_j,\tau_{j+1})$, and satisfies
 \[
- f(\tau_j)\le\liminf_{s\uparrow\tau_j}f(s)\qquad(1\le j<N).
+ f(\tau_j)\le\liminf_{s\uparrow\tau_j}f(s)\qquad(1\le j\le N).
 \]
+Here the no-upward-jump condition includes the final endpoint $b=\tau_N$.
+Equivalently, for every $r<f(\tau_j)$, all sufficiently nearby $s<\tau_j$
+satisfy $r<f(s)$.  This formulation does not require a finite left limit.
 Let $\psi\in C^1([a,b]\times\mathbb R)$ and assume
 \[
  D^+f(t)\le\psi(t,f(t))
@@ -110,6 +124,15 @@ $f(\tau_{j+1})\le G(\tau_{j+1})$.  This is the initial inequality for the
 next half-open interval.  Induction over the finite partition proves the
 claim, including the final endpoint.
 \end{proof}
+
+\noindent\textit{Endpoint regression.}
+The terminal condition cannot be omitted: for the single interval $[0,1]$,
+take $\psi=G=0$, $f(t)=0$ for $t<1$, and $f(1)=1$.  All the half-open
+hypotheses hold, but comparison fails at $1$.  This counterexample and the
+rejection of its terminal jump by the repaired hypothesis are checked in
+\texttt{PoincareConjectureTests.lean}.  The Lean no-upward-jump condition is
+\texttt{LowerSemicontinuousWithinAt f (Iio b) b}; a separate test applies the
+finite-partition theorem to an actual downward discontinuity.
 
 \begin{lemma}[Uniform transport of time-slice maxima]
 \label{lem:uniform-time-slice-transport}
