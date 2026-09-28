@@ -101,20 +101,20 @@ the graph:
 
 ### Lean declaration
 
-`formalized-sources/DoCarmo/hgraph/nodes/45d735d70a2e/verdicts.yaml` is attached
+`site/reviews/formalized-sources/DoCarmo/45d735d70a2e/verdicts.yaml` is attached
 to `Riemannian.Geodesic.HasGeodesicEquationAt`. It records `diudiu1728`'s
 satisfactory review from issue #10 on 2026-07-31.
 
 ### Blueprint node with multiple reviewers
 
-`formalized-sources/DoCarmo/hgraph/nodes/72dfd827f733/verdicts.yaml` is attached
+`site/reviews/formalized-sources/DoCarmo/72dfd827f733/verdicts.yaml` is attached
 to blueprint node `thm:dc-ch7-2-8` (Hopf--Rinow). It records `diudiu1728`'s
 satisfactory review from issue #10 on 2026-07-31 and the latest
 `JxChen24` unsatisfactory review from issue #11 on 2026-08-09. JxChen24 also
 reviewed this node in issues #5 and #6; those older entries are deliberately
 collapsed to the one current mark for that reviewer.
 
-`formalized-sources/MorganTian/hgraph/nodes/216694762274/verdicts.yaml` is
+`site/reviews/formalized-sources/MorganTian/216694762274/verdicts.yaml` is
 attached to blueprint node `thm:bishop-gromov` (node 1.117). It records the
 unsatisfactory statement-correspondence findings from `Lightmarey` (issue #16,
 2026-08-23) and `wanxuy4-lab` (issue #18, 2026-08-30). Both entries are kept

@@ -31,7 +31,7 @@ the source without reproducing its text.
 - `Thurston/Basic.lean` - initial namespace module.
 - `blueprint/src/content.tex` - ordered blueprint entry point.
 - `blueprint/src/chapters/` - independently worded chapter distillations.
-- `hgraph/config.yaml` - Horizon graph configuration.
+- `../../site/projects/formalized-sources/Thurston/config.yaml` - graph configuration.
 
 ## Build
 

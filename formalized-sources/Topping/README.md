@@ -12,7 +12,7 @@ in the root `PoincareConjecture/` project.
   parabolic PDE infrastructure).
 - `Topping.lean` - root library module.
 - `blueprint/src/` - source-based mathematical blueprint.
-- `hgraph/config.yaml` - graph synchronization configuration.
+- `../../site/projects/formalized-sources/Topping/config.yaml` - graph synchronization configuration.
 
 The package depends on `DoCarmoLib` and `MorganTianLib` through the sibling
 paths `../DoCarmo` and `../MorganTian`.

@@ -15,7 +15,7 @@ scaffold for declarations following that dependency graph.
 - `CheegerGromovTaylor/` - Lean source modules.
 - `CheegerGromovTaylor.lean` - root library module.
 - `blueprint/src/` - source-faithful mathematical blueprint.
-- `hgraph/config.yaml` - graph synchronization configuration.
+- `../../site/projects/formalized-sources/CheegerGromovTaylor/config.yaml` - graph synchronization configuration.
 
 The package uses `DoCarmoLib` through the sibling `../DoCarmo` path dependency.
 

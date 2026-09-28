@@ -14,7 +14,7 @@ scaffold for declarations following that dependency graph.
 - `ChowKnopf.lean` - root library module.
 - `blueprint/src/chapters/` - source-faithful chapter files.
 - `blueprint/src/content.tex` - blueprint entry point.
-- `hgraph/config.yaml` - graph synchronization configuration.
+- `../../site/projects/formalized-sources/ChowKnopf/config.yaml` - graph synchronization configuration.
 
 The package uses `DoCarmoLib` through the sibling `../DoCarmo` path dependency.
 

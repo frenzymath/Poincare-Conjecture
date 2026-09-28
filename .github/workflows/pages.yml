@@ -35,29 +35,12 @@ jobs:
           cache-dependency-path: site/proof-map/package-lock.json
 
       - name: Install pinned hgraph
-        run: pip install "hgraph @ git+https://github.com/AxelDlv00/hgraph.git@5f6e4b1308ba4a49d3c773c28301c01b35478806"
-
-      - name: Synchronize workspace graph
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          import subprocess
-          import yaml
-
-          manifest = yaml.safe_load(Path("config.yaml").read_text(encoding="utf-8"))
-          for project in manifest["projects"]:
-              root = str(project["root"])
-              print(f"::group::hgraph sync {root}", flush=True)
-              subprocess.run(["hgraph", "--root", root, "sync"], check=True)
-              print("::endgroup::", flush=True)
-          PY
+        run: pip install -r requirements-site.txt
 
       - name: Build static site
-        run: |
-          hgraph site --out _site/index.html
-          npm ci --prefix site/proof-map
-          npm --prefix site/proof-map run build -- --outDir ../../_site/proof-map --emptyOutDir
-          touch _site/.nojekyll
+        env:
+          TMPDIR: ${{ runner.temp }}
+        run: python scripts/build_site.py --out _site
 
       - uses: actions/configure-pages@v5
 

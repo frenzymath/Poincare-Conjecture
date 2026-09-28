@@ -1,40 +1,31 @@
 # Contributing
 
-Contributions to the primary proof, reference-source projects, shared Lean
-infrastructure, blueprints, and mathematical reviews are welcome.
+`PoincareConjecture/` contains the primary proof, organized by mathematical
+dependency. `formalized-sources/` follows the cited books and articles.
+`shared/` contains book-independent infrastructure. Keep changes focused and
+preserve the pinned Lean toolchains and mathlib revisions.
 
-## Repository roles
+## Lean checks
 
-- `PoincareConjecture/` is the primary custom formalization. Organize it by
-  proof dependency, not by the chapter structure of a reference.
-- `formalized-sources/` contains projects that follow particular books or
-  articles. Preserve the source's mathematical organization and cite it
-  precisely.
-- `shared/` contains only book-independent infrastructure and mathlib gaps.
+Automatic CI does **not** compile Lean. It scans `PoincareConjecture/`, fails on
+source occurrences of `sorry`, `sorryAx`, `admit` or `axiom`, and publishes a directory
+statistics table in the Actions summary. JSON and per-file CSV are available
+as a seven-day artifact. Comments and string literals do not count as admissions.
+The scanner is lexical, not a Lean parser or transitive proof audit.
 
-Keep each pull request focused on one project or one coherent infrastructure
-change. For substantial work, check the
-[project board](https://github.com/orgs/frenzymath/projects/1) and open an issue
-before starting.
-
-## Git hooks
-
-Enable the repository hooks once after cloning:
+Run the same check locally:
 
 ```bash
-git config core.hooksPath .githooks
+pip install -r requirements-site.txt
+python scripts/lean_stats.py PoincareConjecture --output .verification/statistics --check
 ```
 
-The hooks remove unwanted generated attribution from commit messages and block
-publishing history that still contains it. Before a push containing Lean
-changes, they also build each changed package and every local package that
-depends on it, then enforce the CI sorry and axiom budgets. Files whose names
-contain `Scratch` are rejected; promote useful experiments to a production
-module before publishing them.
+Statistics distinguish physical LOC, nonblank LOC, nonblank LOC after removing
+docstrings, and nonblank LOC after removing all comments. Both declaration
+docstrings (`/--`) and module documentation (`/-!`) are removed in the docstring
+column. Dependencies under `.lake/` are excluded.
 
-## Lean
-
-Build the project you changed from its own package directory:
+Build changed packages locally before publishing proof edits:
 
 ```bash
 cd PoincareConjecture
@@ -42,114 +33,58 @@ lake exe cache get
 lake build
 ```
 
-For a reference project, use its path under `formalized-sources/`:
+`scripts/validate-lean-changes.sh origin/main` runs dependency-aware local
+builds. The optional repository hooks (`git config core.hooksPath .githooks`)
+also run these builds on Lean pushes. This local policy is independent of CI.
+The **Manual Lean build** Actions workflow retains the full package matrix
+for explicit use; it does not run on pushes or PRs and stores no Lake caches.
 
-```bash
-cd formalized-sources/DoCarmo
-lake exe cache get
-lake build
-```
-
-To run the same dependency-aware validation before committing:
-
-```bash
-scripts/validate-lean-changes.sh origin/main
-```
-
-All packages use the pinned toolchain and mathlib revision recorded in their
-Lake files. Do not change those pins unless an upgrade is the purpose of the
-pull request.
+See [verification.md](site/verification.md) for comparator evidence and release
+verification. A successful source scan does not imply a successful Lean build.
 
 ## Blueprints
 
-- Give theorem-like statements stable, descriptive labels.
-- Record mathematical dependencies with `\uses{...}`.
-- Use `\lean{...}` for the corresponding Lean declaration.
-- Add `\leanok` only after the declaration has been checked and fully proves
-  the blueprint statement.
-- Include precise source metadata in source-based projects.
+Give statements stable labels, record dependencies with `\uses{...}`, and
+link declarations with `\lean{...}`. Preserve precise source citations.
+Only add `\leanok` after checking the corresponding declaration and statement.
 
-The generated hgraph records and static website are build artifacts. Do not
-commit `_site/`, `docs/`, or the directly generated Markdown files under
-`hgraph/nodes/` and `hgraph/edges/`.
+## Website
 
-## hgraph and website
+All graph records are temporary build output. No `hgraph/` directory belongs
+in Git. The authored inputs are:
 
-GitHub Actions installs the pinned hgraph revision, synchronizes every project,
-builds the static site, and deploys it. Ordinary Lean and blueprint
-contributors do not need to install hgraph.
+- `config.yaml`: workspace manifest and project order.
+- `site/projects/<project-root>/config.yaml`: source paths and project settings.
+- `site/reviews/<project-root>/<node-id>/`: authored comments and review verdicts.
+- Blueprints, Lean sources and `site/` assets.
 
-Local hgraph is useful when changing graph metadata, previewing the website, or
-writing a review. Install it using the upstream instructions, then synchronize
-the project you are working on:
+The Pages workflow installs the pinned hgraph dependency, stages source links
+and copies of authored feedback in temporary storage, generates the graph and
+site, then deletes that staging area. It deploys `_site/` using a Pages artifact.
+No graph cache is required for correctness, and ordinary contributors need not
+install or run hgraph.
 
-```bash
-hgraph --root PoincareConjecture sync
-hgraph serve --manifest config.yaml
-```
-
-Before starting the live server for the first time, and after changing the
-Proof Map, rebuild its mounted application:
+For a local preview, put large temporary output on workspace disk:
 
 ```bash
-npm ci --prefix site/proof-map
-npm --prefix site/proof-map run build
-hgraph serve --port 8000
-```
-
-For a reference project, pass its full root, for example
-`--root formalized-sources/MorganTian`. From the repository root, bare
-`hgraph sync` synchronizes every project listed in `config.yaml`.
-
-The expandable Proof Map is a separate Vite application embedded by the
-generated landing page. To preview the complete static site after changing it:
-
-```bash
-hgraph site --out _site/index.html
-npm ci --prefix site/proof-map
-npm --prefix site/proof-map run build -- --outDir ../../_site/proof-map --emptyOutDir
+mkdir -p "$HOME/.horizon/development-tmp/site"
+export TMPDIR="$HOME/.horizon/development-tmp/site"
+pip install -r requirements-site.txt
+python scripts/build_site.py --out _site
 python3 -m http.server 8000 --directory _site
 ```
 
-The Proof Map's mathematical nodes and explanations live in
-`site/proof-map/src/proof-data.js`; its rendering and interaction code is kept
-separate so the argument can be expanded without rewriting the interface.
-Its static geometric figures live in `site/proof-map/public/figures/`. All SVG
-meshes are generated by `npm --prefix site/proof-map run figures`; the expanded
-view loads its interactive 3D renderer only after a proof step is opened.
+The same script runs in CI. Generated graphs and `_site/` are not committed.
+Review attachment names retain their stable node identifiers; editing an
+authored attachment under `site/reviews/` updates the deployed feedback on the
+next site build. Temporary generated data must not be used to store new reviews.
 
-## Reviews and comments
-
-Reviews and comments are authored hgraph attachments. They live below a stable
-node identifier and are intentionally tracked:
-
-```text
-<project>/hgraph/nodes/<node-id>/review-1.md
-<project>/hgraph/nodes/<node-id>/comment-1.md
-```
-
-Run a local project sync before reviewing so the target nodes exist. Reviews
-created through `hgraph serve` can be committed in a pull request. The CI sync
-reconstructs the derived nodes around those attachments without overwriting
-them, and the deployed site includes the merged feedback.
-
-Alternatively, authenticated contributors can publish local feedback for
-discussion without committing it first:
-
-```bash
-hgraph --root <project> review send --dry-run
-hgraph --root <project> review send
-```
-
-Feedback sent through an issue appears in the repository-backed website only
-after its attachment file is merged.
+The Proof Map's authored data lives in `site/proof-map/src/proof-data.js` and
+its figures in `site/proof-map/public/figures/`.
 
 ## Pull requests
 
-A pull request should explain the mathematical or technical gap, its source,
-the validation performed, and any remaining `sorry` or assumptions. CI builds
-every Lean package and reconstructs the complete hgraph workspace from the
-checked-out repository files.
-
-By contributing, you agree that your contribution is licensed under the
-repository's [Apache 2.0 License](LICENSE).
+Explain the mathematical or technical change, validation and remaining
+assumptions. CI reports source statistics; local builds and comparator results
+must be identified separately. Contributions use the repository's Apache 2.0
+license.
