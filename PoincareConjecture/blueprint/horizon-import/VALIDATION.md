@@ -19,11 +19,21 @@ Validated on 2026-09-29 against the imported Horizon snapshot
   without runtime or KaTeX errors. All 16 reference projects hide formalization
   percentages, Lean controls, status squares, badges, and chapter-progress
   summaries. Their chapter disclosures retain an accessible label and navigation.
-  The main project retains its progress display and the regenerated map loads.
+  The main project omits completion percentages, provides Source links and
+  Verification views, and loads the regenerated map. The two views are also
+  reachable through the mobile view selector.
 - Hgraph reports 95 linked statement nodes and 84 without current attached Lean
-  targets (53% linkage). This is not an estimate of proof completion or a new
+  targets. This is not an estimate of proof completion or a new
   verification result. The three historical adapters are among the unlinked
   nodes; many other nodes are explanatory statements without Lean annotations.
+- CI pins hgraph to `9be0acffbe467d739b3b4cc0f7bd32a940a743d3`, installed from
+  GitHub for the successful full site build. All 17 project configurations set
+  `site.progress: false`; generated project cards export `pct: null`, so no
+  completion percentage is computed for them. Source annotation counts remain
+  available separately. The map's filters and legend use source-link labels.
+- The hgraph change passes 78 Python tests, its frontend production build,
+  four docstring tests, and desktop/mobile Playwright regression checks for
+  default progress behavior, opted-out projects and mixed workspaces.
 
 The full-tree source parser also reports existing duplicate Lean names and
 unattached helper declarations. Some reference blueprints retain unresolved

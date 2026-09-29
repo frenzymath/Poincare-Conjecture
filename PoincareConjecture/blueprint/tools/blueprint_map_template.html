@@ -181,12 +181,12 @@
       <span class="map-stat" id="map-stat"></span>
       <span class="map-spacer"></span>
       <input class="map-control map-search" id="map-search" type="search" placeholder="Find a statement..." aria-label="Find a statement">
-      <select class="map-control map-select" id="map-status" aria-label="Filter by formalization status">
-        <option value="all">All statuses</option>
-        <option value="lean_ok">Lean OK</option>
-        <option value="mathlib_ok">Mathlib OK</option>
-        <option value="sorry">Sorry</option>
-        <option value="empty">Unformalized</option>
+      <select class="map-control map-select" id="map-status" aria-label="Filter by source annotation">
+        <option value="all">All source annotations</option>
+        <option value="lean_ok">Lean linked</option>
+        <option value="mathlib_ok">Mathlib reference</option>
+        <option value="sorry">Link needs review</option>
+        <option value="empty">No resolved link</option>
       </select>
       <select class="map-control map-select" id="map-chapter" aria-label="Focus a chapter">
         <option value="all">All chapters</option>
@@ -206,11 +206,11 @@
       </select>
       <button class="map-control map-button" id="map-close" type="button" title="Return to the blueprint" aria-label="Return to the blueprint">×</button>
       <button class="map-control map-button" id="map-fit" type="button" title="Fit the map to the available width" aria-label="Fit map">Fit</button>
-      <div class="map-legend" aria-label="Status legend">
-        <span><i class="legend-dot legend-mathlib"></i>mathlib</span>
-        <span><i class="legend-dot legend-ok"></i>Lean</span>
-        <span><i class="legend-dot legend-pending"></i>open</span>
-        <span><i class="legend-dot legend-sorry"></i>sorry</span>
+      <div class="map-legend" aria-label="Source annotation legend">
+        <span><i class="legend-dot legend-mathlib"></i>mathlib reference</span>
+        <span><i class="legend-dot legend-ok"></i>Lean linked</span>
+        <span><i class="legend-dot legend-pending"></i>no resolved link</span>
+        <span><i class="legend-dot legend-sorry"></i>link needs review</span>
       </div>
       <div class="map-legend map-depth-legend" aria-label="Dependency depth legend">
         <span class="layer-legend-label">depth</span>
@@ -233,7 +233,7 @@
       <dl class="detail-grid">
         <dt>Chapter</dt><dd id="detail-chapter"></dd>
         <dt>Section</dt><dd id="detail-section"></dd>
-        <dt>Status</dt><dd id="detail-status"></dd>
+        <dt>Source annotation</dt><dd id="detail-status"></dd>
         <dt>Source / dcref</dt><dd id="detail-ref"></dd>
       </dl>
       <div class="detail-body" id="detail-body"></div>
@@ -282,7 +282,7 @@
     const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({
       "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
     }[char]));
-    const statusLabel = (value) => ({ lean_ok: "Lean OK", mathlib_ok: "Mathlib OK", sorry: "Sorry", empty: "Open" }[value] || value || "Open");
+    const statusLabel = (value) => ({ lean_ok: "Lean linked", mathlib_ok: "Mathlib reference", sorry: "Link needs review", empty: "No resolved link" }[value] || value || "No resolved link");
     const chapterColor = (index) => ["#3868ad", "#7556a8", "#35865a", "#b87923", "#2d8580"][index % 5];
     const layerPalettes = {
       incoming: ["#dc2626", "#ea580c", "#ca8a04", "#65a30d", "#0f766e", "#2563eb", "#4f46e5", "#7c3aed"],

@@ -18,10 +18,11 @@ The smoothing chapter and whole-book publication review remain pending;
 the exposition's review status is separate from verification of the Lean proof.
 
 The main blueprint links mathematical statements to the current proof library.
-Its progress counters measure those attached declarations. Explanatory statements
-without links and three explicitly historical surgery adapters are not counted
-as verified current declarations. The sixteen reference projects contain only
-reading blueprints, without formalization progress.
+The Source links view records annotation coverage without treating it as proof
+completion. Some explanatory statements lack annotations, and three historical
+surgery adapters refer to removed auxiliary declarations. The Verification tab
+records the separate, revision-pinned build and Comparator results. The sixteen
+reference projects contain only reading blueprints, without formalization progress.
 
 ## Sources
 

@@ -76,6 +76,8 @@ def check(repo):
     configs = repo / 'site/projects'
     for entry in yaml.safe_load((repo / 'config.yaml').read_text())['projects']:
         config = yaml.safe_load((configs / entry['root'] / 'config.yaml').read_text())
+        if config.get('site', {}).get('progress') is not False:
+            issues.append(f"Blueprint annotations treated as proof progress: {entry['root']}")
         if bool(config.get('lean')) != (entry['root'] == 'PoincareConjecture'):
             issues.append(f"Unexpected formalization project: {entry['root']}")
     return dict(chapters=len(chapters), statements=len(statements),
