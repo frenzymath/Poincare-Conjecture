@@ -72,5 +72,7 @@ organizes the proof library by mathematical subject and adds the blueprint.
 Exact import revisions, adaptations, and retained source notices are recorded
 in [the import provenance](PoincareConjecture/IMPORT.md) and
 [MODIFICATIONS.md](PoincareConjecture/MODIFICATIONS.md).
+The [whole-tree external-source audit](PoincareConjecture/provenance/2026-09-29/README.md)
+records reviewed similarity matches, restored notices, and upstream licenses.
 
 Licensed under [Apache 2.0](LICENSE).

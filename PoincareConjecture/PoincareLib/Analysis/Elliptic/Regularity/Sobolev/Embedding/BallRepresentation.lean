@@ -1,9 +1,29 @@
+/-
+Provenance and modification notice (recorded 2026-09-29).
+Notices for the adapted source:
+Copyright 2026 The DifferentialGeometry contributors
+Copyright 2026 Scott Armstrong and Julia Kempe
+Source: https://github.com/qinz1yang/differential-geometry
+DifferentialGeometry/External/DeGiorgi/Poincare.lean
+Comparison revision: 1b535dd102b94cc42b107cca27059687888f08b3.
+Changes: Imports, module paths, and namespaces were adapted to the subject-organized PoincareLib library. The local file extracts a subset of the upstream development.
+Additional provenance: https://github.com/scottnarmstrong/DeGiorgi
+DeGiorgi/Poincare.lean
+Comparison revision: 4c1b3077d3782b24065184df4ba59501b2e56fc7.
+DeGiorgi material was incorporated through DifferentialGeometry.
+Upstream modification notice: Modified 2026-04-28: updated internal import paths for project namespace
+Upstream modification notice: Modified 2026-05-16: style-warning cleanup
+License: Apache-2.0. Source licenses and notices are retained under
+PoincareConjecture/provenance/2026-09-29/licenses/.
+See PoincareConjecture/MODIFICATIONS.md for the reviewed source mapping.
+-/
+
 import PoincareLib.Analysis.Elliptic.Regularity.Sobolev.Weak.WholeSpace
 
 /-!
 Adapted from Chow--Liao--Qin, revision `1b535dd102b94cc42b107cca27059687888f08b3`,
 `DifferentialGeometry/External/DeGiorgi/Poincare.lean`.
-Apache-2.0; see `references/ricci-flow/chow-liao-qin-2026/LICENSE.Apache-2.0.txt`.
+Apache-2.0; see `PoincareConjecture/provenance/2026-09-29/licenses/DifferentialGeometry/LICENSE`.
 -/
 
 noncomputable section

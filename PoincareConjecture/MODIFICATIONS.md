@@ -21,26 +21,48 @@ substantive changes.
   cited source at the token level.
 - **License:** Apache-2.0, subject to the source project's license and notice.
 
+## Whole-tree audit, 2026-09-29
+
+The [audit](provenance/2026-09-29/README.md) compared **23,564 active Lean files**
+against **18,888 files** from pinned revisions of DifferentialGeometry, DeGiorgi,
+TauCeti, ClassificationOfSurfaces, and Mathlib. It searched code without requiring
+existing citations or matching filenames. The 80% token-coverage rule, including
+local fragments, yielded **455 candidate pairs in 109 local files**.
+
+All candidates have recorded review dispositions in the
+[file-by-file ledger](provenance/2026-09-29/reviewed-files.json).
+One additional explicitly attributed adaptation, `Topology/Plane/Meshes/PolygonalDomains.lean`,
+was reviewed despite falling below the detector threshold. The ledger records
+source paths, comparison commits, source hashes, notices, modifications, and
+the disposition of every candidate. Comparison commits identify inspected
+snapshots; they do not establish the date or exact revision of initial copying.
+
+Missing copyright notices were added to **36 files**. Existing notices were
+preserved, and all 110 reviewed files have local provenance and modification
+notices. Nine files retain Scott Armstrong and Julia Kempe's DeGiorgi notice,
+including substantial fragments incorporated through DifferentialGeometry.
+The two partial Mathlib adaptations retain Yizheng Zhu's and Sebastien Gouezel's
+respective source notices. TauCeti files retain their individual notices, which
+distinguish Lean FRO, LLC from The Tau Ceti contributors.
+
+The DeGiorgi match in `Sobolev/Iterated/Basic.lean` consists of scattered common
+weak-derivative proof idioms (longest continuous match: 38 tokens); it did not
+justify an additional DeGiorgi attribution. Its substantial DifferentialGeometry
+adaptation is separately recorded. Related matches and duplicate upstream trees
+are recorded without treating each as a distinct author.
+
+This audit changes Lean comments only. It does not change declarations, imports,
+proofs, or mathematical attribution based merely on similarity. Retained source
+licenses and the DifferentialGeometry NOTICE are under
+[`provenance/2026-09-29/licenses/`](provenance/2026-09-29/licenses/).
+
 ## Detection workflow
 
-Run the detector against a checkout of the source repository. It follows
-`DifferentialGeometry/.../*.lean` references in local comments, reads the
-requested Git revision when a source file is not checked out, strips Lean
-comments and whitespace, and reports token-stream similarity. The output is a
-review queue. It does not add copyright notices or assert that similar code is
-copyrightable.
+Use [`scripts/scan_external_reuse.py`](../scripts/scan_external_reuse.py) and the
+[reproduction instructions](provenance/2026-09-29/README.md). This replaces the
+earlier citation-only workflow in `scripts/detect_provenance.py` for whole-tree
+audits. The old helper cannot discover uncited reuse.
 
-```sh
-python3 scripts/detect_provenance.py \
-  PoincareConjecture/PoincareLib \
-  /path/to/differential-geometry \
-  --source-revision 1b535dd102b94cc42b107cca27059687888f08b3 \
-  --threshold 0.98 \
-  --json /tmp/poincare-provenance-candidates.json
-```
-
-For each `needs-review` result, compare the source and local file, inspect the
-license and notices, and then add a concise local header plus an entry here.
-Do not infer authorship from token similarity alone; mathematical statements,
-common Mathlib idioms, and generated or mechanically renamed code need separate
-review.
+The scanner proposes candidates; source inspection determines which notices
+to retain. It is a textual heuristic, not a semantic proof comparator, and its
+threshold and sampled prefilter can miss short or heavily rewritten adaptations.

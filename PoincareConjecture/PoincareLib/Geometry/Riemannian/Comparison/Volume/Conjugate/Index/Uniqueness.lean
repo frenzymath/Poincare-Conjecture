@@ -1,3 +1,14 @@
+/-
+Provenance and modification notice (recorded 2026-09-29).
+Source: https://github.com/qinz1yang/differential-geometry
+DifferentialGeometry/Analysis/ODE/IndexFormUniqueness.lean
+Comparison revision: 1b535dd102b94cc42b107cca27059687888f08b3.
+Changes: The index-form uniqueness proof is rebuilt using the retained first-order linear ODE uniqueness theorem; see the existing source notice.
+License: Apache-2.0. Source licenses and notices are retained under
+PoincareConjecture/provenance/2026-09-29/licenses/.
+See PoincareConjecture/MODIFICATIONS.md for the reviewed source mapping.
+-/
+
 import PoincareLib.Geometry.Riemannian.Comparison.Volume.Conjugate.Index.Basic
 
 /-!
@@ -10,7 +21,7 @@ Original SHA-256: 31732b47714399fe45418ff684c311bb5e148f7d7da455282ef8e06a3424b9
 The proof is rebuilt using the retained first-order linear ODE uniqueness.
 Upstream NOTICE: DifferentialGeometry
 Copyright 2026 The DifferentialGeometry contributors
-License: `references/ricci-flow/chow-liao-qin-2026/LICENSE.Apache-2.0.txt`.
+License: `PoincareConjecture/provenance/2026-09-29/licenses/DifferentialGeometry/LICENSE`.
 -/
 
 open Set

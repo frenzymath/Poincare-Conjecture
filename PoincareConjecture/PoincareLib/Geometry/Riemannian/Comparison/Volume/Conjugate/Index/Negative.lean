@@ -1,10 +1,21 @@
 /-
+Provenance and modification notice (recorded 2026-09-29).
+Source: https://github.com/qinz1yang/differential-geometry
+DifferentialGeometry/Analysis/ODE/IndexFormNegative.lean
+Comparison revision: 1b535dd102b94cc42b107cca27059687888f08b3.
+Changes: Imports, module paths, and namespaces were adapted to the subject-organized PoincareLib library.
+License: Apache-2.0. Source licenses and notices are retained under
+PoincareConjecture/provenance/2026-09-29/licenses/.
+See PoincareConjecture/MODIFICATIONS.md for the reviewed source mapping.
+-/
+
+/-
 Adapted from Chow, Liao, Qin, DifferentialGeometry/Analysis/ODE/IndexFormNegative.lean,
 commit 1b535dd102b94cc42b107cca27059687888f08b3 (Apache-2.0).
 Original SHA-256: 94719c472c27f9251ccb92d9d16315134dc52426b45b99d6bf931900c1e37f80.
 Upstream NOTICE: DifferentialGeometry
 Copyright 2026 The DifferentialGeometry contributors
-License: references/ricci-flow/chow-liao-qin-2026/LICENSE.Apache-2.0.txt.
+License: PoincareConjecture/provenance/2026-09-29/licenses/DifferentialGeometry/LICENSE.
 Uses Poincare's Jacobi solution predicate and linear ODE uniqueness.
 -/
 import PoincareLib.Geometry.Riemannian.Comparison.Volume.Conjugate.Index.Uniqueness

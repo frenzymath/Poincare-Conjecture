@@ -1,3 +1,16 @@
+/-
+Provenance and modification notice (recorded 2026-09-29).
+Notices for the adapted source:
+Copyright 2026 The DifferentialGeometry contributors
+Source: https://github.com/qinz1yang/differential-geometry
+DifferentialGeometry/Analysis/Sobolev/Euclidean/Embedding/MorreyHigherOrder.lean
+Comparison revision: 1b535dd102b94cc42b107cca27059687888f08b3.
+Changes: Imports, module paths, and namespaces were adapted to the subject-organized PoincareLib library.
+License: Apache-2.0. Source licenses and notices are retained under
+PoincareConjecture/provenance/2026-09-29/licenses/.
+See PoincareConjecture/MODIFICATIONS.md for the reviewed source mapping.
+-/
+
 import PoincareLib.Analysis.Elliptic.Regularity.Sobolev.Embedding.MorreySmoothInequality
 import PoincareLib.Analysis.Elliptic.Regularity.Sobolev.Iterated.ClassicalNorm
 import PoincareLib.Analysis.Elliptic.Regularity.Sobolev.Iterated.Multiply
@@ -5,7 +18,7 @@ import PoincareLib.Analysis.Elliptic.Regularity.Sobolev.Iterated.Multiply
 /-!
 Adapted from Chow--Liao--Qin, revision `1b535dd102b94cc42b107cca27059687888f08b3`,
 `DifferentialGeometry/Analysis/Sobolev/Euclidean/Embedding/MorreyHigherOrder.lean`.
-Apache-2.0; see `references/ricci-flow/chow-liao-qin-2026/LICENSE.Apache-2.0.txt`.
+Apache-2.0; see `PoincareConjecture/provenance/2026-09-29/licenses/DifferentialGeometry/LICENSE`.
 -/
 
 

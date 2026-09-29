@@ -1,4 +1,15 @@
 /-
+Provenance and modification notice (recorded 2026-09-29).
+Source: https://github.com/mccorvie/classification-of-surfaces
+JordanCurve/Arcs.lean
+Comparison revision: e3c7230fe78d7b056a415d9ecae6f77887046b32.
+Changes: Imports, module paths, and namespaces were adapted to the subject-organized PoincareLib library.
+License: Apache-2.0. Source licenses and notices are retained under
+PoincareConjecture/provenance/2026-09-29/licenses/.
+See PoincareConjecture/MODIFICATIONS.md for the reviewed source mapping.
+-/
+
+/-
 Copyright (c) 2026 ClassificationOfSurfaces contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ClassificationOfSurfaces contributors

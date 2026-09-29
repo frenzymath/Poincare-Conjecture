@@ -1,3 +1,16 @@
+/-
+Provenance and modification notice (recorded 2026-09-29).
+Notices for the adapted portions:
+Copyright 2026 The DifferentialGeometry contributors
+Source: https://github.com/qinz1yang/differential-geometry
+DifferentialGeometry/Geometry/Flow/RicciFlow/ShortTime/LowRegularity/GaugeRemoval.lean
+Comparison revision: 1b535dd102b94cc42b107cca27059687888f08b3.
+Changes: The tangent-section negation helper is specialized to the Euclidean model, renamed, and exposed for local use.
+License: Apache-2.0. Source licenses and notices are retained under
+PoincareConjecture/provenance/2026-09-29/licenses/.
+See PoincareConjecture/MODIFICATIONS.md for the reviewed source mapping.
+-/
+
 /- Adapted from Mapher `PoincareMT/Proofs/M03/Existence/TimeDependentConjugatingFlowNative.lean` at
 f927d9e1f0810042766d3b5f64d3f4da02ee93cc. See
 `references/ricci-flow/mapher/local-theory/port.json`. -/

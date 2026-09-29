@@ -1,9 +1,22 @@
+/-
+Provenance and modification notice (recorded 2026-09-29).
+Notices for the adapted source:
+Copyright 2026 The DifferentialGeometry contributors
+Source: https://github.com/qinz1yang/differential-geometry
+DifferentialGeometry/Analysis/Sobolev/Euclidean/ChainRule/CompChainRuleK.lean
+Comparison revision: 1b535dd102b94cc42b107cca27059687888f08b3.
+Changes: Imports, module paths, and namespaces were adapted to the subject-organized PoincareLib library. The local file extracts a subset of the upstream development.
+License: Apache-2.0. Source licenses and notices are retained under
+PoincareConjecture/provenance/2026-09-29/licenses/.
+See PoincareConjecture/MODIFICATIONS.md for the reviewed source mapping.
+-/
+
 import PoincareLib.Analysis.Elliptic.Regularity.Sobolev.Density
 
 /-!
 Adapted from Chow--Liao--Qin, revision `1b535dd102b94cc42b107cca27059687888f08b3`,
 `DifferentialGeometry/Analysis/Sobolev/Euclidean/ChainRule/CompChainRuleK.lean`.
-Apache-2.0; see `references/ricci-flow/chow-liao-qin-2026/LICENSE.Apache-2.0.txt`.
+Apache-2.0; see `PoincareConjecture/provenance/2026-09-29/licenses/DifferentialGeometry/LICENSE`.
 -/
 
 noncomputable section

@@ -1,3 +1,17 @@
+/-
+Provenance and modification notice (recorded 2026-09-29).
+Notices for the adapted portions:
+Copyright (c) 2025 Yizheng Zhu. All rights reserved.
+Original author of the adapted portion: Yizheng Zhu.
+Source: https://github.com/leanprover-community/mathlib4
+Mathlib/MeasureTheory/Function/AbsolutelyContinuous.lean
+Comparison revision: 0df444a360eaa60ab8c11dca51a86af692955474.
+Changes: The interval-integral absolute-continuity proof is generalized from scalar to vector-valued Bochner integrals.
+License: Apache-2.0. Source licenses and notices are retained under
+PoincareConjecture/provenance/2026-09-29/licenses/.
+See PoincareConjecture/MODIFICATIONS.md for the reviewed source mapping.
+-/
+
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.AbsolutelyContinuousFun
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 import Mathlib.Analysis.Calculus.ContDiff.Operations

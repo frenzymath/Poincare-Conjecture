@@ -1,10 +1,21 @@
 /-
+Provenance and modification notice (recorded 2026-09-29).
+Source: https://github.com/qinz1yang/differential-geometry
+DifferentialGeometry/Analysis/ODE/IndexForm.lean
+Comparison revision: 1b535dd102b94cc42b107cca27059687888f08b3.
+Changes: Imports, module paths, and namespaces were adapted to the subject-organized PoincareLib library.
+License: Apache-2.0. Source licenses and notices are retained under
+PoincareConjecture/provenance/2026-09-29/licenses/.
+See PoincareConjecture/MODIFICATIONS.md for the reviewed source mapping.
+-/
+
+/-
 Adapted from Chow, Liao, Qin, DifferentialGeometry/Analysis/ODE/IndexForm.lean,
 commit 1b535dd102b94cc42b107cca27059687888f08b3 (Apache-2.0).
 Original SHA-256: 4f6bb62a9d7e879d759cfb5abae7af0941fddfcafe1feae34aedb866752c6f6d.
 Upstream NOTICE: DifferentialGeometry
 Copyright 2026 The DifferentialGeometry contributors
-License: references/ricci-flow/chow-liao-qin-2026/LICENSE.Apache-2.0.txt.
+License: PoincareConjecture/provenance/2026-09-29/licenses/DifferentialGeometry/LICENSE.
 Uses the existing Poincare Jacobi solution predicate.
 -/
 import PoincareLib.Analysis.ODE.Jacobi.Basic

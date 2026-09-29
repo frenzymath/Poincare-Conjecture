@@ -1,3 +1,22 @@
+/-
+Provenance and modification notice (recorded 2026-09-29).
+Notices for the adapted portions:
+Copyright 2026 The DifferentialGeometry contributors
+Copyright 2026 Scott Armstrong and Julia Kempe
+Source: https://github.com/qinz1yang/differential-geometry
+DifferentialGeometry/Analysis/Sobolev/Euclidean/Density.lean
+Comparison revision: 1b535dd102b94cc42b107cca27059687888f08b3.
+Changes: Imports, module paths, and namespaces were adapted to the subject-organized PoincareLib library.
+Additional provenance: https://github.com/scottnarmstrong/DeGiorgi
+DeGiorgi/SobolevSpace/Approximation.lean
+Comparison revision: 4c1b3077d3782b24065184df4ba59501b2e56fc7.
+DeGiorgi material was incorporated through DifferentialGeometry.
+DeGiorgi attribution applies to the cutoff and weak convolution derivative proofs.
+License: Apache-2.0. Source licenses and notices are retained under
+PoincareConjecture/provenance/2026-09-29/licenses/.
+See PoincareConjecture/MODIFICATIONS.md for the reviewed source mapping.
+-/
+
 import PoincareLib.Analysis.Elliptic.Regularity.Sobolev.Weak.PartialLimit
 import PoincareLib.Analysis.Sobolev.Euclidean.FrechetKolmogorov
 import PoincareLib.Analysis.Sobolev.Euclidean.Rellich
@@ -6,7 +25,7 @@ import PoincareLib.Analysis.Sobolev.Euclidean.Mollifier
 /-
 Adapted from Chow--Liao--Qin, revision `1b535dd102b94cc42b107cca27059687888f08b3`,
 `DifferentialGeometry/Analysis/Sobolev/Euclidean/Density.lean`.
-Apache-2.0; see `references/ricci-flow/chow-liao-qin-2026/LICENSE.Apache-2.0.txt`.
+Apache-2.0; see `PoincareConjecture/provenance/2026-09-29/licenses/DifferentialGeometry/LICENSE`.
 -/
 
 

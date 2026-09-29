@@ -1,3 +1,19 @@
+/-
+Provenance and modification notice (recorded 2026-09-29).
+Notices for the adapted portions:
+Copyright 2026 The DifferentialGeometry contributors
+Source: https://github.com/qinz1yang/differential-geometry
+DifferentialGeometry/Analysis/Parabolic/Euclidean/HeatKernelSchauderHigher.lean
+Comparison revision: 1b535dd102b94cc42b107cca27059687888f08b3.
+Changes: The heat-kernel moment and integrability helpers are specialized to the half-order weight and local scaling conventions.
+Additional provenance: https://github.com/qinz1yang/differential-geometry
+DifferentialGeometry/Analysis/Parabolic/Euclidean/HeatKernelHigher.lean
+Comparison revision: 1b535dd102b94cc42b107cca27059687888f08b3.
+License: Apache-2.0. Source licenses and notices are retained under
+PoincareConjecture/provenance/2026-09-29/licenses/.
+See PoincareConjecture/MODIFICATIONS.md for the reviewed source mapping.
+-/
+
 import PoincareLib.Analysis.Parabolic.Interior.Kernel.HolderMoment
 import PoincareLib.Analysis.Parabolic.Interior.Kernel.HigherDerivatives
 
