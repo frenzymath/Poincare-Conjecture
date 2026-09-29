@@ -1,3 +1,7 @@
+> This reference is now blueprint-only. Its Lean sources and Lake package have
+> been removed; earlier formalization and build notes below are historical.
+> The active proof library is in `../../PoincareConjecture/`.
+
 # Morgan-Tian - Ricci Flow and the Poincare Conjecture
 
 A source-based Lean 4 formalization and dependency blueprint following John

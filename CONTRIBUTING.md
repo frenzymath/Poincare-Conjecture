@@ -1,8 +1,8 @@
 # Contributing
 
 `PoincareConjecture/` contains the primary proof, organized by mathematical
-dependency. `references/` holds book and article blueprints and retained Lean
-developments. `references/shared/` contains their common infrastructure.
+dependency. `references/` holds book and article blueprints only. Their site
+configurations use `lean: []`; only the primary project is a Lean package.
 Keep changes focused and
 preserve the pinned Lean toolchains and mathlib revisions.
 
@@ -14,11 +14,16 @@ statistics table in the Actions summary. JSON and per-file CSV are available
 as a seven-day artifact. Comments and string literals do not count as admissions.
 The scanner is lexical, not a Lean parser or transitive proof audit.
 
+The primary-package scan explicitly excludes its historical `references/`,
+frozen `contracts/`, and `Comparator/Challenge.lean`. The challenge contains
+intentional admissions; Solution and all production sources remain scanned.
+The report records these exclusions.
+
 Run the same check locally:
 
 ```bash
 pip install -r requirements-site.txt
-python scripts/lean_stats.py PoincareConjecture --output .verification/statistics --check
+python scripts/lean_stats.py PoincareConjecture --exclude references --exclude contracts --exclude Comparator/Challenge.lean --output .verification/statistics --check
 ```
 
 Statistics distinguish physical LOC, nonblank LOC, nonblank LOC after removing
@@ -34,11 +39,11 @@ lake exe cache get
 lake build
 ```
 
-`scripts/validate-lean-changes.sh origin/main` runs dependency-aware local
-builds. The optional repository hooks (`git config core.hooksPath .githooks`)
-also run these builds on Lean pushes. This local policy is independent of CI.
-The **Manual Lean build** Actions workflow retains the full package matrix
-for explicit use; it does not run on pushes or PRs and stores no Lake caches.
+`scripts/validate-lean-changes.sh origin/main` builds changes to the primary
+Lean package. The optional repository hooks (`git config core.hooksPath .githooks`)
+also run this check on Lean pushes. This local policy is independent of CI.
+The **Manual Lean build** Actions workflow builds the primary package on request;
+it does not run on pushes or PRs and stores no Lake caches.
 
 See [verification.md](site/verification.md) for comparator evidence and release
 verification. A successful source scan does not imply a successful Lean build.
@@ -48,6 +53,17 @@ verification. A successful source scan does not imply a successful Lean build.
 Give statements stable labels, record dependencies with `\uses{...}`, and
 link declarations with `\lean{...}`. Preserve precise source citations.
 Only add `\leanok` after checking the corresponding declaration and statement.
+
+The main blueprint imports Horizon's eighteen-chapter exposition.
+Its current sources are in `PoincareConjecture/blueprint/`: `content.tex`,
+`macros.tex`, `refs.bib`, and `chapters/`. Import records and source reviews live
+separately under `PoincareConjecture/provenance/blueprint-import/`; the map
+generator and template are `scripts/build_blueprint_map.py` and
+`site/blueprint_map_template.html`. Run
+`python scripts/check_blueprint_import.py` after changing its source or import
+records; source changes require reconciliation with the retained chapter reviews.
+The site build regenerates its blueprint map from the staged current graph.
+Reference projects keep `lean: []` and do not display formalization progress.
 
 ## Website
 

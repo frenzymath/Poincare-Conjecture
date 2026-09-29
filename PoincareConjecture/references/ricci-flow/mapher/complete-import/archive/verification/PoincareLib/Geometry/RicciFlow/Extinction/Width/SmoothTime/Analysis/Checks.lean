@@ -1,0 +1,4 @@
+import PoincareLib.Geometry.RicciFlow.Extinction.Width.SmoothTime.Analysis.Profile
+
+#print axioms PoincareMT.smoothWidthProfile_hasDerivWithinAt
+#print axioms PoincareMT.smoothWidthProfile_forward_bound

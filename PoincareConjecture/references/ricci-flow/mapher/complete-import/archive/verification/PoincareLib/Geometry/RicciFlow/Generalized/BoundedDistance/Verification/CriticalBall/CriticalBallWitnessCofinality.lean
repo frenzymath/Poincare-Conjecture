@@ -1,0 +1,6 @@
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.GeometryImports
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.CriticalBall.CriticalBallWitnessCofinality
+
+set_option autoImplicit false
+
+#print axioms PoincareMT.M28.tube.critical_witnesses_cofinal_below

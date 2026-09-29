@@ -1,3 +1,7 @@
+> This reference is now blueprint-only. Its Lean sources and Lake package have
+> been removed; earlier formalization and build notes below are historical.
+> The active proof library is in `../../PoincareConjecture/`.
+
 # Cheeger-Gromov-Taylor - Finite Propagation Speed and Kernel Estimates
 
 A Lean 4 reference project and source-faithful blueprint for Jeff Cheeger,

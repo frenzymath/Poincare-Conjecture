@@ -1,0 +1,11 @@
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.Surface.Modification
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.Surface.FiniteBox
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.Surface.Disjoint.Tail
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.Plane.JoinedFiniteLower
+
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.Surface.inserted_actual_body_iff_saddle
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.Surface.removed_actual_body_iff_saddle
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.Surface.pair_body_germs_in_physical_lower_strip
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.Surface.Disjoint.transported_roundedPairBody_tail_germ
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.Surface.Transfer.closed_shell_body_germ_of_pair
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.exists_actual_joined_finite_energy_transport_preserving_lower_neck

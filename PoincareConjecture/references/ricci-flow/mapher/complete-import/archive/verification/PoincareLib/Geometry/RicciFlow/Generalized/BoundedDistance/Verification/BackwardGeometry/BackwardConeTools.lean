@@ -1,0 +1,62 @@
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.GeometryImports
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Spacetime.StrongNecks.Geometry.StrongNeckCenterLimitCurvature
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Angles.Geometry.CrossSegmentComparison
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Cone.Ends.TerminalQuadratic
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Cone.OpenGeometry.OpenConePotential
+
+/-!
+# Direct audits of the backward center limit and incomplete comparison tools
+
+These audit the actual constructions in derivations 137, 139, 140, 142,
+146 and 148. The geometric cone potential and original M28 entry remain
+separate obligations.
+-/
+
+set_option autoImplicit false
+
+#print axioms PoincareMT.M28.FixedCoordinateFlowLimit
+#print axioms PoincareMT.M28.exists_fixedCoordinateFlowLimit_of_within_bounds
+#print axioms PoincareMT.M28.exists_fixedCoordinateFlowLimit_of_normal_charts
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_eighth_flow
+#print axioms PoincareMT.M28.exists_strongNeck_source_center_limit_accuracy
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_secondary_scale_eq_one
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_eighth_global_window
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.global_flow_metric_eq_half_of_unit_scale
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.global_flow_curvature_eq_half_of_unit_scale
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_eighth_flow_metric
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_eighth_flow_connection
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_eighth_original_point_eq_pointMap
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_eighth_original_point_time
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_eighth_original_point_time_mem
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_eighth_physical_time_mem
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_eighth_pinching_error_nonneg
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_half_plane_lower_eighth_window
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_eighth_flow_plane_lower
+#print axioms
+  PoincareMT.M28.GeneralizedStrongNeck.rescaled_eighth_original_scalar_le_of_curvature_bound
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_eighth_pinching_error_lt
+#print axioms PoincareMT.M28.strongNeck_eighth_pinching_error_eventually_lt
+#print axioms PoincareMT.M28.strongNeck_eighth_pinching_error_tendsto_zero
+#print axioms PoincareMT.M28.FixedCoordinateFlowLimit.spatial_twoJets
+#print axioms PoincareMT.M28.FixedCoordinateFlowLimit.coefficients_eq_canonical_germ
+#print axioms PoincareMT.M28.FixedCoordinateFlowLimit.metric_inner_tendsto
+#print axioms PoincareMT.M28.FixedCoordinateFlowLimit.curvatureTensor_tendsto
+#print axioms PoincareMT.M28.FixedCoordinateFlowLimit.scalarCurvature_tendsto
+#print axioms PoincareMT.M28.strongNeck_fixedCoordinate_limit_nonnegativeCurvatureOperator
+#print axioms PoincareMT.M28.strongNeck_center_limit_readouts
+#print axioms PoincareMT.ConjugateVariation.continuousOn_intervalIntegral_of_continuousOn_prod
+#print axioms PoincareMT.ConjugateVariation.contDiffOn_two_intervalIntegral_of_contDiffOn_box
+#print axioms PoincareMT.M28.Comparison.MovingEndpointRealization
+#print axioms PoincareMT.M28.Comparison.exists_movingEndpointRealization
+#print axioms PoincareMT.M28.Comparison.exists_affine_field_with_index_bound
+#print axioms PoincareMT.M28.Comparison.MovingEndpointRealization.exists_energy_support
+#print axioms PoincareMT.M28.Comparison.exists_squared_distance_upper_support_of_metric_segment
+#print axioms PoincareMT.M28.Comparison.squared_distance_sub_sq_concave_of_cross_segments
+#print axioms PoincareMT.M28.Comparison.corresponding_side_lower_of_cross_segments
+#print axioms PoincareMT.M28.terminal_ricci_eq_zero_of_homothetic_field
+#print axioms PoincareMT.M28.no_positive_terminal_scalar_of_homothetic_field
+#print axioms PoincareMT.M28.no_positive_terminal_scalar_of_quadratic_potential
+#print axioms LipschitzWith.half_sq_of_abs_le
+#print axioms PoincareMT.RiemannianMetric.locally_lipschitz_chart_of_riemannian_edist_bound
+#print axioms PoincareMT.M28.open_potential_of_ambient_isometry_and_local_radial_law
+#print axioms PoincareMT.M28.open_radius_potential_of_retained_isometry

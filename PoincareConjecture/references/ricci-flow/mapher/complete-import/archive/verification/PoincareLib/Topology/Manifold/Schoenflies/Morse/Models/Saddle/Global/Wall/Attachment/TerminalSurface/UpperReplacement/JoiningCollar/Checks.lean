@@ -1,0 +1,11 @@
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalSurface.UpperReplacement.JoiningCollar.Recut
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalSurface.UpperReplacement.JoiningCollar.Clock
+
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.UpperReplacement.JoiningCollar.upper_cap_center_above_core_band
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.UpperReplacement.JoiningCollar.actual_upper_circle_eq_level
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.UpperReplacement.JoiningCollar.exists_actual_upper_circle_family_on_core_band
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.UpperReplacement.JoiningCollar.exists_unique_upper_end_of_connected_level
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.UpperReplacement.JoiningCollar.exists_unique_upper_end_of_recut
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.UpperReplacement.JoiningCollar.exists_terminal_upper_recut
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.UpperReplacement.JoiningCollar.exists_normalized_actual_upper_circle_family
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.UpperReplacement.JoiningCollar.exists_actual_upper_clock_correction

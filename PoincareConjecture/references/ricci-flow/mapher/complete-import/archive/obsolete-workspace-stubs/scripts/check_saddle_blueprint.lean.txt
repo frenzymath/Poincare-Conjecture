@@ -1,0 +1,53 @@
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Leaves.Blueprint
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Leaves
+import Lean.Util.CollectAxioms
+
+/-! Exact leaf type comparison and recursive admission-source audit. -/
+
+open Poincare.Manifold.Schoenflies.SaddleLevel
+
+open Lean Elab Term in
+elab "blueprint_leaf_type% " name:ident : term => do
+  return (← getConstInfo name.getId).type
+
+example : blueprint_leaf_type%
+    Poincare.Manifold.Schoenflies.SaddleLevel.saddle_planar_family_leaf :=
+  @saddle_planar_family_leaf_of_blueprint
+
+example : blueprint_leaf_type%
+    Poincare.Manifold.Schoenflies.SaddleLevel.saddle_cap_replacement_leaf :=
+  @saddle_cap_replacement_leaf_of_blueprint
+
+open Lean Elab Command in
+run_cmd do
+  let env := (← getEnv).setExporting false
+  let planar := #[``exists_terminal_planar_matching_seed,
+    ``exists_terminal_planar_matching_transport, ``exists_terminal_planar_glued_family,
+    ``exists_terminal_planar_localized_family]
+  let caps := #[``exists_terminal_actual_cap_ball, ``exists_terminal_model_cap_ball,
+    ``exists_terminal_cap_replacement]
+  for (root, expected) in #[(``saddle_planar_family_leaf_of_blueprint, planar),
+      (``exists_terminal_cap_assembly, caps),
+      (``saddle_cap_replacement_leaf_of_blueprint, caps)] do
+    let rootInfo ← getConstInfo root
+    if rootInfo.type.hasSorry || (rootInfo.value? (allowOpaque := true)).any Expr.hasSorry then
+      throwError "Composition has a direct admission: {root}"
+    let mut pending := #[root]
+    let mut seen : NameSet := {}
+    let mut admissions : NameSet := {}
+    while !pending.isEmpty do
+      let name := pending.back!
+      pending := pending.pop
+      if seen.contains name then continue
+      seen := seen.insert name
+      let some info := env.checked.get.find? name
+        | throwError "Cannot inspect {name}"
+      if info.type.hasSorry || (info.value? (allowOpaque := true)).any Expr.hasSorry then
+        admissions := admissions.insert name
+      pending := pending ++ info.getUsedConstantsAsSet.toArray
+    unless admissions.toArray.qsort Name.lt == expected.qsort Name.lt do
+      throwError "Unexpected direct admission sources in {root}: {admissions.toArray}"
+    let axioms ← collectAxioms root
+    unless axioms.all (#[``propext, ``Classical.choice, ``Quot.sound, ``sorryAx].contains) do
+      throwError "Unexpected axioms in {root}: {axioms}"
+    logInfo m!"{root}: exact leaf type; direct admission-free; recursive sources {admissions.toArray}"

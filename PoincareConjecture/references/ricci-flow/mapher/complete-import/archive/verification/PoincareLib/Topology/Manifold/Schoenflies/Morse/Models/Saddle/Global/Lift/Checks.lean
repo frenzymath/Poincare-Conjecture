@@ -1,0 +1,13 @@
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Lift.Parametric
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Lift.IntervalExtension
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Matching
+
+#print axioms Poincare.Manifold.Schoenflies.Saddle.exists_height_lift
+#print axioms Poincare.Manifold.Schoenflies.Saddle.exists_height_cutoff_lift
+#print axioms Poincare.Manifold.Schoenflies.Saddle.exists_parametric_height_cutoff_lift_product
+#print axioms Poincare.Manifold.Schoenflies.Saddle.exists_parametric_height_cutoff_lift
+#print axioms Poincare.Manifold.Schoenflies.Saddle.image_iUnion_slice_parametric
+#print axioms Poincare.Manifold.Schoenflies.Saddle.image_iUnion_slice_parametric_of_eq_one
+#print axioms Poincare.Manifold.Schoenflies.Saddle.image_iUnion_slice_parametric_of_matching
+#print axioms Poincare.Manifold.Schoenflies.Saddle.exists_interval_supported_planar_family
+#print axioms Poincare.Manifold.Schoenflies.Saddle.exists_interval_supported_height_lift

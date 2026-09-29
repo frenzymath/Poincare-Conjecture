@@ -1,0 +1,505 @@
+\chapter{Width comparison and finite extinction}
+\label{ch:extinction-v4}
+
+We now turn the deformation of loop families into a finite extinction
+argument. A nonzero third homotopy class gives a nonnegative width.
+Ordinary Ricci flow forces this width below a scalar profile, and surgery
+cannot cause an upward jump from the left. One profile therefore bounds
+the width through finitely many events. Its eventual negativity contradicts
+the existence of a surviving component.
+
+The initial class and its width must be fixed before the terminal time and
+surviving component are chosen. We use the simply connected, time-zero
+branch: the initial manifold already has trivial second homotopy and
+nonzero third homotopy. The later-start argument in
+\cite[Section 18.3.2, pp. 431--432]{MT2007} is not needed here.
+
+\section{Widths and the deformation input}
+
+On an ordinary slab, $M$ is a compact, connected, Hausdorff, second-countable
+smooth three-manifold without boundary, $x\in M$, and $\pi_2(M,x)=0$.
+Write $\Lambda^1M$ for the $C^1$ free-loop space of
+Chapter~\ref{ch:filling-width-v4}.
+
+\begin{definition}[Null family]
+\label{def:v4-null-family}
+\lean{PoincareMT.M61NullFamily}
+A null family is a continuous map $F:S^2\to\Lambda^1M$ whose every member
+is nullhomotopic. No continuously chosen family of spanning disks is required.
+\source{MT2007}\dcref{Definition 18.17, p. 430}
+\end{definition}
+
+For a null loop $\gamma$, let $A_g(\gamma)$ be the infimum of the areas of
+its Lipschitz spanning disks, with boundary equal to $\gamma$ up to the
+admissible boundary reparameterization. Section~\ref{sec:filling-short-loops}
+supplies such disks, nonnegative filling area, and continuity on null loops.
+
+\begin{definition}[Family and class width]
+\label{def:v4-family-width}
+\label{def:v4-free-width}
+\lean{PoincareMT.m61FamilyWidth}
+\lean{PoincareMT.m61FreeClassWidthRange}
+\lean{PoincareMT.m61FreeClassWidth}
+For a null family $F$, set
+\[
+ W_g(F)=\max_{c\in S^2}A_g(F(c)),\qquad
+ W_g[F]=\inf\{W_g(G):G\text{ is null and freely homotopic to }F\}.
+\]
+The maximum exists for each fixed family; the class infimum need not be
+attained. Proposition~\ref{prop:filling-loop-identification} labels this
+same competitor class by $\alpha\in\pi_2(\Lambda^1M,\mathrm{const}_x)$
+and identifies $\alpha$ with $\xi\in\pi_3(M,x)$. We also write
+$W_g(\alpha)$ for this free-class infimum.
+\source{MT2007}\dcref{Claim 18.16 and Definition 18.17, p. 430}
+\end{definition}
+
+\begin{proposition}[Maximum and near minimizers]
+\label{prop:v4-width-properties}
+\uses{def:v4-family-width}
+\lean{PoincareMT.m61FamilyWidth_from_M60}
+\lean{PoincareMT.m61Widths}
+These widths are finite and nonnegative. For every $e>0$ there is a null
+family $G$ freely homotopic to $F$ with $W_g(G)<W_g[F]+e$.
+\end{proposition}
+\begin{proof}
+The continuous function $c\mapsto A_g(F(c))$ attains its maximum on $S^2$.
+The competitor range contains $F$ and is bounded below by zero. If no
+competitor had width less than $W_g[F]+e$, that larger number would also
+be a lower bound, contradicting the definition of the infimum.
+\end{proof}
+
+Two separate short-loop inputs will be used. For a fixed metric there is
+$r>0$ such that a null family all of whose members have length less than
+$r$ is freely homotopic to a constant family. For every $\eta>0$ there
+is $q(\eta)>0$ such that a loop shorter than $q(\eta)$ bounds a disk of
+area less than $\eta$. In the first assertion, contracting each loop to
+its initial point produces a sphere of constant loops; $\pi_2(M)=0$
+then contracts that sphere of points. These are the results of
+Section~\ref{sec:filling-short-loops}.
+
+For a Ricci flow $g(t)$ on $[a,b]$, define
+\[
+ B_a(t)=\int_a^t R_{\min}(u)/2\,du,\qquad
+ \Phi_{a,A}(t)=e^{-B_a(t)}
+       \left(A-2\pi\int_a^t e^{B_a(u)}\,du\right).
+\]
+The scalar-curvature infimum $R_{\min}$ on the compact slice is continuous.
+Consequently
+\[
+ \Phi_{a,A}(a)=A,\quad
+ \partial_t\Phi_{a,A}=-2\pi-\tfrac12R_{\min}\Phi_{a,A},\quad
+ \Phi_{a,A+d}(b)=\Phi_{a,A}(b)+e^{-B_a(b)}d.
+\]
+Theorem~\ref{thm:loop-family-deformation} gives, for each null family $G$
+and $z>0$, null families $D_t$ freely homotopic to $G$ such that
+\[
+ |A_{g(a)}(D_a(c))-A_{g(a)}(G(c))|<z,
+\]
+and for \emph{each} $c$ either
+\[
+ \operatorname{Length}_{g(b)}(D_b(c))<z
+ \quad\hbox{or}\quad
+ A_{g(b)}(D_b(c))\leq\Phi_{a,A_{g(a)}(D_a(c))}(b)+z.
+\]
+Different members may satisfy different alternatives. The disk first
+variation and Gauss--Bonnet argument producing $-2\pi$ is part of that
+deformation theorem.
+\cite[Definition 18.23, Proposition 18.24 and Claim 18.26, pp. 433--434]{MT2007}
+
+\section{Comparison on an ordinary slab}
+
+\begin{proposition}[Endpoint comparison]
+\label{prop:v4-endpoint-comparison}
+\uses{prop:v4-width-properties,thm:loop-family-deformation,prop:filling-short-area,prop:filling-loop-identification}
+\lean{PoincareMT.m66_deformed_comparison}
+\lean{PoincareMT.m66_endpoint_comparison}
+If $F$ represents a nonzero class and $a\leq b$, then
+\[
+ W_{g(b)}[F]\leq\Phi_{a,W_{g(a)}[F]}(b).
+\]
+\end{proposition}
+\begin{proof}
+Write $w=W_{g(a)}[F]$, $A=\Phi_{a,w}(b)$ and $E=e^{-B_a(b)}>0$.
+Fix $e,\eta>0$ and choose an $e$-near minimizing family $G$.
+Choose the terminal short-family radius $r$ and small-disk radius
+$q(\eta)$, and only then set $z=\min\{e,r,q(\eta)\}$ and deform $G$.
+For every member the initial error gives
+$A_{g(a)}(D_a(c))\leq w+e+z$. Positivity and affinity of the profile
+in its initial value show that each member in the area alternative has
+\[
+ A_{g(b)}(D_b(c))\leq A+E(e+z)+z\leq A+(2E+1)e.
+\]
+At least one member is not short: otherwise the short-family theorem
+would make $D_b$, and hence $F$, trivial. Its nonnegative area gives
+$0\leq A+(2E+1)e$. This does not exclude short members.
+Every short member has filling area less than $\eta$ by the small-disk
+estimate. Taking the family maximum and then the class infimum gives
+\[
+ W_{g(b)}[F]\leq\max\{\eta,A+(2E+1)e\}.
+\]
+Letting $e\downarrow0$ in the nonnegativity inequality gives $A\geq0$.
+Given $\epsilon>0$, set $\eta=\epsilon$ and $e=\epsilon/(2E+1)$.
+The last display is at most $A+\epsilon$. Let $\epsilon\downarrow0$.
+\end{proof}
+
+Continuity requires an estimate uniform over all disks and families.
+
+\begin{lemma}[Metric comparison for width]
+\label{lem:v4-metric-width}
+\uses{prop:v4-width-properties}
+\lean{PoincareMT.m66_freeClassWidth_le_of_metric_le}
+If metrics on the compact manifold satisfy $h(v,v)\leq Cg(v,v)$
+for $C>0$, then $W_h[F]\leq CW_g[F]$.
+\end{lemma}
+\begin{proof}
+For tangent vectors $u,v$ with $u\ne0$, replace $v$ by
+$v-g(u,v)u/g(u,u)$. Each Gram determinant is unchanged, and the
+vectors become $g$-orthogonal. Bound the two diagonal $h$ terms by
+$C$ times the $g$ terms and discard the nonpositive cross-square:
+\[
+ \det\operatorname{Gram}_h(u,v)
+ \leq C^2\det\operatorname{Gram}_g(u,v).
+\]
+The case $u=0$ is immediate. Square roots give the area-density factor
+$C$. The identity map is $\sqrt C$-Lipschitz, so the same disk remains
+admissible, with unchanged boundary and almost-everywhere differential.
+Its new area is at most $C$ times its old area. Compactness supplies a
+reverse metric bound too, so admissibility is equivalent for both metrics.
+Taking disk infima, family maxima and class infima proves the result;
+the competitor class is unchanged.
+\end{proof}
+
+\begin{proposition}[Smooth-time estimates]
+\label{prop:v4-smooth-time}
+\uses{prop:v4-endpoint-comparison,lem:v4-metric-width}
+\lean{PoincareMT.m66_smooth_time_theory}
+\lean{PoincareMT.m66Width_continuousAt}
+\lean{PoincareMT.m66_forward_difference_bound}
+For the nonzero class above, $w(t)=W_{g(t)}[F]$ is nonnegative and
+continuous on $[a,b]$. For every $s\in[a,b)$ and $\epsilon>0$ there
+is $\delta>0$ such that, if $s<t\leq b$ and $t<s+\delta$, then
+\begin{equation}
+ \frac{w(t)-w(s)}{t-s}
+ \leq-2\pi-\frac{R_{\min}(s)}2w(s)+\epsilon.
+ \label{eq:v4-forward}
+\end{equation}
+\source{MT2007}\dcref{Proposition 18.18, p. 431; Claim 18.21, pp. 432--433}
+\end{proposition}
+\begin{proof}
+Curvature continuity on the compact space-time slab bounds
+$|\operatorname{Ric}(v,v)|\leq Dg(v,v)$ for some $D\geq0$.
+Integrating $\partial_tg=-2\operatorname{Ric}$ on a fixed tangent
+vector gives $g(t)\leq e^{2D|t-s|}g(s)$ and the reverse bound. Thus
+Lemma~\ref{lem:v4-metric-width} gives
+\[
+ e^{-2D|t-s|}w(s)\leq w(t)\leq e^{2D|t-s|}w(s).
+\]
+The squeeze theorem proves continuity, including at slab endpoints.
+No minimizing representative is chosen uniformly in time.
+
+Apply Proposition~\ref{prop:v4-endpoint-comparison} to the restricted
+slab $[s,t]$. It gives $w(t)\leq\Phi_{s,w(s)}(t)$ with equality of
+initial values at $s$. The profile has right derivative
+$-2\pi-R_{\min}(s)w(s)/2$ there. Subtract $w(s)$, divide by $t-s>0$
+and use the definition of this derivative to obtain
+\eqref{eq:v4-forward}. Differentiability of $w$ is not asserted.
+\end{proof}
+
+\section{One class through a surgery history}
+
+Fix a component path $X_t\subset M_t$ on $[0,T]$. Its components are
+compact connected smooth three-manifolds with basepoints $x_t$; at an
+event the slice means the outgoing slice. There are finitely many events,
+none at zero. On $(a,b]$ without events, actual slice diffeomorphisms
+$r_{a,b}:X_a\to X_b$ have compatible composition and basepoint transport.
+At an event $s$, an earlier preterminal time $s^-<s$ has no event in
+$(s^-,s)$. Theorem~\ref{thm:comparison-transport} gives a comparison
+homotopy equivalence from that parent to the selected child. Its parent
+and child are simply connected; we retain this specialization here.
+
+Fix one based/free identification throughout, $\pi_2(X_0,x_0)=0$,
+and $\xi_0\ne0$ in $\pi_3(X_0,x_0)$. Transport ordinarily by the slice
+diffeomorphisms and specified basepoint paths. At an event, transport to
+the preterminal parent, then by the actual comparison map, and finally
+along a path in the child to $x_s$. Homotopy equivalences preserve
+triviality of $\pi_2$ and nontriviality of the third homotopy element;
+basepoint change is an isomorphism too.
+
+For completeness, order the finite set consisting of zero and the events.
+Define the class at zero. The preterminal time $s^-<s$ of each event
+lies after a previously defined anchor, whose class can be transported
+ordinarily to $s^-$. Apply the event map to define the new anchor class.
+At an arbitrary $t$, transport from the largest anchor not exceeding
+$t$. Two times with no intervening event have the same last anchor, so
+the composition rule proves compatibility of their classes. The recursive
+definition gives the event rule. No unrelated class is chosen on a child.
+\lean{PoincareMT.m67_finite_transport_section}
+\lean{PoincareMT.m67_class_path_exists}
+
+Let $\alpha_t$ be the resulting loop-space class and put
+$w(t)=W_{g(t)|X_t}(\alpha_t)$. The based/free identification makes this
+the actual free-class width on each ordinary slab. An interval's initial
+width is evaluated at that interval's start, not silently replaced by
+the time-zero width.
+
+Area estimates use smooth approximants of an event map. All these
+approximants have the same based $\pi_3$ map at the fixed comparison
+basepoint. Naturality of $\pi_2(\Lambda^1X)\simeq\pi_3(X)$ shows that
+their postcomposed families give the same $\alpha_s$ after rebasing
+along the fixed child path. Changing the approximation tolerance therefore
+does not change the width being estimated.
+\lean{PoincareMT.m67_event_class_datum_exists}
+
+\section{The estimate at an event}
+
+The strict event bounds are $\delta(s)<\delta_{\rm cut}$ and
+$h(s)<R_{\rm cut}^{-1/2}$ for the cutoffs of the local surgery theorem;
+the flow accuracy must also satisfy its terminal-neighborhood threshold.
+Section~\ref{sec:global-comparison-calibration} makes these choices before
+constructing the flow. Once these bounds hold, the comparison
+theorem gives the following uniform conclusion. For each $\eta>0$
+there is $\delta_0>0$ such that every preterminal $t$ with
+$s-\delta_0<t<s$ admits a smooth $(1+\eta)$-Lipschitz map
+$f_t:X_t\to X_s$ inducing the same based homotopy map as above.
+These are the same-map and same-class conclusions of
+Theorem~\ref{thm:comparison-transport}.
+
+\begin{lemma}[Disk postcomposition]
+\label{lem:v4-disk-transport}
+\uses{lem:v4-metric-width}
+\lean{PoincareMT.m67_filling_transport_of_lipschitz}
+If $f:(X,g)\to(Y,h)$ is smooth and $L$-Lipschitz, $L>0$, then
+$A_h(f\circ\gamma)\leq L^2 A_g(\gamma)$ for every null loop $\gamma$.
+\end{lemma}
+\begin{proof}
+Its differential satisfies $h(df(v),df(v))\leq L^2g(v,v)$.
+The Gram-determinant argument of Lemma~\ref{lem:v4-metric-width},
+applied to these differentials, bounds the area Jacobian by $L^2$.
+For an admissible disk $D$, the disk $f\circ D$ is Lipschitz, retains
+the boundary reparameterization, and is differentiable almost everywhere
+by the chain rule. Its area density is integrable and its area is at most
+$L^2\operatorname{Area}_g(D)$. Take the infimum over $D$.
+\end{proof}
+
+Postcomposition sends each pre-event competitor for $\alpha_t$ to a
+competitor for $\alpha_s$. Taking family maxima and then pre-event
+infima in the disk estimate yields
+\begin{equation}
+ w(s)\leq(1+\eta)^2w(t)\quad(s-\delta<t<s),\qquad
+ \delta=\min\{\delta_0,s-s^-\}>0.
+ \label{eq:v4-event-factor}
+\end{equation}
+The minimum puts every test time on the actual preterminal regular
+piece. The tolerance is chosen before the neighborhood.
+
+\begin{proposition}[Changing width estimates]
+\label{prop:v4-event-width}
+\uses{prop:v4-smooth-time,lem:v4-disk-transport,thm:comparison-transport,prop:filling-loop-identification}
+\lean{PoincareMT.m67_surgery_width_theory}
+\lean{PoincareMT.m67_event_factor_bounds}
+\lean{PoincareMT.m67_lower_limit_of_factor_bounds}
+The constructed width is nonnegative, obeys \eqref{eq:v4-forward} on
+ordinary pieces, is continuous at regular times, and is right-continuous
+at events. For every event $s$ and $\epsilon>0$ there is $\delta>0$
+such that
+\[
+ s-\delta<t<s\quad\Longrightarrow\quad w(s)\leq w(t)+\epsilon.
+\]
+This is the meaning of $w(s)\leq\liminf_{t\uparrow s}w(t)$ here.
+No incoming limit is assumed to exist.
+\source{MT2007}\dcref{Proposition 18.18, p. 431; Claim 18.22, p. 433}
+\end{proposition}
+\begin{proof}
+Nonnegativity and regular estimates apply to the same widths on ordinary
+pieces. Finiteness of the event set gives an outgoing regular interval at
+each time before $T$. Slab continuity, including its left endpoint,
+proves right continuity. At $T$ the assertion within $[0,T]$ is immediate.
+
+Put $v=w(s)\geq0$, choose
+$\eta=\min\{1,\epsilon/(4(v+1))\}>0$, and then choose the neighborhood
+in \eqref{eq:v4-event-factor}. If $w(t)\geq v$ there is nothing to prove.
+Otherwise $0\leq w(t)<v$, and
+\[
+ v-w(t)\leq(2\eta+\eta^2)w(t)\leq3\eta v
+             <4\eta(v+1)\leq\epsilon.
+\]
+This holds uniformly for all pre-times in that neighborhood.
+\end{proof}
+
+\section{Scalar comparison without differentiating the width}
+
+The normalized scalar-curvature bound is
+\begin{equation}
+ R_{\min}(t)\geq-\frac6{1+4t}.
+ \label{eq:v4-scalar-clock}
+\end{equation}
+Since $w\geq0$, \eqref{eq:v4-forward} bounds its upper forward slopes
+by $F(t,w(t))=-2\pi+3w(t)/(1+4t)$. Nonnegativity is essential in
+this substitution.
+
+\begin{proposition}[Regular-slab forward comparison]
+\label{prop:v4-m81}
+\lean{PoincareMT.m81RegularSlabComparison}
+Let $a\leq b$, with $1+4t>0$ on $[a,b]$. Suppose $f,G$ are
+continuous there, $f(a)\leq G(a)$, $G'=F(t,G)$, and for every
+$s\in[a,b)$ and $\epsilon>0$, all sufficiently near $t>s$ satisfy
+$(f(t)-f(s))/(t-s)\leq F(s,f(s))+\epsilon$.
+Then $f\leq G$ throughout the slab.
+\end{proposition}
+\begin{proof}
+Put $k=3/(1+4a)+1>0$. Since the clock increases,
+$3/(1+4s)<2k$. For $\eta>0$ use the barrier
+$H(t)=G(t)+\eta e^{2k(t-a)}$. At a contact $f(s)=H(s)$,
+\[
+ F(s,f(s))-H'(s)
+ =\left(\frac3{1+4s}-2k\right)\eta e^{2k(s-a)}<0.
+\]
+The forward quotient bound and the right derivative of $H$ imply
+$f(t)-H(t)<0$ for every sufficiently near $t>s$.
+
+If $f(t_*)>H(t_*)$, continuity and $f(a)<H(a)$ give a zero of $f-H$
+before $t_*$. The zero set in $[a,t_*]$ is compact, so it has a largest
+element $s<t_*$. Continuity and absence of further zeros make $f-H$
+positive on $(s,t_*]$, contrary to the negative values immediately to
+the right of $s$. Thus $f\leq H$. The perturbation is bounded by
+$\eta e^{2k(b-a)}$, so letting $\eta\downarrow0$ proves $f\leq G$.
+Only right slopes at a last contact were used, not a derivative of $f$.
+\end{proof}
+
+For $T_1\geq0$, the scalar solution with value $w_1$ there is
+\begin{equation}
+ P_{T_1,w_1}(t)=
+ w_1\left(\frac{1+4t}{1+4T_1}\right)^{3/4}
+ +2\pi(1+4T_1)^{1/4}(1+4t)^{3/4}-2\pi(1+4t).
+ \label{eq:v4-profile}
+\end{equation}
+Multiplying the ODE by $(1+4t)^{-3/4}$ gives derivative
+$-2\pi(1+4t)^{-3/4}$, whose integral is
+$-2\pi((1+4t)^{1/4}-(1+4T_1)^{1/4})$. Solving for $P$ gives
+\eqref{eq:v4-profile} and $P(T_1)=w_1$. All real powers have positive
+arguments.
+\lean{PoincareMT.m68_profile_equation}
+
+\section{Restarting through finitely many events}
+
+Fix $[T_1,T_2]\subset[0,T]$ and retain the single profile
+$P=P_{T_1,w(T_1)}$ on that whole interval. Suppose $w(t)\leq P(t)$
+for $a<t<s$ and $s$ is an event. For $\epsilon>0$, use the event
+inequality with error $\epsilon/2$ and continuity of $P$ with error
+$\epsilon/2$. Choose $t\in(a,s)$ in both neighborhoods. Then
+\[
+ w(s)\leq w(t)+\epsilon/2\leq P(t)+\epsilon/2<P(s)+\epsilon.
+\]
+Letting $\epsilon\downarrow0$ gives $w(s)\leq P(s)$ without any
+incoming width limit.
+\lean{PoincareMT.m68_event_restart_bound}
+
+\begin{proposition}[Finite-event scalar comparison]
+\label{prop:v4-scalar-clock}
+\uses{prop:v4-m81,prop:v4-event-width}
+\lean{PoincareMT.m68_scalar_clock_statement}
+For every $t\in[T_1,T_2]$, $0\leq w(t)\leq P_{T_1,w(T_1)}(t)$.
+\end{proposition}
+\begin{proof}
+If $[a,b]$ has no event in $(a,b)$ and $w(a)\leq P(a)$, then
+ordinary comparison gives the bound at $b$ when $b$ is regular.
+When $b$ is an event, compare on each $[a,c]$, $a<c<b$, and then
+use the preceding restart argument. Outgoing continuity at $a$ allows
+$a$ itself to be an event.
+
+Induct on a finite set covering all interior events. The empty case is
+the preceding argument. Remove an element $s$. If $s\notin(a,b)$,
+the remaining set still covers all interior events. If $a<s<b$, apply
+the induction hypothesis to $[a,s]$ and then $[s,b]$. Each interval
+has its interior events covered by the smaller set, and the first bound
+supplies $w(s)\leq P(s)$ for the second. Starting from equality at
+$T_1$ proves the result on $[T_1,t]$ for every $t$. The profile and
+its initial width are never reset.
+\end{proof}
+
+\begin{proposition}[Finite-piece propagation and contradiction]
+\label{prop:v4-finite-piece}
+\label{prop:v4-component-contradiction}
+\uses{prop:v4-scalar-clock}
+\lean{PoincareMT.m69FinitePiecePropagation}
+\lean{PoincareMT.m70FiniteExtinctionContradiction}
+The transported classes remain nonzero and their actual filling widths
+satisfy the preceding bound. A component path therefore cannot exist
+through $B\in[T_1,T_2]$ with $P_{T_1,w(T_1)}(B)<0$.
+\end{proposition}
+\begin{proof}
+The class construction preserves nontriviality and identifies the starting
+width with the free infimum at $T_1$. Scalar comparison would give
+$0\leq w(B)\leq P_{T_1,w(T_1)}(B)<0$. This contradicts existence
+of that path; a common extinction time still requires common initial data.
+\end{proof}
+
+\section{A common negative time and the first empty event}
+
+Fix the global flow of Section~\ref{sec:global-assembly}, with time domain
+$[0,\infty)$, nonempty initial slice, locally finite events, permanence of
+emptiness, and no surgery strictly after an empty slice. We require the
+following ancestry data from Section~\ref{sec:filling-fixed-initial-class}.
+There is one fixed initial component, basepoint, induced metric and
+nonzero class $\alpha_0$, chosen before the observation time. Every
+target slice is covered by the terminal components of finitely many paths
+starting at this same initial component. Each path has the comparison
+and class data above. All scalar and strict event bounds hold for this
+same flow.
+
+The class construction is anchored at $\alpha_0$. Hence every such
+path, for every terminal time, has
+\[
+ w(0)=w_0:=W_{g(0)|X_0}(\alpha_0).
+\]
+Equality of initial components also identifies their basepoints and
+induced metrics; an unspecified isomorphism of components would not
+suffice for this equality of widths.
+\lean{PoincareMT.m71WidthChoice_initial_width}
+
+Set
+\begin{equation}
+ c=2+\frac{w_0}{2\pi},\qquad T_*=(c^4-1)/4.
+ \label{eq:v4-extinction-time}
+\end{equation}
+Since $w_0\geq0$, $c\geq2$ and $T_*>0$. The zero-start profile is
+$(w_0+2\pi)(1+4t)^{3/4}-2\pi(1+4t)$, and therefore
+\[
+ P_{0,w_0}(T_*)=(w_0+2\pi)c^3-2\pi c^4=-2\pi c^3<0.
+\]
+Here $w_0=2\pi(c-2)$ and $c>0$ justify the equality.
+\lean{PoincareMT.m71ProfileAlgebra_neg}
+
+\begin{theorem}[Global finite extinction]
+\label{prop:v4-global-extinction}
+\uses{prop:v4-finite-piece}
+\lean{PoincareMT.m71GlobalFiniteExtinction}
+Under the global-flow and fixed-initial-class ancestry hypotheses just
+stated, the slice at $T_*$ is empty. An actual surgery time $S\leq T_*$
+has empty outgoing slice, every earlier slice is nonempty, and all later
+slices are empty.
+\source{MT2007}\dcref{Theorem 18.1, p. 415; Section 18.3.2, pp. 431--432}
+\end{theorem}
+\begin{proof}
+A surviving point at $T_*$ belongs, by the target cover, to a component
+path reaching $T_*$. Its initial width is $w_0$, so the common negative
+profile contradicts Proposition~\ref{prop:v4-component-contradiction}.
+Thus the slice at $T_*$ is empty.
+
+Take the maximum $S$ of zero and all surgery times in $[0,T_*]$.
+This is a nonempty finite set, with no surgery in $(S,T_*]$.
+If $S<T_*$, ordinary-slab identification carries emptiness back to
+$S$; if $S=T_*$ it is already empty. Initial nonemptiness excludes
+$S=0$, so $S$ is an actual event. An empty slice at an earlier $s<S$
+would prohibit that event by the no-surgery-after-emptiness property.
+Thus all earlier slices are nonempty, and permanence gives later emptiness.
+\lean{PoincareMT.m71FirstEmptySurgery}
+\end{proof}
+
+The last event before an already empty observation thus locates the first
+empty slice; no attainment of an infimum of empty times was assumed.
+This event is the input to finite-history reconstruction. The uniformity
+here comes from one time-zero class on the simply connected initial
+manifold. The broader argument in \cite[pp. 431--432]{MT2007} starts after
+second homotopy has vanished and takes a bound over finitely many initial
+components at that later time. That additional route is not asserted here.

@@ -1,0 +1,4 @@
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Caps.EndBall
+
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryCoreCap.LowerAnnularEnd.exists_ball_with_closing_disk
+#print axioms Poincare.Manifold.Schoenflies.SphereSurgeryCoreCap.UpperAnnularEnd.exists_ball_with_closing_disk

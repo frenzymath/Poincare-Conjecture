@@ -1,0 +1,29 @@
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalSurface.DirectLower
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalSurface.Middle.Assembly
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalSurface.Middle.Reflection
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalSurface.Middle.BandCoverage
+
+open Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface
+open Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.Middle
+
+#print axioms direct_union_lower_boundary
+#print axioms retimedPoint_profileLift
+#print axioms retimedPoint_profileLift_mem_normalized
+#print axioms inserted_frontier_point_mem_retimed_original
+#print axioms removed_frontier_point_mem_retimed_original
+#print axioms open_wall_mem_lifted_disk_of_strict_width
+#print axioms continued_profile_transition_mem_gap_or_open_wall
+#print axioms finite_gap_continued_point_data
+#print axioms inserted_frontier_on_finite_gap_mem_retimed_original
+#print axioms removed_frontier_on_finite_gap_mem_retimed_original
+#print axioms continuation_above_threshold_iff
+#print axioms selected_continued_point_actual_or_transition
+#print axioms continued_side_point_mem_actual_or_gap_or_wall
+#print axioms actual_inserted_frontier_mem_retimed_original
+#print axioms actual_removed_frontier_mem_retimed_original
+#print axioms retimedPoint_halfTurn
+#print axioms reflectedEnergyTransport_inverse_energy
+#print axioms retimed_localization_of_halfTurn
+#print axioms continued_band_subset_of_normalized_points
+#print axioms side_sphere_open_middle_subset_band
+#print axioms side_sphere_middle_subset_band_of_upper_trace

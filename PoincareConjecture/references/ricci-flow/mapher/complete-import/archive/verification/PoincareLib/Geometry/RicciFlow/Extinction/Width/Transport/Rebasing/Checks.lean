@@ -1,0 +1,5 @@
+import PoincareLib.Geometry.RicciFlow.Extinction.Width.Transport.Rebasing.Represents
+
+#print axioms PoincareMT.m67_basepoint_transport_homotopy
+#print axioms PoincareMT.m67_sphere_free_transport
+#print axioms PoincareMT.m67_represents_postcomposition_rebase

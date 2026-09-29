@@ -1,3 +1,7 @@
+> This reference is now blueprint-only. Its Lean sources and Lake package have
+> been removed; earlier formalization and build notes below are historical.
+> The active proof library is in `../../PoincareConjecture/`.
+
 # Cao-Zhu - Hamilton-Perelman's proof
 
 A Lean 4 project and complete source-based blueprint following Huai-Dong Cao

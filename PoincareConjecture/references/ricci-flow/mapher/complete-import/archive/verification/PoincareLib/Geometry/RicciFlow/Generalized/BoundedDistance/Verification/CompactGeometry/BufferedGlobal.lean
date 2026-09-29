@@ -1,0 +1,20 @@
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.GeometryImports
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Spacetime.StrongNecks.CompactGeometry.StrongNeckBufferedGlobalBounds
+
+/-! # Direct audits of actual globally rescaled buffered source flows -/
+
+set_option autoImplicit false
+
+open PoincareMT.M28
+
+#print axioms GeneralizedStrongNeck.buffered_global_rescaling
+#print axioms GeneralizedStrongNeck.buffered_global_time_mem
+#print axioms GeneralizedStrongNeck.buffered_global_flow
+#print axioms GeneralizedStrongNeck.buffered_global_flow_metric
+#print axioms GeneralizedStrongNeck.buffered_global_flow_connection
+#print axioms GeneralizedStrongNeck.buffered_global_flow_metric_at_zero
+#print axioms GeneralizedStrongNeck.buffered_global_flow_metric_eq_restriction
+#print axioms GeneralizedStrongNeck.buffered_global_physical_time_mem
+#print axioms GeneralizedStrongNeck.buffered_global_flow_curvatureTensorNorm
+#print axioms GeneralizedStrongNeck.buffered_global_flow_curvatureDerivativeNorm
+#print axioms exists_strongNeck_buffered_global_bounds_accuracy

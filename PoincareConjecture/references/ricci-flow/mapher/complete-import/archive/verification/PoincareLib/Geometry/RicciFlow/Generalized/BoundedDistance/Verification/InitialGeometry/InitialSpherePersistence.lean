@@ -1,0 +1,39 @@
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.GeometryImports
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.SourceGeometry.CriticalBall.SourceCriticalBallInitialSphereGraph
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.SourceGeometry.InitialGeometry.SourceInitialGraphSide
+
+/-!
+# Direct audits of the initial sphere persistence and relative side
+
+Every new public declaration in the fixed-atlas forward transfer, actual
+source graph and first-neck component construction has a direct axiom
+report here. Source: Morgan--Tian Proposition 10.7, pp. 253-254;
+M28 derivations 91 and 109.
+-/
+
+set_option autoImplicit false
+
+open PoincareMT PoincareMT.M28
+open PoincareMT.Proofs.M28.NeckTransfer
+
+#print axioms RegularPointedMetricConvergence.exists_limit_finite_chart_bounds
+#print axioms cylinderNeckCoefficients_unscale
+#print axioms hasUniformJetBoundsAt_fixedCylinderCoordinates_fderiv
+#print axioms forwardCylinderCoordinates_source_coefficients
+#print axioms forwardCylinderCoordinates_error_germ
+#print axioms exists_forwardCylinder_metric_error_tail
+#print axioms NeckGeometryCore.frozen_forward_difference_germ
+#print axioms NeckGeometryCore.norm_frozen_forward_difference_jet_le
+#print axioms CounterexampleNeckFamily.exists_regularRawStage_forward_metric_error
+#print axioms CounterexampleNeckFamily.exists_regularRawStage_forward_neck_geometry
+#print axioms CounterexampleNeckFamily.eventually_exists_regularRawStage_forward_neck
+#print axioms CounterexampleNeckFamily.exists_retained_initial_sphere_persistence_accuracy
+#print axioms central_sphere_subset_small_slab_of_capture
+#print axioms exists_same_center_neck_sphere_graph_accuracy
+#print axioms CounterexampleNeckFamily.exists_retained_initial_sphere_graph_accuracy
+#print axioms EpsilonTubeCertificate.closure_first_belowGraph
+#print axioms EpsilonTubeCertificate.frontier_first_belowGraph
+#print axioms EpsilonTubeCertificate.isClopen_first_belowGraph_complement
+#print axioms EpsilonTubeCertificate.connectedComponentIn_first_belowGraph
+#print axioms SourceTubeData.isLeast_tube_chain_zero
+#print axioms SourceTubeData.initial_graph_negative_region

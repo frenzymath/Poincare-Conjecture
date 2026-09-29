@@ -1,0 +1,8 @@
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalSurface.UpperReplacement.RelativeBoundaryTransport
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalSurface.UpperReplacement.JoiningTrace
+
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.UpperReplacement.exists_relative_upper_hemisphere_transport
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.UpperReplacement.exists_relative_latitude_transport
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.UpperReplacement.circle_embedding_range_eq_of_subset
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.UpperReplacement.ambient_circle_eq_of_subset
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.UpperReplacement.joining_trace_subset_of_strict_upper_replacement

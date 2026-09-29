@@ -1,0 +1,40 @@
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.GeometryImports
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.SourceGeometry.CriticalBall.SourceCriticalBallChartFlow
+
+/-!
+# Axiom audit for original source backward chart flows
+
+The declarations below implement the source rescaling, fixed-domain
+pullback and exact terminal critical metric in M28 derivation 74.
+-/
+
+set_option autoImplicit false
+-- This verification module intentionally prints kernel dependency reports.
+set_option linter.hashCommand false
+
+open PoincareMT.M28
+
+#print axioms GeneralizedStrongNeck.global_scale_pos
+#print axioms GeneralizedStrongNeck.global_rescaling
+#print axioms GeneralizedStrongNeck.global_time_mem_quarter
+#print axioms GeneralizedStrongNeck.global_flow
+#print axioms GeneralizedStrongNeck.global_flow_metric
+#print axioms GeneralizedStrongNeck.global_flow_connection
+#print axioms GeneralizedStrongNeck.global_flow_metric_at_zero
+#print axioms GeneralizedStrongNeck.global_flow_metric_eq_restriction
+#print axioms GeneralizedStrongNeck.global_physical_time
+#print axioms GeneralizedStrongNeck.global_physical_time_mem
+#print axioms ordinaryRescaling_curvatureDerivativeNorm
+#print axioms GeneralizedStrongNeck.global_flow_curvatureTensorNorm
+#print axioms GeneralizedStrongNeck.global_flow_curvatureDerivativeNorm
+#print axioms exists_strongNeck_global_bounds_accuracy
+#print axioms GeneralizedStrongNeck.captured_chart_map
+#print axioms GeneralizedStrongNeck.captured_chart_map_localDiffeomorph
+#print axioms GeneralizedStrongNeck.global_chart_flow
+#print axioms GeneralizedStrongNeck.global_chart_flow_metric_at_zero
+#print axioms GeneralizedStrongNeck.global_chart_flow_curvatureTensorNorm
+#print axioms GeneralizedStrongNeck.global_chart_flow_curvatureDerivativeNorm
+#print axioms RegularPointedMetricConvergence.chart_embedding_localDiffeomorph
+#print axioms CounterexampleNeckFamily.tubeCritical_chart_original_localDiffeomorph
+#print axioms CounterexampleNeckFamily.tubeCritical_chart_flow
+#print axioms CounterexampleNeckFamily.tubeCritical_chart_flow_metric_at_zero

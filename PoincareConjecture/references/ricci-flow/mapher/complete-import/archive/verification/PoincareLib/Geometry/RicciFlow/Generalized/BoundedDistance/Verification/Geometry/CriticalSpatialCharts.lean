@@ -1,0 +1,29 @@
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.GeometryImports
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.SourceGeometry.CriticalBall.SourceCriticalBallChartCapture
+
+/-! Kernel audits for the scalar, scale and fixed-chart bridges in derivation 72. -/
+
+set_option autoImplicit false
+-- This file deliberately reports the kernel dependencies of the new producers.
+set_option linter.hashCommand false
+
+namespace PoincareMT.M28
+
+#print axioms tendsto_metricTwoJet_of_uniform_bilinear_jets
+#print axioms RegularPointedMetricConvergence.tendsto_scalarCurvature
+#print axioms RegularPointedMetricConvergence.scalarCurvature_lower_bound
+#print axioms RegularPointedMetricConvergence.exists_eventual_chart_ball_capture
+#print axioms GeneralizedStrongNeck.rescaled_half_ball_eq_preimage
+
+namespace CounterexampleNeckFamily
+
+#print axioms tubeCritical_scalar_eq
+#print axioms exists_source_criticalBall_scalar_lower_accuracy
+#print axioms exists_source_criticalBall_limit_scalar_lower_accuracy
+#print axioms source_centered_neck_scale_sq_eq_inverse_scalar
+#print axioms exists_source_criticalBall_neck_scale_limits_accuracy
+#print axioms tubeCritical_mem_original_ball
+#print axioms exists_source_criticalBall_neck_chart_capture_accuracy
+
+end CounterexampleNeckFamily
+end PoincareMT.M28

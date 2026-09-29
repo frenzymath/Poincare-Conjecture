@@ -28,11 +28,11 @@ class BuildSelectionTests(unittest.TestCase):
     def test_lean_changes_still_select_a_build(self):
         self.check_selected_package('PoincareConjecture', 'PoincareConjecture')
 
-    def test_reference_changes_select_the_relocated_package(self):
-        self.check_selected_package('references/MorganTian', 'MorganTian')
+    def test_reference_changes_do_not_start_lake(self):
+        self.check_selected_package('references/MorganTian', None)
 
-    def test_shared_changes_select_the_relocated_package(self):
-        self.check_selected_package('references/shared', 'Shared')
+    def test_retired_shared_changes_do_not_start_lake(self):
+        self.check_selected_package('references/shared', None)
 
     def check_selected_package(self, package_path, package_name):
         with tempfile.TemporaryDirectory() as directory:
@@ -55,6 +55,11 @@ class BuildSelectionTests(unittest.TestCase):
             env = {**os.environ, 'PATH': str(binary) + os.pathsep + os.environ['PATH']}
             result = subprocess.run(['bash', str(SCRIPT), 'HEAD'], cwd=repo,
                                     env=env, capture_output=True, text=True)
+            if package_name is None:
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertIn('No Lean package changes', result.stdout)
+                self.assertNotIn('LAKE_SELECTED', result.stdout)
+                return
             self.assertEqual(result.returncode, 7)
             self.assertIn(f'Building {package_name} ({package_path})', result.stdout)
             self.assertIn('LAKE_SELECTED', result.stdout)

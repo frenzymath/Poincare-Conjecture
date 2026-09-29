@@ -1,0 +1,1237 @@
+\chapter{Resolving singularities by surgery}
+\label{ch:surgery}
+
+This chapter describes one local surgery step and the continuation data that
+make it usable in a changing-carrier Ricci flow.  A surgery is a geometric
+operation only after its incoming slice, its strong necks, and its scale
+parameters have been fixed.  We first construct the metric replacement on
+those necks, then identify the topology of the resulting event and compare
+its incoming and outgoing components.  The terminal-limit results of the
+preceding chapter supply the necks; the global schedule chapter arranges
+successive events.
+
+\section{Changing carriers and terminal data}
+\label{sec:surgery-carriers}
+
+Let $F$ be a three-dimensional changing-carrier flow.  Its time domain is a
+subset of $\mathbb R$, its slice at $t$ is a smooth manifold $M_t$, and its
+metric and connection are denoted $g(t)$ and $\nabla(t)$.  Away from the
+discrete set $\Sigma$ of surgery times, ordinary transport identifies the
+slices and
+\[
+        \partial_t g(t)=-2\operatorname{Ric}(g(t)).
+\]
+At $T\in\Sigma$ the event has a pre-time $T^-$, a regular terminal region,
+finitely many disjoint necks, a retained pre-region, a retention map into the
+outgoing slice, and a finite family of inserted caps.  The incoming and
+outgoing carriers are not identified globally.  All maps below are on the
+part of a carrier where their domains are stated.
+
+The flow data include compact slices, the ordinary transports, and the
+event identifications.  Admissibility imposes three further conditions:
+each boundary neck is strong; sufficiently late before a nonempty event,
+every point outside the interior retained region has canonical control;
+and sufficiently late before a vanishing event, every point has canonical
+control.  Here canonical control means the neck, cap, or positive closed
+component alternative with the flow's fixed constants $\varepsilon,C$.
+The relevant late interval is part of each event.  Pinching means the
+absolute-time Hamilton--Ivey inequalities displayed below on every slice.
+A terminal
+input at $T>0$ has time domain $[0,T)$, a last surgery-free slab
+$[a,T)$, and curvature unbounded arbitrarily close to $T$.  It is
+admissible, pinched, canonical above the prescribed radius threshold,
+and noncollapsed with its prescribed function $\kappa(t)$.
+The last condition is imposed on surviving parabolic balls with
+backward interval $[t-r^2,t]$, $0<r\leq\varepsilon$, and
+$|\operatorname{Rm}|\leq r^{-2}$: outside the positive-component
+alternative their final volumes are at least $\kappa(t)r^3$.
+The input also has a controlled core $\mathcal C\subset M_a$
+and the scale data
+\[
+  \rho=\delta(T)r(T),\qquad 0<\rho<r(T),\qquad
+  0<\rho<r_0,
+\]
+with
+\[
+ \delta(T)\leq\delta_0,\quad
+ h(T)\leq R_0^{-1/2},\quad
+ h(T)\leq\rho\delta(T),\quad
+ h(T)\leq\frac{\rho}{2C}.
+\]
+The controlled core is classified by the disjoint alternatives
+$\mathcal C\ne\varnothing$ and $\mathcal C=\varnothing$.
+The terminal regular limit, the
+selected deep horns, and the bridge from the last slab to that limit are
+separate hypotheses of the continuation theorem.
+
+\begin{definition}[Regular history]
+\label{def:surgery-regular-history}
+For a generalized reference flow $G$ on an interval $J$, a regular history
+of $G$ in $F$ is a family of forward embeddings and inverse maps on every
+ordinary box.  They are smooth, mutually inverse on the image, pull back the
+metric exactly, and commute with the ordinary slab transports.  At a surgery
+time they land in the interior of the retained region before and after the
+event, and the retention map carries the pre-image to the same worldline in
+the outgoing slice.  The history also contains the time-domain inclusion and
+the compatibility of all overlapping boxes.
+\lean{PoincareMT.M33RegularHistoryData}
+\source{MT2007}
+\dcref{Lemma 14.11 and Proposition 14.12, pp. 349--350;
+Definition 15.8, pp. 361--362}
+\cite[Lemma 14.11 and Proposition 14.12, pp. 349--350;
+Definition 15.8, pp. 361--362]{MT2007}
+\end{definition}
+
+The point of this definition is that a regular limit is not silently placed
+on a fixed manifold.  The forward maps identify only the retained worldlines;
+discarded neck ends have no image in the terminal regular region.
+
+\section{The standard cap}
+\label{sec:standard-cap}
+
+\begin{definition}[Standard initial metric and maximal cap flow]
+\label{def:standard-initial-metric}
+A standard initial metric $g_0^{\rm cap}$ is a complete rotationally invariant
+smooth metric on $\mathbb R^3$ with nonnegative sectional curvature and
+sectional curvature $1/4$ on some ball about the origin.  It is invariant
+under $\operatorname{SO}(3)$.  Outside a compact closed metric ball of radius
+$A_0>0$, a specified collar identifies it with
+$2g_{S^2}+ds^2$, where $g_{S^2}$ has sectional curvature one.
+A partial standard-cap flow has lifetime $\tau>0$, solves Ricci flow on
+$[0,\tau)$, and has both this initial metric and its specified connection.
+For every $0\leq b<\tau$ there is $K_b<\infty$ bounding
+$|\operatorname{Rm}|$ at every point and every time in $[0,b]$.
+Completeness and rotational symmetry are conclusions, not additional
+assumptions on a partial flow.  Maximality means that no flow with larger
+lifetime agrees with both its metric and connection on its entire domain.
+\lean{PoincareMT.StandardInitialMetric}
+\source{MT2007}
+\dcref{Definition 12.1, pp. 293--294}
+\cite[Definition 12.1, pp. 293--294]{MT2007}
+\end{definition}
+
+\begin{lemma}[Common-domain uniqueness]
+\label{lem:cap-common-uniqueness}
+\uses{def:standard-initial-metric}
+Two partial standard-cap flows with the same initial metric and connection
+agree at every common included time, without a separate completeness
+or symmetry assumption.
+\lean{PoincareMT.M34.partialStandardCapFlow_metric_unique}
+\source{MT2007}
+\dcref{Section 12.5, pp. 309--319}
+\cite[Section 12.5, pp. 309--319]{MT2007}
+\end{lemma}
+
+\begin{proof}
+Fix a compact common time interval $[0,b]$.  Subtract the metrics,
+connections, and raised curvature tensors of the two flows.  On the
+compact tip and a sequence of translated cylindrical annuli choose
+cutoffs whose plateaus cover the carrier and whose supports meet only
+neighboring annuli.  Pull each translated annulus back to a fixed
+reference domain, and denote the three tensor differences there by
+$H_j,A_j,S_j$.  Fixed linear coordinates on their finite-dimensional
+fibers give Euclidean norms.  With compactly supported cutoff $\chi_j$,
+define the actual coordinate energy
+\[
+ E_j(t)=\int \chi_j^2
+       \bigl(|H_j|^2+|A_j|^2+|S_j|^2\bigr)\,dx.
+\]
+Index zero uses a compact-core chart; positive indices use the
+translated end chart.  Uniform metric comparison and derivative
+estimates, including bounds inherited from the initial metric at
+time zero, control the coefficients on these fixed supports.
+Integration by parts in the curvature-difference
+equation, together with the metric and connection evolution equations,
+bounds $E_j'$ by a constant times the integral of the
+same density over its support.  Derivatives of the cutoff give only
+support terms: Young's inequality absorbs the factors containing
+one derivative of the curvature difference into the negative
+diffusion term.  Each support is covered by at most three adjacent
+plateaus.  The uniform coefficient and cutoff bounds consequently give
+$0\leq E_j\leq M$ with one $M$ for all $j$, and
+\[
+ E_0',E_1'\leq C(E_0+E_1+E_2),\qquad
+ E_{j+2}'\leq C(E_{j+1}+E_{j+2}+E_{j+3}).
+\]
+All initial energies vanish.  To justify the noncompact argument, set
+$F_k=\sum_{j=0}^{k+2}2^{-j}E_j$.  The displayed inequalities imply
+\[
+ F_k'\leq8CF_k+2CM\,2^{-(k+3)},\qquad F_k(0)=0.
+\]
+Scalar Gronwall bounds $F_k(t)$ by a quantity tending to zero as
+$k\to\infty$, uniformly for $0\leq t\leq b$.  For each fixed $j$,
+$2^{-j}E_j\leq F_k$ once $k\geq j$; hence $E_j=0$.
+The plateau cover and continuity give metric equality everywhere;
+uniqueness of the Levi-Civita connection gives connection equality.
+Only finite sums were differentiated.  Exhausting the common time
+interval proves the assertion.
+\end{proof}
+
+\begin{theorem}[Existence of the standard cap flow]
+\label{thm:standard-cap-existence}
+\uses{def:standard-initial-metric,lem:cap-common-uniqueness}
+For every standard initial metric $g_0^{\rm cap}$ there is a selected maximal
+flow $G$ with $G(0)=g_0^{\rm cap}$ and lifetime exactly one.  For
+$0\leq t<1$ every slice is complete and has nonnegative sectional curvature;
+for $0<t<1$ it has positive sectional curvature and is rotation invariant.
+For every $0\leq t_0<1$ and $\epsilon>0$, there is a compact set $K$ such
+that each $x\notin K$ has one spatial cylinder chart of length
+$\epsilon^{-1}$, valid for all $t\in[0,t_0]$, in which $G(t)$ is
+$\epsilon$-close to $2(1-t)g_{S^2}+ds^2$.  Closeness uses spatial
+covariant jets through order $\lfloor\epsilon^{-1}\rfloor$.
+There are $r_*>0$ and $\kappa_*>0$ such that, whenever
+$0<r\leq r_*$, $r^2\leq t<1$, and $|\operatorname{Rm}|\leq r^{-2}$
+on the fixed final-time ball $B_{G(t)}(x,r)$ throughout $(t-r^2,t]$,
+\[
+ \operatorname{vol}_{G(t)} B_{G(t)}(x,r)\geq\kappa_*r^3.
+\]
+\lean{PoincareMT.repairedStandardCapExistence}
+\source{MT2007}
+\dcref{Theorem 12.5, pp. 295--297; Proposition 12.13, pp. 305--306;
+Theorems 12.28--12.29 and Claim 12.30, pp. 323--325}
+\cite[Theorem 12.5, pp. 295--297; Proposition 12.13, pp. 305--306;
+Theorems 12.28--12.29 and Claim 12.30, pp. 323--325]{MT2007}
+\end{theorem}
+
+\begin{proof}
+First, the class of initial metrics is nonempty.  In radial arclength choose
+a smooth concave profile $f$, equal to $2\sin(s/2)$ near zero, with
+$0\leq f'\leq1$, and eventually constant $\sqrt2$.
+A cutoff parameter adjusts the integral of $f'$ to $\sqrt2$; continuity
+and the intermediate value theorem give the required plateau height.
+The warped metric $ds^2+f(s)^2g_{S^2}$ has sectional curvatures
+$-f''/f$ and $(1-(f')^2)/f^2$.  Thus it is nonnegative, is round with
+curvature $1/4$ near the tip, and is the required cylinder at infinity.
+The round formula makes the origin smooth, and the unbounded radial
+arclength proves completeness.
+
+For any specified initial metric, double successively longer truncated
+cylindrical ends and run the compact Ricci flows.  Local curvature and
+derivative bounds on fixed balls, together with the noncollapsing and
+pointed-compactness results of the analytic chapters, give a diagonal
+limit, including the initial endpoint.  On every compact time interval
+with curvature bound $K$, integrating the Ricci equation gives uniform
+two-sided comparison with the complete initial metric.  This proves
+completeness of the limit.  The tensor maximum principle preserves
+nonnegative curvature; its strong form, applied to the positive tip,
+gives positive sectional curvature at positive times.
+Lemma~\ref{lem:cap-common-uniqueness}, applied to rotation pullbacks, proves rotational
+invariance.  Restarting and identifying overlapping solutions gives a
+maximal flow.  Translating farther down the initial cylinder and taking
+limits identifies the end with the shrinking cylinder, uniformly on
+each compact time interval.  Reduced-geometry noncollapsing applies to
+the controlled parabolic balls stated in the theorem.
+
+The cap transfer also preserves the quantitative geometric margins used
+later.  If a normalized core point has scalar curvature one and the
+common cap constant is $C\geq1$, the reference ball of radius
+$(100C)^{-1}$ has volume at least
+$C^{-1}(100C)^{-3}$.  Forward and inverse chart differentials bounded
+by $2$ put its image inside the corresponding target ball and change
+calibrated volume by at most $2^3$.  Here Bishop--Gromov is applied in
+the complete limit cap, whose Ricci curvature is nonnegative, to propagate
+its core-ball volume witness down to the reference radius.  For a target
+ball normalized by $\sup_{B(y,r)}R=r^{-2}$, the scalar bounds
+$(2C)^{-1}\leq R\leq2C$ imply the conservative bounds
+$(2C)^{-1}\leq r\leq2C$.  Short source paths and the differential
+bound put the reference ball's image inside that target ball.  Consequently
+\[
+ \operatorname{vol}B(y,r)\geq
+ \frac{(100C)^{-3}}{8C(2C)^3}\,r^3.
+\]
+This proves the required bound on the scalar-normalized core balls.
+The same chart
+bounds, applied to the coefficient derivatives on a larger compact ball,
+give the finite spatial-jet bounds; they are not consequences of pointwise
+metric convergence alone.
+
+We give the essential lifetime argument because a bound on each compact
+subinterval alone gives no bound at a finite endpoint.  If $\tau>1$,
+the cylindrical asymptotic scalar curvature $1/(1-t)$ contradicts a
+uniform curvature bound on a compact time interval containing $1$.
+Suppose instead that $\tau<1$.  First there are constants $A,C,Q_*>0$
+such that each point of scalar curvature at least $Q_*$ has canonical
+control and $|\partial_tR|\leq AR^2$.  To prove this, choose the
+requested neighborhood accuracy before its model constant.  If no
+threshold worked, choose bad points with scalar curvature tending to
+infinity.  Noncollapsing and the fixed-sequence long-limit theorem
+give an ancient limit normalized to scalar curvature one at its base.
+The ancient alternative is a strong neck or cap at that exact base.
+For a neck, convergence on the backward unit slab transfers the
+fixed cylinder chart.  For a cap, choose a relatively compact open
+neighborhood of its closure, transfer both its end and boundary
+neck charts, and retain the original core under the convergence
+embedding.  Strict scalar-ratio, derivative, diameter, and volume
+margins survive the finite-jet and volume convergence.  Completeness
+allows the comparison balls to stay in the transferred neighborhood.
+This produces a canonical neighborhood at the originally chosen
+bad point.  Ancient analytic estimates, transferred through the
+same space-time chart, give the scalar derivative bound there too,
+a contradiction.  This is persistence of an ordinary limit cap,
+and uses no theorem about caps born at a surgery event.
+
+Because $\tau<1$, the asymptotic cylinder gives one finite scalar
+bound $K$ at spatial infinity, uniform in the initial choice of
+time $t_0<\tau$.  Choose $B\geq\max(1,Q_*,9K)$ first, then
+$t_0=\tau-d$ with $0<d\leq\min(\tau/2,1/(16AB))$.
+At that time some compact $X$ has $R(x,t_0)\leq B$ outside $X$.
+For each fixed such $x$, the guarded inequality $R'\leq AR^2$
+prevents $R$ from reaching $2B$ before $\tau$: integration of
+$(1/R)'\geq-A$ on a last interval from $B$ to $2B$ would require
+at least $1/(2AB)$ time.  Nonnegative sectional curvature bounds
+$|\operatorname{Rm}|$ by scalar curvature.  We have therefore
+obtained one exterior full-curvature bound on all of $[t_0,\tau)$.
+
+Choose a relatively compact open set $\Omega$ outside $X$.  The exterior
+curvature bound and metric comparison give
+$\operatorname{vol}_{G(t)}\Omega\geq v>0$ for $t_0\leq t<\tau$.
+Nonnegative Ricci curvature makes distances nonincreasing.  Compactness
+of $X$ therefore supplies $D$ such that
+$\Omega\subset B_{G(t)}(p,D)$ for every $p\in X$ and $t\geq t_0$.
+Finite maximal lifetime forces curvature blowup, with centers
+$p_j\in X$, times $t_j\uparrow\tau$, and scales $Q_j\to\infty$.
+Point-picking and long-limit compactness give an ancient noncollapsed
+limit of $(M,Q_jG(t_j),p_j)$; its asymptotic volume ratio is zero.
+For fixed $A$ and large $j$, Bishop--Gromov comparison gives
+\[
+ \frac{v}{D^3}\leq
+ \frac{\operatorname{vol}_{G(t_j)}B(p_j,D)}{D^3}
+ \leq\frac{\operatorname{vol}_{Q_jG(t_j)}B(p_j,A)}{A^3}.
+\]
+Pass first to the pointed limit and then let $A\to\infty$.
+The right side tends to zero, a contradiction.  Hence $\tau=1$.
+\end{proof}
+
+\begin{theorem}[Uniqueness, lifetime, and canonical alternatives]
+\label{thm:standard-cap-uniqueness}
+\uses{thm:standard-cap-existence,lem:cap-common-uniqueness}
+Let $E$ be the existence data for $g_0^{\rm cap}$.  Every maximal standard-cap
+flow $G'$ with the same initial metric has lifetime one and agrees with $E$ on
+the common interval.  More generally, every compatible partial flow agrees
+with $E$ on its common domain; maximality is needed only to compare lifetimes.
+There is a constant $c>0$ such that, for every $t\in[0,1)$ and every
+$x\in\mathbb R^3$,
+\[
+             \frac{c}{1-t}\leq R_E(x,t).
+\]
+For each $0<\epsilon<1/2$ there is $C>0$, chosen before $x$ and $t$, such
+that every $(x,t)$ is either in a quantitative cap, is the center of an
+evolving $\epsilon$-neck on $[0,t]$ disjoint from the initial cap core, or is
+the center of an evolving neck on normalized time $(-(1+\epsilon),0]$.
+More precisely, the cap alternative supplies an open $U\cong\mathbb R^3$,
+a compact embedded closed ball $K\subset U$ with $x\in\operatorname{int}K$,
+and an $\epsilon$-neck end $U\setminus K$.  Put $Q_U=\sup_U R$.
+For $y,z\in U$ one has $0<R(z)<CR(y)$,
+$d_U(y,z)<CQ_U^{-1/2}$, and
+$\operatorname{vol}U<CQ_U^{-3/2}$.
+For each $y\in\operatorname{int}K$ there is $r>0$ with compact
+$\overline{B(y,r)}\subset U$, $\sup_{B(y,r)}R=r^{-2}$, and
+$\operatorname{vol}B(y,r)>C^{-1}r^3$.
+On $U$, $|\nabla R|<CR^{3/2}$ and $|\partial_tR|<CR^2$.
+The evolving-neck alternatives use one fixed spatial chart and the
+normalization $Q=R(x,t)$: the first has time interval $[-tQ,0]$
+and misses the closed initial radius-$(A_0+4)$ ball; the second has
+interval $(-(1+\epsilon),0]$.
+\lean{PoincareMT.repairedStandardCapUniqueness}
+\source{MT2007}
+\dcref{Theorem 12.5, pp. 295--297; uniqueness argument, pp. 307--323;
+Proposition 12.31 and Theorem 12.32, pp. 325--327}
+\cite[Proposition 12.31 and Theorem 12.32, pp. 325--327]{MT2007}
+\end{theorem}
+
+\begin{proof}
+Common-domain uniqueness is Lemma~\ref{lem:cap-common-uniqueness}.
+A maximal flow shorter than
+the selected one extends by that flow; a longer one is excluded by the
+same cylindrical lifetime barrier.
+
+We establish the scalar rate before using the final longer-time neck
+alternative.  The unit-time high-curvature model theorem gives
+$A,H>0$ with $|\nabla R|\leq AR^{3/2}$ and
+$|\partial_tR|\leq AR^2$ wherever $R\geq H$.
+At a fixed time write the rotational metric in radial arclength as
+$ds^2+w(s)^2g_{S^2}$.  Nonnegative curvature gives $w''\leq0$;
+completeness and positivity for every $s>0$ force $w'\geq0$.
+The end asymptotic gives an exterior scalar floor
+$c_t=1/(2(1-t))$.  Since
+\[
+ R=\frac{2(1-(w')^2)}{w^2}-\frac{4w''}{w},
+\]
+one has $w^2\leq2/c_t=4(1-t)$ everywhere.  Indeed, if this
+bound failed at some radius, monotonicity of $w$ would give a
+strictly negative uniform upper bound for $w''$ farther out, forcing
+$w'$ eventually negative.  Consequently, for a fixed nonzero point
+$x$ and nonzero Euclidean tangent vector $v\perp x$,
+\[
+ G(t)_x(v,v)\leq4(1-t)\frac{|v|^2}{|x|^2}\longrightarrow0.
+\]
+If $R(x,t)$ did not diverge, the Harnack estimate would give a
+uniform final scalar bound at $x$.  Nonnegative Ricci curvature and
+the Ricci equation would then give a positive lower bound for
+$G(t)_x(v,v)$, a contradiction.  To include the tip, use the
+guarded gradient estimate on $R^{-1/2}$, clipped at the level $H$.
+A bounded final scalar at the tip would bound scalar on a fixed small
+metric ball around it.  Metric contraction makes a ball at time
+$1/2$ stay inside that ball at all later times.  It contains a
+nonzero point, contradicting the blowup just proved.
+
+The reciprocal argument now gives the uniform rate.  In particular,
+$\partial_tR\leq AR^2$ where $R\geq H$.
+Put $\tau_0=\min(1/2,1/(2AH))$.  The terminal component of the set
+$\{t:R(x,t)>H\}$ starts before $1-\tau_0$: otherwise integrate
+$(1/R)'\geq-A$ from its left boundary to $1$ to obtain
+$1/H\leq A\tau_0\leq1/(2H)$.
+Thus, for $t\geq1-\tau_0$, integration to the blowup endpoint gives
+$R(x,t)\geq1/(A(1-t))$.
+On $[0,1-\tau_0]$ the compact tip and positive cylindrical asymptotic
+give a uniform lower bound $B>0$.  Choosing
+$c=\min(A^{-1},B\tau_0)$ proves the asserted estimate for all $x,t$.
+
+Finally fix $\epsilon\in(0,1/2)$.  The high-curvature canonical
+theorem supplies a threshold $r_*^{-2}$ and cap constants, with
+neck limits extending for normalized time $1+\epsilon$.
+The scalar rate just proved confines points below this threshold
+to $t\leq\theta<1$.  On that interval the cylindrical asymptotic
+gives the time-zero neck alternative outside a compact set, with
+initial image avoiding the fixed cap core.  The remaining compact
+space-time set has a common quantitative cap constant.  Taking the
+maximum of these constants gives the stated $C$.
+In deriving the longer neck interval the prescribed backward-time
+compactness margin is used; an arbitrary positive extension would
+not suffice for the requested $1+\epsilon$.
+\end{proof}
+
+\section{Metric surgery on a strong neck}
+\label{sec:metric-surgery}
+
+Let $N$ be a static $\delta$-neck with center scalar scale $Q$ and axial
+coordinate $s\in(-\delta^{-1},\delta^{-1})$.  Write $A_0$ for the radius at
+which the standard cap is exactly cylindrical.  At absolute time $t$, put
+$\nu=\max\{-K_{\min},0\}$, where $K_{\min}$ is the least sectional
+curvature on the neck.
+
+\begin{theorem}[Metric surgery]
+\label{thm:metric-surgery}
+\uses{def:standard-initial-metric}
+For every standard initial metric there are constants
+\[
+ 0<\delta_0<1/200,\quad R_0>0,\quad q>1,\quad C_0>1
+\]
+chosen before the ambient manifold and the neck, with $100q<C_0$ after the
+profile parameter is enlarged.  If $N$ has $\delta\leq\delta_0$, center scalar
+curvature $Q\geq R_0$, and at time $t\geq0$ on its carrier
+\[
+ R\geq-\frac{6}{1+4t},\qquad
+ R\geq2\nu\bigl(\log\nu+\log(1+t)-3\bigr)\quad(\nu>0),
+\]
+then there is a surgery output $(\widehat M,\widehat g)$ and a radial map
+$\Psi:N\longrightarrow\widehat M$ with the following properties.
+
+\begin{enumerate}
+\item The negative half-neck, including its central sphere, is retained with
+  its original metric; the positive tail is replaced by one closed standard
+  cap.  The cap chart is defined on the open radius-$A_0+5$ ball, and its
+  closed radius-$A_0+4$ ball is the closure of the inserted cap.
+\item The metric is Hamilton--Ivey pinched, and the inner cap has positive
+  sectional curvature.  If the whole input neck has positive sectional
+  curvature, the whole output does as well.
+\item $\Psi$ is continuous on the neck carrier, collapses a terminal part
+  of the positive tail to the cap tip, and satisfies
+  $d_{\widehat g}(\Psi x,\Psi y)\leq d_{g,N}(x,y)$,
+  where $d_{g,N}$ is intrinsic distance in the input neck.
+  Its inverse on the retained collar
+  is smooth, and the retained metric identity holds on the closed
+  nonpositive half-neck.
+\item For every $\eta>0$ there is a further cutoff
+  $\delta_{\rm cmp}(\eta)>0$ such that $\delta\leq\delta_{\rm cmp}(\eta)$
+  gives a tip-preserving smooth chart on
+  $B_{g_0^{\rm cap}}(0,\eta^{-1})$ whose image contains
+  $B_{\widehat g}(\mathrm{tip},Q^{-1/2}\eta^{-1})$.
+  In this chart the sum of squared spatial covariant-jet errors of
+  $Q\widehat g$ relative to $g_0^{\rm cap}$, through order
+  $\lfloor\eta^{-1}\rfloor$, is uniformly less than $\eta^2$.
+\end{enumerate}
+\lean{PoincareMT.repairedMetricSurgery}
+\source{MT2007}
+\dcref{Claim 13.1, Theorem 13.2 and Lemma 13.4, pp. 331--334;
+Corollary 13.12, pp. 339--340}
+\cite[Theorem 13.2 and Lemma 13.4, pp. 332--334;
+Corollary 13.12, pp. 339--340]{MT2007}
+\end{theorem}
+
+\begin{proof}
+Choose $q$ so large that
+\[
+ 100(A_0+4)^2<q,\qquad
+ \frac{q^2}{s^4}e^{-q/s}<\frac1{100}
+       \quad(0<s\leq A_0+4),
+\]
+and then choose $C_0>100q$.  In normalized coordinates put
+\[
+ f(s)=\begin{cases}C_0\delta e^{-q/s}&s>0,\\0&s\leq0.\end{cases}
+\]
+All derivatives vanish at zero.  On the output ball let
+$s=A_0+4-\operatorname{dist}_{g_0^{\rm cap}}(0,\cdot)$.
+With $\chi(s)=1$ for $s\leq5/4$ and $\chi(s)=0$ for $s\geq7/4$,
+form the normalized preconformal metric
+\[
+ J=\chi\,Q(\Psi^{-1})^*g+(1-\chi)(1-6\delta)g_0^{\rm cap}.
+\]
+The first summand is used only on its smooth collar domain, and its
+weight vanishes outside that domain.  Choose a positive round-tip
+radius $r\leq A_0$ and put $A_*=A_0+4$.  A second cutoff $\zeta$
+equals one for $s\leq A_*-3r/4$ and zero for $s\geq A_*-r/2$.
+The physical metric is
+\[
+ \widehat g=Q^{-1}
+ \bigl(\zeta(s)e^{-2f(s)}+(1-\zeta(s))e^{-2f(A_*)}\bigr)J.
+\]
+This multiplier is constant near the tip and equals $e^{-2f}$ on
+the neck transition.  Thus the radial-coordinate singularity does
+not spoil smoothness at the origin.
+
+The curvature estimate uses the formula, for a $J$-orthonormal pair
+$e_1,e_2$,
+\[
+ K_{e^{-2f}J}(e_1\wedge e_2)=e^{2f}
+ \bigl(K_J+\nabla^2f(e_1,e_1)+\nabla^2f(e_2,e_2)
+ +(df(e_1))^2+(df(e_2))^2-|df|^2\bigr).
+\]
+Here $f'=qf/s^2$ and $f''=(q^2/s^4-2q/s^3)f$.
+The quantitative order of choices matters.  The near-cylinder geometry
+first supplies, for the normalized blend $J$, the bounds
+$1/2\leq|\nabla s|_J^2\leq2$, Hessian and Laplacian errors at most
+$K\delta$, scalar curvature at least $1/2$, and sectional curvature
+at least $-K\delta$. Moreover, a $J$-orthonormal plane spanned by $v,w$
+has curvature at least $1/8$ whenever
+$ds(v)^2+ds(w)^2\leq1/2$. This is the nearly transverse plane case.
+For $\phi(s)=C_0\delta e^{-q/s}$ the profile estimates are chosen so that,
+with $B=K\delta$ and $\kappa=1/8$,
+\[
+ 2B\phi'(s)+2\phi'(s)^2\leq\tfrac14\phi''(s),\qquad
+ 2B\phi'(s)+2\phi'(s)^2<\kappa,\qquad
+ 2\nu_J\phi(s)\leq\tfrac14\phi''(s).
+\]
+The first inequality absorbs both Hessian and gradient-square errors in
+the conformal sectional-curvature formula when the plane has a substantial
+height component; the second preserves the transverse positive gap, and
+the third controls conformal amplification of the negative-curvature part
+$\nu_J$ of the blend. Choose
+$C_0>\max\{100q,128K e^q/q^2\}$; after shrinking $\delta_0$,
+the profile also satisfies $K\delta<\phi''/4$ for $1\leq s\leq2$.
+Choosing $q$ first, then $C_0$, and only then shrinking
+$\delta_0$ makes these inequalities uniform on $0<s\leq2$ (the factor
+$e^{-q/s}$ controls the finitely many cutoff derivatives).  The
+conformal estimate gives, for $0<s<2$,
+\[
+ R_{\widehat g}\geq Q/2,\quad R_{\widehat g}\geq Q R_J,
+ \quad\nu_{\widehat g}\leq Q\nu_J.
+\]
+For $s\geq1$ the same gain inequality gives positive sectional curvature
+on every orthonormal plane; on the pure-cap part this is combined with
+the round-tip curvature estimate and the constant multiplier.  Thus the
+smaller radius-$(A_0+3)$ cap is positive as well.  On the overlap where
+the second cutoff is changing, its derivative terms are bounded by the
+same finite profile table and are included in the preceding choice of
+$C_0$ and $\delta_0$.
+For $s\leq0$ both metric and curvature are unchanged. On $0<s<1$,
+the blend is exactly the normalized pullback of the old metric, so here
+$R_{\widehat g}\geq R_g$ and $\nu_{\widehat g}\leq\nu_g$.
+For $s\geq1$, positivity gives $\nu_{\widehat g}=0$ directly.
+To deduce logarithmic pinching on $0<s<1$, set
+$H_t(v)=2v(\log v+\log(1+t)-3)$.
+If $H_t(\nu_{\widehat g})\leq0$, nonnegative scalar curvature suffices.
+Otherwise $H_t$ is increasing between $\nu_{\widehat g}$ and $\nu_g$,
+so $R_{\widehat g}\geq R_g\geq H_t(\nu_g)
+\geq H_t(\nu_{\widehat g})$.  This avoids assuming that $H_t$ is
+increasing on all positive numbers.
+
+The radial collapse equals the original identification on the negative
+half and becomes constant at the tip.  The quadratic-form estimates
+for the contracted blend give $|d\Psi(v)|_{\widehat g}\leq|v|_g$
+on each smooth piece.  Partitioning a piecewise smooth neck path at
+the transition collars, and passing by approximation across the
+constant locus, gives the length inequality.  Taking infima over neck
+paths proves the asserted distance bound.  On the closed negative
+half the same argument in both directions gives intrinsic isometry.
+An ambient path leaving the neck is not among these paths.
+
+Finally each fixed finite set of profile and cutoff derivatives is
+bounded, while the normalized input neck tends to the cylinder as
+$\delta\to0$.  The transition-coordinate estimates control the metric,
+connection, and curvature jets on the closed radius-$(A_0+4)$ ball;
+the pure-cap chart is constant near the tip, so no radial-coordinate
+singularity enters this estimate.  The error in the cap metric therefore
+tends to zero in each prescribed finite spatial jet norm.  Choosing the
+further cutoff after $\eta$ gives the last conclusion.  The lower and
+upper radial distance estimates imply respectively that the physical
+image contains the ball of radius $Q^{-1/2}\eta^{-1}$ and that the chart
+is defined on the standard radius-$\eta^{-1}$ ball.  Thus the comparison
+is on the actual metric ball and not merely on a coordinate neighborhood.
+\end{proof}
+
+\section{Continuation through a singular time}
+\label{sec:surgery-continuation}
+
+The continuation input consists of a preterminal slab, its generalized reference flow,
+the regular terminal limit and the selected horns, and a bridge carrying the
+same metric and scalar data between the slab and the reference.  The bridge
+also supplies the Appendix A neck--cap topology at accuracy
+$c_T\varepsilon$, where $c_T=10^{14}$, with
+$c_T\varepsilon\leq\varepsilon_A$ for the supplied neck--cap theory.
+The bridge identifies the reference extension with the horn selection's
+limit, preserves metric, scalar curvature and slab transport, and takes
+the controlled core exactly onto the terminal sublevel
+$\{R_T\leq\rho^{-2}\}$.  It identifies the constants
+$\varepsilon,C,r_0$ and supplies metric surgery with the same chosen
+constants on each selected neck.  Its deep-horn rule applies to every
+calibrated strong horn at the stated accuracy and returns a neck at
+the prescribed height $h(T)$, not at a newly selected height.
+
+\begin{theorem}[Branch-correct continuation]
+\label{thm:branch-continuation}
+\uses{def:surgery-regular-history,thm:metric-surgery}
+Assume compact Ricci-flow local existence, uniqueness and continuation,
+and the absolute-time pinching theorem.  Every regular-history window has
+regular-history data.  Given a terminal input $I$ at $T$, a singular regular
+limit $L$, horn data $N$, and a bridge satisfying the metric pullback,
+scalar pullback, transport, core-image, calibration, and metric-insertion
+hypotheses, there is a continuation extension on the same input.  It
+preserves all earlier events, has the terminal cut-and-cap event when the
+controlled core is nonempty, and has a permanent empty continuation when the
+core is empty.  In either case the extension has a positive surgery-free
+interval after $T$, remains admissible and pinched, and contains the supplied
+regular history on its old domain.
+\lean{PoincareMT.repairedBranchContinuation}
+\source{MT2007}
+\dcref{Lemma 15.11, p. 364; Theorem 15.9, pp. 363--366 and 409--410}
+\cite[Lemma 15.11, p. 364; Theorem 15.9, pp. 363--366 and 409--410]{MT2007}
+\end{theorem}
+
+\begin{proof}
+Ordinary slab transport first constructs compatible boxes along each
+retained worldline.  Choose a countable refinement; on overlaps the
+transport cocycle identifies the same points and tangent vectors.
+The local metric jets therefore define a single smooth horizontal
+metric on this atlas.  Across an old event only the continuing interior
+is identified.  Equality of its limiting metrics and the Ricci equation
+give equality of all one-sided time jets there.  This constructs the
+regular history without identifying discarded worldlines.
+
+Suppose first that the controlled core is nonempty.  Its image is a
+compact scalar sublevel.  Since components of the regular limit are
+open, a finite subcover proves that only finitely many components meet
+it.  We must cut every escaping end of those same components.  When
+$C\leq99$, the small-constant calibrated-horn construction gives the
+required original-end horns directly.  For $C>99$, the global
+neck--cap alternative gives either a calibrated horn or a capped tube.
+If the tube contains a point with $R_T\leq\rho^{-2}$, cut off a
+closed escaping half of that tube, keeping its original end.
+Otherwise the low point lies in its cap.  The fixed-accuracy cap-overlap
+lemma then excludes a canonical cap centered where
+$R_T\geq2C\rho^{-2}$: overlap would force the low point's curvature
+to be comparable to that center, contrary to this threshold.
+Thus those high points are strong-neck centers.  Continuing overlapping
+necks above $4C\rho^{-2}$ produces a horn whose boundary is below
+$8C\rho^{-2}$ and whose tail is the original end.
+
+Deep-horn selection now gives cuts at height $h(T)$ with controlled
+boundary curvature, in particular the bound $32C\rho^{-2}$ used in
+the overlap argument.  Whole neck collars, rather than just their
+central spheres, lie in the selected ends.  Choose a maximal pairwise
+disjoint family of candidate neck carriers.  All centers have scalar
+curvature $h(T)^{-2}$, a compact level by scalar properness.  Uniform
+neck geometry supplies a fixed positive packing radius there, so the
+disjoint family is finite.  Maximality ensures that every candidate
+intersects a selected neck.  This intersection alone does not give
+end coverage: the calibrated boundary estimate and height inequalities
+show that its original escaping end has a tail inside the selected
+horn cut, even when the intersection is shallow.  For this finite
+list, directed neck overlap makes intersecting discarded tails nested;
+remove contained redundant tails.  Every original end remains covered.
+An escaping sequence in the complement would determine an uncovered
+end, contradicting that property.  Removing these
+tails leaves a region with compact closure and disjoint spherical
+boundary.  This compactness is needed for restart; finiteness of the
+list alone would not imply it.
+
+Apply Theorem~\ref{thm:metric-surgery} on these disjoint collars and
+glue the cap balls to the retained region.  The collar identifications
+are smooth and isometric on a neighborhood of the retained closed
+half; they produce one compact smooth outgoing manifold and one
+pinched metric.  Compact Ricci-flow existence restarts it at $T$.
+Uniqueness joins overlapping ordinary restarts to a maximal one,
+while the absolute-time pinching theorem retains the original clock.
+At the event the horizontal metrics glue on the continuing interior;
+the newly exposed caps and the discarded ends are not a common smooth
+slice across $T$.  Pulling back the compact retained set to one late
+pre-time constructs the actual event data and preserves all old events.
+
+If the controlled core is empty, every disappearing worldline either
+has scalar curvature tending to infinity or has terminal scalar
+greater than $\rho^{-2}>r(T)^{-2}$.  Compactness gives a common late
+interval on which all disappearing points have canonical control.
+Thus deleting the entire slice satisfies admissibility.  Record that
+vanishing event and set every later slice to the empty manifold; all
+flow and pinching conditions there are vacuous.  This branch has
+infinite lifetime and no later event.  Empty controlled core does not
+assert that the regular-limit carrier itself was empty.
+\end{proof}
+
+\begin{proposition}[Compatibility of a supplied flow]
+\label{prop:surgery-compatibility}
+\uses{thm:branch-continuation,thm:metric-surgery}
+For a metric-surgery service, a branch-continuation service, an actual flow,
+and a compatibility witness whose underlying data are literally those three
+objects, there is a compatible surgery-flow package with that flow,
+those metric surgeries, and those branch applications.
+\lean{PoincareMT.repairedSurgeryFlow}
+\source{MT2007}
+\dcref{Definitions 15.5--15.8, pp. 359--362; Lemma 15.11, p. 364}
+\cite[Definitions 15.5--15.8, pp. 359--362; Lemma 15.11, p. 364]{MT2007}
+\end{proposition}
+\begin{proof}
+Keep the supplied flow and each of the supplied identifications.
+All required compatibility identities are the identities in the
+witness.  This proves no new flow existence or event-operation
+alignment; it records the already supplied ones.
+\end{proof}
+
+\section{The topology of the actual event}
+\label{sec:surgery-event-topology}
+
+Metric insertion and topological reconstruction have different hypotheses.
+The next statement requires the neck--cap topology theorem and the
+admissibility of the supplied flow; it does not assume an already
+classified list of discarded factors.
+
+\begin{theorem}[Local reconstruction]
+\label{thm:surgery-local-topology}
+For any supplied neck--cap theory with threshold $\varepsilon_A>0$,
+there is $0<\varepsilon_0\leq\varepsilon_A$, chosen before the flow,
+such that every admissible three-dimensional surgery flow with
+$c_T\varepsilon\leq\varepsilon_0$, with the terminal accuracy factor
+$c_T=10^{14}$, has the following property at each
+event $T$.  Its incoming slice is obtained by a finite smooth
+connected-sum assembly from the actual outgoing components, finitely
+many $S^2$-bundles over $S^1$, and finitely many closed positive
+spaceforms.  The assembly includes collared balls and gluing maps.
+In a nonempty event every actual inserted cap lies in its recorded
+survivor component.  In a vanishing event there are no survivor pieces.
+\lean{PoincareMT.rawLocalSurgeryTopology}
+\source{MT2007}
+\dcref{Proposition 15.3, pp. 357--358; Appendix A.21}
+\cite[Proposition 15.3, pp. 357--358]{MT2007}
+\end{theorem}
+
+\begin{proof}
+Transport the finite central neck spheres into one sufficiently late
+incoming slice.  Cut there and cap both sides.  On the retained side
+the actual event charts identify the capped result with the outgoing
+slice, including its particular cap balls.  On the other side form
+the capped discarded carrier using the same collars.  The collars
+give compatible smooth charts; disjointness and closed attachment
+graphs make the quotient Hausdorff.  Its compactness follows from
+compact discarded closures and finitely many closed cap balls.
+
+Choose the late slice uniformly for these finitely many closures.
+Admissibility supplies canonical neighborhoods at all their points.
+The neck--cap continuation theorem places each closure inside a
+canonical tube, capped tube, or closed canonical model.  The containing
+model is not identified with the discarded component.  Write $U$ for
+the image of that component in the containing model $Q$.  Its frontier is
+the finite disjoint union of the actual incident collar spheres.
+The positive sides of these collars enter $U$; their negative sides
+miss $\overline U$.
+
+First suppose each frontier sphere bounds a smooth closed ball $B_i$ in
+$Q$.  Choose $p\in U$.  Since $U$ is connected and misses $\partial B_i$,
+it lies on one side of that sphere.  If $p\in B_i$, then
+$\overline U\subset B_i$, giving spherical coordinates around the whole
+closure.  Otherwise $U$ misses every $B_i$.  Two fillings with disjoint
+frontiers are nested or disjoint.  Nesting is impossible here: the inner
+frontier belongs to $\overline U$, whereas the interior of the outer ball
+misses $\overline U$.  The balls are therefore disjoint.  Their complement
+is connected, and $U$ is both open and relatively closed in it, since all
+of $\partial U$ lies on their frontiers.  Thus
+\[
+                 U=Q\setminus\bigcup_i B_i.
+\]
+Adjust the ball collars to the given event collars, preserving their
+central spheres and side choices.  Gluing those adjusted balls back in
+then identifies the literal capped event component with $Q$.  In the
+enclosing-ball alternative, the same construction in spherical
+coordinates identifies it with a sphere.
+
+For a positive spaceform, the required frontier fillings are constructed
+by lifting each sphere to its finite spherical cover.  Smooth sphere
+filling upstairs gives a finite family of balls on sides avoiding a fixed
+point.  An innermost ball has disjoint nontrivial deck translates, so the
+covering is injective on it and its descent is a ball with the prescribed
+frontier downstairs.  This supplies the preceding argument for closed
+spaceforms and punctured projective caps.  A tube or Euclidean cap has
+spherical region coordinates.  A capped tube first absorbs its attached
+tube into its original cap by the relative cap-absorption result of the
+neck--cap chapter.  Its smallness threshold is fixed before the flow.
+
+There are two additional closed models.  In a sphere bundle over the
+circle, either all frontier spheres fill and the preceding construction
+returns that bundle or a sphere, or one sphere is essential.  Lift the
+essential sphere to the pullback cylinder over $\mathbb R$ and straighten
+its collar.  Cut along a slightly negative collar slice, disjoint from
+$\overline U$.  Connectedness places the entire closure in one covering
+sheet of the cut complement, which has spherical coordinates.  Its
+capped component is consequently spherical.
+For a projective double, the corresponding cylinder cover has an infinite
+dihedral deck action.  If all frontier spheres fill, the exact-complement
+alternative reconstructs the whole double and hence its two projective
+summands; the enclosing alternative is spherical.  Otherwise straighten
+an essential lifted collar and again cut at a negative slice.  A connected
+lifted region either projects injectively, giving spherical coordinates,
+or is preserved by a reflection, giving punctured-projective coordinates.
+The spaceform filling construction then applies to the actual region.
+
+Components incident to no collar are whole old components and use the
+closed canonical classification directly.  These constructions classify
+and assemble each literal capped discarded component, including all its
+incident spheres, before the incoming slice is reconstructed.
+
+Now append this assembly to the unchanged outgoing components and
+reverse the cuts using their recorded balls.  The finite incidence
+graph has vertices the retained and capped discarded components and
+edges the event collars.  A spanning forest joins distinct pieces;
+remaining identifications give the residual bundle factors.  In
+particular, a separating sphere gives a connected-sum separation,
+whereas a nonseparating sphere contributes a sphere-bundle factor.
+Reversing the finite list yields a diffeomorphism onto the original
+incoming slice.  Tracking the retained vertices preserves each
+original cap's survivor assignment.  With no cuts, the construction
+reduces to whole-component classification.  If the outgoing slice
+is empty, that classification contains no retained vertices.
+\end{proof}
+
+\section{Comparison across one surgery}
+\label{sec:comparison}
+
+Let $T$ be a nonempty surgery event.  Choose compact connected parent
+and child components $X,Y$, with their smooth inclusions $\iota_X$
+and $\iota_Y$ in the incoming and outgoing slices.  Write
+$K_{\rm pre}$ for the retained pre-region and $\mathfrak r$ for
+retention.  A comparison input records the selected local reconstruction,
+the actual parent and child pullback metrics, separating surgery
+spheres, and the full retained open set
+\[
+ \mathcal R=\{x\in X:\ \iota_X x\in\operatorname{int}K_{\rm pre},\quad
+       \mathfrak r(\iota_X x)\in\iota_Y(Y)\},
+\]
+and the fact that $\mathcal R\ne\varnothing$.  The event must satisfy
+\[
+ \delta(T)<\delta_0,\qquad h(T)<R_0^{-1/2},\qquad
+ c_T\,\varepsilon\leq\varepsilon_0.
+\]
+
+\begin{theorem}[Comparison map and metric bounds]
+\label{thm:comparison-map}
+\uses{thm:metric-surgery,thm:surgery-local-topology}
+There is $\varepsilon_0>0$, chosen before the standard metric and flow, such
+that every comparison input above has a continuous map
+\[
+                   \Phi:M_{T^-}^{\rm parent}\longrightarrow M_T^{\rm child}
+\]
+which agrees with the retention map on $\mathcal R$, is smooth there, has
+open retained target image, and sends every point outside $\mathcal R$ into
+one of the actual closed caps.  On $\mathcal R$ its metric is the pullback of
+the terminal limit metric.  For every $\eta>0$ there is
+$0<d\leq T-T^-$ such that,
+for $T-d<t<T$, the same map satisfies
+\[
+ d_{g_T}(\Phi x,\Phi y)\leq (1+\eta)d_{g(t)}(x,y)
+ \quad\text{for all }x,y.
+\]
+The target basepoint is the image under this map of the chosen parent
+basepoint.
+\lean{PoincareMT.repairedComparisonMap}
+\source{MT2007}
+\dcref{Proposition 15.12, p. 365; Claim 18.22, p. 433;
+Claim 13.1 and Theorem 13.2, pp. 331--334}
+\cite[Proposition 15.12, p. 365; Claim 18.22, p. 433]{MT2007}
+\end{theorem}
+
+\begin{proof}
+Let $K$ be the connected closed retained root for the chosen child.
+Its boundary consists of the relevant separating neck spheres.
+For each boundary sphere choose the connected complementary side
+containing the outward collar.  That side misses $K$: otherwise a
+path in $K$ from the inward collar would cross the sphere from the
+wrong side.  Two such outward sides are disjoint; if they met,
+connectedness and the disjoint frontiers in $K$ would force one to
+cross the other's frontier.  The root and all outward sides cover
+the parent, since their union is open and closed there.
+
+On the root use retention.  On each outward collar use the radial
+collapse, and beyond its constant locus send the whole remaining
+branch to that cap's tip.  The definitions agree on collar overlaps
+and are constant near each outer gluing boundary, so they define a
+continuous map.  On the full open retained region the map is smooth
+with the stated metric identity.  All remaining images lie in the
+actual closed caps.
+
+Crucially, all nonconstant local models are controlled on one compact
+subset $K_*$ of the regular region.  Smooth convergence there gives,
+for all sufficiently late $t$, the quadratic-form inequality
+$g_T^{\rm reg}\leq(1+\eta)^2g(t)$ on $K_*$.
+At each parent point the map has one of three local descriptions:
+constant, retained isometry, or neck collapse.  The first has zero
+image length, the second uses this metric inequality, and the third
+combines it with the local intrinsic-distance estimate of metric
+surgery.  Partition any piecewise smooth parent path into finitely
+many segments in these neighborhoods.  Sum the local inequalities
+and take the infimum over paths to obtain the global distance bound.
+The single compact control set gives one time window for every path
+and pair of points.  Shrinking it to the available pre-event interval
+gives the stated bound on $d$.
+\end{proof}
+
+\begin{theorem}[Degree, homotopy, and third homotopy transport]
+\label{thm:comparison-transport}
+\uses{thm:comparison-map,prop:foundations-top-homology,prop:foundations-cw-equivalence}
+Assume in addition that the parent and child components are closed and simply
+connected and that a parent integral orientation
+\[
+ H_3(M_{T^-}^{\rm parent};\mathbb Z)\simeq\mathbb Z
+\]
+has been fixed.  For the literal comparison map $\Phi$ just constructed there
+are a child orientation and a degree-one identity on third homology.  The map
+is the forward map of a homotopy equivalence and induces a bijection on the based
+third homotopy groups.  For every $\eta>0$ and all sufficiently late
+pre-times there is a smooth $(1+\eta)$-Lipschitz map $\Phi_t$ with the exact
+target basepoint, homotopic to $\Phi$, having the same degree and the same
+based $\pi_3$ map.
+\lean{PoincareMT.repairedComparisonHomotopy}
+\source{MT2007}
+\dcref{Proposition 15.12, p. 365; cap-image discussion, p. 428;
+Poincare transport, pp. 430--431; Claim 18.22, p. 433}
+\cite[Proposition 15.12, p. 365; Claim 18.22, p. 433]{MT2007}
+\end{theorem}
+
+\begin{proof}
+Choose a point $x$ in the retained open set whose image $y$ lies outside
+the closed caps.  Injectivity of retention and the cap-image condition
+give $\Phi^{-1}(y)=\{x\}$.  Near $x$ the map is a local homeomorphism.
+It consequently gives an isomorphism on the local groups
+$H_3(X,X\setminus\{x\};\mathbb Z)$ and
+$H_3(Y,Y\setminus\{y\};\mathbb Z)$, where $X,Y$ denote the parent
+and child.  The restriction maps from global third homology to these
+local groups are isomorphisms for connected closed oriented
+three-manifolds, as proved in the foundations chapter
+(the standard local-homology formulation is
+\cite[Theorem 3.26(a), pp. 236--238]{Hatcher}).
+The naturality square therefore makes
+$\Phi_*:H_3(X;\mathbb Z)\to H_3(Y;\mathbb Z)$ an isomorphism.
+Given the chosen isomorphism $o_X:H_3(X;\mathbb Z)\to\mathbb Z$,
+set $o_Y=o_X\Phi_*^{-1}$.  Then $o_Y\Phi_*=o_X$, exactly the
+degree-one identity, independently of an initial choice of child
+orientation.
+
+The foundations chapter supplies homotopy equivalences of each closed
+simply connected three-manifold with $S^3$, constructed from its finite
+CW model and homology.  Conjugating $\Phi$ by these equivalences gives
+a self-map of $S^3$ inducing an isomorphism on $H_3$, hence of degree
+$1$ or $-1$.  Its inverse homotopy class gives a homotopy inverse;
+conjugating back makes the actual $\Phi$ a homotopy equivalence.
+This uses the homotopy type of a sphere, not a prior homeomorphism
+with a sphere.  The based third homotopy map is therefore bijective.
+
+For completeness, near-isometric smoothing must reserve room both
+for smoothing and for the basepoint correction.  On compact smooth
+manifolds a finite chart cover permits local convolution with cutoff
+interpolation.  Choose nested source charts and positive target-chart
+margins.  At stage $j$, convolution changes the map by at most $e_j$
+and its Lipschitz constant by at most $s_j$; choose these budgets with
+summable totals below the desired displacement and Lipschitz errors.
+Previously smoothed neighborhoods remain smooth.  Short geodesics in
+the target charts give the homotopy at each stage.  A finite partition
+of any path upgrades the local derivative bounds to a global
+Lipschitz estimate.
+
+Put $\alpha=\min(1,\eta/8)$.  First choose a late time window on
+which $\Phi$ is $(1+\alpha)$-Lipschitz.  A supported target
+diffeomorphism, homotopic to the identity and with Lipschitz constant
+at most $1+\alpha$, can move any sufficiently close point to the
+prescribed target basepoint.  Choose the smoothing displacement within
+that radius and its Lipschitz increase at most $\alpha$.  Composing
+the smooth approximation with this correction gives an exactly based
+smooth map with Lipschitz constant
+\[
+ (1+\alpha)(1+2\alpha)\leq1+\eta.
+\]
+Its free homotopy to $\Phi$ preserves degree.  The possible trace
+of the basepoint is a loop in the simply connected target, so its
+action on $\pi_3$ is trivial.  Thus the based homomorphism is the
+same, not merely conjugate under an unspecified basepoint change.
+\end{proof}
+
+\section{The two continuation branches}
+\label{sec:branch-dichotomy}
+
+The controlled core determines whether the continuation just constructed
+has a nonempty terminal slice.  The following consequences keep the same
+extension and all its identification maps.
+
+\begin{proposition}[Nonempty branch extraction]
+\label{prop:nonempty-branch}
+\uses{thm:branch-continuation}
+For a fixed terminal input $I$ with controlled core $C_I$ and supplied
+continuation branch $B$, if $C_I\ne\varnothing$, then the continued time-$T$ carrier is
+nonempty and its terminal operation is the nonempty surgery described
+above.  The event, reference time, height, identifications and regular-limit
+source are those of $B$, with its post-terminal admissibility and pinching.
+\lean{PoincareMT.repairedNonemptyContinuation}
+\source{MT2007}
+\dcref{Lemma 15.11, p. 364; nonempty case of Theorem 15.9, pp. 409--410}
+\cite[Lemma 15.11, p. 364; nonempty case of Theorem 15.9, pp. 409--410]{MT2007}
+\end{proposition}
+
+\begin{proof}
+The equivalence between nonemptiness of the core and of the continued
+carrier supplies a point in the latter.  The vanishing operation has empty
+outgoing carrier and is therefore impossible.  Thus the operation already
+constructed in $B$ is the nonempty one.
+\end{proof}
+
+\begin{proposition}[Vanishing branch extraction]
+\label{prop:vanishing-branch}
+\uses{thm:branch-continuation}
+If the same input has $C_I=\varnothing$, then the terminal
+carrier is empty, its operation is the vanishing surgery, and the
+extension has infinite lifetime, a positive surgery-free interval after $T$,
+admissibility, pinching, and no later surgery.  Emptiness persists at every
+later time.
+\lean{PoincareMT.repairedVanishingContinuation}
+\source{MT2007}
+\dcref{Lemma 15.11, p. 364; degenerate case of Theorem 15.9, pp. 409--410}
+\cite[Lemma 15.11, p. 364; degenerate case of Theorem 15.9, pp. 409--410]{MT2007}
+\end{proposition}
+
+\begin{proof}
+The same equivalence makes the terminal carrier empty, excluding the
+nonempty operation.  In the construction of
+Theorem~\ref{thm:branch-continuation}, this is precisely the case continued
+by empty slices for all later times.  There are no later events, and all
+pointwise geometric conditions on these slices hold vacuously.
+\end{proof}
+
+\begin{proposition}[Unified branch assembly]
+\label{prop:unified-branch}
+\uses{prop:nonempty-branch,prop:vanishing-branch}
+Every terminal input $I$ and every fixed supplied branch $B$ satisfies
+one of the two mutually exclusive core alternatives above.  It has a
+continuation of that type, retaining the exact input,
+branch, terminal operation, post-terminal interval, admissibility, and
+pinching data.
+\lean{PoincareMT.repairedUnifiedContinuation}
+\source{MT2007}
+\dcref{Lemma 15.11, p. 364; Theorem 15.9, pp. 363--366 and 409--410}
+\cite[Lemma 15.11, p. 364; Theorem 15.9, pp. 363--366 and 409--410]{MT2007}
+\end{proposition}
+
+\begin{proof}
+Either $C_I$ contains a point or it is empty.  Apply the corresponding
+preceding proposition to the same $B$.  The two statuses cannot both
+hold.  This is a dichotomy of statuses, not uniqueness of every piece
+of auxiliary continuation data.
+\end{proof}
+
+\section{Persistence of a surgery cap}
+\label{sec:cap-persistence}
+
+An observation has a horizon $H>0$, interval $[0,H)$, and a selected
+standard cap flow.  Fixing scales after a time $a$ means that the
+initial cap model, metric-surgery constants, $\varepsilon,C$, and
+height selector are those of the fixed parameter setup, and that,
+for $a\leq s<H$,
+\[
+ r_{\rm next}\leq r(s),\quad \delta(s)\leq\bar\delta,
+ \quad h(s)=h_{\rm sel}(\delta(s)r(s),\delta(s)).
+\]
+Canonical control at radius $r_{\rm next}$ means that every point
+with $R\geq r_{\rm next}^{-2}$ has the specified strong canonical
+neighborhood.  These conditions permit $r(s)$ to change at an epoch
+boundary; they do not assert that the height is constant in time.
+
+\begin{theorem}[Cap persistence or removal]
+\label{thm:cap-persistence}
+\uses{thm:metric-surgery,thm:standard-cap-uniqueness}
+Fix a standard initial metric $g_0^{\rm cap}$, its selected standard
+flow $G$, and the metric-surgery
+constants.  Given a finite initial list of epoch parameters, ending with
+radius $r_i$, and a next radius $r_{\rm next}$
+with
+\[
+ 0<r_{\rm next}\leq r_i,
+\]
+and positive $A,\eta,\theta$ with $\theta<1$, there is a cutoff
+$\bar\delta>0$ chosen before the actual flow, observation, event, and cap.
+For every admissible pinched flow whose observation uses that same
+standard flow, assume the fixed-scale conditions after the preceding
+epoch's start $a$ and canonical control at radius $r_{\rm next}$
+on $[0,H)$.  Let $a\leq T<H$ be a nonempty surgery event with
+$\delta(T)\leq\bar\delta$.  For each inserted cap with tip $p$, put
+\[
+ h=h(T),\quad U=B_{g(T)}(p,Ah),\quad
+ T_{\rm end}=\min(H,T+\theta h^2),\quad
+ d=(T_{\rm end}-T)/h^2.
+\]
+Then one of the following holds.
+
+\begin{enumerate}
+\item The worldlines of all of $U$ give a flow cylinder for normalized
+  time $s\in[0,d)$.  A tip-preserving initial chart maps
+  $B_{g_0^{\rm cap}}(0,A)$ exactly onto $U$; the cylinder is the
+  identity on $U$ at time zero.  Pull back by this fixed spatial
+  chart after normalizing time by $h^2$ and metric by $h^{-2}$.
+  Relative to $G(s)$, the sum of squared spatial covariant-jet
+  errors through order $\lfloor\eta^{-1}\rfloor$ is bounded by
+  one number strictly less than $\eta^2$, uniformly in $x,s$.
+\item There is a later surgery $T<T_+<T_{\rm end}$ and the same
+  comparison on $[0,(T_+-T)/h^2)$.  The whole tracked ball disappears
+  there: either the outgoing slice is empty, or, sufficiently late
+  before $T_+$, every tracked worldline lies outside the interior
+  retained region of that event.
+\end{enumerate}
+
+The initial chart is linked to the metric-surgery cap chart by the actual
+local insertion map.  The normalization is performed once, before
+pulling back both tensor slots.  The cutoff is chosen before the later
+flow, observation, event, and cap.
+\lean{PoincareMT.repairedCapPersistence}
+\source{MT2007}
+\dcref{Proposition 16.5, pp. 370--371; Claim 16.6, Corollary 16.7,
+Lemma 16.8, Corollary 16.9, pp. 371--373; Claim 16.10, pp. 374--375}
+\cite[Proposition 16.5, pp. 370--371; Claim 16.6 and Corollary 16.9,
+pp. 371--373; Claim 16.10, pp. 374--375]{MT2007}
+\end{theorem}
+
+\begin{proof}
+Suppose the conclusion fails for every cutoff and choose counterexamples
+with $\delta_j\to0$.  Normalize each birth cap by its own $h_j^{-2}$
+and translate its birth time to zero.  The incoming strong neck exists
+for one backward normalized time unit.  Interior derivative estimates
+therefore bound every curvature derivative on its middle half at
+birth.  The fixed surgery cutoffs and smooth cap metric transfer these
+bounds to the newly inserted region.  In particular, this is an
+initial-endpoint estimate; positive-time smoothing alone would not
+justify convergence at the birth of a cap.
+
+Choose a buffered collar and a larger fixed standard ball
+$B_{A+b}$ containing the closed radius-$A$ ball, with $b>0$ fixed
+before the sequence.  The initial strong-neck derivative estimates and
+the cap transfer give uniform bounds for the metric, connection, and all
+spatial jets needed on $B_{A+b}$ at birth.  Canonical scalar derivative
+bounds, together with pinching and local curvature transport, then give
+the corresponding bounds for a definite normalized time.  In coordinates
+the Ricci equation is an ODE for the metric coefficients and the
+connection equation is an ODE for their first derivatives; integrating
+the common bounds gives a uniform modulus in time.  Choose the time
+increment so that this modulus is smaller than the collar margin $b$.
+The chart consequently continues on the same worldlines and the image
+of the physical closed ball remains inside the buffered chart.  These
+are local estimates on the tracked buffer, not a scalar-rate bound on
+every point of the whole surgery flow.
+
+The exact birth-ball chart requires a further construction. Write
+$\widehat g_j=h_j^{-2}g_j(T_j)$ and fix a large parameter radius $R>2(A+b)$.
+The initial comparison confines closed $\widehat g_j$-balls in a larger
+compact chart. Its metric and connection coefficients converge smoothly
+to those of $g_0^{\rm cap}$. Choose orthonormal frames at the actual tips.
+After a subsequence their coordinate matrices converge to an orthonormal
+model frame $L$. The geodesic equation and its differentiated equations
+give convergence, on fixed parameter balls, of the actual exponentials
+$E_j$ to the standard exponential $E_0$ in that frame.
+
+The standard tip is a pole: radial arclength gives a global smooth
+exponential and inverse logarithm. In its logarithmic coordinates the maps
+$E_j$ have derivatives converging to the identity on each smaller closed
+parameter ball. A derivative error less than one, integrated along a line
+segment in this convex ball, proves injectivity; nonsingularity gives a
+smooth inverse. These are actual exponential charts. Each radial geodesic
+has initial norm $|v|$, hence length $|v|$ to parameter one. Conversely,
+compact containment of a physical ball gives a minimizing geodesic from the
+tip to every point in it. Initial-value uniqueness identifies it with the
+radial curve of $E_j$, with parameter norm equal to its distance. Therefore
+\[
+ E_j(B(0,r))=B_{\widehat g_j}(p_j,r)
+ \qquad(0<r\leq A+b).
+\]
+The map $C_j=E_j\circ E_0^{-1}$ consequently sends every standard
+radius-$r$ ball exactly onto this physical normalized ball, for the same
+map $C_j$. In the original comparison coordinates its adjustment tends
+smoothly to the identity. The bilinear pullback formula, with the derivative
+in both tensor slots and one factor $h_j^{-2}$, preserves convergence of
+every fixed finite jet. Thus the adjusted charts still satisfy the required
+strict comparison error. A hypothetical failure at every positive cutoff
+would give such a convergent sequence, contradicting the resulting charts;
+the adjustment is therefore uniform before the physical flow is selected.
+
+Compose with the local insertion embedding. Its metric pullback is exact,
+and compact ball containment prevents shortcuts through the complement of
+its image, so the images are the ambient birth balls in the surgery slice.
+Scaling distances gives
+$B_{\widehat g_j}(p_j,r)=B_{g_j(T_j)}(p_j,h_jr)$.
+Apply the time-modulus and compactness estimates on the larger closed ball
+$B_{A+b}$ first, and only then restrict to $B_A$, retaining these exact
+birth identities. A diagonal sequence of larger balls and pointed
+compactness give a partial standard-cap flow.  Completeness follows
+from uniform metric comparison on each compact time interval.
+Theorem~\ref{thm:standard-cap-uniqueness} identifies this limit with
+$G$.  Since $\theta<1$, the curvature of $G$ is bounded on the
+relevant compact time interval.  The local estimates can therefore
+be restarted by a positive amount depending on this bound and the
+fixed control constants.  Repetition gives convergence throughout
+the assigned interval wherever the tracked cylinder survives.
+The same adjusted initial chart is used throughout the comparison cylinder.
+
+It remains to show that a loss of one worldline removes the whole
+tracked ball.  If its maximal cylinder stops before $T_{\rm end}$,
+bounded curvature and ordinary local continuation force that endpoint
+to be a later surgery $T_+$.  Enlarge the test ball first if necessary
+so that it contains a standard neck sphere bounding a ball about
+the tip.  Suppose the tracked ball met a later cutting sphere.
+If $h'$ is that surgery's scale, its scalar curvature is comparable
+to $(h')^{-2}$, whereas comparison with $G$ bounds curvature on the
+tracked ball by $Kh^{-2}$.  Thus $h/h'$ is bounded.  The tracked
+ball's diameter is bounded by a multiple of $Ah$; the later strong
+neck has buffer length of order $(\delta')^{-1}h'$.  For sufficiently
+small cutoff, the entire tracked ball therefore lies inside that
+neck.
+
+The neck-overlap sphere lemma makes its internal standard neck
+sphere homotopic to the central sphere of the later neck.  The
+latter is nontrivial in $\pi_2(S^2\times I)$, while the former
+bounds its tip ball inside the tracked region, hence inside that
+neck.  This is impossible.  Therefore the tracked ball avoids all
+later cutting spheres near $T_+$.  It is connected, so once one of
+its worldlines lies on a disappearing side all of them do.
+The comparison already proved holds up to $T_+$, giving the second
+alternative.  Both alternatives contradict the chosen counterexamples;
+one positive cutoff consequently works uniformly as asserted.
+\end{proof}
+
+\section{From one event to a controlled history}
+\label{sec:surgery-interfaces}
+
+The constructions above preserve one set of event identifications.
+The terminal-limit theorem supplies the regular region and calibrated
+horns; metric surgery supplies its cap metric; local reconstruction
+records the actual retained and discarded factors.  The comparison
+map uses those same factors and metrics.  Its based $\pi_3$ transport
+can therefore be used for loop-family classes without changing the
+underlying surgery event.
+
+To iterate this operation one must still select scale parameters,
+propagate canonical neighborhoods and noncollapsing, and rule out
+finite accumulation of event times.  Cap persistence supplies the
+local input for that induction.  The global controlled-flow chapter
+performs the parameter selection and proves the finite-event bounds;
+the later finite-history argument reverses the exact assemblies
+constructed here.

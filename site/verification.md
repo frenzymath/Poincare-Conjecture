@@ -25,22 +25,34 @@ and memory. Use an isolated account without unrelated credentials.
 
 The primary proof import must supply these inputs before this workflow can run:
 
-- `PoincareConjecture/comparator/comparator.json`, its Challenge and Solution modules.
+- `PoincareConjecture/Comparator/config.json`, its Challenge and Solution modules.
 - Pinned Comparator and lean4export dependencies in the project's Lake manifest.
 - Exactly `propext`, `Classical.choice`, and `Quot.sound` as permitted axioms,
   nonempty theorem targets, and `enable_nanoda: true`.
 
-The public repository does not yet contain those imported proof targets.
-This tooling therefore makes no claim that comparator has already passed.
-The workflow builds the pinned verification tools, then invokes comparator;
-comparator builds its target dependencies as needed.
+The draft import supplies these targets and pins. A local comparator run passed
+at commit `1876d7dc2c85325a3f62ce9776af98f910c5db04`: both Nanoda and Lean's
+default kernel accepted the solution, and the driver exited successfully after
+6h 55m. The source stayed clean and unchanged throughout the run. See the
+[integration evidence](../PoincareConjecture/references/ricci-flow/mapher/integration-verification/README.md)
+for the report, compressed logs, tool hashes and execution details. This is a
+local result, not a CI attestation or a claim about later unchecked proof changes.
+Historical Horizon build and recursive endpoint axiom evidence is retained in
+`PoincareConjecture/references/ricci-flow/mapher/production-cleanup/`;
+it is not a comparator result or a build of the final PR revision.
+The workflow builds the pinned verification tools with the reviewed
+[`nanoda-before-parse.patch`](../PoincareConjecture/Comparator/nanoda-before-parse.patch),
+then invokes comparator. This execution-order patch avoids retaining both
+kernels' proof representations concurrently. It preserves statement comparison,
+axiom validation, both kernel checks, and all success conditions. Source and
+patch hashes are recorded in `Comparator/provenance.json`.
 
 For a local run, start from a clean checkout of the intended commit. Build
 the pinned tools in the primary Lean project:
 
 ```bash
 cd PoincareConjecture
-lake build @Comparator/comparator @lean4export/lean4export
+make comparator-build
 cd ..
 export COMPARATOR_LANDRUN=/absolute/path/to/landrun
 export COMPARATOR_NANODA=/absolute/path/to/nanoda_bin

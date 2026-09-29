@@ -6,19 +6,24 @@
 <div align="center">
 
 [![Website: Live](https://img.shields.io/badge/Website-Live-0969da?style=flat-square)](https://frenzymath.github.io/Poincare-Conjecture/)
-[![Project board: Worklist](https://img.shields.io/badge/Project-Worklist-2da44e?style=flat-square)](https://github.com/orgs/frenzymath/projects/1)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-yellow?style=flat-square)](LICENSE)
-[![Lean: v4.32.1](https://img.shields.io/badge/Lean-v4.32.1-6f42c1?style=flat-square)](https://github.com/leanprover/lean4/tree/v4.32.1)
-[![Mathlib: 520045a](https://img.shields.io/badge/Mathlib-520045a-0969da?style=flat-square)](https://github.com/leanprover-community/mathlib4/tree/520045ab14e26149ee970e2e617ca04b09bde5d6)
+[![Lean: v4.33.1](https://img.shields.io/badge/Lean-v4.33.1-6f42c1?style=flat-square)](https://github.com/leanprover/lean4/tree/v4.33.1)
+[![Mathlib: 0df444a](https://img.shields.io/badge/Mathlib-0df444a-0969da?style=flat-square)](https://github.com/leanprover-community/mathlib4/tree/0df444a360eaa60ab8c11dca51a86af692955474)
 </div>
 
 <p align="center">
-  A custom Lean 4 formalization of the Poincare conjecture,<br>
-  with a custom proof blueprint and annotated blueprints of mathematical references.
+  A complete Lean 4 formalization of the Poincare conjecture,<br>
+  with a proof blueprint and blueprint-only mathematical references.
 </p>
 
-> [!IMPORTANT]
-> This is an active, incomplete formalization. The website distinguishes verified Lean declarations from statements still in progress.
+The formalization has passed a full Lean build and Comparator verification.
+Comparator accepted both public targets at commit `1876d7dc`, with checks by
+Nanoda and Lean's default kernel. See the
+[verification evidence](PoincareConjecture/references/ricci-flow/mapher/integration-verification/README.md)
+for the exact revisions, verifier configuration, and logs.
+
+Read the [FrenzyMath announcement](https://frenzymath.com/news/poincare-formalization/)
+for the project's background and results.
 
 ## The conjecture
 
@@ -27,75 +32,37 @@
 
 The primary [`PoincareConjecture`](PoincareConjecture/) project is organized by
 the mathematical dependency structure of the proof, independently of any one
-book's chapter order. Blueprints following individual books and articles are
-collected under [`references/`](references/), together with their earlier Lean
-developments. These references are not separate formalization objectives for
-the primary proof.
+book's chapter order. Its [18-chapter Horizon blueprint](PoincareConjecture/blueprint/content.tex)
+explains the implemented proof; the snapshot retains its outstanding editorial
+review status. Blueprints following individual books and articles are
+collected under [`references/`](references/) as blueprint-only reading material.
 
 ## Repository structure
 
 ```text
 PoincareConjecture/     primary custom blueprint and Lean library
-references/            book and article blueprints with retained Lean developments
-references/shared/     shared Lean infrastructure used by the reference packages
+references/            book and article blueprints, without Lean packages
 config.yaml            hgraph workspace and website manifest
 site/                  authored website content, graph settings, reviews and assets
 ```
 
-## Primary project and references
+## Discussion
 
-| Project | Role |
-|---|---|
-| [PoincareConjecture](https://frenzymath.github.io/Poincare-Conjecture/#/PoincareConjecture) | Primary custom proof architecture |
-| [Morgan-Tian](https://frenzymath.github.io/Poincare-Conjecture/#/references/MorganTian) | Ricci flow and the Poincare conjecture |
-| [Kleiner-Lott](https://frenzymath.github.io/Poincare-Conjecture/#/references/KleinerLott) | Notes on Perelman's papers |
-| [Cao-Zhu](https://frenzymath.github.io/Poincare-Conjecture/#/references/CaoZhu) | Hamilton-Perelman proof and geometrization |
-| [Chow et al.](https://frenzymath.github.io/Poincare-Conjecture/#/references/ChowEtAl) | Ricci flow techniques and applications, Parts II-IV |
-| [Chow-Knopf](https://frenzymath.github.io/Poincare-Conjecture/#/references/ChowKnopf) | Introduction to Ricci flow |
-| [Topping](https://frenzymath.github.io/Poincare-Conjecture/#/references/Topping) | Lectures on Ricci flow |
-| [do Carmo](https://frenzymath.github.io/Poincare-Conjecture/#/references/DoCarmo) | Riemannian geometry |
-| [Petersen](https://frenzymath.github.io/Poincare-Conjecture/#/references/Petersen) | Riemannian geometry |
-| [Lee, Riemannian Manifolds](https://frenzymath.github.io/Poincare-Conjecture/#/references/LeeRiemannian) | Riemannian geometry |
-| [Lee, Smooth Manifolds](https://frenzymath.github.io/Poincare-Conjecture/#/references/LeeSmooth) | Smooth-manifold foundations |
-| [Cheeger-Gromov-Taylor](https://frenzymath.github.io/Poincare-Conjecture/#/references/CheegerGromovTaylor) | Kernel estimates on complete Riemannian manifolds |
-| [Hatcher](https://frenzymath.github.io/Poincare-Conjecture/#/references/Hatcher) | Algebraic topology |
-| [Thurston](https://frenzymath.github.io/Poincare-Conjecture/#/references/Thurston) | Three-manifold topology and hyperbolic geometry |
-| [Evans](https://frenzymath.github.io/Poincare-Conjecture/#/references/Evans) | Partial differential equations |
-| [Gilbarg-Trudinger](https://frenzymath.github.io/Poincare-Conjecture/#/references/GilbargTrudinger) | Second-order elliptic partial differential equations |
-| [Han-Lin](https://frenzymath.github.io/Poincare-Conjecture/#/references/HanLinLectureNotes) | Elliptic differential equations |
+[Issues](https://github.com/frenzymath/Poincare-Conjecture/issues) |
+[Pull requests](https://github.com/frenzymath/Poincare-Conjecture/pulls) |
+[Lean Zulip](https://leanprover.zulipchat.com/)
 
-## Current review milestones
-
-- **Hopf-Rinow (do Carmo, Chapter 7, Section 2).** The path-regularity gap raised
-  in [issue #6](https://github.com/frenzymath/Poincare-Conjecture/issues/6) is
-  closed: `piecewiseRiemannianEDist_eq_riemannianEDist` identifies do Carmo's
-  finite piecewise-smooth infimum with Mathlib's `riemannianEDist`.
-- **Cartan-Hadamard (do Carmo, Chapter 7, Section 3).** The theorem is fully
-  formalized without project axioms or `sorry`. The construction
-  `hadamardDiffeomorphOfNonpos_complete` is a global smooth diffeomorphism and
-  its underlying map is definitionally the exponential map, so mathematical
-  and Lean review can start.
-- **Cross-reference status.** Cartan-Hadamard is also complete in the
-  Lee-Riemannian development. Petersen Section 6.2 remains open, which is why
-  the workspace-wide milestone remains active.
-
-## Contributing
-
-Contributions are welcome through [issues](https://github.com/frenzymath/Poincare-Conjecture/issues) and focused [pull requests](https://github.com/frenzymath/Poincare-Conjecture/pulls). Build instructions, local website preview, and the review/comment workflow are documented in [CONTRIBUTING.md](CONTRIBUTING.md).
-
-Automatic CI reports Lean source statistics and admissions without compiling the
-proof. Full builds and comparator verification are explicit workflows; their
-evidence and trust assumptions are described in [Verification](site/verification.md).
-Generated graph directories and website output are never committed.
-
-Active work is coordinated on the [Poincare Conjecture Formalization Library project board](https://github.com/orgs/frenzymath/projects/1).
+Build and website instructions are in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Provenance
 
-This is an independent formalization. A limited part of the Riemannian
-geometry infrastructure was originally derived from
-[OpenGA](https://github.com/MathNetwork/OpenGA) and has since been substantially
-extended and rewritten. The project is built on
-[Mathlib](https://github.com/leanprover-community/mathlib4/tree/520045ab14e26149ee970e2e617ca04b09bde5d6).
+See [frenzymath/PoincareConjecture](https://github.com/frenzymath/PoincareConjecture)
+for the companion proof repository and comparator statement. This repository
+organizes the proof library by mathematical subject and adds the blueprint.
+Exact import revisions, adaptations, and retained source notices are recorded
+in [the import provenance](PoincareConjecture/IMPORT.md) and
+[MODIFICATIONS.md](PoincareConjecture/MODIFICATIONS.md).
+The [whole-tree external-source audit](PoincareConjecture/provenance/2026-09-29/README.md)
+records reviewed similarity matches, restored notices, and upstream licenses.
 
 Licensed under [Apache 2.0](LICENSE).

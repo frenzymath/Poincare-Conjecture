@@ -1,0 +1,34 @@
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.GeometryImports
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.SourceGeometry.CriticalBall.SourceCriticalBallInitialSides
+
+/-!
+# Direct audits of the actual initial limiting sides
+
+Every new public declaration in collar label transfer, compact-path
+separation, full complementary components, strict orientation retention
+and the negative scalar bound has a direct axiom report. Source:
+Morgan--Tian Proposition 10.7, pp. 253-254; M28 derivation 114.
+-/
+
+set_option autoImplicit false
+
+open PoincareMT PoincareMT.M28
+
+#print axioms IsPreconnected.mem_iff_of_connectedComponentIn_eq
+#print axioms JoinedIn.eventually_component_mem_iff
+#print axioms not_joinedIn_of_eventually_opposite_component_labels
+#print axioms closure_connectedComponentIn_subset_union_compl
+#print axioms connectedComponentIn_compl_inter_neighborhood_nonempty
+#print axioms compl_eq_union_connectedComponentIn_of_two_half_collar
+#print axioms frontier_connectedComponentIn_compl_eq_of_closure_subset
+#print axioms Filter.exists_strictMono_constant_label_witness
+#print axioms neck_collar_opposite_graph_component_labels
+#print axioms EpsilonNeck.complement_components_of_isSeparating
+#print axioms CounterexampleNeckFamily.initial_sphere_isSeparating
+#print axioms CounterexampleNeckFamily.exists_retained_initial_separating_sphere_accuracy
+#print axioms CounterexampleNeckFamily.initial_graph_opposite_labels
+#print axioms CounterexampleNeckFamily.eventually_initial_graph_labels_along_path
+#print axioms CounterexampleNeckFamily.exists_retained_initial_graph_orientation
+#print axioms CounterexampleNeckFamily.eventually_initial_graph_labels_on_component
+#print axioms CounterexampleNeckFamily.exists_initial_limit_scalar_upper_accuracy
+#print axioms CounterexampleNeckFamily.exists_retained_initial_sides_accuracy

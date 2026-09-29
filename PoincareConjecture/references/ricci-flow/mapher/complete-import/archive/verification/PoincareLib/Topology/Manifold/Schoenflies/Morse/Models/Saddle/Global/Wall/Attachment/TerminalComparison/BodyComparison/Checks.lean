@@ -1,0 +1,27 @@
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.BodyComparison.Coordinates
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.BodyComparison.Clearance
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.BodyComparison.Lower
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.BodyComparison.Assembly
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.BodyComparison.Pair
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.BodyComparison.Reflection.Checks
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.BodyComparison.WholeWall.CoordinateChecks
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.BodyComparison.Rounded
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.BodyComparison.SelectedEnergy
+
+open Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.BodyComparison
+
+#print axioms finite_energy_germ
+#print axioms exists_joining_planar_isotopy_lift
+#print axioms closed_gap_strip_clearance
+#print axioms actual_lower_body_iff_model_of_finite_energy
+#print axioms actual_lower_body_germ_of_finite_energy
+#print axioms actual_lower_body_germ_at_closed_gap
+#print axioms exists_finite_gap_joining_lift
+#print axioms exists_actual_side_finite_gap_coordinates
+#print axioms exists_pair_comparison_neighborhood
+#print axioms exists_actual_pair_finite_gap_coordinates
+#print axioms actual_side_body_joined_wall_germ
+#print axioms actual_side_body_wall_germ_of_disk_transport
+#print axioms Reflection.reflectedEnergyTransport_disk_image
+#print axioms exists_rounded_actual_side_pair
+#print axioms exists_selected_wall_energy_coordinates

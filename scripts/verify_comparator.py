@@ -33,7 +33,7 @@ def executable(value):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--project', type=Path, default=Path('PoincareConjecture'))
-    parser.add_argument('--config', type=Path, default=Path('comparator/comparator.json'),
+    parser.add_argument('--config', type=Path, default=Path('Comparator/config.json'),
                         help='path relative to the Lean project')
     parser.add_argument('--comparator', default='.lake/packages/Comparator/.lake/build/bin/comparator',
                         help='executable path relative to the Lean project')
@@ -69,7 +69,7 @@ def main():
     command = [str(binaries['systemd-run']), '--user', '--wait', '--pipe', '--collect',
                '--property=RestrictAddressFamilies=~AF_UNIX', f'--working-directory={project}',
                '-E', 'PATH', '-E', 'COMPARATOR_LANDRUN', '-E', 'COMPARATOR_LEAN4EXPORT',
-               '-E', 'COMPARATOR_NANODA', str(binaries['lake']), 'env',
+               '-E', 'COMPARATOR_NANODA', '-E', 'TMPDIR', str(binaries['lake']), 'env',
                str(binaries['comparator']), str(config)]
     inputs = {str(path.relative_to(repo)): sha256(path)
               for path in [project / 'lean-toolchain', project / 'lake-manifest.json',
@@ -91,18 +91,29 @@ def main():
     record = output / 'verification.json'
     record.write_text(json.dumps(evidence, indent=2) + '\n', encoding='utf-8')
     log = output / 'comparator.log'
+    required_messages = {
+        'Nanoda kernel accepts the solution',
+        'Lean default kernel accepts the solution',
+        'Your solution is okay!',
+    }
+    observed_messages = set()
     with log.open('w', encoding='utf-8') as stream:
         process = subprocess.Popen(command, cwd=project, env=env, stdout=subprocess.PIPE,
                                    stderr=subprocess.STDOUT, text=True, errors='replace')
         for line in process.stdout:
             stream.write(line)
+            stream.flush()
+            if line.strip() in required_messages:
+                observed_messages.add(line.strip())
             print(line, end='', flush=True)
         returncode = process.wait()
     # A source mutation during the run invalidates the commit association.
     clean = not git(repo, 'status', '--porcelain', '--untracked-files=all')
     same_commit = git(repo, 'rev-parse', 'HEAD') == evidence['commit']
-    passed = returncode == 0 and clean and same_commit
+    missing_messages = sorted(required_messages - observed_messages)
+    passed = returncode == 0 and clean and same_commit and not missing_messages
     evidence.update(status='passed' if passed else 'failed', exit_code=returncode,
+                    missing_success_messages=missing_messages,
                     source_unchanged=clean and same_commit,
                     completed_at=datetime.now(timezone.utc).isoformat(), log_sha256=sha256(log))
     record.write_text(json.dumps(evidence, indent=2) + '\n', encoding='utf-8')

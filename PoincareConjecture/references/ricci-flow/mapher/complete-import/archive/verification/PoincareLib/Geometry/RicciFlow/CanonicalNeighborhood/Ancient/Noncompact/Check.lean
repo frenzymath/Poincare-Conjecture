@@ -1,0 +1,52 @@
+import PoincareLib.Geometry.RicciFlow.CanonicalNeighborhood.Ancient.Noncompact.Producer
+import PoincareLib.Geometry.RicciFlow.CanonicalNeighborhood.Ancient.Noncompact.Product.CoverFlow
+import PoincareLib.Geometry.RicciFlow.CanonicalNeighborhood.Ancient.Noncompact.Convergence.SpatialJets
+import PoincareLib.Geometry.RicciFlow.CanonicalNeighborhood.Ancient.Noncompact.Product.Normalization
+import PoincareLib.Geometry.RicciFlow.CanonicalNeighborhood.Ancient.Noncompact.Product.Evolution
+import PoincareLib.Geometry.RicciFlow.CanonicalNeighborhood.Ancient.Noncompact.Convergence.Stability
+
+/-!
+# Axiom audit for the noncompact construction
+
+The intermediate constructions use only the standard logical axioms.
+The exact universal producer has no direct admission. Its transitive
+admissions are the separately tracked original-flow trichotomy and
+positive-curvature capped-tube producer.
+-/
+
+#print axioms PoincareMT.CapCertificate.isCompact_univ_of_whole
+#print axioms PoincareMT.GlobalNeckCapConclusion.tube_or_capped_of_noncompact
+#print axioms PoincareMT.CapCertificate.one_lt_cap_constant
+#print axioms PoincareMT.NoncompactKappa.capWithConnection
+#print axioms PoincareMT.NoncompactKappa.strongCapOfCap
+#print axioms PoincareMT.NoncompactKappa.strongCappedTubeOfCappedTube
+#print axioms PoincareMT.roundCylinderFamilyClose_model
+#print axioms PoincareMT.exists_strongEvolvingNeck_of_exactCylinder
+#print axioms PoincareMT.NoEmbeddedTrivialNormalProjectivePlane.not_projectivePlaneLine
+#print axioms PoincareMT.NoncompactKappa.exists_wholeStrongTube_threshold
+#print axioms PoincareMT.noncompactKappaSolutionAlternatives.ofStrongCoverage
+#print axioms PoincareMT.M27TwistedSphereLineFlowCertificate.isCompact_slabCore
+#print axioms PoincareMT.M27TwistedSphereLineFlowCertificate.positiveEnd_isOpenEmbedding
+#print axioms PoincareMT.M27TwistedSphereLineFlowCertificate.complement_slabCore
+#print axioms PoincareMT.NormalizedKappaSpacetimeEmbedding.contMDiffOn_terminalSpatialMap
+#print axioms PoincareMT.NormalizedKappaSpacetimeEmbedding.terminal_coefficient_eq_fixed_pullback
+#print axioms PoincareMT.NormalizedKappaSpacetimeEmbedding.contDiffOn_terminalCoefficient
+#print axioms PoincareMT.AncientCompactness.iteratedFDeriv_spatial_slice_of_open_halfspace
+#print axioms PoincareMT.M23TerminalMetricConvergence.tendstoUniformlyOn_fixedPullbackSpatialJets
+#print axioms PoincareMT.KappaNine88Conclusion.ofCappedTube
+#print axioms PoincareMT.KappaNine88Conclusion.mono_constant
+#print axioms PoincareMT.M23TerminalExtension.eventually_strongEvolvingNeck
+#print axioms PoincareMT.ancientKappaCurvatureTrichotomy
+#print axioms PoincareMT.positiveCurvatureStrongCappedTubes
+#print axioms PoincareMT.twistedCylinder_strongCappedTube
+#print axioms PoincareMT.noncompactKappaSolutionAlternatives
+#print axioms PoincareMT.M27SphereLineFlowCertificate.exists_scalarNormalized_sphere
+#print axioms PoincareMT.RicciFlow.Splitting.normalized_round_surface_inner_relative
+#print axioms PoincareMT.RiemannianMetric.ricci_eq_of_line_product
+#print axioms PoincareMT.M27SphereLineFlowCertificate.sphereFlow
+#print axioms PoincareMT.RicciFlow.Splitting.round_surface_inner_backward
+#print axioms PoincareMT.M27SphereLineFlowCertificate.exists_strongEvolvingNeck
+#print axioms PoincareMT.noncompactKappaSolutionAlternatives.ofSphereLine
+#print axioms PoincareMT.RiemannianMetric.ricci_eq_of_line_product_local_isometry
+#print axioms PoincareMT.M27RoundSphereFamily.flowOfProductCover
+#print axioms PoincareMT.M27TwistedSphereLineFlowCertificate.sphere_inner_backward

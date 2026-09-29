@@ -1,0 +1,3 @@
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalSurface.UpperReplacement.ActualJoiningCircle
+
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.UpperReplacement.joining_circle_eq_of_actual_trace

@@ -7,10 +7,31 @@ import unittest
 SCRIPTS = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(SCRIPTS))
 from lean_stats import count_source, scan_tree
+from detect_provenance import lean_tokens
 from build_site import preserve_legacy_routes, stage_workspace
 
 
 class StatisticsTests(unittest.TestCase):
+    def test_provenance_tokenizer_ignores_nested_comments_and_whitespace(self):
+        left = '/- ignored -/\n/- nested /- comment -/ -/ def x := 1'
+        right = 'def x := 1'
+        self.assertEqual(lean_tokens(left), lean_tokens(right))
+
+    def test_explicit_exclusions_keep_solution_and_nested_production_sources(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for name in ('comparator', 'references', 'Library/references'):
+                (root / name).mkdir(parents=True)
+            for name in ('comparator/Challenge.lean', 'comparator/Solution.lean',
+                         'references/Audit.lean', 'Library/references/Proof.lean'):
+                (root / name).write_text('theorem gap : True := by sorry\n')
+            total, _, files, findings = scan_tree(
+                root, ['references', 'comparator/Challenge.lean'])
+            self.assertEqual((total.files, total.sorry), (2, 2))
+            self.assertEqual({entry['path'] for entry in files},
+                             {'comparator/Solution.lean', 'Library/references/Proof.lean'})
+            self.assertEqual(len(findings), 2)
+
     def test_nested_docs_and_literals(self):
         counts = count_source('''/-- Documentation
 with /- nested -/ sorry -/
@@ -42,6 +63,15 @@ public axiom assumption : Prop
 
 
 class SiteStagingTests(unittest.TestCase):
+    def test_reference_configs_disable_lean_and_packages_are_removed(self):
+        import yaml
+        repo = SCRIPTS.parent
+        for config in (repo / 'site/projects/references').glob('*/config.yaml'):
+            self.assertEqual(yaml.safe_load(config.read_text())['lean'], [], str(config))
+        self.assertFalse(list((repo / 'references').rglob('*.lean')))
+        self.assertFalse(list((repo / 'references').rglob('lean-toolchain')))
+        self.assertFalse(list((repo / 'references').rglob('lake-manifest.json')))
+
     def test_legacy_routes_are_injected_before_the_page_loads(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

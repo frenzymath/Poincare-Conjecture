@@ -1,0 +1,10 @@
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalSurface.TerminalPairing.Direct
+
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.TerminalPairing.NormalizedBand.reflected
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.TerminalPairing.NormalizedBand.firstPairing_reflected
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.TerminalPairing.exists_normalized_band
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.TerminalPairing.exists_original_or_reflected_first_pairing
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.TerminalPairing.exists_first_paired_terminal_input
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.TerminalPairing.exists_filling_or_first_paired_terminal_input
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.TerminalPairing.directPairConclusion_of_firstPairing
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.TerminalPairing.exists_filling_or_terminal_direct_pair

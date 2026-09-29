@@ -1,0 +1,15 @@
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Preparation.TerminalSelection.Construction.TerminalDirect
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Preparation.TerminalSelection.Construction.NestedMiddle
+
+open Poincare.Manifold.Schoenflies.Saddle.Wall.Preparation.TerminalSelection.Construction
+
+#print axioms exists_direct_union_data
+#print axioms exists_direct_removal_data
+#print axioms exists_direct_pair_data
+#print axioms Poincare.Manifold.Schoenflies.SphereMorseReduction.exists_terminal_direct_pair
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.physicalProfileNormalizer_rev_frame
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.rev_side_sphere_below_cut_mem_actual_or_gap_or_wall
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.direct_removal_lower_boundary
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.Middle.direct_removal_continued_bands
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.Middle.direct_removal_middle_boundary
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.Middle.direct_removal_below_joining_boundary

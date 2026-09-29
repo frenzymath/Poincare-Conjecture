@@ -1,0 +1,434 @@
+{
+  "chapter": "sphere-reduction",
+  "title": "Sphere factors and connected-sum reduction",
+  "objective_revision": 4,
+  "mission": "blueprint-v4-sphere-reduction",
+  "owned_files": [
+    "blueprint-publication/drafts/sphere-reduction.tex",
+    "blueprint-publication/inventory/reviews/sphere-reduction-v4.json"
+  ],
+  "status": "accepted_by_main_agent_with_explicit_predecessor_results",
+  "metadata": {
+    "nodes": [
+      "connected-sum-reduction-to-the-three-sphere",
+      "m75-smooth-poincare-endpoint-from-extinction-and-topology",
+      "sphere-classification-of-surgery-factors"
+    ]
+  },
+  "source_revision": {
+    "requested_lean_pin": "5950ef93a2a8035ef518a2062a094da966df809b",
+    "workspace_checked": "d13a00151300454743744cee30caa7a680d6b545",
+    "outline_and_notation": "00f2b127b0a948274c637cd9de0820d6d1add9d0",
+    "library_read": "806006e5715414bceb6897d00ea279e8722042e",
+    "roadmap_read": "2912db8dd8d7db573079cd02f251b1276fda72db",
+    "reference_format_inherited_pin": "bb91a091f0b968f8bbe8d861e025a88d82b161be",
+    "reference_format_evidence": "Coordinator reference-format.md and current shared macros were read. The reference mirror was not independently cloned in this session; no mathematical assertion uses its historical book.",
+    "source_pin_policy": "The requested Lean pin is retained. Current retained ConnectedSum, Surgery/SphereFactors and Surgery/Reduction files are identical to that pin; the comparison identifies only three deleted M82 PrimeFactorLedger files. Current PoincareLib, contracts, lakefile.lean and lean-toolchain are identical to the checked cleanup commit 751329327f4f582797bda8e6cffe7cdf7531cc1d. No whole-tree identity with the requested pin is claimed.",
+    "live_repository_reads": "Read current workspace Lean files, Library HEAD README/root/tree (historical analytical library, not the production source for this chapter), and live Roadmap files for the three assigned nodes and M82."
+  },
+  "sections": [
+    {
+      "label": "sec:sphere-reconstruction-interface",
+      "title": "Exact reconstruction interface",
+      "milestones": [
+        "M72"
+      ]
+    },
+    {
+      "label": "sec:factor-fundamental-groups",
+      "title": "Simple connectedness of the factors",
+      "milestones": [
+        "M73"
+      ]
+    },
+    {
+      "label": "sec:factor-classification",
+      "title": "The factor classification",
+      "milestones": [
+        "M73"
+      ]
+    },
+    {
+      "label": "sec:binary-sphere-gluing",
+      "title": "The binary smooth sphere identity",
+      "milestones": [
+        "M74"
+      ]
+    },
+    {
+      "label": "sec:sphere-union-induction",
+      "title": "The finite sphere-union invariant",
+      "milestones": [
+        "M74"
+      ]
+    },
+    {
+      "label": "sec:m74-m75-endpoint",
+      "title": "The smooth endpoint",
+      "milestones": [
+        "M74",
+        "M75"
+      ]
+    }
+  ],
+  "lean_declarations": [
+    {
+      "name": "PoincareMT.m72ReverseInduction",
+      "path": "PoincareLib/Topology/Manifold/Surgery/Reconstruction/Assembly/ReverseInduction.lean",
+      "role": "consumed M72 finite-history contract"
+    },
+    {
+      "name": "PoincareMT.SmoothFiniteConnectedSumAssembly.piece_factor",
+      "path": "PoincareLib/Topology/Manifold/Surgery/GroupEffects/ConnectedSum/Reconstruction.lean",
+      "role": "composed fundamental-group retractions; lemma sphere-factor-retraction"
+    },
+    {
+      "name": "PoincareMT.SmoothFiniteConnectedSumAssembly.piece_simplyConnected",
+      "path": "PoincareLib/Topology/Manifold/Surgery/SphereFactors/Assembly/PieceSimplyConnected.lean",
+      "role": "factor fundamental-group bridge"
+    },
+    {
+      "name": "PoincareMT.m73_sliceZero_simplyConnected",
+      "path": "PoincareLib/Topology/Manifold/Surgery/SphereFactors/Assembly/SliceSimplyConnected.lean",
+      "role": "time-zero transport"
+    },
+    {
+      "name": "PoincareMT.m73_factor_kind",
+      "path": "PoincareLib/Topology/Manifold/Surgery/SphereFactors/Assembly/FactorKind.lean",
+      "role": "survivor and bundle exclusion"
+    },
+    {
+      "name": "PoincareMT.SurgerySphereBundle.not_simplyConnectedSpace",
+      "path": "PoincareLib/Topology/Manifold/Surgery/SphereFactors/Assembly/SphereBundleExclusion.lean",
+      "role": "lifted-circle covering contradiction"
+    },
+    {
+      "name": "PoincareMT.SurgeryPositiveSpaceform.nonempty_diffeomorph_threeSphere",
+      "path": "PoincareLib/Topology/Manifold/Surgery/SphereFactors/SimplyConnected/KillingHopf.lean",
+      "role": "positive-spaceform spherical covering"
+    },
+    {
+      "name": "PoincareMT.m73SphereFactors",
+      "path": "PoincareLib/Topology/Manifold/Surgery/SphereFactors/Main.lean",
+      "role": "M73 exact factor conclusion"
+    },
+    {
+      "name": "PoincareMT.m73SphereFactors_from_M72",
+      "path": "PoincareLib/Topology/Manifold/Surgery/SphereFactors/Providers.lean",
+      "role": "same-M72 provider"
+    },
+    {
+      "name": "PoincareMT.SmoothConnectedSumData.nonempty_diffeomorph_threeSphere",
+      "path": "PoincareLib/Topology/Manifold/Surgery/Reduction/Assembly/SphereConnectedSum.lean",
+      "role": "binary sphere identity"
+    },
+    {
+      "name": "PoincareMT.M74.SphereUnion.of_connectedSumStep",
+      "path": "PoincareLib/Topology/Manifold/Surgery/Reduction/Assembly/StepPreservesSphereUnion.lean",
+      "role": "componentwise step induction"
+    },
+    {
+      "name": "PoincareMT.M74.SphereUnion.of_finite_regions",
+      "path": "PoincareLib/Topology/Manifold/Surgery/Reduction/Assembly/FiniteComponentFamily.lean",
+      "role": "finite clopen-region enumeration"
+    },
+    {
+      "name": "PoincareMT.M74.SphereUnion.of_reflTransGen",
+      "path": "PoincareLib/Topology/Manifold/Surgery/Reduction/Assembly/FiniteInduction.lean",
+      "role": "finite relation induction"
+    },
+    {
+      "name": "PoincareMT.M74.SphereUnion.nonempty_diffeomorph_threeSphere",
+      "path": "PoincareLib/Topology/Manifold/Surgery/Reduction/Assembly/SphereUnionInvariant.lean",
+      "role": "connected terminal extraction"
+    },
+    {
+      "name": "PoincareMT.m74ConnectedSumReduction",
+      "path": "PoincareLib/Topology/Manifold/Surgery/Reduction/Main.lean",
+      "role": "M74 checked provider"
+    },
+    {
+      "name": "PoincareMT.m74Reduction_from_M72_M73",
+      "path": "PoincareLib/Topology/Manifold/Surgery/Reduction/Providers.lean",
+      "role": "exact assembly bridge"
+    },
+    {
+      "name": "PoincareMT.m75EndpointInputFromExtinction",
+      "path": "PoincareLib/Topology/Manifold/Poincare/Smooth/Providers.lean",
+      "role": "same-flow M75 input"
+    },
+    {
+      "name": "PoincareMT.m75SmoothPoincare",
+      "path": "PoincareLib/Topology/Manifold/Poincare/Smooth.lean",
+      "role": "endpoint composition"
+    },
+    {
+      "name": "PoincareMT.m90SmoothEndpointInputs",
+      "path": "PoincareLib/Topology/Manifold/Poincare/Final/Providers.lean",
+      "role": "actual upstream producer into the smooth endpoint; not a new theorem proved in this chapter"
+    }
+  ],
+  "definitions_and_hypotheses_checked": [
+    "M72ReconstructionConclusion carries a finite event ledger, bijective summand reindexing, exact piece equalities, a smooth finite connected-sum assembly, target nonemptiness, target connectedness, and successor transport; the draft uses the same-flow fields rather than an arbitrary factor family.",
+    "M73 assumes the original smooth measurable three-manifold is simply connected and uses the initial identification to transport this property to the exact time-zero slice. Each factor receives connectedness from its event topology and simple connectedness from the M54 assembly factor certificate.",
+    "The sphere-bundle obstruction assumes compact total carrier and formal bundle local trivializations; it does not assume a pre-existing universal cover of the carrier. The lift is through the real-to-circle exponential covering.",
+    "Positive-spaceform classification assumes a positive curvature constant, compactness, and factor simple connectedness. The proof rescales to sectional curvature one, constructs a spherical covering, and uses target simple connectedness to make it bijective.",
+    "A connected-sum step retains radius-two ball charts, removed closed radius-one balls, arbitrary sphere gluing diffeomorphism, collar inverse and smoothness, and a disjoint cover by two source regions and the central sphere. The binary sphere identity is proved for these supplied data, including both orientation classes.",
+    "The Schoenflies input is quantified over every embedded smooth collar and every width 0<delta<1. The full oriented half-collar is in the chart-image identity; the radial function is initially only strictly increasing. Its smoothness and nonzero derivative near the original surgery sphere are proved from the inverse chart and immersion.",
+    "The sphere-union invariant is a finite clopen region family with smooth region equivalences and sphere maps. Its definition allows the empty family, while M74 separately assumes target nonemptiness and connectedness.",
+    "M75EndpointInput stores the global certificate and a reduction of that certificate's own time-zero carrier; m75EndpointInputFromExtinction sets the global field definitionally equal to the supplied flow."
+  ],
+  "substantive_proof_mechanisms": [
+    {
+      "topic": "exact M72 factors",
+      "exposition": "def:exact-factor-ledger",
+      "mechanism": "Consumed exact output of successor transport, reverse induction, local substitution and reindexing; those constructions remain in finite-history.",
+      "sources": [
+        "Reconstruction/Assembly/HistoryIndices.lean",
+        "Reconstruction/Assembly/Successors.lean",
+        "Reconstruction/Assembly/ReverseInduction.lean"
+      ]
+    },
+    {
+      "topic": "factor simple connectedness",
+      "exposition": "lem:sphere-factor-retraction",
+      "mechanism": "Clopen-region based groups, explicit free-product retraction with simply connected half-collar overlap, ball-removal isomorphism, composition of retractions, and connected locally path-connected manifold bridge.",
+      "sources": [
+        "GroupEffects/FactorData.lean",
+        "GroupEffects/ConnectedSum/Factors.lean",
+        "GroupEffects/ConnectedSum/Reconstruction.lean",
+        "SphereFactors/Assembly/SliceSimplyConnected.lean",
+        "SphereFactors/Assembly/PieceSimplyConnected.lean"
+      ]
+    },
+    {
+      "topic": "sphere-bundle exclusion",
+      "mechanism": "transported exponential covering, unique lift, compact nonempty range, local-sheet openness, clopen range contradiction in R",
+      "sources": [
+        "SphereFactors/Assembly/SphereBundleExclusion.lean"
+      ]
+    },
+    {
+      "topic": "positive spaceform",
+      "exposition": "prop:positive-spaceform-sphere",
+      "mechanism": "Metric rescaling with unchanged Levi-Civita connection, curvature normalization, standard spherical covering, covering bijectivity under simple connectedness, and gluing local smooth inverses.",
+      "sources": [
+        "SphereFactors/SimplyConnected/KillingHopf.lean"
+      ]
+    },
+    {
+      "topic": "binary sphere gluing",
+      "exposition": "lem:reciprocal-sphere-end and thm:binary-sphere-identity",
+      "mechanism": "Explicit shifted collar v(t)=(1+2t)/(2+t), sign and bounded-side identification, exact smaller-ball image, recovery of radial regularity, orthogonal-to-boundary isotopy with linear germ, positive convex radial splice, reciprocal collar coordinates, compression H, inversion J and two stereographic charts with transition J.",
+      "sources": [
+        "Reduction/Assembly/ShiftedPunctureCollar.lean",
+        "Reduction/Assembly/SchoenfliesGlobalChart.lean",
+        "Reduction/Assembly/SchoenfliesBallSide.lean",
+        "Reduction/Assembly/SchoenfliesExteriorBall.lean",
+        "Reduction/Assembly/SchoenfliesRadialCoordinate.lean",
+        "Reduction/Assembly/SchoenfliesRadiusInverse.lean",
+        "Reduction/Assembly/SchoenfliesCanonicalRadius.lean",
+        "Reduction/Algebra/ReciprocalRadiusExtension.lean",
+        "Reduction/Algebra/PositiveRadiusSplice.lean",
+        "Reduction/Assembly/CanonicalPuncturedSphereEnd.lean",
+        "Reduction/Assembly/CollarAbsorptionActualAssembly.lean",
+        "Reduction/Assembly/CollarAbsorptionSphereCharts.lean",
+        "Reduction/Assembly/CollarAbsorptionAssemblyMaps.lean",
+        "Reduction/Assembly/CollarAbsorptionAssembly.lean",
+        "Reduction/Assembly/SphereConnectedSum.lean"
+      ]
+    },
+    {
+      "topic": "finite reduction",
+      "mechanism": "unique clopen region containing each connected radius-two chart, selected component restriction, untouched-region equivalences, Option-indexed finite cover, reflexive-transitive induction, connected terminal extraction",
+      "sources": [
+        "Reduction/Assembly/ComponentBookkeeping.lean",
+        "Reduction/Assembly/ComponentRestriction.lean",
+        "Reduction/Assembly/ComponentUntouched.lean",
+        "Reduction/Assembly/FiniteComponentFamily.lean",
+        "Reduction/Assembly/FiniteInduction.lean",
+        "Reduction/Assembly/SphereUnionInvariant.lean"
+      ]
+    }
+  ],
+  "external_sources": [
+    {
+      "key": "MT2007",
+      "locator": "Corollary 0.2(a), p. x; Proposition 15.3 and Corollary 15.4(2), pp. 357-359; Theorem 1.11(2) and following spaceform paragraph, pp. 8-9; Theorem 15.9 and Corollary 15.10, p. 363",
+      "verification": "Read local authoritative Clay-edition PDF pages 11, 51-52, 400-402 and 406. Corollary 15.4 calls the simply connected conclusion immediate; this chapter develops its specialized group, bundle and actual-gluing arguments. The existence citations are upstream context, not a discharge of the conditional flow premise."
+    },
+    {
+      "key": "Hatcher",
+      "locator": "Theorem 1.20, p. 43; Propositions 1.33-1.34, pp. 61-62",
+      "verification": "Read local authoritative Algebraic Topology PDF pages 52, 70-71; these discharge ordinary van Kampen and covering-lift background only."
+    },
+    {
+      "key": "Hatcher3M2014",
+      "locator": "Theorem 1.1, pp. 1-5; sphere extension, p. 5",
+      "verification": "Read local PDF theorem on printed p. 1; the stronger exact collar service remains an explicit neck-cap-topology contract, not a consequence claimed from the bare theorem alone."
+    },
+    {
+      "key": "Smale1959",
+      "locator": "Theorems 5-6, pp. 624-626",
+      "verification": "Read local PDF pages 4-6; Theorem 6 treats orientation-preserving diffeomorphisms. Composition with a fixed reflection supplies the other orientation class used in the input."
+    }
+  ],
+  "cross_chapter_contracts": {
+    "inputs": [
+      {
+        "chapter": "finite-history",
+        "contract": "M72ReconstructionConclusion for the actual extinction flow, including exact factors, assembly, target connectedness, and successor/reindexing evidence"
+      },
+      {
+        "chapter": "filling-width",
+        "contract": "Surgery fundamental-group input (M54): ball-removal and basepoint/component forms of the free-product retractions. This chapter develops their composition and application to the actual finite assembly; the shared group interface must be reconciled with the filling-width chapter."
+      },
+      {
+        "chapter": "neck-cap-topology",
+        "contract": "M25 collared Schoenflies quantified over all widths after the collar, with exact full-half-collar chart image, smooth inverse and radial formula; jointly smooth sphere isotopy from an orthogonal map. Precise used clauses are stated in sec:binary-sphere-gluing."
+      },
+      {
+        "chapter": "extinction",
+        "contract": "one normalized global flow, raw local topology, and finite extinction conclusion referring to the same stored flow"
+      }
+    ],
+    "outputs": [
+      {
+        "chapter": "smoothing",
+        "contract": "smooth Poincare endpoint only; compatible smoothing and topological transport are downstream"
+      }
+    ]
+  },
+  "milestone_reconciliation": [
+    {
+      "milestone": "M72",
+      "disposition": "Consumed as the exact finite-history interface; substantive reverse induction remains owned by finite-history."
+    },
+    {
+      "milestone": "M54",
+      "disposition": "Shared surgery-group input from filling-width; its specific assembly retraction use is developed at lem:sphere-factor-retraction. Additional coverage beyond the old selected inventory."
+    },
+    {
+      "milestone": "M73",
+      "disposition": "Accepted at thm:exact-sphere-factors: arbitrary-basepoint factor retractions, lifted-circle obstruction, curvature normalization and exact per-factor sphere maps."
+    },
+    {
+      "milestone": "M74",
+      "disposition": "Accepted at lem:reciprocal-sphere-end, thm:binary-sphere-identity, lem:sphere-union-step and thm:sphere-finite-reduction, relative to the named precise topology inputs."
+    },
+    {
+      "milestone": "M75",
+      "disposition": "Accepted conditional composition at thm:sphere-smooth-endpoint, using the same flow's initial identification and reduction. Construction of its premise is upstream."
+    },
+    {
+      "milestone": "M82",
+      "disposition": "Retired from current production: the three PrimeFactorLedger files present at the requested pin were removed. Their historical adapter copied exact M72/M73 ledger data, was not called by the endpoint provider and established no independent prime-decomposition uniqueness theorem. Its meaningful indexing is already stated in def:exact-factor-ledger; do not count M82 as an additional proof."
+    }
+  ],
+  "background_or_helper_classification": {
+    "background": [
+      "standard covering-space lifting and connected-clopen facts",
+      "ordinary properties of smooth manifolds and positive-curvature spherical coverings"
+    ],
+    "substantive_project_specific": [
+      "M72 exact-factor assembly and reverse-history interface",
+      "M73 sphere-bundle compact-range contradiction",
+      "M73 factor simple-connectedness bridge",
+      "M74 actual collar-based binary sphere identity",
+      "M74 componentwise finite induction"
+    ],
+    "implementation_helpers": [
+      "Option-index enumeration and subtype bookkeeping after the selected core is constructed",
+      "transported Circle/UnitCircle homeomorphism definition used to connect Mathlib's exponential covering to the formal bundle model"
+    ]
+  },
+  "unresolved_issues": [],
+  "verification": {
+    "isolated_chapter_build": "Passed pdflatex, BibTeX and two further pdflatex passes using shared macros and bibliography in a temporary wrapper. Ten pages including bibliography; final log has no undefined references, citation warnings or overfull/underfull boxes. Latin Modern is absent on this worker, so only the temporary wrapper uses the default font. This is not the integrated book/site build.",
+    "visual_inspection": "Rendered and inspected the reciprocal-end construction and binary-transition/component-induction pages; formulas and prose fit the page. Final integrated pagination remains coordinator-owned.",
+    "metadata_validation": "JSON parsed; declaration paths/names, helper paths, stored source hashes, section labels and internal references checked. These are traceability checks, not completeness evidence.",
+    "make_check_attempt": "Invoked before editing; all 12 frozen contract hashes passed. The fresh dependency/full build was deliberately terminated (exit 143) to honor the prose-only instruction against large rebuilds. This is not a passed local Lean build.",
+    "reused_lean_evidence": "As authorized, reuse the coordinator's passed make check and recursive endpoint audit. The archived verification/results.json records exit 0 and only propext, Classical.choice, Quot.sound; current production tree equals cleanup commit 751329327f4f582797bda8e6cffe7cdf7531cc1d. No Lean source changed here, so no new kernel-verification claim is made.",
+    "historical_blueprint_check": "check_blueprint.py passed for its existing scope; that historical scope is not completeness evidence for this chapter.",
+    "integrated_book_check": "check_book.py failed on the existing M25 source-line inventory mismatch, recorded above.",
+    "source_hashes_checked": {
+      "PoincareLib/Topology/Manifold/Surgery/SphereFactors/Main.lean": "2e915e5343b17a59b55afe2f7c1f0f759ae00983dc9c1f6d4104c74290cdbebd",
+      "PoincareLib/Topology/Manifold/Surgery/Reduction/Providers.lean": "84bba244f6bf33876d1d0490a0c779128619e9aa55630aef77f59e2dddcec63e",
+      "PoincareLib/Topology/Manifold/Poincare/Smooth.lean": "ce31371724e496a14f044df5881c7b7cbb24e9fe6aa0215686850a9be8e589ec"
+    },
+    "lean_source_changed": false,
+    "status": "chapter_accepted_whole_book_pending"
+  },
+  "integration_owner": {
+    "mission": "blueprint-v4-integration",
+    "session": "session_fd894b3e2eb047718aa35f162d35c568",
+    "observed_status": "running",
+    "actions": "Acceptance recorded in integration_review; complete remaining predecessor and book reviews, current-text metadata and final rendering."
+  },
+  "bibliography_proposals": [],
+  "notes": "Only the two owned files are submitted. Shared macros, bibliography, contracts, Lean sources, other chapter files and reference mirrors are preserved. Historical review 05 was discovery evidence only. This is an author source-trace and self-review record, not independent main-agent acceptance.",
+  "integration_review": {
+    "status": "accepted",
+    "date": "2026-09-28",
+    "reviewer_session": "session_fd894b3e2eb047718aa35f162d35c568",
+    "reviewed_production": "751329327f4f582797bda8e6cffe7cdf7531cc1d",
+    "draft_sha256": "9e90f55ca98476f77d3a1d031d2a10a5e906a7005fc887e082b0770f05a65dd1",
+    "calibration_prerequisite": "Extinction calibration accepted at 77936e5090144b8475576678b32f2e215c009544 before this review.",
+    "evidence": "blueprint-publication/inventory/reviews/sphere-reduction-integration-v4.md",
+    "source_review": "Complete chapter reviewed against the actual factor-retraction, bundle-exclusion, curvature normalization, reciprocal-end, actual collar assembly and finite-component induction source mechanisms. Same-flow M75 provider checked.",
+    "readability_review": "Complete continuous reading, with explicit nonemptiness and basepoint transport added. Strong predecessor statements now have precise labels; they are not replaced by bare Schoenflies or isotopy citations.",
+    "scope": "Accepts this chapter with its explicit predecessor results. Full neck-cap-topology and filling-width chapter reviews, remaining book coverage, current source-link inventory and complete rendering remain pending. A change to an input statement reopens this acceptance."
+  },
+  "historical_author_issues": [
+    {
+      "severity": "pending_review",
+      "issue": "Independent source and readability acceptance of this chapter, using extinction as calibration, remains required; this author review is not that acceptance.",
+      "owner": "main-agent / blueprint integration coordinator",
+      "unlock": "separate accepted chapter review"
+    },
+    {
+      "severity": "cross_chapter",
+      "issue": "Accept the exact event ledger and finite smooth assembly into this flow's M_0, including bijective indexing and connected nonempty target.",
+      "owner": "blueprint-v4-finite-history and main-agent",
+      "unlock": "finite-history source/readability review and matching interface"
+    },
+    {
+      "severity": "cross_chapter",
+      "issue": "Accept the exact full-half-collar Schoenflies output and smooth orthogonal-to-sphere isotopy; the ordinary citations alone do not prove the stronger service specifications.",
+      "owner": "blueprint-v4-neck-cap-topology and main-agent",
+      "unlock": "accepted topology input contracts matching sec:binary-sphere-gluing"
+    },
+    {
+      "severity": "cross_chapter",
+      "issue": "Reconcile the M54 ball-removal/basepoint and disconnected-component group input with the filling-width chapter. This chapter gives the van Kampen mechanism and complete retraction composition.",
+      "owner": "blueprint-v4-filling-width and main-agent",
+      "unlock": "shared group-contract source/readability review"
+    },
+    {
+      "severity": "cross_chapter",
+      "issue": "M75's normalized flow and finite-extinction producer remain upstream. The final theorem is deliberately conditional on their constructed same-flow premise.",
+      "owner": "extinction chapter and main-agent",
+      "unlock": "calibration acceptance and same-flow producer review"
+    },
+    {
+      "severity": "integration",
+      "issue": "The existing check_book.py fails at PoincareMT.m25NeckCapTopology: incorrect source line in coordinator-owned inventory; it does not validate this new draft.",
+      "owner": "main-agent / blueprint integration coordinator",
+      "unlock": "refresh the shared inventory during integration and rerun the integrated book check"
+    }
+  ],
+  "publication_gates": [
+    {
+      "owner": "blueprint-v4-integration",
+      "issue": "Neck-cap-topology full review remains pending, including the compact planar moving-axis correction and ambient ball-filling routes. Precise collar and isotopy interfaces are lem:neck-cap-prescribed-collar and lem:neck-cap-sphere-isotopy."
+    },
+    {
+      "owner": "blueprint-v4-integration",
+      "issue": "Filling-width full review remains pending. The arbitrary-basepoint group retraction used here is developed and checked locally, and shared with prop:filling-group-effects."
+    },
+    {
+      "owner": "blueprint-v4-integration",
+      "issue": "Integrated revision-4 source-link inventory and complete PDF/site inspection remain pending. The historical checker mismatch is fixed without pretending it validates revision-4 text."
+    }
+  ]
+}

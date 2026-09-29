@@ -1,0 +1,5 @@
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalSurface.UpperReplacement.Direct.Trace
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalSurface.UpperReplacement.Direct.NestedTrace
+
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.UpperReplacement.direct_union_replacement_joining_trace
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalSurface.UpperReplacement.direct_removal_replacement_joining_trace

@@ -1,3 +1,7 @@
+> This reference is now blueprint-only. Its Lean sources and Lake package have
+> been removed; earlier formalization and build notes below are historical.
+> The active proof library is in `../../PoincareConjecture/`.
+
 # Thurston - The Geometry and Topology of Three-Manifolds
 
 A Lean 4 reference project and independently worded mathematical blueprint

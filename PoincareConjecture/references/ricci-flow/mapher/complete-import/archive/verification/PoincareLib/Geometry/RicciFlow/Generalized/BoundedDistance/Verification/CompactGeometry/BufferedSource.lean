@@ -1,0 +1,20 @@
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.GeometryImports
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Spacetime.StrongNecks.CompactGeometry.StrongNeckBufferedSourceBounds
+
+/-! # Direct audits of the actual buffered source flow and whole-core bounds -/
+
+set_option autoImplicit false
+
+open PoincareMT.M28
+
+#print axioms buffered_cylinder_covariant_component_le
+#print axioms buffered_cylinder_first_component_le
+#print axioms exists_buffered_cylinder_second_component_bound
+#print axioms exists_buffered_cylinder_model_curvature_bound
+#print axioms exists_buffered_cylinder_metricTwoJet_bound
+#print axioms exists_buffered_cylinder_curvature_accuracy
+#print axioms exists_strongNeck_rescaled_buffered_curvature_bound
+#print axioms GeneralizedStrongNeck.rescaled_buffered_flow
+#print axioms GeneralizedStrongNeck.rescaled_buffered_flow_metric
+#print axioms GeneralizedStrongNeck.rescaled_buffered_flow_connection
+#print axioms exists_strongNeck_buffered_source_bounds_accuracy

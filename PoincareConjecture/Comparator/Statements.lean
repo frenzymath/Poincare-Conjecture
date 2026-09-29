@@ -1,0 +1,26 @@
+import Mathlib
+
+/-! Elaborate the public statements before importing the proof library's instances. -/
+
+set_option autoImplicit false
+
+open scoped Manifold ContDiff
+
+universe u
+
+namespace PoincareConjecture
+
+abbrev ThreeSphere := Metric.sphere (0 : EuclideanSpace ℝ (Fin 4)) 1
+
+def SmoothPoincare : Prop :=
+  ∀ (M : Type u) [TopologicalSpace M] [T2Space M] [SecondCountableTopology M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [IsManifold (𝓡 3) ∞ M]
+    [CompactSpace M] [SimplyConnectedSpace M],
+    Nonempty (Diffeomorph (𝓡 3) (𝓡 3) M ThreeSphere ∞)
+
+def TopologicalPoincare : Prop :=
+  ∀ (M : Type u) [TopologicalSpace M] [T2Space M] [SecondCountableTopology M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    [CompactSpace M] [SimplyConnectedSpace M], Nonempty (M ≃ₜ ThreeSphere)
+
+end PoincareConjecture

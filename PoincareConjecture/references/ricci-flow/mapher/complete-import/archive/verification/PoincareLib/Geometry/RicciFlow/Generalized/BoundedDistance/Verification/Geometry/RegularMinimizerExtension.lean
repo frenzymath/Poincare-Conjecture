@@ -1,0 +1,37 @@
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.GeometryImports
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.SourceGeometry.CriticalBall.SourceCriticalBallSpatialLimit
+
+/-! Kernel audits for the actual Claim 10.6 curvature producer, derivation 70. -/
+
+set_option autoImplicit false
+-- This file deliberately reports the kernel dependencies of the new producers.
+set_option linter.hashCommand false
+
+namespace PoincareMT.M28
+
+#print axioms exists_pathELength_right_anchor_in_ball
+#print axioms exists_pathELength_left_anchor_in_ball
+#print axioms nested_intrinsicOpenMetric_ball_image_of_regular
+#print axioms exists_radial_gain_of_regular_regional_minimizer
+#print axioms exists_counterexample_criticalBall_spatial_limit_accuracy
+
+namespace CounterexampleNeckFamily
+
+#print axioms normalizedSlice_intrinsicEDist
+#print axioms normalizedSlice_source_path_minimizing
+#print axioms source_neck_subset_tube_carrier
+#print axioms source_connector_base_subarc
+#print axioms normalized_source_connector_of_finite_walk
+#print axioms exists_source_criticalBall_small_scale_margin_accuracy
+#print axioms exists_source_node_scalar_accuracy
+#print axioms exists_source_criticalBall_scalar_accuracy
+#print axioms exists_criticalBallPointwiseShi_uniform_accuracy
+#print axioms exists_criticalBallLocalShi_uniform_accuracy
+#print axioms exists_source_criticalBall_curvature_accuracy
+#print axioms exists_source_criticalBall_subsequence_limit_accuracy
+#print axioms exists_source_criticalBall_spatial_limit_accuracy
+#print axioms exists_actual_source_criticalBall_spatial_limit_accuracy
+#print axioms exists_actual_source_criticalBall_retained_limit_accuracy
+
+end CounterexampleNeckFamily
+end PoincareMT.M28

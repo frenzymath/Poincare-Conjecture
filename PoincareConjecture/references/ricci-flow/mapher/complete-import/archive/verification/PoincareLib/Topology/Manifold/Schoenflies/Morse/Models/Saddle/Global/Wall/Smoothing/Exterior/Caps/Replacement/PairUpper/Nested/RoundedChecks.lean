@@ -1,0 +1,9 @@
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Smoothing.Exterior.Caps.Replacement.PairUpper.Nested.RoundedFilling
+
+open Poincare.Manifold.Schoenflies.Saddle.Wall.Smoothing.Exterior.Caps.PairUpper.Nested
+
+#print axioms exists_filled_nested_upper_meridian_disk
+#print axioms exists_nested_upper_meridian_normalizing_isotopy
+#print axioms exists_rotated_removal_surface_normalization
+#print axioms exists_filled_rounded_removal_shell
+#print axioms roundedRemovalShell_frontier

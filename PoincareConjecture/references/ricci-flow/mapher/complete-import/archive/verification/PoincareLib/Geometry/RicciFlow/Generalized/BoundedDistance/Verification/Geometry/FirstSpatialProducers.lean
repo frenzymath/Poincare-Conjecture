@@ -1,0 +1,21 @@
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.GeometryImports
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.SourceGeometry.Ends.SourceTubeInitialCapture
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.SourceGeometry.Ends.SourceTubeNoncollapse
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.NeckGeometry.NeckSlabMinimizer
+
+/-! Kernel audits for the first-spatial producers. -/
+
+set_option autoImplicit false
+set_option linter.hashCommand false
+
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.tube_initial_neck_distance_lt
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.tubeCritical_contains_initial_neck
+#print axioms PoincareMT.M28.regularPoints_of_intrinsicOpenMetric
+#print axioms PoincareMT.M28.nested_intrinsicOpenMetric_ball_volume_of_regular
+#print axioms PoincareMT.M28.strongNeckNoncollapseConstant_pos
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.scaled_ambient_ball_volume_lower
+#print axioms PoincareMT.M28.exists_source_tubeCritical_noncollapse_accuracy
+#print axioms PoincareMT.M28.neckTailCompactSet_compact_subset
+#print axioms PoincareMT.M28.mem_neckTailCompactSet_iff
+#print axioms PoincareMT.M28.neck_tail_incoming_sphere
+#print axioms PoincareMT.M28.exists_neck_tail_minimizer

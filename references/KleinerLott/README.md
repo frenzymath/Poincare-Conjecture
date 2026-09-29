@@ -1,3 +1,7 @@
+> This reference is now blueprint-only. Its Lean sources and Lake package have
+> been removed; earlier formalization and build notes below are historical.
+> The active proof library is in `../../PoincareConjecture/`.
+
 # Kleiner-Lott - Notes on Perelman's Papers
 
 A Lean 4 project and complete source-based dependency blueprint following

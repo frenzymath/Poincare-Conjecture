@@ -1,0 +1,23 @@
+diff --git a/Main.lean b/Main.lean
+--- a/Main.lean
++++ b/Main.lean
+@@ -253,6 +253,9 @@ def stringStream (s : String) : BaseIO IO.FS.Stream := do
+ 
+ def verifyMatch (challengeExport : String) (solutionExport : String) :
+     M Unit := do
++  let mut result := none
++  if ← getNanodaEnabled then
++    result := result <|> (← runNanoda solutionExport)
+   let challenge ← Export.parseStream (← stringStream challengeExport)
+   let solution ← Export.parseStream (← stringStream solutionExport)
+   let theoremNames ← getTheoremNames
+@@ -260,9 +263,6 @@ def verifyMatch (challengeExport : String) (solutionExport : String) :
+   let targets := (← getTheoremNames) ++ (← getLegalAxioms)
+   IO.ofExcept <| Comparator.compareAt challenge solution targets definitionNames (← primitiveTargets)
+   IO.ofExcept <| Comparator.checkAxioms solution theoremNames definitionNames (← getLegalAxioms)
+-  let mut result := none
+-  if ← getNanodaEnabled then
+-    result := result <|> (← runNanoda solutionExport)
+   result := result <|> (← runKernel solution)
+   if let some error := result then
+     throw <| IO.userError error

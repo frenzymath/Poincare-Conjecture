@@ -1,0 +1,47 @@
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.Plane.Transition
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.LowerEnergy.Ambient
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.Height.Calibration
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.Selected.Tail
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.Plane.Joined
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.OuterCollar.Joined
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.OuterCollar.Construction
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.RelativeFlow.Field
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.RelativeFlow.Source
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.Compression.Family
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.Compression.Conjugation
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.Compression.JoinedGap
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.Plane.JoinedFinite
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.RelativeFlow.LowerPaths
+import PoincareLib.Topology.Manifold.Schoenflies.Morse.Models.Saddle.Global.Wall.Attachment.TerminalComparison.Plane.JoinedFiniteLower
+
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.exists_prescribed_lower_energy_plane_map
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.exists_full_lower_neck_plane_map
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.exists_quantified_lower_energy_transport
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.exists_quantified_lower_neck_comparison
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.LowerEnergy.lowerEnergyChart_covers_full_neck_band
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.LowerEnergy.lowerEnergyChart_image_lowerNeckTransitionPatch
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.exists_prescribed_lower_height_coordinate
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.exists_joined_prescribed_height_coordinate_on
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.exists_normalized_joined_prescribed_height_coordinate_on
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.exists_positive_radius_factor_prescribed_on_compact
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.exists_joined_wall_coordinates_with_prescribed_lower_patch
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.exists_lower_neck_calibration
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.exists_actual_joined_wall_transport_preserving_lower_neck
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.OuterCollar.exists_smooth_joinedWallWidth_energy_oval
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.OuterCollar.exists_joinedWallWidth_energy_collar
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.RelativeFlow.actual_joined_width_relative_field
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.RelativeFlow.actual_circular_relative_field
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.Compression.exists_actual_profile_gap_compression
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.Compression.exists_profile_gap_compression_family
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.Compression.exists_compact_manifold_chart_conjugate
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.Compression.exists_ambient_energy_fiber_transport
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.Compression.exists_ambient_profile_gap_transport
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.Compression.exists_actual_joined_profile_gap_compression
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.Compression.exists_planar_energy_clock
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.exists_positive_energy_band_of_germs
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.exists_finite_energy_transport_of_germs
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.OuterCollar.exists_circular_energy_collar
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.exists_actual_joined_finite_energy_transport
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.RelativeFlow.hasDerivAt_lowerCircularPath
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.RelativeFlow.lowerCircularPath_mem_neck
+#print axioms Poincare.Manifold.Schoenflies.Saddle.Wall.Attachment.TerminalComparison.exists_actual_joined_finite_energy_transport_preserving_lower_neck

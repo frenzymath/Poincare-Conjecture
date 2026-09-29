@@ -1,0 +1,6 @@
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.GeometryImports
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.SourceGeometry.NeckGeometry.SourceNeckPathConnector
+
+set_option autoImplicit false
+
+#print axioms PoincareMT.M28.exists_source_neck_path_connector_accuracy

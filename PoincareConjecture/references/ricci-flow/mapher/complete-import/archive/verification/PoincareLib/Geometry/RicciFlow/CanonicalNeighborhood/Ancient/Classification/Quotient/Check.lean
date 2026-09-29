@@ -1,0 +1,10 @@
+import PoincareLib.Geometry.RicciFlow.CanonicalNeighborhood.Ancient.Classification.Quotient.Models
+import PoincareLib.Geometry.RicciFlow.CanonicalNeighborhood.Ancient.Classification.Deck.Transformation
+
+#print axioms PoincareMT.AncientCylinderQuotient.exists_projectivePlaneCoordinates
+#print axioms PoincareMT.AncientCylinderQuotient.exists_twistedProjectiveSmoothModel
+#print axioms PoincareMT.M27ProjectivePlaneLineFlowCertificate.ofCover
+#print axioms PoincareMT.M27TwistedSphereLineFlowCertificate.ofCover
+#print axioms PoincareMT.AncientCylinderQuotient.deckDiffeomorph
+#print axioms PoincareMT.AncientCylinderQuotient.deck_productInner
+#print axioms PoincareMT.AncientCylinderQuotient.models_of_fiber_alternatives

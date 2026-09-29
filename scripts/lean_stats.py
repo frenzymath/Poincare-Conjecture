@@ -42,16 +42,19 @@ def count_source(source):
     )
 
 
-def scan_tree(root):
+def scan_tree(root, excluded=()):
     total, groups, files, findings = Counts(), {}, [], []
     for directory, subdirs, names in os.walk(root):
         subdirs[:] = sorted(d for d in subdirs if d not in {'.lake', '.git', 'build', 'node_modules'}
+                           and Path(directory, d).relative_to(root).as_posix() not in excluded
                            and not Path(directory, d).is_symlink())
         for name in sorted(names):
             path = Path(directory, name)
             if path.suffix != '.lean' or path.is_symlink():
                 continue
             relative = path.relative_to(root).as_posix()
+            if relative in excluded:
+                continue
             source = path.read_text(encoding='utf-8')
             counts = count_source(source)
             total.add(counts)
@@ -89,18 +92,23 @@ def main():
     parser.add_argument('root', type=Path)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--check', action='store_true', help='fail on any sorry, admit or axiom')
+    parser.add_argument('--exclude', action='append', default=[],
+                        help='exact file or directory path relative to the scan root')
     args = parser.parse_args()
     if not args.root.is_dir():
         parser.error(f'missing source directory: {args.root}')
-    total, groups, files, findings = scan_tree(args.root)
+    total, groups, files, findings = scan_tree(args.root, args.exclude)
     if not total.files:
         parser.error('no Lean source files found')
     revision = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
     args.output.mkdir(parents=True, exist_ok=True)
     report = markdown(args.root, revision, total, groups)
+    if args.exclude:
+        report += '\nExplicit exclusions: ' + ', '.join(f'`{p}`' for p in args.exclude) + '.\n'
     (args.output / 'summary.md').write_text(report, encoding='utf-8')
     (args.output / 'statistics.json').write_text(json.dumps({
         'schema_version': 1, 'commit': revision, 'scope': str(args.root),
+        'exclusions': args.exclude,
         'totals': asdict(total), 'directories': {k: asdict(v) for k, v in groups.items()},
         'files': files, 'findings': findings,
     }, indent=2) + '\n', encoding='utf-8')

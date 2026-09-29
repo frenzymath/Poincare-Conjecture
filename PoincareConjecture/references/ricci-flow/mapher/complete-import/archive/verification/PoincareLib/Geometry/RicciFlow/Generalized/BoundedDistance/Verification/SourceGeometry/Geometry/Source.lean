@@ -1,0 +1,298 @@
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.GeometryImports
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Spacetime.Geometry.IndexedSourceGeometry
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Spacetime.StrongNecks.Geometry.StrongNeckQuarterBounds
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.PartialLimits.Limits.ActualSourceMetricLimit
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.SourceGeometry.Geometry.SourceSliceNormalization
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.SourceGeometry.NeckGeometry.SourceNeckRegion
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.NeckGeometry.NeckOverlapCapture
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.PartialLimits.RegularSets.NormalCharts
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.PartialLimits.RegularSets.VolumeCover
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.PartialLimits.RegularSets.ComponentDistances
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.PartialLimits.RegularSets.CurvatureJets
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.PartialLimits.RegularSets.RescaledCharts
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.PartialLimits.RegularSets.CoordinateCore
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.Geometry.CriticalRadius
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.SourceGeometry.NeckGeometry.SourceNeckNoReturn
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.NeckGeometry.NeckRicciComparison
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.SourceGeometry.Paths.SourceMinimizingGeodesicAssembly
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.SourceGeometry.InitialGeometry.SourceInitialBall
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.SourceGeometry.Geometry.SourceFrontierSelection
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.NeckGeometry.NeckGraphIsotopy
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.IntrinsicGeometry.IntrinsicDistanceUpperSupport
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.NeckGeometry.NeckBalancedDistance
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.NeckGeometry.NeckBalancedScale
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.NeckGeometry.NeckAxialTransition
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.NeckGeometry.NeckFrontierSphere
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.NeckGeometry.NeckQuarterOverlap
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.NeckGeometry.NeckThreeQuarter
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.Geometry.OrientedNoReturn
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.Geometry.OffPathCapCore
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.PartialLimits.RegularSets.CountableCoefficients
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.PartialLimits.RegularSets.QuotientConnectedness
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.PartialLimits.RegularSets.CompactExhaustion
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.PartialLimits.RegularSets.GeometryLimit
+
+/-! # Kernel audit of the actual source-selection assembly -/
+
+set_option autoImplicit false
+-- These commands are the audit's intended output.
+set_option linter.hashCommand false
+
+#print axioms PoincareMT.M28.exists_region_source_minimizer_accuracy
+#print axioms PoincareMT.M28.exists_canonical_source_minimizer_accuracy
+#print axioms PoincareMT.M28.exists_counterexample_source_necks_accuracy
+#print axioms PoincareMT.M28.exists_counterexample_neck_segment_accuracy
+#print axioms PoincareMT.M28.exists_counterexample_neck_family_accuracy
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.sourceIndex_strictMono
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.base_scalar_pos
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.base_scalar_tendsto_atTop
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.lower_scalar_pos
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.lower_scalar_tendsto_atTop
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.retained_ratio_lower
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.retained_ratio_tendsto_atTop
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.neck_center_scalar_tendsto_atTop
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_half_flow
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_half_flow_metric
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_half_flow_connection
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_half_source_neck
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_half_source_neck_eq
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_half_source_neck_epsilon
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_half_source_neck_scale
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_half_source_neck_center
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_half_source_neck_center_val
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_half_source_neck_connection
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_half_source_neck_carrier
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_half_source_neck_coordinate_map_val
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_half_source_neck_coordinate_inverse
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_half_scalar_at_center
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_half_center_ball_capture
+#print axioms PoincareMT.M28.strongNeckSource_preconnected
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_source_metricSpace
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_source_metricSpace_topology
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_source_metricSpace_edist
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.selectedOriginalNeck
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.selectedSourceOpen
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.rawSourceRescaling
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.normalizedSourceFlow
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.normalizedSourceNeck
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.normalizedSourceMetricSpace
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.normalizedSourceNeck_center_val
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.normalizedSourceNeck_scalar_one
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.normalizedSourceMetricSpace_topology
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.normalizedSourceMetricSpace_edist
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.normalizedSource_original_scalar_tendsto_atTop
+#print axioms PoincareMT.M28.cylinderTensorDerivative_time_eq
+#print axioms PoincareMT.M28.half_cylinder_covariant_component_le
+#print axioms PoincareMT.M28.half_cylinder_first_component_le
+#print axioms PoincareMT.M28.exists_half_cylinder_second_component_bound
+#print axioms PoincareMT.M28.jetCurvatureNorm
+#print axioms PoincareMT.M28.continuousAt_jetCurvatureNorm
+#print axioms PoincareMT.M28.exists_jetCurvatureNorm_uniform_modulus
+#print axioms PoincareMT.M28.jetCurvatureNorm_metricTwoJet_eq
+#print axioms PoincareMT.M28.jetCurvatureNorm_metricTwoJet_pullback
+#print axioms PoincareMT.M28.cylinderAxialMetricCoefficient
+#print axioms PoincareMT.M28.evolvingCylinderModelCoefficient
+#print axioms PoincareMT.M28.evolvingCylinderModelCoefficient_apply
+#print axioms PoincareMT.M28.evolvingCylinderModelCoefficient_basis
+#print axioms PoincareMT.M28.contDiff_evolvingCylinderModelCoefficient
+#print axioms PoincareMT.M28.evolvingCylinderModelCoefficient_zero_isInvertible
+#print axioms PoincareMT.M28.evolvingCylinderModelTwoJet
+#print axioms PoincareMT.M28.evolvingCylinderModelTwoJet_eq
+#print axioms PoincareMT.M28.continuous_evolvingCylinderModelTwoJet
+#print axioms PoincareMT.M28.exists_half_cylinder_model_curvature_bound
+#print axioms PoincareMT.M28.exists_half_cylinder_metricTwoJet_bound
+#print axioms PoincareMT.M28.exists_half_cylinder_curvature_accuracy
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_metric_at_time
+#print axioms PoincareMT.M28.strongNeckSource_tensor_eq_on_strip_at_time
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.rescaled_source_comparison
+#print axioms PoincareMT.M28.strongNeckCurvatureCoefficients
+#print axioms PoincareMT.M28.strongNeckCurvatureCoefficients_contDiffAt
+#print axioms PoincareMT.M28.strongNeckCurvatureCoefficients_frozen_germ
+#print axioms PoincareMT.M28.strongNeckCurvatureCoefficients_norm_zero
+#print axioms PoincareMT.M28.exists_strongNeck_rescaled_curvature_bound
+#print axioms PoincareMT.M28.neckVolumeModelChart
+#print axioms PoincareMT.M28.neckVolumeModelChart_apply
+#print axioms PoincareMT.M28.neckVolumeModelChart_source
+#print axioms PoincareMT.M28.neckVolumeModelChart_zero
+#print axioms PoincareMT.M28.neckVolumeChart
+#print axioms PoincareMT.M28.neckVolumeChart_apply
+#print axioms PoincareMT.M28.neckVolumeChart_source
+#print axioms PoincareMT.M28.neckVolumeChart_smooth
+#print axioms PoincareMT.M28.neckVolumeChart_symm_smooth
+#print axioms PoincareMT.M28.normalized_neck_chart_speed_bounds
+#print axioms PoincareMT.M28.normalized_neck_chart_density_bounds
+#print axioms PoincareMT.M28.normalized_neck_height_lt_of_mem_ball
+#print axioms PoincareMT.M28.normalized_neck_unit_ball_subset_domain
+#print axioms PoincareMT.M28.normalized_neck_isCompact_center_ball
+#print axioms PoincareMT.M28.normalized_neck_chart_edist_le
+#print axioms PoincareMT.M28.normalized_neck_chart_ball_subset
+#print axioms PoincareMT.M28.normalized_neck_chart_image_volume_bounds
+#print axioms PoincareMT.M28.exists_neckVolumeModelChart_finite_cover
+#print axioms PoincareMT.M28.normalizedNeckVolumeLowerConstant
+#print axioms PoincareMT.M28.normalizedNeckVolumeLowerConstant_pos
+#print axioms PoincareMT.M28.normalized_neck_ball_volume_lower
+#print axioms PoincareMT.M28.exists_normalized_neck_ball_volume_upper
+#print axioms PoincareMT.M28.exists_normalized_neck_volume_bounds
+#print axioms PoincareMT.M28.exists_source_neck_terminal_derivative_bound
+#print axioms PoincareMT.M28.exists_strongNeck_source_bounds_accuracy
+#print axioms PoincareMT.M28.exists_source_neck_compact_core_accuracy
+#print axioms PoincareMT.M28.exists_strongNeck_source_normal_covers_accuracy
+#print axioms PoincareMT.M28.exists_counterexample_source_family_accuracy
+#print axioms PoincareMT.M28.exists_source_neck_quarter_derivative_bound
+#print axioms PoincareMT.M28.exists_strongNeck_source_quarter_bounds_accuracy
+#print axioms
+  PoincareMT.M28.CounterexampleSourceGeometry.exists_normalized_source_partial_metric_limit
+#print axioms PoincareMT.M28.exists_counterexample_source_metric_limit_accuracy
+#print axioms PoincareMT.M28.CounterexampleSourceRegion
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.normalizedSliceMetric
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.normalizedSliceConnection
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.normalizedSlice_scalar_eq
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.normalizedSlice_lower_scalar
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.normalizedSlice_upper_scalar_tendsto
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.normalizedSlice_path_length_lt
+#print axioms PoincareMT.M28.CounterexampleNeckSegment.neckCarrierUnion
+#print axioms PoincareMT.M28.CounterexampleNeckSegment.center_mem_cover
+#print axioms PoincareMT.M28.CounterexampleNeckSegment.cover_subset_neckCarrierUnion
+#print axioms PoincareMT.M28.CounterexampleNeckSegment.neckCarrierUnion_open
+#print axioms PoincareMT.M28.CounterexampleNeckSegment.neckCarrierUnion_connected
+#print axioms PoincareMT.M28.exists_source_neck_region_accuracy
+#print axioms PoincareMT.M28.exists_source_neck_endpoint_exclusion_accuracy
+#print axioms PoincareMT.M28.exists_neck_overlap_scale_accuracy
+#print axioms PoincareMT.M28.exists_buffered_neck_sphere_capture_accuracy
+#print axioms PoincareMT.M28.regularPoints
+#print axioms PoincareMT.M28.regularComponent
+#print axioms PoincareMT.M28.regularPoints_antitone
+#print axioms PoincareMT.M28.regularComponent_antitone
+#print axioms PoincareMT.M28.regularComponent_subset
+#print axioms PoincareMT.M28.mem_regularComponent
+#print axioms PoincareMT.M28.isPreconnected_regularComponent
+#print axioms PoincareMT.M28.isConnected_regularComponent
+#print axioms PoincareMT.M28.mem_regularPoints_of_mem_ball
+#print axioms PoincareMT.M28.ball_subset_regularComponent
+#print axioms PoincareMT.M28.isClosed_regularPoints
+#print axioms PoincareMT.M28.isClosed_regularComponent
+#print axioms PoincareMT.M28.closure_ball_subset_regularComponent
+#print axioms PoincareMT.M28.exists_uniform_regular_normal_charts
+#print axioms PoincareMT.M28.exists_finset_regularComponent_cover
+#print axioms PoincareMT.M28.isCompact_regularComponent_of_volume_bounds
+#print axioms PoincareMT.M28.exists_regularComponent_cover_of_noncollapse
+#print axioms PoincareMT.M28.RegularNormalChartCover
+#print axioms PoincareMT.M28.exists_uniform_regular_normal_cover
+#print axioms PoincareMT.M28.RegularNormalChartCover.base_distance_le
+#print axioms PoincareMT.M28.RegularNormalChartCover.chart_distance_le
+#print axioms PoincareMT.M28.coordinate_core_subset_image_of_fderiv_close
+#print axioms PoincareMT.M28.eventually_coordinate_core_subset_image
+#print axioms PoincareMT.M28.eventually_regular_normalCover_jet_bound_of_curvature
+#print axioms PoincareMT.M28.RegularNormalChartCover.unitBallMap
+#print axioms PoincareMT.M28.RegularNormalChartCover.unitBallMap_distances
+#print axioms PoincareMT.M28.RegularNormalChartCover.unitBallMap_isLocalDiffeomorph
+#print axioms PoincareMT.M28.RegularNormalChartCover.unitBallMap_isOpenEmbedding
+#print axioms PoincareMT.M28.RegularNormalChartCover.unitBallMap_cover
+#print axioms PoincareMT.M28.RegularNormalChartCover.unitBallMap_mem_regularComponent
+#print axioms PoincareMT.M28.tube.eventuallyRadiusBound
+#print axioms PoincareMT.M28.tube.eventuallyRadiusBound_mono
+#print axioms PoincareMT.M28.tube.exists_critical_radius_witnesses
+#print axioms PoincareMT.M28.tube.critical_radius_preserved_by_subsequence
+#print axioms PoincareMT.M28.intrinsic_minimizer_return_stays_in_middle
+#print axioms PoincareMT.M28.exists_source_neck_no_return_accuracy
+#print axioms PoincareMT.M28.CounterexampleNeckSegment.exists_source_frontier_quarter_accuracy
+#print axioms PoincareMT.M28.CounterexampleNeckSegment.exists_source_frontier_three_quarter_accuracy
+#print axioms PoincareMT.M28.CounterexampleNeckSegment.exists_oriented_frontier_no_return_accuracy
+#print axioms PoincareMT.M28.exists_off_path_cap_core_exclusion_accuracy
+#print axioms PoincareMT.M28.tube.cylinderNeckCoefficients_ricci_eq
+#print axioms PoincareMT.M28.tube.cylinderNeckChart_mfderiv_zero_apply
+#print axioms PoincareMT.M28.tube.cylinderNeckCoefficients_ricci_zero
+#print axioms PoincareMT.M28.tube.cylinderModelMetricCoefficient_fderiv_apply
+#print axioms PoincareMT.M28.tube.cylinderModelTwoJet_first_eq_zero
+#print axioms PoincareMT.M28.tube.cylinderModelTwoJet_second_apply
+#print axioms PoincareMT.M28.tube.cylinderModelTwoJet_inverse_coefficient
+#print axioms PoincareMT.M28.tube.cylinderModelTwoJet_curvature
+#print axioms PoincareMT.M28.tube.cylinderModelTwoJet_ricci
+#print axioms PoincareMT.M28.tube.exists_neck_ricci_accuracy
+#print axioms PoincareMT.M28.exists_intrinsic_arcLength_minimizer
+#print axioms PoincareMT.M28.exists_geodesic_eq_metric_segment_of_right_anchor
+#print axioms PoincareMT.M28.exists_geodesic_germ_of_metric_segment
+#print axioms PoincareMT.M28.exists_geodesic_eq_intrinsic_metric_segment
+#print axioms PoincareMT.M28.exists_intrinsic_unit_geodesic_minimizer
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.normalizedSlice_low_neck_scale
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.normalizedSlice_low_neck_ball
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.normalizedSlice_low_neck_regular
+#print axioms PoincareMT.M28.exists_source_initial_ball_accuracy
+#print axioms PoincareMT.M28.exists_finite_frontier_selection
+#print axioms PoincareMT.M28.mapsTo_finite_frontier_selection
+#print axioms PoincareMT.M28.CounterexampleNeckSegment.exists_neck_scale_lower
+#print axioms PoincareMT.M28.CounterexampleNeckSegment.exists_neck_parameter_margin
+#print axioms PoincareMT.M28.CounterexampleNeckSegment.exists_frontier_neck_selection
+#print axioms PoincareMT.M28.exists_buffered_neck_sphere_graph_accuracy
+#print axioms PoincareMT.M28.neck_graph_isSmoothEmbedding
+#print axioms PoincareMT.M28.neck_graph_isotopic_central
+#print axioms PoincareMT.M28.exists_buffered_neck_sphere_isotopy_accuracy
+#print axioms PoincareMT.M28.pathELength_le_ofReal_halfEnergy
+#print axioms PoincareMT.M28.intrinsicOpenEDist_triangle
+#print axioms PoincareMT.M28.intrinsicEDist_le_ofReal_prefix_halfEnergy
+#print axioms PoincareMT.M28.regularUnitBallMap
+#print axioms PoincareMT.M28.regularUnitBallMap_of_le
+#print axioms PoincareMT.M28.regularUnitBallMap_pair
+#print axioms PoincareMT.M28.regularUnitBallMap_zero
+#print axioms PoincareMT.M28.regularUnitBallMap_isLocalDiffeomorph
+#print axioms PoincareMT.M28.regularUnitBallMap_isOpenEmbedding
+#print axioms PoincareMT.M28.regularUnitBallMap_distance_bounds
+#print axioms PoincareMT.M28.regularUnitBallMap_base_distance_bound
+#print axioms PoincareMT.M28.regularUnitBallMap_pairwise_bounded
+#print axioms PoincareMT.M28.regularUnitBallMap_eventually_mem_regularComponent
+#print axioms PoincareMT.M28.regularUnitBallMap_compact_cover
+#print axioms PoincareMT.M28.RegularNormalChartCover.unitBallMap_pullbackCoefficients
+#print axioms PoincareMT.M28.RegularNormalChartCover.unitBallMap_lower_coefficients
+#print axioms PoincareMT.M28.regularUnitBallMap_eventually_lower_coefficients
+#print axioms PoincareMT.M28.regularUnitBallMap_eventually_bounded_derivatives
+#print axioms PoincareMT.M28.regularUnitBallMap_bounded_derivatives_of_curvature
+#print axioms PoincareMT.ChartDistance.quotient_preconnected_of_regular_component_covers
+#print axioms PoincareMT.M28.regularChartQuotient_preconnected
+#print axioms PoincareMT.M28.exists_connected_open_exhaustion_capturing_compacts
+#print axioms PoincareMT.M28.EndpointVariation.position
+#print axioms PoincareMT.M28.EndpointVariation.velocity
+#print axioms PoincareMT.M28.EndpointVariation.density
+#print axioms PoincareMT.M28.EndpointVariation.hasDerivAt_position_time
+#print axioms PoincareMT.M28.EndpointVariation.contDiffOn_position
+#print axioms PoincareMT.M28.EndpointVariation.contDiffOn_velocity
+#print axioms PoincareMT.M28.EndpointVariation.hasDerivAt_integral_density
+#print axioms PoincareMT.M28.exists_terminal_chart_variation
+#print axioms PoincareMT.M28.exists_intrinsic_distance_upper_support_of_unit_geodesic
+#print axioms PoincareMT.M28.coordinate_path_axial_displacement_le_of_speed
+#print axioms PoincareMT.M28.path_axial_displacement_le_of_speed
+#print axioms PoincareMT.EpsilonNeck.exists_first_neck_collar_subarc
+#print axioms PoincareMT.EpsilonNeck.coordinate_axial_speed_lower_sharp
+#print axioms PoincareMT.EpsilonNeck.path_axial_displacement_le_sharp
+#print axioms PoincareMT.EpsilonNeck.edist_central_lower_of_not_mem_region
+#print axioms PoincareMT.M28.exists_neck_frontier_distance_accuracy
+#print axioms PoincareMT.M28.exists_neck_balanced_scale_accuracy
+#print axioms PoincareMT.M28.exists_neck_axial_transition_accuracy
+#print axioms PoincareMT.M28.neck_edist_le_axial_gap_add_sphere
+#print axioms PoincareMT.M28.neck_narrow_region_edist_center_le
+#print axioms PoincareMT.M28.exists_neck_narrow_region_capture_accuracy
+#print axioms PoincareMT.M28.exists_signed_level_before_neck_exit
+#print axioms PoincareMT.M28.neckGraphHeight
+#print axioms PoincareMT.M28.continuousOn_neckGraphHeight
+#print axioms PoincareMT.M28.neckGraphHeight_coordinate_map
+#print axioms PoincareMT.M28.neckGraphHeight_eq_zero_iff
+#print axioms PoincareMT.M28.neckGraphHeight_sides
+#print axioms PoincareMT.M28.exists_neckGraphHeight_negative_in_open
+#print axioms PoincareMT.M28.exists_neck_graph_crossing
+#print axioms PoincareMT.M28.neckSignedRegion
+#print axioms PoincareMT.M28.neckSignedRegion_one
+#print axioms PoincareMT.M28.neckSignedRegion_neg_one
+#print axioms PoincareMT.M28.neck_signed_axis_mem
+#print axioms PoincareMT.M28.isOpen_neckSignedRegion
+#print axioms PoincareMT.M28.isPreconnected_neckSignedRegion
+#print axioms PoincareMT.M28.mem_neck_slice_iff_signed_axis
+#print axioms PoincareMT.M28.neck_graph_side_alignment
+#print axioms PoincareMT.M28.exists_frontier_neck_sphere_sides_accuracy
+#print axioms PoincareMT.M28.RegularPointedMetricConvergence
+#print axioms PoincareMT.M28.RegularPointedMetricConvergence.reindex
+#print axioms PoincareMT.M28.eventually_source_core_subset_image
+#print axioms PoincareMT.M28.eventually_source_core_subset_exhaustion_image
+#print axioms PoincareMT.M28.exists_regular_pointed_source_exhaustion
+#print axioms PoincareMT.M28.exists_regular_metric_limit_of_coordinate_limits
+#print axioms PoincareMT.M28.exists_regular_metric_limit_of_normal_covers
+#print axioms PoincareMT.M28.exists_regular_metric_limit_of_eventual_normal_covers
+#print axioms PoincareMT.M28.exists_regular_metric_limit_of_geometry

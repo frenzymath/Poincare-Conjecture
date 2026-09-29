@@ -1,0 +1,8 @@
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.GeometryImports
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.CriticalBall.CriticalBallLocalShiProducer
+
+set_option autoImplicit false
+
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.exists_criticalBallLocalShi_accuracy
+#print axioms PoincareMT.M28.GeneralizedStrongNeck.scaled_curvatureDerivativeNorm
+#print axioms PoincareMT.M28.inverse_sqrt_le_of_normalized_scalar

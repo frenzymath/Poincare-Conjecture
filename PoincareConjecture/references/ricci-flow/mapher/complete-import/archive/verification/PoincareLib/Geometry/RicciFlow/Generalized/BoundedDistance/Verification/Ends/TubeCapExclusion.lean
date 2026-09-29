@@ -1,0 +1,34 @@
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.GeometryImports
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.SourceGeometry.Ends.SourceTubeCenteredNecks
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.Tube.SourceGeometry.Ends.SourceTubeCriticalRegion
+import PoincareLib.Geometry.RicciFlow.Generalized.BoundedDistance.PartialLimits.RegularSets.OpenCapture
+
+/-! Kernel audits for actual cap exclusion, fresh neck centers and the critical region. -/
+
+set_option autoImplicit false
+-- Printing kernel dependencies is the purpose of this audit module.
+set_option linter.hashCommand false
+
+#print axioms PoincareMT.M28.quarter_subset_core_of_tail_closure
+#print axioms PoincareMT.M28.SourceEdgeCommonOrientationPacket.forward_core
+#print axioms PoincareMT.M28.SourceEdgeCommonOrientationPacket.reciprocal_core
+#print axioms PoincareMT.M28.exists_neck_frontier_orientation_pair_accuracy
+#print axioms PoincareMT.M28.SourceTubeData.carrier_subset_neckCarrierUnion
+#print axioms PoincareMT.M28.exists_source_cap_boundary_contact_accuracy
+#print axioms PoincareMT.M28.exists_cap_boundary_minimizer_hit_accuracy
+#print axioms PoincareMT.M28.exists_source_neck_core_buffer_accuracy
+#print axioms PoincareMT.M28.exists_source_tube_cap_exclusion_accuracy
+#print axioms PoincareMT.M28.exists_source_tube_centered_strong_necks_accuracy
+#print axioms PoincareMT.M28.ambient_ball_subset_open_of_intrinsic_regular
+#print axioms PoincareMT.M28.intrinsicOpenMetric_ball_eq_preimage_of_regular
+#print axioms PoincareMT.M28.intrinsicOpenMetric_ball_image_of_regular
+#print axioms PoincareMT.M28.intrinsicOpenMetric_ball_volume_of_regular
+#print axioms PoincareMT.M28.intrinsicOpenMetric_ball_calibratedVolume_of_regular
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.tubeCriticalRegion_coe
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.tubeCriticalBase_val
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.tubeCriticalRegion_connected
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.tubeCritical_ball_eq_preimage
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.tubeCritical_base_edist
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.tubeCritical_base_regular
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.tubeCritical_volume_eq
+#print axioms PoincareMT.M28.CounterexampleNeckFamily.exists_tubeCritical_volume_bound

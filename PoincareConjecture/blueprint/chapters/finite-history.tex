@@ -1,0 +1,437 @@
+\chapter{Reversing a finite surgery history}
+\label{ch:finite-history-v4}
+
+This chapter reverses one specified surgery flow after its extinction time has
+been found.  Every factor below is an actual component supplied by the local
+surgery theorem for this flow.  In particular, we never replace the discarded
+components by a separately classified list.  The result is a finite smooth
+connected-sum assembly of the actual time-zero slice.  The finite reversal is
+the argument of \cite[Corollary 15.4, pp.~358--359]{MT2007}; its local input is
+\cite[Proposition 15.3, pp.~357--358]{MT2007}.
+
+Fix a normalized initial metric $g_0$ on a smooth three-manifold $M$.  The
+dimension is three throughout. Fix the flow $F$ of
+Section~\ref{sec:global-assembly}, and write $M_t$
+for its slice at time $t$,
+let $H$ be the extinction time supplied
+by Theorem~\ref{prop:v4-global-extinction} for this same $F$, and assume
+that $M$ is connected. The local surgery topology theorem,
+Theorem~\ref{thm:surgery-local-topology}, supplies, for every surgery time
+$T\leq H$, an event record whose incoming reference slice is an actual slice
+$M_{q_T}$ with $0\leq q_T<T$.  We assume $M$ is nonempty, compact,
+Hausdorff and second countable, with the smooth and measurable structures of
+the global-flow input.  The chosen time satisfies
+$H\in\operatorname{Surg}(F)$ and $M_H=\varnothing$.
+The global flow is defined for all nonnegative times, and zero is not a
+surgery time.
+
+The chronology used by the reversal has the following form.  There is an
+anchor $p_T<q_T$, with either $p_T=0$ or
+$p_T\in\operatorname{Surg}(F)$, such that $[p_T,q_T]$ lies in the time
+domain and there is no surgery in $(p_T,q_T]$ or $(q_T,T)$.
+There is a specified diffeomorphism $M_{p_T}\to M_{q_T}$ equal to the
+regular-slab transport.  All event conclusions and cap correspondences come
+from the local topology theorem for this same $F$.  These hypotheses explain
+which identifications, in addition to extinction, the reversal uses.
+More precisely, $q_T$ lies after the lower endpoint of the actual event's
+preterminal slab, both in the nonempty and vanishing branches.  The local
+conclusion on $M_{q_T}$ is the conclusion for that actual event transported
+along its preterminal identification.
+We construct these reference times below from local finiteness and the
+event's own regular interval.
+
+\section{The event ledger and its factors}
+\label{sec:finite-event-ledger}
+
+The flow's local finiteness says that
+\[
+  \mathcal S_K=\{T\in\operatorname{Surg}(F):T\in K\}
+\]
+is finite for every compact time set $K$.  Applying it to the compact interval
+$[0,H]$ gives the event ledger
+\begin{equation}
+  \mathcal E=\operatorname{Surg}(F)\cap[0,H].
+  \label{eq:finite-ledger}
+\end{equation}
+An event index is a time $T\in\mathcal E$, ordered by the real
+times.  Since the chosen extinction event belongs to $\mathcal E$, the ledger
+is nonempty and has a first element.
+
+For $T\in\mathcal E$, write
+\[
+  E_T=(q_T,S_T),
+\]
+where $q_T<T$ is the selected pre-event reference time and
+\[
+  S_T:\;M_{q_T}\longleftarrow M_T
+\]
+denotes the local topology conclusion, rather than a map between the two
+slices.  Its finite index set is $J_T$; the carrier
+of the $i$th local piece is $P_{T,i}$ and its kind is one of
+\[
+  \mathrm{survivor},\qquad \mathrm{sphere\ bundle},\qquad
+  \mathrm{positive\ spaceform}.
+\]
+A sphere bundle here is a smooth, surjective map onto $S^1$ with smooth local
+trivializations having fiber $S^2$; both orientable and nonorientable bundles
+are allowed.  A positive spaceform carries a Riemannian metric and its
+Levi-Civita connection with constant strictly positive sectional curvature.
+For a piece of either kind the local conclusion supplies the corresponding
+bundle or metric data, not just a name for its topological type.
+For a survivor, $S_T$ gives a region $U_{T,i}\subset M_T$ and a smooth region
+equivalence
+\[
+  P_{T,i}\simeq M_T|_{U_{T,i}}.
+\]
+The survivor regions are pairwise disjoint connected components and cover the
+post-event slice.  Every local piece is nonempty, compact and connected.  If $M_T$ is
+empty, the event record asserts that no $i\in J_T$ is a survivor.  This last
+clause is what makes the terminal ledger event a genuine base case.
+If $M_T$ is nonempty, every inserted cap region $C_{T,a}\subset M_T$ is
+contained in some survivor region: for every cap index $a$ there is an
+$i\in J_T$ of survivor kind with $C_{T,a}\subset U_{T,i}$.
+The reverse induction uses the whole-slice assembly; this cap condition
+retains the event provenance at its input.
+
+Define the exact discarded index set and its carrier by
+\[
+  D_T=\{i\in J_T:\operatorname{kind}(T,i)\neq\mathrm{survivor}\},
+  \qquad P(T,i)=P_{T,i}\quad(i\in D_T),
+\]
+and define the global summand type
+\begin{equation}
+  \mathcal D=\coprod_{T\in\mathcal E}D_T.
+  \label{eq:global-discarded-index}
+\end{equation}
+Thus a summand remembers both its event and its local index.  The associated
+family $P:\mathcal D\to\{\text{slice carriers}\}$ is the literal family
+$P(T,i)=P_{T,i}$; no quotient identifies factors from different events.
+For $e\in\mathcal E$, define the tail index set
+\[
+  \operatorname{Tail}(e)=\{(T,i)\in\mathcal D:e\leq T\}.
+\]
+
+\begin{definition}[Smooth finite connected-sum assembly]
+\label{def:finite-smooth-assembly}
+\lean{PoincareMT.SmoothFiniteConnectedSumAssembly}
+For a finite family $P_a$ and a carrier $X$, an assembly consists of an initial
+carrier $C$, a partition $C=\coprod_a V_a$ into open-and-closed regions,
+and diffeomorphisms $P_a\to V_a$, together with a reflexive-transitive chain
+of smooth connected-sum steps from $C$ to $X$.  A step first decomposes its
+source into two open-and-closed smooth carriers $B_1\sqcup B_2$.  On each side
+it chooses an embedded ball parametrized on the radius-two ball in
+$\mathbb R^3$, removes the closed radius-one ball, and identifies the two
+punctured sides with disjoint open regions of its target.  A diffeomorphism
+$\phi:S^2\to S^2$ and a smooth collar $S^2\times(-1,1)$ specify the joining
+sphere.  In the negative collar half the map agrees with the first ball
+coordinate at $(1-s)z$; in the positive half it agrees with the second ball
+coordinate at $(1+s)\phi(z)$.  The punctured regions and central sphere cover
+the target, with the central sphere disjoint from both regions.  All region
+and collar maps have smooth inverses on their images.  The reflexive case is allowed, so an empty chain
+of operations is an assembly as well.
+\end{definition}
+
+Thus an assembly retains the geometric operations as well as the list of
+factors.  This is the object consumed by the later sphere-reduction chapter.
+The two sides of an operation, and its target, need not be connected: the
+operation can join two components while retaining all other components.
+This flexibility is necessary because the intermediate surgery slices can
+be disconnected.
+
+\begin{lemma}[Transporting an assembly]
+\label{lem:finite-assembly-transport}
+\uses{def:finite-smooth-assembly}
+\lean{PoincareMT.SmoothFiniteConnectedSumAssembly.nonempty_transportTarget}
+If a family has an assembly with target $X$ and $d:X\to Y$ is a
+diffeomorphism, the same family has an assembly with target $Y$.
+\end{lemma}
+
+\begin{proof}
+If the assembly has no operation, its target is its initial disjoint union.
+Use $Y$ as the new initial manifold, replace each region $V_a$ by $d(V_a)$,
+and postcompose its identifying map with $d$.  The regions still form an
+open-and-closed partition, and the new assembly again has no operation.
+Otherwise retain every operation before the last one.  In the last
+operation postcompose both punctured-region maps and its collar with $d$;
+precompose their inverses with $d^{-1}$.  The two balls and the sphere
+gluing map are unchanged.  Disjointness and coverage pass through $d$, and
+the two collar identities pass through postcomposition.  Thus the last
+operation now ends at $Y$.  In neither case is a diffeomorphism counted as
+an additional connected-sum operation.
+\end{proof}
+
+\begin{lemma}[Choosing compatible event references]
+\label{lem:finite-event-references}
+\uses{lem:finite-assembly-transport,thm:surgery-local-topology}
+\lean{PoincareMT.m72LocalTopologyFromRaw}
+The local topology conclusions of the fixed flow can be placed at reference
+times $q_T$ with all the predecessor and regular-interval properties stated
+above.  This changes none of their pieces, survivor identifications, or
+cap correspondences.
+\end{lemma}
+
+\begin{proof}
+Fix an event $T$ and let $r_T<T$ be the lower endpoint of its stored
+preterminal interval.  Local finiteness makes
+\[
+ B_T=\{0\}\cup\bigl(\operatorname{Surg}(F)\cap[0,T)\bigr)
+\]
+a nonempty finite set.  Put $p_T=\max B_T$.  Since $T>0$, every element
+of $B_T$ is strictly less than $T$, so $0\leq p_T<T$.  Any surgery time
+strictly between $p_T$ and $T$ would belong to $B_T$ and exceed its maximum.
+There are consequently no such surgery times.
+
+Choose
+\[
+ q_T=\frac{\max\{p_T,r_T\}+T}{2}.
+\]
+Both entries in the maximum are less than $T$.  Therefore
+$p_T<q_T<T$ and $r_T<q_T<T$.  The interval $[p_T,q_T]$ is in the
+nonnegative time domain, and the absence of surgery in $(p_T,T)$ gives
+the two required surgery-free intervals.  The regular flow identification
+on $[p_T,q_T]$ supplies the specified map $M_{p_T}\to M_{q_T}$.
+
+The event's preterminal identification also gives a diffeomorphism
+$M_{r_T}\to M_{q_T}$.  Apply
+Lemma~\ref{lem:finite-assembly-transport} to the local reconstruction
+whose target is $M_{r_T}$.  Only that target is changed: every local
+piece, its kind, and its map into the outgoing slice remain the same.
+For a nonempty outgoing slice this retains the actual cap-to-survivor
+correspondence.  For an empty outgoing slice the vanishing-event
+conclusion supplies the no-survivor rule, which is likewise unchanged.
+Thus the two event branches supply the claimed data for the same $F$.
+\end{proof}
+
+\section{Successors and unchanged intervals}
+\label{sec:finite-successors}
+
+Let $T\in\mathcal E$ with $T<H$.  In particular this holds whenever an
+$i\in J_T$ is a survivor: otherwise $T=H$ and the empty-event rule excludes
+that kind.  The finite set
+\[
+  \{T'\in\mathcal E:T<T'\}
+\]
+is nonempty since it contains $H$.  Let $T'$ be its least element.  It is
+minimal among all surgery times greater than $T$: times at most $H$ lie in
+the ledger, and times greater than $H$ are also greater than $T'$.  The predecessor anchor in the
+event record of $T'$ cannot be a time strictly between $T$ and $T'$: such a
+time would itself be a surgery event and contradict minimality.  Hence
+$p_{T'}\leq T$.  If $p_{T'}<T$, then either $T\leq q_{T'}$, contradicting
+the absence of surgery in $(p_{T'},q_{T'}]$, or $q_{T'}<T<T'$, contradicting
+the absence of surgery in $(q_{T'},T')$.  Thus $p_{T'}=T$.  In particular,
+\begin{equation}
+  T<q_{T'},\qquad [T,q_{T'}]\subset\operatorname{Dom}(F),
+  \qquad \operatorname{Surg}(F)\cap(T,q_{T'}]=\varnothing.
+  \label{eq:successor-slab}
+\end{equation}
+The regular-slab theorem supplies a diffeomorphism
+\begin{equation}
+  d_{T,T'}:M_T\longrightarrow M_{q_{T'}}.
+  \label{eq:successor-diffeo}
+\end{equation}
+For a survivor $i$, write $U_{T,i}=\operatorname{Comp}_{M_T}(y)$ using the
+local conclusion and put $x_{T,i}=d_{T,T'}(y)$.  A homeomorphism and its inverse
+carry connected sets to connected sets; maximality of connected components
+therefore gives
+$x_{T,i}\in M_{q_{T'}}$ and
+\begin{equation}
+  d_{T,T'}(U_{T,i})=\operatorname{Comp}_{M_{q_{T'}}}(x_{T,i}).
+  \label{eq:successor-component}
+\end{equation}
+Postcomposing the local region equivalence with $d_{T,T'}$ gives the required
+componentwise equivalence from $P_{T,i}$ to this connected component.  This is
+the successor record attached to $(T,i)$; its target event is again an element
+of the same finite ledger because $T'\in[0,H]$.
+
+The order and minimality assertions are used later, not merely recorded as
+metadata.  They ensure that a survivor is transported across one surgery-free
+interval, rather than across an interval containing an unaccounted event.
+
+\section{The local substitution construction}
+\label{sec:finite-substitution}
+
+Suppose an assembly $R$ has already been constructed for the tail beginning
+at a later event $T'$, with target $M_{q_{T'}}$.  Transporting the target of
+$R$ backwards by $d_{T,T'}^{-1}$ using
+Lemma~\ref{lem:finite-assembly-transport} gives an assembly of the whole slice $M_T$.
+Let $C_T$ be the initial carrier of the local assembly, with its partition
+$C_T=\coprod_{i\in J_T}V_{T,i}$ and identifications
+$a_i:P_{T,i}\to V_{T,i}$.  Define the discarded carrier
+$Z_T=\bigcup_{i\in D_T}V_{T,i}$ with its induced smooth structure.
+The restricted partition gives a zero-operation assembly $Q_T$ of the current
+discarded family inside $Z_T$, including when $D_T$ is empty.
+The local split construction identifies
+\begin{equation}
+  M_T\sqcup Z_T\xrightarrow{\cong} C_T.
+  \label{eq:local-split}
+\end{equation}
+On a survivor region $U_{T,i}$, this map is $a_i$ composed with the inverse
+of the survivor identification; on $Z_T$ it is the inclusion into $C_T$.
+The survivor regions are open and closed, since connected components of a
+manifold are open and closed.  They partition $M_T$, and the discarded regions
+partition $Z_T$.  The maps therefore paste smoothly, with smooth inverses
+defined on the partition $V_{T,i}$ of $C_T$.  This proves the split
+diffeomorphism.  The original local operation chain, from $C_T$ to
+$M_{q_T}$, remains to be performed.
+
+The substitution is a geometric operation.  If $R$ has pieces indexed by a
+finite type $A$, append the pieces indexed by $D_T$ to form the disjoint union
+indexed by $A\amalg D_T$.  Every connected-sum step in $R$ is lifted over the
+extra carrier $Z_T$: its balls, punctured regions, collar,
+and gluing map are included in the first summand, while the extra carrier is
+left untouched in the second.  The lifted chain ends at
+\(M_T\sqcup Z_T\).  Composing it with the local chain in
+$S_T$ yields an assembly of $M_{q_T}$.
+
+More explicitly, a step with sides $A,B$ and output $Y$ lifts to a step with
+sides $A,B\sqcup Z_T$ and output $Y\sqcup Z_T$.  The second ball lies in
+$B$, so its punctured complement is the old punctured $B$ together with all
+of $Z_T$.  The two target regions are the old first region and the union of
+the old second region with $Z_T$; the collar is the old collar included in
+$Y\sqcup Z_T$.  Disjointness, coverage, smooth inverses and the two collar
+gluing identities follow separately on these open summands.  Lifting each
+step, and leaving a zero-length chain zero-length, gives the claimed chain.
+
+To compose across the split diffeomorphism, distinguish the two possibilities
+for the local chain $C_T\to M_{q_T}$.  If it has no step, transport the
+assembled target directly across the split.  If it has a first step, pull
+back that step's two-region decomposition by the split diffeomorphism and
+keep its ball and gluing data; then append its remaining steps.  This changes
+the source of an actual operation.  A diffeomorphism alone is not inserted as
+a connected-sum step.
+
+The index family after substitution is literally
+\[
+  A\amalg D_T,
+\]
+and its carrier at the left summand is the old tail carrier while its carrier
+at the right summand is the current discarded piece.  The finite equivalence
+\begin{equation}
+  \operatorname{Tail}(T')\amalg D_T
+       \;\cong\;\operatorname{Tail}(T)
+  \label{eq:tail-equivalence}
+\end{equation}
+is bijective because every ledger event at least $T$ is either $T$ itself or is
+at least $T'$ by successor minimality.  The two cases are disjoint, and every
+index in the right-hand side belongs to one of them.  The equivalence preserves
+the carrier pointwise, so reindexing does not alter any region or gluing map.
+
+\section{Reverse induction}
+\label{sec:finite-reverse-induction}
+
+For $e\in\mathcal E$, let $\mathscr A_e$ denote an assembly of the family indexed by its tail
+with target $M_{q_e}$.  We prove, by well-founded induction on the strict
+reverse order of the finite ledger, that
+\begin{equation}
+  \forall e\in\mathcal E,\qquad
+  \mathscr A_e\text{ exists}.
+  \label{eq:reverse-invariant}
+\end{equation}
+
+At the terminal event $e=H$, the slice $M_H$ is empty.  Hence its local
+conclusion has no survivor.  The tail is exactly the finite family $D_H$, and
+the local reconstruction $S_H$ itself is an assembly of that family.  A
+finite equivalence between the local indices and $\operatorname{Tail}(H)$
+relabels this assembly without changing its carriers.
+
+For an earlier event $e=T$, choose its immediate successor $T'$.  The
+induction hypothesis supplies $\mathscr A_{T'}$.  Apply the target transport
+along $d_{T,T'}^{-1}$, perform the substitution of
+Section~\ref{sec:finite-substitution}, and then reindex by
+\eqref{eq:tail-equivalence}.  The resulting object is $\mathscr A_T$.
+The later whole-slice assembly is retained as one disjoint summand, which
+can itself be disconnected, and all present discarded factors are added
+exactly once.
+
+No survivor is silently discarded.  Every survivor is represented by its
+component transport to the next event, while every non-survivor appears in the
+right summand of one substitution.  The tail equivalences prove both coverage
+and non-duplication.
+
+\begin{theorem}[Finite reverse-history reconstruction]
+\label{prop:connected-sum-reconstruction}
+\uses{lem:finite-event-references,lem:finite-assembly-transport,prop:v4-global-extinction}
+\lean{PoincareMT.m72FiniteReconstruction}
+\source{MT2007}\dcref{Corollary 15.4, pp. 358--359}
+For every fixed flow and local reconstruction data as above, there are a ledger $\mathcal E$, a
+finite type $K$, a bijection
+\[
+  \iota:K\xrightarrow{\cong}\mathcal D,
+\]
+and a family $P_k=P(\iota(k))$ with a smooth finite connected-sum assembly
+\[
+  \mathscr A:\{P_k\}_{k\in K}\longrightarrow M_0.
+\]
+The ledger is exactly \eqref{eq:finite-ledger}; every $P_k$ is a connected
+non-survivor piece of the actual local conclusion at its event; and every
+survivor piece carries the successor record
+\eqref{eq:successor-slab}--\eqref{eq:successor-component}.  The target carrier
+is nonempty and connected.
+\end{theorem}
+
+\begin{proof}
+The ledger is finite by local finiteness and nonempty because it contains the
+extinction event.  Choose its first event $e_0$.  Equation~\eqref{eq:reverse-invariant}
+gives an assembly of $\operatorname{Tail}(e_0)$ with target $M_{q_{e_0}}$.
+The first-event anchor is zero: if it were a surgery time, it would be
+nonnegative and strictly less than $e_0\leq H$, hence would belong to
+$\mathcal E$, contrary to minimality.
+The inverse predecessor transport is therefore a diffeomorphism
+$M_{q_{e_0}}\to M_0$.  Transport the assembly along it and use the equivalence
+$\operatorname{Tail}(e_0)\cong\mathcal D$.  The resulting family is indexed by
+the exact global non-survivor type.  Enumerating this finite type by a finite
+ordinal supplies $K$ and $\iota$.
+
+The initial identification in the global certificate is a diffeomorphism from
+$M$ onto $M_0$.  Its image transports the assumed connectedness and the
+nonemptiness of $M$ to $M_0$.  The successor choices constructed above are
+stored separately in the conclusion and their target times are shown to lie
+in the same ledger by the interval bounds in \eqref{eq:finite-ledger}.
+\end{proof}
+
+\section{The event-indexed sphere-factor ledger}
+\label{sec:m82-factor-ledger}
+
+The next chapter classifies the exact family just constructed.  To make the
+interface explicit, suppose in addition that $M$ is simply connected and that
+Theorem~\ref{thm:exact-sphere-factors} is applied to this same reconstruction conclusion.
+For each enumerated index $k\in K$, it supplies
+\[
+  \operatorname{kind}(P_k)=\mathrm{positive\ spaceform},
+  \qquad \sigma_k:P_k\xrightarrow{\cong}S^3.
+\]
+Thus the event-indexed ledger is the tuple
+\begin{equation}
+  (K,\iota,(P_k)_{k\in K},(\sigma_k)_{k\in K},\mathscr A),
+  \label{eq:m82-ledger}
+\end{equation}
+where $\iota$ is the very bijection supplied by the reconstruction.  Its
+assembly target is still the same $M_0$; no new target map or independently
+chosen factor list is introduced.
+
+The tuple~\eqref{eq:m82-ledger} records exactly what the
+downstream reduction needs.  Neither this ledger nor the reconstruction claims
+prime-decomposition uniqueness.
+
+\section{The reconstruction in the proof}
+\label{sec:finite-history-contracts}
+
+The reconstruction uses one flow with local finiteness, its
+actual surgery times and the initial identification, together with
+an empty slice at an actual event time of that same flow.  Its local
+topological input consists, at every ledger event, of the
+connected local pieces, survivor regions, cap correspondence, the empty-event
+no-survivor rule, and the collared assembly of the incoming slice.  The
+successor proof additionally needs regular-slab diffeomorphisms on intervals
+with no surgery.
+
+The next chapter receives the exact family $P_k$, its piecewise
+kind data and the assembly $\mathscr A$, and constructs the maps $\sigma_k$.
+It must not
+replace them by a separately classified list or a new assembly.  The finite-history proof
+does not prove the sphere-bundle obstruction, positive-spaceform uniformization,
+or the identity $S^3\mathbin{\#}X\cong X$; those are downstream obligations.
+
+Simple connectedness was not used in the reverse induction.  It enters
+the next step, where the actual discarded factors are proved to be
+three-spheres and the finite assembly is reduced to a sphere.

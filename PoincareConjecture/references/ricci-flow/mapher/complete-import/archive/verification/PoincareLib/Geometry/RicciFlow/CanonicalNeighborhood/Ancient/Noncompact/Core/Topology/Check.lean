@@ -1,0 +1,10 @@
+import PoincareLib.Geometry.RicciFlow.CanonicalNeighborhood.Ancient.Noncompact.Core.Topology.TwistedLimit
+
+/-! Axiom audit for the projective exclusions in limits of point-soul sources. -/
+
+#print axioms PoincareMT.RiemannianMetric.PointSoulData.noEmbeddedTrivialNormalProjectivePlane
+#print axioms PoincareMT.M23TerminalExtension.noEmbeddedTrivialNormalProjectivePlane_of_pointSouls
+#print axioms PoincareMT.M23TerminalExtension.not_projectivePlaneLine_of_pointSouls
+#print axioms PoincareMT.CoreTopology.no_twistedStrip_localHomeomorph
+#print axioms PoincareMT.M27TwistedSphereLineFlowCertificate.not_compact_strip_transport
+#print axioms PoincareMT.M23TerminalExtension.not_twistedSphereLine_of_pointSouls

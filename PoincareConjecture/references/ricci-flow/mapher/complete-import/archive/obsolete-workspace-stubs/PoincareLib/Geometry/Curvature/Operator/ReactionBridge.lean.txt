@@ -1,0 +1,51 @@
+import PoincareLib.Geometry.Curvature.Operator.Reaction
+import PoincareLib.Geometry.Curvature.Operator.ThreeDimensional
+
+open scoped BigOperators
+
+namespace Poincare.Geometry.Curvature.Operator
+
+noncomputable section
+
+ /-- The four-term contraction retained by the moving-frame curvature equation,
+written in the cyclic three-frame coordinates. -/
+def movingInputReaction (R : Fin 3 → Fin 3 → Fin 3 → Fin 3 → ℝ)
+    (i j : Fin 3) : ℝ :=
+  2 * ((∑ a, ∑ b, R (pairFirst i) a (pairSecond i) b *
+      R (pairFirst j) a (pairSecond j) b) -
+    (∑ a, ∑ b, R (pairFirst i) a (pairSecond i) b *
+      R (pairSecond j) a (pairFirst j) b) -
+    (∑ a, ∑ b, R (pairFirst i) a (pairSecond j) b *
+      R (pairSecond i) a (pairFirst j) b) +
+    (∑ a, ∑ b, R (pairFirst i) a (pairSecond j) b *
+      R (pairFirst j) a (pairSecond i) b))
+
+theorem movingInputReaction_apply (R : Fin 3 → Fin 3 → Fin 3 → Fin 3 → ℝ)
+    (i j : Fin 3) :
+    movingInputReaction R i j =
+      2 * ((∑ a, ∑ b, R (pairFirst i) a (pairSecond i) b *
+          R (pairFirst j) a (pairSecond j) b) -
+        (∑ a, ∑ b, R (pairFirst i) a (pairSecond i) b *
+          R (pairSecond j) a (pairFirst j) b) -
+        (∑ a, ∑ b, R (pairFirst i) a (pairSecond j) b *
+          R (pairSecond i) a (pairFirst j) b) +
+        (∑ a, ∑ b, R (pairFirst i) a (pairSecond j) b *
+          R (pairFirst j) a (pairSecond i) b)) := rfl
+
+/-- The moving-frame four-term contraction is the factor-two matrix reaction.
+
+The proof is a finite coordinate calculation.  The two skew symmetries remove
+repeated indices and orient every two-plane, while pair interchange identifies
+the remaining terms with entries of the cyclic curvature matrix.
+-/
+theorem movingInputReaction_eq_curvatureReaction
+    (R : Fin 3 → Fin 3 → Fin 3 → Fin 3 → ℝ)
+    (hfirst : ∀ i j k l, R i j k l = -R j i k l)
+    (hlast : ∀ i j k l, R i j k l = -R i j l k)
+    (hpair : ∀ i j k l, R i j k l = R k l i j) :
+    movingInputReaction R = curvatureReaction (curvatureMatrix R) := by
+  sorry
+
+end
+
+end Poincare.Geometry.Curvature.Operator
