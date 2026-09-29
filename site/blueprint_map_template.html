@@ -42,26 +42,25 @@
     body { overflow: hidden; }
     button, input, select { font: inherit; }
     button { color: inherit; }
-    .map-app { height: 100vh; min-height: 720px; display: flex; flex-direction: column; background: var(--soft); }
+    .map-app { height: 100vh; height: 100dvh; display: flex; flex-direction: column; background: var(--soft); }
     .map-toolbar {
-      z-index: 20; display: flex; align-items: center; gap: 8px; flex-wrap: nowrap;
+      z-index: 20; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; flex: 0 0 auto;
       padding: 10px 16px; border-bottom: 1px solid var(--line); background: rgba(255,255,255,.95);
-      box-shadow: 0 2px 12px rgba(25, 43, 68, .05); min-height: 52px; overflow-x: auto;
+      box-shadow: 0 2px 12px rgba(25, 43, 68, .05); min-height: 52px;
     }
     .map-title { margin-right: 4px; flex: 0 0 auto; white-space: nowrap; }
     .map-title h1 {
       margin: 0; font-size: 16px; line-height: 1; letter-spacing: 0;
       display: inline; font-weight: 700;
     }
-    .map-title h1::after {
-      content: " · statements by chapter";
-      color: var(--muted); font-size: 11px; font-weight: 500; margin-left: 2px;
-    }
-    .map-stat { color: var(--muted); font-size: 11px; white-space: nowrap; flex: 0 0 auto; }
+    .map-stat { color: var(--muted); font-size: 11px; overflow-wrap: anywhere; flex: 0 1 auto; }
+    .map-toolbar [hidden] { display: none; }
     .map-control { height: 30px; border: 1px solid var(--line); border-radius: 6px; background: #fff; flex: 0 0 auto; }
-    .map-search { width: min(200px, 22vw); padding: 0 10px; color: var(--ink); outline: none; }
+    .map-search { width: 200px; min-width: 0; max-width: 100%; padding: 0 10px; color: var(--ink); outline: none; }
     .map-search:focus { border-color: #7ba2e1; box-shadow: 0 0 0 3px rgba(53,104,184,.13); }
-    .map-select { padding: 0 8px; color: var(--ink); max-width: 180px; }
+    .map-select { padding: 0 8px; color: var(--ink); max-width: 220px; min-width: 0; }
+    .map-zoom { display: inline-flex; align-items: center; gap: 4px; }
+    #map-zoom-level { width: 42px; text-align: center; font-size: 11px; }
     .map-button { min-width: 30px; padding: 0 9px; cursor: pointer; }
     .map-button:hover { border-color: #92add7; background: var(--blue-soft); }
     .map-toggle { display: inline-flex; align-items: center; gap: 5px; padding: 0 8px; color: var(--muted); font-size: 10px; white-space: nowrap; }
@@ -164,8 +163,13 @@
     .detail-links li + li { margin-top: 3px; }
     @media (max-width: 720px) {
       .map-toolbar { padding: 8px 10px; gap: 6px; }
+      .map-title { order: -3; }
+      #map-close { order: -2; margin-left: auto; }
+      .map-stat { order: -1; flex-basis: 100%; }
+      .map-spacer { display: none; }
       .map-title h1::after { content: ""; }
-      .map-search { width: min(140px, 28vw); }
+      .map-search { width: 100%; }
+      .map-select { flex: 1 1 140px; max-width: 100%; font-size: 12px; }
       .map-legend { display: none; }
       .map-canvas { padding-left: 14px; padding-right: 14px; }
       .chapter-column { flex-basis: 300px; }
@@ -182,7 +186,7 @@
       <span class="map-spacer"></span>
       <input class="map-control map-search" id="map-search" type="search" placeholder="Find a statement..." aria-label="Find a statement">
       <select class="map-control map-select" id="map-status" aria-label="Filter by source annotation">
-        <option value="all">All source annotations</option>
+        <option value="all">All statuses</option>
         <option value="lean_ok">lean ok</option>
         <option value="mathlib_ok">mathlib ok</option>
         <option value="sorry">not formalized (admission)</option>
@@ -205,6 +209,11 @@
         <option value="all">All layers</option>
       </select>
       <button class="map-control map-button" id="map-close" type="button" title="Return to the blueprint" aria-label="Return to the blueprint">×</button>
+      <div class="map-zoom" role="group" aria-label="Map zoom">
+        <button class="map-control map-button" id="map-zoom-out" type="button" title="Zoom out" aria-label="Zoom out">−</button>
+        <output id="map-zoom-level" aria-live="polite">100%</output>
+        <button class="map-control map-button" id="map-zoom-in" type="button" title="Zoom in" aria-label="Zoom in">+</button>
+      </div>
       <button class="map-control map-button" id="map-fit" type="button" title="Fit the map to the available width" aria-label="Fit map">Fit</button>
       <div class="map-legend" aria-label="Source annotation legend">
         <span><i class="legend-dot legend-mathlib"></i>mathlib ok</span>
@@ -785,7 +794,8 @@
     }
 
     function setZoom(next, keepFit = false) {
-      zoom = Math.max(.08, Math.min(4, next));
+      zoom = Math.max(.025, Math.min(4, next));
+      document.getElementById("map-zoom-level").value = `${Math.round(zoom * 100)}%`;
       fitMode = keepFit;
       measure();
       drawEdges();
@@ -807,6 +817,8 @@
       if (window.parent !== window) window.parent.location.reload();
     });
     document.getElementById("map-fit").addEventListener("click", () => fitMap(true));
+    document.getElementById("map-zoom-in").addEventListener("click", () => setZoom(zoom * 1.5));
+    document.getElementById("map-zoom-out").addEventListener("click", () => setZoom(zoom / 1.5));
     viewport.addEventListener("scroll", () => {
       if (previewAnchor) requestAnimationFrame(() => placeDetail(previewAnchor));
     }, { passive: true });
