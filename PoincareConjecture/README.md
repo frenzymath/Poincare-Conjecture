@@ -20,14 +20,14 @@ for the exact revisions, verifier configuration, and logs, and the
 [FrenzyMath announcement](https://frenzymath.com/news/poincare-formalization/)
 for the project's background.
 
-The [main blueprint](blueprint/src/content.tex) now contains Horizon's 18-chapter
+The [main blueprint](blueprint/content.tex) contains Horizon's 18-chapter
 exposition of the implemented proof, imported from workspace revision
 `fbdf7e1493ed`. Seventeen chapters have passed Horizon's source and readability
 review; smoothing and whole-book publication review remain pending. The
-[snapshot record](blueprint/horizon-import/README.md) preserves chapter hashes,
+[snapshot record](provenance/blueprint-import/README.md) preserves chapter hashes,
 review decisions, and the distinction between current and historical Lean links.
-Only this project's blueprint shows formalization progress; all 16 reference
-projects remain blueprint-only.
+Source-link coverage is separate from the recorded proof verification;
+all 16 reference projects remain blueprint-only.
 
 ## Build
 

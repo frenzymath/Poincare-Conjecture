@@ -23,9 +23,11 @@ The upstream status checkpoint also predates the final global-surgery correction
 that chapter's newer acceptance record matches the imported text. The local
 checker validates all 17 accepted chapter hashes against their individual reviews.
 
-The former six-chapter blueprint is archived under `../legacy/six-chapter/src/`
-and is not imported into the active graph. Historical review documents elsewhere
-under `blueprint/` refer to that earlier outline unless explicitly stated otherwise.
+The active `../../blueprint/` directory contains only the current TeX chapters,
+entry point, macros and bibliography. The former six-chapter blueprint and its
+obsolete reviews were removed from the working tree; they remain in Git history
+at `e84e9c3f`. Map generation lives in the repository's `scripts/` and `site/`
+directories. This provenance directory is not part of the document sources.
 
 The source report records 237 Lean names, including three historical adapters
 removed during production cleanup. Their treatment is explicit in
@@ -35,11 +37,11 @@ verified declarations. Source report URLs beginning `/api/v2/forge/` are origina
 Horizon provenance, not public website links. Active site links are generated
 from the current local Lean sources.
 
-Only `PoincareConjecture` has Lean source discovery and formalization progress.
+Only `PoincareConjecture` has Lean source discovery.
 All 16 reference projects use `lean: []`; their source views, formalization
-controls and percentages are hidden. Main-blueprint progress is derived by
-hgraph from attached Lean declarations, not from editorial acceptance or an
-assumption that every explanatory statement has a corresponding declaration.
+controls and percentages are hidden. All projects set `site.progress: false`.
+The main blueprint's Source links view records annotation coverage separately
+from the revision-pinned build and Comparator evidence in its Verification tab.
 
 Run the integration checks and build the site from the repository root:
 

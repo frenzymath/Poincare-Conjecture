@@ -54,7 +54,12 @@ Give statements stable labels, record dependencies with `\uses{...}`, and
 link declarations with `\lean{...}`. Preserve precise source citations.
 Only add `\leanok` after checking the corresponding declaration and statement.
 
-The main blueprint imports Horizon's eighteen-chapter exposition. Run
+The main blueprint imports Horizon's eighteen-chapter exposition.
+Its current sources are in `PoincareConjecture/blueprint/`: `content.tex`,
+`macros.tex`, `refs.bib`, and `chapters/`. Import records and source reviews live
+separately under `PoincareConjecture/provenance/blueprint-import/`; the map
+generator and template are `scripts/build_blueprint_map.py` and
+`site/blueprint_map_template.html`. Run
 `python scripts/check_blueprint_import.py` after changing its source or import
 records; source changes require reconciliation with the retained chapter reviews.
 The site build regenerates its blueprint map from the staged current graph.

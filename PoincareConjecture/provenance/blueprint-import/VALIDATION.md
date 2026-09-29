@@ -5,6 +5,11 @@ Validated on 2026-09-29 against the imported Horizon snapshot
 
 - All 29 Python tooling tests pass, including chapter/source linkage, review
   digests, provenance records, and map generation from a staged project root.
+- The blueprint directory contains only `content.tex`, `macros.tex`, `refs.bib`
+  and the 18 current chapters. Moving the sources preserves the recorded chapter,
+  macro and bibliography hashes. Import evidence lives in this provenance
+  directory; map tooling lives in `scripts/` and `site/`. Obsolete drafts and
+  reviews were removed from the working tree and remain available in Git history.
 - The integration checker resolves 18 chapters, 179 statement nodes, and 234
   current Lean names. It reports no unresolved chapter references or citations.
   The three historical Lean names are explicitly excluded from current source

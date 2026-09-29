@@ -21,10 +21,10 @@ from pathlib import Path
 import yaml
 
 
-ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_TEMPLATE = ROOT / "blueprint" / "tools" / "blueprint_map_template.html"
+REPO = Path(__file__).resolve().parents[1]
+ROOT = REPO / "PoincareConjecture"
+DEFAULT_TEMPLATE = REPO / "site" / "blueprint_map_template.html"
 DEFAULT_OUTPUT = ROOT / "blueprint-map-tab.html"
-DEFAULT_IMPORTANT = ROOT / "blueprint" / "horizon-import" / "important-statements.yaml"
 
 
 def _header(path: Path) -> dict:
@@ -49,7 +49,7 @@ def _plain_tex(value: str | None) -> str:
 
 def _blueprint_macros() -> dict[str, str]:
     """Extract the small macro table needed by KaTeX in hover statements."""
-    path = ROOT / "blueprint" / "src" / "macros.tex"
+    path = ROOT / "blueprint" / "macros.tex"
     text = path.read_text(encoding="utf-8") if path.exists() else ""
     macros: dict[str, str] = {"\\mbox": "\\text", "\\hbox": "\\text"}
     command = re.compile(
@@ -79,7 +79,7 @@ def _command_value(text: str, start: int) -> tuple[str, int] | None:
 
 def _heading_context() -> tuple[list[str], dict[str, dict[str, str]]]:
     """Return chapter order and label -> chapter/section source coordinates."""
-    content = ROOT / "blueprint" / "src" / "content.tex"
+    content = ROOT / "blueprint" / "content.tex"
     source = content.read_text(encoding="utf-8")
     includes = re.findall(r"\\input\{([^}]+)\}", source)
     files = []
@@ -163,14 +163,14 @@ def _heading_context() -> tuple[list[str], dict[str, dict[str, str]]]:
     return chapters, labels
 
 
-def _load_important_labels(path: Path = DEFAULT_IMPORTANT) -> list[str]:
+def _load_important_labels(path: Path | None = None) -> list[str]:
     """Read the curated important-statement labels from YAML.
 
     Prefer ``chapters.*.labels`` (chapter-balanced authoring form).  Fall back
     to a flat top-level ``labels`` list.  Unknown / duplicate labels are kept
     here and filtered against live nodes in ``_build_data``.
     """
-    if not path.exists():
+    if path is None or not path.exists():
         return []
     payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     labels: list[str] = []
@@ -194,7 +194,7 @@ def _load_important_labels(path: Path = DEFAULT_IMPORTANT) -> list[str]:
     return labels
 
 
-def _build_data(*, important_path: Path = DEFAULT_IMPORTANT) -> dict:
+def _build_data(*, important_path: Path | None = None) -> dict:
     chapters, label_context = _heading_context()
     important_labels = _load_important_labels(important_path)
     nodes: dict[str, dict] = {}
@@ -308,7 +308,8 @@ def main() -> int:
                         help="Project root containing the synchronized hgraph")
     parser.add_argument("--template", type=Path, default=DEFAULT_TEMPLATE)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
-    parser.add_argument("--important", type=Path, default=DEFAULT_IMPORTANT)
+    parser.add_argument("--important", type=Path,
+                        help="Optional curated statement labels; defaults to the full blueprint")
     args = parser.parse_args()
     ROOT = args.root.resolve()
 

@@ -28,5 +28,6 @@ reference projects contain only reading blueprints, without formalization progre
 
 - [FrenzyMath announcement](https://frenzymath.com/news/poincare-formalization/)
 - [Companion proof repository](https://github.com/frenzymath/PoincareConjecture)
-- [Blueprint source and review records](https://github.com/frenzymath/Poincare-Conjecture/tree/import/poincare-subject-library/PoincareConjecture/blueprint/horizon-import)
+- [Blueprint source](https://github.com/frenzymath/Poincare-Conjecture/tree/import/poincare-subject-library/PoincareConjecture/blueprint)
+- [Blueprint review records](https://github.com/frenzymath/Poincare-Conjecture/tree/import/poincare-subject-library/PoincareConjecture/provenance/blueprint-import)
 - [Verification evidence](https://github.com/frenzymath/Poincare-Conjecture/tree/import/poincare-subject-library/PoincareConjecture/references/ricci-flow/mapher/integration-verification)

@@ -17,14 +17,18 @@ class BlueprintImportTests(unittest.TestCase):
         self.assertEqual(report['chapters'], 18)
         self.assertEqual(report['accepted_chapters'], 17)
         self.assertEqual(report['pending_reviews'], ['smoothing'])
+        blueprint = ROOT / 'PoincareConjecture/blueprint'
+        self.assertEqual({p.name for p in blueprint.iterdir()},
+                         {'content.tex', 'macros.tex', 'refs.bib', 'chapters'})
+        self.assertEqual(len(list((blueprint / 'chapters').glob('*.tex'))), 18)
 
     def test_map_uses_the_supplied_staged_graph_and_chapters(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            (root / 'blueprint/src').mkdir(parents=True)
+            (root / 'blueprint').mkdir(parents=True)
             (root / 'hgraph/nodes').mkdir(parents=True)
-            (root / 'blueprint/src/content.tex').write_text('\\input{chapter}\n')
-            (root / 'blueprint/src/chapter.tex').write_text(
+            (root / 'blueprint/content.tex').write_text('\\input{chapter}\n')
+            (root / 'blueprint/chapter.tex').write_text(
                 '\\chapter{Current chapter}\n\\begin{theorem}[Current result]\n'
                 '\\label{thm:current}\nTrue.\\end{theorem}\n')
             (root / 'hgraph/nodes/current.md').write_text(
@@ -33,9 +37,9 @@ class BlueprintImportTests(unittest.TestCase):
             (root / 'template.html').write_text('__BLUEPRINT_MAP_DATA__')
             output = root / 'map.html'
             result = subprocess.run([
-                sys.executable, str(ROOT / 'PoincareConjecture/blueprint/tools/build_blueprint_map.py'),
+                sys.executable, str(ROOT / 'scripts/build_blueprint_map.py'),
                 '--root', str(root), '--template', str(root / 'template.html'),
-                '--output', str(output), '--important', str(root / 'no-curation.yaml'),
+                '--output', str(output),
             ], capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stderr)
             rendered = html.unescape(output.read_text())

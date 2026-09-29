@@ -14,7 +14,7 @@ import yaml
 def check(repo):
     project = repo / 'PoincareConjecture'
     blueprint = project / 'blueprint'
-    evidence = blueprint / 'horizon-import'
+    evidence = project / 'provenance/blueprint-import'
     manifest = json.loads((evidence / 'manifest.json').read_text())
     upstream = json.loads((evidence / 'inventory/v4-publication-status.json').read_text())
     issues = []
@@ -40,11 +40,11 @@ def check(repo):
                     issues.append(f'Accepted chapter has no matching review digest: {key}')
                 else:
                     accepted.append(key)
-    entry = (blueprint / 'src/content.tex').read_text()
+    entry = (blueprint / 'content.tex').read_text()
     chapters = re.findall(r'\\input\{chapters/([^}]+)\}', entry)
     if chapters != manifest['chapters']:
         issues.append('Active chapter sequence differs from the snapshot')
-    source = read_blueprint(blueprint / 'src/content.tex')
+    source = read_blueprint(blueprint / 'content.tex')
     source = re.sub(r'(?<!\\)((?:\\\\)*)%[^\n]*', r'\1', source)
     labels = re.findall(r'\\label\{([^}]+)\}', source)
     issues += [f'Duplicate label: {label}' for label, count in Counter(labels).items() if count > 1]
@@ -52,7 +52,7 @@ def check(repo):
         for group in re.findall(r'\\(?:' + command + r')(?:\[[^\]]*\])*\{([^}]+)\}', source)
         for item in group.split(',')]
     issues += [f'Unresolved reference: {label}' for label in set(groups('ref|eqref|uses')) - set(labels)]
-    bibliography = {row['key'] for row in parse_bib((blueprint / 'src/refs.bib').read_text())}
+    bibliography = {row['key'] for row in parse_bib((blueprint / 'refs.bib').read_text())}
     issues += [f'Unknown citation: {key}' for key in set(groups('cite|citep|citet|source')) - bibliography]
     statements, _ = parse_blueprint(source)
     if {s['label'] for s in statements} != {s['label'] for s in upstream['statements']}:
