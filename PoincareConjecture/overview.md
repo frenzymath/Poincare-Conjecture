@@ -6,28 +6,27 @@ and Comparator verification with Nanoda and Lean's default kernel.
 
 ## The blueprint
 
-Archon Horizon's eighteen-chapter exposition follows the implemented proof:
+The eighteen-chapter blueprint was developed with Archon Horizon from the
+definitions, theorem statements, and proofs in
+[PoincareLib](https://github.com/frenzymath/Poincare-Conjecture/tree/main/PoincareConjecture/PoincareLib).
+It follows the implemented argument:
 three-manifold foundations, Ricci flow, reduced geometry, ancient models,
 necks and caps, singular limits, surgery and global continuation, filling width,
 ramps, annular comparison, finite extinction, reverse surgery, sphere reduction,
 protected Dehn surfaces, compact cores, relative rigidity, and smoothing.
 
-This snapshot is pinned to Horizon workspace revision `fbdf7e1493ed`.
-Seventeen chapters have passed Horizon's source and readability review.
-The smoothing chapter and whole-book publication review remain pending;
-the exposition's review status is separate from verification of the Lean proof.
+The introduction explains the selection of mathematical nodes, the chapter
+structure, notation, and revision-specific verification evidence. The smooth
+theorem concludes Chapter 14. The **Poincare conjecture**, for topological
+three-manifolds, is the final theorem of Chapter 18.
 
-The main blueprint links mathematical statements to the current proof library.
-The Source links view records annotation coverage without treating it as proof
-completion. Some explanatory statements lack annotations, and three historical
-surgery adapters refer to removed auxiliary declarations. The Verification tab
-records the separate, revision-pinned build and Comparator results. The sixteen
-reference projects contain only reading blueprints, without formalization progress.
+The companion reference projects contain reading blueprints for the books
+and articles used as mathematical background. Their source references are
+distinct from the main blueprint's links to Lean declarations.
 
 ## Sources
 
 - [FrenzyMath announcement](https://frenzymath.com/news/poincare-formalization/)
 - [Companion proof repository](https://github.com/frenzymath/PoincareConjecture)
-- [Blueprint source](https://github.com/frenzymath/Poincare-Conjecture/tree/import/poincare-subject-library/PoincareConjecture/blueprint)
-- [Blueprint review records](https://github.com/frenzymath/Poincare-Conjecture/tree/import/poincare-subject-library/PoincareConjecture/provenance/blueprint-import)
-- [Verification evidence](https://github.com/frenzymath/Poincare-Conjecture/tree/import/poincare-subject-library/PoincareConjecture/references/ricci-flow/mapher/integration-verification)
+- [Blueprint source](https://github.com/frenzymath/Poincare-Conjecture/tree/main/PoincareConjecture/blueprint)
+- [Verification evidence and reproduction](https://github.com/frenzymath/Poincare-Conjecture/blob/main/site/verification.md)

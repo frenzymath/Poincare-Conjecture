@@ -15,7 +15,6 @@ elif (( $# == 1 || $# == 2 )); then
   fi
   for path in "${changed_files[@]}"; do
     case "$path" in
-      PoincareConjecture/references/*|PoincareConjecture/contracts/*) continue ;;
       PoincareConjecture/*.lean|PoincareConjecture/lakefile.toml|PoincareConjecture/lake-manifest.json|PoincareConjecture/lean-toolchain)
         selected=true ;;
     esac
@@ -31,5 +30,5 @@ fi
 echo 'Building PoincareConjecture (PoincareConjecture)'
 (cd PoincareConjecture && lake exe cache get && make check)
 python3 scripts/lean_stats.py PoincareConjecture \
-  --exclude references --exclude contracts --exclude Comparator/Challenge.lean \
+  --exclude Comparator/Challenge.lean \
   --output .verification/statistics --check

@@ -183,16 +183,16 @@
       <input class="map-control map-search" id="map-search" type="search" placeholder="Find a statement..." aria-label="Find a statement">
       <select class="map-control map-select" id="map-status" aria-label="Filter by source annotation">
         <option value="all">All source annotations</option>
-        <option value="lean_ok">Lean linked</option>
-        <option value="mathlib_ok">Mathlib reference</option>
-        <option value="sorry">Link needs review</option>
-        <option value="empty">No resolved link</option>
+        <option value="lean_ok">lean ok</option>
+        <option value="mathlib_ok">mathlib ok</option>
+        <option value="sorry">not formalized (admission)</option>
+        <option value="empty">not formalized</option>
       </select>
       <select class="map-control map-select" id="map-chapter" aria-label="Focus a chapter">
         <option value="all">All chapters</option>
       </select>
-      <label class="map-control map-toggle" title="Show only the curated important-statements.yaml milestones">
-        <input id="map-minimized" type="checkbox" checked aria-label="Show curated important nodes only">
+      <label class="map-control map-toggle" title="Show selected milestones">
+        <input id="map-minimized" type="checkbox" aria-label="Show selected milestones only">
         <span>Important nodes</span>
       </label>
       <select class="map-control map-select" id="map-depth" aria-label="Dependency layers around selected node">
@@ -207,10 +207,10 @@
       <button class="map-control map-button" id="map-close" type="button" title="Return to the blueprint" aria-label="Return to the blueprint">×</button>
       <button class="map-control map-button" id="map-fit" type="button" title="Fit the map to the available width" aria-label="Fit map">Fit</button>
       <div class="map-legend" aria-label="Source annotation legend">
-        <span><i class="legend-dot legend-mathlib"></i>mathlib reference</span>
-        <span><i class="legend-dot legend-ok"></i>Lean linked</span>
-        <span><i class="legend-dot legend-pending"></i>no resolved link</span>
-        <span><i class="legend-dot legend-sorry"></i>link needs review</span>
+        <span><i class="legend-dot legend-mathlib"></i>mathlib ok</span>
+        <span><i class="legend-dot legend-ok"></i>lean ok</span>
+        <span><i class="legend-dot legend-pending"></i>not formalized</span>
+        <span><i class="legend-dot legend-sorry"></i>not formalized (admission)</span>
       </div>
       <div class="map-legend map-depth-legend" aria-label="Dependency depth legend">
         <span class="layer-legend-label">depth</span>
@@ -282,7 +282,7 @@
     const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({
       "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
     }[char]));
-    const statusLabel = (value) => ({ lean_ok: "Lean linked", mathlib_ok: "Mathlib reference", sorry: "Link needs review", empty: "No resolved link" }[value] || value || "No resolved link");
+    const statusLabel = (value) => ({ lean_ok: "lean ok", mathlib_ok: "mathlib ok", sorry: "not formalized", empty: "not formalized" }[value] || value || "not formalized");
     const chapterColor = (index) => ["#3868ad", "#7556a8", "#35865a", "#b87923", "#2d8580"][index % 5];
     const layerPalettes = {
       incoming: ["#dc2626", "#ea580c", "#ca8a04", "#65a30d", "#0f766e", "#2563eb", "#4f46e5", "#7c3aed"],
@@ -294,6 +294,7 @@
     };
     // Curated milestones from blueprint/important-statements.yaml (embedded at build).
     const importantLabels = new Set(DATA.important_labels || []);
+    minimized.closest("label").hidden = !importantLabels.size;
     const importantNode = (node) => importantLabels.size ? importantLabels.has(node?.label) : true;
     const displayedNodes = () => {
       if (!minimized.checked) return DATA.nodes;

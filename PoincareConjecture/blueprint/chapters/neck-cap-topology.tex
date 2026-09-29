@@ -22,6 +22,10 @@ are described in Section~\ref{sec:ball-gluing}.
 \section{Necks, caps, and covers}
 \label{sec:neck-cap-definitions}
 
+\begin{definition}[A normalized smooth neck]
+\label{def:neck-cap-neck}
+\lean{PoincareMT.EpsilonNeck,PoincareMT.NeckMetricJetComparison}
+\uses{def:foundations-manifold}
 Let $M$ be a $T_3$ smooth manifold modelled on $\mathbb R^3$, with Borel
 measurable structure, and let $g$ be a Riemannian metric.  An
 \emph{$\varepsilon$-neck} consists of $0<\varepsilon<1/2$, a centre $p$,
@@ -51,6 +55,7 @@ side, in every overlap statement.  Reversing the axial coordinate is allowed;
 two necks are equivalent up to reversal when their scales, centres, carriers,
 central spheres, and coordinates agree after $s\mapsto\sigma s$ with
 $\sigma\in\{1,-1\}$.
+\end{definition}
 
 An \emph{$\varepsilon$-neck-only cover} is a connected set $X\subset M$ and a
 set of necks such that every $x\in X$ is the centre of one of them, all have
@@ -58,6 +63,10 @@ the same $\varepsilon$, and $\varepsilon$ is below a threshold at most
 $1/200$.  A \emph{connected neck--cap cover} additionally contains caps whose
 cores cover the points not selected as neck centres.  A cover is \emph{whole}
 when $X=M$; no theorem about a local cover may silently replace $X$ by $M$.
+\begin{definition}[A cap with its attaching collar]
+\label{def:neck-cap-cap}
+\lean{PoincareMT.CapCertificate}
+\uses{def:neck-cap-neck}
 Each cap has an open carrier, a nonempty core equal to the interior of a
 compact closed core, a smooth end neck, a boundary neck and boundary sphere,
 and a model equivalence with either Euclidean space or a punctured real
@@ -93,10 +102,15 @@ smooth, $df\ne0$, and $Q$ is locally $f\le0$; it lies in the closure of the
 negative terminal quarter of the end neck.  Thus the data specify a smooth
 domain and an attaching collar, as well as estimates.  The same scale and
 Levi--Civita connection are retained when the cap is glued to a tube.
+\end{definition}
 
 \subsection{Scalar control on the entire neck}
 \label{sec:neck-cap-full-scalar}
 
+\begin{lemma}[Scalar control on the full neck]
+\label{lem:neck-cap-scalar}
+\lean{PoincareMT.EpsilonNeck.scalarCurvature_sub_one_le}
+\uses{def:neck-cap-neck}
 The neck estimates hold up to every point of the open coordinate domain;
 the distance of a point from its ends need not have a fixed positive lower
 bound.  The quantitative estimate needed in the singular-limits chapter is
@@ -108,8 +122,11 @@ bound.  The quantitative estimate needed in the singular-limits chapter is
 Both numerical constants precede the choices of manifold, metric, neck and
 point.  The scalar may be computed using any Levi--Civita description of
 the same metric, since that connection is unique.
+\end{lemma}
 
-Here is the two-jet calculation giving this uniformity.  At any cylinder
+\begin{proof}
+\proves{lem:neck-cap-scalar}
+At any cylinder
 point $(q,s)$ use a rotated sphere chart and translate the axial coordinate
 so that the point becomes zero.  A neighborhood of zero fits inside the
 neck even when $s$ is near an end; its radius can depend on $s$.  Only the
@@ -145,6 +162,7 @@ $10^{12}\varepsilon<1/2$ gives
 $R(p)/2<R(x)<2R(p)$ everywhere in the neck.  The linear estimate, rather
 than only this factor-two consequence, is what controls a change to the
 terminal scalar normalization in Chapter~\ref{ch:singular-limits-v4}.
+\end{proof}
 
 \section{Overlap geometry and balanced tubes}
 \label{sec:balanced-tubes}
@@ -246,27 +264,8 @@ because it contains the initial neck centre.  The whole-cover hypothesis
 makes $M$ connected, so $W=M$.  This is the precise use of connectedness
 that prevents a returning chain from describing only part of the manifold.
 
-The three product charts $e_i:S^2\times[0,1]\longrightarrow M$,
-$i\in\mathbb Z/3\mathbb Z$, have images respectively
-$K,\overline{D_R},\overline{D_Q}$ and extend smoothly over collars of their
-boundaries.  The intersection of consecutive images is exactly
-$e_{i+1}(S^2\times\{0\})$.  After a fibrewise change of the interval
-coordinates, the circle coordinate is the interval coordinate on the
-$i$th of three successive arcs of $S^1$.
-The collar matching makes these coordinates agree at each endpoint and on
-its neighborhood.  They therefore define a smooth map, and the same
-extended charts are its local trivialisations.  Smooth isotopies first move
-each chain sphere to the terminal slice, and then to a fibre in these
-charts.  The transition around the last arc can act nontrivially on $S^2$;
-no triviality of monodromy is asserted.
-
-This proof uses a finite return, not an assumed periodic parametrisation.  The
-three-piece decomposition is what supplies the global projection; the
-connectedness of the cover is what lets the local separation labels propagate
-around the entire circle.
-
-The overlap and smooth matching deserve a more explicit description.
-Orient the return neck as $\widehat R$, and choose a source neck, possibly
+To construct the matching product charts, orient the return neck as
+$\widehat R$, and choose a source neck, possibly
 reversed, $Q$ centred at height $-17L/20$ in $N$.  The overlap estimates
 give smooth transition maps from the two bands of $Q$
 \[
@@ -301,19 +300,11 @@ $e_i$ the required scalar coordinate is
 It equals one at $u=1$ and has positive $u$ derivative.  Extend the two
 positive endpoint germs $u$ and $g_i$ to a strictly increasing smooth
 coordinate $d_i(q,u)$ on the whole interval, fixing zero and one.
-Here is the positive splice used in this construction.  Shrink the lower
-collar until its germ $g_0$ is less than $1/4$.  Blend it with
-$\ell(u)=3/8+u/4$ using an increasing cutoff $\beta$ which changes
-from zero to one inside that collar.  The derivative of the blend is
-\[
- (1-\beta)\partial_u g_0+\beta/4+\beta'(\ell-g_0)>0.
-\]
-The value gap makes the last term nonnegative.  Apply the same construction
-to $1-g_i(q,1-u)$ at the upper end and reflect it back.  Both splices
-equal $\ell$ in the middle, since $1-\ell(1-u)=\ell(u)$, so they
-paste smoothly.  Extending the positive coordinate to the line gives
-the required fibre diffeomorphisms; their smooth inverses follow from
-the parameter-dependent inverse function theorem.
+Shrink each endpoint collar and blend its germ with
+$\ell(u)=3/8+u/4$ using an increasing cutoff.  The positive value gap
+and positive derivatives keep the blend strictly increasing.  Reflect
+the upper splice; both agree with $\ell$ in the middle.  The
+parameter-dependent inverse function theorem supplies smooth inverses.
 On a common raw collar the corrected coordinates satisfy
 $d_i(q,s)=s$ and
 $d_{i-1}(e_{i-1}^{-1}e_i(q,s))=1+s$.
@@ -568,6 +559,7 @@ radial formula on $\delta\le s<1$.
 \end{lemma}
 
 \begin{proof}
+\proves{lem:neck-cap-prescribed-collar}
 An ambient diffeomorphism taking the standard
 unit sphere to $\psi(S^2\times\{0\})$ supplies a ball chart $B$ with exactly
 that boundary.  Choose a sign $\sigma\in\{1,-1\}$ so that
@@ -577,9 +569,7 @@ $B(h(q))=\psi(q,0)$.  On a radial annulus define
 \[
  A((1+s)h(q))=\psi(q,\sigma s).
 \]
-The radial direction and sphere direction are unique, so this is a genuine
-annular chart, and $A=B$ at radius one.  We explain the adjustment that
-makes this equality hold on an open overlap.  The transition
+This annular chart agrees with $B$ at radius one.  The transition
 $T=B^{-1}\circ A$ is defined near $S^2$, fixes it pointwise, and takes
 the exterior side to the exterior side.  Its derivative is the identity
 on every tangent plane to $S^2$.  Its normal component is positive:
@@ -594,13 +584,9 @@ for $t\ge1$.  Near the sphere put
 At a point of the sphere its derivative fixes the tangent plane and
 has positive normal component
 $1-\theta(t)+\theta(t)\langle x,DT(x)x\rangle$.
-Thus $(t,x)\mapsto(t,T_t(x))$ is a local diffeomorphism there.  It is
-injective on the compact set $[-1,2]\times S^2$, which it fixes.  There
-is consequently one open neighborhood of this compact set on which it
-is a chart.  To see why shrinking suffices, a failure of injectivity on
-every shrinking neighborhood would give pairs with equal images
-converging to two points of the compact set.  Injectivity on that set
-makes the limits equal, contradicting local injectivity at the limit.
+Thus $(t,x)\mapsto(t,T_t(x))$ is a local diffeomorphism along the
+fixed compact set $[-1,2]\times S^2$.  Compactness and local
+injectivity give one neighborhood on which it is a chart.
 
 On the image chart the velocity is
 $V(t,y)=\partial_tT_t(T_t^{-1}(y))$.
@@ -615,17 +601,9 @@ $\Phi_1$ preserves both the open and closed unit balls exactly.
 Consequently $C=B\circ\Phi_1$ has the same filled region as $B$ and
 agrees with $A$ on an open neighborhood of $S^2$.
 
-Use $C$ on the inner ball and $A$ on the outer annulus.  Their agreement
-on an open overlap makes their union a smooth injective chart $J$ on the ball of
-radius two, with smooth inverse.  Its image is the filled interior together
-with the whole outward half-collar, and
-\[
- J((1+s)h(q))=\psi(q,\sigma s)\quad(\delta\le s<1).
-\]
-The radial function is explicitly $1+s$, hence positive, strictly increasing,
-and less than two on this interval.  This verifies the prescribed collar
-data needed when filling a cap; merely identifying its boundary with a
-sphere would not give this agreement.
+Glue $C$ on the inner ball to $A$ on the outer annulus.  Their open
+overlap gives the required smooth chart $J$ and its inverse on $B(0,2)$,
+with the prescribed radial formula throughout the outward half-collar.
 The region $\Omega=B(B_1)$ is bounded because its closure is the image
 of the compact closed unit ball.  It and the complementary exterior
 are connected, being ambient images of the two standard regions.
@@ -643,8 +621,8 @@ diffeomorphisms $I_t$, $t\in\mathbb R$, with $I_0=A|_{S^2}$ and $I_1=f$.
 \end{lemma}
 
 \begin{proof}
-Here is the reduction to compact planar isotopy, retaining its endpoint
-convention.  Fix a pole $p$.  The radial extension
+\proves{lem:neck-cap-sphere-isotopy}
+Fix a pole $p$.  The radial extension
 $R(x)=|x|f(x/|x|)$ is a diffeomorphism off the origin.  Its derivative
 $L=DR(p)$ is invertible and $Lp=f(p)$.  The sphere map
 $B(q)=Lq/|Lq|$ therefore has the same first-order behavior as $f$ at
@@ -723,73 +701,36 @@ time ends it fixes one uniform strip about the axis.  Its moving axis
 $C_t(u)=F_t(u,0)$ is an embedded regular line, equal to $(u,0)$ outside
 one compact interval, and equal to that line near the two time ends.
 
-To correct this moving axis, take a uniform thin normal tube around the
-family $C_t$ on a compact time interval.  Such a tube exists because
-the tangent never vanishes, local inverse charts cover the compact moving
-part, and pairs outside those charts have a positive separation; the
-fixed straight tails use the standard tube.  Inscribe a sufficiently fine
-affine-grid polygon in $C_t$, retaining those tails.  Compact uniform
-continuity of position and tangent makes the polygon simple and its
-chords close to the corresponding tangents.  Round each vertex by a
-smooth convex replacement of absolute value, equal to absolute value
-off a small interval and with derivative bounded by one.  The rounded
-line $\gamma_t$ is jointly smooth and its normal-tube coordinates
-$(\xi_t(u),\eta_t(u))$ satisfy
-\[
- \partial_u\xi_t(u)>0,\qquad |\eta_t(u)|<w/2,
-\]
-where $w$ is the tube width.  The same rounded samples will be used in
-both transports below.  On the fixed tails and on stationary time slices
-they are exactly the original straight line.
+Take a uniform normal tube of width $w$ around the compact moving part
+of $C_t$.  A sufficiently fine polygonal approximation, rounded with a
+fixed smooth profile, gives embedded lines $\gamma_t$ whose tube
+coordinates satisfy $\partial_u\xi_t>0$ and $|\eta_t|<w/2$.
+Keep the straight tails and stationary time slices fixed.
 
-Here is the finite polygon argument behind the second transport.
-An admissible interior vertex is one whose adjacent triangle meets the
-arc only in its two adjacent edges.  Moving it to the midpoint of its
-neighbors inside that triangle preserves simplicity and makes it
-removable.  An admissible vertex persists on a small parameter window.
-Finitely many such windows cover the time interval; choices at successive
-windows may be made equal or nonadjacent.  Supported pushes therefore
-preserve the straight vertex needed in the neighboring window.  Near
-each junction first use induction on the smaller number of vertices to
-make the whole arc straight.  On each remaining interval delete its
-straight vertex, apply the same induction relative to the straight
-endpoint windows, and reinsert the vertex.  The interval homotopies
-agree on those fixed windows and paste smoothly.  This gives a smooth
-two-parameter polygon family with fixed endpoints and time tails,
-ending in the straight segment.  The admissible-vertex choice and this
-relative induction are Munkres, Lemmas 2.3--2.7, pp.~195--197.
+Straighten the polygon family by relative induction on its vertices.
+An admissible vertex moves within its empty adjacent triangle to the
+midpoint of its neighbors.  On finitely many parameter windows make these
+choices agree or be nonadjacent; induction on the smaller polygons makes
+the junction windows stationary.  The resulting homotopies paste and
+retain the endpoints and time tails
+\cite[Lemmas 2.3--2.7, pp.~195--197]{Munkres1960}.
 
-Rounding that finite polygon homotopy with one sufficiently small
-profile gives an isotopy of embedded smooth lines.  Subdivide its homotopy
-parameter into finitely many intervals on which each line is a small
-normal graph over the line at the interval's initial parameter.
-Supported graph transports, composed successively, give an ambient
-map $J_t$ taking $\gamma_t$ to the axis, with $J_t=\mathrm{id}$ at
-the time ends.  There is also a relative ambient map $I_t$ taking
-the original $C_t$ to $\gamma_t$.  Indeed $\xi_t$ is increasing and
-is the identity on the tails, so it is a diffeomorphism of the line
-with smooth parameter-dependent inverse.  In tube coordinates
-$\gamma_t$ is thus the graph
-$\eta_t\circ\xi_t^{-1}$.  Write its height as $a_t(u)$, with
-$|a_t|<A<w$.  Choose a normal cutoff $\beta$ supported inside the
-remaining tube width, with $\beta(0)=1$ and $|\beta'|\le B$,
-and an integer $n>BA$.  The $k$th small slide is
+Round this finite homotopy and subdivide it into small normal graphs.
+Supported normal slides give ambient transports $I_t:C_t\to\gamma_t$
+and $J_t:\gamma_t\to\mathbb R\times\{0\}$.  For graph height $a_t(u)$,
+choose a normal cutoff $\beta$ with $\beta(0)=1$, and an integer
+$n>\|\beta'\|_\infty\|a\|_\infty$.  The $k$th slide is
 \[
  (u,y)\longmapsto
  \left(u,y+\beta\bigl(y-ka_t(u)/n\bigr)a_t(u)/n\right),
  \qquad 0\le k<n.
 \]
-Its normal derivative is positive because $B|a_t|/n<1$, and its
-normal coordinate is the identity outside a bounded interval, hence
-is bijective.  It takes height $ka_t/n$ to $(k+1)a_t/n$.
-Conjugate these maps by the tube chart and extend by the identity;
-their supports lie compactly inside the chart.  Their composition
-is the required graph transport.  It is the identity whenever the graph
-is zero, and has one compact support because the parameter range and
-nonstraight part are compact.  Hence
-$G_t=J_t\circ I_t$ takes $C_t$ into the axis and is the identity at
-both time ends.  This develops the normal-slide step of Munkres,
-Section~2.8, p.~197, using smooth rounded samples throughout.
+Its normal derivative is positive; its normal coordinate is bijective
+and sends $ka_t/n$ to $(k+1)a_t/n$.  Extend the conjugated slides by
+identity outside the tube.  They retain one compact support and are
+identity whenever the graph is zero.  Hence $G_t=J_t\circ I_t$
+straightens the moving axis and fixes both time endpoints
+\cite[Section 2.8, p.~197]{Munkres1960}.
 
 It remains to fix a whole strip, not merely the axis setwise.
 The restriction of $G_t\circ F_t$ to the axis is increasing: its
@@ -830,6 +771,20 @@ planar family across the stereographic pole.
 \section{Local and global topological alternatives}
 \label{sec:m25}
 
+\begin{theorem}[Topology of a neck--cap cover]
+\label{thm:neck-cap-cover}
+\lean{PoincareMT.m25NeckCapTopology}
+\uses{lem:neck-cap-prescribed-collar,lem:neck-cap-sphere-isotopy,def:neck-cap-cap,lem:neck-cap-scalar}
+There is a positive accuracy threshold, independent of the manifold and
+cover, such that a connected region covered by necks and caps below this
+threshold lies in a compatible tube, capped tube, double-capped tube,
+single cap, two-cap closed component, or sphere bundle over a circle.
+For a whole-manifold cover the resulting region is the whole manifold.
+\source{MT2007}\dcref{Appendix A, Propositions A.19, A.21 and A.25}
+\end{theorem}
+
+\begin{proof}
+\proves{thm:neck-cap-cover}
 The local theorem fixes one threshold before the manifold, metric, or cover.
 The current proof takes the minimum of eight positive thresholds: the
 separating-chain tube, its whole-cover specialization, uniform separation
@@ -861,10 +816,26 @@ The whole-cover corollary turns the six local cases into four global cases:
 \end{enumerate}
 The implication uses only $X=M$: a local containment $X\subset Y$ becomes
 $M\subset Y$, and hence $Y=M$; no new smallness estimate is introduced.
+\end{proof}
 
 \section{Global alternatives for ancient solutions}
 \label{sec:m26}
 
+\begin{theorem}[Global ancient alternatives]
+\label{thm:neck-cap-ancient-alternatives}
+\lean{PoincareMT.m26CanonicalNeighborhoods}
+\uses{thm:neck-cap-cover,thm:ancient-universal,thm:ancient-compactness,thm:ancient-model-identifications}
+For sufficiently small prescribed accuracy, every noncompact ancient
+three-dimensional $\kappa$-solution with no embedded projective plane of
+trivial normal bundle is a whole strong tube or strong capped tube.
+A compact zero-time slice is a round ancient quotient, a uniformly small
+positive-curvature component, or a double-capped strong tube. The cap and
+diameter constants are uniform over solutions at the chosen accuracy.
+\source{MT2007}\dcref{Corollary 9.88 and Theorem 9.89, pp. 239--241}
+\end{theorem}
+
+\begin{proof}
+\proves{thm:neck-cap-ancient-alternatives}
 Let $K$ be a connected, second-countable ancient three-dimensional
 $\kappa$-solution, with time domain $t\le0$.  A strong evolving neck at time
 $t$ has a terminal $\varepsilon$-neck, the same flow connection, and a
@@ -924,34 +895,27 @@ The round branch carries a finite spherical-space-form quotient, not only the
 simply connected sphere.  This is a zero-time slice
 statement; it does not yet assert a canonical neighborhood at every ancient
 time.
+\end{proof}
 
 \section{Pointwise canonical neighborhoods}
 \label{sec:m27}
 
-For this refinement we use the preceding compact and noncompact
-alternatives, the separating-tube and whole-cover results, scalar and
-curvature evolution, scalar normalization, universal noncollapsing,
-normalized compactness, and the two-dimensional and model-refinement
-inputs.  The construction below uses these statements directly.  In
-particular it does not assume the additional blow-up setup, classified
-asymptotic limit, or Ricci-evolution service in the preceding global
-theorem's full input bundle.  Its compact two-core conclusion is
-constructed from the refinement's own inputs.
+\begin{theorem}[Canonical neighborhoods of ancient solutions]
+\label{thm:neck-cap-canonical}
+\lean{PoincareMT.m27KappaAlternatives}
+\uses{thm:neck-cap-ancient-alternatives,thm:ancient-compactness,thm:ancient-universal,thm:rf-shi}
+At every point and ancient time there is a strong neck, a controlled cap,
+or a compact positive-curvature alternative, with uniform constants at
+each sufficiently small accuracy. The actual scalar curvature satisfies
+$|\nabla R|\leq B R^{3/2}$ and $|\partial_t R|\leq B R^2$ for one
+uniform $B$ smaller than the chosen canonical constant.
+\source{MT2007}\dcref{Theorem 9.93 and Corollary 9.94, pp. 242--243}
+\end{theorem}
 
-We now add the uniform scalar derivative bounds.  There is a constant
-$0\le B<C$ such
-that, for every $t\le0$ and $x\in M$,
-\[
- |\nabla R|(x,t)\le B R(x,t)^{3/2},\qquad
- |\partial_tR(x,t)|\le B R(x,t)^2,
-\]
-with the time derivative interpreted as a derivative within $(-\infty,0]$.
-The proof normalizes at $(x,t)$, applies the uniform curvature-jet estimate,
-contracts the first two curvature derivatives to scalar estimates, and uses
-the Ricci-flow scalar equation.  Round solutions are handled separately and
-then combined with the nonround estimate by increasing the common constant.
-For clarity, normalized compactness supplies one scalar bound on a unit
-ball for each fixed noncollapsing constant.  The bound by later scalar
+\begin{proof}
+\proves{thm:neck-cap-canonical}
+Normalize at $(x,t)$.  Normalized compactness supplies a scalar bound
+on a unit ball for each fixed noncollapsing constant.  The bound by later scalar
 curvature controls the curvature there backwards in time, so the local
 derivative estimates give constants $D_1,D_2$ for the first two curvature
 derivatives at the normalized centre.  Their scalar contractions have
@@ -971,14 +935,10 @@ Then $\widetilde R(x,0)=1$,
        =\lambda^{-3/2}|\nabla R|(x,t),\qquad
  \partial_s\widetilde R(x,0)=\lambda^{-2}\partial_tR(x,t).
 \]
-The first identity uses $\widetilde R=\lambda^{-1}R$ and the factor
-$\lambda^{-1/2}$ in the norm of a covector.  The second uses the same scalar
-factor and $dt/ds=\lambda^{-1}$.  Applying one uniform normalized jet bound
-and multiplying by the indicated powers proves both estimates with a
-constant independent of $(x,t)$ and of the solution.  At $t=0$ the chain
-rule is within the closed ancient time interval, so no future extension of
-the solution is required.  Increasing the final neighborhood constant
-strictly above this uniform bound gives the displayed slack $B<C$.
+Rescaling the normalized jet bound proves both estimates uniformly.
+At $t=0$ the chain rule is within the closed ancient time interval.
+Choose the final neighborhood constant strictly above the derivative
+bound to retain $B<C$.
 
 More precisely, there exists $\bar\varepsilon>0$ such that, for every
 $0<\varepsilon<\bar\varepsilon$, there is $C>0$, independent of the solution
@@ -1091,6 +1051,7 @@ The projective-plane-line exception is explicit and is not silently absorbed
 into the cap branch.  The all-time conclusion supplies the canonical
 alternatives used by later surgery constructions; the preceding global
 classification concerns the distinguished time-zero slice.
+\end{proof}
 
 \section{Cross-chapter contracts and limits}
 \label{sec:neck-cap-contracts}
@@ -1111,10 +1072,8 @@ alternative; it must construct the standard cap and metric interpolation.
 The sphere-reduction chapter consumes the closed-component certificates and
 the collared sphere gluing, then proves the finite connected-sum reduction.
 
-The ancient classification, normalized compactness, and evolution inputs
-remain hypotheses until supplied by their earlier chapters.  Their precise
-integration status, the source revisions, and the outstanding review points
-are recorded in the companion review artifact.
+The earlier chapters supply the ancient classification, normalized
+compactness, and evolution inputs in this order.
 
 \section*{Sources}
 
@@ -1131,11 +1090,9 @@ Munkres, Theorem 1.3 and Lemmas 1.1--1.2, pp.~193--195, and Lemmas
 2.1--2.7 with Section~2.8, pp.~195--197; its jointly smooth relative
 version is developed in Section~\ref{sec:neck-cap-planar-isotopy}.
 
-\lean{PoincareMT.m25NeckCapTopology}
-\lean{PoincareMT.m26CanonicalNeighborhoods}
-\lean{PoincareMT.m27KappaAlternatives}
 \source{MT2007}
-\dcref{Appendix A, pp. 504--514; Corollary 9.88--Corollary 9.94, pp. 239--243}
+\dcref{Appendix A, pp. 504--514}
+\dcref{Corollary 9.88--Corollary 9.94, pp. 239--243}
 \cite[Appendix A, pp.~504--514; pp.~239--243]{MT2007}
 \cite[Theorem 1.1, pp.~1--5]{Hatcher3M2014}
 \cite[Theorems 5--6, pp.~624--626]{Smale1959}

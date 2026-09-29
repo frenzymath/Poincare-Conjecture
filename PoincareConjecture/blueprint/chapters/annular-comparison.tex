@@ -43,6 +43,8 @@ $\Lambda^1M$ and are free, without a prescribed base loop.
 \section{Annuli and their area infimum}
 \label{sec:annulus-definitions}
 
+\begin{definition}[Admissible annulus]\label{def:annular-admissible}
+\uses{def:rf-flow}
 Write $\mathbb A=[0,2\pi]\times[0,1]$ and identify its first coordinate
 periodically.  We integrate on the closed rectangle
 \[
@@ -69,7 +71,10 @@ where the determinant is taken in the two Euclidean coordinate directions.
 \lean{PoincareMT.M64Annulus}
 \lean{PoincareMT.m64AnnulusArea}
 \source{MT2007}\dcref{Lemma 19.15, pp. 447--449}
+\end{definition}
 
+\begin{lemma}[Guarded least annular area]\label{lem:annular-infimum}
+\uses{def:annular-admissible}
 The admissible class is deliberately larger than the piecewise-smooth class
 used to build a particular competitor.  Its least area is the guarded
 infimum
@@ -90,7 +95,10 @@ competitor.  In particular, no minimizing annulus is silently introduced.
 \lean{PoincareMT.m64AnnulusAreaRange_nonempty}
 \lean{PoincareMT.m64LeastAnnulusArea_nonneg}
 \lean{PoincareMT.m64LeastAnnulusArea_le_annulus}
+\end{lemma}
 
+\begin{definition}[Geodesic interpolation competitors]\label{def:annular-geodesic}
+\uses{def:annular-admissible}
 For the interpolation competitors we additionally record a finite partition
 into angular strips on each of which $u$ is $C^1$, and require each
 transverse slice to be the selected minimizing geodesic between its boundary
@@ -102,10 +110,13 @@ arbitrarily small area.
 \lean{PoincareMT.m60AreaDensity_eq_zero_of_factor}
 \lean{PoincareMT.M64PiecewiseC1Annulus}
 \lean{PoincareMT.M64GeodesicAnnulus}
+\end{definition}
 
 \section{Projection and evolving annular area}
 \label{sec:annular-evolution}
 
+\begin{lemma}[Projection decreases annular area]\label{lem:annular-projection}
+\uses{def:annular-admissible}
 For a product point $q=(x,\theta)$, the product metric is the orthogonal sum
 of the base metric and the circle metric.  Consequently the base projection
 has no larger differential norm.  If $A$ is an annulus in the product at
@@ -128,9 +139,12 @@ are inherited from the product annulus.
 \lean{PoincareMT.m64ProjectedDensity_integrable}
 \lean{PoincareMT.m64ProjectedAnnulus_of_annulus}
 \lean{PoincareMT.M64AnnulusProjection}
+\end{lemma}
 
 \begin{proposition}[Annular evolution]
 \label{prop:annular-evolution}
+\uses{thm:ramps-uniform-jets,prop:ramps-global}
+\uses{lem:annular-infimum,lem:annular-projection,lem:annular-immersed-minimum}
 Suppose $n\ge3$ and $c_0,c_1$ are periodic $C^2$ shrinking curves on the
 closed slab, initially positive-slope ramps of degree one in the same product.
 Assume an actual annulus between their initial curves is given.  This last
@@ -158,553 +172,95 @@ The distinction matters in the later scalar-clock comparison.
 \lean{PoincareMT.m64AnnulusEvolution_of_M63}
 \end{proposition}
 
-We explain the geometric variation and the removal of intersecting
-boundaries.  Fix an auxiliary flat circle of circumference $1$, and place
-$c_0,c_1$ in the sections of auxiliary heights $0,\varepsilon$, where
-$0<\varepsilon<1$.  They are now disjoint.  Denote their annular infimum
-by $\mu_\varepsilon(t)$.  A radial lift of an actual original annulus gives
-a competitor in this separated class.  The nonzero degree in the original
-circle excludes a compression of the annular core to a disk: a null-homotopy
-would project to a null-homotopy of a nonzero-degree circle map.
-The two energy bounds below give the quantitative nondegeneration
-needed to construct the minimum.
-
-The analytic construction minimizes energy over the modulus and boundary
-labels together.  We describe it because the annular topology alone does
-not identify the minimum with the required area infimum.  Embed the compact
-target smoothly in a Euclidean space, retaining the two circle coordinates
-as smooth observations.  On the fixed rectangle use the energy
-\[
- \mathcal E_m(f)=\tfrac12\int
-       \bigl(m|\partial_xf|_g^2+m^{-1}|\partial_yf|_g^2\bigr),\qquad m>0.
-\]
-The weak class consists of $W^{1,2}$ maps into the target with periodic
-seam, monotone boundary labels $\sigma_i$ satisfying
-$\sigma_i(x+2\pi)=\sigma_i(x)+2\pi$, and a weak real lift of the original
-circle phase with its prescribed nonzero period.  Boundary labels are
-allowed to be merely monotone at this stage.  Normalize their value at
-$0$ into one period.  The initial annulus supplies a member of this class.
-More precisely, let $H_i$ be the strictly increasing real lift of
-the original circle coordinate of $c_i$.  The real weak phase has
-lower trace $H_0\circ\sigma_0$ and upper trace
-$H_1\circ\sigma_1+d$, where $d$ is an integral multiple of the
-original circle circumference.  Its radial Green identity has
-these literal traces; its angular Green identity has the prescribed
-affine period as its boundary term.  The offset is allowed to
-vary between competitors.  Normalizing both labels therefore
-does not discard annuli with a different relative phase winding.
-
-Two coercive estimates prevent the conformal modulus from degenerating.
-On almost every horizontal slice, Cauchy--Schwarz bounds the squared
-phase period by $2\pi$ times its angular Dirichlet integral.
-On almost every vertical slice, choose a real linear observation of the
-auxiliary circle taking distinct constant values on its two boundary
-sections.  Its squared boundary difference is bounded by the vertical
-Dirichlet integral.  Bounded differentials of the observations and uniform
-equivalence of the ambient and intrinsic norms give constants
-$\alpha,\beta>0$ with
-\[
- \mathcal E_m(f)\ge\alpha m,\qquad
- \mathcal E_m(f)\ge\beta/m.
-\]
-Thus every competitor below an energy cap $C$ has modulus in a compact
-positive interval, with strict endpoint slack obtained by using $C+1$.
-The constants may depend on the chosen separation; no uniformity as
-$\varepsilon\to0$ is needed for this existence step.
-
-On that modulus interval, a minimizing sequence has bounded weak derivative
-columns.  Rellich compactness gives strong convergence of the maps after
-embedding, weak convergence of the columns, and almost-everywhere target
-convergence; closedness of the embedded target keeps the limit in it.
-Helly selection of the two normalized monotone labels and the trace
-identities keep the weak limit in the same free phase class.  The real
-phase period is retained, even before continuity of the labels is known.
-Lower semicontinuity of the positive quadratic energy, including convergence
-of the modulus and metric coefficients, gives an attained weak minimum.
-Any competitor above the original cap has larger energy than the seed,
-so this is a minimum over all positive moduli.
-
-Here is the compactness control on the relative offset.  Put
-$b_0=H_0\circ\sigma_0$ and $b_1=H_1\circ\sigma_1+d$,
-and denote the weak vertical phase derivative by $v$.
-Testing its full Green identity with the constant function one gives
-\[
- \int_{D_{\rm ann}}v
-       =\int_0^{2\pi}b_1-\int_0^{2\pi}b_0.
-\]
-Monotonicity and the affine phase period $\rho$ imply
-\[
- b_i(0)\leq\frac1{2\pi}\int_0^{2\pi}b_i
-                   \leq b_i(0)+\rho.
-\]
-The lower normalization bounds $|b_0(0)|$ by a fixed $B_0$.
-If $\int v^2\leq C$, integration of $2|v|\leq1+v^2$
-therefore gives
-\[
- |b_1(0)|\leq B_0+\rho+
-                \frac{|D_{\rm ann}|+C}{4\pi}.
-\]
-The upper normalized label also bounds $|H_1(\sigma_1(0))|$,
-so $d=b_1(0)-H_1(\sigma_1(0))$ stays in a fixed compact
-interval.  Extract its convergent subsequence together with
-the trace limits.  Its limit remains in $\rho\mathbb Z$
-because that subgroup is closed.  Thus the same weak class,
-including its literal upper offset, survives the limiting process.
-
-Finite real-phase energy also rules out jumps in the raw labels.
-On semicircular shells about a boundary point, the trace Green
-identity and Cauchy--Schwarz bound the square of a monotone phase
-gap by $C E/N$ across a window of radius $\rho e^{-N}$.
-A jump would give a fixed positive gap for all $N$, a
-contradiction.  At the angular cut use the affine seam identity
-to join the two half-windows; its boundary term is exactly the
-phase period, so it introduces no extra jump.  Subtracting the
-affine part then transports this continuity to every cut.
-The inverse of $H_i$ is continuous, hence both original labels
-are continuous.  For a sequence with bounded energy, the same
-estimate and the positive lower slope of $H_i$ give a common
-modulus of continuity for the labels.  Thus the Helly limit
-has the actual continuous boundary trace, not merely values
-defined almost everywhere on it.
-
-Local replacements must preserve the phase constraint.  In a disk compactly
-inside the cylinder, lift the circle component and cone the boundary data
-in target coordinates, then restore the unchanged map outside the disk.
-This leaves the global phase period and both boundary traces intact.
-Minimality bounds the energy on a smaller disk by a constant times the
-angular energy of a surrounding circle.  Integrating over the annulus of
-radii $re^{-1}$ and $r$ gives, with $X=\mathcal E(B_r)$ and
-$Y=\mathcal E(B_{re^{-1}})$, an inequality $Y\le L(X-Y)$.
-Hence $Y\le qX$ for some $0<q<1$.  Iteration gives a bound
-$\int_{B_s}|df|^2\le C s^\beta$ with $\beta>0$, uniformly for nearby
-centers.  Morrey's averaging argument yields a continuous representative.
-Target variations yield the weak harmonic-map equation; the
-power decay and the same-map interior regularity argument make
-this representative smooth.  Conformality is proved before
-boundary differentiability.  For the actual weak derivative
-columns put
-\[
- U=m|f_x|^2-m^{-1}|f_y|^2,\qquad
- V=2m^{-1}\langle f_x,f_y\rangle.
-\]
-These are $L^1$ functions.  A small periodic horizontal source
-variation changes the free labels monotonically and preserves
-the real phase identities.  Differentiating its energy gives
-\[
- \int (\eta'\rho U+\eta\rho' V)=0
-\]
-for every smooth periodic $\eta$ and smooth radial test $\rho$;
-$\rho$ may be nonzero at either boundary.  Interior harmonicity
-gives the second identity
-\[
- \int (-m^2\eta'\rho V+\eta\rho' U)=0
-\]
-when $\rho$ is supported in $(0,1)$.  To obtain this for every
-periodic angular test, first use tests vanishing at one cut,
-then rotate the weak annulus by half a period and use a partition
-between the two cuts.  Rotation preserves the minimum and
-transports the original columns, so both identities concern
-the same $U,V$.  Independent variation of $m>0$ gives
-$\int U=0$.
-
-For completeness, these identities force pointwise conformality
-in the interior.  Pair them with $e^{ijx}$ and write $u_j,v_j$
-for the resulting radial moments.  In the weak sense
-\[
- v_j'=ij u_j,\qquad u_j'=-m^2ij v_j.
-\]
-The first identity, tested through both boundary values, gives
-$v_j(0)=v_j(1)=0$ after recovering absolutely continuous
-representatives.  Hence $v_j''=m^2j^2v_j$ and integration
-against $\overline{v_j}$ gives $v_j=0$.  For $j\ne0$ this also
-gives $u_j=0$.  For $j=0$, $u_0$ is constant and its integral
-is zero by modulus balance.  Uniqueness of Fourier coefficients
-for the almost every $L^1$ horizontal slice, followed by Fubini,
-gives $U=V=0$ almost everywhere.  Interior smoothness makes
-the Gram identities hold everywhere there, including branch
-points.  In particular energy equals area.
-\lean{PoincareMT.M64.auxiliaryCircle_free_phase_stress_eq_zero}
-
-To extend through a boundary, take a small half-disk in the
-covering strip.  In a target chart straightening the regular
-boundary curve, replace the semicircle by its parameter cone.
-The label on the diameter is its affine chord in the original
-boundary parameter.  The real phase is replaced at the same
-time, with diameter trace $H_i$ of that chord, retaining the
-upper offset when appropriate.  The map and phase Green identities have
-exactly the corresponding changes in radial boundary flux;
-gluing therefore gives a member of the original free class.
-Small angular energy keeps the cone in the chosen chart.
-For large angular energy the fixed total energy gives the same
-comparison after enlarging its constant.  Minimality thus gives
-the half-disk energy decay, with the modulus factors bounded
-by the fixed positive modulus interval.  Even reflection of
-the weak fields and averaging produce the continuous map
-with its literal trace.
-
-Rescale the two source directions to make the conformality
-equations unweighted.  In target coordinates straightening
-the $C^2$ boundary curve, the transverse components have zero
-trace and a quadratic Poisson bound.  Odd reflection, the
-weighted energy regularity argument, and the conformality
-equation recovering the remaining derivative give within-$C^1$
-regularity, as developed for disks in
-Section~\ref{sec:annular-plateau}.  These operations retain the
-original weak values and columns.  Apply them at both radial
-boundaries and again after a half-period rotation.  The two
-completions agree on open overlaps because they are continuous
-and equal almost everywhere there.  This gives one $C^1$ map
-on the closed rectangle with exactly matching angular edges.
-The two-cut construction includes the corner points and does
-not presume differentiable boundary labels.
-
-Conversely, every Lipschitz competitor admits free-label
-energy approximations from above.  First attach zero-area
-boundary collars and pass through polar coordinates to a map
-near the closed planar annulus.  Relative mollification in
-finitely many target charts preserves its boundary curves
-and makes it $C^1$, with area increase smaller than any
-prescribed positive error.  For this map $G$, choose a smooth
-positive metric $Q$ majorizing the continuous pullback form
-$G^*g$ and satisfying
-\[
- \int\sqrt{\det Q}<\operatorname{Area}(G)+\eta.
-\]
-For completeness, the relative approximation changes the map
-inside one target chart at a time, using a source cutoff times
-the difference between a coordinate mollification and the original
-map.  It preserves germs off the allowed region and points already
-of class $C^1$.  Coordinate derivatives converge in $L^2$ and
-the two-column Jacobian converges in $L^1$; uniform closeness
-controls the metric coefficients.  A finite chart cover and
-successively halved distance and area errors keep every image
-inside its chosen chart and bound the total area increase.
-The boundary collars lie outside the modified compact region.
-No extension of the target-valued map through the planar hole
-is required.
-
-To construct $Q$, approximate the pullback bilinear form $A=G^*g$
-within operator norm $\delta/2$ by a smooth form $B$, then set
-$Q=(B+B^{\mathsf T})/2+(3\delta/2)I$.
-Its quadratic forms satisfy $A+\delta I\le Q\le A+2\delta I$.
-Continuity of the two-dimensional determinant on the compact
-annulus makes its area tend to that of $A$ as $\delta\downarrow0$,
-including where $dG$ has deficient rank.
-We next construct the conformal cylinder for this metric, including
-the boundary labels needed for admissibility.
-
-\paragraph{Scalar construction of the cylinder.}
-\label{sec:annular-uniformization}
-Write $\Omega=\{z\in\mathbb R^2:1<|z|<2\}$, with metric $Q$.
-Choose a smooth function $b$ with values zero and one on its two
-boundary circles.  On $H^1_0(\Omega)$ the bilinear form
-\[
- a(u,v)=\int_\Omega\langle\nabla u,\nabla v\rangle_Q\,dA_Q
-\]
-is coercive by the Poincare inequality and uniform ellipticity on
-the closed annulus.  Lax--Milgram supplies the unique $w$ satisfying
-$a(w,v)=-a(b,v)$ for all zero-boundary $v$.  Thus $H=b+w$ is
-weakly harmonic, with the specified traces, and
-$a(H+v,H+v)-a(H,H)=a(v,v)$.
-Interior elliptic regularity gives its smooth representative.
-Flattening each boundary circle gives a uniformly elliptic divergence
-equation for the zero-trace correction with smooth forcing.
-Tangential difference quotients first give $H^2$; differentiating
-once more, with the localized forcing in $H^1$, gives $H^3$ on
-smaller half-disks.  Two-dimensional Sobolev embedding supplies
-a continuous classical differential up to the boundary.  The
-zero Sobolev trace agrees with the continuous trace, so these
-representatives patch with $H$ and retain its literal values zero
-and one.
-
-There are quantitative barriers at both circles.  For
-$s(z)=|z|^2$, compactness gives $|\nabla s|_Q^2\ge c_0>0$
-and $|\Delta_Qs|\le C_0$ on the closure.  For sufficiently large
-$a>0$, both exponentials have positive Laplacian, since
-\[
- \Delta_Q e^{\pm as}
- =e^{\pm as}\bigl(\pm a\Delta_Qs+a^2|\nabla s|_Q^2\bigr)>0.
-\]
-Normalize the increasing exponential to zero at $|z|=1$ and
-one at $|z|=2$, and the decreasing exponential to one and zero.
-The maximum principle compares them respectively with $H$ and
-$1-H$.  Their positive boundary slopes give, for some $c>0$,
-\[
- H(z)\ge c(|z|-1),\qquad 1-H(z)\ge c(2-|z|).
-\]
-In particular $0<H<1$ in $\Omega$.  Taking one-sided radial
-derivatives shows that the differential of $H$ is nonzero at
-both circles, with positive derivative in the increasing-radius
-direction.
-
-Orient the annulus by its planar orientation and define the
-conjugate one-form $\omega=\iota_{\nabla_QH}dA_Q$.  It is closed
-because $H$ is harmonic.  On the polar cover
-\[
- p(r,t)=r(\cos(2\pi t),\sin(2\pi t)),\qquad
- 1<r<2,\quad t\in\mathbb R,
-\]
-the Poincare lemma gives $dV=p^*\omega$.  Periodicity of this
-differential makes $V(r,t+1)-V(r,t)$ a constant $P$, independent
-of both variables.  It is the flux of $\omega$ around any circle.
-This constant must be positive; it is not a choice of sign or
-an assumption about the sought coordinates.
-
-Here is the energy calculation with the boundary limits retained.
-Let $U=H\circ p$, and put
-\[
- J=U_rV_t-U_tV_r\ge0,\qquad
- B(r)=\int_0^1U(r,t)V_t(r,t)\,dt.
-\]
-Green's identity on each compact radial band gives
-$\int_{[a,b]\times[0,1]}J=B(b)-B(a)$, so $B$ is increasing.
-The total differential energy is finite.  If
-$e(r)=\int_0^1|dH(p(r,t))|^2\,dt$, integrability supplies
-circles approaching either boundary with
-$(r-1)e(r)\to0$ or $(2-r)e(r)\to0$: a positive lower bound
-would force the divergent integral of the reciprocal distance.
-The fundamental theorem along radial lines and Cauchy--Schwarz
-bound the squared flux errors by constants times these quantities.
-Along such circles, $B(r)\to0$ at the inner boundary and
-$B(r)\to P$ at the outer boundary.  Thus $0\le B(r)\le P$.
-Nonconstant boundary data force positive energy on an interior
-band, proving $P>0$.  Exhausting the annulus by the selected bands
-and using integrability gives the exact identity
-\[
- \int_{(1,2)\times(0,1)}J
-   =\int_\Omega|\nabla H|_Q^2\,dA_Q=P.
-\]
-
-Consider the normalized map
-$\Psi(r,t)=(U(r,t),V(r,t)/P)$ into $(0,1)\times\mathbb R$.
-We prove that it is a diffeomorphism before using its inverse.
-The local analytic input is the existence of isothermal coordinates
-for a smooth planar metric, proved in
-Section~\ref{sec:rf-harmonic-coordinates}.  In that construction, normalized
-exponential coordinates first make the metric close to Euclidean;
-a cutoff extension preserves its local values and radial Gauss
-identity.  A curvature bound on a compact coordinate ball permits
-the local harmonic-coordinate construction.  The first harmonic
-coordinate has nonzero differential, and its conjugate and the
-inverse function theorem give an isothermal chart.  This is a
-local use of harmonic coordinates and imposes no completeness
-hypothesis on $Q$.
-
-In these charts a local conjugate pair for $H$ is holomorphic
-(or its conjugate if the chart reverses orientation).  It is
-nonconstant: the identity theorem propagated through overlapping
-charts would otherwise make $H$ constant on the annulus.
-The complex open mapping theorem therefore makes $\Psi$ locally
-open, even at possible critical points.  It is also proper.
-Indeed, a compact target set bounds $H$ away from zero and one,
-so continuity and the boundary values bound $r$ away from both
-circles.  On this compact radial band $V(r,t)-Pt$ is bounded
-by its values for $0\le t\le1$.  A bound on $V/P$ then bounds
-$t$.  The preimage is a closed subset of a compact rectangle.
-The nonempty image of a proper open map is closed and open in
-the connected target strip, hence is the whole strip.
-
-Surjectivity and the deck identity imply that integer vertical
-translates of $E=\Psi((1,2)\times(0,1))$ cover the unit target
-square except for the image of the integer angular cuts.  That
-exceptional image has planar measure zero, since it is a countable
-union of smooth curve images.  Partitioning into unit horizontal
-bands and translating gives $|E|\ge1$.  On the other hand the
-area inequality and the energy identity give
-\[
- |E|\le\int_{(1,2)\times(0,1)}|\det d\Psi|
-       =P^{-1}\int J=1.
-\]
-Two distinct points in this source band with the same image
-would have disjoint neighborhoods whose images overlap in a
-nonempty open set.  Applying the area inequality to a small
-closed ball about the first point and to its complement counts
-this positive-area overlap twice, contradicting the unit bound.
-Thus $\Psi$ is injective on the band.  Nor can $E$ overlap an
-integer translate of itself: remove a small closed disk in such
-an overlap, retaining its disjoint translated copy.  The remaining
-set still covers the unit square modulo translations but has area
-less than one, another contradiction.  Deck equivariance now gives
-injectivity off the angular cuts.  A collision on the cuts would,
-by openness, give an open overlap containing a point outside their
-null image, already excluded.  Therefore $\Psi$ is a homeomorphism
-on the whole open strip.
-
-The same argument also removes its possible critical points.
-In an isothermal chart the critical points of the nonconstant
-local conjugate pair are isolated.  Its actual local inverse is
-conformal away from the image of such a point and continuous at
-that image.  The removable singularity theorem extends the inverse
-smoothly there.  Differentiating the inverse identity excludes a
-zero differential of the conjugate pair.  Consequently $dH$ is
-nonzero throughout the interior and $\Psi$ has smooth inverse.
-\lean{PoincareMT.M64Uniformization.exists_smooth_annular_cover_chart}
-
-Let $F_0=p\circ\Psi^{-1}$.  The conjugate differential identity
-gives, for a target tangent vector $(v_1,v_2)$,
-\[
- |\nabla H(F_0)|_Q^2\,|dF_0(v_1,v_2)|_Q^2
-       =v_1^2+P^2v_2^2.
-\]
-The continuous nonvanishing differential of $H$ has a positive
-lower bound on the compact closed annulus.  Together with metric
-ellipticity, this identity bounds $dF_0$ on the entire target strip.
-The mean value inequality on that convex strip makes $F_0$
-Lipschitz, so it extends to its closure.  Its potential and deck
-identities extend by continuity.  The barriers place its two
-boundary traces on the correct physical circles.
-
-The differential $dV=p^*\omega$ likewise extends continuously to
-both boundary lines, and $V$ has a Lipschitz extension $\overline V$.
-On either circle, $dH$ vanishes on angular tangents and is positive
-on increasing radial vectors.  The identity
-$dH\wedge\omega=|\nabla H|_Q^2dA_Q$ then gives $\partial_t\overline V>0$.
-For $r=1,2$ the functions
-\[
- \phi_r(x)=\frac{2\pi}{P}\overline V(r,x/(2\pi))
-\]
-are $C^1$ increasing homeomorphisms of $\mathbb R$ with
-$\phi_r(x+2\pi)=\phi_r(x)+2\pi$.  Their positive continuous
-periodic derivatives are bounded below, so their inverses
-$\sigma_{r-1}$ are $C^1$, Lipschitz and have positive derivative.
-Extending the forward-inverse identity to the boundary gives the
-literal parametrization
-\[
- F(x,y)=F_0(y,x/(2\pi)),\qquad
- F(x,i)=p(1+i,\sigma_i(x)/(2\pi))\quad(i=0,1).
-\]
-The modulus is $m=2\pi/P>0$: the metric identity gives
-$m|F_x|_Q^2=m^{-1}|F_y|_Q^2$ and
-$\langle F_x,F_y\rangle_Q=0$.
-The half-open rectangle $0\le x<2\pi$, $0<y<1$ maps
-bijectively to $\Omega$, by the inverse and deck identities.
-Change of variables therefore preserves the exact area integral,
-including for compositions with maps of deficient rank.
-\lean{PoincareMT.M64Uniformization.exists_lipschitz_free_modulus_conformal_cylinder}
-
-Returning to the competitor $G$, since $G^*g\le Q$, its composition
-satisfies, by the weighted diagonal Gram inequalities,
-\[
- \mathcal E_m(G\circ F)\le
- \operatorname{Area}_Q(F)=\int\sqrt{\det Q}.
-\]
-This is an actual Lipschitz annulus: local derivative bounds for
-$G$ on its compact annular image combine with Lipschitzness of
-$F$ to give one bound on the rectangle.  Its angular edges match
-and its boundary curves are exactly $c_i\circ\sigma_i$.
-Subtracting integer multiples of $2\pi$ normalizes the labels
-without changing these curves.
-
-Project to the original circle and lift on the simply connected
-closed rectangle, normalizing the lower trace to
-$H_0\circ\sigma_0$.  The upper trace differs from
-$H_1\circ\sigma_1$ by a constant $k\rho$, $k\in\mathbb Z$,
-where $\rho$ is the original circle circumference: the continuous
-difference takes values in its discrete period subgroup.
-The same argument on the angular edges makes their phase
-difference equal to the lower degree, here $\rho$.
-The local circle isometry bounds each phase derivative by the
-corresponding target column.  The convex-rectangle mean value
-inequality, followed by closure, makes the lifted phase Lipschitz.
-Its weak derivatives are its interior classical derivatives.
-Integration by parts therefore gives the radial Green identity
-with the two traces just obtained, and the angular identity with
-the affine seam term $\rho\int_0^1\varphi(0,y)\,dy$ for periodic
-tests $\varphi$.  Observing the full target retains the actual
-map columns and their energy, while the projected phase supplies
-the required phase observation.  This constructs a member of the
-original weak class with the displayed energy bound.
-Taking the two approximation errors to zero
-gives $\mathcal E_m(f)\le\mu_\varepsilon$.
-Collars that interpolate boundary labels factor through the boundary
-curve and have rank at most one, so they restore literal boundary labels
-without increasing area.  The resulting admissible annulus gives the
-opposite inequality $\mu_\varepsilon\le\operatorname{Area}(f)$.
-This proves equality with the required infimum.
-\lean{PoincareMT.M64FreeWeakPhaseAnnulus.exists_strict_modulus_interval}
-\lean{PoincareMT.M64FreeWeakPhaseAnnulus.weightedEnergy_attained_positive}
+\begin{lemma}[A separated annulus has a weak energy minimum]
+\label{lem:annular-weak-minimum}
+\uses{def:annular-admissible,lem:annular-infimum}
 \lean{PoincareMT.M64.auxiliaryCircle_free_ramp_weak_minimum}
-\lean{PoincareMT.M64.auxiliaryCircle_free_phase_column_power_growth}
+\lean{PoincareMT.M64FreeWeakPhaseAnnulus.exists_strict_modulus_interval,PoincareMT.M64FreeWeakPhaseAnnulus.weightedEnergy_attained_positive}
+At a fixed time, let two periodic $C^2$ positive-slope ramps in the
+same circle product be joined by an actual annulus. Separate them
+by heights $0<\varepsilon<1$ in a second unit circle. Their weak
+annular energy, minimized over conformal modulus and monotone
+boundary labels, attains a positive minimum.
+\end{lemma}
+\begin{proof}
+On the fixed rectangle use
+$\mathcal E_m(f)=\tfrac12\int(m|\partial_xf|^2+m^{-1}|\partial_yf|^2)$.
+The nonzero original-circle period and the auxiliary boundary
+separation give $\mathcal E_m\geq\alpha m$ and
+$\mathcal E_m\geq\beta/m$ with $\alpha,\beta>0$. Thus an energy cap
+confines $m$ to a compact interval inside $(0,\infty)$.
 
-Morrey's existence and regularity theory and Lemaire's boundary analysis
-provide the analytic background.  In comparing with Lemaire's Theorem 1.7,
-one must use the modification in Remark 5.5 and Lemma 5.2 for targets with
-nonzero $\pi_2$; the present hypotheses do not impose $\pi_2(M)=0$.
-The explicit phase class and two modulus bounds above are the specialized
-construction used here.
+Embed the compact target. Rellich compactness gives strong convergence
+of maps and weak convergence of derivative columns; Helly selection
+retains normalized monotone boundary labels. The phase Green
+identities include the integral relative winding offset, so this
+normalization does not discard a homotopy class. Trace compactness
+and lower semicontinuity of the metric energy give the minimum.
+\end{proof}
 
-The auxiliary phase of the minimum lifts to a real harmonic function on
-the cylinder, since its boundary degree in the auxiliary circle is zero.
-It has constant boundary values $0,c$ with $[c]=[\varepsilon]$ and
-$c\ne0$.  Subtract $cy$ and integrate its harmonic equation against the
-zero-boundary difference.  The resulting Dirichlet integral is zero, so
-the auxiliary phase is exactly $cy$.  Its transverse derivative is
-nonzero.  Conformality makes the two derivative columns perpendicular,
-with squared norms in the positive ratio prescribed by $m$; therefore
-neither column vanishes, even on the boundary by $C^1$ continuity.  This
-removes all branch points for the separated minimum.  In particular the
-boundary parameterizations have nonvanishing derivatives and can be used
-in the first variation.
+\subsection{Conformal annular coordinates}
+\label{sec:annular-uniformization}
 
-Let $\Sigma$ denote this minimum at an interior time.  Extend the prescribed
-boundary velocity into it.  The interior normal first variation vanishes
-by minimality.  With $k_g$ measured toward the surface interior,
-\[
- \frac{d}{dt}\operatorname{Area}(\Sigma)
- =-\int_\Sigma\operatorname{tr}_{T\Sigma}\operatorname{Ric}
-    -\int_{\partial\Sigma}k_g
- =\int_\Sigma(K_\Sigma-\operatorname{tr}_{T\Sigma}\operatorname{Ric}).
-\]
-The second equality is Gauss--Bonnet with Euler characteristic zero.
-The Gauss equation gives $K_\Sigma\le\sec(T\Sigma)\le K$.
-Both flat factors have zero Ricci curvature, so the original base dimension
-gives $-\operatorname{tr}_{T\Sigma}\operatorname{Ric}\le2(n-1)K$.
-The sum is $(2n-1)K$, regardless of the two extra circle directions.
-One may use either $K=A_{\sup}(t)$ or $K=K_0$ in these pointwise estimates.
-Extending the boundary variation through finitely many charts, and using
-the $C^1$ boundary regularity, gives actual future annuli whose areas are
-bounded by this first-order expression with an $o(h)$ remainder.  The
-definition of the infimum then proves the forward inequality for
-$\mu_\varepsilon$.
+\begin{lemma}[Smooth annular uniformization]\label{lem:annular-uniformization}
+\uses{thm:rf-harmonic-radius}
+\lean{PoincareMT.M64Uniformization.exists_smooth_annular_cover_chart}
+A smooth positive metric on the planar annulus admits a harmonic
+function with boundary values zero and one, a conjugate on its
+universal cover, and a positive flux period. Their normalized pair
+is a smooth coordinate diffeomorphism onto a strip, equivariant
+under the deck translation.
+\end{lemma}
+\begin{proof}
+Solve the scalar Dirichlet problem. Local harmonic coordinates and
+the maximum principle control its level sets; the boundary flux is
+positive. The conjugate closed one-form integrates on the cover.
+Its period and the noncritical harmonic coordinate give a proper
+one-to-one map to the normalized strip. The inverse function theorem
+upgrades the inverse to smoothness.
+\end{proof}
 
-Here is this last order argument explicitly.  Suppose
-an annulus $A_t$ attains the displayed infimum at time $t$ and, for every
-$\eta>0$, every sufficiently small $h>0$ has a future competitor $B_{t+h}$
-with
-\[
- \operatorname{Area}(B_{t+h})\le\operatorname{Area}(A_t)+h(\lambda+\eta).
-\]
-The infimum is at most the area of $B_{t+h}$, so division by $h>0$ gives
-\[
- \frac{\mu(t+h)-\mu(t)}h\le\lambda+\eta.
-\]
-This proves the one-sided derivative bound for the separated class.
-To remove the auxiliary separation, projection gives
-$\mu(t)\le\mu_\varepsilon(t)$.  Conversely, lift any original annulus $U$
-by $(p,y)\mapsto(U(p,y),[\varepsilon y])$.  The added derivative column
-changes its area by at most $C_U\varepsilon$, where $C_U$ is finite by
-Lipschitzness.  Taking a competitor within any fixed positive error of
-$\mu(t)$ proves $\mu_\varepsilon(t)\to\mu(t)$.
-
-Sweeping each boundary over a short time interval constructs annuli of
-area tending to zero with the time separation.  Gluing these to a competitor
-at one time and comparing nearby metrics proves both nonemptiness and
-continuity of the infima.  Integrate the separated forward inequality first:
-on any interval where its coefficient is at most $K$,
-$\mu_\varepsilon(t)\le e^{K(t-s)}\mu_\varepsilon(s)$.
-Passing to the pointwise limit proves the same interval inequality for
-$\mu$.  Continuity of $A_{\sup}$ on the compact slab allows $K$ to decrease
-to $(2n-1)A_{\sup}(s)$ on shrinking right intervals.  Dividing the resulting
-bound by $t-s$ and using $(e^{Kh}-1)/h\to K$ proves
-(\ref{eq:annulus-forward}), including $s=a$.
-The constant choice $(2n-1)K_0$ proves (\ref{eq:annulus-exponential}).
-Passing a derivative inequality directly through a pointwise limit would
-not justify this step.
-\lean{PoincareMT.m64AnnulusForward_of_minimal_competitors}
-\lean{PoincareMT.m64AnnulusForwardDerivativeBound.of_pointwise_limit}
+\begin{lemma}[A separated immersed annular minimum]
+\label{lem:annular-immersed-minimum}
+\uses{lem:annular-weak-minimum,lem:annular-uniformization}
 \lean{PoincareMT.M64.auxiliaryCircle_free_ramp_immersed_minimum}
-\lean{PoincareMT.M64.auxiliaryCircle_ramp_evolution}
-\source{MT2007}\dcref{Lemma 19.15 and Corollary 19.16, pp. 447--449}
+\lean{PoincareMT.M64Uniformization.exists_lipschitz_free_modulus_conformal_cylinder}
+The separated ramps of Lemma~\ref{lem:annular-weak-minimum}
+admit an immersed minimal annulus realizing their admissible area
+infimum, with the actual boundary curves up to boundary labels.
+\end{lemma}
+\begin{proof}
+Smooth positive approximations to the Gram matrix of any Lipschitz
+competitor, followed by annular uniformization, show that the weak
+minimum's energy is at most that competitor's area plus an
+arbitrarily small error. Stationarity in both the modulus and the
+boundary labels kills the conformal stress. Interior and boundary
+regularity give the same harmonic conformal map; the positive
+phase derivative excludes branches. Hence it is immersed and its
+area equals its energy and the guarded area infimum.
+\end{proof}
+
+\begin{proof}[Proof of Proposition~\ref{prop:annular-evolution}]
+\proves{prop:annular-evolution}
+Apply the separated minimum at each time. The Gauss equation and
+boundary shortening variation give the upper forward comparison
+with coefficient $(2n-1)A_{\sup}(t)$. The finite-time comparison
+uses near-minimizers at the initial time, so it does not assert
+differentiability of a family of minimizers.
+
+Projection shows $\mu(t)\leq\mu_\varepsilon(t)$. Lifting any original
+Lipschitz competitor by the height $\varepsilon y$ increases its
+area by at most $C_U\varepsilon$. Thus
+$\mu_\varepsilon(t)\to\mu(t)$. Swept boundary annuli and metric
+comparison give nonemptiness and continuity. Integrate the
+separated forward inequality first and only then pass to this
+pointwise limit. On shrinking right intervals, continuity of
+$A_{\sup}$ gives \eqref{eq:annulus-forward}. Its constant-coefficient
+version gives \eqref{eq:annulus-exponential}. A derivative inequality
+alone cannot be passed directly through a pointwise limit.
+\end{proof}
+\source{MT2007}\dcref{Lemma 19.15}
+\dcref{Corollary 19.16, pp. 447--449}
 
 \section{Small-area comparison}
 \label{sec:small-area}
@@ -715,6 +271,7 @@ the closed planar annulus $\{1\le |x|\le2\}$, smooth on a neighborhood
 of that set; its two boundary lengths and its area are computed in this metric.
 \begin{proposition}[Intrinsic small-area comparison]
 \label{prop:intrinsic-annular}
+\uses{prop:filling-short-area}
 Let $N$ be an intrinsic annulus, let $K\in\mathbb R$ be
 a Gaussian curvature upper bound, let $r>0$, and let
 $0<\delta<1/100$.  There is $\mu=\mu(\delta,r,K)>0$ such that, whenever
@@ -733,677 +290,159 @@ Here $L_i$ is the intrinsic length of boundary $i$ over one full period.
 The order is important: $\delta,r,K$ are chosen first,
 then $\mu$, then the annulus.  The statement permits arbitrary real
 $K$; the proof uses $\max\{K,1\}$ in the comparison ODE.
-\lean{PoincareMT.M64IntrinsicAnnulusComparison}
+\lean{PoincareMT.M64IntrinsicAnnulusComparison,PoincareMT.m64IntrinsicAnnulusComparison}
 \source{MT2007}\dcref{Proposition 19.35, pp. 467--481}
 \end{proposition}
 
-Here are the uniform choices and the length accounting in the proof.  Put
-\[
- \kappa=\sqrt{\max(K,1)},\quad
- q=\min\{r/2,1/(2\kappa)\},\quad \alpha=100\delta/q.
-\]
-The normal Jacobi comparison gives a positive radius $R_0$, depending only
-on $K,\delta,\alpha$.  Set
-\[
- h=\min\{q/100,R_0\},\qquad
- \mu=\min\{(1-\delta)^2h(q/10),1/(100\kappa^2)\}.
-\]
-In particular $K_+\mu+\delta<\pi/2$.  These choices precede $N$ and $L_0$.
-Parameterize the first boundary by arclength $p$.  For bases whose absolute
-geodesic curvature is at most $\alpha$, the inward normal exponential map
-$e(p,t)$, stopped at the boundary or at height $h$, satisfies
-\[
- e^*g_N\ge(1-\delta)^2(dp^2+dt^2).
-\]
-Indeed its transverse Jacobi field starts with value $1$ and derivative
-bounded below by $-\alpha$; comparison with
-$\cos(\kappa t)-(\alpha/\kappa)\sin(\kappa t)$ bounds it below by
-$1-\delta$ on a sufficiently small uniform interval.  The radial field is
-unit and orthogonal to it by the Gauss lemma.
-
-\paragraph{Normal returns inside a specified region.}
-We first work in a Jordan region $U$ whose closure lies in $N$ and
-whose boundary consists of an inner-circle arc $I$ and one or two
-embedded unit-speed sides of length at most $h$.  All circle arcs
-in this argument use an angular lift of length less than one period.
-This specifies which arc is meant even across the usual angular cut.
-
-There are two elementary curvature obstructions.  A simple geodesic
-loop contained in $\overline U$ bounds a Jordan subregion there:
-the connected unbounded exterior of $U$ cannot enter its bounded
-Jordan interior without crossing its boundary.  The same observation
-gives nesting for a return joined to a subarc of $I$.  At the join
-of a simple geodesic loop the exterior turning is at most $\pi$;
-Gauss--Bonnet therefore gives curvature integral at least $\pi$,
-contrary to $K_+\operatorname{Area}(N)<\pi$.
-For an embedded normal return to $I$ with a transverse terminal
-join, the initial exterior turning is at most $\pi/2$ and the
-terminal turning is at most $\pi$.  The geodesic side contributes
-zero turning, whence
-\[
- \frac{\pi}{2}\le
- \int_{U'}K_N\,dA+\int_{I'}|k_g|\,ds.
-\]
-If the child base $I'$ has length at most $r$, the right side is
-strictly less than $K_+\mu+\delta\le\pi/2$.
-The formula can be obtained by triangulating the actual region
-with both joins retained as vertices: internal edge turnings cancel,
-the disk Euler count supplies $2\pi$, and the two remaining
-corner defects have sum at most $3\pi/2$.
-Thus every such transverse return has base length greater than $r$.
-
-\paragraph{A confined radial family and its focusing estimate.}
+\subsection{Normal returns and confined focusing}
 \label{sec:annular-confined-focusing}
-Consider a two-side collision region with base length $L\le r$,
-normal side lengths $A,B\le h$, and vertex $v$.  Put
-$R=L/2+\max(A,B)$, and suppose $\kappa R\le\pi/4$.
-We will prove
+
+\begin{proof}[Proof of Proposition~\ref{prop:intrinsic-annular}]
+\proves{prop:intrinsic-annular}
+Put $\kappa=\sqrt{\max(K,1)}$ and
+$q=\min\{r/2,1/(2\kappa)\}$. Jacobi comparison supplies a
+uniform positive normal radius. Choose $h$ smaller than this
+radius and $q/100$, and choose $\mu$ smaller than both
+$(1-\delta)^2h(q/10)$ and $1/(100\kappa^2)$.
+
+Normal rays cannot be treated as an embedded collar in advance.
+At an earliest collision inside a specified region, shorten the
+base-to-vertex minimizers and keep their interiors in that region.
+The confined radial family bounds the length of its focusing
+arc by the turning of the boundary segment. Regional descent
+then excludes central returns and long two-sided regions.
+
+Choose the retained strips cyclically rather than starting from an
+arbitrary cut of the first boundary. The return and collision
+arguments discard at most $L_0/50$ and $3L_0/50$. Injectivity of the
+remaining normal strips makes their areas disjoint. The small-area
+hypothesis discards fewer than $L_0/10$ additional bases whose
+normal rays have not reached the opposite boundary by height $h$.
+Thus a retained set $Z$ has length greater than $41L_0/50$.
+Its endpoint map to the opposite boundary is injective and
+stretches arclength by at least $1-\delta$. Hence
+\[
+ L_1\geq(1-\delta)|Z|>
+       (99/100)(41/50)L_0>3L_0/4.
+\]
+\end{proof}
+
+\begin{lemma}[Small-area comparison for product ramps]
+\label{lem:annular-ramp-comparison}
+\uses{prop:intrinsic-annular,lem:annular-immersed-minimum}
+\lean{PoincareMT.M64RampSmallAnnulusComparison,PoincareMT.m64RampSmallAnnulusComparison_of_geometry}
+For the selected ambient geometry in dimension $n\geq3$ and
+$r>0$, there is $\mu>0$ such that, for every circumference,
+included time, and pair of periodic $C^2$ positive-slope ramps,
+an actual annulus $A$ of area less than $\mu$ implies
 \begin{equation}
- \cos(\kappa R)L\le
- \frac{\sin(\kappa R)}{\kappa}\int_I|k_g|\,ds.
- \label{eq:annular-confined-focusing}
-\end{equation}
-The construction must take place inside this region: the annulus
-need not be a normal neighborhood of $v$.
-
-First fix an interior point of the base.  Following the shorter
-base subarc and then its normal side gives a path to $v$ of length
-at most $R$ in $\overline U$.  Minimize length among paths with
-these endpoints and this confinement.  Arclength parametrization,
-compactness of $\overline U$, uniform equicontinuity and lower
-semicontinuity of length give a minimizing path.  Removing a loop
-would shorten it, so its arclength representative is embedded;
-each of its subarcs is also minimizing under the same constraint.
-
-Its open path avoids the two geodesic sides.  Near a smooth point
-of such a side, a sufficiently small geodesically convex
-neighborhood on the occupied side gives a shorter replacement
-unless the path follows the side.  Equality forces agreement
-with that geodesic by uniqueness, and continuation of the contact
-would reach a base corner or the initial point.  The initial
-point is not on a side.  At a base corner the region occupies
-the quadrant between the circle and its inward normal; a path
-through that corner admits a strictly shorter chord in the
-quadrant.  Thus neither alternative is possible.
-
-There is also no further contact with the base.  Otherwise take
-the last such contact.  The remaining open tail avoids the whole
-boundary and is a smooth unit geodesic.  Compact continuation of
-its equation gives its actual endpoint derivatives.  At the last
-contact its derivative is tangent to the base: in a boundary
-chart, a transverse departure at an interior time of a constrained
-minimizer admits a local shortening across the join.  The
-collision vertex is a convex corner.  Indeed equal terminal
-tangents would identify the two sides, and opposite terminal
-tangents would join them to a forbidden short normal return.
-For independent tangents, Gauss--Bonnet with the two right base
-corners gives the occupied vertex angle as the curvature integral
-plus signed base turning.  It is less than $\pi/2$ under our
-budget.  The interior tail therefore arrives strictly between
-the two sides; a tangent arrival would coincide with a side.
-Choose the base subarc in the direction of its tangential
-departure and the corresponding normal side.  Together with
-the tail these bound a nested Jordan region.  Its corner
-turnings have sum at most $3\pi/2$, whereas its base turning
-and curvature integral sum to less than $\pi/2$.
-Gauss--Bonnet is impossible.  This proves that the original
-minimizer has open image in $U$, and hence is a smooth unit
-geodesic up to both endpoints.  Reversing it gives a confined
-radial segment from $v$ to every interior base point; at the
-two endpoints use the reversed original normal sides.
-
-We next need uniqueness in a larger class: all radial vectors
-of norm at most $R$ whose whole segments stay in $\overline U$.
-Choose an orthonormal frame at $v$ and write $E(z)=\exp_v(z)$
-where the geodesic exists.  A smooth cutoff continuation of the
-geodesic equation supplies a map on the closed vector ball;
-on every confined segment it agrees with the original equation.
-All curvature comparisons below concern these original segments.
-The scalar Jacobi equation $j''+K_Nj=0$, $j(0)=0$, $j'(0)=1$,
-compared with $\sin(\kappa t)/\kappa$, gives no conjugate point
-before $\pi/\kappa$.  Thus $E$ has a local inverse at every
-vector in this confined class.  Each individual segment is
-embedded: a first self-return gives a nested simple geodesic
-loop with curvature integral at least $\pi$.  A return to the
-vertex is treated in its convex corner.  Both contradict the
-curvature budget.
-
-Suppose two confined vectors represent the same point on one
-fixed radial segment.  Among noncanonical contacts choose the
-earliest point on that fixed segment.  This minimum exists:
-the vector ball and the confinement condition are compact,
-and local inverses exclude a sequence of noncanonical vectors
-converging to the canonical one.  The minimum is positive,
-and the two initial segments meet only at their endpoints.
-They bound a nested geodesic digon.  Gauss--Bonnet gives the
-sum of its two occupied corner angles as its curvature
-integral, hence less than $\pi/2$.  In particular both corners
-are convex and the terminal angle is acute.
-
-Here is the perturbation that contradicts earliest contact.
-Let the two terminal vectors be $z$ and $s\theta$, where
-$|\theta|=1$.  There is one inverse chart for $E$ around the
-whole compact segment $[0,z]$: individual regularity and
-injectivity on that segment permit shrinking and patching
-the local charts.  Straightening the two initial sides makes
-$z$ and $\theta$ the positive coordinate axes.  The direction
-$z+\varepsilon\theta$, for small $\varepsilon>0$, enters the
-digon.  A small extension of $z$ beyond its terminal point
-leaves the digon, and the same holds after this perturbation.
-Take the first exit of the perturbed ray from the closed
-digon.  It cannot exit through the first side, by injectivity
-of the chart and the positive second coordinate.  It therefore
-meets the other side at a parameter strictly between $0$ and
-$s$.  The new vector still has norm at most $R$: near the
-terminal point, the Gauss lemma and the acute terminal angle
-make the inverse radius decrease when moving backwards on
-the other side; away from that point, a compact tube about
-the first radial segment already has this norm bound at
-contacts.  First exit guarantees confinement of the entire
-new segment, not merely its endpoint.  Its positive first
-coordinate makes it noncanonical.  This contradicts the
-choice of $s$ and proves uniqueness.
-
-The unique confined vector $u(p)$ representing each base point
-now depends continuously on $p$.  For any convergent sequence
-of base points, compactness gives a convergent subsequence
-of vectors; continuity of $E$ preserves the endpoint and
-whole-segment confinement.  Uniqueness identifies its limit
-with the vector at the limiting point.  Local inverse charts
-then make this lift smooth along the base, with its literal
-endpoint values the reversed normal sides.
-
-Finally set $f(t)=\sin(\kappa t)/\kappa$ and push the radial
-vector field $f(|z|)z/|z|$ forward by $E$ along this lift,
-obtaining $W$.  The Jacobi comparison gives
-$j'/j\ge\kappa\cot(\kappa t)$: the Wronskian of $j$ and
-$\sin(\kappa t)/\kappa$ has nonnegative derivative until
-their first zero.  Radial and transverse components, together
-with the Gauss lemma, consequently give for the unit base
-tangent $T$
-\[
- \langle\nabla_TW,T\rangle\ge\cos(\kappa R),
- \qquad |W|\le f(R).
-\]
-The normal endpoint values give $\langle W,T\rangle=0$ at
-both ends.  Integrating
-$(\langle W,T\rangle)'=\langle\nabla_TW,T\rangle
-+\langle W,\nabla_TT\rangle$ proves
-\eqref{eq:annular-confined-focusing}.  Endpoint continuity
-suffices by first integrating on smaller closed subintervals.
-This proves the quantitative estimate before its two uses below.
-\lean{PoincareMT.m64Intrinsic_exists_short_base_to_vertex_minimizer}
-\lean{PoincareMT.m64Intrinsic_affine_collision_minimizer_interior}
-\lean{PoincareMT.m64Intrinsic_exists_earliest_confined_contact}
-\lean{PoincareMT.m64_exists_earlier_radial_digon_contact}
-\lean{PoincareMT.m64Intrinsic_continuous_focusing_arc_length_le_turning}
-\source{MT2007}\dcref{Claims 19.39--19.43 and Remark 19.42, pp. 470--473}
-
-\paragraph{Regional length and descent.}
-For each interior base point of $I$, stop its inward normal at the
-first contact with $\partial U$, or at $h$, whichever comes first.
-Inward transversality and the local separation by the boundary arc
-give a positive initial interval in $U$.  Continuity gives a
-measurable first-contact height $H(p)$, no larger than the annular
-stopping height.  The endpoint lies in $\overline U$ and, if
-$H(p)<h$, in $\partial U$.  Every stopped ray is embedded.  Indeed,
-a first self-intersection extracts a simple geodesic loop in
-$\overline U$; uniqueness for the geodesic equation and the initial
-inward direction exclude a tangential retracing.  The preceding
-curvature obstruction applies to its nested region.  This reasoning
-uses the specified Jordan region, and does not assume that an
-arbitrary essential loop of the annulus bounds a disk.
-
-Here is the local length estimate which forces a return to $I$.
-Choose a subinterval $J\subset I$ of length exactly $q$, and suppose
-that no positive normal from $J$ returns transversely to $I$ before
-its regional stopping time.  Parameter transversality gives a
-full-measure set of bases for which contact with the inner circle,
-where the normal map is regular, is transverse.  Set $H=0$ on its
-null complement.  Consequently every positive good normal avoids
-the inner circle up to and including its stopping time.
-
-Colliding embedded prefixes based in $J$ cut out a nested
-first-contact region on their ordered base subinterval.  That
-subinterval has length at most $q$.  Jacobi comparison first at
-radius $q/2+h$ gives length less than $51q/5000$, so half its
-length plus the longer side is less than $151q/10000<q/10$.
-Repeating the comparison at $\varrho=q/10$ gives
-\[
- |I'|\le 2\varrho\int_{I'}|k_g|\,ds.
-\]
-In this local use, the shortness of the base is supplied by $J$;
-no exclusion of long regional bases is being used yet.
-Select disjoint collision intervals and enlarge them fourfold
-in the arclength coordinate.  Their union covers all collision
-intervals and has length at most
-$8\varrho\int_J|k_g|<q/50$.
-The bases with $|k_g|>\alpha$ have length less than $q/100$.
-Outside these two sets the normal strip is injective.  The area
-formula and the lower metric estimate show that its bases whose
-height equals $h$ have length less than $q/10$.  Thus a measurable
-set $Z\subset J$ of length greater than $87q/100$ remains, with
-positive height less than $h$, injective endpoints on $\partial U$,
-and a regular normal map at every endpoint.
-
-Under the supposed absence of returns to $I$, these endpoints all
-lie on the other side or sides of $U$.  Their total available
-length is at most $2h$.  The metric lower bound instead implies
-\[
- (1-\delta)|Z|\le 2h,
-\]
-which contradicts $h\le q/100$ and $|Z|>87q/100$.
-This length comparison does not differentiate the measurable
-height function.  On each inverse chart of the normal map,
-project the smooth target side to its base coordinate; the
-derivative bound is the reciprocal of $1-\delta$.  The
-one-dimensional area inequality on a countable collection of
-such charts gives the displayed estimate.  If there are two
-sides, assign a shared endpoint to the first side and partition
-the remaining bases onto the second, so overlaps are counted
-only once.  We have therefore constructed an embedded transverse
-normal return from every such $J$, with open prefix in $U$.
-
-Suppose now that $U$ is bounded by one geodesic side and its base
-has length $L>r$.  Since $2q\le r$, arclength selects an interval
-$J$ of length $q$ whose every point is at least $q/10$ from both
-ends of the parent base.  The constructed return starts at
-$p\in J$ and ends at another point $w$ of the parent base.
-Its embeddedness gives $p\ne w$.  Its union with the interval
-between $p$ and $w$ is a Jordan curve; its bounded region is
-nested in $U$ by the exterior argument above.  Whichever order
-$p,w$ have, this interval omits a parent end segment of length
-at least $q/10$.  Its length $L'$ thus satisfies
-\[
- r<L'\le L-q/10.
-\]
-The first inequality is the short-return obstruction.  Consider
-all such nested one-side regions inside the original region,
-retaining the original normal family and constants.  Their base
-lengths form a nonempty set bounded below by $r$.  Choose a member
-less than $q/10$ above its infimum.  The same construction gives
-a member below that infimum, a contradiction.  No passage to a
-limiting Jordan region is needed.  Together with the short case,
-this excludes every embedded transverse regional normal return.
-\lean{PoincareMT.m64Intrinsic_no_central_regional_return}
-\lean{PoincareMT.m64Intrinsic_no_regional_normal_return}
-
-For a region with two sides and base length greater than $2q$,
-choose the same central interval.  The two-side endpoint estimate
-constructs a transverse normal return and its nested one-side
-region.  This has just been excluded.  Hence a two-side region
-has base length at most $2q$.
-\lean{PoincareMT.m64Intrinsic_no_long_two_side_region}
-
-\paragraph{Global collision control.}
-Two embedded normal prefixes meeting for the first time, together
-with one of their cyclic base arcs, bound such a two-side Jordan
-region.  To see why the chosen region is inside the annulus,
-select a pair of first-contact times once and retain those same
-two sides.  With each of the complementary inner-circle arcs
-they form a Jordan curve.  Each bounded region is either contained
-in the closed annulus or contains the open inner disk; the unbounded
-outer region excludes points outside the outer circle.  If the
-first bounded region contains the inner disk, the second frontier
-lies in its closure.  Connectedness and unboundedness of the first
-exterior place it in the second exterior, so the second bounded
-region lies in the first.  Choose an interior point of the first
-circle arc, which is omitted by the second frontier.  It cannot
-lie in the second bounded region, since it is on the first
-frontier.  It therefore lies in the second exterior, which meets
-the inner disk near that point.  Connectedness of the inner disk
-then puts the whole disk in that exterior.  The second region
-is the required annular one.  This explains both the confinement
-needed for its curvature integral and the possible choice of
-either cyclic arc.
-
-On a region with base
-length at most $2q$, the radial Jacobi comparison first applies at radius
-$q+h$.  It gives base length less than $101q/5000$, and hence half its
-length plus the longer normal side is less than $201q/10000<q/10$.
-A second application at radius $\varrho=q/10$ gives the sharper inequality
-\[
- \cos(\kappa\varrho)|I|
- \le \frac{\sin(\kappa\varrho)}{\kappa}
-       \int_I |k_g|\,dp,\qquad \varrho=q/10.
-\]
-Here Gauss--Bonnet is applied to the actual first-contact Jordan region,
-whose closure lies in $N$, so its curvature integral is bounded by
-$K_+\operatorname{Area}(N)$.  The two stages are needed to justify the
-small radius in this inequality; small lengths of the normal sides alone
-do not bound the chosen base arc.
-
-This collision statement does not assume that every full normal ray is
-embedded.  To prove that assertion, take a good base $p$.  On a sufficiently
-small neighborhood of $p$, boundary curvature is at most $2\alpha$.
-Two distinct embedded prefixes from that neighborhood cannot meet: the
-focusing inequality would give $|I|\le4\varrho\alpha |I|<|I|$ on
-the short arc; the complementary arc is excluded by its length, since
-the focused arc has length at most $2q<L_0$ and the base
-neighborhood can be chosen so small that its complementary arc
-has length greater than $2q$.
-The metric lower bound makes the normal map a local diffeomorphism along
-the stopped ray.  Here is the argument retaining its closed endpoint.
-In the small base neighborhood just chosen, let $\mathcal P$ consist
-of pairs $(p,t)$ for which $0<t<h$, the closed prefix up to $t$
-is embedded, and its positive-time points lie strictly inside the
-annulus.  Prefix separation for distinct bases and embeddedness
-for each single base make $e$ injective on $\mathcal P$.
-A sufficiently small signed collar $\mathcal C$ at $(p,0)$ lies
-in one inverse chart.  Its positive-height part belongs to
-$\mathcal P$, while its nonpositive-height image has coordinate
-radius at most one.  Thus $e$ is also injective on
-$\mathcal P\cup\mathcal C$.
-
-If the stopped ray first returns at times $s<t$, it is embedded
-on $[0,t)$ and $(p,t)$ lies in the closure of this injectivity
-domain.  There is an inverse chart about $(p,s)$ whose source
-lies inside that domain.  When $s=0$ use $\mathcal C$; when
-$s>0$, choose $s<v<t$.  Compactness and local inverse charts
-make embeddedness of the prefix $[0,v]$ stable under a small
-change of base.  Its strict confinement is stable away from zero,
-and the inward collar supplies stability near zero.  This gives
-the required open neighborhood of $(p,s)$ in $\mathcal P$.
-For a sequence $z_j$ in the injectivity domain tending to $(p,t)$,
-the images $e(z_j)$ eventually lie in this inverse chart's target.
-Injectivity identifies $z_j$ with their images under that local
-inverse.  Continuity therefore gives
-$(p,t)=e^{-1}_{\rm local}(e(p,t))=(p,s)$, a contradiction.
-This argument covers essential self-returns without claiming that every
-loop in the annulus bounds a disk.
-
-Finally, restrict to the full-measure set of bases transverse to the first
-boundary.  An endpoint on that same boundary would give a transverse
-regional return, excluded by the same regional argument.  A ray from
-this set stopping before height $h$ therefore ends on the other boundary.
-Exceptional bases may be assigned height zero for the area calculation;
-they are removed again before using the endpoint image.
-
-Both cyclic arcs must be allowed: choosing a fixed cut on the circle does
-not force the first collision region to use the non-wrapping arc.
-Since $\kappa\varrho\le\pi/4$, this implies
-$|I|\le2\varrho\int_I|k_g|$.  A disjoint-interval selection followed by
-fourfold enlargement covers all collision
-arcs by a measurable set $E$ with
-\[
- |E|\le16\varrho\int_{\partial_0N}|k_g|\,dp
-       <32\varrho\delta L_0/q\le3L_0/50.
-\]
-For the cyclic cover, represent a wrapping arc by the ordinary
-interval $[b,a+2\pi]$ in two periods.  Apply the weighted interval
-cover there and project its two pieces back into one period.
-Periodicity preserves their integrals and overlap can only decrease
-the integral of their union; the seam point has zero length.
-The two-period turning integral accounts for the factor two in
-the bound $16\varrho\int|k_g|$.  Either chosen arc contains its
-two endpoints, so every collision between retained bases is
-removed by this single measurable cover.
-The total-turning estimate used here follows by partitioning the boundary
-into $\lceil L_0/q\rceil$ arcs of length at most $q$; since $q<L_0$,
-their total turning is less than $2\delta L_0/q$.
-The same estimate gives
-$|\{|k_g|>\alpha\}|<L_0/50$.
-
-Outside these two discarded sets, individual-ray injectivity and removal
-of every collision arc make $e$ injective on its variable-height strip.
-The area formula and the metric lower bound give
-\[
- (1-\delta)^2\int_{S}\operatorname{height}(p)\,dp
- \le\operatorname{Area}(N)<(1-\delta)^2h q/10.
-\]
-Thus bases in $S$ with height $h$ have length less than $q/10<L_0/10$.
-The remaining set $Z$ has length greater than
-$(1-1/50-3/50-1/10)L_0=41L_0/50$.
-Intersect $Z$ with the full-measure transverse-contact set.  Its endpoint
-map lands on the other boundary, is injective, and stretches arclength by at
-least $1-\delta$.  Consequently
-\[
- L_1\ge(1-\delta)|Z|>(99/100)(41/50)L_0>3L_0/4.
-\]
-This proves the comparison once the normal return and collision constructions
-are in place; their geometric hypotheses and the cyclic choice, rather than
-an assumed globally embedded collar, are essential.
-\lean{PoincareMT.m64IntrinsicAnnulusComparison}
-\lean{PoincareMT.m64Intrinsic_exists_cyclic_retained_strip_three_losses}
-\lean{PoincareMT.m64Intrinsic_good_normal_ray_injOn}
-\lean{PoincareMT.m64Intrinsic_normal_collision_wide_focusing}
-
-For the product ramps, specialize to $n\ge3$.  Given $r>0$, the selected
-geometry supplies one $\mu>0$ such that for every $\rho>0$, every included
-time $t$, every pair of periodic $C^2$ positive-slope ramps, and every annulus
-$A$ between them with $\operatorname{Area}(A)<\mu$, the same conclusion holds:
-\begin{equation}
- r\le L_0,\quad
- \text{first-boundary subarc turning}<1/200
+ r\leq L_0,\quad
+ \text{turning of each first-boundary subarc of length at most }r<1/200
  \quad\Longrightarrow\quad
- \tfrac34 L_0\le L_1.
+ \tfrac34L_0\leq L_1.
  \label{eq:ramp-comparison}
 \end{equation}
-The threshold is selected before circumference, time, and curves.  Positive
-slope gives an immersion and the periodic degree is arbitrary; degree one is
-part of the evolving statement above.  We describe the error margins needed
-to apply the intrinsic theorem to a minimum that is initially only $C^1$
-on its boundary.
-
-Apply the intrinsic theorem with parameters
-$\delta'=7/800$, $r'=r/4$, $K=K_0$, obtaining a threshold $\mu'$;
-take $\mu=\mu'/2$.  Suppose the desired length inequality fails by a gap
-$d=3L_0/4-L_1>0$.  Choose
-$\epsilon=\min\{\mu'/4,d/4\}$.  Smooth the two $C^2$ ramp labels
-closely enough to preserve positive slope, length to the specified
-$\epsilon$ margin, and turning less than $3/400$ on arcs of length at
-most $r/2$.  Strictness of the original $1/200$ bound provides this
-margin.  Coordinate convolution and short connecting geodesics produce
-an annulus to the original curves with arbitrarily small area.
-Lift the smoothed curves into distinct constant sections of an auxiliary
-circle.  A radial lift of their competitor and minimization produce a
-separated conformal annulus with area less than
-$\operatorname{Area}(A)+\epsilon<\mu'$.
-
-The affine auxiliary-phase argument just proved removes branch points
-on the closure.  The smoothed unlabelled boundary curves permit the
-following finite boundary regularity argument.  Its smoothness
-hypothesis concerns those curves, and does not strengthen the
-$C^2$ input curves in Proposition~\ref{prop:annular-evolution}.
-
-Take an arbitrary boundary point of the covering strip, rescale
-to a half-disk, and put the harmonic map in target coordinates
-$H$.  Its complex differential satisfies a bounded first-order
-equation $\bar\partial\Phi=A\Phi$.  Straightening the regular
-boundary arc in a metric frame permits reflection of this
-equation across the diameter.  The Cauchy-transform construction
-for the reflected field gives $D\Phi\in L^2$ locally.  Thus
-the actual closed-$C^1$ map has $H^2$ coordinate functions on
-a smaller half-disk.  Nonvanishing of its differential and its
-boundary trace $c(\sigma(s))$ also imply $\sigma'(s)\ne0$.
-
-Choose smooth metric-normal coordinates along $c$, writing the
-map as $u=(u^0,u^\perp)$.  On the diameter $u^\perp=0$.
-The tangential derivative is a nonzero multiple of $c'$, and
-conformality makes the normal derivative metric-orthogonal to
-$c'$.  Metric-normal coordinates therefore give
-$\partial_\nu u^0=0$ there.  The coordinate harmonic equation
-has the form
-\[
- -\Delta u^j=F^j(u,Du)
-   =\sum_{i=1}^2 B^j(u)(\partial_i u,\partial_i u),
-\]
-with smooth coefficient forms $B^j$.  On a compact smaller
-chart, $Du,B^j,DB^j,D^2B^j$ are bounded.  Since $u\in H^2$,
-the weak product rule shows $F\in H^1$: each differentiated
-term is either bounded or a bounded factor times $D^2u$.
-The flat boundary estimate now gives $u\in H^3$, using
-Dirichlet data for $u^\perp$ and Neumann data for $u^0$.
-
-Here the Neumann gain follows from the actual normal derivative
-and its zero continuous trace.  Differentiate the weak equation
-in the normal direction, use the zero-trace boundary estimate
-for that derivative, and recover the remaining tangential
-derivatives from the original equation.  The boundary term
-vanishes because this is the same normal derivative, rather
-than an independently chosen weak field.
-In two source dimensions $H^1$ embeds locally in $L^4$.
-Consequently the new $H^3$ bound gives $D^2u\in L^4$ on a
-smaller chart.  Twice differentiating $F$ produces only bounded
-terms, bounded factors times $D^3u$, and products of two
-$D^2u$ factors.  All belong to $L^2$, so $F\in H^2$.
-A second application of the mixed boundary estimate yields
-$u\in H^4$.
-
-After a cutoff, the half-space Sobolev estimates give continuous
-first and second derivatives of this same map on the closed
-half-disk.  Equality with the original classical derivatives
-holds in the interior by weak derivative uniqueness and
-extends to the boundary by continuity; integration on the
-closed convex half-disk supplies the within derivatives.
-Inverting the smooth target and affine source changes gives
-closed-$C^2$ regularity of the attained annulus.  This works at
-every angular parameter, including the period cut.  Overlaps
-agree through their common interior, hence give one $C^2$ map
-on the whole closed strip.
-\lean{PoincareMT.M64.RampTransport.harmonic_regular_trace_exists_closed_c2}
-\lean{PoincareMT.M64.RampTransport.annulus_strip_c2_of_boundary_charts}
-
-Trim both boundaries into its smooth interior.  As the
-trim tends to zero, their lengths and turning integrals converge to those
-of the labelled boundary curves.  The lower length stays above $r/4$,
-and arcs of length at most $r/4$ have turning less than $7/800$.
-The induced metric on the trimmed cylinder is a smooth intrinsic annulus;
-minimality and the Gauss equation bound its Gaussian curvature by $K_0$,
-and its area is no greater than that of the minimum.  The intrinsic theorem
-therefore applies to every sufficiently small trim.
-Letting the trim vanish and restoring the smoothed labels yields
-$3L_0/4\le L_1+2\epsilon$.  Since $2\epsilon\le d/2$, this contradicts
-the definition of $d$.  All perturbations were chosen after the universal
-threshold; none changes its dependence on $r$ and the ambient geometry.
-\lean{PoincareMT.M64RampSmallAnnulusComparison}
-\lean{PoincareMT.m64RampSmallAnnulusComparison_of_geometry}
+The threshold precedes the circumference, time, and curves.
+The ramp degree here need not be one.
 \source{MT2007}\dcref{Lemma 19.31, pp. 462, 464--466}
-The external analytic inputs are Morrey's ICM lecture, Sections 2--5,
-printed pp. 180--187, and Lemaire's Theorem 1.7, p. 94, with Remark 5.5,
-p. 102.
+\end{lemma}
+\begin{proof}
+Apply Proposition~\ref{prop:intrinsic-annular} with
+$\delta'=7/800$, $r'=r/4$, and $K=K_0$, obtaining $\mu'$,
+and take $\mu=\mu'/2$. If the desired inequality fails by a
+gap $d>0$, smooth the labels and separate them in an auxiliary
+circle with error below $\min\{\mu'/4,d/4\}$.
+
+The separated minimum is smooth inside and $C^2$ up to its
+regular boundary traces. Trim into its interior; the induced
+metric is a smooth intrinsic annulus, its Gaussian curvature
+is at most $K_0$ by the minimal-surface Gauss equation, and its
+area is below $\mu'$. Its first-boundary turning remains below
+$7/800$ on arcs of length $r/4$. Apply the intrinsic comparison,
+then let the trim and smoothing error vanish, contradicting the gap.
+\end{proof}
 
 \section{Static approximation and finite nets}
 \label{sec:static-approximation}
 
-Let $\Gamma:S^2\to\Lambda^1M$ be a continuous family of $C^1$ loops and let
-$\zeta>0$.  There is $N_0>0$ so that every $N\ge N_0$
-and every $\gamma$ in a prescribed compact subset of the $C^1$ loop space has
-one unique sampled minimizing geodesic $N$-gon $P_\gamma$.  Its vertices are
-the samples at the fixed cell points, and
+\begin{lemma}[Uniform polygonal approximation]\label{lem:annular-static}
+\uses{def:annular-geodesic,lem:annular-infimum}
+\lean{PoincareMT.M64StaticApproximationTheory,PoincareMT.M64RawFamilyApproximation,PoincareMT.M64RawFamilyApproximation.toM63}
+For a compact family of $C^1$ loops and $\zeta>0$, there is $N_0$
+such that every $N\geq N_0$ gives unique sampled minimizing geodesic
+polygons, with length loss less than $\zeta$ and geodesic interpolation
+annuli of area less than $\zeta$. Their lengths are
 \begin{equation}
  \operatorname{Length}(P_\gamma)=
- \sum_{j=0}^{N-1}(2\pi/N)\,\operatorname{speed}(P_\gamma|_{[2\pi j/N,2\pi(j+1)/N]}).
+ \sum_{j=0}^{N-1}(2\pi/N)\,
+ \operatorname{speed}(P_\gamma|_{[2\pi j/N,2\pi(j+1)/N]}).
  \label{eq:polygon-length}
 \end{equation}
-The loss is nonnegative and less than $\zeta$.  The geodesic interpolation
-annulus from $\gamma$ to $P_\gamma$ has area in $[0,\zeta)$ and is both
-piecewise $C^1$ and transverse-geodesic.  If $\Gamma$ is pointwise null, its
-raw boundary maps have genuine filling disks and the filling-area error is
-less than $\zeta$.  A fixed-profile flattening produces a $C^1$ family smooth in
-the angular coordinate, with continuous first and second angular jets, and
-preserves the family homotopy class.
+For a pointwise null family, the raw polygons have genuine filling
+disks and filling-area error less than $\zeta$. Fixed-profile
+flattening gives a family smooth in the angular coordinate, with
+continuous first and second angular jets, freely homotopic to the
+original family in the $C^1$ loop space.
+\source{MT2007}\dcref{Definition 19.18}
+\dcref{Claims 19.19--19.20}
+\dcref{Corollary 19.21, pp. 450--451}
+\dcref{Lemma 19.17}
+\dcref{Claim 19.22, pp. 449--453}
+\end{lemma}
+\begin{proof}
+Compactness gives a common geodesically convex neighborhood of the
+diagonal and uniform continuity of the family's first angular
+derivatives. Fine meshes therefore give unique short geodesic sides
+with uniformly small chord deficits. The interpolation's transverse
+derivative tends uniformly to zero, while its angular derivative
+stays bounded, so its Jacobian area tends uniformly to zero.
 
-We give the uniformity argument.  Compactness of $M$ gives a neighborhood
-of the diagonal on which the minimizing geodesic between two points is
-unique and depends smoothly on them.  Compactness of the loop family in
-$C^1$ bounds all angular speeds and makes their first derivatives uniformly
-continuous in finitely many coordinate charts.  For sufficiently fine
-equal meshes, every sampled subarc stays in one of these geodesic
-neighborhoods.  Each polygon side is the unique constant-speed minimizing
-geodesic between its endpoints, including a constant side when endpoints
-coincide.  Its speed integral is exactly the endpoint distance, which is
-at most the length of the original subarc.  Uniform continuity of the
-derivatives makes the sum of these chord deficits tend to zero uniformly
-in the compact family.  Choose a common mesh cutoff for this length
-estimate and for geodesic uniqueness.
+Flatten each side using the same smooth increasing transition, flat
+at its endpoints. This preserves its image and length and matches all
+angular derivatives at the vertices. A short geodesic homotopy from
+the original loops to the flattened loops is continuous in $C^1$.
+The flattening is a circle homeomorphism; absorb it into each disk's
+boundary label rather than precomposing its interior by a nonsmooth
+inverse. Gluing the small interpolation annuli to actual disks in
+both directions gives the filling-area error.
+\end{proof}
 
-Interpolate pointwise from the loop to its polygon by these short minimizing
-geodesics.  On each open mesh cell the angular derivative is bounded by a
-common constant, while the transverse derivative has norm equal to the
-endpoint distance, which tends uniformly to zero.  The two-column area
-bound $|\partial_xf\wedge\partial_yf|\le|\partial_xf|\,|\partial_yf|$
-therefore makes the annular area tend to zero.  Across a mesh endpoint the
-maps agree; there are only finitely many such endpoints, of measure zero,
-so the cellwise Lipschitz and area estimates glue.  Taking the maximum of
-the three cutoffs proves all assertions for every subsequent mesh size.
-
-The polygon may have corners and need not itself belong to $\Lambda^1M$.
-On each cell compose its geodesic side with a fixed smooth increasing
-transition $\chi:[0,1]\to[0,1]$, flat to all orders at both endpoints.
-This preserves the image and length by the one-dimensional substitution
-formula and makes all angular derivatives agree at vertices.  Dependence
-of geodesics on endpoints gives continuous first and second angular jets
-over $S^2$.  Interpolating the time parameter between the identity and
-the flattening would still leave polygonal corners.  Instead use the
-original family $\Gamma$ and the flattened family $\widetilde\Gamma$.
-They are uniformly close: the flattening stays in each original mesh
-cell, where both the loop and its short polygon side have uniformly
-small diameter.  Join corresponding values by the unique short
-geodesic in the fixed diagonal neighborhood.  This gives
-\[
- H(\tau,z)(x)=\operatorname{geo}_{\Gamma(z)(x),
-             \widetilde\Gamma(z)(x)}(\tau).
-\]
-Each loop in this homotopy is $C^1$.  The chain rule expresses
-its angular derivative as the endpoint differentials of the
-geodesic interpolator applied to the two original angular
-derivatives.  Values and first derivatives are jointly continuous
-in $(\tau,z,x)$, hence the homotopy is continuous in the $C^1$
-loop space.  It has the literal original and flattened families
-as endpoints and transfers pointwise nullity.
-
-Disk area requires a separate check from length.  The piecewise polygon has
-a continuous raw circle boundary, with filling disks allowed up to boundary
-homeomorphism.  The flattening is an orientation-preserving circle
-homeomorphism, although its inverse need not be differentiable at vertices.
-Absorbing it into the permitted boundary label identifies the raw polygon
-disk-area range with that of the flattened loop.  Thus one transports actual
-disks without precomposing the disk interior by a possibly nonsmooth inverse.
-Uniform closeness, the sum of the two length bounds and the controlled
-geodesic interpolation give a small-area annulus between the original
-and flattened loops.  Gluing to actual disks in both directions gives
-the filling-area error for these $C^1$ loops.  The equality of admissible
-area ranges then transfers exactly that error to the raw polygon.
-\lean{PoincareMT.M64StaticApproximationTheory}
-\lean{PoincareMT.M64RawFamilyApproximation}
-\lean{PoincareMT.M64RawFamilyApproximation.toM63}
-\source{MT2007}\dcref{Definition 19.18, Claims 19.19--19.20 and Corollary 19.21, pp. 450--451; Lemma 19.17 and Claim 19.22, pp. 449--453}
-
-When a polygonal approximation is already supplied, construct shrinking
-ramps from its actual flattened curves and apply the analytic estimates
-to those solutions.  The number of sides, the initial family, and the
-annuli giving its area error remain those of the supplied approximation.
-Choosing a second approximation here would lose the initial-area statement
-needed in the deformation theorem.
+\begin{lemma}[Evolve the supplied approximation]\label{lem:annular-evolving}
+\uses{lem:annular-static,prop:ramps-global,thm:ramps-uniform-jets}
 \lean{PoincareMT.m64EvolvingApproximation_from_M63}
+For a supplied polygonal family approximation, its actual flattened
+curves generate the shrinking ramp family. The number of sides,
+initial curves, and initial area-error annuli remain those of that
+same approximation.
+\end{lemma}
+\begin{proof}
+Apply the ramp existence and family estimates to the selected smooth
+flattenings. No new approximation is chosen, so the initial-area
+estimate is the one from Lemma~\ref{lem:annular-static}.
+\end{proof}
 
-The finite-net output is stronger than pointwise compactness.  For every
-$\mu>0$, a finite list $z_1,\ldots,z_m\in S^2$ and a circumference cutoff
-$\rho_* >0$ are chosen so that each $z\in S^2$ has one node $z_i$ with, for
-every $0<\rho<\rho_*$, an actual annulus at the initial time joining the
-canonical ramp of $\Gamma(z)$ to that of $\Gamma(z_i)$ and having area less
-than $\mu$.  The node is chosen before circumference and is retained for all
-smaller circumferences.  This is the compactness step that later permits one
-common circumference for the entire family.
-
-To prove this stronger order of choices, bound the angular derivatives of
-the compact family by $S$.  The minimizing interpolator has a uniform
-endpoint differential bound $B$ on a smaller diagonal neighborhood.
-If two loops are uniformly within $\epsilon$ there, their interpolation
-annulus has column bounds $B,\epsilon$.  Its canonical lift to $P_\rho$
-has bounds $B+1,\epsilon$ for all $0<\rho\le2\pi$, since its angular
-circle speed is $\rho/(2\pi)\le1$ and its transverse circle derivative
-is zero.  Its area is at most $2\pi(B+1)\epsilon$.  Choose $\epsilon>0$
-so that this is less than $\mu$, while remaining in that neighborhood.
-The image of $S^2$ is compact in the uniform topology, so finitely many
-uniform $\epsilon$-balls with centers in the image cover it.  Take the
-corresponding source parameters as nodes.  The same chosen node and the
-same interpolator work at every smaller circumference; $\rho_*=2\pi$
-is an available cutoff.  Null-homotopy is not needed for this net.
-\lean{PoincareMT.M64FamilyAnnulusNet}
-\lean{PoincareMT.m64FamilyAnnulusNets_of_compact}
+\begin{lemma}[A finite annular net uniform in circumference]
+\label{lem:annular-finite-net}
+\uses{def:annular-geodesic}
+\lean{PoincareMT.M64FamilyAnnulusNet,PoincareMT.m64FamilyAnnulusNets_of_compact}
+Let $\Gamma:S^2\to\Lambda^1M$ be continuous and let $\mu>0$.
+There are finitely many $z_1,\ldots,z_m\in S^2$ and $\rho_*>0$
+such that every $z$ has one selected $z_i$ for which, for every
+$0<\rho<\rho_*$, an actual initial annulus joins their canonical
+ramps and has area less than $\mu$. The node is selected before
+$\rho$ and works at all smaller circumferences. Nullity is not required.
 \source{MT2007}\dcref{pp. 461--462}
+\end{lemma}
+\begin{proof}
+The compact family has a uniform angular derivative bound.
+The minimizing interpolator has a uniform endpoint differential
+bound $B$ near the diagonal. For uniformly $\epsilon$-close loops,
+its canonical lift has column bounds $B+1,\epsilon$ for all
+$0<\rho\leq2\pi$, hence area at most $2\pi(B+1)\epsilon$.
+Choose $\epsilon$ to make this less than $\mu$ and then take a finite
+cover of the compact family by uniform $\epsilon$-balls. The same
+center and interpolator work for every smaller circumference.
+\end{proof}
 
 \section{Deforming a raw family}
 \label{sec:width-deformation}
@@ -1423,6 +462,7 @@ factor, so initial area errors transfer quantitatively to terminal errors.
 
 \begin{theorem}[Deformation of a null loop family]
 \label{thm:loop-family-deformation}
+\uses{prop:annular-evolution,prop:intrinsic-annular,thm:annular-plateau,prop:filling-width-properties,thm:ramps-uniform-jets}
 The input is a compact Hausdorff second-countable smooth three-manifold, a flow on
 $[t_0,t_1]$ with $t_0\le t_1$, and a raw continuous family
 $\Gamma:S^2\to\Lambda^1M$ of pointwise null loops.  The output for each
@@ -1443,11 +483,14 @@ satisfies the pointwise alternative
  \le \Phi_{F}\bigl(A_{g(t_0)}(\Gamma_{t_0}(z)),t_1\bigr)+\zeta.
  \label{eq:terminal-alternative}
 \end{equation}
+\lean{PoincareMT.m65LoopFamilyDeformation,PoincareMT.m65LoopFamilyDeformation_from_predecessors}
+\uses{lem:annular-static,lem:annular-evolving,lem:annular-family-class,lem:annular-common-terminal}
 \lean{PoincareMT.M65RawFlowInput}
 \lean{PoincareMT.M65DeformedFamily}
 \lean{PoincareMT.areaComparisonProfile}
 \lean{PoincareMT.areaComparisonProfile_hasDerivWithinAt}
-\source{MT2007}\dcref{Definition 18.23 and Proposition 18.24, pp. 433--434; Claim 18.26, p. 434}
+\source{MT2007}\dcref{Definition 18.23 and Proposition 18.24, pp. 433--434}
+\dcref{Claim 18.26, p. 434}
 \end{theorem}
 
 For its proof write $a=t_0$ and $b=t_1$ and initially assume $a<b$.
@@ -1459,6 +502,8 @@ under consideration.  All constants below are uniform for $0<\rho<1$.
 \subsection{The swept annulus and disk comparison}
 \label{sec:swept-area}
 
+\begin{lemma}[The swept annulus]\label{lem:annular-swept}
+\uses{def:annular-admissible,thm:ramps-uniform-jets}
 For strict interior times $a<s\le t<b$, a shrinking ramp $c(x,r)$ gives the
 time-reparameterized map
 \[
@@ -1494,7 +539,10 @@ metric time in the slab.  The estimate is linear in the time separation and is
 uniform in the member and circumference.
 \lean{PoincareMT.m65FamilyInteriorSweptAnnulus_area_le}
 \lean{PoincareMT.m65FamilyTotalCurvatureBound}
+\end{lemma}
 
+\begin{lemma}[Filling-area comparison by annular gluing]\label{lem:annular-disk-gluing}
+\uses{lem:annular-projection,lem:annular-infimum,prop:filling-width-properties}
 Projection of $U$ supplies an annulus between the two base loops.  If $D_0$
 is any actual Lipschitz filling disk for the first boundary, the projected
 annulus glues to $D_0$ and yields a disk $D_1$ for the second boundary.  The
@@ -1516,10 +564,13 @@ is used.  In the family application, nullity and the static approximation
 supply these disks at the initial time, and sweeping supplies them later.
 \lean{PoincareMT.m65ProjectedDiskComparison}
 \lean{PoincareMT.m65FillingArea_le_add_annulus}
+\end{lemma}
 \source{MT2007}\dcref{Claim 19.23, pp. 453--454}
 
 \subsection{Changing the metric and including endpoints}
 
+\begin{lemma}[Closed-time filling-area control]\label{lem:annular-time-control}
+\uses{lem:annular-swept,lem:annular-disk-gluing,prop:rf-metric-comparison}
 A disk at time $s$ can be transported through the same carrier to time $t$.
 The Ricci metric comparison gives
 \begin{equation}
@@ -1548,6 +599,7 @@ gives continuity along the original closed time path.
 \lean{PoincareMT.m65FillingArea_flowMetric_le}
 \lean{PoincareMT.m65ClosedTimeFillingDifference}
 \lean{PoincareMT.m65UniformTimeFillingBounds}
+\end{lemma}
 
 Let $f_z(t)=A_{g(t)}(\Gamma_t(z))$.  The same estimates also give constants
 $A_*,L_*$, independent of $z$ and $0<\rho<1$, such that
@@ -1570,6 +622,7 @@ Chapter~\ref{ch:filling-width-v4}.
 
 \begin{theorem}[Attainment for a regular Jordan loop]
 \label{thm:annular-plateau}
+\uses{lem:annular-disk-minimum,lem:annular-disk-strict-trace}
 There is a Lipschitz map $f:\overline{\mathbb D}\to M$ and a circle
 homeomorphism $\beta$ such that $f|_{S^1}=\gamma\circ\beta$ and
 \[
@@ -1582,506 +635,184 @@ zeros on the boundary.
 \lean{PoincareMT.m65Plateau_attainment}
 \end{theorem}
 
-We give the construction, including the boundary properties needed for
-area variation.  Choose a smooth embedding $e:M\hookrightarrow\mathbb
-R^N$.  Extend the metric on each embedded tangent space to a positive
-quadratic form $G_p$ on $\mathbb R^N$.  Compactness gives constants
-$0<k\le K$ with
-$k|v|^2\le G_p(v,v)\le K|v|^2$ for all $p,v$.
-The auxiliary embedding serves to define weak derivatives; on a
-genuine map its energy is the intrinsic energy.
+\begin{lemma}[Compactness of normalized weak disks]
+\label{lem:annular-weak-disks}
+\uses{prop:filling-width-properties}
+\lean{PoincareMT.m65NormalizedWeakDisks_boundary_equicontinuous,PoincareMT.m65NormalizedWeakDisks_subsequence,PoincareMT.m65WeakDisk_energy_le_of_limit}
+Embed the compact target in Euclidean space and fix three distinct
+boundary pins. An energy-bounded sequence of normalized weak
+spanning disks for the Jordan curve has a subsequence with strongly
+convergent maps, weakly convergent derivative columns, uniformly
+convergent boundary labels, and a weak-disk limit whose metric
+energy is no greater than the lower limit of the energies.
+\end{lemma}
+\begin{proof}
+The three pins exclude concentration of an entire boundary
+parameterization at one point. The boundary energy estimate gives
+equicontinuity; compactness of normalized monotone labels gives
+uniform trace convergence. Rellich and weak $L^2$ compactness
+supply the map and derivative limits, and the Green identities
+pass to that limit. Closedness of the embedded target retains its
+values. For varying metric coefficients $T_j$, positivity gives
+$\langle d_j,T_jd_j\rangle\geq
+2\langle d_j,T_jd\rangle-\langle d,T_jd\rangle$.
+Strong convergence of $T_jd$ proves lower semicontinuity.
+\end{proof}
 
-A weak disk consists of an almost everywhere $M$-valued map $u$,
-its embedded value $e\circ u\in W^{1,2}(\mathbb D,\mathbb R^N)$,
-and a continuous weakly monotone map $\beta:S^1\to S^1$.
-Here weakly monotone means a uniform limit of circle homeomorphisms,
-with either orientation permitted.  The boundary value is linked to
-the weak derivatives by the coordinate Green identities
-\[
- \int_{\mathbb D} (e\circ u)_j\,\partial_i\phi
-   +\int_{\mathbb D} d_i(e\circ u)_j\,\phi
- =\int_{S^1}(e\circ\gamma\circ\beta)_j\,\phi\,n_i\,d\theta.
-\]
-Thus the boundary function is the actual Sobolev trace.  Its energy is
-\[
- E(u)=\frac12\int_{\mathbb D}\sum_{i=1}^2
-                   G_{u}(d_i(e\circ u),d_i(e\circ u)).
-\]
-Fix distinct $a,b,c\in S^1$ and impose
-$\beta(1)=a$, $\beta(-1)=b$, and either $\beta(i)=c$ or
-$\beta(-i)=c$.  These three conditions prevent loss of the boundary
-under conformal automorphisms; they do not fix the remaining boundary
-parameter.
-
-Take an energy-minimizing sequence in this normalized class.
-Uniform ellipticity bounds its two weak derivatives in $L^2$.
-Its boundary maps have a common modulus of continuity.  To see the
-point of the three pins, take a small circular crosscut near a
-boundary point.  Polar integration and Cauchy--Schwarz give a radius
-between $\epsilon$ and $R$ for which the squared distance between the
-two endpoint images is at most
-\[
- \frac{2\pi B}{\log(R/\epsilon)},
- \qquad B\ge\|d_1(e\circ u)\|_2^2+
-                    \|d_2(e\circ u)\|_2^2.
-\]
-The continuous inverse of the embedded Jordan curve turns this into
-closeness of their circle labels.  A short source arc has diameter
-less than the separation of the three pinned source points, so it
-contains at most one pin.  Weak monotonicity and the other two pins
-exclude the long target arc between its endpoint labels.  The whole
-short source arc therefore has small image.  The crosscut scale is
-chosen from $B$ and the Jordan inverse modulus, uniformly in the
-sequence.
-
-Arzela--Ascoli now gives uniform convergence of the boundary labels.
-The weakly monotone class and both alternatives for the third pin are
-closed.  Rellich compactness gives strong $L^2$ convergence of embedded
-values, and Hilbert weak compactness gives weak $L^2$ convergence of
-both derivatives.  A further almost everywhere subsequence has values
-in the closed set $e(M)$.  Uniform boundary convergence also gives
-strong convergence of the boundary values in $L^2(S^1)$, so all the
-Green identities pass to the limit.
-
-The metric energy is lower semicontinuous despite its varying
-coefficients.  Write $G_{u_j}$ as the positive self-adjoint operator
-$T_j$, acting by multiplication on $L^2$.  Almost everywhere value
-convergence and the uniform coefficient bound imply
-$T_jv\to Tv$ strongly for each fixed $v\in L^2$.  If $d_j\rightharpoonup d$,
-positivity gives
-\[
- \langle d_j,T_jd_j\rangle
- \ge 2\langle d_j,T_jd\rangle-\langle d,T_jd\rangle
- \longrightarrow\langle d,Td\rangle.
-\]
-Summing over the two columns proves that the limit is a normalized
-weak minimum.
-\lean{PoincareMT.m65NormalizedWeakDisks_boundary_equicontinuous}
-\lean{PoincareMT.m65NormalizedWeakDisks_subsequence}
-\lean{PoincareMT.m65WeakDisk_energy_le_of_limit}
-
-The energy of this minimum is at most $A_g(\gamma)$.  This requires a
-comparison with every admissible Lipschitz disk $D$, whose arbitrary
-boundary homeomorphism need not be Lipschitz.  Let $H$ be its measurable
-positive semidefinite Gram matrix, extended by zero outside the disk.
-For every $\eta>0$ choose a smooth positive definite matrix field $Q$
-such that
-\[
- \int_{\mathbb D}\frac12\sqrt{\det Q}\,
-               \operatorname{tr}(Q^{-1}H)
-       <\int_{\mathbb D}\sqrt{\det H}+\eta.
-\]
-One first regularizes $H$ by a positive scalar matrix and then
-smooths it, making $Q$ scalar near the center and outside the disk.
-For fixed regularization the inverses are bounded and smoothing
-converges in the displayed integral; letting the regularization tend
-to zero gives $\sqrt{\det H}$, including at rank-deficient points.
-The scalar regions can be chosen with arbitrarily small area error.
-The following construction supplies the required coordinates on the
-whole disk, including its boundary.
-
-\paragraph{Smooth disk coordinates.}
+\subsection{Disk coordinates and the area-energy comparison}
 \label{sec:annular-disk-beltrami}
-Let $Q$ be a smooth positive definite symmetric matrix field on the
-plane, equal to $\delta I$ near zero and for $|z|\ge1$, with $\delta>0$.
-We construct a smooth plane diffeomorphism $\Phi$, preserving both
-the open and closed unit disks, such that
-\[
- (D\Phi_z)^T Q(\Phi(z))D\Phi_z=c(z)I,\qquad c(z)>0,
- \quad |z|\le1.
-\]
-Identify the plane with $\mathbb C$, and put
-$\partial=(\partial_x-i\partial_y)/2$ and
-$\bar\partial=(\partial_x+i\partial_y)/2$.  The coefficient
-\[
- \mu(z)=
- \frac{Q_{11}(z)-Q_{22}(z)+2iQ_{12}(z)}
-      {Q_{11}(z)+Q_{22}(z)+2\sqrt{\det Q(z)}}
-\]
-is smooth, has modulus less than one, and vanishes near zero and
-outside the open disk.  Positivity also gives the algebraic identity
-\[
- Q_z(v,v)=d(z)|v+\mu(z)\bar v|^2,\qquad
- d(z)=\frac{\operatorname{tr}Q(z)+2\sqrt{\det Q(z)}}4>0.
-\]
-Write $Jz=1/\bar z$ for reflection in the unit circle.  Extend the
-coefficient by reflection, setting
-\[
- \nu(z)=\mu(z)+(z/\bar z)^2\overline{\mu(Jz)}
- \quad(z\ne0),\qquad \nu(0)=0.
-\]
-The second summand vanishes inside the disk and the first outside.
-Smoothness across the unit circle follows from the smooth vanishing
-of $\mu$ on the outside; near zero the reflected summand is zero.
-Vanishing of $\mu$ near zero makes $\nu$ compactly supported.
-Thus $|\nu|\le k<1$ for some $k$, and
-$\nu(z)=(z/\bar z)^2\overline{\nu(Jz)}$.
 
-Here is the analytic construction for this smooth compactly
-supported $\nu$.  The Beurling operator $S=\partial\bar\partial^{-1}$
-on $L^2(\mathbb C)$ has Fourier multiplier $\bar\xi/\xi$ away
-from zero.  Plancherel gives $\|S h\|_2\le\|h\|_2$.
-Consequently $T h=\nu S h$ has norm at most $k$, and
-\[
- h=\sum_{j=0}^{\infty}T^j a,\qquad a=\partial\nu,
- \qquad h-\nu S h=\partial\nu
-\]
-converges uniquely in $L^2$.  Smoothness of this particular solution
-needs a derivative estimate.  Let $B_m(h)$ be the sum of the $L^2$
-norms of all ordered coordinate derivatives through order $m$.
-Commutation of $S$ with those derivatives and the product rule give
-\[
- B_{m+1}(\nu S h)\le k B_{m+1}(h)+C_m B_m(h).
-\]
-All derivatives landing on $\nu$ occur in the lower order term.
-Choose $r=(1+k)/2$.  Induction on $m$ gives
-$B_m(T^j a)\le A_m r^j$: at the next order choose
-$A_{m+1}\ge B_{m+1}(a)$ and
-$(r-k)A_{m+1}\ge C_mA_m$, and then induct on $j$.
-Sobolev estimates on the plane bound every uniform derivative norm
-by one of these finite derivative budgets.  The series therefore
-converges with all derivatives.  Every term has support in
-$\operatorname{supp}\nu\cup\operatorname{supp}a$, so its sum is
-smooth and compactly supported.
-
-The Cauchy potential
-\[
- q(z)=\frac1\pi\int_{\mathbb C}\frac{h(\zeta)}{z-\zeta}\,dA(\zeta)
-\]
-satisfies $\bar\partial q=h$, $\partial q=S h$, and $q(z)\to0$
-at infinity.  These identities follow first distributionally
-from the fundamental solution of $\bar\partial$ and then
-classically from the smooth right side; equivalently one may
-differentiate after subtracting the value at the kernel's singularity.
-Compact support gives the decay directly outside a large disk.
-It follows that
-$\bar\partial q-\nu\partial q=\partial\nu$.
-Hence $w=e^q$ never vanishes, tends to one at infinity, and satisfies
-$\bar\partial w=\partial(\nu w)$.  The complex-valued real one-form
-\[
- A_z(v)=w(z)(v+\nu(z)\bar v)
-\]
-is closed.  Its actual primitive is
-$f(z)=\int_0^1 A_{tz}(z)\,dt$.
-Differentiating this integral and using closedness changes its
-derivative integrand to
-$\frac d{dt}\{t A_{tz}(v)\}$, so $Df_z(v)=A_z(v)$.
-In particular $f$ is smooth and
-\[
- \bar\partial f=\nu\,\partial f,\qquad
- \partial f=w,\qquad
- \det Df=|w|^2(1-|\nu|^2)>0.
-\]
-
-This local diffeomorphism is global.  Indeed $Df\to I$ at infinity.
-Choose $R$ so that $\|Df-I\|\le1/2$ outside $B_R$ and integrate
-along radial segments starting on its boundary.  A uniform bound
-there gives $|f(z)-z|\le |z|/2+C$, and hence
-$|f(z)|\ge |z|/2-C$.  Thus $f$ is proper.  Its image is nonempty,
-open and closed in the plane, and its fibers are finite.
-Local inverse neighborhoods and properness make it a covering:
-after taking the finitely many inverse neighborhoods over one
-point, properness excludes further preimages over a sufficiently
-small common target neighborhood.  Since the target plane is
-simply connected and the source plane connected, path lifting
-gives a single sheet.  The inverse is smooth by the local inverse
-theorem.
-
-Replace $f$ by $(f-f(0))/(f(1)-f(0))$.
-It now fixes zero and one, retains its equation, and has derivative
-tending to a nonzero complex scalar.  There is at most one such
-normalized solution for a fixed $\nu$: if $f,g$ are two, the chain
-rule shows that $g\circ f^{-1}$ is holomorphic.  Its derivative
-tends at infinity to the quotient of the two limiting scalars,
-so is a bounded entire function.  Liouville's theorem makes the
-transition affine, and the two fixed points make it the identity.
-
-Apply this uniqueness to $\widehat f=J\circ f\circ J$.
-Away from zero the chain rule and the reflection identity for
-$\nu$ show that $\widehat f$ solves the same equation.
-The solution $f$ and its inverse are holomorphic off a compact
-set, because their Beltrami coefficients vanish there.
-Thus $\widehat f$ and its inverse are holomorphic in punctured
-neighborhoods of zero.  Properness makes their values tend to
-zero, so the removable singularity theorem extends both there;
-their inverse identities persist.  They are therefore smooth
-diffeomorphisms at zero as well.  Near zero, $f$ is holomorphic
-with $f'(0)\ne0$.  As $|z|\to\infty$, differentiation of the
-reflection gives the complex scalar
-\[
- \widehat f'(z)=
- \frac{\overline{f'(Jz)}}
-      {\overline{\,f(Jz)/(Jz)\,}^{\,2}}
- \longrightarrow\frac1{\overline{f'(0)}}\ne0.
-\]
-The reflected map fixes zero and one, so uniqueness proves
-$fJ=Jf$.  The unit circle, the fixed set of $J$, is consequently
-preserved.  No interior point can map outside it: the image of
-a radial path from zero would first hit the circle, contradicting
-injectivity and circle preservation.  Applying the same argument
-to the inverse proves preservation of both the open and closed
-disks.
-
-Set $\Phi=f^{-1}$.  On the closed disk $\nu=\mu$, and the identity
-$Df_{\Phi(z)}D\Phi_z=I$ gives
-\[
- Q_{\Phi(z)}(D\Phi_zv,D\Phi_zv)
-   =\frac{d(\Phi(z))}{|\partial f(\Phi(z))|^2}|v|^2.
-\]
-This is the promised coordinate formula.  Smoothness on the
-whole plane bounds both first derivatives on the closed disk,
-so both restrictions are Lipschitz.  The same construction
-applies directly to any smooth Beltrami coefficient supported
-away from the center and boundary, as required by the inner
-variations below.
-
-The use of smooth coefficients agrees with the scope of
-\cite[Theorem 2.2, p.~6]{FitziWenger2019}.  Its epsilon-conformal
-disk result is Theorem 4.1, pp.~8--10.  The present disk
-preservation argument uses reflection and normalized uniqueness;
-the cited proof instead conformally maps the image domain back
-to the disk.  The matrix and energy computations here concern
-Riemannian targets and half Dirichlet energy.
-
-\paragraph{Area-to-energy comparison.}
-The coordinates just constructed reparameterize $D$ to the
-Lipschitz disk $D'=D\circ\Phi$ with the same area.  The chain rule,
-the isothermal identity and change of variables give
-\[
- E(D')=\int_{\mathbb D}\frac12\sqrt{\det Q}\,
-                         \operatorname{tr}(Q^{-1}H).
-\]
-In this calculation $D\Phi(D\Phi)^T=cQ^{-1}$ and
-$|\det D\Phi|=c/\sqrt{\det Q}$ cancel the conformal factor.
-A conformal disk
-automorphism puts the three labels at the chosen pins without
-changing energy or area.  The two possible positions $\pm i$ retain
-both boundary orientations.
-
-Every such $D'$ belongs to the weak class with its actual weak
-derivatives and Green trace.  Minimality gives
-$E(u)\le\operatorname{Area}(D)+\eta$.  First let $\eta\downarrow0$,
-then take the area infimum over $D$.  The same conformal normalization
-of arbitrary weak disks shows that this normalized minimum minimizes
-energy in the unpinned weak class as well.
+\begin{lemma}[Normalized competitors with almost the same area]
+\label{lem:annular-energy-competitor}
+\uses{prop:filling-width-properties}
 \lean{PoincareMT.m65SpanningDisk_exists_normalized_energy_competitor}
-\lean{PoincareMT.m65Plateau_weak_minimum}
-
-We next obtain conformality in the original weak derivatives.  Put
-$a=G_u(d_1u,d_1u)$, $b=G_u(d_1u,d_2u)$, $c=G_u(d_2u,d_2u)$,
-using embedded derivatives in this formula, and set $e_0=(a+c)/2$.
-For a smooth complex test function $\nu$ supported away from the
-center and boundary, Beltrami reparameterization produces admissible
-weak competitors with energies
+For every Lipschitz spanning disk $D$, every $\eta>0$, and
+three distinct boundary pins, there is a normalized weak spanning
+disk with energy less than $\operatorname{Area}(D)+\eta$.
+Both possible boundary orientations are retained.
+\end{lemma}
+\begin{proof}
+Let $H$ be the measurable positive semidefinite Gram matrix of $D$.
+Regularize and smooth it to a positive field $Q$, scalar near the
+center and outside the unit disk, with
 \[
- V(t)=\int_{\mathbb D}
- \frac{(1+t^2|\nu|^2)e_0
-       -t\{\operatorname{Re}\nu\,(a-c)+2\operatorname{Im}\nu\,b\}}
-      {1-t^2|\nu|^2}.
+ \int_{\mathbb D}\tfrac12\sqrt{\det Q}\,
+       \operatorname{tr}(Q^{-1}H)
+ <\int_{\mathbb D}\sqrt{\det H}+\eta .
 \]
-For sufficiently small $|t|$ the denominator is bounded below, and
-the derivative is dominated by a constant times
-$|e_0|+|a-c|+|b|$.  Minimality at $t=0$ therefore gives
+The disk Beltrami construction produces a smooth disk-preserving
+coordinate diffeomorphism $\Phi$ with
+$(D\Phi)^TQ(\Phi)D\Phi=cI$. The chain rule and change of variables
+show that $D\circ\Phi$ has precisely the energy on the left.
+A conformal disk automorphism places the three boundary labels
+at the pins without changing energy. The boundary homeomorphism
+is kept as a trace label, so no Lipschitz inverse is assumed.
+\end{proof}
+
+\begin{lemma}[A weak minimum below the filling-area infimum]
+\label{lem:annular-disk-minimum}
+\uses{lem:annular-weak-disks,lem:annular-energy-competitor}
+\lean{PoincareMT.m65Plateau_weak_minimum}
+Under the hypotheses of Theorem~\ref{thm:annular-plateau}, the
+normalized weak spanning-disk class has an energy minimum $u$,
+and $E(u)\leq A_g(\gamma)$.
+\end{lemma}
+\begin{proof}
+The supplied filling disk makes the class nonempty.
+Lemma~\ref{lem:annular-weak-disks} gives a minimum.
+Apply Lemma~\ref{lem:annular-energy-competitor} to each actual
+spanning disk and then let its positive error tend to zero.
+Taking the guarded area infimum proves the inequality.
+\end{proof}
+
+\begin{lemma}[Conformality of the weak minimum]
+\label{lem:annular-disk-conformal}
+\uses{lem:annular-disk-minimum,lem:annular-energy-competitor}
+\lean{PoincareMT.m65WeakDisk_conformal_of_normalized_minimum}
+The minimum $u$ is weakly conformal: its two weak derivative
+columns have equal metric norm and are orthogonal almost everywhere.
+\end{lemma}
+\begin{proof}
+Write their Gram coefficients as $a,b,c$ and $e_0=(a+c)/2$.
+A compactly supported Beltrami variation with parameter $t\nu$
+gives the exact energy
 \[
  \int_{\mathbb D}
-       \{\operatorname{Re}\nu\,(a-c)+2\operatorname{Im}\nu\,b\}=0.
+ \frac{(1+t^2|\nu|^2)e_0
+       -t\{\operatorname{Re}\nu(a-c)+2\operatorname{Im}\nu\,b\}}
+      {1-t^2|\nu|^2}.
 \]
-Real and purely imaginary tests imply $a=c$ and $b=0$ almost
-everywhere.  The omitted center and boundary have area measure zero.
-No differentiable dependence of the chosen isothermal maps on $t$
-is needed: their exact energy formula is what is differentiated.
-\lean{PoincareMT.m65WeakDisk_conformal_of_normalized_minimum}
+Its derivative at zero vanishes by minimality and dominated
+convergence. Real and imaginary test functions yield $a=c$ and
+$b=0$. No differentiable dependence of the chosen coordinate
+maps on the variation parameter is required.
+\end{proof}
 
-\paragraph{Regularity of the same minimum.}
-Trace-preserving replacement on an interior disk proves local energy
-minimality.  For almost every radius the actual weak map has an
-absolutely continuous circle trace and the local Green identity.
-If that trace has small oscillation, it lies in one uniformly
-controlled target chart.  Coning the chart trace to its value at
-one point gives a weak disk with the same trace and energy bounded
-by a fixed multiple of its angular energy.  Gluing it into $u$ and
-using minimality gives $E(r)\le C rE'(r)$.  If the trace oscillation
-is too large for this construction, Cauchy--Schwarz gives a lower
-bound for $rE'(r)$; the fixed outer energy bound yields the same
-inequality after enlarging $C$.  These statements hold at the same
-almost every radius, where the trace, Green, and radial energy
-identities all hold.  Absolute continuity of $E$ gives
-\[
- E(r)\le E(R)(r/R)^{1/C}.
-\]
-The constants can be fixed for centers in a smaller disk.  Averaging
-and Poincare estimates then construct a Holder continuous
-representative of the original weak map; continuity and closedness
-of $e(M)$ keep its values in the target.
+\begin{lemma}[Interior regularity of the minimizing disk]
+\label{lem:annular-disk-interior}
+\uses{lem:annular-disk-minimum,lem:annular-disk-conformal}
+\lean{PoincareMT.M65Interior.localMinimum_energy_power_decay,PoincareMT.M65Boundary.quadratic_holder_contDiffAt,PoincareMT.m65PlateauInteriorRegularityInput_proved}
+The same weak minimum has a smooth harmonic representative on
+the open disk, with the original weak values and derivatives.
+\end{lemma}
+\begin{proof}
+Trace-preserving replacement gives local energy minimality.
+Coning a small-oscillation boundary trace in a target chart gives
+$E(r)\leq CrE'(r)$; if its oscillation is large, Cauchy--Schwarz
+gives the same estimate. Integration yields power decay and a
+Holder representative. The quadratic harmonic-map equation
+improves the weighted energy exponent; after finitely many
+steps the logarithmic-potential gradient is continuous.
+The equation then bootstraps the same map to smoothness.
+\end{proof}
 
-Supported variations in a captured target chart give the weak
-harmonic-map equation $\Delta X=f(X,DX)$ with
-$|f|\le C|DX|^2$.  Here the derivatives remain those of the original
-weak map.  We describe the regularity step because the initial
-$W^{1,2}$ bound alone does not supply continuous derivatives.
-Write $e_X=|DX|^2$ and let $\beta>0$ be a Holder exponent for $X$,
-reduced so that the uniform disk energy bound is $Cr^{2\beta}$.
-Annular summation gives, uniformly for nearby centers $x$,
-\[
- \int |z-x|^{-\beta}e_X(z)\,dz< C_\beta.
-\]
-On a sufficiently small neighborhood, continuity makes
-$|f(z)\cdot(X(z)-X(x))|\le e_X(z)/2$.
-Suppose the weighted energy bound holds with exponent
-$\alpha\le1$.  The logarithmic potential for the weak Poisson
-equation bounds the weighted first derivative with exponent
-$s+1$, where $s=\alpha-\beta/2<\alpha$.  Test the equation
-against the centered map times a cutoff and the regularized weight
-$|z-x|^{-b}$, where $b=\alpha+\beta/2$.  The forcing pairing is
-absorbed by the preceding half-energy bound.  Differentiating the
-weight leaves a first derivative with weight $|z-x|^{-b-1}$;
-the Holder bound for the centered map reduces this exponent to
-$b+1-\beta=s+1$, just controlled by the potential estimate.
-The cutoff terms have a uniform bound on a smaller disk.  This
-proves the weighted energy bound with exponent $b$.
-Starting at $\alpha=\beta$,
-finitely many steps reach an exponent greater than one.
-The gradient kernel of the logarithmic potential has size
-$C|z-x|^{-1}$; the stronger weighted bound makes its near-diagonal
-integral uniformly small.  Its far part is continuous by dominated
-convergence.  The harmonic remainder is smooth, so the actual weak
-derivatives have continuous representatives and $X$ is $C^1$.
-The local harmonic-map bootstrap, the $\alpha=1$ case of the
-regularity argument in Chapter~\ref{ch:filling-width-v4}, now makes
-the same map smooth.  Its coordinate equation is the vanishing of
-the geometric tension field.
-\lean{PoincareMT.M65Interior.localMinimum_energy_power_decay}
-\lean{PoincareMT.M65Boundary.quadratic_holder_contDiffAt}
-\lean{PoincareMT.m65PlateauInteriorRegularityInput_proved}
+\begin{lemma}[Regularity at the actual boundary trace]
+\label{lem:annular-disk-boundary}
+\uses{lem:annular-disk-interior,lem:annular-disk-conformal}
+\lean{PoincareMT.M65Boundary.weakDisk_boundary_local_contMDiff,PoincareMT.m65PlateauBoundaryRegularityInput_proved}
+The representative is $C^1$ within the closed disk and retains
+its continuous weakly monotone trace on the regular Jordan curve.
+\end{lemma}
+\begin{proof}
+Use a holomorphic half-disk chart and straighten the captured
+regular target arc. Trace-preserving half-disk replacements give
+boundary energy decay. The transverse harmonic equations control
+the transverse derivative columns. Conformality determines the
+square of the remaining longitudinal column; continuity and the
+interior sign choice extend that column through both its zero and
+nonzero sets. Integrating the extended differential gives
+within-$C^1$ regularity. The local extensions agree on overlaps.
+\end{proof}
 
-At a boundary point use the holomorphic coordinate
-$P_p(z)=p\exp(iz)$, $|p|=1$, from a small upper half-disk to the
-original disk.  The boundary values lie in a regular target arc.
-Here a cone to an arbitrary trace value would change the diameter
-trace incorrectly.  Instead, straighten the captured target arc
-to an axis and write $v(\theta)$, $0\le\theta\le\pi$, for the
-absolutely continuous trace on a semicircle of radius $r$.
-Its endpoint values lie on that axis.  With
-$m=(v(0)+v(\pi))/2$, use the half-cone
-\[
- v_r(s,\theta)=m+\frac{s}{r}\bigl(v(\theta)-m\bigr).
-\]
-Its diameter trace is the single affine interval from $v(\pi)$
-to $v(0)$.  The boundary label is replaced on precisely this
-source arc by the corresponding monotone target-arc label, and
-is unchanged elsewhere.  Monotonicity at both endpoints shows
-that the new label remains weakly monotone.  The actual traces
-agree on the semicircle, so the two Green identities glue this
-half-cone to the original map as an admissible weak disk.
-Unpinned minimality and cancellation of the unchanged exterior
-energy give $E^+(r)\le C r(E^+)'(r)$.  If the semicircle has
-oscillation too large for one target chart, its angular energy
-has a fixed positive lower bound and the outer energy bound
-gives the same inequality.  The constants are uniform along
-the compact boundary curve.
-
-Integrating this inequality gives power decay on half-disks
-centered on the diameter.  Even reflection constructs a weak
-map on a full disk: the semicircle Green identities at common
-good radii give its reflected weak derivatives.  A disk near
-the diameter is bounded by a larger boundary-centered
-half-disk, while disks away from the diameter use the interior
-decay already proved.  Thus the reflected map has uniform
-power decay on all sufficiently small disks.  No local
-minimality of the reflected map is asserted.
-The averaging construction yields a continuous
-representative whose diameter trace is exactly
-$\gamma\circ\beta\circ P_p$.  In the open half-disk it agrees
-with the smooth interior representative: two continuous functions
-equal almost everywhere are equal there.
-
-Straighten the regular target arc to one coordinate axis.  Write
-the resulting map as $X=(x,Y)$, with $Y=0$ on the diameter.
-The coordinate metric remains smooth and positive definite.
-Harmonicity and the two conformality equations give
-$|\Delta X|\le C|DY|^2$.  Odd reflection of $Y$ has a genuine weak
-Poisson equation across the diameter; the zero trace cancels the
-boundary terms.  Its forcing is bounded by $C|DY|^2$, and its
-Holder and energy-decay bounds follow from the original map.
-The preceding weighted argument makes $DY$ continuous up to the
-diameter.
-
-Conformality recovers the remaining derivatives without dividing by
-the differential of $X$.  In complex notation it is one quadratic
-equation in the missing longitudinal column.  Completing the square
-expresses its square as a continuous function of the already
-controlled transverse columns and metric coefficients.  At a zero
-of that function the modulus of the square root tends to zero.
-At a nonzero value, a local continuous square root exists and
-connectedness of a smaller open half-disk fixes the sign of the
-existing interior root.  Thus the full differential extends
-continuously.  Integrating it along segments gives within-$C^1$
-regularity of $X$, and inverse coordinates return that regularity
-to the original map.  Overlapping extensions agree in the interior
-and hence on their common closed-domain boundary.  This constructs
-one within-$C^1$ map on the entire closed disk with the same weak
-values, derivatives, and continuous boundary trace.
-\lean{PoincareMT.M65Boundary.weakDisk_boundary_local_contMDiff}
-\lean{PoincareMT.m65PlateauBoundaryRegularityInput_proved}
-
-\paragraph{Finite branches and a homeomorphic trace.}
-In a harmonic target chart the complex differential
-$\Phi=X_x-iX_y$ satisfies $\bar\partial\Phi=A\Phi$ with bounded
-matrix coefficient locally.  On a small disk a Cauchy-transform
-contraction solves $P=I+\mathcal C(AP)$ with $\|P-I\|<1$.
-Consequently $P$ is invertible and $P^{-1}\Phi$ is holomorphic.
-It either vanishes locally or factors as $z^m v(z)$ with $m\ge0$
-and $v(0)\ne0$.
-
-The boundary version uses the actual tangent of the regular Jordan
-arc.  An invertible metric row frame makes the tangential component
-of $\Phi$ real on the diameter and the transverse components purely
-imaginary.  Reflection by the corresponding anti-complex involution
-extends this framed field continuously to a full disk.  Its reflected
-coefficient may jump across the diameter, but is bounded and smooth
-on each open side.  The same small-disk Cauchy construction gives a
-continuous invertible gauge.  After the gauge change the field is
-holomorphic on both sides; rectangle integrals cancel along the
-common continuous trace, proving holomorphicity across the diameter.
-Undoing the frame gives, in the closed half-disk,
+\begin{lemma}[Finite branches and a homeomorphic boundary label]
+\label{lem:annular-disk-strict-trace}
+\uses{lem:annular-disk-conformal,lem:annular-disk-interior,lem:annular-disk-boundary}
+\lean{PoincareMT.M65StrictTrace.finite_disk_branches,PoincareMT.m65Plateau_strict_trace}
+The differential has finitely many zeros on the closed disk,
+and the weakly monotone boundary label is a circle homeomorphism.
+Near each branch, in the appropriate disk or half-disk coordinate,
 \begin{equation}
- X_x-iX_y=z^m Q(z),\qquad Q(0)\ne0.
+ X_x-iX_y=z^m Q(z),\qquad Q(0)\ne0 .
  \label{eq:annular-boundary-factor}
 \end{equation}
-After shrinking, $Q$ is nowhere zero, continuous on the closed
-half-disk, and $C^1$ on its interior.  The Cauchy-transform estimates
-also give $DQ\in L^2$ and
-$|Q(z)-Q(w)|\le C|z-w|^{1/2}$.  These estimates, rather than
-continuity alone, will justify the curvature integral below.
+Here $Q$ is continuous, locally half-Holder, and has weak derivative
+in $L^2$; it is $C^1$ in the interior.
+\end{lemma}
+\begin{proof}
+The complex differential satisfies $\bar\partial\Phi=A\Phi$.
+A small-disk Cauchy-transform contraction gives an invertible
+gauge in which it is holomorphic. At the boundary, a metric row
+frame and reflection by its anti-complex involution reduce to the
+same construction. Holomorphic factorization gives
+\eqref{eq:annular-boundary-factor} and the stated estimates.
 
-Local vanishing of the differential would propagate through the
-connected open disk by the interior alternative, making the map
-constant.  This contradicts the surjective weakly monotone trace
-onto a Jordan curve.  Thus every differential zero is isolated
-relative to the closed disk.  The zero set is closed by within-$C^1$
-regularity and compact, hence finite.  If $\beta$ were not injective,
-weak monotonicity would give a nontrivial collapsed boundary arc.
-The tangential derivative vanishes on that arc, and conformality,
-extended to the boundary by continuity, makes the full differential
-zero there.  Finiteness excludes this.  Therefore $\beta$ is a
-continuous bijection of the circle, hence a homeomorphism.
+Local vanishing would propagate to a constant disk, contradicting
+the Jordan trace. Zeros are therefore isolated relative to the
+closed disk; compactness makes them finite. A noninjective monotone
+label would collapse an arc, on which the tangential differential,
+and by conformality the full differential, would vanish.
+Thus the label is injective and hence a homeomorphism.
+\end{proof}
 
-Within-$C^1$ regularity on the compact disk supplies a Lipschitz
-bound.  Area equals energy by conformality, and the same weak
-derivative identities preserve that energy.  The resulting genuine
-admissible disk $f$ consequently satisfies
+\begin{proof}[Proof of Theorem~\ref{thm:annular-plateau}]
+\proves{thm:annular-plateau}
+The preceding lemmas give the same conformal harmonic minimum
+with a homeomorphic boundary label and within-$C^1$ regularity.
+Compactness makes it Lipschitz. Hence it is an actual admissible
+disk, and
 \[
- A_g(\gamma)\le\operatorname{Area}_g(f)=E(u)\le A_g(\gamma),
+ A_g(\gamma)\leq\operatorname{Area}_g(u)=E(u)\leq A_g(\gamma).
 \]
-which finishes the attainment construction.
-\lean{PoincareMT.M65StrictTrace.finite_disk_branches}
-\lean{PoincareMT.m65Plateau_strict_trace}
+\end{proof}
 \source{MorreyICM1950}\dcref{Sections 3--5, pp. 181--187}
 \source{MT2007}\dcref{Lemma 19.2, pp. 437--439}
 
 \subsection{Gauss--Bonnet with boundary branches}
 \label{sec:annular-disk-gauss-bonnet}
 
+\begin{lemma}[Branched disk Gauss--Bonnet]\label{lem:annular-branched-gauss}
+\uses{thm:annular-plateau,lem:annular-disk-strict-trace}
+\lean{PoincareMT.M65MinimalDisk.logarithmicGaussDensity_integrable,PoincareMT.M65MinimalDisk.logarithmicGaussDensity_gaussBonnet}
 Let $f$ be the disk just constructed and write
 $f^*g=\lambda\,|dz|^2$ on its regular locus.  Its area density is
 $\lambda$, which is continuous and nonnegative on the closed disk.
@@ -2106,6 +837,7 @@ without a boundary immersion assumption:
  2\pi\le\int_{\mathbb D}G-\int_{-\pi}^{\pi}B(\theta)\,d\theta.
  \label{eq:annular-branched-gauss}
 \end{equation}
+\end{lemma}
 
 First, $G$ is absolutely integrable.  Near an interior branch the
 complex differential has a finite power factor with a nonzero
@@ -2218,6 +950,20 @@ convergence, proving (\ref{eq:annular-branched-gauss}).
 
 \subsection{The disk inequality for an immersed shortening curve}
 \label{sec:immersed-disk-comparison}
+
+\begin{lemma}[Filling-area comparison along immersed shortening]
+\label{lem:annular-immersed-disk}
+\uses{thm:annular-plateau,lem:annular-branched-gauss,lem:annular-disk-gluing}
+\lean{PoincareMT.m65EmbeddedFillingAreaInequality_proved,PoincareMT.m65Exists_generic_filled_approximations,PoincareMT.m65ImmersedFillingAreaComparison_of_diskComparison}
+On a compact smooth three-dimensional Ricci flow, a smooth immersed
+null loop evolving by curve shortening satisfies the integrated
+filling-area comparison
+\[
+ A_{g(t)}(c(t))\leq\Phi_{F,s}(A_{g(s)}(c(s)),t)
+\]
+on each closed interval strictly inside its smooth time domain.
+Here $\Phi_{F,s}$ is the profile with initial time $s$.
+\end{lemma}
 
 The negative constant in the profile comes from the disk, not from the
 annulus.  Let $c(x,t)$ be a smooth family of immersed null loops on an
@@ -2362,8 +1108,12 @@ residual estimate is an extra hypothesis on the original shortening curve.
 \subsection{Good times and a fixed delayed grid}
 \label{sec:good-time-grid}
 
-Fix $\eta>0$.  We first prove a statement for one member $z$, with a
-circumference cutoff allowed to depend on $z$: either its product length
+\begin{lemma}[A terminal alternative for each member]
+\label{lem:annular-member-terminal}
+\uses{lem:annular-evolving,lem:annular-time-control,lem:annular-immersed-disk,thm:ramps-uniform-jets}
+\lean{PoincareMT.m65FiniteProfileComparison,PoincareMT.m65Family_exists_fixed_good_grid,PoincareMT.m65FamilyCell_exists_filled_limit,PoincareMT.m65FamilyCell_exists_comparison_cutoff,PoincareMT.m65Family_pointwise_terminal_alternative}
+Fix $\eta>0$. For each member $z$ there is a positive circumference
+cutoff such that, below that cutoff, either its product length
 is less than $\eta/2$ throughout a fixed final interval $[T,b]$, or
 \[
  f_z(b)\le\Phi_F(f_z(a),b)+\eta/2.
@@ -2371,6 +1121,7 @@ is less than $\eta/2$ throughout a fixed final interval $[T,b]$, or
 The final time $T$ and all discretization parameters will precede $z$
 and $\rho$.  This distinction is what makes the later finite-net step
 possible.
+\end{lemma}
 
 For $0<\rho<1$, the ramp estimates applied to the chosen polygonal
 approximation give
@@ -2577,6 +1328,8 @@ the stated per-member alternative with the same $T$ for every member.
 \subsection{One circumference and class preservation}
 \label{sec:terminal-transfer}
 
+\begin{lemma}[Projection preserves the family class]\label{lem:annular-family-class}
+\uses{lem:annular-evolving}
 Curve shortening in the product preserves the projected family homotopy
 class: continuity in time gives a homotopy from the initial approximation to
 each included slice, and the static flattening is homotopic to the raw family.
@@ -2590,6 +1343,7 @@ sum of the base square and a nonnegative circle square.  Thus
 \lean{PoincareMT.m65ProjectedFamily_homotopic}
 \lean{PoincareMT.m65ProjectedFamilyLength_le}
 \lean{PoincareMT.m65Projection_tangentNorm_le}
+\end{lemma}
 
 We now turn the per-member cutoffs into one circumference.  First choose
 thresholds for transferring each of the two alternatives along an initial
@@ -2604,6 +1358,8 @@ an arbitrary positive error of that infimum, project and glue it, and then
 let the error tend to zero.  Attainment of the original annulus infimum is
 unnecessary.
 
+\begin{lemma}[Transfer of the area alternative]\label{lem:annular-area-transfer}
+\uses{prop:annular-evolution,lem:annular-disk-gluing}
 For the area branch, set $E=e^{5K_0(b-a)}$ and $Q=1/w(b)>0$.
 The initial-value identity for the profile is
 $\Phi_F(A,b)-\Phi_F(B,b)=Q(A-B)$.  If
@@ -2616,8 +1372,11 @@ Thus the uniform choice $\mu_{\rm area}=\eta/[4(E+Q)]$ transfers
 the half-error alternative at the node to the full-error alternative
 at the member.
 \lean{PoincareMT.m65AreaLoopTransfer}
+\end{lemma}
 \source{MT2007}\dcref{Lemma 19.30, p. 462}
 
+\begin{lemma}[Transfer of the short-loop alternative]\label{lem:annular-short-transfer}
+\uses{prop:annular-evolution,lem:annular-ramp-comparison,thm:ramps-uniform-jets}
 For the short branch, suppose the node's product length is less than
 $\eta/2$ at every time of $[T,b]$.  Set
 \[
@@ -2641,8 +1400,11 @@ boundary, would force the node's length at $t$ to be at least
 $(3/4)(3\eta/4)=9\eta/16>\eta/2$, a contradiction.  The projected member
 therefore has terminal length less than $\eta$.
 \lean{PoincareMT.m65ShortLoopTransfer}
+\end{lemma}
 \source{MT2007}\dcref{Claim 19.32, pp. 463--464}
 
+\begin{lemma}[One circumference for the whole family]\label{lem:annular-common-terminal}
+\uses{lem:annular-finite-net,lem:annular-area-transfer,lem:annular-short-transfer,lem:annular-member-terminal}
 Apply the finite-net construction to the \emph{approximated} family with
 $\mu=\min\{\mu_{\rm area},\mu_{\rm short}\}$.
 For each of its finitely many nodes take the per-member cutoff from the
@@ -2659,6 +1421,7 @@ The order of choices is
 \lean{PoincareMT.m65CommonTerminalAlternative}
 \lean{PoincareMT.m65CommonTerminalAlternative_proved}
 \lean{PoincareMT.m65DeformedFamilyOfProjectedEstimate}
+\end{lemma}
 \source{MT2007}\dcref{Claims 19.25--19.32, pp. 453--464}
 
 The deformation is the projected solution at this single circumference.

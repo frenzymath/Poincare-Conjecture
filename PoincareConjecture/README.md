@@ -15,19 +15,23 @@ The [subject-organized proof library](IMPORT.md) has passed a full Lean build
 and endpoint axiom audits at `516badd1`. Comparator accepted both public targets
 at `1876d7dc`, checked by Nanoda and Lean's default kernel. The recursive axiom
 audits report only `propext`, `Classical.choice`, and `Quot.sound`.
-See the [verification evidence](references/ricci-flow/mapher/integration-verification/README.md)
+See the [verification evidence](../archive/PoincareConjecture/references/ricci-flow/mapher/integration-verification/README.md)
 for the exact revisions, verifier configuration, and logs, and the
 [FrenzyMath announcement](https://frenzymath.com/news/poincare-formalization/)
 for the project's background.
 
-The [main blueprint](blueprint/content.tex) contains Horizon's 18-chapter
-exposition of the implemented proof, imported from workspace revision
-`fbdf7e1493ed`. Seventeen chapters have passed Horizon's source and readability
-review; smoothing and whole-book publication review remain pending. The
-[snapshot record](provenance/blueprint-import/README.md) preserves chapter hashes,
-review decisions, and the distinction between current and historical Lean links.
-Source-link coverage is separate from the recorded proof verification;
-all 16 reference projects remain blueprint-only.
+The [main blueprint](blueprint/content.tex) explains the implemented proof in
+18 chapters, from Ricci flow and surgery to finite extinction, reconstruction,
+and compatible smoothing. Its named mathematical nodes link to current Lean
+declarations and record their prerequisites. Run
+`python scripts/check_blueprint_import.py` from the repository root to check
+these links, citations, and graph connections.
+
+The [snapshot record](../archive/PoincareConjecture/provenance/blueprint-import/README.md)
+preserves the original Horizon import at `fbdf7e1493ed`, including its hashes
+and review decisions. Those historical reviews and the recorded kernel checks
+are distinct from validation of the revised exposition. All 16 reference
+projects remain blueprint-only.
 
 ## Build
 

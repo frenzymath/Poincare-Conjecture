@@ -11,5 +11,5 @@ cross-cutting utilities should be placed at the lowest mathematically natural
 level. Move and rename modules when that improves the dependency structure.
 
 The reviewed M05-M07 interfaces are preserved outside the build in
-`../contracts/`. Those snapshots constrain theorem statements, not the internal
+`../../archive/PoincareConjecture/contracts/`. Those snapshots constrain theorem statements, not the internal
 organization of this library.

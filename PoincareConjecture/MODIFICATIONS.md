@@ -23,14 +23,14 @@ substantive changes.
 
 ## Whole-tree audit, 2026-09-29
 
-The [audit](provenance/2026-09-29/README.md) compared **23,564 active Lean files**
+The [audit](../archive/PoincareConjecture/provenance/2026-09-29/README.md) compared **23,564 active Lean files**
 against **18,888 files** from pinned revisions of DifferentialGeometry, DeGiorgi,
 TauCeti, ClassificationOfSurfaces, and Mathlib. It searched code without requiring
 existing citations or matching filenames. The 80% token-coverage rule, including
 local fragments, yielded **455 candidate pairs in 109 local files**.
 
 All candidates have recorded review dispositions in the
-[file-by-file ledger](provenance/2026-09-29/reviewed-files.json).
+[file-by-file ledger](../archive/PoincareConjecture/provenance/2026-09-29/reviewed-files.json).
 One additional explicitly attributed adaptation, `Topology/Plane/Meshes/PolygonalDomains.lean`,
 was reviewed despite falling below the detector threshold. The ledger records
 source paths, comparison commits, source hashes, notices, modifications, and
@@ -54,12 +54,12 @@ are recorded without treating each as a distinct author.
 This audit changes Lean comments only. It does not change declarations, imports,
 proofs, or mathematical attribution based merely on similarity. Retained source
 licenses and the DifferentialGeometry NOTICE are under
-[`provenance/2026-09-29/licenses/`](provenance/2026-09-29/licenses/).
+[`../archive/PoincareConjecture/provenance/2026-09-29/licenses/`](../archive/PoincareConjecture/provenance/2026-09-29/licenses/).
 
 ## Detection workflow
 
 Use [`scripts/scan_external_reuse.py`](../scripts/scan_external_reuse.py) and the
-[reproduction instructions](provenance/2026-09-29/README.md). This replaces the
+[reproduction instructions](../archive/PoincareConjecture/provenance/2026-09-29/README.md). This replaces the
 earlier citation-only workflow in `scripts/detect_provenance.py` for whole-tree
 audits. The old helper cannot discover uncited reuse.
 

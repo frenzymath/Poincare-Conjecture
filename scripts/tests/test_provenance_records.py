@@ -6,7 +6,7 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[2]
-AUDIT = ROOT / 'PoincareConjecture/provenance/2026-09-29'
+AUDIT = ROOT / 'archive/PoincareConjecture/provenance/2026-09-29'
 
 
 class ProvenanceRecordTests(unittest.TestCase):
