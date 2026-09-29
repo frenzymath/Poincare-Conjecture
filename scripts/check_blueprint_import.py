@@ -1,89 +1,132 @@
 #!/usr/bin/env python3
-"""Validate the pinned Horizon blueprint integration without compiling Lean."""
+"""Check the live blueprint against its Lean sources and dependency graph.
+
+Imported reviews are historical evidence, not a constraint that prevents
+correcting the published blueprint. This audit does not confer kernel
+verification or mathematical review.
+"""
 from collections import Counter
-import hashlib
 import json
 from pathlib import Path
 import re
 
 from hgraph.dashboard import parse_bib
-from hgraph.sync import parse_blueprint, parse_lean, read_blueprint
+from hgraph.sync import THM_ENVS, _assoc_proofs, parse_blueprint, parse_lean, read_blueprint
 import yaml
+
+
+def groups(source, command):
+    return [item.strip()
+            for group in re.findall(r'\\(?:' + command + r')(?:\[[^\]]*\])*\{([^}]+)\}', source)
+            for item in group.split(',') if item.strip()]
+
+
+def resolve_declarations(project, names):
+    """Parse candidate files, including namespaces, rather than guess names."""
+    if not names:
+        return {}
+    tails = {name.rsplit('.', 1)[-1] for name in names}
+    headers = re.compile(
+        r'(?m)^\s*(?:@\[[^\]]*\]\s*)*(?:(?:noncomputable|private|protected|unsafe)\s+)*'
+        r'(?:theorem|lemma|def|abbrev|structure|class|inductive)\s+([^\s(:]+)')
+    resolved = {}
+    for path in sorted((project / 'PoincareLib').rglob('*.lean')):
+        source = path.read_text(encoding='utf-8')
+        if not any(name.rsplit('.', 1)[-1] in tails for name in headers.findall(source)):
+            continue
+        for declaration in parse_lean(source):
+            name = declaration['fqname']
+            if name in names:
+                resolved.setdefault(name, []).append(str(path.relative_to(project)))
+    return resolved
+
+
+def check_graph(statements):
+    nodes = {statement['label']: statement for statement in statements}
+    aliases = {alias: s['label'] for s in statements
+               for alias in s.get('labels', [s['label']])}
+    issues, visiting, visited = [], set(), set()
+
+    def visit(label):
+        if label in visiting:
+            issues.append(f'Dependency cycle through {label}')
+            return
+        if label in visited:
+            return
+        visiting.add(label)
+        for dependency in nodes[label]['uses']:
+            dependency = aliases.get(dependency, dependency)
+            if dependency not in nodes:
+                issues.append(f'Unresolved dependency: {label} -> {dependency}')
+            else:
+                visit(dependency)
+        visiting.remove(label)
+        visited.add(label)
+
+    for label in nodes:
+        visit(label)
+    return issues
 
 
 def check(repo):
     project = repo / 'PoincareConjecture'
     blueprint = project / 'blueprint'
-    evidence = project / 'provenance/blueprint-import'
-    manifest = json.loads((evidence / 'manifest.json').read_text())
-    upstream = json.loads((evidence / 'inventory/v4-publication-status.json').read_text())
-    issues = []
-    accepted, checkpoint_differences = [], []
-    for record in manifest['files']:
-        data = (blueprint / record['path']).read_bytes()
-        for adaptation in reversed(record.get('metadata_adaptations', [])):
-            old, new = adaptation['original'].encode(), adaptation['replacement'].encode()
-            if data.count(new) != 1:
-                issues.append(f"Metadata adaptation differs: {record['path']}")
-            data = data.replace(new, old, 1)
-        if hashlib.sha256(data).hexdigest() != record['sha256']:
-            issues.append(f"Imported source changed: {record['path']}; reconcile its review")
-        if 'key' in record:
-            key = record['key']
-            checkpoint = next(c for c in upstream['chapters'] if c['key'] == key)
-            if checkpoint['sha256'] != record['sha256']:
-                checkpoint_differences.append(key)
-            if record['review_status'].startswith('accepted'):
-                review = json.loads((evidence / f'inventory/reviews/{key}-v4.json').read_text())
-                acceptance = review.get('integration_review', review.get('acceptance', {}))
-                if acceptance.get('draft_sha256') != record['sha256']:
-                    issues.append(f'Accepted chapter has no matching review digest: {key}')
-                else:
-                    accepted.append(key)
     entry = (blueprint / 'content.tex').read_text()
     chapters = re.findall(r'\\input\{chapters/([^}]+)\}', entry)
-    if chapters != manifest['chapters']:
-        issues.append('Active chapter sequence differs from the snapshot')
     source = read_blueprint(blueprint / 'content.tex')
     source = re.sub(r'(?<!\\)((?:\\\\)*)%[^\n]*', r'\1', source)
     labels = re.findall(r'\\label\{([^}]+)\}', source)
-    issues += [f'Duplicate label: {label}' for label, count in Counter(labels).items() if count > 1]
-    groups = lambda command: [item.strip()
-        for group in re.findall(r'\\(?:' + command + r')(?:\[[^\]]*\])*\{([^}]+)\}', source)
-        for item in group.split(',')]
-    issues += [f'Unresolved reference: {label}' for label in set(groups('ref|eqref|uses')) - set(labels)]
+    issues = [f'Duplicate label: {label}' for label, count in Counter(labels).items() if count > 1]
+    issues += [f'Unresolved reference: {label}'
+               for label in set(groups(source, 'ref|eqref|uses')) - set(labels)]
     bibliography = {row['key'] for row in parse_bib((blueprint / 'refs.bib').read_text())}
-    issues += [f'Unknown citation: {key}' for key in set(groups('cite|citep|citet|source')) - bibliography]
-    statements, _ = parse_blueprint(source)
-    if {s['label'] for s in statements} != {s['label'] for s in upstream['statements']}:
-        issues.append('Active mathematical statements differ from the imported draft report')
-    names = set(groups('lean'))
-    if names != set(upstream['declarations']):
-        issues.append('Active Lean names differ from the source report')
-    historical = []
-    cache = {}
-    for name, record in upstream['declarations'].items():
-        if record['source_disposition']['status'] == 'historical_removed_auxiliary':
-            historical.append(name)
-            if (project / record['file']).exists():
-                issues.append(f'Historical source unexpectedly restored: {name}')
+    issues += [f'Unknown citation: {key}'
+               for key in set(groups(source, 'cite|citep|citet|source')) - bibliography]
+    statements, proofs = parse_blueprint(source)
+    environments = re.findall(r'\\begin\{(' + '|'.join(map(re.escape, THM_ENVS)) + r')\}', source)
+    if len(environments) != len(statements):
+        issues.append('Every theorem-like environment must have a graph label')
+    proof_dependencies = _assoc_proofs(statements, proofs, issues)
+    for statement in statements:
+        statement['uses'] = sorted(set(statement['uses']) |
+                                   proof_dependencies.get(statement['label'], set()))
+    issues += check_graph(statements)
+    nodes = {alias: s for s in statements for alias in s['labels']}
+    ancestors, pending = set(), ['thm:topological-endpoint']
+    while pending:
+        label = pending.pop()
+        if label not in nodes:
             continue
-        path = project / record['file']
-        if path not in cache:
-            cache[path] = {decl['fqname']: decl for decl in parse_lean(path.read_text())}
-        if name not in cache[path]:
-            issues.append(f'Unresolved current Lean declaration: {name}')
+        label = nodes[label]['label']
+        if label in ancestors:
+            continue
+        ancestors.add(label)
+        pending.extend(nodes[label]['uses'])
+    names = set(groups(source, 'lean'))
+    resolved = resolve_declarations(project, names)
+    issues += [f'Unresolved current Lean declaration: {name}' for name in names - resolved.keys()]
+    unlinked = [s['label'] for s in statements if not s['lean']]
+    issues += [f'Node has no Lean declaration: {label}' for label in unlinked]
+    for chapter in chapters:
+        items, _ = parse_blueprint((blueprint / 'chapters' / f'{chapter}.tex').read_text())
+        if not items:
+            issues.append(f'Chapter has no graph nodes: {chapter}')
+        elif not any(s['label'] in ancestors for s in items):
+            issues.append(f'Chapter is disconnected from the Poincare theorem: {chapter}')
+    for command in ('chaptermark', 'bibliographystyle', 'bibliography'):
+        if re.search(r'\\' + command + r'\b', source):
+            issues.append(f'Print-only command in web blueprint: {command}')
     configs = repo / 'site/projects'
     for entry in yaml.safe_load((repo / 'config.yaml').read_text())['projects']:
         config = yaml.safe_load((configs / entry['root'] / 'config.yaml').read_text())
-        if config.get('site', {}).get('progress') is not False:
-            issues.append(f"Blueprint annotations treated as proof progress: {entry['root']}")
         if bool(config.get('lean')) != (entry['root'] == 'PoincareConjecture'):
             issues.append(f"Unexpected formalization project: {entry['root']}")
     return dict(chapters=len(chapters), statements=len(statements),
-                accepted_chapters=len(accepted), superseded_checkpoint_digests=checkpoint_differences,
-                current_lean_names=len(names)-len(historical),
-                historical_lean_names=historical, pending_reviews=manifest['pending_reviews'],
+                linked_statements=len(statements)-len(unlinked), unlinked_statements=unlinked,
+                current_lean_names=len(resolved),
+                endpoint_ancestors=len(ancestors),
+                dependencies=sum(len(set(s['uses'])) for s in statements),
+                roots=[s['label'] for s in statements if not s['uses']],
                 issues=sorted(set(issues)))
 
 

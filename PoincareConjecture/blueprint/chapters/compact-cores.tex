@@ -21,6 +21,7 @@ restrictions have local finite polyhedral, piecewise affine descriptions.
 
 \begin{definition}[Compatible PL domain]
 \label{def:compact-pl-domain}
+\lean{PoincareMT.M76.PLDomain}
 A PL domain $R$ for $e$ is closed in $X$; the charts $e_i$ cover $X$ and
 have piecewise affine transitions. For every $x\in\operatorname{fr}_X R$
 there are a compatible partial chart $b$, an affine functional $\ell$,
@@ -45,6 +46,7 @@ while belonging to $\operatorname{fr}_X K$.
 
 \begin{definition}[One simply connected end]
 \label{def:one-simply-connected-end}
+\lean{PoincareMT.M76.HasOneSimplyConnectedEnd}
 A space $Y$ has one simply connected end when for every compact
 $C\subset Y$ there exists compact $D\subset Y$ such that
 $C\subset\operatorname{int}_Y D$, $Y\setminus D$ is nonempty and connected,
@@ -60,6 +62,8 @@ nonempty complement of a set containing $Y$.
 
 \begin{definition}[Marked PL sphere, ball, and irreducibility]
 \label{def:chartwise-sphere-ball}
+\uses{def:compact-pl-domain}
+\lean{PoincareMT.M76.ChartwisePLSphere,PoincareMT.M76.ChartwisePLBall,PoincareMT.M76.IsPLIrreducible}
 A chartwise PL sphere on $S\subset X$ consists of a homeomorphism
 $s:Q^2\to S$ and a map $\widetilde s:V^3\to X$ equal to $s$ on $Q^2$
 and chartwise PL there. No regularity away from $Q^2$ is required.
@@ -158,6 +162,8 @@ contractions; ambient orientability is not an extra hypothesis. The
 finite surface analysis also gives a PL sphere parametrization for $g_i=0$.
 
 \begin{definition}[Compression complexity]
+\label{def:compression-complexity}
+\lean{PoincareMT.M76.Wall.compressionComplexity}
 For this finite component model put
 \[
  w(g)=\max\{2g-1,0\},\qquad c(F)=\sum_{i=1}^n w(g_i).
@@ -174,6 +180,8 @@ complexities has a least element. Choose a witness attaining it.
 
 \begin{proposition}[No essential proper disk for a minimal core]
 \label{prop:compact-core-incompressibility}
+\uses{def:compression-complexity,def:compact-pl-domain,def:one-simply-connected-end}
+\lean{PoincareMT.M76.exists_protected_core_without_essential_disk}
 For this witness, let $d:B^2\to R\setminus C$ be an embedded chartwise PL
 disk such that $d^{-1}(F)=Q^1$. Its boundary loop, with the complete
 $Q^1$ parametrization, represents the identity in the fundamental group
@@ -235,6 +243,21 @@ it does not assert that all frontier loops are trivial.
 
 \section{The spherical alternative}
 \label{sec:spherical-frontier}
+
+\begin{theorem}[Finite spherical frontier]
+\label{thm:compact-spherical-frontier}
+\uses{prop:compact-core-incompressibility,thm:dehn-marked-loop,def:chartwise-sphere-ball}
+\lean{PoincareMT.M76.exists_original_terminal_spherical_family}
+Let $R$ be a connected PL domain with compact frontier and one simply
+connected end, and let $A\subset R$ be compact. There is a compact
+connected PL domain $K\subset R$ whose new frontier is a finite disjoint
+family of chartwise PL spheres $S_i\subset\operatorname{int}R$:
+\[
+ \operatorname{fr}_X K=\operatorname{fr}_X R\cup\bigcup_i S_i,
+ \qquad j^{-1}(A\cup\operatorname{fr}_X R)
+ \subset\operatorname{int}_R j^{-1}K.
+\]
+\end{theorem}
 
 The marked-boundary Dehn theorem takes a PL domain, an open marked part
 of its boundary, and a continuous disk filling of a loop whose class is
@@ -349,6 +372,22 @@ relative interior. No filled complementary component is asserted to be a ball.
 \section{Joining two boundary spheres}
 \label{sec:sphere-merging}
 
+\begin{theorem}[Reduction to one frontier sphere]
+\label{thm:compact-single-sphere}
+\uses{thm:compact-spherical-frontier,def:one-simply-connected-end}
+\lean{PoincareMT.M76.exists_single_spherical_frontier_of_finite_family}
+Suppose a compact connected PL core $K\subset R$ has a finite disjoint
+new spherical frontier in $\operatorname{int}R$. Let $P\subset R$ be
+closed, contain the old frontier, and lie in the relative interior of
+$K$. Then $K$ enlarges to a compact connected PL core $M\subset R$
+with one chartwise PL sphere $T\subset\operatorname{int}R$ as new
+frontier. It retains $P\subset\operatorname{int}_R M$ and satisfies
+\[
+ \operatorname{fr}_X M=\operatorname{fr}_X R\cup T,
+ \qquad \operatorname{fr}_R j^{-1}M=j^{-1}T.
+\]
+\end{theorem}
+
 Suppose a filled core $L$ has $n>1$ new spheres and protect the closed set
 $P=A\cup B$. Choose points on distinct spheres $S_a,S_b$. Since
 $B\subset L$, the connected exterior $R\setminus L$ equals the open set
@@ -389,6 +428,8 @@ All cores increase, so the original compact set stays protected.
 
 \begin{theorem}[Protected Wall core]
 \label{thm:protected-wall-core}
+\uses{thm:compact-spherical-frontier,thm:compact-single-sphere}
+\lean{PoincareMT.M76.hasWallCompactCore}
 Let $X$ be Hausdorff and paracompact, $e$ an ambient chart family, and $R$
 a connected PL domain with compact frontier and one simply connected end.
 For every compact $A\subset R$ there are compact $K\subset R$ and a
@@ -426,6 +467,9 @@ $C_r=\pi(B^I\times B_r^J)$ and
 $A_r=\pi(\partial B^I\times B_r^J)$.
 
 \begin{definition}[Protected marked ball]
+\label{def:protected-marked-ball}
+\uses{def:chartwise-sphere-ball}
+\lean{PoincareMT.M76.HamiltonMarkedProtectedBall}
 For an ambient PL chart family $e$ making $R$ a PL domain, a protected
 marked ball is a chartwise PL ball $(D,\operatorname{fr}_X D)$ with
 $D\subset R$ and these position conditions. If $i=0$, require
@@ -446,6 +490,8 @@ the ball after choosing its periods.
 
 \begin{theorem}[Protected irreducible replacement]
 \label{thm:protected-prime-replacement}
+\uses{def:protected-marked-ball,thm:prime-index-zero,thm:prime-index-one,thm:prime-index-two}
+\lean{PoincareMT.M76.hasHamiltonProtectedIrreducibleReplacement}
 For every $I,J,\Lambda,e,D$ satisfying these conditions, there are a
 chart family $a$ on the same ambient space and an ambient open set
 $N\supset D\cup\operatorname{fr}_X R$ such that $R$ is irreducible in $a$.
@@ -460,11 +506,16 @@ specializations are developed next.
 \section{A finite bound before choosing a maximal cut}
 \label{sec:prime-replacement}
 
+\begin{definition}[Marked sphere cut]
+\label{def:marked-sphere-cut}
+\uses{def:chartwise-sphere-ball}
+\lean{PoincareMT.M76.MarkedSphereCut}
 A marked sphere cut consists of finitely many disjoint parametrized PL
 spheres in $\operatorname{int}_X R$, disjoint closed product collars with
 the spheres at height $1/2$, and the collars' two complete boundary
 spheres, called ports. Removing the open collars gives a compact PL
 carrier $Q$ whose frontier is the old frontier together with all ports.
+\end{definition}
 
 Fix a faithful finite PL realization $f:R\to|\mathcal K|$ and its inverse.
 A component of $Q$ is a punctured sphere component if, through this
@@ -481,10 +532,17 @@ $\mathcal K_2$ and boundary vertices $\mathcal J_0$, put
  B_0=4\,\#\mathcal K_2+\#\mathcal J_0,\qquad
  b_1(R)=\dim_{\mathbb F_2}H_1(R;\mathbb F_2).
 \]
-The implemented uniform bound for an admissible system of $s$ spheres is
+\begin{theorem}[Uniform bound for admissible sphere cuts]
+\label{thm:prime-sphere-bound}
+\uses{def:marked-sphere-cut}
+\lean{PoincareMT.M76.HasNoPuncturedSphereComponents.card_le_original_model_bound}
+For the fixed pure finite realization with its boundary subcomplex,
+compatible affine face and vertex-star charts, an admissible system of
+$s$ spheres satisfies
 \begin{equation}
  s+1\leq b_1(R)+B_0.\label{eq:prime-sphere-bound}
 \end{equation}
+\end{theorem}
 
 First normalize the admissible system while retaining its sphere index
 set and the fixed original complex. Original chart-star motions avoid the
@@ -570,6 +628,17 @@ incidence assertions are needed before the capping argument.
 \section{Capping and the irreducibility test}
 \label{sec:prime-capping}
 
+\begin{theorem}[A maximal marked sphere cut]
+\label{thm:prime-maximal-cut}
+\uses{thm:prime-sphere-bound,def:chartwise-sphere-ball}
+\lean{PoincareMT.M76.exists_maximal_original_sphere_cut}
+A compact connected PL domain containing a marked PL ball has a finite
+faithful realization for which either the domain is a punctured sphere
+or there is an admissible marked cut of maximal cardinality. Inserting
+any additional interior sphere produces a punctured-sphere component
+incident to a new port, while preserving every old collar and port.
+\end{theorem}
+
 Refine collars inside a prescribed open neighborhood of the cut spheres.
 In a finite realization add one extra coordinate direction for each port
 and cone that port in its own direction. The resulting PL ball caps are
@@ -595,12 +664,7 @@ necessary. Maximal sphere count alone would leave the nonseparating case
 unresolved. The separate capped-sphere test performs these steps before
 asserting irreducibility.
 
-The cap construction is relative to the original carrier. Each port is given
-its own extra coordinate direction, so the cap is a finite PL ball meeting
-the carrier exactly in that port; the caps are pairwise disjoint and are
-chosen inside the prescribed collar support. If a sphere avoids all cap
-balls, its collar can be inserted without changing the old frontier. The new
-punctured component has a new port. To exclude both new ports, lift the
+To exclude both new ports, lift the
 inserted sphere through the lattice covering to a locally flat sphere in
 $\mathbb R^3$ and take its bounded region. Distinct deck translates have
 disjoint frontiers. Their closed bounded regions are either disjoint or
@@ -632,6 +696,33 @@ boundary on the retained side, supplying the required $N$.
 
 \section{The three lower-index constructions}
 \label{sec:prime-index-cases}
+
+\begin{theorem}[Protected replacement on a three-torus]
+\label{thm:prime-index-zero}
+\uses{thm:prime-maximal-cut}
+\lean{PoincareMT.M76.hasHamiltonProtectedIrreducibleReplacement_of_card_eq_zero}
+For $i=0$, the protected marked ball admits an irreducible atlas on the
+same lattice-handle ambient space. Both PL identity maps remain valid
+on an open neighborhood of that entire ball.
+\end{theorem}
+
+\begin{theorem}[Protected replacement on a torus slab]
+\label{thm:prime-index-one}
+\uses{thm:prime-maximal-cut}
+\lean{PoincareMT.M76.hasHamiltonProtectedIrreducibleReplacement_of_card_eq_one}
+For $i=1$, the retained atlas makes the whole handle irreducible,
+including after reattachment of the same marked ball. Both PL identity
+maps hold near the ball and the complete old boundary.
+\end{theorem}
+
+\begin{theorem}[Protected replacement on a solid torus]
+\label{thm:prime-index-two}
+\uses{thm:prime-maximal-cut}
+\lean{PoincareMT.M76.hasHamiltonProtectedIrreducibleReplacement_of_card_eq_two}
+For $i=2$, moving a maximal cut off the physical cocore and the protected
+ball yields an irreducible atlas. It agrees in both PL directions near
+the same ball and the whole old boundary.
+\end{theorem}
 
 For $i=0$ the domain is the whole three-torus and has no old boundary.
 Construct a boundary-relative irreducible atlas with a nonempty open
@@ -686,15 +777,6 @@ matched corner sectors give the new transverse charts. Thus $S'$ belongs
 to the original admissible family, contradicting the sphere minimum.
 This establishes irreducibility of the whole handle in the retained atlas.
 
-The equal-label bigon case is excluded by the terminal disk minimum, not by
-an appeal to a picture: the bigon and the terminal disk form a new proper
-disk with strictly fewer intersection arcs, contradicting minimality. In the
-spanning case the rectangle has two distinct contact-circle labels, so the
-formula above joins exactly those two circles. The product charts on the two
-half-height sides and the corner sectors give the crossing charts for the
-replacement sphere, which is why the contact minimum is taken over physical
-chart data as well as over the number of circles.
-
 For $i=2$ begin with a maximal cut of $R$. The regular cocore construction
 and finite contact reduction produce a cut disjoint from a selected
 physical cocore, preserving the same sphere index set and the absence of
@@ -704,11 +786,6 @@ motion. The new cut is still maximal because its cardinality is unchanged
 and the bound applies to every admissible cut. Protected capping and atlas
 transport now finish the construction. This proves the three cases of
 Theorem~\ref{thm:protected-prime-replacement}.
-
-In particular, the cocore reduction preserves the no-punctured-component
-predicate and the maximal cardinality; it is not merely an isotopy of an
-abstract sphere system. The same physical motion carries every collar and
-port, so the protected ball is avoided before the retained atlas is assembled.
 
 \section{Use in the lower-handle argument}
 \label{sec:compact-core-contracts}

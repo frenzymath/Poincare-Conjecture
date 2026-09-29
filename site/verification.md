@@ -34,11 +34,11 @@ The draft import supplies these targets and pins. A local comparator run passed
 at commit `1876d7dc2c85325a3f62ce9776af98f910c5db04`: both Nanoda and Lean's
 default kernel accepted the solution, and the driver exited successfully after
 6h 55m. The source stayed clean and unchanged throughout the run. See the
-[integration evidence](../PoincareConjecture/references/ricci-flow/mapher/integration-verification/README.md)
+[integration evidence](../archive/PoincareConjecture/references/ricci-flow/mapher/integration-verification/README.md)
 for the report, compressed logs, tool hashes and execution details. This is a
 local result, not a CI attestation or a claim about later unchecked proof changes.
 Historical Horizon build and recursive endpoint axiom evidence is retained in
-`PoincareConjecture/references/ricci-flow/mapher/production-cleanup/`;
+`archive/PoincareConjecture/references/ricci-flow/mapher/production-cleanup/`;
 it is not a comparator result or a build of the final PR revision.
 The workflow builds the pinned verification tools with the reviewed
 [`nanoda-before-parse.patch`](../PoincareConjecture/Comparator/nanoda-before-parse.patch),

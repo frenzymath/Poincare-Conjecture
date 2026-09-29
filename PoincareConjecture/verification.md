@@ -10,7 +10,7 @@ Comparator permitted only `propext`, `Classical.choice`, and `Quot.sound`.
 The production proof tree was unchanged between these two checks. The build
 and Comparator logs, configuration, tool hashes, and exact source revisions
 are preserved in the
-[verification evidence](https://github.com/frenzymath/Poincare-Conjecture/tree/import/poincare-subject-library/PoincareConjecture/references/ricci-flow/mapher/integration-verification).
+[verification evidence](../archive/PoincareConjecture/references/ricci-flow/mapher/integration-verification/README.md).
 These are recorded local checks of the cited revisions, not new CI results
 for later documentation changes.
 

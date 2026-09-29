@@ -25,6 +25,7 @@ are smooth.  We write $h:M\cong N$ for the chosen homeomorphism.
 
 \begin{definition}[Compatible smooth model]
 \label{def:smoothing-bridge}
+\lean{PoincareMT.SmoothingBridgeConclusion}
 For a connected nonempty topological manifold $M$, a compatible smooth
 model consists of
 \begin{enumerate}
@@ -37,20 +38,19 @@ model consists of
 The smooth atlas must induce this same topology on $N$.
 \end{definition}
 
-The homeomorphism is part of the data because all later transport must use
-the same map.  In particular, replacing $h$ by an existentially chosen
-homeomorphism after applying the smooth theorem would lose the relation
-between the transported topological hypotheses and the endpoint map.
+All hypothesis transport and the final composition use this same $h$.
 
 \begin{theorem}[Hamilton--Cairns bridge]
 \label{thm:m76}
+\uses{def:smoothing-bridge,thm:lower-handle-straightening,thm:smoothing-finite-assembly,thm:smoothing-geometric-triangulation,thm:smoothing-triangulation}
 For every compact, Hausdorff, second-countable, charted topological
 three-manifold that is nonempty and connected, there is a compatible
 smooth model. The proof is independent of simple connectedness.
 \lean{PoincareMT.m76CompatibleSmoothing}
 \lean{PoincareMT.M76.smoothingConclusion_of_lower_handle_cases}
 \source{Hamilton1976,Cairns1940}
-\dcref{Hamilton 1976, Theorem 2(1), pp.~64,69; Cairns 1940, Theorem III, p.~797 and Section 11, p.~807}
+\dcref{Hamilton 1976, Theorem 2(1), pp.~64,69}
+\dcref{Cairns 1940, Theorem III, p.~797 and Section 11, p.~807}
 \end{theorem}
 
 The rest of the chapter proves the content hidden behind this theorem.  The
@@ -79,6 +79,7 @@ complement is simply connected.
 
 \begin{definition}[One simply connected end]
 \label{def:one-end}
+\uses{def:one-simply-connected-end}
 For a topological space $Y$, write $Y$ has one simply connected end when
 for every compact $C\subset Y$ there is a compact $D\subset Y$ such that
 \[
@@ -101,6 +102,7 @@ following exact statement.
 
 \begin{proposition}[Protected Wall compact core]
 \label{prop:wall-core}
+\uses{thm:protected-wall-core}
 Assume $R$ is a connected PL domain, $\partial R$ is compact, $R$ has one
 simply connected end, and $A\subset R$ is compact.  There are compact
 $K\subset R$ and a set $S\subset\operatorname{int}R$ such that
@@ -143,6 +145,7 @@ frontier.
 
 \begin{definition}[Generalized Dehn input]
 \label{def:generalized-dehn}
+\uses{thm:dehn-standard-proper,thm:dehn-protected-disks,thm:dehn-protected-annulus,thm:dehn-enclosing-region}
 The generalized Dehn input is the conjunction of
 \begin{enumerate}
 \item the protected index-one annulus, with both prescribed rim maps;
@@ -165,22 +168,9 @@ frontier, as in Theorem~\ref{thm:dehn-standard-proper}.
 \dcref{Hamilton 1976, pp.~65--69}
 \end{definition}
 
-The finite constructions are proved in
-Sections~\ref{sec:dehn-marked-tower} and
-\ref{sec:dehn-annulus-descent}.  Tower ascent decreases
-$|T|-|s_T(T)|$ for one fixed finite set of source marks $T$.
-During disk descent the number of boundary double components strictly
-decreases without increasing the interior count; after the boundary
-count vanishes, interior circle surgery decreases the latter count
-while fixing the entire rim.  Annulus descent instead decreases the
-number of connected components of the actual source double locus,
-with both whole rim maps fixed.  Finite supported repairs and exact
-tube preimages justify these component comparisons.  The separate
-proper-disk boundary correction uses the finite residual
-\eqref{eq:dehn-collar-residual} to paste its collar compression to
-the identity on the rest of the domain.  That residual construction
-is part of the proof, rather than an additional surface-existence
-premise in the generalized Dehn input.
+The disk and annulus constructions, their decreasing measures, and the
+boundary correction are proved in Chapter~\ref{ch:dehn-surfaces}.
+They retain the complete rim parametrizations needed by the next step.
 
 For a lattice $L$ and a chart $e$, the protected irreducible replacement
 predicate is an atlas-level relative conclusion.  Given a marked protected
@@ -199,6 +189,16 @@ applied after this replacement, to the resulting irreducible structure.
 
 \section{The four handle cases}
 \label{sec:handle-cases}
+
+\begin{theorem}[Alexander straightening of the three-handle]
+\label{thm:smoothing-index-three}
+\lean{PoincareMT.M76.hasHamiltonChartHandleStraightening_indexThree}
+\uses{def:compact-pl-domain}
+Let a topological chart contain the closed unit cube in its source and
+be PL on an open neighborhood of the cube frontier. A homeomorphism
+of $\mathbb R^3$, isotopic to the identity fixing the whole frontier
+and exterior, makes the corrected chart finite PL on the cube.
+\end{theorem}
 
 For indices zero, one and two, the preceding relative-rigidity chapter
 combines these inputs and constructs the required supported correction.
@@ -335,6 +335,18 @@ Section~\ref{sec:smoothing-contract}.
 \section{Finite supported assembly}
 \label{sec:finite-assembly}
 
+\begin{theorem}[Finite supported atlas straightening]
+\label{thm:smoothing-finite-assembly}
+\uses{thm:smoothing-index-three,thm:lower-handle-straightening}
+\lean{PoincareMT.M76.exists_finite_atlas_supported_straightening}
+Let a compatible PL chart family cover a locally compact Hausdorff
+space $X$, let $d$ be a full-source incoming chart, and let $Q\subset X$
+be compact. There exist an ambient homeomorphism $F$, a compact set $S$,
+and an open neighborhood $U\supset Q$ such that $F$ fixes $S^c$ and
+$d\circ F$ is locally PL relative to every old chart on its overlap
+with $U$.
+\end{theorem}
+
 The local straightening theorem is converted into a global supported
 correction as follows.  Choose a finite compact chart presentation of a
 compact set $Q$ in the old PL atlas.  Order its finitely many affine faces
@@ -381,6 +393,29 @@ coordinate maps.
 
 \section{Independent vertices before Cairns smoothing}
 \label{sec:independent-triangulation}
+
+\begin{theorem}[A finite geometric triangulation with affine stars]
+\label{thm:smoothing-geometric-triangulation}
+\uses{thm:smoothing-finite-assembly}
+\lean{ChartedSpace.exists_finite_geometric_affine_star_triangulation}
+Supported overlap straightening gives a finite geometric complex $K$
+and a homeomorphism $M\cong |K|$. Every closed vertex star admits an
+ambient affine projection to $\mathbb R^3$ that is injective on the
+whole star and sends its vertex into the interior of the star image.
+\end{theorem}
+
+\begin{theorem}[Cairns smoothing of a finite triangulation]
+\label{thm:smoothing-triangulation}
+\lean{Geometry.SimplicialComplex.exists_independent_euclidean_realization}
+\uses{def:smoothing-bridge,thm:smoothing-geometric-triangulation}
+\lean{PoincareMT.M76.smoothingConclusion_of_finite_geometric_triangulation}
+Suppose $M$ is homeomorphic to a finite geometric complex $K$ of pure
+dimension three. Assume that every edge link is connected, each triangle
+link has two vertices, and each closed vertex star has an injective
+facewise affine map to $\mathbb R^3$ whose image has nonempty interior.
+Then $M$ has a compatible smooth model. The vertices of the supplied
+realization need not be globally affinely independent.
+\end{theorem}
 
 Here is the finite geometric realization of the compatible PL atlas just
 constructed. Choose finitely many charts $e_i$ and compact cores
@@ -449,7 +484,8 @@ $\sigma$ contains all cofaces of $\sigma$. The construction has supplied
 the affine star and link hypotheses, but its geometric vertices need
 not be globally affinely independent.
 \source{Hamilton1976,Cairns1940}
-\dcref{Hamilton p.~69; Cairns pp.~798--799 and 804--807}
+\dcref{Hamilton p.~69}
+\dcref{Cairns pp.~798--799 and 804--807}
 
 This issue is repaired before applying Cairns.  Since $K$ has finitely many
 vertices, choose the Euclidean space $F=\mathbb R^{V(K)}$ and the basis
@@ -465,8 +501,6 @@ synthesis map $Q:F\to E$ is a left inverse on $|K|$; hence injectivity of
 $f$ is proved, rather than assumed.  The image complex $f(K)$ has exactly
 the same face and link data as $K$, and the homeomorphism to the carrier is
 composed with this embedded image.
-\lean{Geometry.SimplicialComplex.exists_independent_euclidean_realization}
-\lean{PoincareMT.M76.smoothingConclusion_of_finite_geometric_triangulation}
 \source{Cairns1940}
 \dcref{Cairns Section 3, pp.~798--799}
 
@@ -599,15 +633,18 @@ it does not identify the original arbitrary charted space with that atlas.
 \section{Transporting the topological hypotheses}
 \label{sec:m77-m80}
 
-Now assume in addition that $M$ is simply connected and choose a
-compatible smooth model $(N,h)$. The inverse homeomorphism
-$h^{-1}:N\cong M$ induces a homotopy equivalence,
-so
-\[
- \operatorname{SimplyConnected}(M)
- \Longrightarrow \operatorname{SimplyConnected}(N).
-\]
-The same model also satisfies all the conclusions of
+\begin{theorem}[Transport to the chosen smooth model]
+\label{thm:smoothing-hypothesis-transport}
+\uses{def:smoothing-bridge,thm:m76}
+\lean{PoincareMT.m77TransportTopologicalHypotheses}
+If $M$ is simply connected and $h:M\cong N$ is its chosen compatible
+smooth model, then $N$ is simply connected. Its topology is the one
+carried by the model: compactness, the Hausdorff and second-countability
+conditions, and connectedness remain available on that same carrier.
+\end{theorem}
+
+Apply the transport theorem to the chosen $(N,h)$. The same model
+also satisfies all the conclusions of
 Chapter~\ref{ch:foundations-v4}: it is orientable, has a finite CW model,
 and has $\pi_2(N)=0$ and $\pi_3(N)\cong\mathbb Z$. These are consequences
 of its compactness, simple connectedness and dimension, with the
@@ -626,16 +663,19 @@ connected space is nonempty and path connected ensures both hypotheses
 needed to construct the smooth model. Thus the construction applies to
 every topological manifold in the following statement.
 
-\begin{theorem}[Topological endpoint]
+\begin{theorem}[Poincaré conjecture]
 \label{thm:topological-endpoint}
+\uses{thm:m76,thm:smoothing-hypothesis-transport,thm:sphere-smooth-endpoint}
 Every compact, Hausdorff, second-countable, simply connected topological
 three-manifold is homeomorphic to $S^3$.
-\lean{PoincareMT.m77TransportTopologicalHypotheses}
 \lean{PoincareMT.m78EndpointTransport}
 \lean{PoincareMT.m79TopologicalPoincare}
 \lean{PoincareMT.m80EndpointAssembly}
+\lean{PoincareMT.m90FinalAssemblyFromMilestones}
 \source{Hamilton1976,Cairns1940,MT2007}
-\dcref{Hamilton 1976, Theorem 2(1), p.~64; Cairns 1940, Theorem III, p.~797; Morgan--Tian Corollary 0.2(a)}
+\dcref{Hamilton 1976, Theorem 2(1), p.~64}
+\dcref{Cairns 1940, Theorem III, p.~797}
+\dcref{Morgan--Tian Corollary 0.2(a)}
 \end{theorem}
 
 \begin{proof}

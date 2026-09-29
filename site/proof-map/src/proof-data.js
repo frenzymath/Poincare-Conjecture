@@ -26,12 +26,18 @@ export const stages = [
   {
     id: "topology",
     number: "5",
-    title: "Topological conclusion",
+    title: "Smooth reconstruction",
     color: "#18356f",
+  },
+  {
+    id: "smoothing",
+    number: "6",
+    title: "Topological conclusion",
+    color: "#8b3c55",
   },
 ];
 
-const morganTian = "references/MorganTian";
+const proof = "PoincareConjecture";
 
 export const nodes = [
   {
@@ -54,8 +60,8 @@ export const nodes = [
     role:
       "This supplies the dynamical setting. Every later estimate is designed either to understand a singularity of this equation or to restart the equation after surgery.",
     theorem: {
-      project: morganTian,
-      label: "thm:local-existence-uniqueness",
+      project: proof,
+      label: "thm:rf-local",
       title: "Local existence and uniqueness (Hamilton)",
     },
   },
@@ -79,8 +85,8 @@ export const nodes = [
     role:
       "Nonnegative curvature is the rigidity input behind the classification of ancient blow-up limits and the neck-or-cap description of singular regions.",
     theorem: {
-      project: morganTian,
-      label: "thm:pinching-toward-positive-curvature",
+      project: proof,
+      label: "thm:rf-pinching",
       title: "Pinching toward positive curvature",
     },
   },
@@ -104,8 +110,8 @@ export const nodes = [
     role:
       "The reduced volume detects a forbidden loss of volume at the curvature scale and is the key analytic input to no local collapsing.",
     theorem: {
-      project: morganTian,
-      label: "thm:reduced-volume-monotone",
+      project: proof,
+      label: "thm:m10-reduced-volume",
       title: "Monotonicity of reduced volume",
     },
   },
@@ -129,8 +135,8 @@ export const nodes = [
     role:
       "This prevents blow-up sequences from degenerating dimensionally. Singular rescalings therefore converge to genuine complete three-dimensional models.",
     theorem: {
-      project: morganTian,
-      label: "thm:kappa-noncollapsed-generalized-flow",
+      project: proof,
+      label: "thm:m15-noncollapse",
       title: "Kappa-non-collapsing for generalized Ricci flows",
     },
   },
@@ -154,8 +160,8 @@ export const nodes = [
     role:
       "Kappa-solutions are not arbitrary examples. They are the universal local models that every sufficiently high-curvature region must resemble.",
     theorem: {
-      project: morganTian,
-      label: "thm:kappa-solution-compactness",
+      project: proof,
+      label: "thm:ancient-compactness",
       title: "Compactness of based three-dimensional kappa-solutions",
     },
   },
@@ -179,8 +185,8 @@ export const nodes = [
     role:
       "This converts an uncontrolled analytic singularity into recognizable geometry. In particular, sufficiently thin horns contain standard necks on which surgery can be performed.",
     theorem: {
-      project: morganTian,
-      label: "cor:canonical-neighborhood-existence",
+      project: proof,
+      label: "thm:neck-cap-canonical",
       title: "Existence of canonical neighborhoods",
     },
   },
@@ -204,8 +210,8 @@ export const nodes = [
     role:
       "Surgery removes only geometrically standard high-curvature regions. Its topological effect is explicit, so the original manifold can later be reconstructed from the pieces that disappear.",
     theorem: {
-      project: morganTian,
-      label: "def:surgery-operation",
+      project: proof,
+      label: "thm:metric-surgery",
       title: "The surgery operation at a singular time",
     },
   },
@@ -229,8 +235,8 @@ export const nodes = [
     role:
       "These estimates close the induction. Surgery is not a one-time repair: it defines a globally controlled evolution whose topology can be followed until extinction.",
     theorem: {
-      project: morganTian,
-      label: "thm:main-existence-ricci-flow-surgery",
+      project: proof,
+      label: "thm:global-controlled-flow",
       title: "Controlled Ricci flow with surgery extends for all time",
     },
   },
@@ -245,7 +251,7 @@ export const nodes = [
     summary:
       "Min-max areas attached to nontrivial homotopy decrease too quickly for a relevant component to persist indefinitely.",
     statement:
-      "If the fundamental group is a free product of finite groups and infinite cyclic groups, every corresponding Ricci flow with surgery becomes empty after a finite time.",
+      "The constructed controlled surgery flow from a closed simply connected smooth three-manifold becomes empty at an actual finite surgery event. The argument retains the initial homotopy class and its component ancestry throughout the flow.",
     mechanism: [
       "When pi_2 is nontrivial, minimize the maximal area in a nontrivial family of two-spheres. Minimal-surface variation under Ricci flow supplies a negative topological term in its upper derivative.",
       "After essential two-spheres disappear, a nontrivial pi_3 class is encoded by a family of loops and spanning disks. Curve shortening and disk-area estimates give the analogous decay inequality for this second width.",
@@ -254,8 +260,8 @@ export const nodes = [
     role:
       "Extinction turns the analytic evolution into a finite topological history: every initial component is eventually accounted for by surgeries and standard discarded pieces.",
     theorem: {
-      project: morganTian,
-      label: "thm:finite-time-extinction-main",
+      project: proof,
+      label: "prop:v4-global-extinction",
       title: "Finite-time extinction for Ricci flow with surgery",
     },
   },
@@ -270,7 +276,7 @@ export const nodes = [
     summary:
       "Tracking every cut and discarded component expresses the original manifold as a connected sum of standard pieces.",
     statement:
-      "A closed three-manifold with the relevant free-product fundamental group is a connected sum of spherical space forms and two-sphere bundles over the circle.",
+      "The initial manifold is reconstructed by a finite smooth connected-sum assembly of the exact non-survivor pieces in its surgery history. Each piece retains its event and its geometric classification.",
     mechanism: [
       "Cutting a neck corresponds to cutting along an embedded two-sphere. Depending on whether that sphere separates, the operation records a connected-sum splitting or an S^2-bundle factor.",
       "Discarded positively curved components are spherical space forms; the other allowed discarded components are explicit S^2-bundle or connected-sum types.",
@@ -279,15 +285,15 @@ export const nodes = [
     role:
       "This is where geometry returns to topology. The Ricci-flow analysis provides a controlled decomposition rather than directly identifying the original manifold.",
     theorem: {
-      project: morganTian,
-      label: "thm:classification-fundamental-group-free-product",
-      title: "Classification by free-product fundamental group",
+      project: proof,
+      label: "prop:connected-sum-reconstruction",
+      title: "Finite reverse-history reconstruction",
     },
   },
   {
-    id: "poincare",
+    id: "smooth-poincare",
     stage: "topology",
-    title: "Poincare conjecture",
+    title: "Smooth Poincaré theorem",
     subtitle: "The simply connected special case",
     formula: String.raw`\pi_1(M)=1\quad\Longrightarrow\quad M\cong S^3`,
     visual: "final-sphere",
@@ -302,11 +308,59 @@ export const nodes = [
       "If the full fundamental group is trivial, all those factors are excluded. Only S^3 summands remain, and a connected sum of copies of S^3 is again S^3.",
     ],
     role:
-      "The final step is short because the difficult work has already forced the manifold into a rigid topological list.",
+      "This proves the smooth endpoint for the same initial manifold reconstructed from the surgery history. Compatible smoothing then removes the original smoothness assumption.",
     theorem: {
-      project: morganTian,
-      label: "cor:poincare-and-spherical-space-form",
-      title: "Poincare and spherical space-form conjectures",
+      project: proof,
+      label: "thm:sphere-smooth-endpoint",
+      title: "Smooth Poincaré theorem",
+    },
+  },
+  {
+    id: "compatible-smoothing",
+    stage: "smoothing",
+    title: "Compatible smoothing",
+    subtitle: "From topological charts to a smooth model",
+    formula: String.raw`M\cong M_{\mathrm{sm}}`,
+    visual: "spaceform",
+    summary:
+      "A compact topological three-manifold admits a compatible smooth model, independently of simple connectivity.",
+    statement:
+      "Every nonempty connected compact Hausdorff second-countable topological three-manifold has a homeomorphic smooth three-manifold model.",
+    mechanism: [
+      "Protected compact cores and the relative topological results support straightening in each chart-handle index.",
+      "Finite supported atlas straightening constructs a finite geometric triangulation with compatible affine stars.",
+      "Cairns smoothing of that triangulation gives the smooth model and the homeomorphism back to the original carrier.",
+    ],
+    role:
+      "This is a separate topological branch. It transports compactness and simple connectivity to the chosen smooth model without assuming a smooth atlas on the original manifold.",
+    theorem: {
+      project: proof,
+      label: "thm:m76",
+      title: "Compatible smoothing of topological three-manifolds",
+    },
+  },
+  {
+    id: "poincare",
+    stage: "smoothing",
+    title: "Poincaré conjecture",
+    subtitle: "The topological three-dimensional theorem",
+    formula: String.raw`\pi_1(M)=1\quad\Longrightarrow\quad M\cong S^3`,
+    visual: "final-sphere",
+    summary:
+      "Combine the smooth theorem with compatible smoothing to identify the original topological manifold with the three-sphere.",
+    statement:
+      "Every compact Hausdorff second-countable simply connected topological three-manifold is homeomorphic to the standard three-sphere.",
+    mechanism: [
+      "Choose the compatible smooth model and transport compactness and simple connectivity through its homeomorphism.",
+      "Apply the smooth Poincaré theorem to obtain a diffeomorphism from that model to the standard three-sphere.",
+      "Forget smoothness and compose the two homeomorphisms. The conclusion is about the original topological manifold.",
+    ],
+    role:
+      "This is the public topological endpoint proved by PoincareMT.topologicalPoincareSkeleton, alongside the separate smooth endpoint.",
+    theorem: {
+      project: proof,
+      label: "thm:topological-endpoint",
+      title: "Poincaré conjecture",
     },
   },
 ];
@@ -325,7 +379,9 @@ export const edges = [
   { from: "surgery-control", to: "extinction", label: "global evolution" },
   { from: "surgery", to: "space-forms", label: "topology of cuts" },
   { from: "extinction", to: "space-forms", label: "finite history" },
-  { from: "space-forms", to: "poincare", label: "trivial fundamental group" },
+  { from: "space-forms", to: "smooth-poincare", label: "trivial fundamental group" },
+  { from: "smooth-poincare", to: "poincare", label: "smooth endpoint" },
+  { from: "compatible-smoothing", to: "poincare", label: "transport and compose" },
 ];
 
 export function theoremHref(theorem) {

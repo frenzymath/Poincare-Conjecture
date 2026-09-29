@@ -35,6 +35,8 @@ fields matter at $\tau=0$: they are not a convention that every continuous curve
 is admissible.
 
 \begin{definition}[Reduced length]
+\label{def:reduced-length}
+\lean{PoincareMT.reducedLength,PoincareMT.BackwardTimePath}
 For $p,q\in M$ and $\tau>0$, define
 \[
  \ell_T(p,q,\tau)=\frac1{2\sqrt\tau}
@@ -47,6 +49,7 @@ endpoints.
 
 \begin{theorem}[Existence, Euler equation and variation]
 \label{thm:m08-l-geodesics}
+\uses{def:reduced-length,prop:rf-evolution}
 \lean{PoincareMT.lGeodesicExistenceAndVariation}
 Let $T\in J$, $\tau_{\max}>0$, $[T-\tau_{\max},T]\subset J$, and assume a
 complete full-curvature bound on that closed slab: each slice is complete
@@ -66,7 +69,11 @@ $\mathcal L$-Jacobi fields.  A
 positive-time Euler path extends uniquely to $\tau=0$, and the zero-start
 Jacobi initial-value problem has a unique solution for each initial tangent
 derivative.
-\source{MT2007}\dcref{Definitions 6.1--6.2, p. 106; Lemmas 6.4, 6.8, 6.10, 6.12, pp. 107--110; Proposition 6.13, pp. 110--112; Proposition 6.33 and Claim 6.34, pp. 120--122; Lemmas 7.2--7.3, pp. 150--151}\cite[Definitions 6.1--6.2, Lemmas 6.4, 6.8, 6.10, 6.12, Proposition 6.13, Proposition 6.33, Claim 6.34, and Lemmas 7.2--7.3]{MT2007}
+\source{MT2007}\dcref{Definitions 6.1--6.2, p. 106}
+\dcref{Lemmas 6.4, 6.8, 6.10, 6.12, pp. 107--110}
+\dcref{Proposition 6.13, pp. 110--112}
+\dcref{Proposition 6.33 and Claim 6.34, pp. 120--122}
+\dcref{Lemmas 7.2--7.3, pp. 150--151}\cite[Definitions 6.1--6.2, Lemmas 6.4, 6.8, 6.10, 6.12, Proposition 6.13, Proposition 6.33, Claim 6.34, and Lemmas 7.2--7.3]{MT2007}
 \end{theorem}
 \begin{proof}
 Write $s_i=\sqrt{\tau_i}$ and $\alpha(s)=\gamma(s^2)$.  Substitution removes
@@ -158,6 +165,9 @@ The minimizing curve is not unique everywhere.  The correct regular set is
 therefore a set of endpoint--time pairs, not a globally chosen branch.
 
 \begin{definition}[Regular branch and Harnack integral]
+\label{def:reduced-regular-branch}
+\lean{PoincareMT.ReducedLengthRegularPoint,PoincareMT.reducedHarnackIntegral}
+\uses{def:reduced-length}
 For a base point $p$, a point $(q,\tau)$ with $0<\tau<\tau_{\max}$ is regular
 if it has a unique minimizing path whose endpoint map has bijective
 differential.  Write $l(q,\tau)=\ell_T(p,q,\tau)$ also at nonregular points.
@@ -176,6 +186,7 @@ the separate spatial term in $H$ must be retained.
 
 \begin{theorem}[Regular formulas and barriers]
 \label{thm:m09-differential}
+\uses{thm:m08-l-geodesics,def:reduced-regular-branch,prop:rf-evolution}
 \lean{PoincareMT.ReducedLengthDifferentialTheory}
 \lean{PoincareMT.reducedLengthDifferentialInequalities}
 Under the complete bounded-curvature hypotheses above, for every $p$ and
@@ -203,7 +214,10 @@ regular branch equality in the sharp Laplacian inequality implies
 \[
  \operatorname{Ric}+\nabla^2l=\frac{g}{2\tau}.
 \]
-\source{MT2007}\dcref{Propositions 6.37 and 6.43, pp. 123--129; Theorem 6.50 and Corollary 6.51, pp. 131--132; Propositions 6.56 and 6.59, pp. 133--139; Proposition 7.8, pp. 152--154}\cite[Propositions 6.37 and 6.43, Theorem 6.50, Corollary 6.51, Propositions 6.56 and 6.59, and Proposition 7.8]{MT2007}
+\source{MT2007}\dcref{Propositions 6.37 and 6.43, pp. 123--129}
+\dcref{Theorem 6.50 and Corollary 6.51, pp. 131--132}
+\dcref{Propositions 6.56 and 6.59, pp. 133--139}
+\dcref{Proposition 7.8, pp. 152--154}\cite[Propositions 6.37 and 6.43, Theorem 6.50, Corollary 6.51, Propositions 6.56 and 6.59, and Proposition 7.8]{MT2007}
 \end{theorem}
 \begin{proof}
 The coherent $\mathcal L$-exponential family is smooth for every initial
@@ -273,6 +287,9 @@ Since their endpoint values form a basis, the claimed tensor identity follows.
 \section{Reduced volume and rigidity}
 
 \begin{definition}[Unnormalized reduced volume]
+\label{def:reduced-volume}
+\lean{PoincareMT.reducedVolume,PoincareMT.reducedVolumeDensity}
+\uses{def:reduced-length}
 At positive backward time define
 \[
  u_T(p,q,\tau)=\tau^{-n/2}e^{-\ell_T(p,q,\tau)},\qquad
@@ -289,6 +306,7 @@ there is no hidden $(4\pi)^{-n/2}$ normalization.
 
 \begin{theorem}[Weak inequalities, monotonicity and equality]
 \label{thm:m10-reduced-volume}
+\uses{def:reduced-volume,thm:m09-differential}
 \lean{PoincareMT.reducedVolumeMonotonicity}
 Under the hypotheses of Theorems~\ref{thm:m08-l-geodesics} and
 \ref{thm:m09-differential}, $l$ is locally Lipschitz in positive spacetime,
@@ -305,7 +323,13 @@ $0<\sigma\leq\tau$.  Also $l(\cdot,\tau)$ attains a spatial minimum
 at most $n/2$.  If equality with the Euclidean value holds at an interior
 time $b$, the closed slab $[T-b,T]$ is static Euclidean: one fixed
 diffeomorphism identifies every metric on that slab with the Euclidean metric.
-\source{MT2007}\dcref{Corollary 6.67 and Claims 6.68--6.69, pp. 139--140; Definition 6.70 and Lemma 6.71, pp. 140--141; Theorem 6.80 and Proposition 6.81, pp. 145--146; Theorem 7.10 and Claim 7.11, pp. 154--156; Theorem 7.13, pp. 156--164; Claim 7.22 and Corollary 7.24, pp. 161--162; Theorem 7.26 and Proposition 7.27, pp. 165--167}\cite[Corollary 6.67, Claims 6.68--6.69, Lemma 6.71, Theorem 6.80, Proposition 6.81, Theorems 7.10 and 7.13, Claim 7.22, Corollary 7.24, Theorem 7.26, and Proposition 7.27]{MT2007}
+\source{MT2007}\dcref{Corollary 6.67 and Claims 6.68--6.69, pp. 139--140}
+\dcref{Definition 6.70 and Lemma 6.71, pp. 140--141}
+\dcref{Theorem 6.80 and Proposition 6.81, pp. 145--146}
+\dcref{Theorem 7.10 and Claim 7.11, pp. 154--156}
+\dcref{Theorem 7.13, pp. 156--164}
+\dcref{Claim 7.22 and Corollary 7.24, pp. 161--162}
+\dcref{Theorem 7.26 and Proposition 7.27, pp. 165--167}\cite[Corollary 6.67, Claims 6.68--6.69, Lemma 6.71, Theorem 6.80, Proposition 6.81, Theorems 7.10 and 7.13, Claim 7.22, Corollary 7.24, Theorem 7.26, and Proposition 7.27]{MT2007}
 \end{theorem}
 \begin{proof}
 Fix $0<\tau<\tau_{\max}$; all integrals in the weak-comparison argument are over
@@ -484,6 +508,8 @@ generalized construction keeps a single topological carrier $X$ and a smooth
 time function $t:X\to\mathbb R$ whose range is the prescribed interval.
 
 \begin{definition}[Generalized flow spacetime]
+\label{def:generalized-spacetime}
+\lean{PoincareMT.GeneralizedFlowSpacetime}
 A generalized flow spacetime consists of a Hausdorff second-countable
 charted smooth carrier with half-space time model, a smooth clock with
 range $I$ and $\partial X=\{x:t(x)\in\operatorname{frontier}I\}$,
@@ -517,6 +543,7 @@ $\mathcal L_\chi g=-2\operatorname{Ric}^{\mathcal H}$.
 
 \begin{theorem}[Carrier, gauge and Ricci bridge]
 \label{thm:m11-m12-gauge}
+\uses{def:generalized-spacetime}
 \lean{PoincareMT.generalizedSpacetimeRealization}
 \lean{PoincareMT.GeneralizedRicciGaugeTheory}
 \lean{PoincareMT.generalizedRicciGaugeGeometry}
@@ -566,6 +593,7 @@ No completeness follows from these local constructions.
 
 \begin{theorem}[Exact parabolic rescaling]
 \label{thm:m13-rescaling}
+\uses{thm:m11-m12-gauge,def:reduced-length,def:reduced-volume}
 \lean{PoincareMT.ParabolicSpacetimeRescaling}
 \lean{PoincareMT.generalizedParabolicRescaling}
 Given $Q>0$ and a time shift $a$, the target has clock $t'=Q(t-a)$, metric
@@ -606,6 +634,9 @@ The gauge bridge therefore makes each compatible cylinder an ordinary
 Ricci flow with exactly its pulled-back metric.
 
 \begin{definition}[Generalized backward paths and stable vectors]
+\label{def:generalized-stable-paths}
+\lean{PoincareMT.M14BackwardPath,PoincareMT.M14StableSet}
+\uses{thm:m11-m12-gauge,def:reduced-regular-branch}
 A backward path based at $(x,T)$ is a curve $\gamma$ in $X$ with
 $t(\gamma(\tau))=T-\tau$, prescribed endpoints, continuous closed-interval
 and $C^1$ interior regularity, and integrable action.  Its spatial velocity is
@@ -638,6 +669,7 @@ it makes no assertion about the complement of that image in the slice.
 
 \begin{proposition}[Positive starting time]
 \label{prop:positive-start}
+\uses{def:generalized-stable-paths,thm:m08-l-geodesics}
 \lean{PoincareMT.M14.positiveStartCorrectionStatement}
 Let $0<a<b$, and let $\gamma:[a,b]\to X$ be a minimizing backward
 path from $x$ to $y$, with its genuine one-sided initial derivative
@@ -660,7 +692,8 @@ Then, with $l=l(y)$ and $R=R(y)$,
        -\frac{K_a^{\mathrm{shift}}}
                     {2\sqrt b(\sqrt b-\sqrt a)^2}.
 \end{align*}
-\source{MT2007}\dcref{Proposition 6.43, pp. 127--129; Lemma 6.49 and Theorem 6.50, p. 131}\cite[Proposition 6.43, pp. 127--129; Lemma 6.49 and Theorem 6.50, p. 131]{MT2007}
+\source{MT2007}\dcref{Proposition 6.43, pp. 127--129}
+\dcref{Lemma 6.49 and Theorem 6.50, p. 131}\cite[Proposition 6.43, pp. 127--129; Lemma 6.49 and Theorem 6.50, p. 131]{MT2007}
 \end{proposition}
 \begin{proof}
 The first variation identifies the endpoint gradient with $v(b)$; moving
@@ -680,6 +713,7 @@ zero-start formulas would discard the initial term and change the action.
 
 \begin{theorem}[Generalized $\mathcal L$-geometry and transport]
 \label{thm:m14-generalized}
+\uses{prop:positive-start,thm:m10-reduced-volume,thm:m13-rescaling}
 \lean{PoincareMT.generalizedLGeometryTheory}
 Assume the curvature calculus of the Ricci-flow chapter and the gauge and
 rescaling constructions above.
@@ -698,7 +732,12 @@ horizontal vectors and every supplied compact neighborhood of the base point,
 there is $0<\varepsilon\leq\delta$ such that $B$ lies in the stable domain
 at every $0<\tau\leq\varepsilon$ and its branches stay in that neighborhood.
 With compact exhaustion the reduced volume tends to $(4\pi)^{n/2}$ at zero.
-\source{MT2007}\dcref{Definitions 6.1--6.2, p. 106; Definition 6.25 and Proposition 6.28, pp. 116--118; Proposition 6.78 and Corollary 6.79, pp. 143--145; Theorem 6.80 and Proposition 6.81, pp. 145--146; Proposition 7.5, pp. 151--152; Theorem 7.26, p. 165}\cite[Definitions 6.1--6.2 and 6.25, Proposition 6.28, Proposition 6.78, Corollary 6.79, Theorem 6.80, Proposition 6.81, Proposition 7.5, and Theorem 7.26]{MT2007}
+\source{MT2007}\dcref{Definitions 6.1--6.2, p. 106}
+\dcref{Definition 6.25 and Proposition 6.28, pp. 116--118}
+\dcref{Proposition 6.78 and Corollary 6.79, pp. 143--145}
+\dcref{Theorem 6.80 and Proposition 6.81, pp. 145--146}
+\dcref{Proposition 7.5, pp. 151--152}
+\dcref{Theorem 7.26, p. 165}\cite[Definitions 6.1--6.2 and 6.25, Proposition 6.28, Proposition 6.78, Corollary 6.79, Theorem 6.80, Proposition 6.81, Proposition 7.5, and Theorem 7.26]{MT2007}
 \end{theorem}
 \begin{proof}
 The generalized path calculus is proved in gauge cylinders and transported
@@ -760,6 +799,9 @@ generalized endpoint.
 \section{Noncollapsing}
 
 \begin{definition}[Parabolic noncollapse]
+\label{def:parabolic-noncollapse}
+\lean{PoincareMT.M15GeneralizedNoncollapseAt}
+\uses{def:generalized-spacetime}
 For $\kappa,r_0>0$, a point $(x,t)$ is $\kappa$-noncollapsed through scale
 $r_0$ if for every $0<r\leq r_0$ and every compatible cylinder based on
 the entire terminal ball $B_{g(t)}(x,r)$, of time interval $[t-r^2,t]$,
@@ -775,6 +817,7 @@ implicit replacement.
 
 \begin{theorem}[Generalized and compact noncollapsing]
 \label{thm:m15-noncollapse}
+\uses{def:parabolic-noncollapse,thm:m14-generalized}
 \lean{PoincareMT.noncollapsingGeneralizedAndCompact}
 For each $n>0$ and each $\bar\tau,l_0,V>0$ there is a constant
 \[
@@ -812,7 +855,9 @@ For $t_0\in[0,T]$ and $0<r$ with $r^2\leq t_0$, assume
 \]
 Then $\mu_{g(t_0)}(B_{g(t_0)}(p,r))\geq\kappa_c r^3$.
 The ordinary-flow results above supply the capture inputs for this assertion.
-\source{MT2007}\dcref{Theorem 8.1 and Proposition 8.2, pp. 169--171; Lemma 8.3, Corollary 8.4, Claims 8.5--8.8 and Lemma 8.9, pp. 171--176; Theorem 8.10, pp. 176--177}\cite[Theorem 8.1, Proposition 8.2, Lemma 8.3, Corollary 8.4, Claims 8.5--8.8, Lemma 8.9, and Theorem 8.10]{MT2007}
+\source{MT2007}\dcref{Theorem 8.1 and Proposition 8.2, pp. 169--171}
+\dcref{Lemma 8.3, Corollary 8.4, Claims 8.5--8.8 and Lemma 8.9, pp. 171--176}
+\dcref{Theorem 8.10, pp. 176--177}\cite[Theorem 8.1, Proposition 8.2, Lemma 8.3, Corollary 8.4, Claims 8.5--8.8, Lemma 8.9, and Theorem 8.10]{MT2007}
 \end{theorem}
 \begin{proof}
 First fix the constants, before any flow or cylinder is selected.  The

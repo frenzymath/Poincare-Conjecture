@@ -7,7 +7,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'scripts'))
-from check_blueprint_import import check
+from check_blueprint_import import check, check_graph, resolve_declarations
 
 
 class BlueprintImportTests(unittest.TestCase):
@@ -15,12 +15,33 @@ class BlueprintImportTests(unittest.TestCase):
         report = check(ROOT)
         self.assertEqual(report['issues'], [])
         self.assertEqual(report['chapters'], 18)
-        self.assertEqual(report['accepted_chapters'], 17)
-        self.assertEqual(report['pending_reviews'], ['smoothing'])
+        self.assertEqual(report['unlinked_statements'], [])
+        self.assertEqual(report['linked_statements'], report['statements'])
         blueprint = ROOT / 'PoincareConjecture/blueprint'
         self.assertEqual({p.name for p in blueprint.iterdir()},
                          {'content.tex', 'macros.tex', 'refs.bib', 'chapters'})
         self.assertEqual(len(list((blueprint / 'chapters').glob('*.tex'))), 18)
+
+    def test_missing_dependencies_and_cycles_are_errors(self):
+        self.assertEqual(check_graph([
+            {'label': 'a', 'uses': []}, {'label': 'b', 'uses': ['a']}]), [])
+        self.assertEqual(check_graph([
+            {'label': 'a', 'labels': ['a', 'alias'], 'uses': []},
+            {'label': 'b', 'uses': ['alias']}]), [])
+        self.assertIn('Unresolved dependency: a -> missing', check_graph([
+            {'label': 'a', 'uses': ['missing']}]))
+        self.assertTrue(any('cycle' in issue for issue in check_graph([
+            {'label': 'a', 'uses': ['b']}, {'label': 'b', 'uses': ['a']}])))
+
+    def test_declaration_resolution_checks_namespace_not_mention(self):
+        with tempfile.TemporaryDirectory() as directory:
+            project = Path(directory)
+            (project / 'PoincareLib').mkdir()
+            (project / 'PoincareLib/Example.lean').write_text(
+                'namespace Actual\n@[simp] theorem result : True := trivial\nend Actual\n'
+                '-- Missing.result\n')
+            result = resolve_declarations(project, {'Actual.result', 'Missing.result'})
+            self.assertEqual(result, {'Actual.result': ['PoincareLib/Example.lean']})
 
     def test_map_uses_the_supplied_staged_graph_and_chapters(self):
         with tempfile.TemporaryDirectory() as directory:

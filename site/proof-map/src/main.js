@@ -65,7 +65,7 @@ appRoot.innerHTML = `
     <header class="proof-header">
       <div class="proof-kicker">Proof map</div>
       <h1>The architecture of the proof</h1>
-      <p>From metric evolution to singularity models, controlled surgery, extinction, and the topological conclusion.</p>
+      <p>Ricci flow, controlled surgery, and finite extinction prove the smooth theorem; compatible smoothing gives the topological conclusion.</p>
     </header>
 
     <div class="map-summary"><strong>${nodes.length} steps</strong> across ${stages.length} stages</div>

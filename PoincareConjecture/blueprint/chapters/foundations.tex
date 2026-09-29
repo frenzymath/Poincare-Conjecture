@@ -1,1054 +1,396 @@
 \chapter{Closed three-manifold topology and the Poincare problem}
 \label{ch:foundations-v4}
-\chaptermark{Closed three-manifold topology}
 
-The Poincare problem asks whether simple connectedness determines a closed
-three-manifold. Algebraic topology gives a striking preliminary answer:
-such a smooth manifold has the homotopy type of a sphere. A homotopy
-equivalence, however, does not provide local coordinates for its inverse,
-and does not identify the differentiable structures. The geometric
-argument developed in this book is needed to obtain a diffeomorphism.
-This chapter establishes the topology available before that argument starts.
+Simple connectedness gives a closed smooth three-manifold the homotopy
+type of a sphere. The Ricci-flow argument will strengthen this to a
+diffeomorphism. This chapter constructs the initial topology needed by
+surgery and extinction, without assuming a sphere recognition theorem.
 
 \section{Manifolds and the two conclusions}
 \label{sec:foundations-endpoints}
 
-\begin{definition}[Manifold conventions]
+\begin{definition}[The smooth and topological problems]
 \label{def:foundations-manifold}
-A topological three-manifold is a Hausdorff, second-countable space equipped
-with charts onto open subsets of $\mathbb R^3$. In particular, it has no
-boundary. A smooth three-manifold has, in addition, smooth transition maps
-between its charts. Here smooth means $C^\infty$. A manifold is
-\emph{closed} if it is compact and has no boundary.
-
-A space is \emph{simply connected} if it is nonempty and path connected
-and any two paths with the same endpoints are homotopic relative to those
-endpoints. For a nonempty path-connected space, the last condition is
-equivalent to requiring that all based loops be nullhomotopic.
-For a point $p\in X$, write $\pi_k(X,p)$ for based homotopy
-classes of maps $(I^k,\partial I^k)\to(X,p)$, with their usual group
-structure for $k\geq1$.
+The smooth Poincare proposition quantifies over compact, Hausdorff,
+second-countable, simply connected spaces with a smooth atlas over
+$\mathbb R^3$, and asks for a diffeomorphism with the standard unit
+sphere $S^3\subset\mathbb R^4$. The topological proposition instead
+requires only a topological atlas and asks for a homeomorphism.
+Here simple connectedness includes nonemptiness and path connectedness;
+the manifold charts have no boundary, and smooth means $C^\infty$.
+\lean{PoincareMT.SmoothPoincare}
+\lean{PoincareMT.TopologicalPoincare}
 \end{definition}
 
-The standard sphere throughout the book is
-\[
- S^3=\{x\in\mathbb R^4:\|x\|=1\},
-\]
-with its subspace topology and standard smooth hypersurface structure.
-The two conclusions to be proved have different hypotheses:
 \begin{theorem}[Smooth and topological Poincare conclusions]
 \label{thm:foundations-targets}
-Every closed, simply connected smooth three-manifold is diffeomorphic to
-$S^3$. Every closed, simply connected topological three-manifold is
-homeomorphic to $S^3$.
-\source{MT2007}\dcref{Corollary 0.2(a), p. xii, for the smooth conclusion}
+Both propositions of Definition~\ref{def:foundations-manifold} hold.
+\lean{PoincareMT.smoothPoincareSkeleton}
+\lean{PoincareMT.topologicalPoincareSkeleton}
+\uses{def:foundations-manifold}
+\source{MT2007}
+\dcref{Corollary 0.2(a), p. xii, for the smooth conclusion}
 \end{theorem}
 
-This is the target of the book, not a theorem established in this chapter.
-The quantifier is over every manifold with the stated structure; neither
-conclusion assumes an orientation, a Riemannian metric, or a chosen sphere
-identification. The smooth conclusion is the conclusion of
-\cite[Corollary 0.2(a), p. xii]{MT2007}. Passage from the smooth to the
-topological conclusion requires a separate compatible-smoothing theorem.
-
-Unless stated otherwise, $M$ below is a closed, simply connected smooth
-three-manifold with the separation and countability hypotheses of
-Definition~\ref{def:foundations-manifold}. Homology and cohomology have
-integer coefficients. We write $H_j(X,A)$ for relative singular homology
-and $H_c^j(X)$ for singular cohomology with compact supports. A homotopy
-equivalence is denoted by $\simeq$, a homeomorphism by $\cong$, and a smooth
-identification explicitly by ``diffeomorphic.''
+These are the book's endpoints, proved in Chapters 14 and 18. In this
+chapter $M$ denotes a closed, simply connected smooth three-manifold.
+Homology and cohomology have integer coefficients, $\simeq$ denotes
+homotopy equivalence, and $\cong$ denotes homeomorphism.
 
 \begin{proposition}[Initial topology]
 \label{prop:foundations-initial}
-The chosen smooth atlas of $M$ admits compatible orientation signs, and
-$M$ admits a finite CW structure of dimension at most three. For every
+The chosen atlas of $M$ has compatible orientation signs. There is a
+finite CW structure of dimension at most three on $M$, and for every
 $p\in M$,
 \[
  \pi_1(M,p)=0,\qquad \pi_2(M,p)=0,\qquad
  \pi_3(M,p)\cong\mathbb Z.
 \]
 Moreover, $M\simeq S^3$.
-\uses{def:foundations-manifold}
-\source{MT2007}\dcref{discussion after Proposition 18.9, p. 424; after Claim 18.20, p. 431}
+\lean{PoincareMT.closedSimplyConnectedThreeManifoldTopology}
+\uses{prop:foundations-triangulation,lem:foundations-determinant-cover,cor:foundations-homotopy-groups,prop:foundations-cw-equivalence}
+\source{MT2007}
+\dcref{discussion after Proposition 18.9, p. 424}
+\dcref{discussion after Claim 18.20, p. 431}
 \end{proposition}
 
-We prove the separate assertions below. In particular, the last assertion
-is a homotopy conclusion and is never used as a sphere recognition theorem.
-The nonzero third homotopy class and the orientation obstruction are the
-parts required when the geometric proof begins. The cited discussions in
-\cite{MT2007} explain their role; the constructions here also account for
-the finite CW and homotopy-equivalence assertions.
+The following constructions prove this proposition. The nonzero third
+homotopy class supplies the width argument; orientation supplies the
+obstruction to a two-sided projective plane.
 
 \section{A finite three-dimensional CW structure}
 \label{sec:foundations-triangulation}
 
-A CW structure on $M$ means cells with characteristic maps into $M$ whose
-open-cell images partition it, whose boundaries lie in lower skeleta, and
-whose weak topology is the given topology. We need an actual such
-structure on $M$, rather than merely a space with the same homotopy type.
-The following construction gives more: a homeomorphism from a finite
-simplicial complex of dimension at most three.
+The construction embeds $M$ in Euclidean space, perturbs an ambient grid
+away from low-dimensional faces, and projects an associated order complex
+back to $M$. Its quantitative steps are recorded separately.
+
+\begin{lemma}[Finite affine-plane avoidance]
+\label{lem:foundations-affine-avoidance}
+For $N>0$, a ball $B(c,R)\subset\mathbb R^N$ with $R>0$, and
+$m$ nonempty proper affine subspaces $P_i$, there is $x\in B(c,R)$
+such that
+\[
+ \operatorname{dist}(x,P_i)>
+ \frac{R}{4(N+1)^2(m+1)}\qquad(1\leq i\leq m).
+\]
+\lean{Poincare.Topology.exists_ball_point_avoiding_affine_planes}
+\end{lemma}
+\begin{proof}
+Use the $(m+1)^N$ points with coordinates
+$c_j+\frac{R}{N+1}(\frac{2a_j+1}{m+1}-1)$,
+$0\leq a_j\leq m$. A unit normal to each forbidden hyperplane has
+one coordinate of absolute value at least $1/(N+1)$. Thus at most
+$(m+1)^{N-1}$ grid points lie in its prescribed slab. The $m$ slabs
+cannot cover the grid.
+\end{proof}
+
+\begin{lemma}[Clearance across a join]
+\label{lem:foundations-join-clearance}
+Let $P\subset P^*$ be nonempty affine subspaces and $Q$ a nonempty
+finite subset of $P^*$. Suppose $d,t,D>0$, the convex hull of $Q$
+has distance at least $d$ from $P$, $z$ has distance at least $t$ from
+$P^*$, and $\|z-y\|\leq D$ on that hull. Then
+\[
+ \operatorname{dist}(x,P)\geq\frac{dt}{D+t}
+ \quad(x\in\operatorname{conv}(Q\cup\{z\})).
+\]
+\lean{Poincare.Topology.affine_join_distance_lower_bound}
+\end{lemma}
+\begin{proof}
+At $x=(1-a)y+az$, orthogonal projection gives lower bounds $at$ and
+$d-aD$. Their maximum is at least $dt/(D+t)$.
+\end{proof}
+
+\begin{proposition}[Triangulation of an embedded three-manifold]
+\label{prop:foundations-embedded-triangulation}
+Let $M$ be a nonempty compact Hausdorff smooth three-manifold and let
+$e:M\to\mathbb R^N$, $N>3$, be a smooth closed embedding with
+injective derivative. There is a finite poset $I$ and a homeomorphism
+$|\operatorname{Ord}(I)|\cong M$; every chain in $I$ has at most
+four elements.
+\lean{Poincare.Topology.exists_embedded_three_finite_triangulation}
+\uses{lem:foundations-affine-avoidance,lem:foundations-join-clearance}
+\end{proposition}
+\begin{proof}
+Uniform graph charts and a tubular neighborhood follow from compactness.
+Perturb a mesh-$h$ grid using the clearance lemmas. Faces of dimension
+at most $N-4$ stay a distance $bh>0$ from $e(M)$, with simplex
+diameters and altitudes controlled by fixed multiples of $h$.
+
+Call a face active when it meets $e(M)$. Normal projection in graph
+charts shows that minimal active faces have $N-2$ vertices and meet
+$e(M)$ at unique fixed points of contractions. Average these points to
+obtain centers with positive barycentric coordinates in every active face.
+
+Order active faces by inclusion. Their cardinalities range from $N-2$
+to $N+1$, so flags have at most four terms. Mapping flag vertices to
+centers gives an injective affine realization: successive largest supports
+recover each barycentric coefficient uniquely.
+
+Compare it with the tangent-plane flag realization. The clearance and
+altitude bounds make the displacement Lipschitz constant at most $1/2$
+when the graph error is sufficiently small. The normal-fiber equation
+is then a contraction, giving exactly one point over each point of
+$e(M)$. Nearest-point projection is a continuous bijection from the
+compact flag realization to $e(M)$, hence a homeomorphism.
+\end{proof}
 
 \begin{proposition}[Finite triangulated model]
 \label{prop:foundations-triangulation}
-Every nonempty compact smooth three-manifold that is Hausdorff and
-second countable is homeomorphic to the realization of the order complex
-of a finite partially ordered set. Each chain in this partially ordered
-set has at most four elements.
+Every nonempty compact Hausdorff smooth three-manifold is homeomorphic
+to the order complex of a finite poset whose chains have at most four
+elements. It has a finite CW structure of dimension at most three.
+\lean{Poincare.Topology.exists_compact_three_manifold_finite_triangulation}
+\lean{Poincare.Topology.exists_finite_simplicialCW}
+\lean{Poincare.Topology.exists_finiteCW_of_homeomorph}
+\uses{prop:foundations-embedded-triangulation}
 \end{proposition}
-
-Here the order complex has one vertex for each element of the partially
-ordered set and one simplex for each nonempty finite chain. The following
-proof describes the geometric construction, including the estimates that
-turn a nearby polyhedron into a homeomorphic model.
-The smooth embedding, graph charts, and tubular neighborhood are
-ordinary differential topology; their constructions are recalled below.
-The quantitative avoidance, section, and flag estimates are developed
-explicitly, rather than deduced from a general triangulation theorem.
-
 \begin{proof}
-Start with a smooth embedding $e:M\to\mathbb R^N$, enlarging the ambient
-space if necessary so that $N>3$. Such an embedding is obtained from a
-finite chart cover and smooth cutoff functions: use the functions and
-their products with chart coordinates as Euclidean coordinates. Choose
-the cutoffs so that some cutoff is nonzero near every point. Equality of
-all coordinates then identifies two points in a common chart, and the
-same coordinates give injectivity of the derivative. Compactness makes
-the resulting injective immersion a closed embedding.
-
-Put $L=N+1$ and identify $T_pM$ with its image under $D e_p$ in
-$\mathbb R^N$. Uniform graph charts for this compact embedding write $e(M)$
-near $e(p)$ as
-\[
- e(p)+v+r_p(v),\qquad v\in T_pM,
- \qquad r_p(v)\in(T_pM)^\perp,
- \qquad \operatorname{Lip}(r_p)\leq\epsilon.
-\]
-For every prescribed $\epsilon>0$, compactness allows a common positive
-chart radius. There is also a positive tubular radius $r$ on which the
-nearest-point projection $\nu$ to $e(M)$ is defined and continuous, and
-its fibers are normal to $M$. To obtain a uniform neighborhood, apply
-the inverse function theorem to the normal map $(p,v)\mapsto e(p)+v$
-along the zero section. Compactness supplies a common radius. If
-injectivity failed at every smaller radius, two sequences of normal
-representations would converge to the same point of the zero section,
-contradicting its local inverse. A distance minimizer exists by compactness;
-first variation makes its displacement normal, and uniqueness in this
-neighborhood identifies it with the normal-map inverse.
-
-Triangulate a sufficiently large ambient box by the usual grid simplices
-of mesh $h$, and perturb its vertices slightly. The perturbation is
-chosen to keep every face of dimension at most $N-4$ a positive distance
-from $e(M)$. The quantitative form used here gives a constant $b>0$
-depending only on $N$ such that these faces have distance greater than
-$bh$. At the same time every simplex has diameter at most $2Lh$ and
-every altitude is at least $h/4$.
-
-Here is the finite avoidance argument. For $m$ proper affine planes and
-a movement ball of radius $R$ centered at $c$, consider the $(m+1)^N$
-points with coordinates
-\[
- x(a)_i=c_i+\frac{R}{N+1}
-       \left(\frac{2a_i+1}{m+1}-1\right),\qquad 0\leq a_i\leq m.
-\]
-Their coordinate absolute displacements sum to less than $R$, so they
-lie in the ball. For each plane choose a containing hyperplane
-$\langle u,x\rangle=d$ with $\|u\|=1$. Some coordinate of $u$ has
-absolute value at least $1/(N+1)$. Holding the other coordinates fixed,
-successive candidate values of $\langle u,x\rangle$ differ by at least
-$2R/((N+1)^2(m+1))$. Thus at most one lies in a slab of half-width
-\[
- t=\frac{R}{4(N+1)^2(m+1)}.
-\]
-Each slab contains at most $(m+1)^{N-1}$ candidates. Their union contains
-at most $m(m+1)^{N-1}<(m+1)^N$, leaving a point with distance greater
-than $t$ from every plane.
-
-Apply this at successive grid vertices. A bound for the number of faces
-incident to a vertex is $J_N=2^{2N+2}(N!+1)$. For each low-dimensional
-face completed at the current vertex, the forbidden affine plane contains
-a nearby tangent three-plane and the already chosen vertices of that face.
-It is proper: a face with $k$ vertices under consideration has $k+3\leq N$,
-so this span has dimension at most $3+(k-1)<N$.
-Choose the movement radius $a_Nh$, where
-\[
- a_N=\frac1{16L},\qquad
- s_N=\frac1{4L^2(J_N+1)},\qquad A_N=a_Ns_N.
-\]
-The avoidance calculation gives clearance $A_Nh$ from all these planes.
-
-The clearance propagates from an old face to its join with the new vertex.
-Indeed, let an old face be at distance at least $d$ from a plane $P$,
-let $P^*$ contain both the old face and $P$, and let the new vertex $z$
-have distance at least $t$ from $P^*$. Suppose its distance from any point
-of the old face is at most $D$. At $(1-a)y+az$ the distance from $P$ is
-at least both $at$ and $d-aD$. Taking the larger lower bound gives
-$dt/(D+t)$. Use this with $D=2Lh$ and with the previous face's clearance.
-The graph error can be bounded by $b h/100$, where
-\[
- b_j=\frac{A_N}{2}\left(\frac{A_N}{8L}\right)^j,
- \qquad b=b_{N-4}.
-\]
-The join inequality, with this allowance for graph error, gives clearance
-$b_jh$ for a completed face of dimension $j\leq N-4$. This proves the
-claimed separation by induction over processed vertices and face dimension.
-Vertices far from the manifold need no change. The mesh is chosen within
-the uniform chart radius so that all faces involved in a step lie in the
-same graph chart.
-The piecewise affine displacement has Lipschitz constant at most $1/4$;
-thus the perturbed grid is still a triangulation. Indeed, a map $x+u(x)$
-with $\operatorname{Lip}(u)<1$ is injective, and solving $x=y-u(x)$ gives
-its inverse by contraction. This also retains the diameter and altitude
-bounds after slightly weakening their constants.
-
-Call an ambient face \emph{active} if its convex hull meets $e(M)$.
-An active face has between $N-2$ and $N+1$ vertices. We next show that
-minimal active faces have $N-2$ vertices, meet the manifold in one point,
-and occur through every vertex of an active face.
-
-Fix a nearby $p$ and let $A(x)=P_{(T_pM)^\perp}(x-e(p))$, whose target
-has dimension $d=N-3$. Write $Q$ for tangent projection. In a simplex
-within distance $R=6Lh$ of $e(p)$, the graph chart gives
-\[
- \operatorname{dist}(x,e(M))\leq\|A(x)\|+\epsilon R,
- \qquad \|A(e(q))\|\leq\epsilon R.
-\]
-Take $a=bh/2$. For sufficiently small $\epsilon$, the grid separation
-therefore implies $\|A(x)\|\geq a$ on every face with at most $d$
-vertices, while $\epsilon R<a$.
-
-Let $P$ be the convex hull of the normal projections of all vertices of
-a face. Every boundary point of $P$ lies in the convex hull of at most
-$d$ projected vertices: a supporting hyperplane reduces the dimension
-by one, and an affinely dependent convex combination can be reduced by
-varying its coefficients until one becomes zero. Repeating this leaves
-at most $d$ terms. If $P$ contained a point of norm less than $a$ but
-did not contain zero, its closest point to zero would be such a boundary
-point, contradicting the small-face gap. The same boundary argument
-shows that, once $0\in P$, the entire closed ball of radius $a$ is in
-$P$.
-
-For a prescribed vertex $v$, follow the ray opposite $A(v)$ from zero
-until it first meets the boundary of $P$. The boundary point is a
-convex combination of at most $d$ projected vertices. Combining it
-with $A(v)$ gives zero as a convex combination on a face containing $v$
-with at most $d+1$ vertices. The gap rules out $d$ or fewer, so the
-face has exactly $d+1=N-2$ vertices. Its projected vertices are
-affinely independent: otherwise the same coefficient reduction would
-give a forbidden zero combination with at most $d$ terms.
-
-On such a minimal face, $A$ is an affine isomorphism onto its affine
-image, which is all of the normal space. Let $x_0$ be its unique zero
-and write its inverse as $n\mapsto x_0+Bn$. The ball inclusion just
-proved gives
-\[
- \|B\|\leq\frac{\operatorname{diam}(s)}a:
- \qquad \|n\|\leq a\ \Longrightarrow\
- x_0+Bn\in\operatorname{conv}(s),\quad
- \|Bn\|\leq\operatorname{diam}(s).
-\]
-A point of this face is on the manifold graph precisely when
-\[
- n=r_p\bigl(Q(x_0+Bn-e(p))\bigr).
-\]
-The right side sends the normal ball of radius $\epsilon R$ into itself
-and has Lipschitz constant at most
-$\epsilon\operatorname{diam}(s)/a<1$. Contraction gives a unique graph
-intersection, with displacement from $x_0$ at most
-$\operatorname{diam}(s)\epsilon R/a$.
-This uniqueness holds in the entire face: any other graph intersection
-has normal coordinate of norm at most $\epsilon R$, and hence is a
-fixed point of the same contraction. The graph chart contains every
-manifold point in this face, by the uniform chart-radius choice.
-
-If a face meets the manifold, its projected hull contains a point of
-norm at most $\epsilon R<a$, hence contains zero by the boundary
-argument. Conversely, if it meets the tangent plane, the minimal-face
-construction and contraction give a manifold intersection in a subface.
-This proves equality of the two sets of active faces and their incidence
-relations, as well as the assertion through each prescribed vertex.
-
-For each active face $s$, average the intersection points associated to
-its minimal active subfaces, obtaining a point $c_s$ in its convex hull.
-These choices are made once per face, so they agree when a face occurs
-in different simplices. If $w_v$ are the barycentric coordinates of
-$c_s$ in $s$, separation from lower-dimensional faces and the diameter
-bound give
-\[
- w_v\geq \frac{b}{2L\,2^{N+1}}\quad(v\in s).
-\]
-To see the source of this bound, a minimal-section point cannot be closer
-than $bh$ to the opposite face, whereas the entire simplex has diameter
-at most $2Lh$. For each vertex at least one averaged point therefore
-has that vertex coordinate at least $b/(2L)$; there are at most
-$2^{N+1}$ terms in the average.
-
-Order the active faces by inclusion and form their order complex $C$.
-Strictly increasing cardinalities in the range $N-2,\ldots,N+1$ show
-that a chain has at most four elements. Send its vertex $s$ to $c_s$
-and extend affinely on each simplex. Denote the resulting map by
-$F:|C|\to\mathbb R^N$.
-
-The positivity of the center coordinates makes $F$ injective. Here is
-the coordinate argument, which will also apply to the tangent centers.
-For a convex combination of centers along a flag, discard zero
-coefficients and let $s$ be its largest face. Its ambient barycentric
-support is exactly $s$. Two equal image points therefore have the same
-largest face, since relative interiors of ambient simplices are
-disjoint. If $z_v$ are their common barycentric coordinates and $c_v>0$
-those of $c_s$, the coefficient of this largest center is
-\[
- \min_{v\in s}\frac{z_v}{c_v}.
-\]
-Indeed all smaller centers contribute nonnegative coordinates, and some
-vertex of $s$ is absent from their largest support. Subtract this
-coefficient times $c_s$ and repeat on the remaining support. The
-procedure recovers every nonzero flag coefficient, proving injectivity.
-
-For the tangent plane the active section of an ambient face is a
-convex polytope, described by nonnegative barycentric coordinates,
-their sum being one, and the equation $A(x)=0$. Its vertices are
-exactly the points in minimal active faces. In fact a section point
-with more than $d+1$ positive coordinates admits a nonzero variation
-preserving both the sum and $A(x)$; small variations of either sign
-stay in the section, so this point is not extreme. A minimal active
-face instead has a unique section point. Averaging these vertices
-gives a tangent center with positive coordinates on the entire face,
-by the prescribed-vertex incidence argument above.
-
-We spell out why these centers give a subdivision. Let $z$ be a
-section point, let $s$ be its positive coordinate support, and let $c$
-be the tangent center indexed by $s$. If $z=c$ there is nothing to
-prove. Otherwise set
-\[
- a=\min_{v\in s}\frac{z_v}{c_v},\qquad
- y=\frac{z-ac}{1-a}.
-\]
-Then $0<a<1$, and $y$ is another section point with strictly smaller
-support: its coordinates are nonnegative and sum to one, its affine
-constraint is zero, and at least one coordinate vanishes. Induction
-expresses $y$ in a flag of smaller active faces, and
-$z=ac+(1-a)y$ adds $s$ to that flag. The preceding uniqueness argument
-shows that two resulting simplices meet only in their common faces.
-This is the usual coning of the subdivided boundary to an interior
-center, here with the prescribed centers and supports. The finite
-realization is compact, so its continuous bijection to the section
-is a homeomorphism. Choices on common ambient faces agree, and the
-subdivisions paste.
-
-In particular these local flags cover the closed tangent disk of radius
-$4Lh$. A point of this disk lies in an ambient simplex. Every point
-of that simplex is within $4Lh+2Lh=6Lh$ of $e(p)$, so the local
-incidence argument applies to the whole simplex and all its faces.
-Its tangent section therefore supplies the required flag representation.
-
-It remains to prove that $\nu F$ identifies $|C|$ with $e(M)$.
-This conclusion is not obtained merely by estimating the distance from
-$F(|C|)$ to $M$. Compare $F$, near $p$, with the flag realization of
-the affine tangent-plane sections. The latter fills a disk in
-$e(p)+T_pM$. The comparison has the form
-\[
- v\longmapsto e(p)+v+E_p(v)
- \quad(\|v\|\leq4Lh),
- \qquad \|E_p(v)\|\leq Lh.
-\]
-The lower bounds on altitudes and barycentric coordinates control the
-inverse affine maps on successive flags. More precisely, put
-\[
- \eta=\frac{b}{4L\,2^{N+1}},\qquad
- C_N=\frac{96L^2}{b}\bigl((1+\eta^{-1})^4-1\bigr).
-\]
-The minimal-face displacement bound, averaged over the same faces on
-the graph and tangent sides, is at most
-\[
- \frac{2Lh}{bh/2}\,\epsilon(6Lh)
-       =\frac{24L^2\epsilon h}{b}=:\delta.
-\]
-We give the coordinate estimate responsible for the power of four.
-For a flag $s_1\subsetneq\cdots\subsetneq s_k$, extend each tangent
-center's barycentric coordinate vector $c_i$ by zero to the largest
-simplex. Its support is exactly $s_i$, every nonzero coordinate is at
-least $\eta$, and $\|c_i\|_\infty\leq1$.
-For arbitrary real $w_i$ put $z=\sum_iw_ic_i$.
-The largest support has a coordinate absent from all the smaller ones.
-At this coordinate, $z_v=w_k(c_k)_v$, so
-$|w_k|\leq\eta^{-1}\|z\|_\infty$.
-Subtracting $w_kc_k$ leaves a vector of norm at most
-$(1+\eta^{-1})\|z\|_\infty$. Induction on $k$, starting from the
-empty flag, yields
-\[
- \sum_i|w_i|\leq
-       \bigl((1+\eta^{-1})^k-1\bigr)\|z\|_\infty.
-\]
-For a difference of two points in the same flag simplex, $\sum_iw_i=0$.
-If $y$ is the corresponding ambient difference, the altitude bound gives
-$\|z\|_\infty\leq\|y\|/(h/4)$: each affine barycentric coordinate
-has derivative of norm the reciprocal of its vertex altitude.
-The change in displacement is bounded by $\delta\sum_i|w_i|$.
-All flags have $k\leq4$, so these inequalities prove the same Lipschitz
-bound on each flag simplex. A segment in the tangent disk crosses only
-finitely many simplices; partitioning the segment and summing its lengths
-extends that bound to the whole disk. Thus
-\[
- \operatorname{Lip}(E_p)
- \leq\frac{24L^2\epsilon h/b}{h/4}
-          \bigl((1+\eta^{-1})^4-1\bigr)
- = C_N\epsilon.
-\]
-Choose
-\[
- 0<\epsilon\leq
- \min\left\{\frac{b}{1000L},\frac{1}{2(C_N+1)}\right\},
- \qquad 0<h<\frac r{10L},
-\]
-and also take $h$ within the graph-chart bound. Thus the last Lipschitz
-constant is at most $1/2$.
-
-Let $P_p$ be orthogonal projection onto $T_pM$. A point of this local
-flag realization lies on the normal fiber over $p$ precisely when
-\[
- v=-P_pE_p(v).
-\]
-The right-hand side maps the closed ball of radius $Lh$ into itself and
-is a contraction. There is exactly one solution there, and the same
-Lipschitz estimate implies uniqueness throughout the disk of radius
-$4Lh$. The resulting point lies within $2Lh<r$ of $e(p)$, so its nearest
-point is $e(p)$.
-
-Every point of $F(|C|)$ lies in an active ambient simplex, hence is within
-$2Lh$ of the manifold. To check that the local comparison captures
-every point in the normal fiber over $p$, write such a point as
-$y=\sum_i\lambda_i c_{s_i}$ along a flag with largest face $s$.
-Both $y$ and the centers lie in that ambient simplex. Since
-$\|y-e(p)\|\leq2Lh$, its diameter bound puts the entire simplex
-within $4Lh$ of $e(p)$. Replace each $c_{s_i}$ by its tangent center
-and retain the same coefficients $\lambda_i$. This gives a tangent
-point $x$ in the same simplex, thus in the disk of radius $4Lh$,
-whose local comparison image is exactly $y$.
-
-Normal-fiber uniqueness now shows that two points with the same nearest
-point have the same image under $F$; the injectivity of $F$ proved above
-shows that they were the same point of $|C|$. The constructed solution
-over each $p$ proves surjectivity. Consequently $\nu F$ is a continuous
-bijection from the compact finite complex $|C|$ to the Hausdorff space
-$e(M)$, and hence is a homeomorphism. Transporting the simplicial cell
-structure along $e^{-1}\nu F$ proves the assertion.
+Take Whitney's compact smooth embedding, append four zero coordinates,
+and apply the embedded construction. Simplex interiors give a finite
+CW structure on the realization. Transport its characteristic maps and
+weak topology along the homeomorphism to $M$.
 \end{proof}
-
-The separation and flag-coordinate estimates in this construction concern
-the embedded manifold; they do not use simple connectedness or any form of
-the Poincare conclusion. Simple connectedness enters the next arguments.
 
 \section{Two orientation constructions}
 \label{sec:foundations-orientation}
 
-We use orientation in two forms. Signed smooth charts supply the
-obstruction needed for surgery. Coherent integral local homology
-generators supply the fundamental class and cap maps. Both can be
-constructed directly from simple connectedness.
-
 \begin{definition}[Compatible chart signs]
 \label{def:foundations-chart-signs}
 For each chart $x_i:U_i\to\mathbb R^3$, choose a locally constant
-function $\varepsilon_i:U_i\to\{1,-1\}$. The signs are compatible if
-at every $p\in U_i\cap U_j$,
+$\varepsilon_i:U_i\to\{1,-1\}$. Compatibility means
 \[
  \varepsilon_i(p)\varepsilon_j(p)
- \det D(x_j\circ x_i^{-1})_{x_i(p)}>0.
+ \det D(x_j\circ x_i^{-1})_{x_i(p)}>0
+ \qquad(p\in U_i\cap U_j).
 \]
-Allowing signs to be locally constant accommodates disconnected chart
-domains and overlaps.
+\lean{PoincareMT.OrientationCompatibleAtlas}
+\uses{def:foundations-manifold}
 \end{definition}
 
 \begin{lemma}[The determinant orientation cover]
 \label{lem:foundations-determinant-cover}
 A simply connected smooth three-manifold admits compatible chart signs.
+\lean{Poincare.Topology.nonempty_orientationCompatibleAtlas}
+\uses{def:foundations-chart-signs}
+\source{Hatcher}\dcref{Proposition 1.33, p. 61}
 \end{lemma}
 \begin{proof}
-The coordinate changes of the tangent bundle have nonzero determinants
-$d_{ij}$. The chain rule gives $d_{ii}=1$ and
-$d_{ik}=d_{jk}d_{ij}$. Their signs are locally constant. Glue
-$U_i\times\{1,-1\}$ by
-$(p,a)_i\sim(p,a\operatorname{sgn}d_{ij}(p))_j$.
-The cocycle identities give a two-sheeted covering.
-
-Choose $p_0\in M$ and one point of the fiber above it. The identity of
-$M$ lifts to this cover because its fundamental group is trivial;
-manifolds are locally path connected, so the usual covering lifting
-criterion applies \cite[Proposition 1.33, p. 61]{Hatcher}. The lift is a
-continuous section. Its coordinates give locally constant signs with
-$\varepsilon_j=\varepsilon_i\operatorname{sgn}d_{ij}$, which is exactly
-the required positivity.
+Transition determinant signs define a two-sheeted cover. Lift the
+identity after choosing a point over a basepoint. Simple connectedness
+makes the lift a section, whose coordinates give the compatible signs.
 \end{proof}
 
-\begin{definition}[Local integral orientation]
 \label{def:foundations-local-orientation}
-For $p\in M$ the local homology group is
-$L_p=H_3(M,M\setminus\{p\})$. An integral local orientation is a
-choice of generator $\omega_p\in L_p$ for every $p$ that is locally
-represented: around each point there is an open set $U$ and a class in
-$H_3(M,M\setminus U)$ whose restrictions to the groups $L_q$, $q\in U$,
-are the chosen generators.
-\end{definition}
+For $p\in M$, write $L_p=H_3(M,M\setminus\{p\})$.
+A local integral orientation chooses generators $\omega_p\in L_p$
+locally represented by a common class in $H_3(M,M\setminus U)$ on
+a neighborhood $U$. The next theorem explicitly constructs this data.
 
 \begin{lemma}[Coherent generators]
 \label{lem:foundations-coherent}
 A simply connected topological three-manifold admits a local integral
-orientation. No smooth structure is needed for this assertion.
+orientation. No smooth structure is required.
+\lean{Poincare.Topology.exists_integralThreeLocallyRepresentedGenerators}
+\uses{def:foundations-manifold}
+\source{Hatcher}\dcref{Section 3.3, pp. 233--235}
 \end{lemma}
 \begin{proof}
-Choose a closed coordinate ball $K$ inside a chart and let $U$ be its
-interior. Excision and the Euclidean pair calculation identify
-$H_3(M,M\setminus K)$ with $\mathbb Z$. For every $q\in U$, restriction
-to $L_q$ is an isomorphism. One way to calculate this is to use the
-boundary isomorphism for the punctured Euclidean space and then its radial
-deformation retraction to $S^2$; moving the puncture within the interior
-does not change the relative generator.
-
-These coordinate balls give local frames for the groups $L_q$. Two
-frames differ by an automorphism of $\mathbb Z$, thus by $1$ or $-1$.
-The sign is locally constant: if two relative classes have the same
-restriction at one point, their difference restricts to zero on a
-sufficiently small neighborhood of that point. This localization
-fact follows by representing a zero class with a finite bounding chain
-and shrinking the neighborhood away from the support of the relative
-chain left outside the puncture.
-
-Glue the two possible generators using these locally constant transition
-signs. This is again a two-sheeted covering. Lift the identity after
-choosing a generator over one point, as in
-Lemma~\ref{lem:foundations-determinant-cover}. In a frame the section is
-locally a constant sign, so the corresponding signed coordinate-ball
-class represents it on a neighborhood. These are the required
-$\omega_q$.
+Excision identifies local homology groups with $\mathbb Z$. Their two
+generators form a covering, since changes of local frame act by locally
+constant signs. Lift the identity to obtain the coherent generators and
+their local representatives.
 \end{proof}
-
-The elementary local homology and orientation facts used here are those
-of \cite[Section 3.3, pp. 233--235]{Hatcher}. The two covering
-constructions need not choose the same sign at the initial point. All
-uses below are invariant under changing the global sign.
 
 \section{The third homology group}
 \label{sec:foundations-top-homology}
 
-We recall the compact-support form of the local-to-global argument. Put
-$H_j^K(M)=H_j(M,M\setminus K)$ for a compact set $K$. Restriction from
-$H_3^K(M)$ to $L_p$, $p\in K$, detects a class: a class with zero
-restriction at every point of $K$ is zero. Moreover, a locally
-represented orientation glues to a class in $H_3^K(M)$ with the
-prescribed restrictions.
-
-For completeness, the compact-support argument proceeds as follows.
-In a Euclidean chart, a compact convex support has the same relative
-homology as a point, by radial retraction of its complement. The
-relative Mayer--Vietoris sequence extends both detection in degree three
-and vanishing above degree three from two compact supports and their
-intersection to their union. Thus finite unions of small closed balls
-have these properties. For a general compact support $K$ in the chart, a relative
-cycle has boundary supported in a compact subset of its complement.
-Choose a finite union $B$ of small closed balls centered at points of
-$K$, covering $K$ and disjoint from this boundary support. The cycle
-is already a relative cycle for $B$, proving high-degree vanishing
-for $K$ from that for $B$. For detection, suppose its point restrictions
-vanish on $K$. On each ball, restriction to the local group at its
-center is an isomorphism, so the class restricts to zero on that ball.
-Detection for the finite union gives zero on $B$ and hence on $K$.
-
-To pass to the manifold, cover a compact support by finitely many compact
-pieces contained in charts. When adding one piece, its intersection
-with the preceding union is a union of fewer chart-contained compact
-pieces, so the same induction applies to the intersection. Local
-orientation representatives glue using the exact segment
-\[
- 0\longrightarrow H_3^{K\cup L}(M)
- \longrightarrow H_3^K(M)\oplus H_3^L(M)
- \longrightarrow H_3^{K\cap L}(M).
-\]
-The last arrow can be taken to be the difference of restrictions;
-the zero on the left comes from $H_4^{K\cap L}(M)=0$.
-Detection makes the local representatives agree on intersections;
-exactness supplies the glued class and its uniqueness. These are the
-ordinary compact-support orientation facts in
-\cite[Lemma 3.27, pp. 236--238]{Hatcher}.
+\begin{lemma}[Compact-support detection and gluing]
+\label{lem:foundations-support-gluing}
+On a Hausdorff topological three-manifold, a class in
+$H_3(M,M\setminus K)$, $K$ compact, is determined by its restrictions
+to local groups at points of $K$. A locally represented orientation
+has a unique such class with the prescribed restrictions.
+\lean{Poincare.Topology.integralThreeManifoldCompactSupport}
+\lean{Poincare.Topology.exists_unique_integralSupportHomology_compact_gluing}
+\uses{lem:foundations-coherent}
+\source{Hatcher}\dcref{Lemma 3.27, pp. 236--238}
+\end{lemma}
+\begin{proof}
+The Euclidean relative calculation gives detection and vanishing above
+degree three on small compact supports. Relative Mayer--Vietoris extends
+them to finite unions. Finite chain supports and a finite chart cover
+reduce general compact supports to these cases. Exactness glues the local
+classes, and detection gives uniqueness.
+\end{proof}
 
 \begin{proposition}[Top integral homology]
 \label{prop:foundations-top-homology}
-If $M$ is a closed, connected topological three-manifold with a local
+If $M$ is a closed connected topological three-manifold with local
 integral orientation $\omega$, there is a unique class $[M]$ restricting
-to $\omega_p$ at every point, and
-\[
- H_3(M)\longrightarrow\mathbb Z,\qquad z[M]\longmapsto z
-\]
-is an isomorphism.
+to $\omega_p$ at every point, and $z\mapsto z[M]$ is an isomorphism
+$\mathbb Z\to H_3(M)$.
+\lean{Poincare.Topology.nonempty_integralSupportHomologyUniv_equiv_int}
+\uses{lem:foundations-support-gluing}
+\source{Hatcher}\dcref{Theorem 3.26, p. 236}
 \end{proposition}
 \begin{proof}
-Apply compact-support gluing with $K=M$. The resulting class belongs to
-$H_3(M,M\setminus M)=H_3(M)$ and has the stated restrictions.
-Support detection gives uniqueness.
-
-For any $a\in H_3(M)$, define the integer $c_a(p)$ by
-$a|_p=c_a(p)\omega_p$. This integer exists and is unique since
-$\omega_p$ is a generator of the infinite cyclic group $L_p$.
-It is locally constant. Indeed, take a neighborhood representative
-$b$ of $\omega$; restrict $a$ to the same relative group as $b$.
-The local restriction of $a-c_a(p)b$ at $p$ is then zero.
-Localization shrinks the neighborhood until all its restrictions vanish.
-Thus $c_a(q)=c_a(p)$ there.
-
-Connectedness makes $c_a$ constant. Fix $p_0$. The map
-$a\mapsto c_a(p_0)$ is a homomorphism and is injective, since a class
-with coefficient zero has every point restriction zero. It is
-surjective since $[M]$ has coefficient $1$. Its inverse is
-$z\mapsto z[M]$.
+Glue with $K=M$. The coefficient of any class relative to $\omega_p$
+is locally constant, hence constant. Detection makes the coefficient
+map injective, and $[M]$ maps to $1$.
 \end{proof}
-
-This proof identifies the generator using its local restrictions; it
-does not assume a triangulated fundamental cycle in advance. It is the
-oriented case of \cite[Theorem 3.26, p. 236]{Hatcher}.
 
 \section{Cap products and vanishing second homology}
 \label{sec:foundations-second-homology}
 
-For an open subset $U\subset M$, the orientation restricts to $U$.
-Define
-\[
- H_c^q(U)=\mathop{\mathrm{colim}}_{K\subset U\text{ compact}}
-                H^q(U,U\setminus K).
-\]
-Restriction of the orientation to a compact support, followed by cap
-product, defines
-\[
- D_U^q:H_c^q(U)\longrightarrow H_{3-q}(U)\qquad(0\leq q\leq3).
-\]
-At the chain level one evaluates the cochain on the front face of an
-oriented simplex and retains the complementary face. The cap boundary
-formula ensures that this descends to homology. Excision and uniqueness
-of the supported orientation classes make the map independent of the
-chosen compact support and compatible with extension from an open
-subset. These are the compact-support cap maps of
-\cite[Section 3.3, pp. 239--245]{Hatcher}.
-
-Only a particular part of duality is needed. Retain all four assertions
-in the following property of an open set $U$:
+\begin{definition}[The open-set cap property]
+\label{def:foundations-cap-property}
+Fix compact-support detection and a locally represented orientation.
+For open $U\subset M$, let $D_U^q:H_c^q(U)\to H_{3-q}(U)$ be
+cap product with the orientation. The cap property consists of
 \begin{equation}
 \label{eq:foundations-cap-property}
-\begin{split}
+\begin{aligned}
  &D_U^1\text{ is surjective},\\
  &D_U^2\text{ and }D_U^3\text{ are isomorphisms},\\
- &H_c^q(U)=0\quad\text{for every }q\geq4.
-\end{split}
+ &H_c^q(U)=0\quad(q\geq4).
+\end{aligned}
 \end{equation}
-The higher-degree clauses are needed to maintain the first clause under
-unions. Establishing only surjectivity in degree one would not close
-the induction.
+\lean{Poincare.Topology.integralOpenCapProperty}
+\uses{lem:foundations-support-gluing}
+\end{definition}
 
 \begin{lemma}[Union step]
 \label{lem:foundations-cap-union}
-If $U,V$, and $U\cap V$ satisfy
-\eqref{eq:foundations-cap-property}, then so does $U\cup V$.
+If $U,V$, and $U\cap V$ satisfy the cap property, then so does $U\cup V$.
+\lean{Poincare.Topology.integralOpenCapProperty_union}
+\uses{def:foundations-cap-property}
 \end{lemma}
 \begin{proof}
-Set $J=U\cap V$ and $W=U\cup V$. Compare the compact-support
-cohomology Mayer--Vietoris sequence with the homology sequence by cap
-product. Around degree one the rows are
-\[
-\begin{split}
- H_c^1(U)\oplus H_c^1(V)&\longrightarrow H_c^1(W)
- \longrightarrow H_c^2(J)\longrightarrow H_c^2(U)\oplus H_c^2(V),\\
- H_2(U)\oplus H_2(V)&\longrightarrow H_2(W)
- \longrightarrow H_1(J)\longrightarrow H_1(U)\oplus H_1(V).
-\end{split}
-\]
-The vertical maps are the corresponding $D^q$. Sum and difference
-maps commute with cap product; the connecting square has the usual
-degree sign, which can be absorbed into one connecting map without
-changing exactness.
-
-Given $z\in H_2(W)$, lift its boundary in $H_1(J)$ by the isomorphism
-$D_J^2$ to $v\in H_c^2(J)$. Its image in
-$H_c^2(U)\oplus H_c^2(V)$ is zero because the corresponding homology
-image is zero and $D_U^2,D_V^2$ are injective. Exactness lifts $v$ to
-$\beta\in H_c^1(W)$. Now $z-D_W^1\beta$ has zero boundary. It comes
-from $H_2(U)\oplus H_2(V)$, where the two degree-one cap maps are
-surjective. Adding the images of their lifts to $\beta$ gives a
-preimage of $z$.
-
-The next five-term segment proves that $D_W^2$ is an isomorphism:
-its four neighboring vertical maps are $D_J^2$, $D_U^2\oplus D_V^2$,
-$D_J^3$, and $D_U^3\oplus D_V^3$, all isomorphisms. For degree three
-the two exact sequences end in $H_0(W)\to0$ and
-$H_c^3(W)\to H_c^4(J)=0$; comparison of cokernels gives the
-isomorphism $D_W^3$. Finally the segment
-$H_c^q(U)\oplus H_c^q(V)\to H_c^q(W)\to H_c^{q+1}(J)$
-has zero outer terms for $q\geq4$. This proves all four clauses.
+Compare compact-support cohomology and homology Mayer--Vietoris by cap
+product. Lift the boundary of a homology class through $D_{U\cap V}^2$,
+then correct by classes from $U$ and $V$ to obtain surjectivity of
+$D_{U\cup V}^1$. The next segment and the five lemma give the
+degree-two isomorphism. Comparing cokernels gives degree three;
+exactness preserves higher-degree vanishing.
 \end{proof}
 
 \begin{lemma}[The property on chart domains]
 \label{lem:foundations-chart-cap}
-Every open subset of a coordinate chart satisfies
-\eqref{eq:foundations-cap-property}.
+Every open subset of a coordinate chart satisfies the cap property.
+\lean{Poincare.Topology.integralOpenCapProperty_of_chart}
+\uses{lem:foundations-cap-union}
 \end{lemma}
 \begin{proof}
-In an open rectangular box in $\mathbb R^3$, ordinary homology vanishes
-in positive degrees, while compact-support cohomology is $\mathbb Z$
-in degree three and zero in the other degrees. This follows by excision
-from the cube modulo its boundary. Capping its relative top generator
-with the dual top cochain gives a point with coefficient $1$.
-Consequently $D^3$ is an isomorphism; the other required maps are maps
-between zero groups. Changing the local orientation multiplies cap by
-$-1$, preserving the assertions.
-
-The intersection of two axis-parallel open boxes is another such box
-or is empty. The union lemma therefore proves the property for finite
-unions of boxes. More explicitly, when adding one box, its intersection
-with the previous union is a union of fewer box intersections, so the
-same induction applies to the intersection term.
-
-Every open subset of $\mathbb R^3$ is the directed union of its finite
-unions of relatively contained boxes. A compactly supported cohomology
-class and any finite singular cycle or bounding chain are captured at
-some stage. Thus these groups and cap maps commute with the relevant
-directed limits. Surjectivity, injectivity, and the stated vanishings
-pass to the union. Transport through a chart proves the claim.
+Compute on an open box by excision from a cube modulo its boundary.
+Use the union step for finite unions of boxes. Cycles, bounding chains,
+and compact supports lie in finite stages, so the property passes to
+directed unions and then through a chart.
 \end{proof}
 
 \begin{proposition}[Vanishing second homology]
 \label{prop:foundations-second-homology}
-A closed simply connected smooth three-manifold satisfies $H_2(M)=0$.
+A closed simply connected smooth three-manifold has $H_2(M)=0$.
+\lean{Poincare.Topology.integralThreeManifoldHomologyTwo_isZero}
+\uses{lem:foundations-chart-cap,lem:foundations-cap-union,prop:foundations-triangulation,lem:foundations-coherent}
 \end{proposition}
 \begin{proof}
-Choose the local orientation of
-Lemma~\ref{lem:foundations-coherent} and a finite chart cover
-$U_1,\ldots,U_m$ of $M$. Inductively prove the cap property for
-\emph{every} open set $W\subset U_1\cup\cdots\cup U_k$.
-For the successor step write
-\[
- W=(W\cap U_{k+1})\cup
-       \bigl(W\cap(U_1\cup\cdots\cup U_k)\bigr).
-\]
-The first set and the intersection lie in $U_{k+1}$, so the chart
-lemma applies. The second set satisfies the induction hypothesis.
-Lemma~\ref{lem:foundations-cap-union} now gives the assertion for $W$.
-At $W=M$, it yields a surjection $H_c^1(M)\to H_2(M)$.
-
-Since $M$ is compact, $H_c^1(M)=H^1(M)$. We show directly that this
-group vanishes. Let $\phi$ be an integral singular one-cocycle. Write
-$I(\gamma)$ for its value on a path regarded as a singular edge.
-The cocycle identity on an affine triangle gives
-$I(\gamma\delta)=I(\gamma)+I(\delta)$ and gives zero on constant
-paths. Applied to the two triangles in a homotopy square, it gives
-invariance under homotopy relative to endpoints: the diagonal terms
-cancel and the two endpoint edges are constant.
-
-Fix $p_0\in M$, choose a path $\gamma_x$ from $p_0$ to each $x$, and
-put $a(x)=I(\gamma_x)$. Simple connectedness makes any path from
-$x$ to $y$ homotopic relative to endpoints to
-$\gamma_x^{-1}\gamma_y$. Hence its value is $a(y)-a(x)$.
-The zero-cochain $a$ therefore has coboundary $\phi$. It follows that
-$H^1(M)=0$ and that the surjective cap map has zero domain. Thus
-$H_2(M)=0$.
+Chart induction gives a surjection $H_c^1(M)\to H_2(M)$, and
+compactness identifies the domain with $H^1(M)$. Integrating a singular
+one-cocycle along paths from a basepoint gives a primitive: simple
+connectedness makes the value independent of the path. Thus $H^1(M)=0$.
+The formal proof transports this calculation through the finite
+triangulation to accommodate arbitrary universes.
 \end{proof}
-
-The chart-cover and cocycle arguments are topological. The finite
-triangulated model from Section~\ref{sec:foundations-triangulation}
-also permits them to be performed on one small, finite-complex carrier
-and transported to $M$. This change of carrier introduces no additional
-geometric assertion and does not weaken the manifold hypotheses.
 
 \section{From homology to based homotopy}
 \label{sec:foundations-hurewicz}
 
-We use the integral Hurewicz theorem in its first nonzero degree: if $X$
-is path connected and $\pi_i(X,p)=0$ for $1\leq i<n$, where $n\geq2$,
-then
-\[
- h_n:\pi_n(X,p)\longrightarrow H_n(X)
-\]
-is an isomorphism. Here $h_n$ sends a based sphere map to the image of
-the oriented sphere generator. This is
-\cite[Theorem 4.32, p. 366]{Hatcher}; it is general algebraic topology,
-not a three-manifold recognition result.
-
-It is useful to specify the mechanism behind the maps used here.
-The vanishing lower homotopy groups let one straighten singular simplices
-inductively so that their low-dimensional faces are constant at $p$,
-while keeping the choices coherent on common faces. The homotopies
-produce prism chains, so a cycle and its straightening represent the
-same homology class. A straightened $n$-simplex with constant boundary
-is a based sphere map. A cycle is a finite integral sum of such
-simplices, and addition in $\pi_n$ realizes that sum. This gives
-surjectivity. For injectivity, carry out the coherent straightening
-also on a bounding chain in degree $n+1$, keeping already based faces
-fixed. The face cancellations provide the relative homotopy between
-the boundary sphere maps. Thus homologous images have the same based
-homotopy class. In the two applications below, these are statements
-about degrees two and three with all their connectivity hypotheses
-verified explicitly.
-
 \begin{corollary}[The initial based classes]
 \label{cor:foundations-homotopy-groups}
 For every $p\in M$, $\pi_2(M,p)=0$ and $\pi_3(M,p)\cong\mathbb Z$.
-In particular there exists a nonzero element of $\pi_3(M,p)$.
+In particular $\pi_3(M,p)$ contains a nonzero class.
+\lean{Poincare.Topology.nonempty_threeManifoldTopologyConclusion_of_integralHomology_two_isZero}
+\uses{prop:foundations-top-homology,prop:foundations-second-homology}
 \end{corollary}
 \begin{proof}
-Simple connectedness gives $\pi_1(M,p)=0$. Hurewicz in degree two
-identifies $\pi_2(M,p)$ with $H_2(M)=0$. Its degree-three version now
-applies, and Proposition~\ref{prop:foundations-top-homology} identifies
-$H_3(M)$ with $\mathbb Z$. The class corresponding to $1$ is nonzero.
+Integral Hurewicz in degree two identifies $\pi_2$ with $H_2=0$;
+in degree three it then identifies $\pi_3$ with $H_3\cong\mathbb Z$.
+Changing basepoint transports the groups by the isomorphism of a chosen
+path. The class corresponding to $1$ remains nonzero.
 \end{proof}
-
-A chosen orientation determines the last isomorphism; reversing it changes
-the generator's sign. No preferred sign is needed for the nontriviality
-argument. Changing basepoint uses the isomorphism induced by a path.
-The conclusion holds at every point, but any comparison of specific
-based classes must still specify the identifications being used.
 
 \section{The stronger sphere homotopy equivalence}
 \label{sec:foundations-cw-equivalence}
 
-The finite CW structure gives an explicit proof of the last assertion
-of Proposition~\ref{prop:foundations-initial}. The proof is a
-three-dimensional cellular construction; it does not require checking
-an isomorphism on every homotopy group.
-
 \begin{proposition}[A three-dimensional cellular recognition result]
 \label{prop:foundations-cw-equivalence}
-Let $C$ be a nonempty path-connected CW complex of dimension at most
-three, with $\pi_1(C,p)=\pi_2(C,p)=0$ for every $p\in C$ and
-$\pi_3(C,p)\cong\mathbb Z$. Then $C\simeq S^3$.
+Let $C$ be a nonempty path-connected Hausdorff CW complex of dimension
+at most three. If $\pi_1(C,p)=\pi_2(C,p)=0$ and
+$\pi_3(C,p)\cong\mathbb Z$ for every $p\in C$, then $C\simeq S^3$.
+\lean{Poincare.Topology.nonempty_homotopyEquiv_sphere_of_cw_three_pi_int}
 \end{proposition}
 \begin{proof}
-Choose a zero-cell $p$. A nonempty CW complex has such a cell: otherwise
-take a cell of least occupied dimension; a positive-dimensional cell
-has nonempty boundary mapping into the lower skeleton, a contradiction.
-The sphere has $\pi_1(S^3)=\pi_2(S^3)=0$ and $H_3(S^3)=\mathbb Z$;
-Hurewicz therefore identifies $\pi_3(S^3)$ with $\mathbb Z$.
-Represent a generator of $\pi_3(C,p)$ by a based map $f:S^3\to C$.
-Naturality of the degree-three Hurewicz homomorphism shows that
-$f_*:\pi_3(S^3)\to\pi_3(C,p)$ is an isomorphism: a generator maps
-to the selected generator.
+Choose a zero-cell $p$ and a map $f:S^3\to C$ representing a generator
+of $\pi_3(C,p)$. Its map on $\pi_3$ is an isomorphism. Vanishing of
+$\pi_1$ and $\pi_2$ contracts the inclusion of the two-skeleton
+relative to $p$; extend this homotopy over $C$.
 
-Let $A=C^{(2)}$. Its inclusion in $C$ is nullhomotopic relative to
-$p$. To construct the homotopy, first move the zero-cells to $p$ along
-paths. Extend across one-cells using $\pi_1(C,p)=0$, and across
-two-cells using $\pi_2(C,p)=0$. At each step the obstruction is the
-map on the boundary of a cell times the homotopy interval, including
-the two end disks, namely a sphere in the indicated homotopy group.
-The weak topology pastes these extensions. This contracts the
-\emph{inclusion} $A\to C$; it does not assert that $A$ is contractible.
-
-By the homotopy extension property, extend this homotopy over $C$.
-At its endpoint obtain a map $a:C\to C$, homotopic to the identity
-relative to $p$, such that $a(A)=\{p\}$. For each characteristic map
-$c_j:D^3\to C$ of a three-cell, $a c_j$ is constant on $\partial D^3$.
-Surjectivity of $f_*$ gives a map
-$g_j:(D^3,\partial D^3)\to(S^3,*)$ and a homotopy
-$f g_j\simeq a c_j$ relative to the boundary.
-
-Paste the maps $g_j$ with the constant map on $A$ to obtain $g:C\to S^3$.
-Paste the relative homotopies with the constant homotopy on $A$.
-Their boundaries agree, and the weak topology gives continuity, so
-$fg\simeq a\simeq\operatorname{id}_C$ relative to $p$.
-Consequently $fgf\simeq f$ as based maps. Injectivity of $f_*$ now
-implies $gf\simeq\operatorname{id}_{S^3}$: precompose with
-$I^3/\partial I^3\cong S^3$ to regard the two maps as elements of
-$\pi_3(S^3,*)$, cancel $f_*$, and descend the resulting relative
-homotopy to the quotient. Thus $f$ and $g$ are homotopy inverses.
+Each three-cell now gives a based sphere map. Lift its class through
+$f_*$ and paste to obtain $g:C\to S^3$ with
+$fg\simeq\mathrm{id}_C$. Injectivity of $f_*$ cancels $f$ from
+$fgf\simeq f$, yielding $gf\simeq\mathrm{id}_{S^3}$.
 \end{proof}
 
-Apply the proposition to the CW structure of
-Proposition~\ref{prop:foundations-triangulation}, using
-Corollary~\ref{cor:foundations-homotopy-groups}. Together with
-Lemma~\ref{lem:foundations-determinant-cover}, this finishes the proof
-of Proposition~\ref{prop:foundations-initial}. Later width arguments
-need a nonzero class, not this stronger unbased equivalence.
-
-The stronger conclusion nevertheless has separate uses in transporting
-topology through surgery. For example, if $e:X\simeq S^3$ and
-$u:S^2\to X$ is continuous, then $eu$ is nullhomotopic because
-$\pi_2(S^3)=0$. Composing a nullhomotopy with a homotopy inverse of $e$
-and using its inverse homotopy gives a free nullhomotopy of $u$.
-Also, for homotopy three-spheres $X,Y$, conjugating a particular map
-$f:X\to Y$ by chosen sphere equivalences gives a self-map of $S^3$.
-If $f_*$ is an isomorphism on $H_3$, the conjugate has degree $1$ or
-$-1$. The degree classification of sphere maps
-\cite[Corollary 4.25, p. 361]{Hatcher} then supplies an inverse
-up to homotopy. The surgery comparison chapter must prove that its
-\emph{selected} comparison map has this homology property and retain
-that map as the forward map of the resulting equivalence. Merely knowing
-that some equivalence between $X$ and $Y$ exists would not suffice.
+Apply this to the triangulated model and initial based classes. The
+result is a homotopy equivalence; surgery reconstruction is needed for
+a diffeomorphism.
 
 \section{Excluding a two-sided projective plane}
 \label{sec:foundations-projective-plane}
 
 \begin{definition}[The excluded neighborhood]
 \label{def:foundations-projective-neighborhood}
-Let $\mathbb{RP}^2=S^2/(u\sim-u)$ and let $J=(-1,1)$. A trivial
-normal product neighborhood in a three-manifold $X$ is a topological
-open embedding
-\[
- j:\mathbb{RP}^2\times J\longrightarrow X.
-\]
-An open embedding is a homeomorphism onto an open subset of $X$.
-We say that $X$ excludes such neighborhoods if no such $j$ exists.
+A space $X$ excludes a trivial normal projective-plane neighborhood if
+there is no topological open embedding $\mathbb{RP}^2\times(-1,1)\to X$.
+\lean{PoincareMT.NoTrivialNormalProjectivePlane}
 \end{definition}
-
-This is the precise form of the two-sided-projective-plane exclusion
-needed below. It is a statement about the whole product neighborhood,
-and does not assume that $j$ is differentiable.
 
 \begin{proposition}[Orientation exclusion]
 \label{prop:foundations-projective-exclusion}
-A Hausdorff, second-countable smooth three-manifold with compatible
-chart signs excludes the neighborhood of
-Definition~\ref{def:foundations-projective-neighborhood}.
-Compactness and simple connectedness are not needed in this statement.
+A Hausdorff second-countable smooth three-manifold with compatible
+chart signs excludes a trivial normal projective-plane neighborhood.
+Neither compactness nor simple connectedness is required.
+\lean{PoincareMT.m83OrientationExclusion}
+\uses{def:foundations-chart-signs,def:foundations-projective-neighborhood}
 \source{MT2007}\dcref{Theorem 0.3, footnote 2, p. xii}
 \end{proposition}
-
 \begin{proof}
-First turn the signed atlas into an atlas with positive transition
-determinants. Restrict each chart to the open sets where its sign is
-constant and, on the negative part, compose with a fixed coordinate
-reflection. The determinant sign in
-Definition~\ref{def:foundations-chart-signs} says exactly that all the
-new transition determinants are positive.
+Correct negative chart signs by reflection to obtain a positive atlas.
+A proposed open embedding pulls it back to
+$\mathbb{RP}^2\times(-1,1)$ and supplies a local integral orientation;
+no derivative of the embedding is used.
 
-Suppose $j$ exists. Restrict these charts to its open image and pull
-them back through $j$. Transitions in the pulled-back atlas are
-restrictions of the original transitions: $j$ and $j^{-1}$ cancel.
-Thus this produces a positive smooth atlas on
-$\mathbb{RP}^2\times J$, even though $j$ was only a topological open
-embedding. No derivative of $j$ has been used.
-
-A positive atlas determines an integral local orientation. To verify
-the needed sign assertion, let a transition fixing the origin have
-derivative $A$. On a sufficiently small sphere, its remainder has
-norm smaller than the lower bound for $\|Ax\|$. Straight-line
-interpolation to $A$ therefore never meets the puncture, and induces
-the same map on local homology. A linear map of positive determinant
-is connected to the identity among invertible positive-determinant
-maps, so it preserves the local generator. The coordinate generators
-therefore agree on overlaps and define an orientation $O$ of the product.
-
-Consider the double covering
-\[
- q:S^2\times J\longrightarrow\mathbb{RP}^2\times J,
- \qquad q(u,t)=([u],t),
-\]
-with deck transformation $\tau(u,t)=(-u,t)$.
-Pullback by the local homeomorphism $q$ gives a local orientation $Q$
-of $S^2\times J$. Since $q\tau=q$, this orientation is invariant
-under $\tau$.
-
-There is also a standard orientation on the cover: use the open
-embedding
-\[
- \Phi:S^2\times(-1,1)\longrightarrow\mathbb R^3,
- \qquad \Phi(u,t)=(2+t)u.
-\]
-Its image is the shell $1<\|x\|<3$, and
-$\Phi\tau=-\Phi$. The antipodal map of $\mathbb R^3$ reverses
-local integral orientation. One can compute the sign without assigning
-a smooth structure to the quotient. A reflection interchanges the
-two open sets obtained from $S^2$ by deleting opposite poles. Its
-map on their intersection is homotopic to the identity, while
-interchanging the two sets negates the Mayer--Vietoris connecting map.
-Hence reflection acts by $-1$ on $H_2(S^2)$. Radial retraction of
-$\mathbb R^3\setminus\{0\}$ and the boundary isomorphism of its
-relative pair transfer that sign to local $H_3$ at the origin.
-Negation is the product of a reflection and a positive-determinant
-linear map, so has the same sign. Translation transfers the calculation
-to every point. This is the local version of
-\cite[degree properties (e)--(f), p. 134]{Hatcher}.
-
-Let $O_0$ be the resulting standard orientation of the connected shell.
-Any local orientation $Q$ differs from $O_0$ by a locally constant sign.
-Connectedness of $S^2\times J$ makes that sign a single number
-$a\in\{1,-1\}$. But then
-\[
- \tau^*Q=a\tau^*O_0=-aO_0=-Q,
-\]
-contradicting $\tau^*Q=Q$. A generator of an infinite cyclic local
-homology group is not its own negative. Therefore $j$ cannot exist.
+Pull this orientation to $S^2\times(-1,1)$. It is invariant under
+$(u,t)\mapsto(-u,t)$. The shell identification $(u,t)\mapsto(2+t)u$
+identifies the deck transformation with negation in $\mathbb R^3$,
+which reverses local orientation. On the connected shell all orientations
+differ by a constant sign, so invariance equates a generator with its
+negative, a contradiction.
 \end{proof}
-
-The covering and the local-orientation interpretation are also described
-in \cite[Example 1.43, p. 74; Section 3.3, pp. 233--235 and
-Exercises 3--5, p. 257]{Hatcher}. Applying the proposition with
-Lemma~\ref{lem:foundations-determinant-cover} gives the exclusion for
-our original $M$. It is this product-neighborhood obstruction that is
-passed to the surgery construction, as in
-\cite[Theorem 0.3, footnote 2, p. xii]{MT2007}.
 
 \section{The forward geometric and backward topological arguments}
 \label{sec:foundations-route}
 
-The remaining chapters use the preceding results in a fixed order.
-Starting with the original smooth $M$, choose and normalize an initial
-Riemannian metric. Its orientation and the exclusion of
-Proposition~\ref{prop:foundations-projective-exclusion} enter the
-global surgery-flow construction. The geometric chapters construct
-one such flow, its slices $M_t$, and its surgery events, with a specified
-identification of $M$ with the time-zero slice.
+Surgery uses the orientation and projective-plane exclusion. Filling
+width uses a nonzero $\pi_3$ class on the fixed time-zero component,
+transported to its chosen basepoint and converted to a class in the
+actual $C^1$ free-loop space.
+Section~\ref{sec:filling-fixed-initial-class} specifies those identifications.
 
-The homotopy input has a different role. Choose $p\in M$ and a nonzero
-class in $\pi_3(M,p)$. The filling-width chapter must turn this into a
-nontrivial family in the actual $C^1$ free-loop space. This requires
-the based/free comparison, its chosen model sphere, and the transport
-through the time-zero identification. None of those assertions follows
-merely from writing $\pi_3(M)\cong\mathbb Z$. The geometric estimates
-then control that family's width through ordinary flow intervals and
-surgery events. The extinction argument applies these estimates to
-the same fixed flow and proves that it becomes empty in finite time.
-
-The basepoint part of this interface can be stated explicitly. Suppose
-the topology construction chose $p$ and the selected initial component
-uses $q$. Choose a path $\gamma:p\to q$ and let $B_k(\gamma)$ be the
-based transport on $\pi_k$. The reverse-path law makes this map an
-isomorphism preserving zero. If $\xi_p$ corresponds to $1\in\mathbb Z$,
-then $\xi_q=B_3(\gamma)\xi_p$ is nonzero, and $B_2(\gamma)$ transfers
-the vanishing of $\pi_2$ to $q$. The loop-space comparison at $q$,
-written $\Phi_{M,q}:\pi_2(\Lambda^1 M,\operatorname{const}_q)
-\to\pi_3(M,q)$, then defines
-$\alpha=\Phi_{M,q}^{-1}(\xi_q)\ne0$.
-Here $\Lambda^1M$ denotes the $C^1$ free-loop space with the topology
-specified in the filling-width chapter. Construction of $\Phi_{M,q}$ and
-of regular representative families belongs to that chapter; this
-argument identifies the exact class it must represent. For the flow
-application, perform this construction on its fixed initial component
-model $C_0$, after transporting the manifold hypotheses through the
-specified time-zero identification. The point $q$ is the selected point
-of $C_0$, and its metric is the pullback of the actual time-zero metric.
-Section~\ref{sec:filling-fixed-initial-class} fixes these choices,
-the sphere quotient, and the loop identification before any terminal
-time or target component is chosen.
-
-The proof then runs backward through the topological history of that
-flow. Every event records its pre-surgery and post-surgery components,
-its discarded pieces, and the balls and collars used in reconstruction.
-Finite-history induction replaces the outgoing components by their
-already reconstructed assemblies. Simple connectedness of the initial
-manifold is used with the actual connected-sum group retractions to
-restrict the possible factors. The sphere-reduction argument cancels
-the resulting sphere factors using the recorded attaching data and
-produces a diffeomorphism of the original $M$ with $S^3$.
-These reconstruction statements, rather than the homotopy equivalence
-of Section~\ref{sec:foundations-cw-equivalence}, give the smooth endpoint.
-
-Finally, for a topological $M$, the smoothing chapters must construct a
-smooth model $N$ and one specified homeomorphism $h:M\to N$.
-Transport compactness, separation, countability, and simple connectedness
-through this $h$. The smooth theorem gives a diffeomorphism
-$d:N\to S^3$, and the composite $d\circ h$ is the required
-homeomorphism. All topology established earlier is applied to this
-same smooth model; an unspecified smoothing is not a substitute for
-the required compatible model and its homeomorphism.
-
-The substantive inputs promised by the later chapters are therefore:
-existence and calibration of the surgery flow; the based/free family
-comparison and width inequalities; finite extinction of that flow;
-reconstruction and sphere reduction of its finite history; and compatible
-smoothing. This chapter supplies the initial topology and orientation
-obstruction, while keeping those later obligations distinct.
+The estimates force extinction of that same flow. Reading its finite
+history backward reconstructs the connected-sum topology and reduces
+the simply connected case to a sphere. Compatible smoothing finally
+gives one homeomorphism from a topological manifold to a smooth model;
+composition with the smooth endpoint proves the topological theorem.

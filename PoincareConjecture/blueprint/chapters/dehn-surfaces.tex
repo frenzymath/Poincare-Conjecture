@@ -315,6 +315,7 @@ open embedding, proves Theorem~\ref{thm:dehn-marked-loop}.
 
 \begin{lemma}[Boundary rank from finite incidence]
 \label{lem:dehn-boundary-rank}
+\uses{def:dehn-pl-domain}
 Let $K$ be a finite triangulation of a connected compact PL
 three-dimensional domain with nonempty boundary subcomplex $A$.
 Use mod-two chains and write $b_i$ for their homology dimensions.
@@ -379,7 +380,7 @@ It is the same calculation for $b=0$ in the disk tower and $b\leq1$
 in the annulus tower.
 \end{proof}
 
-\begin{remark}[Whole-image control]
+\paragraph{Whole-image control.}
 \label{rem:dehn-local-review}
 The ordinary crossing prisms, their source strips, and the terminal
 chart stars supply geometric hypotheses in the preceding proofs.
@@ -387,7 +388,6 @@ Their whole-image and whole-frontier properties matter: a collection
 of local pictures without those equalities would not justify descent.
 The following sections give the
 replacement maps and the boundary correction separately.
-\end{remark}
 
 \section{Restoring a prescribed disk boundary}
 \label{sec:dehn-proper-disk}
@@ -591,6 +591,7 @@ There is no PL assumption on the interior of $h$.
 
 \begin{definition}[Retained block]
 \label{def:dehn-retained-block}
+\uses{def:dehn-pl-domain}
 A retained block means that $\pi$ is injective on $D^k\times2D^n$
 and that one specified chart $e_*$ contains $C_2$ and satisfies
 \[
@@ -644,6 +645,17 @@ slabs give the simultaneous disjointness required.
 
 \section{A marked annulus at the terminal stage}
 \label{sec:dehn-terminal-annulus}
+
+\begin{theorem}[Embedded annulus in the terminal tower stage]
+\label{thm:dehn-terminal-annulus}
+\uses{def:dehn-retained-block,lem:dehn-boundary-rank}
+\lean{PoincareMT.M76.Dehn.ProtectedAnnulus.ProtectedAnnulusTerminalData.exists_embedded_terminal_annulus}
+The constructed terminal stage of a protected annulus tower contains
+a finite PL embedded annulus on the unchanged source complex. Its
+image lies in the retained chart domain, its intersection with the
+whole domain frontier is precisely the two source rims, and it agrees
+pointwise with both prescribed lifted rim maps.
+\end{theorem}
 
 For $k=1,n=2$ the original continuous annulus in chart coordinates is
 \[
@@ -803,6 +815,7 @@ no circular closing condition.
 
 \begin{lemma}[Decreasing annulus surgery]
 \label{lem:dehn-annulus-decrease}
+\uses{def:dehn-retained-block}
 For a proper finite PL projected annulus in one of these retained
 stages, with the prescribed two rim maps, ordinary crossing charts
 and nonempty double locus, there is another such annulus map $g$
@@ -960,7 +973,7 @@ preserve its exact rims and whole-frontier properness.
 
 \begin{theorem}[Protected annulus]
 \label{thm:dehn-protected-annulus}
-\uses{def:dehn-retained-block,lem:dehn-boundary-rank,lem:dehn-annulus-decrease}
+\uses{def:dehn-retained-block,thm:dehn-terminal-annulus,thm:dehn-annulus-termination}
 For the handle data of Definition~\ref{def:dehn-retained-block} with
 $k=1,n=2$, there is a compact embedded chartwise PL annulus
 $j:D^1\times Q^1\to R$, with image $T$, such that
@@ -972,7 +985,8 @@ $j:D^1\times Q^1\to R$, with image $T$, such that
       T\subset C_2\setminus C_1,
       \qquad T\subset\pi(D^1\times\{y:\|y\|<2\}).
 \]
-\lean{PoincareMT.M76.hasHamiltonProtectedDehnAnnulus}
+\lean{PoincareMT.M76.Dehn.ProtectedAnnulus.exists_embedded_chart_annulus}
+\lean{PoincareMT.M76.Dehn.ProtectedAnnulus.exists_protected_annulus_of_chart}
 \source{Hamilton1976}
 \dcref{Index-one generalized Dehn application, printed p. 67}
 \end{theorem}
@@ -989,6 +1003,24 @@ follows from the compact source annulus.
 \end{proof}
 
 \section{The same surfaces enclose the protected core}
+
+\begin{theorem}[Termination of marked annulus surgery]
+\label{thm:dehn-annulus-termination}
+\uses{lem:dehn-annulus-decrease}
+\lean{PoincareMT.M76.Dehn.ProtectedAnnulus.exists_embedded_planar_stage_annulus}
+A proper finite PL annulus in a retained tower stage, with a finite
+ordinary circle decomposition and interior crossing values, admits an
+embedded finite PL replacement. The replacement stays in the same
+domain, is proper against its whole frontier, and retains both complete
+prescribed rim maps.
+\end{theorem}
+
+\begin{proof}
+Induct on the number of connected components of the actual source
+double locus. At zero the map is already embedded. Otherwise
+Lemma~\ref{lem:dehn-annulus-decrease} supplies a smaller count and
+preserves the hypotheses needed for the next step.
+\end{proof}
 \label{sec:dehn-enclosing-region}
 
 It remains to find the enclosing region for the surfaces already
@@ -997,6 +1029,7 @@ markings needed by the later handle argument.
 
 \begin{lemma}[Locally flat sphere separation]
 \label{lem:dehn-sphere-separation}
+\lean{PoincareMT.M76.LocallyFlatTopologicalSphere.exists_bounded_complement_components}
 If
 $S\subset E^3$ is the image of a homeomorphism from a two-sphere
 and every point has an ambient chart identifying $S$ with a plane,
@@ -1019,7 +1052,7 @@ and its relative markings will be used in the rigidity chapter.
 
 \begin{theorem}[Marked enclosing region]
 \label{thm:dehn-enclosing-region}
-\uses{thm:dehn-protected-disks,thm:dehn-protected-annulus}
+\uses{thm:dehn-protected-disks,thm:dehn-protected-annulus,lem:dehn-sphere-separation}
 Let $T$ be the annulus image of
 Theorem~\ref{thm:dehn-protected-annulus}, or the union of the two
 disk images of Theorem~\ref{thm:dehn-protected-disks}.
@@ -1036,7 +1069,8 @@ There is a compact region $P\subset R$ such that
 The displayed frontier is a chartwise finite PL embedded sphere.
 This conclusion specifies an enclosing region; recognition of that
 region as a PL ball is a further step in the handle argument.
-\lean{PoincareMT.M76.HamiltonDehnEnclosingRegion}
+\lean{PoincareMT.M76.Dehn.ProtectedAnnulus.nonempty_enclosing_region}
+\lean{PoincareMT.M76.Dehn.ProtectedDisks.nonempty_enclosing_region}
 \source{Hamilton1976}
 \dcref{Protected enclosing sphere and compact set, printed p. 67}
 \end{theorem}

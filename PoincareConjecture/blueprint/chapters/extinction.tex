@@ -36,6 +36,7 @@ supplies such disks, nonnegative filling area, and continuity on null loops.
 
 \begin{definition}[Family and class width]
 \label{def:v4-family-width}
+\uses{def:v4-null-family}
 \label{def:v4-free-width}
 \lean{PoincareMT.m61FamilyWidth}
 \lean{PoincareMT.m61FreeClassWidthRange}
@@ -55,6 +56,7 @@ $W_g(\alpha)$ for this free-class infimum.
 
 \begin{proposition}[Maximum and near minimizers]
 \label{prop:v4-width-properties}
+\uses{prop:filling-width-properties}
 \uses{def:v4-family-width}
 \lean{PoincareMT.m61FamilyWidth_from_M60}
 \lean{PoincareMT.m61Widths}
@@ -183,7 +185,8 @@ is $\delta>0$ such that, if $s<t\leq b$ and $t<s+\delta$, then
  \leq-2\pi-\frac{R_{\min}(s)}2w(s)+\epsilon.
  \label{eq:v4-forward}
 \end{equation}
-\source{MT2007}\dcref{Proposition 18.18, p. 431; Claim 18.21, pp. 432--433}
+\source{MT2007}\dcref{Proposition 18.18, p. 431}
+\dcref{Claim 18.21, pp. 432--433}
 \end{proposition}
 \begin{proof}
 Curvature continuity on the compact space-time slab bounds
@@ -217,6 +220,10 @@ $(s^-,s)$. Theorem~\ref{thm:comparison-transport} gives a comparison
 homotopy equivalence from that parent to the selected child. Its parent
 and child are simply connected; we retain this specialization here.
 
+\begin{proposition}[A coherent nonzero class along the history]
+\label{prop:v4-class-transport}
+\uses{prop:filling-ancestry-transport,prop:filling-loop-identification}
+\lean{PoincareMT.m67_finite_transport_section,PoincareMT.m67_class_path_exists}
 Fix one based/free identification throughout, $\pi_2(X_0,x_0)=0$,
 and $\xi_0\ne0$ in $\pi_3(X_0,x_0)$. Transport ordinarily by the slice
 diffeomorphisms and specified basepoint paths. At an event, transport to
@@ -224,7 +231,10 @@ the preterminal parent, then by the actual comparison map, and finally
 along a path in the child to $x_s$. Homotopy equivalences preserve
 triviality of $\pi_2$ and nontriviality of the third homotopy element;
 basepoint change is an isomorphism too.
+This constructs one compatible nonzero class at every time on the path.
+\end{proposition}
 
+\begin{proof}
 For completeness, order the finite set consisting of zero and the events.
 Define the class at zero. The preterminal time $s^-<s$ of each event
 lies after a previously defined anchor, whose class can be transported
@@ -233,8 +243,7 @@ At an arbitrary $t$, transport from the largest anchor not exceeding
 $t$. Two times with no intervening event have the same last anchor, so
 the composition rule proves compatibility of their classes. The recursive
 definition gives the event rule. No unrelated class is chosen on a child.
-\lean{PoincareMT.m67_finite_transport_section}
-\lean{PoincareMT.m67_class_path_exists}
+\end{proof}
 
 Let $\alpha_t$ be the resulting loop-space class and put
 $w(t)=W_{g(t)|X_t}(\alpha_t)$. The based/free identification makes this
@@ -242,6 +251,9 @@ the actual free-class width on each ordinary slab. An interval's initial
 width is evaluated at that interval's start, not silently replaced by
 the time-zero width.
 
+\begin{lemma}[The event class is independent of smoothing tolerance]
+\label{lem:v4-event-class}
+\uses{prop:v4-class-transport,thm:comparison-transport}
 Area estimates use smooth approximants of an event map. All these
 approximants have the same based $\pi_3$ map at the fixed comparison
 basepoint. Naturality of $\pi_2(\Lambda^1X)\simeq\pi_3(X)$ shows that
@@ -249,6 +261,7 @@ their postcomposed families give the same $\alpha_s$ after rebasing
 along the fixed child path. Changing the approximation tolerance therefore
 does not change the width being estimated.
 \lean{PoincareMT.m67_event_class_datum_exists}
+\end{lemma}
 
 \section{The estimate at an event}
 
@@ -294,7 +307,7 @@ piece. The tolerance is chosen before the neighborhood.
 
 \begin{proposition}[Changing width estimates]
 \label{prop:v4-event-width}
-\uses{prop:v4-smooth-time,lem:v4-disk-transport,thm:comparison-transport,prop:filling-loop-identification}
+\uses{prop:v4-smooth-time,lem:v4-disk-transport,lem:v4-event-class,thm:comparison-transport,prop:filling-loop-identification}
 \lean{PoincareMT.m67_surgery_width_theory}
 \lean{PoincareMT.m67_event_factor_bounds}
 \lean{PoincareMT.m67_lower_limit_of_factor_bounds}
@@ -307,7 +320,8 @@ such that
 \]
 This is the meaning of $w(s)\leq\liminf_{t\uparrow s}w(t)$ here.
 No incoming limit is assumed to exist.
-\source{MT2007}\dcref{Proposition 18.18, p. 431; Claim 18.22, p. 433}
+\source{MT2007}\dcref{Proposition 18.18, p. 431}
+\dcref{Claim 18.22, p. 433}
 \end{proposition}
 \begin{proof}
 Nonnegativity and regular estimates apply to the same widths on ordinary
@@ -339,6 +353,7 @@ this substitution.
 
 \begin{proposition}[Regular-slab forward comparison]
 \label{prop:v4-m81}
+\uses{prop:rf-evolution}
 \lean{PoincareMT.m81RegularSlabComparison}
 Let $a\leq b$, with $1+4t>0$ on $[a,b]$. Suppose $f,G$ are
 continuous there, $f(a)\leq G(a)$, $G'=F(t,G)$, and for every
@@ -366,6 +381,9 @@ $\eta e^{2k(b-a)}$, so letting $\eta\downarrow0$ proves $f\leq G$.
 Only right slopes at a last contact were used, not a derivative of $f$.
 \end{proof}
 
+\begin{lemma}[The scalar comparison profile]
+\label{lem:v4-profile}
+\lean{PoincareMT.m68_profile_equation}
 For $T_1\geq0$, the scalar solution with value $w_1$ there is
 \begin{equation}
  P_{T_1,w_1}(t)=
@@ -373,18 +391,28 @@ For $T_1\geq0$, the scalar solution with value $w_1$ there is
  +2\pi(1+4T_1)^{1/4}(1+4t)^{3/4}-2\pi(1+4t).
  \label{eq:v4-profile}
 \end{equation}
+It satisfies $P'= -2\pi+3P/(1+4t)$ and $P(T_1)=w_1$ for $t\geq T_1$.
+\end{lemma}
+\begin{proof}
 Multiplying the ODE by $(1+4t)^{-3/4}$ gives derivative
 $-2\pi(1+4t)^{-3/4}$, whose integral is
 $-2\pi((1+4t)^{1/4}-(1+4T_1)^{1/4})$. Solving for $P$ gives
 \eqref{eq:v4-profile} and $P(T_1)=w_1$. All real powers have positive
 arguments.
-\lean{PoincareMT.m68_profile_equation}
+\end{proof}
 
 \section{Restarting through finitely many events}
 
+\begin{lemma}[Restart at an event]
+\label{lem:v4-event-restart}
+\uses{prop:v4-event-width,lem:v4-profile}
+\lean{PoincareMT.m68_event_restart_bound}
 Fix $[T_1,T_2]\subset[0,T]$ and retain the single profile
 $P=P_{T_1,w(T_1)}$ on that whole interval. Suppose $w(t)\leq P(t)$
-for $a<t<s$ and $s$ is an event. For $\epsilon>0$, use the event
+for $a<t<s$ and $s$ is an event. Then $w(s)\leq P(s)$.
+\end{lemma}
+\begin{proof}
+For $\epsilon>0$, use the event
 inequality with error $\epsilon/2$ and continuity of $P$ with error
 $\epsilon/2$. Choose $t\in(a,s)$ in both neighborhoods. Then
 \[
@@ -392,11 +420,11 @@ $\epsilon/2$. Choose $t\in(a,s)$ in both neighborhoods. Then
 \]
 Letting $\epsilon\downarrow0$ gives $w(s)\leq P(s)$ without any
 incoming width limit.
-\lean{PoincareMT.m68_event_restart_bound}
+\end{proof}
 
 \begin{proposition}[Finite-event scalar comparison]
 \label{prop:v4-scalar-clock}
-\uses{prop:v4-m81,prop:v4-event-width}
+\uses{prop:v4-m81,prop:v4-event-width,lem:v4-event-restart,lem:v4-profile}
 \lean{PoincareMT.m68_scalar_clock_statement}
 For every $t\in[T_1,T_2]$, $0\leq w(t)\leq P_{T_1,w(T_1)}(t)$.
 \end{proposition}
@@ -447,6 +475,9 @@ starting at this same initial component. Each path has the comparison
 and class data above. All scalar and strict event bounds hold for this
 same flow.
 
+\begin{lemma}[One initial width for all observed paths]
+\label{lem:v4-common-width}
+\uses{prop:v4-class-transport,prop:filling-component-ancestry}
 The class construction is anchored at $\alpha_0$. Hence every such
 path, for every terminal time, has
 \[
@@ -456,7 +487,11 @@ Equality of initial components also identifies their basepoints and
 induced metrics; an unspecified isomorphism of components would not
 suffice for this equality of widths.
 \lean{PoincareMT.m71WidthChoice_initial_width}
+\end{lemma}
 
+\begin{lemma}[A common negative comparison time]
+\label{lem:v4-negative-time}
+\uses{lem:v4-common-width,lem:v4-profile,prop:v4-width-properties}
 Set
 \begin{equation}
  c=2+\frac{w_0}{2\pi},\qquad T_*=(c^4-1)/4.
@@ -469,16 +504,20 @@ $(w_0+2\pi)(1+4t)^{3/4}-2\pi(1+4t)$, and therefore
 \]
 Here $w_0=2\pi(c-2)$ and $c>0$ justify the equality.
 \lean{PoincareMT.m71ProfileAlgebra_neg}
+\end{lemma}
 
 \begin{theorem}[Global finite extinction]
 \label{prop:v4-global-extinction}
-\uses{prop:v4-finite-piece}
+\uses{thm:global-controlled-flow,prop:filling-component-ancestry,prop:filling-ancestry-transport,prop:foundations-initial,prop:foundations-projective-exclusion}
+\uses{prop:v4-finite-piece,lem:v4-negative-time}
 \lean{PoincareMT.m71GlobalFiniteExtinction}
+\lean{PoincareMT.m71FirstEmptySurgery}
 Under the global-flow and fixed-initial-class ancestry hypotheses just
 stated, the slice at $T_*$ is empty. An actual surgery time $S\leq T_*$
 has empty outgoing slice, every earlier slice is nonempty, and all later
 slices are empty.
-\source{MT2007}\dcref{Theorem 18.1, p. 415; Section 18.3.2, pp. 431--432}
+\source{MT2007}\dcref{Theorem 18.1, p. 415}
+\dcref{Section 18.3.2, pp. 431--432}
 \end{theorem}
 \begin{proof}
 A surviving point at $T_*$ belongs, by the target cover, to a component
@@ -493,7 +532,6 @@ $S$; if $S=T_*$ it is already empty. Initial nonemptiness excludes
 $S=0$, so $S$ is an actual event. An empty slice at an earlier $s<S$
 would prohibit that event by the no-surgery-after-emptiness property.
 Thus all earlier slices are nonempty, and permanence gives later emptiness.
-\lean{PoincareMT.m71FirstEmptySurgery}
 \end{proof}
 
 The last event before an already empty observation thus locates the first

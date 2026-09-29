@@ -19,7 +19,7 @@
 The formalization has passed a full Lean build and Comparator verification.
 Comparator accepted both public targets at commit `1876d7dc`, with checks by
 Nanoda and Lean's default kernel. See the
-[verification evidence](PoincareConjecture/references/ricci-flow/mapher/integration-verification/README.md)
+[verification evidence](archive/PoincareConjecture/references/ricci-flow/mapher/integration-verification/README.md)
 for the exact revisions, verifier configuration, and logs.
 
 Read the [FrenzyMath announcement](https://frenzymath.com/news/poincare-formalization/)
@@ -62,7 +62,7 @@ organizes the proof library by mathematical subject and adds the blueprint.
 Exact import revisions, adaptations, and retained source notices are recorded
 in [the import provenance](PoincareConjecture/IMPORT.md) and
 [MODIFICATIONS.md](PoincareConjecture/MODIFICATIONS.md).
-The [whole-tree external-source audit](PoincareConjecture/provenance/2026-09-29/README.md)
+The [whole-tree external-source audit](archive/PoincareConjecture/provenance/2026-09-29/README.md)
 records reviewed similarity matches, restored notices, and upstream licenses.
 
 Licensed under [Apache 2.0](LICENSE).

@@ -9,7 +9,7 @@ These counts include the supporting library, not external Mathlib.
 The upstream source is `LehengChen/PoincareConjecture` at
 `60de1a94ca7038d04ed123b490a3229f8aa5fa75`, with historical Mapher provenance
 and subject reorganization recorded in
-[complete-import](references/ricci-flow/mapher/complete-import/README.md).
+[complete-import](../archive/PoincareConjecture/references/ricci-flow/mapher/complete-import/README.md).
 Source licenses and notices are retained under that directory's `source-notices/`.
 The separate unhyphenated `frenzymath/PoincareConjecture` snapshot is discussed
 in the retained comparison record; it is not this PR's destination repository.
@@ -30,7 +30,7 @@ are blueprint-only and no longer contain Lean packages.
 
 Horizon recorded a successful reduced-library build and recursive endpoint
 checks requiring exactly `propext`, `Classical.choice`, and `Quot.sound`.
-The [cleanup evidence](references/ricci-flow/mapher/production-cleanup/README.md)
+The [cleanup evidence](../archive/PoincareConjecture/references/ricci-flow/mapher/production-cleanup/README.md)
 contains commands, source hashes and compressed logs. Historical paths and
 Horizon API links in those records refer to the original workspace. These
 records do not assert a fresh build of this relocated package.
@@ -39,7 +39,7 @@ A fresh local `make check` passed at `516badd1`, including both endpoint audits
 with exactly the three standard axioms. Comparator subsequently passed at
 `1876d7dc2c85325a3f62ce9776af98f910c5db04`, after isolating the public statement
 definitions from proof-library instances. The production library remained
-byte-for-byte unchanged. The [integration evidence](references/ricci-flow/mapher/integration-verification/README.md)
+byte-for-byte unchanged. The [integration evidence](../archive/PoincareConjecture/references/ricci-flow/mapher/integration-verification/README.md)
 records both runs, the verifier's memory-order patch, and their scope.
 
 To reproduce the build and endpoint audit:
@@ -55,8 +55,9 @@ sufficient disk space and disk-backed `TMPDIR`. No comparator, Nanoda or
 environment export was run during initial draft preparation or on run12 workers.
 The subsequent successful verification ran locally on the host.
 
-Routine CI scans the package but explicitly excludes historical `references/`,
-frozen `contracts/`, and `Comparator/Challenge.lean`. The challenge deliberately
+Routine CI scans the active package and excludes `Comparator/Challenge.lean`.
+Historical source snapshots and frozen contracts live outside the package in
+`../archive/PoincareConjecture/`. The challenge deliberately
 contains two admissions and is checked separately from the production Solution.
 The source report lists these exclusions and still scans Solution and all
 production library sources. It does not certify compilation or proof fidelity.
