@@ -6,25 +6,24 @@
 <div align="center">
 
 [![Website: Live](https://img.shields.io/badge/Website-Live-0969da?style=flat-square)](https://frenzymath.github.io/Poincare-Conjecture/)
-[![Project board: Worklist](https://img.shields.io/badge/Project-Worklist-2da44e?style=flat-square)](https://github.com/orgs/frenzymath/projects/1)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-yellow?style=flat-square)](LICENSE)
 [![Lean: v4.33.1](https://img.shields.io/badge/Lean-v4.33.1-6f42c1?style=flat-square)](https://github.com/leanprover/lean4/tree/v4.33.1)
 [![Mathlib: 0df444a](https://img.shields.io/badge/Mathlib-0df444a-0969da?style=flat-square)](https://github.com/leanprover-community/mathlib4/tree/0df444a360eaa60ab8c11dca51a86af692955474)
 </div>
 
 <p align="center">
-  A subject-organized Lean 4 proof library for the Poincare conjecture,<br>
+  A complete Lean 4 formalization of the Poincare conjecture,<br>
   with a proof blueprint and blueprint-only mathematical references.
 </p>
 
-> [!IMPORTANT]
-> The imported proof library is under integration review. See [Verification](site/verification.md) for the status of checks on this revision.
+The formalization has passed a full Lean build and Comparator verification.
+Comparator accepted both public targets at commit `1876d7dc`, with checks by
+Nanoda and Lean's default kernel. See the
+[verification evidence](PoincareConjecture/references/ricci-flow/mapher/integration-verification/README.md)
+for the exact revisions, verifier configuration, and logs.
 
-This draft adds the [subject-organized Poincare library](PoincareConjecture/IMPORT.md).
-A fresh local build and endpoint audits passed, and comparator accepted both
-public targets at commit `1876d7dc`. See the [verification evidence](PoincareConjecture/references/ricci-flow/mapher/integration-verification/README.md)
-for the exact revisions, verifier patch and logs. Existing blueprint readiness
-labels have not been upgraded by the import.
+Read the [FrenzyMath announcement](https://frenzymath.com/news/poincare-formalization/)
+for the project's background and results.
 
 ## The conjecture
 
@@ -45,24 +44,13 @@ config.yaml            hgraph workspace and website manifest
 site/                  authored website content, graph settings, reviews and assets
 ```
 
-## Project and references
+## Discussion
 
-The [primary project](https://frenzymath.github.io/Poincare-Conjecture/#/PoincareConjecture)
-contains the proof library and blueprint. The [reference blueprints](references/)
-cover Ricci flow, three-manifolds, Riemannian geometry, algebraic topology, and
-PDEs. They provide mathematical background and are not separate formalization
-projects.
+[Issues](https://github.com/frenzymath/Poincare-Conjecture/issues) |
+[Pull requests](https://github.com/frenzymath/Poincare-Conjecture/pulls) |
+[Lean Zulip](https://leanprover.zulipchat.com/)
 
-## Contributing
-
-Contributions are welcome through [issues](https://github.com/frenzymath/Poincare-Conjecture/issues) and focused [pull requests](https://github.com/frenzymath/Poincare-Conjecture/pulls). Build instructions, local website preview, and the review/comment workflow are documented in [CONTRIBUTING.md](CONTRIBUTING.md).
-
-Automatic CI reports Lean source statistics and admissions without compiling the
-proof. Full builds and comparator verification are explicit workflows; their
-evidence and trust assumptions are described in [Verification](site/verification.md).
-Generated graph directories and website output are never committed.
-
-Active work is coordinated on the [Poincare Conjecture Formalization Library project board](https://github.com/orgs/frenzymath/projects/1).
+Build and website instructions are in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Provenance
 
