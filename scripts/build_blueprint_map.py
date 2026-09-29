@@ -21,6 +21,7 @@ from pathlib import Path
 import yaml
 
 
+YAML_LOADER = getattr(yaml, "CSafeLoader", yaml.SafeLoader)
 REPO = Path(__file__).resolve().parents[1]
 ROOT = REPO / "PoincareConjecture"
 DEFAULT_TEMPLATE = REPO / "site" / "blueprint_map_template.html"
@@ -32,7 +33,7 @@ def _header(path: Path) -> dict:
     if not text.startswith("---"):
         return {}
     front, separator, _ = text[3:].partition("---")
-    return yaml.safe_load(front) if separator else {}
+    return yaml.load(front, Loader=YAML_LOADER) if separator else {}
 
 
 def _plain_tex(value: str | None) -> str:
