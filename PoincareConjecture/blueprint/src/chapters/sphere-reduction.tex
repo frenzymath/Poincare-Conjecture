@@ -1,0 +1,658 @@
+\chapter{Sphere Factors and Connected-Sum Reduction}
+\label{ch:sphere-reduction}
+
+Finite extinction turns the evolution into a finite topological assembly.
+The remaining task is to recognize its factors and then its target.  Simple
+connectedness does the first job: each factor group is a retract of the
+initial fundamental group, a compact sphere bundle over a circle cannot be
+simply connected, and a simply connected positive spaceform is a sphere.
+The second job requires control of the actual attaching balls and collars.
+We construct a sphere map for a binary operation and propagate a finite
+disjoint-union invariant through the assembly.
+
+Throughout this chapter a smooth three-manifold is Hausdorff and second
+countable, has no boundary, and is modelled on $\mathbb R^3$.
+It may be disconnected unless connectedness is specified.  The original
+manifold is denoted $M$, the chosen flow has slices $M_t$, and
+$S^3=\{x\in\mathbb R^4:\|x\|=1\}$ has its standard smooth structure.
+The Borel measurable structure is used when applying the flow theorems;
+none of the topological arguments below depends on an additional measure.
+
+\section{The exact reconstruction interface}
+\label{sec:sphere-reconstruction-interface}
+
+Fix a normalized initial metric on a connected $M$, one controlled surgery
+flow, its initial diffeomorphism $e_0:M\to M_0$, and a finite extinction
+time $T_{\rm ext}$.  The finite-history construction supplies local
+decompositions at precisely the events
+\[
+ \mathcal E=\Sigma\cap[0,T_{\rm ext}],
+\]
+where $\Sigma$ is this flow's surgery-time set.  At $e\in\mathcal E$ write
+$Q_{e,i}$, $0\le i<p_e$, for the nonempty compact connected local pieces.
+Each is labelled survivor, sphere bundle, or positive spaceform.  A survivor
+is identified with a component of the outgoing slice.  The other two kinds
+are recorded even when the outgoing slice is empty.
+
+\begin{definition}[Exact factor family]
+\label{def:exact-factor-ledger}
+The discarded-factor index set is
+\[
+ \mathcal J=\{(e,i):e\in\mathcal E,\ 0\le i<p_e,\
+                       Q_{e,i}\text{ is not labelled survivor}\}.
+\]
+Choose a bijection $\sigma:\{0,\ldots,r-1\}\to\mathcal J$ and put
+$P_j=Q_{\sigma(j)}$.  An exact reconstruction consists of this family,
+the specified equalities with the event pieces, and a finite smooth
+connected-sum assembly of $(P_j)_{j<r}$ into $M_0$.
+\lean{PoincareMT.M72ReconstructionConclusion}
+\uses{prop:connected-sum-reconstruction}
+\source{MT2007}
+\dcref{Proposition 15.3 and Corollary 15.4, pp. 357--359}
+\end{definition}
+
+A smooth disjoint-union presentation of $X$ by $(P_j)$ means a finite
+partition $X=\coprod_j U_j$ into clopen sets and diffeomorphisms $P_j\to U_j$.
+A binary connected-sum operation has two side manifolds $A,B$, disjoint
+open images of their punctured sides in a new manifold, and a smooth
+sphere collar joining them.  Precise ball and collar data are given in
+Section~\ref{sec:binary-sphere-gluing}.  A finite assembly starts with a
+smooth disjoint-union presentation of the given factors and performs
+finitely many such binary operations.  Side manifolds may themselves be
+disconnected.  Thus the intermediate object is not asserted to be a single
+connected sum of connected manifolds.
+
+Proposition~\ref{prop:connected-sum-reconstruction} provides an assembly into the exact $M_0$,
+which is nonempty and connected.  It also establishes that $\sigma$ is
+bijective: every discarded event piece appears once.  Its successor
+transports and reverse induction belong to that theorem.  Here we need its
+geometric output, including the actual gluing data, rather than a second
+choice of manifolds known only to have the same diffeomorphism types.
+
+\section{Fundamental groups of assembly factors}
+\label{sec:factor-fundamental-groups}
+
+\begin{lemma}[Retractions through a finite assembly]
+\label{lem:sphere-factor-retraction}
+For every finite smooth connected-sum assembly $(P_j)_{j<r}\leadsto X$,
+every $j<r$, and every $x\in P_j$, there are a point $y\in X$ and group
+homomorphisms
+\[
+ \iota:\pi_1(P_j,x)\longrightarrow\pi_1(X,y),\qquad
+ p:\pi_1(X,y)\longrightarrow\pi_1(P_j,x),\qquad p\iota=1.
+\]
+In particular, if $X$ is simply connected and $P_j$ is nonempty and connected, then
+$P_j$ is simply connected.
+\lean{PoincareMT.SmoothFiniteConnectedSumAssembly.piece_factor}
+\lean{PoincareMT.SmoothFiniteConnectedSumAssembly.piece_simplyConnected}
+\source{MT2007}
+\dcref{Proposition 15.3, pp. 357--358}
+\end{lemma}
+
+\begin{proof}
+For the initial disjoint union, a based loop and any homotopy of it stay
+in the clopen region containing the basepoint.  Its fundamental group
+is therefore the group of the corresponding factor.
+
+Consider one binary operation, with punctured-side regions $U_A,U_B$ and
+collar $c:S^2\times(-1,1)\to Y$.  The open cover
+\[
+ U_A,\qquad U_B\cup c(S^2\times(-1,1))
+\]
+has intersection $c(S^2\times(-1,0))$.  This intersection is simply
+connected, since $S^2$ is simply connected and an interval is contractible.
+Van Kampen's theorem \cite[Theorem 1.20, p.~43]{Hatcher} gives a homomorphism from the group of
+$Y$, based in $U_A$, onto the group of $U_A$ whose composite with the
+inclusion homomorphism is the identity.  It is the usual free-product
+retraction: keep loops in the first set and send loops from the other set
+to the identity.  The trivial intersection group makes these prescriptions
+compatible.  If the side is disconnected, this is applied to the component
+of the basepoint; components disjoint from the collar retain their groups.
+
+Removing a collared closed three-ball does not change the corresponding
+based fundamental group, up to a choice of basepoint in its complement.
+One obtains this by filling the ball back in and applying van Kampen to
+the exterior enlarged by a collar and the ball enlarged by a collar:
+the ball is simply connected and the intersection retracts to $S^2$.
+Transport across the punctured-side diffeomorphism and this group
+isomorphism gives the displayed retraction for the original first side.
+The positive half-collar gives the same conclusion for the second side.
+More explicitly, for a radius-two ball chart $b$, use the open cover
+$A\setminus b(\overline B_1)$ and $b(B_2)$; the overlap is the annulus
+$b(\{1<|z|<2\})$.  If the original basepoint lies in the removed ball,
+a path inside $b(B_2)$ joins it to $b(3q/2)$ for any $q\in S^2$.
+Basepoint transport along this path gives the required isomorphism.
+This proves the ball-removal input at every basepoint without assuming
+that the side manifold is connected.  The same retractions are used for
+survivors in Proposition~\ref{prop:filling-group-effects}.
+
+Retractions compose.  If $p_1\iota_1=1$ and $p_2\iota_2=1$, then
+\[
+  (p_1p_2)(\iota_2\iota_1)=1.
+\]
+Induction through the finite sequence, starting with the disjoint-union
+isomorphism, proves the assertion at every original basepoint.
+If $\pi_1(X,y)$ is trivial, then for every $a\in\pi_1(P_j,x)$,
+$a=p(\iota(a))=p(1)=1$.  Finally a connected smooth manifold is locally
+path connected and hence path connected; trivial based fundamental groups
+then give simple connectedness.
+\end{proof}
+
+If $M$ is simply connected, $e_0:M\to M_0$ transports simple connectedness
+to $M_0$.  Apply the lemma to the exact assembly and use the connectedness
+of each local event piece.  Every $P_j$ is simply connected.  Notice that
+the argument produces the retractions from the assembly: merely having
+a homomorphism into a trivial group would not suffice.
+
+\section{Excluding bundles and recognizing spaceforms}
+\label{sec:factor-classification}
+
+\begin{definition}[The two discarded types]
+\label{def:discarded-factor-types}
+A sphere-bundle structure on $Q$ consists of a smooth continuous surjection
+$\pi:Q\to S^1$ such that, for every $b\in S^1$, some open neighborhood
+$V$ of $b$ has a smooth trivialization
+$\pi^{-1}(V)\cong S^2\times V$ commuting with the second projection.
+Both orientations of the monodromy are allowed.
+
+A positive-spaceform structure on $Q$ consists of a smooth Riemannian
+metric $g$, its Levi--Civita connection, compactness and connectedness of
+$Q$, and a constant $c>0$ such that every sectional curvature equals $c$.
+Equivalently, the equality holds for every orthonormal pair at every
+point; the constant precedes the choices of point and plane.
+\lean{PoincareMT.SurgerySphereBundle}
+\lean{PoincareMT.SurgeryPositiveSpaceform}
+\source{MT2007}
+\dcref{Theorem 1.11(2), pp. 8--9; Proposition 15.3, pp. 357--358}
+\end{definition}
+
+\begin{lemma}[Compact bundle obstruction]
+\label{lem:sphere-bundle-obstruction}
+A compact smooth three-manifold admitting the sphere-bundle structure
+of Definition~\ref{def:discarded-factor-types} is not simply connected.
+\lean{PoincareMT.SurgerySphereBundle.not_simplyConnectedSpace}
+\source{MT2007}
+\dcref{Corollary 15.4(2), pp. 358--359}
+\end{lemma}
+
+\begin{proof}
+Use the exponential covering $q:\mathbb R\to S^1$,
+$q(t)=(\cos t,\sin t)$.  The bundle projection $\pi$ is open: a
+trivialization carries an open subset of $\pi^{-1}(V)$ to an open subset
+of $S^2\times V$, and projection onto $V$ is open.
+
+Choose $x_0\in Q$ with $\pi(x_0)=q(0)$, using surjectivity.  If $Q$ were
+simply connected, covering-space lifting
+\cite[Proposition 1.33, pp.~61--62]{Hatcher}, together with its local path
+connectedness, would give a continuous map $L:Q\to\mathbb R$ with
+$L(x_0)=0$ and $qL=\pi$.  Its range $R=L(Q)$ is nonempty and compact,
+hence closed in $\mathbb R$.
+
+We verify the additional fact that $R$ is open.  At $t=L(x)$ choose an
+open interval $I$ containing $t$ on which $q$ is injective and is a
+homeomorphism onto an open arc.  Set $W=L^{-1}(I)$.  Then
+\[
+       V_t=I\cap q^{-1}(\pi(W))
+\]
+is an open neighborhood of $t$.  If $u\in V_t$, there is $z\in W$
+with $\pi(z)=q(u)$.  Both $L(z)$ and $u$ lie in $I$, and
+$q(L(z))=\pi(z)=q(u)$, so injectivity on $I$ gives $u=L(z)$.
+Thus $V_t\subset R$.  Consequently $R$ is nonempty and clopen in the
+connected line, so $R=\mathbb R$.  This contradicts its compactness.
+\end{proof}
+
+This excludes the twisted bundle as well as the product bundle, without
+computing either fundamental group or assuming orientability.
+
+\begin{proposition}[Simply connected positive spaceforms]
+\label{prop:positive-spaceform-sphere}
+A simply connected positive spaceform of dimension three is smoothly
+diffeomorphic to $S^3$.
+\lean{PoincareMT.SurgeryPositiveSpaceform.nonempty_diffeomorph_threeSphere}
+\source{MT2007}
+\dcref{Theorem 1.11(2), pp. 8--9}
+\end{proposition}
+
+\begin{proof}
+Let $c>0$ be its curvature constant and put $g_1=cg$.
+Constant rescaling leaves the Levi--Civita connection unchanged; for a
+nondegenerate plane the numerator in sectional curvature scales by $c$
+and its Gram determinant scales by $c^2$.  Therefore
+$K_{g_1}=c^{-1}K_g=1$.  Compactness gives completeness.
+The spherical-covering form of the constant-curvature theorem supplies
+a surjective local diffeomorphism $q:S^3\to Q$.
+This is the standard spaceform theorem
+\cite[Theorem 1.11(2) and the following spaceform paragraph, pp.~8--9]{MT2007}, applied after the displayed
+normalization, rather than a sphere-recognition hypothesis about $Q$.
+
+A connected covering of a simply connected, locally path-connected
+space has one sheet.  Indeed, lift the identity of the base with a chosen
+value in the fiber to a section; uniqueness of lifts
+\cite[Proposition 1.34, p.~62]{Hatcher} makes the section
+composed with the projection the identity on the connected total space.
+Thus $q$ is bijective.  Its local smooth inverses agree wherever their
+domains overlap, so they form a global smooth inverse, as required.
+\end{proof}
+
+\begin{theorem}[Recognition of the exact factors]
+\label{thm:exact-sphere-factors}
+For every reconstruction of Definition~\ref{def:exact-factor-ledger}
+with simply connected original manifold $M$, each $P_j$ is labelled
+positive spaceform and admits a diffeomorphism $d_j:P_j\to S^3$.
+\lean{PoincareMT.m73SphereFactors}
+\lean{PoincareMT.m73SphereFactors_from_M72}
+\source{MT2007}
+\dcref{Proposition 15.3 and Corollary 15.4(2), pp. 357--359}
+\uses{def:exact-factor-ledger,lem:sphere-factor-retraction,lem:sphere-bundle-obstruction,prop:positive-spaceform-sphere}
+\end{theorem}
+
+\begin{proof}
+The retraction lemma makes each exact factor simply connected.
+Its index excludes the survivor label.  The bundle label would supply
+a sphere bundle on the compact factor, contradicting the bundle
+obstruction.  Hence its label is positive spaceform, and the preceding
+proposition supplies $d_j$.  Every use of compactness, connectedness,
+and classification concerns $Q_{\sigma(j)}=P_j$, so the conclusion
+retains the original indexing.
+\end{proof}
+
+\section{Binary smooth sphere gluing}
+\label{sec:binary-sphere-gluing}
+
+\begin{definition}[Collared connected-sum data]
+\label{def:sphere-binary-data}
+A surgery ball in $A$ is a smooth coordinate embedding
+$b:B(0,2)\to A$ with smooth inverse on its open image.  Write
+$D_b=b(\overline B(0,1))$.  Binary connected-sum data on $A,B,C$ consist
+of balls $b_A,b_B$, disjoint open regions $V_A,V_B\subset C$,
+diffeomorphisms
+\[
+ a:A\setminus D_{b_A}\to V_A,\qquad
+ b:B\setminus D_{b_B}\to V_B,
+\]
+a diffeomorphism $\varphi:S^2\to S^2$, and a smooth collar embedding
+$c:S^2\times(-1,1)\to C$ with smooth inverse on its open image, such that
+\[
+ \begin{aligned}
+ c(q,s)&=a(b_A((1-s)q))&&(-1<s<0),\\
+ c(q,s)&=b(b_B((1+s)\varphi(q)))&&(0<s<1).
+ \end{aligned}
+\]
+The central sphere is disjoint from both regions, and
+$C=V_A\cup V_B\cup c(S^2\times\{0\})$.
+No orientation condition is imposed on $\varphi$.
+\lean{PoincareMT.SmoothConnectedSumData}
+\source{MT2007}
+\dcref{Proposition 15.3 and Corollary 15.4, pp. 357--359}
+\end{definition}
+
+We use Lemmas~\ref{lem:neck-cap-prescribed-collar}
+and~\ref{lem:neck-cap-sphere-isotopy} from the neck/cap chapter.
+The collared Schoenflies input has the following precise form.
+For every smooth injective immersion
+$\psi:S^2\times(-1,1)\to\mathbb R^3$ and every $0<\delta<1$,
+there are a sign $\eta\in\{-1,1\}$, a bounded connected open region
+$\Omega$ disjoint from $\psi(S^2\times\{0\})$, a radius $R_*>0$,
+a ball chart $F:B(0,R_*)\to\mathbb R^3$ with smooth inverse on its
+image, a sphere diffeomorphism $\beta$, and a strictly increasing
+function $r:[\delta,1)\to(0,R_*)$ such that
+\[
+ \begin{split}
+ \psi(S^2\times\eta(-1,0))&\subset\Omega,\\
+ F(B(0,R_*))&=\Omega\cup\psi(S^2\times\eta[0,1)),\\
+ F(r(t)\beta(q))&=\psi(q,\eta t)
+       \quad(q\in S^2,\ \delta\le t<1).
+ \end{split}
+\]
+The complement of $\Omega\cup\psi(S^2\times\{0\})$ is connected.
+No smoothness of $r$ is assumed: where needed it is recovered from
+the inverse chart.  This is a stronger collar specification than the
+bare assertion that an embedded sphere bounds a ball.
+The sphere-isotopy input gives, for every diffeomorphism $f:S^2\to S^2$,
+an orthogonal map $O$ and a jointly smooth family of diffeomorphisms
+$I_t$, $t\in\mathbb R$, with $I_0=O|_{S^2}$ and $I_1=f$.
+The orthogonal endpoint permits both orientation classes.
+Their ordinary background is
+\cite[Theorem 1.1 and sphere extension, pp.~1--5]{Hatcher3M2014}
+and \cite[Theorems 5--6, pp.~624--626]{Smale1959};
+the collar adjustment and pole-normalization arguments are developed in
+Section~\ref{sec:neck-cap-prescribed-collars}.
+
+\begin{lemma}[Reciprocal coordinates on a punctured sphere]
+\label{lem:reciprocal-sphere-end}
+\uses{lem:neck-cap-prescribed-collar,lem:neck-cap-sphere-isotopy}
+Given $d:A\to S^3$ and a surgery ball $b$ in $A$, there exist a
+diffeomorphism $E:A\setminus D_b\to\mathbb R^3$ and $0<\epsilon<1$
+such that, for every $q\in S^2$ and $0<s<\epsilon$,
+\[
+             E(b((1+s)q))=s^{-1}q.
+\]
+\lean{PoincareMT.SurgeryBallEmbedding.exists_canonicalPuncturedSphereEnd}
+\source{MT2007}
+\dcref{Collared implementation of Corollary 15.4(2), pp. 358--359}
+\end{lemma}
+
+\begin{proof}
+Let $e:A\setminus\{b(0)\}\to\mathbb R^3$ be $d$ followed by
+stereographic projection having pole $d(b(0))$.  Put
+$\psi(q,s)=e(b((1+s)q))$.  The change of parameter
+\[
+ v(t)=\frac{1+2t}{2+t},\qquad -1<t<1,
+\]
+is an increasing diffeomorphism of $(-1,1)$ onto itself.
+The shifted collar $\widetilde\psi(q,t)=\psi(q,v(t))$ has its
+central sphere at ball radius $3/2$, and reaches the original surgery
+sphere at $t=-1/2$.  Apply the stated Schoenflies input to this collar
+with $\delta=1/4$.
+
+Its sign is $\eta=-1$: the negative half of the shifted collar is the
+whole punctured ball of radius $3/2$ in $e$-coordinates, an unbounded
+set because it approaches the stereographic pole.  It cannot lie in
+the bounded region $\Omega$.  In fact $\Omega$ is precisely the image
+of the exterior of the closed radius-$3/2$ ball.  To see the equality,
+partition the complement of the central sphere into the punctured
+inner-ball image and the outer image.  They are disjoint open sets.
+Connectedness places $\Omega$ wholly in the outer set, since its
+prescribed inner collar meets that set; connectedness of the other
+Schoenflies side places it wholly in the inner set, since it meets
+the negative half-collar.  The two containments force equality.
+The chart-image identity therefore makes $F:B(0,R_*)\to\mathbb R^3$
+surjective: its nonnegative oriented half-collar fills the punctured
+inner ball and its boundary sphere.
+
+Put $R=r(1/2)$.  The radial formula maps the sphere of radius $R$ to
+the original surgery sphere.  It maps $B(0,R)$ exactly to
+$e(A\setminus D_b)$.  Here is the side check for this smaller ball.
+The chart images of $B(0,R)$ and $\{R<\|x\|<R_*\}$ are connected
+and partition the complement of that sphere.  The first is bounded,
+since $F$ is continuous on the compact closed radius-$R$ ball.
+The original punctured inner-ball image is unbounded, so it meets
+the annulus image.  Connectedness places that whole annulus image
+in the inner side.  The nonempty exterior therefore lies in the
+ball image, whose connectedness places it wholly in the exterior.
+This proves the asserted equality without presupposing that the
+original exterior is a ball.
+
+The inverse chart on this exterior has the expression
+\[
+       b((1+s)q)\longmapsto \rho(s)\,\beta(q)
+\]
+near its boundary, where
+\[
+ \rho(s)=r\left(\frac{1-2s}{2-s}\right),\qquad |s|<1/8.
+\]
+The argument of $r$ lies in $(1/4,1)$, so this is within the prescribed
+radial interval, and $\rho(0)=R$.  Strict monotonicity of $r$ makes
+$\rho$ strictly decreasing.  For a fixed $q$, the norm of
+$F^{-1}(\psi(q,s))$ equals $\rho(s)>0$, proving smoothness.
+Differentiating
+$F(\rho(s)\beta(q))=\psi(q,s)$ shows $\rho'(s)\ne0$, since the
+right side has nonzero derivative by the immersion property of the
+collar.  Thus $\rho'<0$, and the inverse function theorem gives its
+smooth inverse near the boundary radius.
+
+The sphere-isotopy input extends $\beta$ to a norm-preserving
+diffeomorphism $K$ of $\mathbb R^3$: for $x=rq\ne0$ take
+$K(rq)=rI_{\chi(r)}(q)$, with a smooth cutoff $\chi$ equal to zero
+near the origin and one on an outer annulus.  Near zero this is the
+linear orthogonal map, so there is no polar-coordinate singularity;
+the same argument applies to its inverse.  Applying $K^{-1}$ removes
+the angular term $\beta$.
+
+It remains to replace $\rho(s)$ by $1/s$.  Let
+$\tau=\rho^{-1}$ near $R$.  It is positive below $R$,
+$\tau'<0$, and $\tau(r)\to0$ as $r\uparrow R$.
+Consequently $h(r)=1/\tau(r)$ has positive derivative there and
+diverges at $R$.  Extend this outer radial function to a smooth
+increasing bijection $f:(0,R)\to(0,\infty)$ which is $kr$ near zero,
+for some $k>0$, and is exactly $h$ sufficiently near $R$.
+Here is the radial interpolation used in the construction.  Choose
+$0<a<b<R$ within the interval where $h'>0$, and put
+$k=h(a)/(2R)>0$.  For $a\le r<R$ we have
+$kr<h(a)\le h(r)$.  Choose a smooth nondecreasing cutoff $\chi$ which
+is zero for $r\le a$ and one for $r\ge b$, and set
+\[
+ f(r)=(1-\chi(r))kr+\chi(r)h(r)\quad(r>a),
+ \qquad f(r)=kr\quad(r\le a).
+\]
+The cutoff makes the two definitions smooth at $a$.  On the transition
+annulus,
+\[
+ f'(r)=(1-\chi(r))k+\chi(r)h'(r)+\chi'(r)(h(r)-kr)>0.
+\]
+The same positivity holds on either remaining interval.  The linear
+germ at zero, divergence at $R$, and the intermediate value theorem
+give bijectivity onto $(0,\infty)$; the inverse function theorem gives
+a smooth inverse.
+
+The radial diffeomorphism $x\mapsto f(\|x\|)x/\|x\|$ of
+$B(0,R)$ onto $\mathbb R^3$ is linear near zero.
+Compose it with $K^{-1}$ and the exterior ball chart.  After choosing
+a common small $\epsilon$, the formula is
+$f(\rho(s))q=(1/s)q$ on every angular direction.
+\end{proof}
+
+\begin{theorem}[Binary sphere identity for the supplied gluing]
+\label{thm:binary-sphere-identity}
+If the data of Definition~\ref{def:sphere-binary-data} are given and
+$A,B$ are diffeomorphic to $S^3$, then $C$ is diffeomorphic to $S^3$.
+\lean{PoincareMT.SmoothConnectedSumData.nonempty_diffeomorph_threeSphere}
+\source{MT2007}
+\dcref{Corollary 15.4(2), pp. 358--359}
+\uses{def:sphere-binary-data,lem:reciprocal-sphere-end}
+\end{theorem}
+
+\begin{proof}
+Choose reciprocal end coordinates $E_A,E_B$.  Apply the radial extension
+of the sphere isotopy to $\varphi^{-1}$, making it equal to
+$rq\mapsto r\varphi^{-1}(q)$ for $r\ge2$, and compose it with $E_B$.
+The resulting Euclidean coordinates $u_A$ on $V_A$ and $u_B$ on $V_B$
+satisfy, on a common collar $|s|<w$ with $0<w\le1/2$,
+\[
+ u_A(c(q,s))=-s^{-1}q\quad(s<0),\qquad
+ u_B(c(q,s))=s^{-1}q\quad(s>0).
+\]
+The bound $w\le1/2$ ensures that the positive-end radius is at least two,
+where the angular correction is exactly $\varphi^{-1}$.
+
+Define the smooth radial compression and inversion
+\[
+ H(z)=\frac{2z}{\sqrt{1+\|z\|^2}+1},\qquad
+ J(z)=\frac{4z}{\|z\|^2}\quad(z\ne0).
+\]
+The first is a diffeomorphism $\mathbb R^3\to B(0,2)$,
+with inverse $H^{-1}(y)=4y/(4-\|y\|^2)$.
+The second is a smooth involution away from zero.  Let
+$o_A=u_A^{-1}(0)$ and $o_B=u_B^{-1}(0)$.  On $C\setminus\{o_B\}$
+set
+\[
+ \Psi(x)=
+ \begin{cases}
+ H(u_A(x)),&x\in V_A,\\
+ J(H(u_B(x))),&x\in V_B\setminus\{o_B\},\\
+ 2q,&x=c(q,0).
+ \end{cases}
+\]
+These three regions map respectively to radii less than, greater than,
+and equal to two.  Their inverse formulas therefore give a bijection
+onto $\mathbb R^3$.
+
+Smoothness across the central sphere is a calculation, not a consequence
+of piecewise continuity.  On the whole smaller collar the three
+expressions equal
+\[
+       \Psi(c(q,s))=a(s)q,\qquad
+       a(s)=2\bigl(\sqrt{1+s^2}+s\bigr).
+\]
+Indeed $(\sqrt{1+s^2}+s)(\sqrt{1+s^2}-s)=1$.
+The radius is positive and strictly increasing, and its inverse is
+$s=r/4-1/r$.  Thus both $\Psi$ and its inverse are smooth at radius two.
+They are already smooth on the cap regions by their explicit formulas.
+
+Interchange the two caps and replace $s$ by $-s$ to obtain a second
+Euclidean chart on $C\setminus\{o_A\}$.  Since $a(s)a(-s)=4$,
+the transition on the overlap is $J$.  The same-basis stereographic
+charts of the standard unit $S^3$ have precisely this transition
+(the factor four reflects the chosen stereographic normalization).
+Compose each chart on $C$ with the inverse standard chart.  The
+transition identity makes the maps agree on the overlap; their inverses
+agree as well.  They glue to the required global diffeomorphism.
+\end{proof}
+
+\section{Clopen components and finite induction}
+\label{sec:sphere-union-induction}
+
+\begin{definition}[Finite sphere union]
+\label{def:sphere-union}
+A manifold $X$ is a finite sphere union if it has a smooth disjoint-union
+presentation by finitely many manifolds diffeomorphic to $S^3$.
+The empty family is permitted and presents only the empty manifold.
+\lean{PoincareMT.M74.SphereUnion}
+\source{MT2007}
+\dcref{Componentwise implementation of Corollary 15.4(2), pp. 358--359}
+\end{definition}
+
+\begin{lemma}[Preservation under one operation]
+\label{lem:sphere-union-step}
+A binary connected-sum operation whose source is a finite sphere union
+has a target which is a finite sphere union.
+\lean{PoincareMT.M74.SphereUnion.of_connectedSumStep}
+\source{MT2007}
+\dcref{Corollary 15.4(2), pp. 358--359}
+\uses{def:sphere-union,thm:binary-sphere-identity}
+\end{lemma}
+
+\begin{proof}
+Let the old source $X$ be partitioned into sphere regions $D_i$, and
+also into the two clopen side regions representing $A$ and $B$ for
+the operation.  Each radius-two ball chart is connected and nonempty.
+A connected subset of a finite clopen partition lies in a unique
+region: its intersection with one nonempty part is clopen in that
+subset and hence equals it.  Thus the two ball charts select indices
+$i_0,i_1$.  Each $D_i$ is itself connected; if it meets a side region,
+it lies wholly in that side.  Therefore $i_0\ne i_1$, since the two
+side regions are disjoint.  The selected regions contain the removed
+closed balls as well as their full radius-two charts.
+
+Pull $D_{i_0}$ back to $A$ to obtain a clopen set $U$, and pull
+$D_{i_1}$ back to $B$ to obtain $V$.  In the target $Y$ form
+\[
+ T=a(U\setminus D_{b_A})\ \cup\
+       b(V\setminus D_{b_B})\ \cup\ c(S^2\times\{0\}).
+\]
+This set is open: away from the central sphere it is an image of an
+open punctured region, and at that sphere the full collar lies in $T$
+because both ball charts lie in $U,V$.  Its complement is
+\[
+       a(A\setminus U)\ \cup\ b(B\setminus V),
+\]
+which is open since these clopen sets avoid the removed balls.
+Thus $T$ is clopen.  Restrict the two ball charts and side
+identifications to the selected original sphere pieces.  The
+unchanged collar and the unchanged gluing map give binary
+connected-sum data with target $T$.  The binary sphere identity
+identifies $T$ with $S^3$.
+
+For every $i\ne i_0,i_1$, the connected region $D_i$ lies in exactly
+one side and avoids that side's ball chart.  Its image under $a$ or
+$b$ is a clopen target region and is smoothly identical to the whole
+old sphere piece.  To verify closedness, put the full opposite side,
+the complement of $D_i$ in its own side, and the central collar
+together; this is the open complementary selected region by the
+previous argument.  Hence no closure point of an untouched piece
+is introduced at the central sphere.
+
+The new regions are indexed by
+\[
+       \{*\}\ \sqcup\ \{i:i\ne i_0,\ i\ne i_1\},
+\]
+where $*$ represents $T$.  Regions from different old indices are
+disjoint by the old partition; images from opposite sides are
+disjoint by the connected-sum data; the central sphere meets
+neither side image.  These facts also give disjointness from $T$.
+Every point of $Y$ lies in a side image or the central sphere.
+In a side image its old index is either the selected one or an
+untouched one, proving that the new regions cover $Y$.
+Enumerating this finite index set gives a smooth disjoint-union
+presentation by spheres.
+\end{proof}
+
+\begin{theorem}[Finite connected-sum reduction]
+\label{thm:sphere-finite-reduction}
+Let $(P_j)_{j<r}$ be a finite family of smooth three-manifolds, each
+equipped with a diffeomorphism to $S^3$.  If a finite smooth
+connected-sum assembly of this family has nonempty connected target
+$X$, then $X$ is smoothly diffeomorphic to $S^3$.
+\lean{PoincareMT.m74ConnectedSumReduction}
+\lean{PoincareMT.M74.SphereUnion.of_reflTransGen}
+\lean{PoincareMT.M74.SphereUnion.nonempty_diffeomorph_threeSphere}
+\source{MT2007}
+\dcref{Corollary 15.4(2), pp. 358--359}
+\uses{def:sphere-union,lem:sphere-union-step}
+\end{theorem}
+
+\begin{proof}
+The initial disjoint union is a finite sphere union.  Apply the
+preservation lemma once for every operation in the finite sequence;
+for a sequence of length zero retain the initial presentation.
+This proves that $X$ is a finite sphere union.
+Choose a point of $X$ and a region containing it.  That region is
+nonempty and clopen in the connected $X$, so it equals $X$.
+Its smooth region identification and its sphere map give the result.
+The zero-factor case cannot produce a nonempty connected target by
+this argument: the final region selection would have no index.
+\end{proof}
+
+\section{The smooth endpoint}
+\label{sec:m74-m75-endpoint}
+
+\begin{corollary}[Reduction of the same initial slice]
+\label{cor:same-slice-sphere}
+An exact finite reconstruction for a simply connected original
+manifold $M$ yields a diffeomorphism $d_0:M_0\to S^3$.
+\lean{PoincareMT.m74Reduction_from_M72_M73}
+\source{MT2007}
+\dcref{Corollary 15.4(2), pp. 358--359}
+\uses{thm:exact-sphere-factors,thm:sphere-finite-reduction}
+\end{corollary}
+
+\begin{proof}
+Recognize every $P_j$ by Theorem~\ref{thm:exact-sphere-factors}.
+Use those maps with the supplied assembly into $M_0$, preserving its
+factor indices and its target.  The finite reduction theorem gives
+$d_0$ because this target is nonempty and connected.
+\end{proof}
+
+\begin{theorem}[Smooth endpoint from the constructed flow]
+\label{thm:sphere-smooth-endpoint}
+Suppose that for every compact simply connected smooth three-manifold
+$M$ the preceding chapters supply a normalized metric, one controlled
+surgery flow with initial identification $e_0:M\to M_0$, the local
+surgery topology of that flow, and its finite extinction conclusion,
+as required by the finite-history theorem.  Then every such $M$ is
+smoothly diffeomorphic to $S^3$.
+\lean{PoincareMT.m75EndpointInputFromExtinction}
+\lean{PoincareMT.m75SmoothPoincare}
+\lean{PoincareMT.m90SmoothEndpointInputs}
+\source{MT2007}
+\dcref{Corollary 0.2(a), p. x; Corollary 15.4(2), pp. 358--359;
+Theorem 15.9 and Corollary 15.10, p. 363}
+\uses{cor:same-slice-sphere}
+\end{theorem}
+
+\begin{proof}
+Equip $M$ with its Borel measurable structure.  Use the supplied
+flow, its local topology, and its extinction conclusion to construct
+the exact finite reconstruction.  The preceding corollary gives
+$d_0:M_0\to S^3$.  The composite $d_0\circ e_0$ is the required
+diffeomorphism.  The flow in this composite is the flow reconstructed
+from extinction: neither the factor family nor the time-zero slice
+is replaced.
+\end{proof}
+
+The earlier chapters' global existence and calibrated extinction
+arguments construct the premise of this theorem.  The conditional
+composition by itself does not establish that premise.  Likewise the
+topological Poincare statement requires the later compatible-smoothing
+construction and transport through its specified homeomorphism.
+This chapter supplies the smooth endpoint consumed by that argument.

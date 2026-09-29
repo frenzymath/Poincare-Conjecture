@@ -54,6 +54,12 @@ Give statements stable labels, record dependencies with `\uses{...}`, and
 link declarations with `\lean{...}`. Preserve precise source citations.
 Only add `\leanok` after checking the corresponding declaration and statement.
 
+The main blueprint imports Horizon's eighteen-chapter exposition. Run
+`python scripts/check_blueprint_import.py` after changing its source or import
+records; source changes require reconciliation with the retained chapter reviews.
+The site build regenerates its blueprint map from the staged current graph.
+Reference projects keep `lean: []` and do not display formalization progress.
+
 ## Website
 
 All graph records are temporary build output. No `hgraph/` directory belongs

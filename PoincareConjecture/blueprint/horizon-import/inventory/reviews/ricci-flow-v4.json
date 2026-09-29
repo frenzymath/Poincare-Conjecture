@@ -1,0 +1,793 @@
+{
+  "objective_revision": 4,
+  "chapter_key": "ricci-flow",
+  "title": "Ricci flow and curvature estimates",
+  "draft": "blueprint-publication/drafts/ricci-flow.tex",
+  "source_revision": "5950ef93a2a8035ef518a2062a094da966df809b",
+  "outline_revision": "00f2b127b0a948274c637cd9de0820d6d1add9d0",
+  "workspace_checked_commit": "e130ac11dab52f2020b596dd4fe0b8e9a44c3fd5",
+  "workspace_remote_observed": "a3cd4e38f27fb629e86887a5914cf3657d049e15",
+  "library_revision": "806006e5715414b4ceb6897d00ea279e8722042e",
+  "roadmap_revision": "d1fb36a710e780e3868508e0a8e81b0f1fbe8452",
+  "reference_revision": "bb91a091f0b968f8bbe8d861e025a88d82b161be",
+  "ancient_chapter_reviewed_revision": "c8c6adcb9b70e3d93fb38fd5ec674874c1e40ef3",
+  "source_pin_policy": {
+    "authoring": "Narrative follows the requested Lean authoring pin. Current workspace, current historical Library, and current Roadmap were fetched/read before claims.",
+    "comparison": "Whole Lean tree differs from the authoring pin following the complete import. The normalization, local-theory, curvature-theory and pinching entry files checked here are unchanged. Local/DeTurck, Harnack and Compactness subtrees are unchanged at the session checkout; Pinching/GeometricPreservation/TransportCoordinates.lean became a compatibility import. Retained scalar-integral corner/packing and product files read for the later expansion are unchanged at the pin; three other corner helpers were deleted by cleanup. Energy and other transitive helper changes elsewhere prevent a blanket unchanged-tree claim.",
+    "library_read": "README, tree, and Geometry/RicciFlow/Compactness/Assembly.lean; the historical Library does not contain the current native Pinching.lean entry.",
+    "reference_read": "Fetched the read-only supported project Git mirror; inspected PoincareConjecture/blueprint/src/macros.tex. Reused blueprint-publication/reference-format.md for the coordinator's broader syntax inspection. No mirror mutation.",
+    "source_status": "Historical comments saying Petrunin or complete pointed-limit producers remain admitted are discovery evidence only. Current Scalar.lean and CoordinateLimit.lean contain actual constructions. This authoring session did not perform a new transitive Lean audit.",
+    "calibration": "Read reconstruction/calibration-review.md. Extinction and each chapter still require separate main-agent source and readability acceptance."
+  },
+  "nodes": [
+    "m03-short-time-ricci-flow-existence-uniqueness-and-continuation",
+    "m04-curvature-evolution-maximum-principles-and-scalar-bounds",
+    "m05-hamilton-ivey-pinching-persistence",
+    "m06-differential-harnack-and-ancient-consequences",
+    "m07-pointed-compactness-with-complete-interior-limits"
+  ],
+  "sections": [
+    {
+      "label": "sec:rf-normalization",
+      "milestones": [
+        "M01"
+      ],
+      "definitions": [
+        "def:rf-normalized"
+      ],
+      "results": [
+        "prop:rf-normalize"
+      ],
+      "content": "Constant and parabolic scaling; finite-volume complete normalized data; common curvature/volume scale; zero-time pinching.",
+      "proof_status": "Scaling and choice of common scale developed; uniform small-ball estimate is ordinary compact metric background."
+    },
+    {
+      "label": "sec:rf-local",
+      "milestones": [
+        "M03"
+      ],
+      "results": [
+        "thm:rf-local"
+      ],
+      "content": "Spectral L2 forcing fixed point; explicit contraction radius and time; positive metric recovery and smooth parameter orbits; negative DeTurck gauge pullback; coupled metric/connection/curvature energy; endpoint jets and restart.",
+      "proof_status": "Complete local passage reread with bounded source reviews of generator regularity, derivative budget, forcing/positivity radius order, parameter covariance and actual pullback orbit, divergence-flux uniqueness and triangular endpoint-jet continuation. Locally reconciled; whole-chapter acceptance remains pending."
+    },
+    {
+      "label": "sec:rf-curvature",
+      "milestones": [
+        "M04"
+      ],
+      "results": [
+        "prop:rf-evolution",
+        "thm:rf-shi",
+        "prop:rf-metric-comparison",
+        "prop:rf-scalar",
+        "prop:rf-positivity"
+      ],
+      "content": "Fixed-input four-covariant reaction, Ricci/scalar traces, derivative estimates with full quantifiers and zero-time guard, metric comparison, scalar ODE barrier, three-dimensional null-cone calculations and rigidity.",
+      "proof_status": "Metric/scalar/null-cone arguments developed. Shi cutoff and Bernstein induction stated with exact standard source; reviewer must judge background boundary."
+    },
+    {
+      "label": "sec:rf-pinching",
+      "milestones": [
+        "M05"
+      ],
+      "definitions": [
+        "def:rf-pinched"
+      ],
+      "results": [
+        "thm:rf-pinching"
+      ],
+      "content": "Least sectional curvature and spectrum; clipped convex carrier; completed-square reaction inequality; rate-two moving-frame PDE; supporting-functional spatial contact; absolute-time scalar clock; explicit continuous full norm bound.",
+      "proof_status": "Algebra, carrier convexity, normalization, scalar-to-full norm and geometric contact mechanism developed. Independent check of transported contact terms remains required."
+    },
+    {
+      "label": "sec:rf-harnack",
+      "milestones": [
+        "M06"
+      ],
+      "results": [
+        "thm:rf-harnack",
+        "prop:rf-bounded-harnack",
+        "cor:rf-ancient-harnack"
+      ],
+      "content": "Hamilton P/M tensors, trace identities, bounded-slab positivity route, separate-slice curvature reduction, Petrunin moving-ball volume loss, expanding ancient cylinder contradiction, terminal-slice supremum argument, endpoint-safe path and ancient limits.",
+      "proof_status": "Tensor-square reaction, quantitative null contact and reciprocal-time exhaustion barrier developed. Stationary injectivity descent, weighted regular-fiber scalar induction, annular concentration and extra-direction rescaling are developed with exact hypotheses. Volume-loss application, expanding cylinder selection with backward buffer and nu/4^n volume constant, Chen cutoff absorption, supremum continuation, path and ancient-limit deductions developed. Quantitative level construction and the ancient chapter's zero-AVR cone input remain independent source/readability review targets."
+    },
+    {
+      "label": "sec:rf-harmonic-coordinates",
+      "milestones": [],
+      "results": ["thm:rf-harmonic-radius"],
+      "content": "Radial parallel transport and quadratic coframe control; actual weak coordinate replacement, qualitative smooth representative, quantitative gradient-error iteration, inverse map, curvature-flux Hessian estimates, Ricci coefficient equation and heat-potential absorption; local surface isothermal specialization.",
+      "proof_status": "Developed and sequentially reviewed by integration after following the M64 consumer beyond milestone endpoints. Bounded annular interface supplied; other consumers and whole-chapter review pending. See harmonic-coordinates-integration-v4.md."
+    },
+    {
+      "label": "sec:rf-compactness",
+      "milestones": [
+        "M07"
+      ],
+      "definitions": [
+        "def:rf-pointed-convergence"
+      ],
+      "results": [
+        "thm:rf-compactness"
+      ],
+      "content": "Heterogeneous carriers, eventual precompact zero-balls, volume scale and two-time bounds; identity spacetime compatibility; normal charts, distance quotient, overlap maps, finite corrections, exhaustion boundary escape; limit curvature transfer and local Cauchy-sequence completeness.",
+      "proof_status": "Full compactness passage reread; normal-chart induction, noncollapse-dependent injectivity, actual open overlaps, transition jets, metric descent, finite correction, boundary escape and interior-slice completeness are developed and boundedly reviewed. Upstream analytic inputs and whole-chapter source/readability acceptance remain pending."
+    },
+    {
+      "label": "sec:rf-interfaces",
+      "content": "Exact downstream uses, including the unchanged absolute pinching clock and bounded-Harnack-before-zero-volume dependency order."
+    }
+  ],
+  "lean_declarations_and_paths": [
+    {
+      "declaration": "PoincareMT.RiemannianMetric.exists_uniform_harmonic_radius",
+      "path": "PoincareLib/Geometry/Riemannian/Coordinates/Harmonic/Radius.lean",
+      "label": "thm:rf-harmonic-radius"
+    },
+    {
+      "declaration": "PoincareMT.HarmonicCoordinates.exists_radial_frame_of_gauss",
+      "path": "PoincareLib/Geometry/Riemannian/Coordinates/Harmonic/RadialFrame.lean",
+      "label": "eq:rf-radial-frame"
+    },
+    {
+      "declaration": "PoincareMT.HarmonicCoordinates.exists_uniform_harmonic_metric_halfHolder",
+      "path": "PoincareLib/Geometry/Riemannian/Coordinates/Harmonic/Regularity/Coefficients/Interior.lean",
+      "label": "sec:rf-harmonic-coordinates"
+    },
+    {
+      "declaration": "PoincareMT.existsNormalizedInitialMetric",
+      "path": "PoincareLib/Geometry/Riemannian/Normalization/Existence.lean",
+      "label": "prop:rf-normalize"
+    },
+    {
+      "declaration": "PoincareMT.ricciFlowLocalTheory",
+      "path": "PoincareLib/Geometry/RicciFlow/Local/ExistenceUniquenessContinuation.lean",
+      "label": "thm:rf-local"
+    },
+    {
+      "declaration": "PoincareMT.ricciFlowContinuation",
+      "path": "PoincareLib/Geometry/RicciFlow/Local/ExistenceUniquenessContinuation.lean",
+      "label": "thm:rf-local"
+    },
+    {
+      "declaration": "PoincareMT.DeTurckResponseMetricNative.exists_response",
+      "path": "PoincareLib/Geometry/RicciFlow/Local/DeTurck/Construction/DeTurckResponseMetric.lean",
+      "label": "sec:rf-local"
+    },
+    {
+      "declaration": "exists_strict_forcing_fixedPoint",
+      "path": "PoincareLib/Geometry/RicciFlow/Local/DeTurck/Construction/QuasilinearDeTurck.lean",
+      "name_scope": "local namespace; locate by exact theorem token",
+      "label": "sec:rf-local"
+    },
+    {
+      "declaration": "PoincareMT.ricciFlowCurvatureTheory",
+      "path": "PoincareLib/Geometry/RicciFlow/Curvature/Construction.lean",
+      "label": "sec:rf-curvature"
+    },
+    {
+      "declaration": "PoincareMT.RicciFlowCurvatureTheory",
+      "path": "PoincareLib/Geometry/RicciFlow/Curvature/Theory.lean",
+      "label": "sec:rf-curvature"
+    },
+    {
+      "declaration": "PoincareMT.hamiltonIveyPinching",
+      "path": "PoincareLib/Geometry/RicciFlow/Pinching.lean",
+      "label": "thm:rf-pinching"
+    },
+    {
+      "declaration": "Poincare.pinchingAuxiliaryEqCompletedSquare",
+      "path": "PoincareLib/Geometry/RicciFlow/Pinching/Algebra.lean",
+      "label": "sec:rf-pinching"
+    },
+    {
+      "declaration": "Poincare.HamiltonIvey.convex_scalarRegion",
+      "path": "PoincareLib/Geometry/RicciFlow/Pinching/Barrier.lean",
+      "label": "sec:rf-pinching"
+    },
+    {
+      "declaration": "Poincare.fullNorm_le_of_hamiltonIvey",
+      "path": "PoincareLib/Geometry/RicciFlow/Pinching/Bounds.lean",
+      "label": "thm:rf-pinching"
+    },
+    {
+      "declaration": "PoincareMT.differentialHarnackAncientTheory",
+      "path": "PoincareLib/Geometry/RicciFlow/Harnack/Theorem.lean",
+      "label": "thm:rf-harnack"
+    },
+    {
+      "declaration": "Poincare.RicciFlow.Harnack.exists_uniform_bound_of_local_right_bound_and_harnack",
+      "path": "PoincareLib/Geometry/RicciFlow/Harnack/Noncompact/CurvatureControl.lean",
+      "label": "sec:rf-harnack"
+    },
+    {
+      "declaration": "PoincareMT.RicciFlow.false_of_positive_volume_small_ancient_limit",
+      "path": "PoincareLib/Geometry/RicciFlow/Harnack/Noncompact/CurvatureControl/VolumeToCurvature.lean",
+      "label": "sec:rf-harnack"
+    },
+    {
+      "declaration": "PoincareMT.exists_uniform_unitBall_scalar_integral_bound",
+      "path": "PoincareLib/Geometry/Curvature/Integral/Scalar.lean",
+      "label": "sec:rf-harnack"
+    },
+    {
+      "declaration": "PoincareMT.pointedRicciFlowCompactness",
+      "path": "PoincareLib/Geometry/RicciFlow/Compactness/Coordinates/SpacetimeBounds/Compactness.lean",
+      "label": "thm:rf-compactness"
+    },
+    {
+      "declaration": "PoincareMT.ChartDistance.exists_complete_geometric_limit_of_chart_limits",
+      "path": "PoincareLib/Geometry/RicciFlow/Compactness/GeometricLimit/CoordinateLimit.lean",
+      "label": "sec:rf-compactness"
+    },
+    {
+      "declaration": "PoincareMT.ChartDistance.exists_local_source_models_near_compact",
+      "path": "PoincareLib/Geometry/RicciFlow/Compactness/GeometricLimit/Stages/SourceEmbedding/Finite.lean",
+      "label": "sec:rf-compactness"
+    },
+    {
+      "declaration": "PoincareMT.BasedFlow.complete_interior_of_two_time_curvature_bound",
+      "path": "PoincareLib/Geometry/RicciFlow/Completeness.lean",
+      "label": "thm:rf-compactness"
+    },
+    {
+      "declaration": "PoincareMT.PointedGeometricConvergence.complete_interior",
+      "path": "PoincareLib/Geometry/RicciFlow/Compactness/Assembly.lean",
+      "label": "thm:rf-compactness"
+    }
+  ],
+  "definitions_and_hypotheses_checked": [
+    "Ricci flow uses the same evolving metric and its Levi-Civita connection; time derivatives are within nondegenerate intervals, including included endpoints.",
+    "Normalized data are three-dimensional, complete and finite volume; curvature <=1 and half-Euclidean calibrated ball volume hold at every center and every radius 0<r<=1.",
+    "Local existence and uniqueness use compact carriers; continuation has one global full-curvature bound for every t in [0,T) and every x, with 0<T<infinity.",
+    "Local Shi constants are chosen after n,k,K,alpha,r but before the carrier, T, flow and center; T<=alpha/K; the original ball has compact closure and curvature bounded throughout its fixed spatial cylinder.",
+    "Initial-derivative variant retains GLOBAL curvature and initial derivative bounds through l, uses natural subtraction max(k-l,0), and at t=0 requires k<=l.",
+    "Positivity preservation is compact and three-dimensional; scalar-zero rigidity is connected and three-dimensional with nonnegative sectional curvature throughout, without a completeness or compactness premise.",
+    "Hamilton-Ivey persistence uses absolute a>=0, [a,b), both scalar and logarithmic initial bounds, and the full norm convention |Rm|^2=4 sum k_i^2.",
+    "Harnack is all-dimensional and uses forall t exists K_t forall x, not a uniform time bound. The ancient public result retains connectedness and nonflatness on every slice. Time-zero derivative is one-sided.",
+    "Finite path comparison has both elapsed-time factors; paths are C1 for the actual evolving metric. No division by scalar curvature is used.",
+    "Pointed compactness has forall A>0 exists K_A eventually k forall s,t in J forall x in the s-ball. The approximants need eventual precompact zero-time balls, not globally complete metrics.",
+    "Product-flow spacetime embeddings preserving partial_t and agreeing with the identity at time zero are time independent. The extra spacetime-control field is supplied by identity maps from the retained all-time hypothesis.",
+    "Pointed limit convergence includes all mixed coordinate jets, relatively compact connected exhaustion, a strict subsequence and based embeddings; completeness is claimed at interior times only.",
+    "The bound K_t in the Harnack interface uses the ordered-pair quadratic operator convention; existence of a bound is equivalent under the usual Lambda^2 normalization. No numerical operator-bound constant is transported unchanged."
+  ],
+  "curvature_field_coverage": {
+    "tensor_calculus": "Opening conventions, prop:rf-evolution and its connection/Bianchi calculation; ordinary tensor calculus background.",
+    "curvature_norm_zero": "prop:rf-evolution",
+    "scalar_regular": "prop:rf-evolution",
+    "scalar_evolution": "prop:rf-evolution",
+    "curvature_evolution": "prop:rf-evolution with all four Ricci slot corrections displayed",
+    "ricci_evolution": "prop:rf-evolution with inverse-metric differentiation",
+    "local_derivative_estimates": "thm:rf-shi, first assertion",
+    "initial_derivative_estimates": "thm:rf-shi, second assertion",
+    "metric_comparison": "prop:rf-metric-comparison",
+    "sectional_preservation": "prop:rf-positivity",
+    "ricci_preservation": "prop:rf-positivity",
+    "scalar_zero_rigidity": "prop:rf-positivity",
+    "scalar_lower_bound": "prop:rf-scalar",
+    "normalized_scalar_lower_bound": "prop:rf-scalar, three-dimensional specialization"
+  },
+  "substantive_proof_mechanisms": [
+    {
+      "section": "sec:rf-local",
+      "paths": [
+        "PoincareLib/Geometry/RicciFlow/Local/ShortTime.lean",
+        "PoincareLib/Geometry/RicciFlow/Local/DeTurck/Construction/DeTurckResponseMetric.lean",
+        "PoincareLib/Geometry/RicciFlow/Local/DeTurck/Construction/QuasilinearDeTurck.lean",
+        "PoincareLib/Geometry/RicciFlow/Local/DeTurck/Forcing/DeTurckParameterForcing.lean",
+        "PoincareLib/Geometry/RicciFlow/Local/DeTurck/Forcing/DeTurckTameRemainder.lean",
+        "PoincareLib/Geometry/RicciFlow/Local/DeTurck/Forcing/DeTurckMixedForcing.lean",
+        "PoincareLib/Geometry/RicciFlow/Local/DeTurck/Forcing/DeTurckTensorForcing.lean",
+        "PoincareLib/Analysis/Parabolic/Quasilinear/Tensor/TensorProbeL2.lean",
+        "PoincareLib/Analysis/Parabolic/Quasilinear/Tensor/TensorFirstOrderClosed.lean",
+        "PoincareLib/Analysis/Parabolic/Quasilinear/Tensor/TensorHilbert.lean",
+        "PoincareLib/Analysis/Parabolic/Quasilinear/Heat/SpectralTraceOperator.lean",
+        "PoincareLib/Geometry/RicciFlow/Local/DeTurck/Gauge/DeTurckFamilyRecovery.lean",
+        "PoincareLib/Geometry/RicciFlow/Local/Energy/Comparison/GlobalDifferenceEnergy.lean",
+        "PoincareLib/Geometry/RicciFlow/Local/Energy/Comparison/UniquenessClosure.lean",
+        "PoincareLib/Geometry/RicciFlow/Local/Continuation/EndpointMetric.lean",
+        "PoincareLib/Geometry/RicciFlow/Local/Continuation/Gluing.lean"
+      ],
+      "mechanism": "Parseval tensor probes and full-support L2 measure; closability by distributional integration by parts; compact dense graph inclusion j and resolvent jj*, spectral generator beta^-1-1; energy and C0-times-L2 residual splitting. Lipschitz constant 8 C1 rho + 2 C2 sqrt T; explicit rho=1/(64(C1+1)) and T=s^2; forcing norm <=rho/3; positive metric >=3g0/4; parameter-orbit spatial smoothness; pullback along -W. Uniqueness energy rates CE, CE+D/2, CE-D close with Gronwall; bounded jets yield terminal metric and smooth restart."
+    },
+    {
+      "section": "sec:rf-pinching",
+      "paths": [
+        "PoincareLib/Geometry/RicciFlow/Pinching/Barrier.lean",
+        "PoincareLib/Geometry/RicciFlow/Pinching/Region.lean",
+        "PoincareLib/Geometry/RicciFlow/Pinching/Algebra.lean",
+        "PoincareLib/Geometry/RicciFlow/Pinching/Reaction.lean",
+        "PoincareLib/Geometry/RicciFlow/Pinching/ReactionSupport.lean",
+        "PoincareLib/Geometry/RicciFlow/Pinching/GeometricPreservation/Preservation.lean",
+        "PoincareLib/Geometry/RicciFlow/Pinching/Bounds.lean"
+      ],
+      "mechanism": "Clipped increasing branch joined to horizontal -3/(1+t), least-eigenvalue concavity, completed-square nonnegative reaction polynomial, transported rate-two PDE and fixed carrier after scaling, outward support/Laplacian first contact, scalar clock and ordered-spectrum norm estimate."
+    },
+    {
+      "section": "sec:rf-harnack",
+      "paths": [
+        "PoincareLib/Geometry/RicciFlow/Harnack/Matrix/Tensors.lean",
+        "PoincareLib/Geometry/RicciFlow/Harnack/Matrix/Trace.lean",
+        "PoincareLib/Geometry/RicciFlow/Harnack/Matrix/Positivity/Reaction.lean",
+        "PoincareLib/Geometry/RicciFlow/Harnack/Matrix/Positivity/PerturbedTimeContact.lean",
+        "PoincareLib/Geometry/RicciFlow/Harnack/Matrix/Positivity/Perturbation.lean",
+        "PoincareLib/Geometry/RicciFlow/Harnack/Matrix/Positivity/Global.lean",
+        "PoincareLib/Geometry/RicciFlow/Harnack/Noncompact/Exhaustion.lean",
+        "PoincareLib/Geometry/RicciFlow/Harnack/Noncompact/Barriers.lean",
+        "PoincareLib/Geometry/RicciFlow/Harnack/Finite.lean",
+        "PoincareLib/Geometry/RicciFlow/Harnack/Noncompact/BoundedFlow.lean",
+        "PoincareLib/Geometry/RicciFlow/Harnack/Noncompact/InitialVolume.lean",
+        "PoincareLib/Geometry/RicciFlow/Harnack/Noncompact/CurvatureControl/ScalarIntegral.lean",
+        "PoincareLib/Geometry/RicciFlow/Harnack/Noncompact/CurvatureControl/VolumeToCurvature.lean",
+        "PoincareLib/Geometry/RicciFlow/Harnack/Noncompact/CurvatureControl/ScalarEstimate.lean",
+        "PoincareLib/Geometry/RicciFlow/Harnack/Noncompact/CurvatureControl/Cylinders/Expanding/Selection.lean",
+        "PoincareLib/Geometry/RicciFlow/Harnack/Noncompact/CurvatureControl/Cylinders/Expanding/Limit.lean",
+        "PoincareLib/Geometry/RicciFlow/Harnack/Noncompact/CurvatureControl/Cylinders/Expanding/FromVolume.lean",
+        "PoincareLib/Geometry/RicciFlow/Harnack/Noncompact/CurvatureControl.lean",
+        "PoincareLib/Geometry/RicciFlow/Harnack/Noncompact/CurvatureControl/Continuation.lean",
+        "PoincareLib/Geometry/RicciFlow/Harnack/Noncompact/CurvatureControl/Assembly.lean",
+        "PoincareLib/Geometry/Riemannian/Comparison/Volume/Nonnegative.lean",
+        "PoincareLib/Geometry/Riemannian/Soul/Injectivity.lean",
+        "PoincareLib/Geometry/Riemannian/Comparison/Injectivity/Radius/ConvexDescent.lean",
+        "PoincareLib/Analysis/Calculus/Monotonicity/CompactDescent.lean",
+        "PoincareLib/Geometry/Curvature/Integral/Scalar.lean",
+        "PoincareLib/Geometry/Curvature/Integral/Induction/Corners/Normalized.lean",
+        "PoincareLib/Geometry/Curvature/Integral/Induction/Corners/DimensionInduction.lean",
+        "PoincareLib/Geometry/Curvature/Integral/Induction/Corners/Step.lean",
+        "PoincareLib/Geometry/Curvature/Integral/Induction/Corners/Slab/AnnularBound.lean",
+        "PoincareLib/Geometry/Curvature/Integral/Induction/Corners/ScalarConsumer.lean",
+        "PoincareLib/Geometry/Curvature/Integral/Concentration/CornerModels.lean",
+        "PoincareLib/Geometry/Curvature/Integral/Concentration/CornerMaximalRank.lean",
+        "PoincareLib/Geometry/Curvature/Integral/Concentration/CornerRankGrowth.lean",
+        "PoincareLib/Geometry/Curvature/Integral/Concentration/ExpandingSubsetRankGrowth.lean",
+        "PoincareLib/Geometry/Curvature/Integral/Reduction/Product.lean"
+      ],
+      "mechanism": "Tensor-square Gram contraction proves sharp reaction positivity; prescribed skew spatial jet and explicit C(n,K,T) give strict contact with alpha=epsilon exp(A tau) rho/tau and psi=delta exp(A tau). Compact normalized directions exclude first zeros. Stationary descent of truncated injectivity plus a convex exhaustion gives initial unit-ball volume. Scalar-integral input controls linear volume loss. Expanding cylinders with A=k+1, Q>[64(n+8)A]^2 and scalar<=4Q are buffered backward before extraction; resulting all-radius volume coefficient is nu/4^n. Bounded ancient zero AVR contradicts this. Chen estimate uses L=D exp(8K), absorbs exp(8K)H<=Q/2, and yields the right bound. Supremum continuation, trace and integrating factors finish."
+    },
+    {
+      "section": "sec:rf-compactness",
+      "paths": [
+        "PoincareLib/Geometry/RicciFlow/Compactness/Convergence.lean",
+        "PoincareLib/Geometry/RicciFlow/Compactness/Coordinates/SpacetimeBounds/Compactness.lean",
+        "PoincareLib/Geometry/RicciFlow/Compactness/GeometricLimit/NormalCharts.lean",
+        "PoincareLib/Geometry/RicciFlow/Compactness/GeometricLimit/CoordinateLimit.lean",
+        "PoincareLib/Geometry/RicciFlow/Compactness/GeometricLimit/Stages/SourceEmbedding/Finite.lean",
+        "PoincareLib/Geometry/RicciFlow/Compactness/GeometricLimit/Stages/SourceEmbedding/Extension.lean",
+        "PoincareLib/Geometry/RicciFlow/Compactness/GeometricLimit/Stages/SourceEmbedding/PointedExhaustion.lean",
+        "PoincareLib/Geometry/RicciFlow/Compactness/GeometricLimit/Complete.lean",
+        "PoincareLib/Geometry/RicciFlow/Compactness/Assembly.lean",
+        "PoincareLib/Geometry/RicciFlow/Completeness.lean"
+      ],
+      "mechanism": "Controlled normal charts and mixed jets; diagonal metric and distance limits; zero-distance quotient and transition cocycles; finite chart correction preserving a protected basepoint; compact source-ball cover yields escaping boundaries and zero-time completeness; transfer two-time curvature through embeddings; bounded Cauchy sequences compare locally with the complete zero-time metric."
+    }
+  ],
+  "external_source_locators": [
+    {
+      "key": "MT2007",
+      "locator": "Definition 4.10 p.67; Theorem 3.11 and Proposition 3.12 pp.39-40; Proposition 4.12 p.68; equations (3.5)-(3.6) p.41, Lemma 3.15 p.42; Theorems 3.28-3.29 pp.51-52; Proposition 4.1 pp.64-65; Corollaries 4.14-4.15 pp.69-70; Theorem 4.18 pp.71-72; Theorem 4.8 p.66; Claims 4.28-4.31 pp.77-79, Theorem 4.32 pp.79-80; Theorem 4.37 and Corollary 4.39 p.81, Theorem 4.40 p.82; Theorem 5.6 pp.86-87, Theorems 5.9-5.11 pp.88-90, Proposition 5.14 pp.90-91, Theorem 5.15 pp.91-92.",
+      "artifact": "references/ricci-flow/morgan-tian/published-edition/morgan-tian-clay-edition.pdf",
+      "direct_inspection": "Printed pp.77-80 inspected against clipped carrier and reaction calculation; other locators cross-checked against source module documentation."
+    },
+    {
+      "key": "Topping2014",
+      "locator": "Theorem 1.7 p.179; Theorem 1.3 and Corollary 1.4 pp.176-177.",
+      "artifact": "references/ricci-flow/topping-2014/Topping_Compactness_published_version.pdf",
+      "direct_inspection": "Printed pp.178-179 inspected; Theorem 1.7 has all source indices, while the formal statement retains eventual index tails. It is used for the completeness mechanism, not as a black box for incomplete approximants."
+    },
+    {
+      "key": "Petrunin2009",
+      "locator": "Theorem 1.1 p.1; hypersurface Bochner identity Section 2.2 p.4; regular corners and direction packing Sections 3.1-3.7 pp.5-7; weighted induction and concentration Sections 4.3-4.7 pp.8-14.",
+      "artifact": "references/riemannian-geometry/petrunin-2009/sc-bound-en.pdf",
+      "direct_inspection": "Read the archived manuscript statement and proof, compared with actual normalized/pointed regular-fiber APIs. The chapter develops signed slab terms, all paired-gradient hypotheses, tolerance before Hessian/buffer constants, scale-correct lower-dimensional estimate, exact narrow annulus, weighted rescaling and strict angle calculation. Native n>=4 route uses all-codimension corner induction; n=3 uses direct surface-level concentration; n=2 uses the width-one line-product cylinder. Historical reference notes remain discovery evidence, not proof status."
+    },
+    {
+      "key": "CabezasRivasWilking2015",
+      "locator": "Theorem 4.2 p.3160; Proposition 4.3 equations (4.2)-(4.3) and Corollary 4.4 p.3161.",
+      "artifact": "references/ricci-flow/cabezas-rivas-wilking-2015/CabezasRivas_Wilking_2015.pdf",
+      "direct_inspection": "Printed pp.3160-3161 inspected. The original application concerns a special approximating sequence; the chapter develops the volume-loss calculation for the exact complete nonnegative-operator specialization."
+    },
+    {
+      "key": "Chen2009",
+      "locator": "Theorem 3.1, archived manuscript pp.10-11.",
+      "artifact": "references/ricci-flow/chen-2009/0706.3081v2.pdf",
+      "direct_inspection": "Locator from VolumeToCurvature.lean; exact scalar specialization and quantitative cutoff absorption traced in ScalarEstimate.lean and developed at eq:rf-chen-local."
+    },
+    {
+      "key": "ChowEtAl2010",
+      "locator": "Part III, Proposition 26.49, Step 3, equations (26.146)-(26.150), printed pp.383-384; PDF pp.404-405.",
+      "artifact": "references/ricci-flow/techniques-and-applications/part-iii.html",
+      "direct_inspection": "Integration directly read these PDF pages (stored with .html extension) and their transcriptions. The printed proof invokes Jost--Karcher and DeTurck--Kazdan after an exponential lift; the actual radial-metric constructor is developed in sec:rf-harmonic-coordinates."
+    },
+    {
+      "key": "ChowEtAl2008",
+      "locator": "Part II, Theorem 15.16 pp.272-279; sharp-reaction proof pp.279-281; Lemma 15.23 p.283; Section 15.4.5 p.287.",
+      "direct_inspection": "Locators from Reaction.lean, Barriers.lean and Global.lean; actual algebra and barrier proofs inspected in Lean, not independently checked against the book in this session."
+    },
+    {
+      "key": "MaederBaumdickerSeidel2025",
+      "locator": "Archived preprint Theorem 1 p.4; Lemma 3.13 pp.17-19; Lemma 5.1 pp.35-37.",
+      "artifact": "references/riemannian-geometry/maeder-baumdicker-seidel-2025/2310.03369v3.pdf",
+      "direct_inspection": "Locators from Soul/Exhaustion, Soul/Injectivity and ConvexDescent. The smooth stationary-descent specialization and compact minimization are traced directly and developed in the chapter."
+    },
+    {
+      "key": "KleinerLott2013",
+      "locator": "Proposition 41.13 p.2678; Corollaries 44.1 and 45.1(a) pp.2682-2685; Appendix F pp.2850-2851.",
+      "artifact": "references/ricci-flow/kleiner-lott/Kleiner_Lott_journal_format_corrected_2013.pdf",
+      "direct_inspection": "Producer provenance; not used to discharge the specialized cylinder and noncompact positivity arguments by citation alone."
+    }
+  ],
+  "cross_chapter_inputs_outputs": {
+    "inputs": [
+      {
+        "owner": "foundations",
+        "statement": "A closed smooth three-manifold, or a chosen smooth model transported from the topological input. Normalization is constructed here on that same model."
+      },
+      {
+        "owner": "blueprint-v4-ancient-models",
+        "status": "producer chapter published and exact statement read; independent acceptance pending",
+        "label": "prop:bounded-ancient-zero-volume",
+        "statement": "For every n>=2, a complete connected noncompact ancient flow on (-infinity,0] with nonnegative curvature operator, one uniform full-curvature bound, positive parabolic noncollapse constant and positive scalar curvature somewhere at time zero has zero asymptotic volume ratio on every slice. Prove using bounded-slab Harnack only, before the full per-slice Harnack theorem.",
+        "source": "PoincareLib/Geometry/RicciFlow/Harnack/Noncompact/AncientVolume/ZeroVolume/Theorem.lean"
+      },
+      {
+        "owner": "blueprint-v4-integration",
+        "status": "additional analytic subsection authored locally; placement and source/readability review pending",
+        "label": "sec:rf-scalar-integral",
+        "statement": "In every dimension, complete sec>=-1 metrics have integral R over any unit ball bounded by a dimension-only constant. The Ricci chapter now supplies a regular-fiber induction subsection, including compact surface base, signed Bochner/Gauss estimates, exact annular constants, weighted concentration and angular-rank increase. Integration decides whether to retain or extract this substantial analytic geometry subsection and checks the summarized quantitative tilted-level construction.",
+        "sources": [
+          "PoincareLib/Geometry/Riemannian/Soul/Injectivity.lean",
+          "PoincareLib/Geometry/Curvature/Integral/Scalar.lean"
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "owner": "annular-comparison",
+        "labels": ["thm:rf-harmonic-radius", "sec:rf-harmonic-coordinates"],
+        "contract": "A smooth local Gauss extension with compact curvature bound supplies a harmonic first coordinate of nonzero differential, then a local conjugate and isothermal chart. No completeness of the annular metric."
+      },
+      {
+        "owner": "reduced-geometry",
+        "labels": [
+          "prop:rf-evolution",
+          "thm:rf-shi",
+          "prop:rf-metric-comparison"
+        ],
+        "contract": "Same flow, metric and component; preserve local compact-ball versus global initial-derivative assumptions."
+      },
+      {
+        "owner": "ancient-models",
+        "labels": [
+          "thm:rf-pinching",
+          "prop:rf-bounded-harnack",
+          "cor:rf-ancient-harnack",
+          "thm:rf-compactness"
+        ],
+        "contract": "Use bounded-slab Harnack in the zero-AVR proof to avoid circularity; verify all-time two-variable bounds and noncollapse for each sequence."
+      },
+      {
+        "owner": "ramps",
+        "labels": [
+          "thm:rf-local",
+          "prop:rf-evolution",
+          "thm:rf-shi",
+          "prop:rf-metric-comparison"
+        ],
+        "contract": "Constants retain dependence on radius, curvature, dimension and time buffer; local estimates do not imply uniformity over an extra ramp parameter."
+      },
+      {
+        "owner": "surgery, global-surgery, extinction",
+        "labels": [
+          "prop:rf-normalize",
+          "thm:rf-local",
+          "prop:rf-scalar",
+          "thm:rf-pinching"
+        ],
+        "contract": "Scalar and logarithmic pinching use the same absolute clock. A restart at a does not reset the clock. Continuation requires global full-curvature bounds."
+      }
+    ]
+  },
+  "background_helper_classification": {
+    "ordinary_background": [
+      {
+        "item": "Gronwall, contraction mapping, smooth dependence of strict fixed points",
+        "justification": "General analysis; the chapter supplies the actual fixed-point map role, norm estimates, radii, initial energy and differential inequality."
+      },
+      {
+        "item": "Tensor connection variation, Bianchi identities and ordinary local calculus",
+        "justification": "Graduate Riemannian background; conventions and the full fixed-input reaction are displayed to make contractions checkable."
+      },
+      {
+        "item": "Shi derivative theorem and scalar/tensor maximum principles",
+        "justification": "Standard analytic inputs with exact hypotheses and theorem locators. The particular logarithmic carrier and geometric application are developed here; source/readability reviewer must approve the cited boundary."
+      },
+      {
+        "item": "Arzela-Ascoli, inverse function theorem, local metric topology, compact images",
+        "justification": "Ordinary background only. They do not replace quotient construction, compatible source embeddings or boundary escape."
+      }
+    ],
+    "substantial_project_mathematics": [
+      "Tensor Hilbert localization, actual spectral residual estimates and smooth parameter-orbit recovery.",
+      "Coupled metric, connection and raised-curvature comparison energy and compatible terminal metric jets.",
+      "Clipped logarithmic carrier, support contact with transported Laplacian, rate-two reaction and explicit full-curvature bound.",
+      "Noncompact Hamilton block positivity, all-dimensional soul/scalar-integral geometry, expanding ancient cylinders and terminal-slice continuation.",
+      "Controlled normal charts, distance quotient, finite source corrections, boundary escape and radius-dependent two-time completeness."
+    ],
+    "implementation_only": [
+      "Universe lifting, connected-component subtype transport, record/producer assembly and instance transport once the mathematical metric/volume identities are specified.",
+      "Enumeration of countably many charts and finite-index/subsequence adapters, with diagonal exhaustion and eventual quantifiers retained in mathematics.",
+      "Intrinsic extended-distance instance equality in M06 is accounted for by the opening metric convention; it does not assert a second geometric theorem."
+    ]
+  },
+  "unresolved_issues": [
+    {
+      "id": "RF-HARMONIC-COORDINATES",
+      "severity": "high",
+      "status": "bounded construction and annular interface reviewed; other consumers and whole chapter pending",
+      "owner": "blueprint-v4-integration",
+      "session": "session_fd894b3e2eb047718aa35f162d35c568",
+      "label": "sec:rf-harmonic-coordinates",
+      "issue": "The M64 scalar annulus construction calls RiemannianMetric.exists_uniform_harmonic_radius through Uniformization/Scalar/LocalHarmonic.lean. Integration has developed radial transport/coframe estimates, weak replacement and smooth representatives, scale-correct gradient-error iteration, a prescribed inverse image ball, divergence-form Hessian estimates and heat-potential seminorm absorption. The annular consumer now points to this proof. The local Gauss-metric extension and compact curvature bound impose no completeness premise on the original planar metric.",
+      "next_action": "Check other consumers and analytic chapter placement. Source reads, sequential review and exact primary-source comparison are in harmonic-coordinates-integration-v4.md. This bounded review does not accept the Ricci-flow chapter."
+    },
+    {
+      "id": "RF-LOCAL-ANALYSIS",
+      "severity": "medium",
+      "status": "bounded local construction reconciled; whole chapter pending",
+      "owner": "blueprint-v4-integration",
+      "label": "sec:rf-local",
+      "issue": "Generator localization and derivative budgets, mixed high/low source estimates and positivity margins are exposed. Subsequent full reread added the background/seed equation and generator commutator needed to identify smooth parameter branches, the divergence flux needed for uniqueness energy, and the triangular connection-jet continuation induction. Bounded independent rereads found no remaining defect in these edited passages.",
+      "next_action": "Retain exact one-sided endpoints and common parameter time interval during the full chapter reread; finish remaining Harnack/comparison review before accepting the chapter."
+    },
+    {
+      "id": "RF-HARNACK-BLOCK",
+      "severity": "medium",
+      "status": "expanded; pending independent source/readability review",
+      "owner": "blueprint-v4-integration",
+      "label": "sec:rf-harnack",
+      "issue": "Expanded to prove sharp reaction by an explicit Gram contraction, prescribe the skew spatial jet, display the full quantitative perturbation bound and construct the reciprocal-time exhaustion barrier. Check the tensor evolution-to-contact calculation and fixed-frame passage, whose term-by-term differentiation is summarized.",
+      "next_action": "Review eq:rf-harnack-sharp and eq:rf-harnack-contact against Reaction, PerturbedTimeContact and Global, including ordered-pair normalization and alpha=epsilon exp(A tau)rho/tau."
+    },
+    {
+      "id": "RF-HARNACK-GEOMETRY",
+      "severity": "medium",
+      "status": "expanded analytic subsection; pending independent source/readability review",
+      "owner": "blueprint-v4-integration",
+      "session": "session_fd894b3e2eb047718aa35f162d35c568",
+      "label": "sec:rf-scalar-integral",
+      "issue": "The initially missing scalar-integral subsection is now developed: exact compact/local fiber hypotheses, signed Gauss/Bochner estimates, lower-dimensional scaling, annular output, maximal minimum rank, weighted blow-up, angle-rescaling calculation and low-dimensional consumers. The detailed smoothing/tilting of paired functions, compact level realization and finite-cover uniformity remain summarized and need independent depth review. This is not accepted merely because the induction closes formally.",
+      "next_action": "Review the local subsection against DimensionInduction, Step, Slab/AnnularBound, CornerModels, CornerMaximalRank and ExpandingSubsetRankGrowth; check uniformity before the Hessian parameter and near-minimality at every marked-section point. Decide whether this analytic geometry should be extracted into a separate subject subsection during integration."
+    },
+    {
+      "id": "RF-ANCIENT-AVR",
+      "severity": "high",
+      "status": "statement matched to published producer; cone construction review remains pending",
+      "owner": "blueprint-v4-ancient-models",
+      "session": "session_b193ec20c2bf4a0088230ddf3d3a80b3",
+      "message_id": 2415,
+      "label": "sec:rf-harnack",
+      "issue": "The published ancient chapter supplies prop:bounded-ancient-zero-volume with n>=2, one spacetime curvature bound, closed-cylinder noncollapse and positive scalar curvature somewhere at zero. Its AM-CONE issue retains overlap and enclosed-limit proof-depth review; this consumer cannot certify that dependency accepted.",
+      "next_action": "Integration review checks AM-CONE and the exact closed-cylinder contract against this consumer, wires prop:bounded-ancient-zero-volume to prop:rf-bounded-harnack, and rejects any use of full M06 in the producer."
+    },
+    {
+      "id": "RF-COMPACTNESS-DETAIL",
+      "severity": "medium",
+      "status": "pending independent source/readability review",
+      "owner": "blueprint-v4-integration",
+      "label": "sec:rf-compactness",
+      "issue": "The full compactness passage has now been reread and its geometric construction reconciled. The stale model-volume sheet count was corrected to the noncollapse-dependent count and finite-orbit argument; radial connection induction and open smooth quotient construction are exposed. Remaining acceptance depends on the shared analytic inputs and whole-chapter review, not on record fields.",
+      "next_action": "Finish the shared Shi/local analytic source review and sequential chapter reread; retain the distinction between the auxiliary quotient distance and the Riemannian path metric."
+    },
+    {
+      "id": "RF-PINCHING-CONTACT",
+      "severity": "medium",
+      "status": "pending independent source review",
+      "owner": "blueprint-v4-integration",
+      "label": "sec:rf-pinching",
+      "issue": "Check all transported contact terms and reaction normalization against the pinned preservation producer. The narrative distinguishes rate-one algebra from the geometric rate-two PDE and includes all scalar-carrier cases.",
+      "next_action": "Compare GeometricPreservation/Preservation and pinned TransportCoordinates, including supporting Laplacian and local Lipschitz hypotheses."
+    },
+    {
+      "id": "RF-INTEGRATION",
+      "severity": "medium",
+      "status": "pending coordinator-owned integration",
+      "owner": "blueprint-v4-integration",
+      "issue": "New draft is intentionally outside the legacy content order; central bibliography lacks six citation keys, old book inventory check fails at m25 source-line drift, and site/dependency metadata integration remains coordinator-owned.",
+      "next_action": "Integrate accepted chapter, import proposed bibliography entries, map JSON labels to publication dependency metadata, repair shared source-line inventory and run final PDF/site/link checks."
+    }
+  ],
+  "proposed_bibliography_additions": [
+    {
+      "key": "ChowEtAl2008",
+      "source": "references/bibliography.bib",
+      "entry": "@book{ChowEtAl2008, author={Chow, Bennett and Chu, Sun-Chin and Glickenstein, David and Guenther, Christine and Isenberg, James and Ivey, Tom and Knopf, Dan and Lu, Peng and Luo, Feng and Ni, Lei}, title={The Ricci Flow: Techniques and Applications. Part II: Analytic Aspects}, series={Mathematical Surveys and Monographs}, volume={144}, publisher={American Mathematical Society}, year={2008}, doi={10.1090/surv/144}}"
+    },
+    {
+      "key": "MaederBaumdickerSeidel2025",
+      "source": "references/bibliography.bib",
+      "entry": "@article{MaederBaumdickerSeidel2025, author={M{\\\"a}der-Baumdicker, Elena and Seidel, Jona}, title={The Injectivity Radius of Souls of Alexandrov Spaces}, journal={Journal of Geometric Analysis}, volume={35}, number={40}, year={2025}, doi={10.1007/s12220-024-01870-9}, note={Archived preprint: arXiv 2310.03369v3, 3 January 2025}, url={https://arxiv.org/abs/2310.03369v3}}"
+    },
+    {
+      "key": "Topping2014",
+      "source": "references/bibliography.bib",
+      "entry": "@article{Topping2014, author={Topping, Peter M.}, title={Remarks on Hamilton's Compactness Theorem for Ricci flow}, journal={Journal fuer die reine und angewandte Mathematik}, volume={692}, pages={173--191}, year={2014}, doi={10.1515/crelle-2012-0079}, url={https://wrap.warwick.ac.uk/id/eprint/97141/}}"
+    },
+    {
+      "key": "Petrunin2009",
+      "source": "references/bibliography.bib",
+      "entry": "@article{Petrunin2009, author={Petrunin, Anton M.}, title={An upper bound for the curvature integral}, journal={St. Petersburg Mathematical Journal}, volume={20}, number={2}, pages={255--265}, year={2009}, doi={10.1090/S1061-0022-09-01046-2}, note={Author-hosted English manuscript: Theorem 1.1, p. 1}, url={https://anton-petrunin.github.io/papers/sc-bound/sc-bound-en.pdf}}"
+    },
+    {
+      "key": "CabezasRivasWilking2015",
+      "source": "references/bibliography.bib",
+      "entry": "@article{CabezasRivasWilking2015, author={Cabezas-Rivas, Esther and Wilking, Burkhard}, title={How to produce a Ricci flow via Cheeger--Gromoll exhaustion}, journal={Journal of the European Mathematical Society}, volume={17}, pages={3153--3194}, year={2015}, doi={10.4171/JEMS/582}, url={https://ems.press/content/serial-article-files/32088?nt=1}}"
+    },
+    {
+      "key": "Chen2009",
+      "source": "references/bibliography.bib",
+      "entry": "@article{Chen2009, author={Chen, Bing-Long}, title={Strong Uniqueness of the Ricci Flow}, journal={Journal of Differential Geometry}, volume={82}, pages={363--382}, year={2009}, note={Archived preprint: arXiv 0706.3081v2, 5 October 2010}, url={https://arxiv.org/abs/0706.3081v2}}"
+    }
+  ],
+  "shared_comparison_integration": {
+    "session": "session_fd894b3e2eb047718aa35f162d35c568",
+    "source_revision": "751329327f4f582797bda8e6cffe7cdf7531cc1d",
+    "exposition_label": "lem:rf-squared-distance-comparison",
+    "progress": [
+      "Developed index nonnegativity from realized variations and the negative-index obstruction to an interior Jacobi zero.",
+      "Developed shortened-tail nonsingularity, actual inverse radial supports, affine Jacobi comparison and the shifted Hessian error.",
+      "Developed the nonsmooth scalar concavity criterion, selected endpoint derivative and two-parameter chord comparison.",
+      "Reconciled the retained-line and every-geodesic Busemann consumers with this shared statement.",
+      "A subsequent main-agent source reread and independent native pass found no mismatch in hinge signs, corresponding-side trimming, arbitrary-geodesic concavity, or the annular ray and comparison-cosine applications; this shared interface is locally reconciled."
+    ],
+    "source_comparison": "Morgan-Tian Theorem 2.4 p. 23; Petersen Lemma 7.1.9 pp. 284-285, directly checked at PDF pages 299-300.",
+    "citation_discrepancy": "No-conjugacy/index source comments cite Morgan-Tian Theorem 1.34 p. 19, but that archived book theorem is Bishop-Gromov volume comparison. Recorded without editing Lean.",
+    "acceptance": "Chapter remains pending; this is a bounded shared-comparison review."
+  },
+  "retained_noncollapse_integration": {
+    "session": "session_fd894b3e2eb047718aa35f162d35c568",
+    "source_revision": "751329327f4f582797bda8e6cffe7cdf7531cc1d",
+    "exposition_label": "lem:rf-limit-static-noncollapse",
+    "progress": [
+      "Developed arbitrary-center source-ball coverage through actual inverse embeddings.",
+      "Developed Jacobian volume bounds, exponential-image sphere nullity and continuity at every positive radius.",
+      "Developed uniform curvature passage on a compact smaller ball and the strict radius margin verifying source noncollapse.",
+      "Passed to the full radius without losing kappa and reconciled three ancient-model applications."
+    ],
+    "scope": "Consequences of supplied complete pointed convergence; construction of that convergence and chapter acceptance remain pending."
+  },
+  "finite_embedding_integration": {
+    "session": "session_fd894b3e2eb047718aa35f162d35c568",
+    "source_revision": "751329327f4f582797bda8e6cffe7cdf7531cc1d",
+    "exposition_label": "sec:rf-compactness",
+    "progress": [
+      "Developed retained compact regions with nested overlap margins and exact agreement on the larger region.",
+      "Derived actual chart containment and smooth readout convergence from retained local corrected-chart formulas.",
+      "Proved exact source-identification equivalence, open gluing, preservation of the basepoint formula and finite induction.",
+      "Separated shrinking finite-stage domains from the exhaustion diagonal and compared Morgan-Tian Theorem 5.6 pp. 86-87."
+    ],
+    "scope": "Finite source-embedding construction reconciled; later atlas and boundary reviews are recorded below. Full chapter acceptance remains pending."
+  },
+  "radius_completeness_integration": {
+    "session": "session_fd894b3e2eb047718aa35f162d35c568",
+    "source_revision": "751329327f4f582797bda8e6cffe7cdf7531cc1d",
+    "exposition_label": "sec:rf-compactness",
+    "progress": [
+      "Developed compact auxiliary-radius sublevels and quotient connectedness from fixed finite source-ball covers.",
+      "Constructed the basepoint component exhaustion with compact nested closures and constant boundary radius.",
+      "Developed uniform boundary escape, whole source-ball coverage and zero-time Cauchy completeness.",
+      "Compared Morgan-Tian Theorem 5.9 and Corollary 5.10 pp. 88-89; no source completeness or radius-distance identification was assumed."
+    ],
+    "scope": "Compactness construction uses the fixed finite controlled chart covers produced and reviewed below. Full chapter acceptance remains pending."
+  },
+  "uniform_cover_injectivity_integration": {
+    "session": "session_fd894b3e2eb047718aa35f162d35c568",
+    "source_revision": "751329327f4f582797bda8e6cffe7cdf7531cc1d",
+    "exposition_label": "sec:rf-compactness",
+    "progress": [
+      "Expanded local Bishop-Gromov model-volume packing for uniformly bounded finite source covers.",
+      "Explained padding of the basepoint-indexed cover and compact coordinate pieces.",
+      "Expanded transport of base noncollapse to bounded centers; subsequent full reread corrected the stale sheet argument to the noncollapse-dependent mass count, count-dependent radius and finite-orbit strict convexity argument developed in ancient-models.",
+      "Compared Morgan-Tian Theorem 1.34 p. 19 and Theorem 5.6 pp. 86-87 with the actual source producers."
+    ],
+    "scope": "Uniform source chart construction reconciled with the detailed shared local injectivity and radial-frame calculations. Mixed-jet descent reviewed below; whole-chapter acceptance remains pending."
+  },
+  "mixed_jet_metric_integration": {
+    "session": "session_fd894b3e2eb047718aa35f162d35c568",
+    "source_revision": "751329327f4f582797bda8e6cffe7cdf7531cc1d",
+    "exposition_label": "sec:rf-compactness",
+    "progress": [
+      "Read the spatial and spacetime jet-convergence producers and quotient coefficient descent.",
+      "Explained local inverse readout formulas and chain/product-rule transfer of all mixed metric jets.",
+      "Recorded finite-cover threshold selection and diagonal derivative-order selection."
+    ],
+    "scope": "Mixed-jet descent is reviewed; upstream Shi estimates and full compactness chapter acceptance remain pending."
+  },
+  "derivative_time_bound_integration": {
+    "session": "session_fd894b3e2eb047718aa35f162d35c568",
+    "source_revision": "751329327f4f582797bda8e6cffe7cdf7531cc1d",
+    "exposition_label": "sec:rf-compactness",
+    "progress": [
+      "Traced finite-order zero-time metric jets to local Shi tails, Gauss identity, normalized initial metric and pullback estimates.",
+      "Traced fixed-point metric comparison to Ricci contraction and Gronwall, preserving the all-time curvature quantifier.",
+      "Recorded differentiated flow equation as the mixed-time derivative producer and compared Morgan-Tian Proposition 5.14 and Theorem 5.15."
+    ],
+    "scope": "Producer chain reviewed; no Lean verification rerun and full chapter acceptance remains pending."
+  },
+  "compactness_atlas_integration": {
+    "session": "session_fd894b3e2eb047718aa35f162d35c568",
+    "source_revision": "751329327f4f582797bda8e6cffe7cdf7531cc1d",
+    "exposition_label": "sec:rf-compactness",
+    "progress": [
+      "Read the complete pointed-compactness passage and corrected the pullback formula, matching the readout to its own limit chart.",
+      "Developed source ball coverage, fixed transition domains and compact zero-distance partners to prove actual overlap openness.",
+      "Derived transition derivative bounds from metric preservation and the Christoffel transformation; explained unique smooth limits, quotient topology and second countability.",
+      "Displayed tensor compatibility and explained positivity, continuous metric inversion and passage of the Ricci equation through mixed jets.",
+      "Existing native reviewers independently checked the bounded radial, injectivity and atlas edits; notation corrections were applied."
+    ],
+    "scope": "Geometric compactness construction locally reconciled; shared analytic inputs, all chapter acceptance and final publication remain pending."
+  },
+  "local_theory_integration": {
+    "session": "session_fd894b3e2eb047718aa35f162d35c568",
+    "source_revision": "751329327f4f582797bda8e6cffe7cdf7531cc1d",
+    "exposition_label": "sec:rf-local",
+    "progress": [
+      "Reread the full local-theory passage and exposed the trace-decoder positivity radius before residual and forcing radius choices.",
+      "Displayed the background/seed parameter equation, negative generator seed and positive pullback commutator; proved actual orbit identification by strong continuity, covariance, positive approximation and local uniqueness on the original time interval.",
+      "Corrected the uniqueness energy gap by displaying the curvature divergence flux and preserving an ellipticity-dependent dissipation coefficient.",
+      "Explained the triangular connection-jet induction and its positive endpoint metric and smooth restart consequences.",
+      "Existing native reviewers checked parameter, energy and continuation edits; no remaining substantive defect found in these bounded passages."
+    ],
+    "source_comparison": "Directly inspected Morgan-Tian Theorem 3.11 pp. 39-40, Proposition 3.12 p. 40 and Proposition 4.12 p. 68, and original flowbasics.tex; spectral construction and energy route distinctions recorded without novelty claims.",
+    "scope": "Local construction reconciled; whole Ricci-flow chapter, remaining chapters and final publication remain pending."
+  },
+  "harnack_kernel_marked_limit_integration": {
+    "session": "session_fd894b3e2eb047718aa35f162d35c568",
+    "source_revision": "751329327f4f582797bda8e6cffe7cdf7531cc1d",
+    "progress": [
+      "Sequentially reread Harnack, scalar-integral and volume-to-curvature arguments; separated reaction and spatial-jet losses and derived the numerical perturbation constant without an alpha upper bound.",
+      "Developed the domain-uniform spectral-to-kernel construction using fixed interior elliptic estimates and Riesz-row factorization; precisely cited ordinary elliptic and compactness background.",
+      "Added the semigroup proof of finite first moments at every finite time and restricted the square-root displacement estimate to times at most one.",
+      "Developed strict-inner-ball stage coverage, proper completion, approximate splits, expanding realizations and compact-subset convergence of actual marked fiber sections.",
+      "Existing native reviewers independently reread the actual edits; the only remaining time-scope correction was applied."
+    ],
+    "review_evidence": "inventory/reviews/ricci-flow-integration-v4.md, Harnack Constants, Kernel Inputs And Marked Limits",
+    "scope": "Concrete bounded omissions reconciled. Final harmonic/opening/closing reread completed using existing source reviews; ancient zero-volume interface, metadata and chapter acceptance remain pending."
+  },
+  "integration_review": {
+    "status": "accepted",
+    "date": "2026-09-29",
+    "reviewer_session": "session_fd894b3e2eb047718aa35f162d35c568",
+    "reviewed_production": "751329327f4f582797bda8e6cffe7cdf7531cc1d",
+    "draft_sha256": "0323fa500e2335d7e6aed1b05e9ea4396839f1db498788ea7aeccd0f8df90692",
+    "details": "inventory/reviews/ricci-flow-integration-v4.md",
+    "calibration_prerequisite": "Extinction accepted at 77936e5090144b8475576678b32f2e215c009544 before this decision.",
+    "main_agent_source_review": "Actual DeTurck spectral/parameter construction, uniqueness flux and continuation, curvature evolution and Shi induction, Hamilton-Ivey contact, Harnack block/localization and heat kernels, regular-fiber integral induction and concentration, stationary injectivity, expanding-cylinder reduction, harmonic coordinates and complete pointed compactness reviewed through substantive producers. Exact paths and source comparisons are recorded in the integration and harmonic-coordinate review documents.",
+    "main_agent_readability_review": "Whole expanded text read sequentially. Concrete corrections include positivity-radius order, pullback-orbit identification, divergence-flux uniqueness, numeric Harnack losses, domain-uniform kernel jets and all-time moments, strict radial coverage of marked limits, and actual compactness overlap/metric descent. No unresolved internal mathematical finding remains at this digest.",
+    "interfaces": "The bounded ancient zero-volume proof is reviewed with only bounded-slab Harnack as input; it then supplies the full slice-wise Harnack reduction. Harmonic coordinates supply the accepted annular local isothermal input. Later surgery consumers retain the absolute pinching clock and the exact derivative/compactness hypotheses.",
+    "historical_findings_resolution": "RF-HARMONIC-COORDINATES, RF-LOCAL-ANALYSIS, RF-HARNACK-BLOCK, RF-HARNACK-GEOMETRY, RF-ANCIENT-AVR, RF-COMPACTNESS-DETAIL and RF-PINCHING-CONTACT are resolved by the recorded source and sequential passes. Their historical next_action fields are superseded by this decision. RF-INTEGRATION remains a whole-book publication gate.",
+    "scope": "Chapter mathematical acceptance with explicit predecessor arguments. Remaining chapter acceptance, final source links and complete PDF/site inspection remain pending. Changed inputs or digest reopen affected review.",
+    "verification_policy": "Read-only formalization comparison against the production pin is empty. No Lean build or audit run under operator 2418; pinned evidence is reused. Text/link checks are separate from mathematical acceptance."
+  },
+  "verification": {
+    "lean": "No Lean or frozen contract changes. Reuse requested pinned baseline evidence in blueprint-publication/provenance.json, including recorded make check and recursive standard-axiom audit. This is not a claim that the changed live tree has been freshly audited here.",
+    "local_make_check": "An unnecessary full make check was started earlier in this session and interrupted (exit 130) after contract hashes passed; it is NOT a successful Lean build and supplies no new proof verification.",
+    "publication_check": {
+      "command": "PYTHONPATH=/home/axel/HyperGraph make -C blueprint-publication check",
+      "result": "failed",
+      "detail": "Historical check_blueprint scan passes; check_book fails at PoincareMT.m25NeckCapTopology: incorrect source line. Neither checker certifies this new draft or mathematical completeness."
+    },
+    "focused_draft_check": "Passed standalone pdflatex/BibTeX/pdflatex compilation using reference theorem environments and existing references/bibliography.bib after Hilbert, Harnack, injectivity, scalar-integral, cylinder and Chen expansions: 23 pages, no unresolved references/citations or layout warnings. Structured validation found 38 unique labels, 35 resolving internal references, 75 unique existing Lean source paths and seven resolvable bibliography keys. Expanded Hilbert, barrier, scalar-estimate, regular-fiber and angular-rank pages were visually inspected, as were earlier pinching/compactness pages. This validates rendering and metadata, not mathematical completeness; no shared files modified.",
+    "scope": "Only the two owned chapter/review files are to be published; temporary render wrapper and PDF remain outside the repository."
+  },
+  "review_status": {
+    "authoring": "Expanded source-traced chapter and proposed dependency allocation supplied for the approved drafting division. Authoring handoff does not certify publication completeness.",
+    "source_trace": "Author traced entry wrappers to actual constructions beyond the historical 97-item selection; this is not an exhaustive dependency-closure review.",
+    "mathematical_readability": "Whole draft sequentially reread and accepted at the integration_review digest after extinction calibration.",
+    "main_agent_acceptance": "accepted",
+    "main_agent_review_session": "session_33793f8835f2467fb9bce1d260cce39e",
+    "integration_session": "session_fd894b3e2eb047718aa35f162d35c568",
+    "publication_completeness": "not established"
+  }
+}

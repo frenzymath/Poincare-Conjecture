@@ -23,8 +23,8 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_TEMPLATE = ROOT / "blueprint" / "tools" / "blueprint_map_template.html"
-DEFAULT_OUTPUT = ROOT / "blueprint" / "blueprint-map-tab.html"
-DEFAULT_IMPORTANT = ROOT / "blueprint" / "important-statements.yaml"
+DEFAULT_OUTPUT = ROOT / "blueprint-map-tab.html"
+DEFAULT_IMPORTANT = ROOT / "blueprint" / "horizon-import" / "important-statements.yaml"
 
 
 def _header(path: Path) -> dict:
@@ -302,11 +302,15 @@ def _build_data(*, important_path: Path = DEFAULT_IMPORTANT) -> dict:
 
 
 def main() -> int:
+    global ROOT
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--root", type=Path, default=ROOT,
+                        help="Project root containing the synchronized hgraph")
     parser.add_argument("--template", type=Path, default=DEFAULT_TEMPLATE)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--important", type=Path, default=DEFAULT_IMPORTANT)
     args = parser.parse_args()
+    ROOT = args.root.resolve()
 
     template = args.template.read_text(encoding="utf-8")
     payload = json.dumps(

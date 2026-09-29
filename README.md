@@ -32,7 +32,9 @@ for the project's background and results.
 
 The primary [`PoincareConjecture`](PoincareConjecture/) project is organized by
 the mathematical dependency structure of the proof, independently of any one
-book's chapter order. Blueprints following individual books and articles are
+book's chapter order. Its [18-chapter Horizon blueprint](PoincareConjecture/blueprint/horizon-import/README.md)
+explains the implemented proof; the snapshot retains its outstanding editorial
+review status. Blueprints following individual books and articles are
 collected under [`references/`](references/) as blueprint-only reading material.
 
 ## Repository structure

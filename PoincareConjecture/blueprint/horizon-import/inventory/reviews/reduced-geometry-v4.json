@@ -1,0 +1,331 @@
+{
+  "chapter": "reduced-geometry",
+  "revision": "v4",
+  "mission": "blueprint-v4-reduced-geometry",
+  "source_revision": {
+    "outline_workspace": "00f2b127b0a948274c637cd9de0820d6d1add9d0",
+    "inspected_workspace": "e130ac11dab52f2020b596dd4fe0b8e9a44c3fd5",
+    "lean_source_pin": "5950ef93a2a8035ef518a2062a094da966df809b",
+    "outline": "blueprint-publication/reconstruction/outline-v4.md",
+    "notation": "blueprint-publication/reconstruction/shared-notation.md",
+    "roadmap_snapshot": "blueprint-publication/roadmap-snapshot.json",
+    "current_roadmap_read": "2912db8dd8d7db573079cd02f251b1276fda72db",
+    "current_library_read": "806006e5715414b4ceb6897d00ea279e8722042e",
+    "reference_mirror_read": "bb91a091f0b968f8bbe8d861e025a88d82b161be",
+    "reference_use": "Authoring macros only; no mathematical outline or argument taken from the mirror.",
+    "pin_comparison": "The current workspace includes a later production import. In the reduced geometry, generalized gauge/reduced geometry/noncollapse, and spacetime directories, the only differences from the Lean source pin are added Noncollapse/Uniform/Constant.lean and Spacetime/Rescaling/Geometry/IntervalCarrier.lean. Neither is used as the mathematical proof of this chapter's claims. Other source directories differ, so no unchanged whole-tree claim is made."
+  },
+  "sections": [
+    "backward action and minimizing curves",
+    "first and second variation",
+    "reduced length, regular locus and differential inequalities",
+    "reduced volume, weak transport, monotonicity and equality rigidity",
+    "generalized spacetime carrier, horizontal metric and gauge bridge",
+    "exact parabolic rescaling",
+    "generalized L-geometry and reduced-volume transport",
+    "compact and generalized noncollapsing"
+  ],
+  "lean_declarations": [
+    {"name": "PoincareMT.lGeodesicExistenceAndVariation", "path": "PoincareLib/Geometry/RicciFlow/ReducedGeometry/LGeometry/Existence.lean", "nodes": ["m08-l-geodesic-existence-and-first-second-variation"]},
+    {"name": "PoincareMT.LGeodesicTheory", "path": "PoincareLib/Geometry/RicciFlow/ReducedGeometry/LGeometry/Theory.lean", "nodes": ["m08-l-geodesic-existence-and-first-second-variation"]},
+    {"name": "PoincareMT.ReducedLengthDifferentialTheory", "path": "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedLength/Theory.lean", "nodes": ["m09-reduced-length-geometry-and-differential-inequalities"]},
+    {"name": "PoincareMT.reducedLengthDifferentialInequalities", "path": "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedLength/DifferentialInequalities.lean", "nodes": ["m09-reduced-length-geometry-and-differential-inequalities"]},
+    {"name": "PoincareMT.reducedVolumeMonotonicity", "path": "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedVolume/Monotonicity.lean", "nodes": ["m10-reduced-volume-monotonicity-and-equality-rigidity"]},
+    {"name": "PoincareMT.ReducedVolumeTheory", "path": "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedVolume/Theory.lean", "nodes": ["m10-reduced-volume-monotonicity-and-equality-rigidity"]},
+    {"name": "PoincareMT.GeneralizedFlowSpacetime", "path": "PoincareLib/Geometry/Spacetime/Basic.lean", "nodes": ["m11-generalized-flow-spacetime-carrier-and-horizontal-metric"]},
+    {"name": "PoincareMT.generalizedSpacetimeRealization", "path": "PoincareLib/Geometry/Spacetime/Realization.lean", "nodes": ["m11-generalized-flow-spacetime-carrier-and-horizontal-metric"]},
+    {"name": "PoincareMT.GeneralizedRicciGaugeTheory", "path": "PoincareLib/Geometry/RicciFlow/Generalized/Gauge/Geometry.lean", "nodes": ["m12-generalized-ricci-equation-and-ordinary-flow-gauge-bridge"]},
+    {"name": "PoincareMT.generalizedRicciGaugeGeometry", "path": "PoincareLib/Geometry/RicciFlow/Generalized/Gauge/Assembly.lean", "nodes": ["m12-generalized-ricci-equation-and-ordinary-flow-gauge-bridge"]},
+    {"name": "PoincareMT.ParabolicSpacetimeRescaling", "path": "PoincareLib/Geometry/Spacetime/Rescaling/Basic.lean", "nodes": ["m13-generalized-parabolic-rescaling-interface"]},
+    {"name": "PoincareMT.generalizedParabolicRescaling", "path": "PoincareLib/Geometry/RicciFlow/Rescaling/Generalized.lean", "nodes": ["m13-generalized-parabolic-rescaling-interface"]},
+    {"name": "PoincareMT.GeneralizedLGeometryTheory", "path": "PoincareLib/Geometry/RicciFlow/Generalized/ReducedGeometry/Theory.lean", "nodes": ["m14-generalized-l-geometry-and-reduced-volume-transport"]},
+    {"name": "PoincareMT.generalizedLGeometryTheory", "path": "PoincareLib/Geometry/RicciFlow/Generalized/ReducedGeometry/Proof.lean", "nodes": ["m14-generalized-l-geometry-and-reduced-volume-transport"]},
+    {"name": "PoincareMT.M14.positiveStartCorrectionStatement", "path": "PoincareLib/Geometry/RicciFlow/Generalized/ReducedGeometry/Regularity/PositiveStart/PositiveStartCorrection.lean", "nodes": ["m14-generalized-l-geometry-and-reduced-volume-transport"]},
+    {"name": "PoincareMT.noncollapsingGeneralizedAndCompact", "path": "PoincareLib/Geometry/RicciFlow/Generalized/Noncollapse/Proof.lean", "nodes": ["m15-generalized-and-compact-noncollapsing"]},
+    {"name": "PoincareMT.GeneralizedNoncollapsingConclusion", "path": "PoincareLib/Geometry/RicciFlow/Generalized/Noncollapse/Theory.lean", "nodes": ["m15-generalized-and-compact-noncollapsing"]}
+  ],
+  "definitions_and_hypotheses_checked": [
+    "backwardLLength uses sqrt(tau) (scalar curvature plus moving-metric speed squared) and BackwardTimePath retains time-window membership, endpoint regularity and interval integrability",
+    "reducedLength is the infimum divided by 2*sqrt(tau), with attainment only under complete bounded-curvature ordinary-flow hypotheses",
+    "reducedVolumeDensity is tau^(-n/2)*exp(-reducedLength), with zero value at nonpositive tau; reducedVolume uses calibrated slice measure and Euclidean value (4*pi)^(n/2)",
+    "regular branches require unique minimizing paths and bijective endpoint differential; stable generalized vectors also require a neighborhood of unique minimizers; singular complements are handled by null-slice and barrier statements",
+    "Harnack scalar time derivative holds the spatial point fixed while differentiating backward time; it is not the total derivative along the path",
+    "M09 local Hessian bound is one-sided; M10 rigidity is on [T-b,T] when equality occurs at b, not on the entire supplied slab",
+    "generalized carriers retain the exact topology, time range, boundary, normalized time vector, horizontal kernel, projection, bundle and positive metric",
+    "M13 uses Q>0 and shift a, target clock Q*(t-a), metric Q*g, vector chi/Q and exact transported interval",
+    "M14 constructs small-time coverage from whole-past-slab curvature, candidate confinement and finite-energy comparison; it is not an extra premise of generalizedLGeometryTheory",
+    "M15 chooses generalized kappa before the configuration and keeps the ordinary M08-M10 provider as an explicit compact-theorem input",
+    "M15 requires r^2 <= tau0 <= taubar, positive taubar/l0/V, compact closure of the actual terminal ball and curvature on the whole closed cylinder image",
+    "Compact M15 quantifies omega,T0 before the compact three-manifold and flow; initial full curvature <= 1, every initial unit ball volume >= omega, 0 < T <= T0 and r^2 <= t0 are explicit; connectedness is not required"
+  ],
+  "substantive_proof_mechanisms": [
+    "direct-method coercivity, metric equivalence, compactness and lower semicontinuity for minimizing paths",
+    "square-root-time ODE continuation and uniqueness at tau=0",
+    "endpoint momentum, moving-connection first variation, Jacobi index form and fixed-endpoint kernel",
+    "Sard/dense regular endpoint branches, Harnack integral identities, trace/index inequalities and smooth upper barriers",
+    "chartwise weak inequalities, null regular-locus complements, finite partition of unity, cutoff removal and Gaussian tails",
+    "regular weighted Jacobian comparison and Gaussian domination for reduced-volume monotonicity; radial-velocity cancellation gives one stationary Euclidean identification",
+    "attained spatial minimum and upper-support slope comparison for tau*min(ell), with its zero-time limit",
+    "literal horizontal kernel/projection decomposition, gauge-cylinder Levi-Civita uniqueness and ordinary Ricci PDE equivalence",
+    "constant-homothety connection/curvature/volume scaling and square-root tangent normalization",
+    "generalized stable-set transport, calibrated Jacobian cancellation and small-time confinement",
+    "positive-start endpoint identities retain C_a=(a/b)^(3/2)*(R(a)+|v(a)|^2), the original 2*sqrt(b) normalization and the shifted Harnack weight sqrt(s)*(sqrt(s)-sqrt(a))^2",
+    "terminal-W lower bound c=taubar^(-n/2)*exp(-l0)*V; small-vector contribution <=2*epsilon^(n/2), half-Gaussian tail <=epsilon^(n/2), fixed epsilon with 3*epsilon^(n/2)<c",
+    "compact early/late split at delta=1/(32*3^6), explicit short-tail l0, actual ordinary stable-source construction, half-radius volume factor 1/8 and minimum of the early/late constants"
+  ],
+  "external_source_locators": [
+    {"source": "MT2007", "locator": "Definitions 6.1-6.2, Lemmas 6.4, 6.8, 6.10, 6.12, Proposition 6.13, Proposition 6.33, Claim 6.34, pp. 106-122"},
+    {"source": "MT2007", "locator": "Theorem 6.50, Corollary 6.51, Claims 6.52-6.55, Proposition 6.56, pp. 133-139"},
+    {"source": "MT2007", "locator": "Corollary 6.67, Claims 6.68-6.69, Theorem 6.80, Proposition 6.81, pp. 139-146"},
+    {"source": "MT2007", "locator": "Theorem 7.13, Theorem 7.26, Proposition 7.27, pp. 156-167"},
+    {"source": "MT2007", "locator": "Definitions 3.34-3.40, pp. 59-61"},
+    {"source": "MT2007", "locator": "Definitions 6.1-6.25, Theorems 6.50-6.79, Definition 7.1, Proposition 7.5, Theorems 7.10-7.26, Theorem 8.1, pp. 105-171"},
+    {"source": "MT2007", "locator": "Theorem 8.1, Proposition 8.2, Lemmas 8.3-8.9, Theorem 8.10, pp. 169-177"}
+  ],
+  "cross_chapter_inputs": [
+    {"owner": "blueprint-v4-ricci-flow", "input": "RicciFlowCurvatureTheory: curvature-slot convention, backward scalar evolution, Ricci and metric evolution, bounded-curvature metric equivalence and short-time compact curvature doubling; precise contracts in the displayed calculations"}
+  ],
+  "cross_chapter_outputs": [
+    {"label": "thm:m10-reduced-volume", "claim": "unnormalized volume monotonicity, zero-time limit and equality rigidity only on [T-b,T]", "consumer": "blueprint-v4-ancient-models and blueprint-v4-global-surgery"},
+    {"label": "thm:m11-m12-gauge", "claim": "actual carrier, horizontal bundle and intrinsic/ordinary gauge equivalence", "consumer": "blueprint-v4-singular-limits and blueprint-v4-ancient-models"},
+    {"label": "thm:m13-rescaling", "claim": "same-carrier exact clock, metric, action and tangent scaling", "consumer": "blueprint-v4-singular-limits and noncollapse consumers"},
+    {"label": "thm:m14-generalized", "claim": "stable-domain transport, proved compact small-time coverage and conditional ordinary capture", "consumer": "blueprint-v4-ancient-models and blueprint-v4-singular-limits"},
+    {"label": "thm:m15-noncollapse", "claim": "generalized configuration estimate and separate compact dimension-three estimate", "consumer": "blueprint-v4-ancient-models, blueprint-v4-singular-limits and blueprint-v4-global-surgery"}
+  ],
+  "classification": {
+    "ordinary_background": ["Sard's theorem, chart partitions of unity, Arzela-Ascoli, standard ODE continuation, basic measure integration by parts"],
+    "implementation_helpers": ["finite index equivalences, bundle instance transport, calibrated-measure coercions, identity rewrites under carrier realization"],
+    "project_specific_substantial": ["moving-metric direct method, square-root endpoint regularization, Harnack/Jacobi formulas, weak reduced-volume transport, equality rigidity, literal horizontal carrier, exact rescaling, generalized stable-set transport, M15 contradiction estimates"],
+    "justification": "The helpers only identify already constructed objects. Every listed project-specific item changes the analytic conclusion or its hypotheses and is represented by source paths and a proof paragraph in the draft."
+  },
+  "helper_traceability": [
+    {"section_label": "thm:m10-reduced-volume", "paths": ["PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedVolume/Regularity/AlmostEverywhere/TerminalUniqueness.lean", "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedVolume/WeakInequality/Comparison/ChartWeakComparison.lean", "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedVolume/Regularity/AlmostEverywhere/GlobalRegularSlice.lean", "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedVolume/Rigidity/Exponential/OpenDenseInjectivity.lean"], "mechanism": "Differentiable contact determines terminal phase; semiconcavity controls the singular Hessian sign; maximal weight gives positive differential and an open map injective on an open dense source, hence globally injective."},
+    {"section_label": "thm:m15-noncollapse", "paths": ["PoincareLib/Geometry/RicciFlow/Generalized/Noncollapse/Confinement/Coordinates/TerminalLiftSpeed.lean", "PoincareLib/Geometry/RicciFlow/Generalized/Noncollapse/Confinement/Energy/PrefixDisplacement.lean", "PoincareLib/Geometry/RicciFlow/Generalized/Noncollapse/Confinement/Continuation/ActualConfinement.lean"], "mechanism": "Terminal-metric speed <= exp(2*n*s^2/r^2)*(initial speed+2*A*s^3/(3*r^3)), integrated 5r/12 margin and compact continuation inside the terminal half-ball."},
+    {"section_label": "prop:positive-start", "paths": ["PoincareLib/Geometry/RicciFlow/Generalized/ReducedGeometry/Measure/Regularity.lean", "PoincareLib/Geometry/RicciFlow/Generalized/ReducedGeometry/Regularity/PositiveStart/PositiveStartCorrection.lean"], "mechanism": "Smooth raw endpoint reduced length, supplied one-sided initial derivative, nonzero initial energy boundary term and shifted adapted index fields."},
+    {"section_label": "thm:m08-l-geodesics", "paths": ["PoincareLib/Geometry/RicciFlow/ReducedGeometry/LGeometry/Basic.lean", "PoincareLib/Geometry/RicciFlow/ReducedGeometry/LGeometry/Variation/FirstVariationIdentity.lean"], "mechanism": "Square-root action, paired Euler residual, endpoint momentum, expanded index density and connection-variation terms."},
+    {"section_label": "thm:m09-differential", "paths": ["PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedLength/Basic.lean", "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedLength/Tensor/HarnackIntegral.lean", "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedLength/Barrier/ComparisonBarrier.lean"], "mechanism": "Fixed-spatial-point scalar derivative, endpoint differentiation and normalized actual comparison-action upper barriers."},
+    {"section_label": "thm:m10-reduced-volume", "paths": ["PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedVolume/WeakInequality/WeakInequalities.lean", "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedVolume/Minimum/MinimumBarrierComparison.lean", "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedVolume/Comparison/VolumeComparison.lean", "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedVolume/Comparison/RestrictedVolume.lean", "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedVolume/Rigidity/EuclideanRigidity.lean"], "mechanism": "Chart weak inequalities; one-sided upper support for tau*min ell; integral of regular weighted Jacobian; dominated Gaussian limit; stationary rescaled exponential at b/2."},
+    {"section_label": "thm:m11-m12-gauge", "paths": ["PoincareLib/Geometry/Spacetime/Realization/Conclusion.lean", "PoincareLib/Geometry/RicciFlow/Generalized/Gauge/Geometry.lean"], "mechanism": "Literal carrier and horizontal kernel, leafwise connection uniqueness, intrinsic/ordinary equation equivalence and relatively open interval restriction."},
+    {"section_label": "thm:m13-rescaling", "paths": ["PoincareLib/Geometry/Spacetime/Rescaling/Basic.lean", "PoincareLib/Geometry/RicciFlow/Rescaling/Generalized.lean"], "mechanism": "Exact interval and carrier; clock Q*(t-a), chi/Q, Q*g; initial tangent divided by sqrt(Q); action and volume factors cancel."},
+    {"section_label": "thm:m14-generalized", "paths": ["PoincareLib/Geometry/RicciFlow/Generalized/ReducedGeometry/Exponential.lean", "PoincareLib/Geometry/RicciFlow/Generalized/ReducedGeometry/SmallTime/Stability/SmallTimeCoverage.lean", "PoincareLib/Geometry/RicciFlow/Generalized/ReducedGeometry/SmallTime/Stability/SmallTimeUniqueBranches.lean", "PoincareLib/Geometry/RicciFlow/Generalized/ReducedGeometry/Proof.lean"], "mechanism": "Neighborhood stability, actual survival domain, candidate action/speed bounds, confinement of all lower-action competitors, positive finite-energy comparison m/4-beta*tau, internally constructed small-time coverage."},
+    {"section_label": "thm:m15-noncollapse", "paths": ["PoincareLib/Geometry/RicciFlow/Generalized/Noncollapse/Uniform.lean", "PoincareLib/Geometry/RicciFlow/Generalized/Noncollapse/Uniform/Reduction.lean", "PoincareLib/Geometry/RicciFlow/Generalized/Noncollapse/Uniform/Assembly.lean", "PoincareLib/Geometry/RicciFlow/Generalized/Noncollapse/Cylinder/UpperBound.lean", "PoincareLib/Geometry/RicciFlow/Generalized/Noncollapse/ReducedVolume/SmallPart/SmallPart.lean", "PoincareLib/Geometry/RicciFlow/Generalized/Noncollapse/ReducedVolume/LargePart.lean", "PoincareLib/Geometry/RicciFlow/Generalized/Noncollapse/Compact/Data.lean", "PoincareLib/Geometry/RicciFlow/Generalized/Noncollapse/Compact/Estimates/LateReducedLength.lean", "PoincareLib/Geometry/RicciFlow/Generalized/Noncollapse/Compact/Estimates/LateVolume.lean", "PoincareLib/Geometry/RicciFlow/Generalized/Noncollapse/Compact/Assembly.lean"], "mechanism": "Exact configuration and uniform constants, lower bound c, two-part bound 2+1, compact short path and actual stable source, half-radius factor 1/8, component restriction."}
+  ],
+  "specializations_and_corrections": [
+    "Narrative specializes the generalized noncollapse argument to n>0. The source separately handles n=0 by calibrated counting volume of a nonempty ball; that branch is unused for the three-dimensional proof.",
+    "M14 small-time coverage is proved internally; the intermediate assembly accepting a coverage argument must not be mistaken for the public theorem's hypothesis.",
+    "Reduced-volume monotonicity follows actual weighted-Jacobian transport. The draft does not assert that its derivative is an integral of a squared Harnack defect.",
+    "Compact late volume uses r/2 and loses 1/8, not an unspecified radius loss.",
+    "The source retains exact connection-curvature slots and positive-start intervals. The displayed ordinary index formula follows LGeometry/Basic.lean; no novelty claim is made."
+  ],
+  "verification": {
+    "reused": "blueprint-publication/provenance.json: continuation_review and audit at Lean pin 5950ef93a2a8035ef518a2062a094da966df809b",
+    "fresh_make_check": "Frozen contracts passed; redundant full Lake build deliberately interrupted. No fresh build success claimed.",
+    "legacy_publication_check": "Passed using the existing sibling publication virtual environment; scope is the legacy assembly, not this new draft's mathematical coverage.",
+    "standalone_tex": "pdflatex/BibTeX with the actual shared macros and references/bibliography.bib, temporary wrapper outside the workspace; 14 pages, final log has no warnings, undefined citations/references or overfull boxes. No shared assembly file modified.",
+    "source_file_comparison": "Every declaration and helper path listed in this JSON exists and matches its bytes at the Lean pin; this is provenance evidence, not a completeness certificate.",
+    "render_scope": "Standalone typesetting is an author check only. Final integrated PDF/site and independent visual/readability inspection belong to blueprint-v4-integration.",
+    "owned_files_only": true,
+    "mathematical_completeness": "Not certified by inventory equality, TeX compilation, source hashes or Lean verification."
+  },
+  "unresolved_issues": [
+    {"severity": "integration", "issue": "Ordinary capture explicitly takes M08/M09/M10 providers. The chapter explains their ordinary construction; final integration must verify the actual downstream instantiation rather than call this a missing M14 theorem.", "proposed_owner": "blueprint-v4-integration", "consumer": "compact noncollapsing and ordinary capture"},
+    {"severity": "consumer-contract", "issue": "Every generalized application must produce stable source W, its normalized action bound, terminal image measure >= V and actual tested cylinder, uniformly in the tested point and scale. The compact branch constructs these; arbitrary generalized applications are not automatic.", "proposed_owner": "blueprint-v4-ancient-models and blueprint-v4-singular-limits for their respective applications", "consumer": "noncollapsingGeneralizedAndCompact"},
+    {"severity": "review", "issue": "Independent main-agent source/readability review remains required, particularly for the cut-locus null-set proof, semiconcave weak comparison, global equality exponential extension and small-vector cylinder confinement. These arguments are now developed in the draft; their full mathematical coverage has not been independently accepted.", "proposed_owner": "blueprint-v4-integration / coordinating main agent", "consumer": "chapter acceptance", "next_action": "Compare the proof paragraphs with the helper anchors, verify coefficient/slot conventions and cross-chapter inputs, and accept only after source and continuous mathematical readability reviews pass."},
+    {"severity": "integration", "issue": "Bibliography entries for the generalized gauge and M15 source mappings are present in references/bibliography.bib but shared publication refs are coordinator-owned; no shared bibliography file was edited.", "proposed_owner": "publication coordinator", "consumer": "final publication build"}
+  ],
+  "proposed_bibliography_additions": [
+    "MapherLean2026ReducedGeometry",
+    "MapherLean2026ReducedLength",
+    "MapherLean2026GeneralizedGauge",
+    "MapherLean2026Rescaling",
+    "MapherLean2026GeneralizedReducedGeometry",
+    "MapherLean2026Noncollapse"
+  ],
+  "review_status": {
+    "source_review": "pending-main-agent-review",
+    "readability_review": "pending-main-agent-review",
+    "lean_claim": "No Lean or contract files changed. Coordinator verification at the pinned revision is retained. A redundant fresh make check passed 12 frozen contracts and was interrupted during lake build after 24912/37091 jobs; it is not a fresh successful build.",
+    "verdict": "pending",
+    "reason": "The chapter has exact definitions, source-traced proof mechanisms, cross-chapter contracts and explicit gaps, but revision-4 acceptance requires independent main-agent source/readability review."
+  },
+  "integration_review": {
+    "status": "accepted",
+    "date": "2026-09-29",
+    "reviewer_session": "session_fd894b3e2eb047718aa35f162d35c568",
+    "reviewed_production": "751329327f4f582797bda8e6cffe7cdf7531cc1d",
+    "draft_sha256": "0ec11f86d8bb7fac9e859f25304eb395f9e187bcc7dd77ee68bee39289bb3a2e",
+    "details": "inventory/reviews/reduced-geometry-integration-v4.md",
+    "calibration_prerequisite": "Extinction accepted at 77936e5090144b8475576678b32f2e215c009544 before this decision.",
+    "source_review": "Reused the independent six-finding source review below and checked corrected actual producers for the zero-residual comparison family, semiconcave weighted weak comparison, whole-slab small-time stability and compact initial-ball cylinder derivative estimate. The whole draft's variational, rigidity, gauge, rescaling and noncollapse arguments were read against these exact interfaces.",
+    "readability_review": "Main reviewer read all 971 lines continuously. No unresolved internal mathematical finding remains. The same-carrier identities, generalized stable-image restriction, comparison coefficients and compact capture conditions are explicit.",
+    "interfaces": "Accepted Ricci-flow supplies the local derivative theorem with its compact initial-ball premise, discharged in the cylinder paragraph. Ancient-models at 0fa8edc89baec2d0a30b496999ebf57017c1adff76fc708a41c5da9c6b6b0670 preserves finite-past-slab bounds, interior-time minima, the common slice-null regular locus, signed weak inequalities and exact rescaling. Arbitrary generalized noncollapse consumers must construct the stated stable W configuration with uniform constants; this is not a consequence of M14 alone.",
+    "historical_findings_resolution": "RG-CUT-LOCUS, RG-WEAK-COMPARISON, RG-BARRIER-AND-COEFFICIENTS, RG-EQUALITY-EXTENSION, RG-GAUGE-AND-TRANSPORT and RG-CYLINDER-CONFINEMENT are resolved. Earlier pending author statuses remain historical and are superseded by this decision.",
+    "scope": "Chapter mathematical acceptance with explicit predecessor results. Whole-book consumer reconciliation, integrated source links and complete PDF/site inspection remain pending. Changed inputs or digest reopen affected review.",
+    "verification_policy": "No Lean build, audit or comparator run. Reused pinned production evidence under operator 2418. Publication consistency is separate from mathematical acceptance."
+  },
+  "independent_review": {
+    "date": "2026-09-29",
+    "reviewer_session": "session_da22739b84bb4bbba72475f1c2fb8962",
+    "review_kind": "Independent source and continuous mathematical readability review of the earlier author's draft, with local corrections",
+    "verdict": "passed-relative-to-explicit-predecessors; ready-for-integration-decision",
+    "main_agent_acceptance": "Not assigned by this record; blueprint-v4-integration retains final acceptance.",
+    "historical_evidence": "All preceding fields are preserved author evidence at their original pins, including historical check attempts and pending statuses. The findings and current locators below supersede the corresponding author descriptions; they do not retroactively certify those earlier checks.",
+    "draft_sha256": "0ec11f86d8bb7fac9e859f25304eb395f9e187bcc7dd77ee68bee39289bb3a2e",
+    "source_pins": {
+      "workspace_read": "c214c7c488d60ac62fd38aaff6a6fa97c725a829",
+      "reviewed_production": "751329327f4f582797bda8e6cffe7cdf7531cc1d",
+      "library_read": "806006e5715414b4ceb6897d00ea279e8722042e",
+      "roadmap_read": "2912db8dd8d7db573079cd02f251b1276fda72db",
+      "reference_pin_reused": "bb91a091f0b968f8bbe8d861e025a88d82b161be",
+      "reference_scope": "Historical authoring conventions only; mathematical comparison uses the local Clay edition and current workspace producers.",
+      "comparison": "PoincareLib, frozen contracts, lakefile.lean, lake-manifest.json and lean-toolchain have no difference between the reviewed production pin and the workspace read. Current Library is a historical smaller repository; it is not substituted for the current workspace producers. Current Roadmap M10/M15 statements were read as interface context."
+    },
+    "review_basis": {
+      "finite_issue_list": "blueprint-publication/reconstruction/outstanding-issues-v4.md",
+      "issue_list_revision": "c214c7c488d60ac62fd38aaff6a6fa97c725a829",
+      "issue_list_sha256": "36d4776c107ec6c815dfa77f55139707cc017ed0a4c1548ce3b4ff2df69b1fe3",
+      "calibration": "blueprint-publication/reconstruction/calibration-review.md and inventory/reviews/extinction-v4.json",
+      "calibration_draft_sha256": "96a09b394f6469e4f019a0da2e0720f8c1a147e536598f12c8dff8a2b7aea086",
+      "standard": "Judge whether a graduate reader can follow the actual implication with its hypotheses, using exact predecessor contracts and precise standard sources. No count, inventory equality or successful render is a mathematical acceptance criterion.",
+      "literature_read": "references/ricci-flow/morgan-tian/published-edition/morgan-tian-clay-edition.pdf, printed pp. 59-61, 106-112, 120-146, 151-177; page-specific comparisons concentrate on the corrected arguments listed below."
+    },
+    "findings": [
+      {
+        "id": "RG-CUT-LOCUS",
+        "status": "resolved",
+        "location": "thm:m10-reduced-volume, regular-locus paragraph",
+        "finding": "The null-set argument needed the implication from a unique noncritical minimizer to a neighborhood of unique minimizing branches, and the outgoing regularity statement needed one open spacetime locus with null complements on every slice.",
+        "resolution": "Rademacher and Sard give differentiable noncritical endpoints. First variation fixes every minimizing terminal covector and phase-ODE uniqueness fixes the path. Bounded initial lifts and a convergent subsequence contradict failure of inverse-branch stability. Positive smooth volume densities transfer chart null sets to the selected slice measure. The theorem now exports spacetime local Lipschitz regularity and the common regular locus explicitly.",
+        "sources": [
+          "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedVolume/Regularity/AlmostEverywhere/TerminalUniqueness.lean",
+          "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedVolume/Regularity/AlmostEverywhere/RegularImage.lean",
+          "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedVolume/Regularity/AlmostEverywhere/GlobalRegularSlice.lean",
+          "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedVolume/Regularity/Lipschitz/SpacetimeLipschitz.lean"
+        ],
+        "standard_background": "Morgan-Tian, Claim 7.22 and Corollary 7.24, pp. 161-162, within Theorem 7.13, pp. 156-164. Sard applies to the smooth full exponential; Rademacher applies to Lipschitz chart representatives. Neither is used on a merely arbitrary measurable function."
+      },
+      {
+        "id": "RG-WEAK-COMPARISON",
+        "status": "resolved",
+        "location": "eq:reduced-weak-inequalities and its proof",
+        "finding": "An almost-everywhere Laplacian bound does not by itself give the claimed distributional inequality. The earlier prose named semiconcavity but omitted the weighted-operator limit that justifies this step.",
+        "resolution": "The revised proof accounts for the Christoffel gradient term, subtracts a quadratic to obtain concavity, and explains convolution with a uniform upper Hessian and gradient bound. For rho*Delta=div(rho*B^{-1}d), this yields a common upper bound on Delta of the smooth approximations. Second jets converge on the full-measure regular locus; upper Fatou plus the fixed smooth-test Green identity transfers the upper bound, followed by a finite partition of unity. Both signs are checked using 2*partial_tau(l)+|grad l|^2-R+l/tau=0. Slice measures are explicit in the display.",
+        "sources": [
+          "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedVolume/WeakInequality/Comparison/ChartWeakComparison.lean",
+          "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedVolume/WeakInequality/Comparison/SemiconcaveWeakComparison.lean",
+          "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedVolume/WeakInequality/WeakInequalities.lean"
+        ],
+        "standard_background": "Morgan-Tian, Theorem 7.13, pp. 156-164. The proof develops the singular-Hessian and smoothing step rather than treating integration by parts across the cut locus as automatic."
+      },
+      {
+        "id": "RG-BARRIER-AND-COEFFICIENTS",
+        "status": "resolved",
+        "location": "thm:m08-l-geodesics, thm:m09-differential and prop:positive-start",
+        "finding": "The old upper-barrier paragraph described a short terminal joining construction, which was not the current producer. Several theorem-type and page locators were also incorrect.",
+        "resolution": "The proof now constructs one smooth comparison family realizing Y_i(s)=(s/c)P_i(s), with D_s P_i=-2s Ric# P_i. Its endpoint-time map is invertible even at a critical minimizing exponential. The normalized comparison action has exact zero residual at contact. The index-form defect argument explains tensor equality; the Jacobi kernel is explicitly endpoint-zero. Checked square-root coefficients, the four curvature slots, the fixed-spatial-point time derivative in H, all K cancellations, and the positive-start C_a and shifted Harnack weight. The original 2*sqrt(b) normalization is retained.",
+        "sources": [
+          "PoincareLib/Geometry/RicciFlow/ReducedGeometry/LGeometry/Basic.lean",
+          "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedLength/Barrier/ZeroResidualBarrier.lean",
+          "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedLength/Barrier/AdaptedComparisonFamily.lean",
+          "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedLength/Barrier/ComparisonLaplacian.lean",
+          "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedLength/Barrier/SpacetimeContact.lean",
+          "PoincareLib/Geometry/RicciFlow/Generalized/ReducedGeometry/Regularity/PositiveStart/PositiveStartCorrection.lean",
+          "PoincareLib/Geometry/RicciFlow/Generalized/ReducedGeometry/Regularity/PositiveStart/PositiveStartLaplacian.lean"
+        ],
+        "current_path_correction": "The historical helper anchor ReducedLength/Barrier/ComparisonBarrier.lean is not a current path. The four Barrier files above supply the current construction; the historical author list remains preserved at its original pin.",
+        "standard_background": "Morgan-Tian, Propositions 6.37 and 6.43, pp. 123-129; Lemma 6.49 and Theorem 6.50, p. 131; Corollary 6.51, p. 132; Propositions 6.56 and 6.59, pp. 133-139; Proposition 7.8, pp. 152-154. Items 6.52-6.55 are not a series of Claims. The positive-start display follows the current source's shifted weight, not an unqualified transcription of the book's K notation."
+      },
+      {
+        "id": "RG-EQUALITY-EXTENSION",
+        "status": "resolved",
+        "location": "thm:m10-reduced-volume, monotonicity and equality paragraphs",
+        "finding": "The proof did not distinguish the globally continuous raw action weight from its regular-domain indicator, and it jumped from equality to the metric pairing and stationary identification.",
+        "resolution": "A strict-subslab phase bound explains the full smooth exponential family. Maximal integrated weight gives a conull regular source; continuity of the raw action weight gives an everywhere positive differential. Open-dense injectivity and existence of minimizing lifts give a global diffeomorphism. The logarithmic weight derivative is exactly minus the sharp Laplacian defect. Equality yields Ric+Hess(l)=g/(2s); the pairing ODE a'=a/s with its initial coefficient gives pullback metric 4s*g(T). Its determinant and weight equality give l=|Z|^2, and first variation gives the radial velocity which cancels in the rescaled exponential. Continuity includes both slab endpoints. The small-time indicator limit is linked to the later ODE/action comparison, which does not assume a volume theorem.",
+        "sources": [
+          "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedLength/Exponential/ExponentialFamily.lean",
+          "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedLength/ODE/ForwardRegularizedContinuation.lean",
+          "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedVolume/Rigidity/Exponential/OpenDenseInjectivity.lean",
+          "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedVolume/Rigidity/Equality/RayEquality.lean",
+          "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedVolume/Rigidity/Equality/RayTensorEquality.lean",
+          "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedVolume/Rigidity/Equality/GramEquality.lean",
+          "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedVolume/Rigidity/Equality/ActionEquality.lean",
+          "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedVolume/Rigidity/Equality/RadialVelocity.lean",
+          "PoincareLib/Geometry/RicciFlow/ReducedGeometry/ReducedVolume/Rigidity/EuclideanRigidity.lean"
+        ],
+        "source_comparison": "Morgan-Tian, Theorem 6.80 and Proposition 6.81, pp. 145-146; Theorem 7.26, p. 165; Proposition 7.27, pp. 166-167. The last proposition uses a selfsimilar-flow/curvature argument. The chapter instead develops the implemented exponential-pairing and stationary-map argument; no novelty claim is made."
+      },
+      {
+        "id": "RG-GAUGE-AND-TRANSPORT",
+        "status": "resolved",
+        "location": "thm:m11-m12-gauge through thm:m14-generalized",
+        "finding": "The transition to generalized path calculus did not explicitly require the intrinsic Ricci equation, and the generalized zero-time volume statement did not clearly specify the stable image being integrated.",
+        "resolution": "Added the intrinsic Ricci equation together with the supplied gauge and leafwise data. The carrier, selected horizontal metric, ordinary pullback metric and clock are the same throughout. Defined generalized volume on the image of a measurable stable source and restricted the zero-time assertion to the full stable image. Whole-past-slab curvature remains necessary in the small-time competitor-confinement argument. Ordinary full-slice capture retains its ordinary M08-M10 inputs; no generalized full-slice null-complement assertion was added.",
+        "sources": [
+          "PoincareLib/Geometry/RicciFlow/Generalized/Gauge/Geometry.lean",
+          "PoincareLib/Geometry/RicciFlow/Generalized/ReducedGeometry/Basic.lean",
+          "PoincareLib/Geometry/RicciFlow/Generalized/ReducedGeometry/Measure/Regularity.lean",
+          "PoincareLib/Geometry/RicciFlow/Generalized/ReducedGeometry/Measure/Analytic.lean",
+          "PoincareLib/Geometry/RicciFlow/Generalized/ReducedGeometry/SmallTime/Stability/SmallTimeCoverage.lean"
+        ],
+        "standard_background": "Morgan-Tian, Definitions 3.34-3.36 and Remark 3.37, pp. 59-60; Definition 3.40, p. 61; Proposition 7.5, pp. 151-152. Parabolic action scaling is sqrt(Q), reduced length is unchanged, and the density and volume factors cancel; Euclidean volume remains (4*pi)^(n/2)."
+      },
+      {
+        "id": "RG-CYLINDER-CONFINEMENT",
+        "status": "resolved",
+        "location": "thm:m15-noncollapse, small-vector estimate",
+        "finding": "The existing speed and strict-displacement argument used a dimension-only scalar-gradient bound without explaining how the compactness hypothesis of the local derivative theorem is supplied on the actual cylinder.",
+        "resolution": "The rescaled unit cylinder has a compact initial-metric ball of radius exp(-n)/8 about every terminal half-ball point, by metric comparison and the terminal interior buffer. The ordinary local derivative estimate on the last half-cylinder gives A/r^3 after scaling back. The square-root speed bound integrates to 5r/12<r/2, and compact inverse-chart continuation prevents an earlier maximal lift endpoint. The source cutoff |Z|^2<=1/(64*epsilon), scalar lower bound, measure distortion, 2+1 volume split and fixed choice 3*epsilon^(n/2)<c retain their coefficients. No completeness of the generalized slice is inferred.",
+        "sources": [
+          "PoincareLib/Geometry/RicciFlow/Generalized/Noncollapse/Cylinder/LocalEstimates.lean",
+          "PoincareLib/Geometry/RicciFlow/Generalized/Noncollapse/Confinement/Coordinates/TerminalLiftSpeed.lean",
+          "PoincareLib/Geometry/RicciFlow/Generalized/Noncollapse/Confinement/Energy/PrefixDisplacement.lean",
+          "PoincareLib/Geometry/RicciFlow/Generalized/Noncollapse/Confinement/Continuation/ActualConfinement.lean"
+        ],
+        "supporting_derivations": [
+          "references/ricci-flow/mapher/noncollapse/derivations/2026-09-20-scalar-gradient-transport.md",
+          "references/ricci-flow/mapher/noncollapse/derivations/2026-09-21-terminal-lift-speed.md"
+        ],
+        "standard_background": "Morgan-Tian, Proposition 8.2, pp. 170-171; Lemma 8.3, p. 171; Corollary 8.4 and Claim 8.5, p. 172; Claims 8.6-8.8, pp. 173-174; Lemma 8.9, pp. 175-176. These are not all Lemmas. The compactness buffer is the source's corrected application of the ordinary local estimate."
+      }
+    ],
+    "readability_review": {
+      "status": "passed-relative-to-explicit-predecessors",
+      "method": "Read the corrected chapter continuously from action/admissibility through the final limitations, separately from comparing source bodies. Checked each substantial implication against the extinction calibration rather than using declaration or proof-environment counts.",
+      "result": "A graduate reader can follow the direct method, square-root variational calculus, barrier comparison, null-set and weak argument, weighted-Jacobian monotonicity, fixed-map rigidity, same-carrier transport and noncollapse contradiction without opening Lean. The regular-locus, raw-weight, singular-Hessian and derivative-buffer steps are now mathematical arguments. Routine ODE, Sard, Rademacher and integration facts have their applicability stated and source locators supplied. No local unresolved mathematical omission was found in this finite pass.",
+      "scope": "Relative to the explicitly stated curvature, local derivative and initial ball-comparison inputs. This is not final book acceptance or an independent reproof of every predecessor."
+    },
+    "cross_chapter_review": {
+      "consumer_revision": "33287ed90953c6093e97892f9e86ff09e28d6d62",
+      "ancient_models_sha256": "0fa8edc89baec2d0a30b496999ebf57017c1adff76fc708a41c5da9c6b6b0670",
+      "ricci_flow_sha256": "0323fa500e2335d7e6aed1b05e9ea4396839f1db498788ea7aeccd0f8df90692",
+      "ancient_models_checked_locations": ["thm:ancient-structure", "prop:ancient-sequence", "thm:ancient-asymptotic", "rem:ancient-energy-interface"],
+      "result": "No mismatch found in these outgoing interfaces. Ancient-models produces a uniform curvature bound on each finite past slab and takes tau_max=tau_i+1 to use interior-time reduced-length minima. Its Harnack input gives K>=-L, hence |grad l|^2+R<=3l/tau and partial_tau(l)>=R-2l/tau. The first variation gives its Hamilton-Jacobi identity. The common regular spacetime locus is slice-null, so its Fubini arguments use the actual weak derivatives; the signed flux bound follows from Delta(l)<=-partial_tau(l)+(n/2-l)/tau. Exact rescaling cancels density and measure factors. Its limiting potential is not asserted to be reduced length from an unconstructed limiting basepoint. Its own argument owns the passage to weak heat equality and regularity.",
+      "remaining_inputs": [
+        {
+          "owner": "blueprint-v4-integration",
+          "owner_session": "session_fd894b3e2eb047718aa35f162d35c568",
+          "input": "Retain accepted Ricci-flow scalar/metric evolution, thm:rf-shi with its compact initial-ball hypothesis, the compact initial-curvature doubling estimate and relative ball-volume comparison. The new cylinder paragraph explicitly discharges the local derivative hypothesis; integration should preserve that reference and the existing curvature-slot convention.",
+          "status": "exact predecessor contracts checked; final shared cross-chapter acceptance belongs to integration"
+        },
+        {
+          "owner": "blueprint-v4-integration",
+          "consumer_owners": ["blueprint-v4-singular-limits", "blueprint-v4-global-surgery"],
+          "input": "For each arbitrary generalized use of M15, retain its actual cylinder with compact terminal ball, closed-cylinder curvature bound, one stable family/source W, action bound l0, image volume >=V, r^2<=tau0<=taubar and constants uniform over the tested region. M14 alone supplies neither full-slice capture nor this configuration. The compact ordinary case constructs its own configuration in the chapter.",
+          "status": "explicit consumer obligation, not a missing local proof or automatic theorem of generalized transport"
+        },
+        {
+          "owner": "blueprint-v4-integration",
+          "input": "Record acceptance with this draft digest, reconcile shared bibliography/source metadata, and perform the final integrated PDF/site and visual checks. The historical author pending-review finding is discharged locally by this appended record; only the coordinator can assign final acceptance.",
+          "status": "integration-owned"
+        }
+      ]
+    },
+    "verification_this_session": {
+      "publication_consistency": "python blueprint-publication/tools/check_v4.py --output blueprint-publication/build/reduced-geometry-review-check.json: passed, no consistency issues. This checks actual text/links only; it does not accept pending chapters or certify mathematical completeness.",
+      "whitespace": "git diff --check passed before recording the review; repeated after JSON validation at publication.",
+      "lean_verification": "No Lean build, make check, contract audit or toolchain/dependency change was run. Reused production verification in references/ricci-flow/mapher/production-cleanup/verification.json at the pinned production commit, as directed.",
+      "render": "No new rendering claim. The earlier standalone typesetting evidence is historical; final integrated rendering remains with integration.",
+      "ownership": "Only drafts/reduced-geometry.tex and inventory/reviews/reduced-geometry-v4.json are published. The consistency tool's ignored build output is not a shared tracked artifact."
+    }
+  }
+}

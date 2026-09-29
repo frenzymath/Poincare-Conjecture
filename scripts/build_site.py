@@ -5,6 +5,7 @@ import argparse
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
 
 import yaml
@@ -55,6 +56,12 @@ def main():
         manifest = stage_workspace(repo, stage)
         for project in manifest['projects']:
             subprocess.run(['hgraph', '--root', str(stage / project['root']), 'sync'], check=True)
+        primary = stage / 'PoincareConjecture'
+        subprocess.run([
+            sys.executable, str(repo / 'PoincareConjecture/blueprint/tools/build_blueprint_map.py'),
+            '--root', str(primary), '--output', str(primary / 'blueprint-map-tab.html'),
+            '--important', str(primary / 'blueprint/horizon-import/important-statements.yaml'),
+        ], check=True)
         subprocess.run(['hgraph', 'site', '--out', str(output / 'index.html')], cwd=stage, check=True)
     preserve_legacy_routes(repo, output)
     subprocess.run(['npm', 'ci', '--prefix', str(repo / 'site/proof-map')], check=True)

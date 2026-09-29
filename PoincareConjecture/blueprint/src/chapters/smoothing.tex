@@ -1,0 +1,658 @@
+\chapter{A Compatible Smooth Structure and the Topological Endpoint}
+\label{ch:smoothing}
+
+The Ricci-flow argument is formulated for smooth manifolds.  The original
+Poincare question is topological.  The bridge between these statements is a
+construction: a closed topological three-manifold is given a smooth model,
+with one specified homeomorphism relating the two carriers.  This chapter
+follows the construction used by the formalization.  It is useful to keep
+the logical order visible.  Hamilton's relative handle argument constructs
+the compatible PL charts; Cairns's construction smooths a finite
+triangulation.  Neither step assumes simple connectedness.  Only after the
+model has been made smooth do we transport simple connectedness and invoke
+the closed-manifold topology package used by the smooth endpoint.
+
+Throughout, $M$ is a topological manifold with a Hausdorff
+topology, a second-countable topology, compactness, and a (possibly merely
+topological) charted space over $E_3=\mathbb R^3$.  Connectedness and
+nonemptiness are hypotheses of the smoothing input.  A smooth model is a
+manifold $N$ with its own topology and $C^\infty$ atlas;
+it is not an assertion that the initially supplied charts on $M$
+are smooth.  We write $h:M\cong N$ for the chosen homeomorphism.
+
+\section{A compatible smoothing}
+\label{sec:smoothing-contract}
+
+\begin{definition}[Compatible smooth model]
+\label{def:smoothing-bridge}
+For a connected nonempty topological manifold $M$, a compatible smooth
+model consists of
+\begin{enumerate}
+\item a manifold $N$ with a topology and an atlas over $E_3$;
+\item a $C^\infty$ manifold structure on $N$;
+\item a Hausdorff, second-countable and compact topology on $N$;
+\item connectedness of $N$; and
+\item a specified homeomorphism $h:M\cong N$.
+\end{enumerate}
+The smooth atlas must induce this same topology on $N$.
+\end{definition}
+
+The homeomorphism is part of the data because all later transport must use
+the same map.  In particular, replacing $h$ by an existentially chosen
+homeomorphism after applying the smooth theorem would lose the relation
+between the transported topological hypotheses and the endpoint map.
+
+\begin{theorem}[Hamilton--Cairns bridge]
+\label{thm:m76}
+For every compact, Hausdorff, second-countable, charted topological
+three-manifold that is nonempty and connected, there is a compatible
+smooth model. The proof is independent of simple connectedness.
+\lean{PoincareMT.m76CompatibleSmoothing}
+\lean{PoincareMT.M76.smoothingConclusion_of_lower_handle_cases}
+\source{Hamilton1976,Cairns1940}
+\dcref{Hamilton 1976, Theorem 2(1), pp.~64,69; Cairns 1940, Theorem III, p.~797 and Section 11, p.~807}
+\end{theorem}
+
+The rest of the chapter proves the content hidden behind this theorem.  The
+four chart-handle indices are represented by finite subsets
+$J\subseteq\{0,1,2\}$.  A straightening for $J$ is required for every
+coordinate chart $e:E_3\dashrightarrow E_3$ whose source contains the
+coordinate cylinder
+\[
+ C_J=\{x\in E_3: |x_i|\leq 1\text{ for }i\in J\}.
+\]
+For every open neighborhood $N$ of the frontier of $C_J$, and every
+map $e$ that is locally piecewise affine on $\operatorname{dom}(e)\cap N$, the conclusion
+is a homeomorphism $A:E_3\cong E_3$ for which $e\circ A$ is finite
+piecewise affine on the closed unit ball, together with a homotopy from the
+identity to $A$.
+Every homotopy stage is a homeomorphism, is the identity outside the
+radius-two ball, and fixes $C_J^c\cup\partial C_J$ pointwise.
+The correction is supported in the prescribed cylinder.
+
+\section{The protected end and Wall cores}
+\label{sec:wall-core}
+
+The lower-index argument works in a noncompact PL domain cut out of a chart.
+The end condition is stronger and more relative than saying that one
+complement is simply connected.
+
+\begin{definition}[One simply connected end]
+\label{def:one-end}
+For a topological space $Y$, write $Y$ has one simply connected end when
+for every compact $C\subset Y$ there is a compact $D\subset Y$ such that
+\[
+C\subset\operatorname{int}D,\qquad D^c\text{ is connected},
+\]
+with $D^c$ nonempty, and every path $p:[0,1]\to Y$ with $p(0)=p(1)=x$
+and image disjoint from $D$ admits a based nullhomotopy avoiding $C$.
+The homotopy is not
+required to avoid $D$; the protected set is the smaller $C$.
+\lean{PoincareMT.M76.HasOneSimplyConnectedEnd}
+\source{Hamilton1976}
+\dcref{Hamilton Lemma 2, p.~65}
+\end{definition}
+
+Let $e=(e_i)$ be an ambient PL atlas on a Hausdorff paracompact space $X$.
+A PL domain has the compatible half-space charts of
+Definition~\ref{def:compact-pl-domain}; connectedness and compact frontier
+are additional hypotheses. Wall's relative conclusion is the
+following exact statement.
+
+\begin{proposition}[Protected Wall compact core]
+\label{prop:wall-core}
+Assume $R$ is a connected PL domain, $\partial R$ is compact, $R$ has one
+simply connected end, and $A\subset R$ is compact.  There are compact
+$K\subset R$ and a set $S\subset\operatorname{int}R$ such that
+\begin{align*}
+ &K\text{ is a PL domain},\quad S\text{ is a nonempty chartwise PL sphere},\\
+ &S\cap\partial R=\varnothing,\qquad
+   \partial K=\partial R\cup S,\\
+ &A\cup\partial R\subset\operatorname{int}_R K,\qquad
+   \partial_R K=S.
+\end{align*}
+The last equality is a relative-frontier equality in the subtype $R$.
+No connectedness of $K$ is part of the exported predicate, although the
+construction below produces a connected core.
+\lean{PoincareMT.M76.hasWallCompactCore}
+\lean{PoincareMT.M76.HasWallCompactCore}
+\source{Hamilton1976}
+\dcref{Hamilton Lemma 2, pp.~65--66}
+\end{proposition}
+
+\begin{proof}
+Apply Theorem~\ref{thm:protected-wall-core}. Its minimal-complexity
+compression and marked-disk contradiction first give a finite spherical
+frontier. Filling the bounded complementary components leaves one connected
+exterior; a two-foot ball along an exterior arc joins two frontier spheres.
+Refilling the bounded components preserves the protected relative interior
+and decreases the sphere count. These are precisely the ambient and
+relative frontier identities retained by that theorem.
+\end{proof}
+
+\section{Marked Dehn surfaces and protected prime replacement}
+\label{sec:dehn-prime}
+
+Wall cores alone do not straighten a lattice handle.  The lower-index
+models have transverse lattice $L$ and a protected compact region.  A
+generalized Dehn input supplies, for every relevant chart, marked proper
+annuli and disks whose boundaries are fixed on the protected collar.  The
+boundary parametrizations are part of the objects: an unmarked embedded
+surface is insufficient because the next projection must agree on the old
+frontier.
+
+\begin{definition}[Generalized Dehn input]
+\label{def:generalized-dehn}
+The generalized Dehn input is the conjunction of
+\begin{enumerate}
+\item the protected index-one annulus, with both prescribed rim maps;
+\item the protected index-two pair of simultaneously disjoint disks,
+with their prescribed negative and positive rim maps; and
+\item the standard proper-disk theorem for every compact standard PL
+domain, prescribed finite PL boundary circle and continuous filling.
+\end{enumerate}
+The first two clauses quantify over the supplied full discrete lattice
+and atlas, with the original chart and retained-block hypotheses of
+Section~\ref{sec:dehn-protected-disks}.  Their surfaces avoid the
+protected block, are proper against the whole old frontier, and come
+with the enclosing region formed from those same surfaces and the full
+attaching patch.  The third clause preserves every value of the
+prescribed circle and keeps the disk interior off the whole domain
+frontier, as in Theorem~\ref{thm:dehn-standard-proper}.
+\lean{PoincareMT.M76.HasHamiltonGeneralizedDehnInput}
+\lean{PoincareMT.M76.hasHamiltonGeneralizedDehnInput}
+\source{Hamilton1976}
+\dcref{Hamilton 1976, pp.~65--69}
+\end{definition}
+
+The finite constructions are proved in
+Sections~\ref{sec:dehn-marked-tower} and
+\ref{sec:dehn-annulus-descent}.  Tower ascent decreases
+$|T|-|s_T(T)|$ for one fixed finite set of source marks $T$.
+During disk descent the number of boundary double components strictly
+decreases without increasing the interior count; after the boundary
+count vanishes, interior circle surgery decreases the latter count
+while fixing the entire rim.  Annulus descent instead decreases the
+number of connected components of the actual source double locus,
+with both whole rim maps fixed.  Finite supported repairs and exact
+tube preimages justify these component comparisons.  The separate
+proper-disk boundary correction uses the finite residual
+\eqref{eq:dehn-collar-residual} to paste its collar compression to
+the identity on the rest of the domain.  That residual construction
+is part of the proof, rather than an additional surface-existence
+premise in the generalized Dehn input.
+
+For a lattice $L$ and a chart $e$, the protected irreducible replacement
+predicate is an atlas-level relative conclusion.  Given a marked protected
+ball $D$, it produces a chart family on the same lattice-handle ambient
+space and an open neighborhood of $D$ together with the old frontier.  The
+new family is PL-irreducible on the handle, and the identity map is
+chartwise PL in both directions between the old and new families on the
+corresponding preimage.  Thus the predicate records the actual relative
+replacement data; it does not assert a homotopy equivalence to a product
+model. Theorem~\ref{thm:protected-prime-replacement} constructs it by
+maximal sphere cuts, relative capping and retained-chart transport. Index
+$i=0,1,2$ counts interval coordinates; the transverse torus dimensions are
+respectively $3,2,1$. Thus the cases are a closed three-torus, an
+interval times a two-torus, and a solid torus. Relative torus rigidity is
+applied after this replacement, to the resulting irreducible structure.
+
+\section{The four handle cases}
+\label{sec:handle-cases}
+
+For indices zero, one and two, the preceding relative-rigidity chapter
+combines these inputs and constructs the required supported correction.
+In particular, the comparison $A$ precedes the placement $Q$; the final
+correction is $B=A^{-1}Q$. The inclusion $Q(C)\subset A(P)$ puts its
+inverse in the protected agreement neighborhood, where both PL identity
+directions are available. The proof there establishes finite PL regularity
+of the corrected original chart, as well as an isotopy fixing the entire
+cylinder frontier and the radius-two exterior.
+
+The fourth case, $J=\{0,1,2\}$, uses Alexander's finite height induction
+(1924, pp.~6--8). Here the coordinate cylinder is the closed unit ball
+$B=[-1,1]^3$ for the maximum norm. Write $h$ for the given chart and
+$S=h(\partial B)$. The chart is PL near $\partial B$; compactness therefore
+gives a finite PL parameterization of this sphere. Choose a compact convex
+polyhedron $C$ with $h(B)\subset\operatorname{int}C$, and put
+$Z=\partial(C\times[-1,1])$. We prove the stronger assertion that there
+is an open connected $U$, with $\partial U=S$ and
+$\overline U\subset\operatorname{int}C$, for which both
+\[
+ (\overline U,S),\qquad
+ \bigl(Z\setminus(U\times\{1\}),S\times\{1\}\bigr)
+\]
+are finite PL three-ball pairs. The second ball is the complementary side
+in the fixed polyhedral three-sphere $Z$.
+
+Triangulate $S$ and choose an affine height $a$ distinct on its finitely
+many vertices. Each whole section $S\cap\{a=c\}$ has a finite presentation
+by simple polygons and at most one residual point; distinct polygons can
+meet only at that point. Give the section charge $q(c)=0$ if its polygons
+are pairwise disjoint, and otherwise give it charge equal to the number of
+\emph{all} polygons in the presentation. Only finitely many levels have
+positive charge, so
+\[
+ N=\sum_{c\in\operatorname{supp}q}q(c)
+\]
+is a nonnegative integer. Recursive surfaces retain such complete section
+presentations, finite height-event sets, collars of branching sections,
+and approaches from both height directions at nonisolated section points.
+We induct on $N$, keeping the same outer body $C$ and both ball pairs.
+
+If $q(c)>0$, the planar polygon arrangement at height $c$ supplies a
+polygon bounding a planar disk $d$ whose intersection with $S$ is exactly
+its rim. Cutting the parameter sphere at that rim gives two surface disks
+$s,s'$ with $S=s\cup s'$ and $s\cap s'=\partial d$; each capped sphere
+is $s\cup d$ or $s'\cup d$. Choose a small height window avoiding the other
+finitely many events. The branching collars push the two caps to opposite
+sides inside this window by finite PL ambient homeomorphisms supported in
+$\operatorname{int}C$. When the common branching point lies on the chosen
+rim it is retained by the two pointed cap moves; otherwise ordinary cap
+moves introduce only isolated extreme sections. Whole section polygons
+are transported or partitioned between the children. Their charges obey
+$q_1(t)+q_2(t)\leq q(t)$ at every corresponding level, with a strict
+inequality at the selected level; new isolated extreme sections have
+charge zero. Consequently $N_1+N_2<N$. This is the finite decrease needed
+for both recursive calls, without requiring a decrease in vertex count.
+
+Pull the resulting regions and both of their ball pairs back by the same
+cap homeomorphisms. The actual bounded regions $U_1,U_2$ of the capped
+spheres have three possible incidences: their closures meet exactly in
+$d$, or one open region lies inside the other. In the first case the new
+region is $\operatorname{int}(\overline U_1\cup\overline U_2)$; attachment
+of two balls along their common boundary disk gives its ball. In the
+nested case, say $U_1\subset U_2$, the region is
+$U_2\setminus\overline U_1$. To obtain its ball, take a collar of the
+appropriate surface disk inside the certified exterior of $U_1$, avoiding
+the exterior of $U_2$ except at the common rim. The spherical covering
+forces this collar into $\overline U_2$. Ball attachment followed by
+compression across the collar removes $\overline U_1$ and leaves a ball
+with boundary $s\cup s'$. The exterior certificates provide the relative
+neighborhood along the old cap needed to glue this compression to the
+identity. The complementary ball is obtained by the corresponding
+excision in the first case, and in the nested case by attaching
+$\overline U_1\times\{1\}$ to the exterior of $U_2$. These operations
+identify the literal set $Z\setminus(U\times\{1\})$, as well as its
+boundary, and so preserve the strengthened induction assertion.
+
+For the base $N=0$, zero charge initially says only that each section's
+polygons are disjoint. Use the two-sided approach property to tilt the
+height slightly on the same finite surface complex so that its positive
+and negative vertex links are connected whenever nonempty. The generic
+height has unique extreme vertices $p_-,p_+$; connectedness of the sphere
+and the signed links then imply that every strict intermediate section
+is one whole simple polygon. Let $d(c)$ be its planar disk. Near $p_-$ the
+surface is conical, giving a first three-ball bounded by $d(c)$ and the
+whole lower surface. Its exterior is also a ball: in a small convex
+envelope the complementary frontier disk cones to a second ball, and
+attaching that cone to the exterior of the envelope in $Z$ gives precisely
+the exterior of the first cone. Reversing height gives the corresponding
+last cone near $p_+$.
+
+Between these cones, a collar of the whole section gives one joint finite
+PL cylinder chart for a small height band. In its height coordinates a
+small move from $c$ to $c'$ is realized by
+$(x,t)\mapsto(x,t+(c'-c)\sigma(x,t))$, where the PL cutoff $\sigma$ is one
+on the swept disk and vanishes outside a compact subset of the chart.
+Taking $|c'-c|$ small makes each vertical map strictly increasing. After
+conjugation this is an ambient homeomorphism supported inside $C$ that
+carries both the capped lower ball and its exterior to the next ones.
+The cylinder slices equal the previously chosen $d(c)$ by uniqueness of
+the planar disk with its specified polygon rim. A finite subdivision of
+the compact interval between the two endpoint heights, subordinate to
+these collar neighborhoods, propagates both ball pairs to the last cone.
+Attaching that cone removes the final cap and gives the two required
+balls for the original sphere. Thus the base and the positive-charge
+reduction together prove the strengthened assertion.
+
+It remains to identify the constructed region with the given chart image.
+Set $V=h(\operatorname{int}B)$. The chart homeomorphism and compactness give
+$\partial V=S$ and $\overline V=h(B)$. If $U$ and $V$ were disjoint, the
+connected interior of the certified exterior ball,
+$Z\setminus(\overline U\times\{1\})$, would meet $V\times\{1\}$ and
+avoid its relative frontier $S\times\{1\}$, hence would lie entirely in
+$V\times\{1\}$. But it contains a point of the bottom face
+$C\times\{-1\}$, a contradiction. Since $U$ and $V$ intersect, their
+connectedness and common frontier imply both inclusions, so $U=V$.
+The finite PL ball is therefore the actual pair $(h(B),h(\partial B))$.
+
+Extend the prescribed finite PL boundary map to a finite PL homeomorphism
+$g:B\to h(B)$ agreeing with $h$ on $\partial B$, by coning boundary maps
+in ball parameterizations. Then $A=h^{-1}g$ fixes $\partial B$ and extends
+by the identity outside $B$, with $hA=g$ on $B$. The corrected chart is
+PL near the whole ball: on the ball it is $g$, outside it retains $h$,
+and these PL maps agree along the polyhedral boundary. For $t>0$ the
+Alexander isotopy is $A_t(x)=tA(x/t)$ for $\|x\|\leq t$, and $A_t(x)=x$
+otherwise. It starts at $A_0=\operatorname{id}$ and fixes the entire unit
+sphere and exterior at
+every time; the same formula for the inverse gives joint continuity of
+the inverse family. This completes index three. Together with indices
+zero, one and two it gives the straightening for every
+$J\subseteq\{0,1,2\}$ with the hypotheses and quantifiers of
+Section~\ref{sec:smoothing-contract}.
+
+\section{Finite supported assembly}
+\label{sec:finite-assembly}
+
+The local straightening theorem is converted into a global supported
+correction as follows.  Choose a finite compact chart presentation of a
+compact set $Q$ in the old PL atlas.  Order its finitely many affine faces
+by a Hamilton face order.  If $P_k$ is the union of the first $k$ model
+faces, then
+\[
+ P_0=\varnothing,\qquad P_{k+1}=P_k\cup\operatorname{carrier}(\sigma_k),
+ \qquad Q\subset P_n.
+\]
+At stage $k$, the new face frontier lies in the current open PL
+neighborhood $U_k$ of $P_k$, and its intrinsic interior is disjoint from
+$P_k$. Choose the handle width after $U_k$ has been chosen: its attaching
+region then lies in $U_k$, while its moving interior avoids $P_k$.
+Straightening this handle extends the PL region to a neighborhood of
+the new face and $P_k$. The correction fixes $P_k$, is supported on a
+compact subset of the chart domain, and extends by the identity outside
+that domain. Compose it with the accumulated correction. The new open
+PL neighborhood can shrink around the old carrier, but must contain
+the enlarged carrier $P_{k+1}$. Thus the induction preserves the
+previously treated faces without presupposing a single handle width
+that works for every later neighborhood.
+
+The result is an ambient homeomorphism $F$, an open set $U$ containing $Q$,
+and a compact support set $S$ such that $F=\mathrm{id}$ on $S^c$. If
+$d$ is the incoming chart and $c_i$ an old chart, then
+$(d\circ F)\circ c_i^{-1}$ is locally piecewise affine on
+$c_i(U\cap\operatorname{dom}c_i)$. This construction applies on the
+actual overlap, where $d$ has full source.
+
+To obtain an atlas, choose finitely many compact chart cores whose
+interiors cover $M$. Suppose a finite compatible family already covers
+their preceding union $A$, and the next core is $B\subset\operatorname{dom}d$.
+Apply the construction to the compact overlap $A\cap B$. Its compact
+support lies inside the actual overlap, so its homeomorphism extends by
+the identity to $M$. The corrected chart still has the same source and
+target as $d$. Choose open neighborhoods $U_A,U_B$ of $A,B$ with
+$U_A\cap U_B$ in the straightened region. Restrict the old charts to
+$U_A$ and the corrected chart to $U_B$. Old transitions remain PL, and
+the displayed formula proves this for the new transitions; their inverses
+are PL because they are local homeomorphisms. The new family covers
+$A\cup B$. Finite induction constructs a compatible PL atlas on the
+original topology, with the cocycle identities inherited from its actual
+coordinate maps.
+
+\section{Independent vertices before Cairns smoothing}
+\label{sec:independent-triangulation}
+
+Here is the finite geometric realization of the compatible PL atlas just
+constructed. Choose finitely many charts $e_i$ and compact cores
+$Q_i\subset\operatorname{dom}e_i$ whose interiors cover $M$. In each
+coordinate domain, enclose $e_i(Q_i)$ in an inner finite polyhedron and
+then in the interior of an outer finite polyhedron, still inside that
+domain. On a common subdivision assign the value $(1,v)$ to each vertex
+$v$ in the inner polyhedron and zero to the remaining vertices, and
+extend affinely over simplices. This gives a PL graph block equal to
+$x\mapsto(1,x)$ on the inner polyhedron and zero on the outer boundary;
+extend it by zero outside. Its height lies in $[0,1]$. If the height is
+one, every vertex with positive barycentric weight has height one, so
+the second coordinate is exactly $x$. Transporting the block by $e_i$
+and extending by zero gives a continuous map
+$g_i:M\to\mathbb R\times\mathbb R^3$, supported compactly inside the
+chart. It is locally PL in every chart by compatibility of transitions.
+The map
+\[
+ \Gamma:M\longrightarrow E=\prod_i(\mathbb R\times\mathbb R^3),
+ \qquad \Gamma(x)=(g_i(x))_i
+\]
+is injective: choose $i$ with $x\in Q_i$; equality of the $i$th blocks
+forces $y$ into the same chart with $e_i(y)=e_i(x)$. Compactness and the
+Hausdorff property make $\Gamma$ a homeomorphism onto its image.
+
+For each point, a finite local PL witness in a coordinate domain gives
+a finite geometric complex in $E$: its affine image is embedded because
+$\Gamma$ is injective. Choose the witnesses with the point in the
+interior of their coordinate carriers. These interiors cover $M$, so
+finitely many image complexes cover exactly $\Gamma(M)$. To triangulate
+their union, describe their simplices by finite affine inequalities,
+subdivide a surrounding polyhedral neighborhood along all the associated
+hyperplanes, and retain the faces lying in at least one supplied simplex.
+This is a finite geometric complex $K$ with $|K|=\Gamma(M)$; intersections
+have been subdivided compatibly, and no new points are added to the image.
+
+On $\Gamma(\operatorname{int}Q_i)$ the ambient linear projection $a_i$
+onto the second coordinate of block $i$ equals $e_i\circ\Gamma^{-1}$.
+Repeated barycentric subdivision makes every whole closed vertex star
+lie in one of these open cores: the mesh tends to zero, the diameter of
+a star is at most twice the mesh, and the finite core cover has a
+Lebesgue number. Keep the name $K$ for the resulting subdivision.
+Thus $a_i$ is injective on that star. A closed vertex star is a
+neighborhood of its vertex in $|K|$, and the corresponding chart is
+open, so $a_i$ sends the vertex into the interior of the star image in
+$\mathbb R^3$.
+
+These affine star maps also give the exact incidence conditions needed
+below. For a face $\sigma$, choose one of its vertices and the associated
+star map. The image of $\sigma$ has relative-interior points in the
+ambient interior of this star image. Nearby points off the finitely many
+lower-dimensional faces lie in tetrahedra; taking a limit and using the
+complex intersection law gives a tetrahedral coface of $\sigma$. For an
+edge, take a small ball about such a relative-interior point inside the
+closed edge star; finiteness lets us avoid every simplex not incident
+there. The ball minus the edge's affine line is connected. Normalizing
+the barycentric weights outside the edge defines a continuous projection
+onto its entire link: every
+link point is reached along a sufficiently short segment from the chosen
+point. The edge link is therefore connected. For a triangle, the two
+sides of a small ball give two tetrahedral cofaces; a third would overlap
+one of them in its interior, contrary to the complex intersection law.
+Its link consequently has exactly two vertices. These are statements
+about the full links of $K$, since the closed star of a vertex of
+$\sigma$ contains all cofaces of $\sigma$. The construction has supplied
+the affine star and link hypotheses, but its geometric vertices need
+not be globally affinely independent.
+\source{Hamilton1976,Cairns1940}
+\dcref{Hamilton p.~69; Cairns pp.~798--799 and 804--807}
+
+This issue is repaired before applying Cairns.  Since $K$ has finitely many
+vertices, choose the Euclidean space $F=\mathbb R^{V(K)}$ and the basis
+vector assignment $v\mapsto e_v$.  The affine extension theorem constructs
+a map $f:E\to F$ satisfying
+\[
+ f|_\sigma\text{ affine for every face }\sigma,
+ \qquad f|_{|K|}\text{ injective},
+ \qquad f(v)=e_v.
+\]
+The basis vectors are affinely independent on every face.  A linear
+synthesis map $Q:F\to E$ is a left inverse on $|K|$; hence injectivity of
+$f$ is proved, rather than assumed.  The image complex $f(K)$ has exactly
+the same face and link data as $K$, and the homeomorphism to the carrier is
+composed with this embedded image.
+\lean{Geometry.SimplicialComplex.exists_independent_euclidean_realization}
+\lean{PoincareMT.M76.smoothingConclusion_of_finite_geometric_triangulation}
+\source{Cairns1940}
+\dcref{Cairns Section 3, pp.~798--799}
+
+This re-realization is logically prior to the smoothing theorem.  It is not
+an optional generic-position perturbation: it preserves the labelled faces,
+their links, the carrier homeomorphism, and the affine star hypotheses while
+providing the independent vertex set required by the Cairns construction.
+
+\section{Cairns's atlas and pullback}
+\label{sec:cairns-pullback}
+
+For a finite independent three-complex $L\subset F$ with pure four-vertex
+cofaces, connected links at edges, and two vertices in each triangle link,
+construct an ambient plane field $P(x)$ of codimension three as follows.
+At a vertex, affine independence extends the simplexwise affine
+Brouwer-star map to an ambient affine map. Its linear part is surjective
+because the star image has interior in $\mathbb R^3$, and its kernel is
+uniformly transverse to the star's secants. This supplies an initial
+plane. Here secant transversality means that projection with this kernel
+has a positive lower bound on the norm of every unit secant of the
+closed face star, not just on the directions of its individual edges.
+
+The extension over positive-dimensional faces uses the special link
+dimensions in dimension three. An edge link is a connected finite graph
+with degree two at every vertex, hence a cycle. After quotienting by the
+edge direction, fix two adjacent normal rays at $1,i\in\mathbb C$.
+Radial normalization contracts all other positive radii to one; the
+remaining angular gaps lie in $(0,\pi)$, have sum $2\pi$, and have
+first gap $\pi/2$. These conditions form a nonempty convex set, so the
+normalized cycle-projection space is contractible. A triangle has two
+normal rays $u,v$; its normalized operators satisfy $Qu=1$ and $Qv<0$,
+again a nonempty convex set. A tetrahedron has empty link and only the
+zero-dimensional normal model. Restoring the face tangent directions
+and the unrestricted operators on the ambient complement preserves
+contractibility. Thus for each positive-dimensional face the entire
+space of codimension-three planes transverse to its closed star is
+contractible \cite[Sections 4--5 and 11, pp.~800--802, 807]{Cairns1940}.
+
+Process the finitely many faces in increasing dimension, keeping the
+field unchanged on a neighborhood of the processed carrier. A full
+tetrahedral coface supplies an affine slice $b:\mathbb R^3\to F$ with
+linear part $J$; transverse planes are represented by normalized
+operators $Q:F\to\mathbb R^3$ with $QJ=1$ and kernel equal to the
+plane. On a new face, choose an inner convex core whose surrounding
+collar lies in the old field domain. Contractibility fills its boundary
+operator values across the core. Retain the additional slice coordinates
+as parameters, smooth relative to a neighborhood of the boundary, and
+normalize back to $QJ=1$. Transversality survives because its operator
+target is open and the controlled core is compact. This gives a smooth
+full-slice field $q(u)$ agreeing with the old one near that boundary.
+To extend it into the ambient space, fix $u_0$ and use
+\[
+ \Phi(u,v)=b(u)+v-Jq(u)v,\qquad v\in\ker q(u_0).
+\]
+On a compact convex base neighborhood, $q$ has a Lipschitz constant
+$M$. Equality of two values of $\Phi$ first forces equality of their
+fixed-kernel coordinates $v$, then gives
+$u-u'=(q(u)-q(u'))v$. Thus $M\|v\|<1$ excludes a collision unless
+$u=u'$. Along the zero section the derivative is invertible;
+restricting this uniformly injective tube to the open invertibility
+locus gives a smooth inverse neighborhood of the compact core. Set the new
+ambient operator at $\Phi(u,v)$ equal to $q(u)$. Its kernel is constant
+locally along the affine leaves parametrized by $v$. Equality of the
+full-slice germs forces equality of these ambient leaf fields near the
+old boundary, so they paste while preserving the previous field on a
+neighborhood. The finite induction yields $P$ on an open neighborhood
+of $|L|$, with $\dim P(x)+3=\dim F$, transverse to each required
+face star and locally constant along its affine leaves
+\cite[Sections 7--8, pp.~803--805]{Cairns1940}.
+
+For the resulting charts, take $a$ in the relative interior of a face
+and choose a full-coface frame $J:\mathbb R^3\to F$. On a smaller
+ambient neighborhood there is a smooth normalized representative
+$Q(y)$ with $Q(y)J=1$ and $\ker Q(y)=P(y)$. Define
+$c(y)=Q(y)(y-a)$ on the carrier. The fixed projection $Q(a)$ is
+injective on the closed face star with a bounded inverse on secants.
+The paired triangular cofaces ensure that its image contains a
+neighborhood of $Q(a)a$. The ambient formula $y\mapsto Q(y)(y-a)$
+has derivative $Q(a)$ at $a$: the derivative of $Q$ is multiplied
+by $a-a=0$. After composing with the inverse of the centered fixed
+projection and shrinking the neighborhood, $c$ is a
+perturbation of the identity whose error has Lipschitz constant less
+than one. It is therefore a local homeomorphism onto an open subset
+of $\mathbb R^3$. With $b(z)=a+Jz$, normalization and leaf constancy
+give, on this chart,
+\[
+ b(c(y))-y\in P(y),\qquad Q(b(c(y)))=Q(y).
+\]
+Both points and their connecting segment lie in a sufficiently small
+convex ambient field neighborhood, so the local leaf identity applies
+along the whole segment.
+
+Choose such charts $c_i$ covering $|L|$, with slices $b_i$ and linear
+parts $J_i$. At $y=c_i^{-1}(z)$ in an overlap, both chart operators
+have kernel $P(y)$ and satisfy $Q_j(y)J_j=1$. Consequently
+$Q_i(b_i(z))J_j$ is invertible. The two slice points differ by a
+vector in $P(y)$, so the overlap map is exactly
+\[
+ (c_j\circ c_i^{-1})(z)
+ =\bigl(Q_i(b_i(z))J_j\bigr)^{-1}
+   Q_i(b_i(z))\bigl(b_i(z)-b_j(0)\bigr).
+\]
+Every term on the right is smooth on the overlap, including inversion
+on the open set of invertible matrices. This constructs the compatible
+smooth atlas on the given carrier topology
+\cite[Section 9, p.~806]{Cairns1940}.
+
+If $e:M\cong|L|$ is the carrier homeomorphism and $a$ is the smooth
+charted space on $|L|$, the smooth atlas on the original topological carrier
+is
+\[
+e^*a.
+\]
+Explicitly, if $c_i$ are the smooth charts on $|L|$, the charts on $M$
+are $\widetilde c_i=c_i\circ e$. Their transition identity is
+\[
+ \widetilde c_i\circ\widetilde c_j^{-1}
+ =c_i\circ e\circ e^{-1}\circ c_j^{-1}=c_i\circ c_j^{-1}
+\]
+on the actual overlap, so it is smooth. Conversely, a smooth atlas on $M$
+gives a compatible smooth model by taking $N=M$ and $h=\mathrm{id}$.
+Thus
+\[
+ M\text{ has a compatible smooth model}\quad\Longleftrightarrow\quad
+ \exists a\;\text{a smooth atlas on the original topology of }M.
+\]
+The forward implication uses the specified $h$ to pull back the model atlas;
+it does not identify the original arbitrary charted space with that atlas.
+
+\section{Transporting the topological hypotheses}
+\label{sec:m77-m80}
+
+Now assume in addition that $M$ is simply connected and choose a
+compatible smooth model $(N,h)$. The inverse homeomorphism
+$h^{-1}:N\cong M$ induces a homotopy equivalence,
+so
+\[
+ \operatorname{SimplyConnected}(M)
+ \Longrightarrow \operatorname{SimplyConnected}(N).
+\]
+The same model also satisfies all the conclusions of
+Chapter~\ref{ch:foundations-v4}: it is orientable, has a finite CW model,
+and has $\pi_2(N)=0$ and $\pi_3(N)\cong\mathbb Z$. These are consequences
+of its compactness, simple connectedness and dimension, with the
+chosen topology throughout. The endpoint below uses simple connectedness;
+the other conclusions explain how the smooth model meets the topology
+hypotheses used earlier in the geometric argument.
+
+Theorem~\ref{thm:sphere-smooth-endpoint} applies to this smooth model
+and produces a diffeomorphism $d:N\cong_{\mathrm{sm}}S^3$.
+The topological endpoint map is the prescribed composition
+\[
+       M\xrightarrow{h}N\xrightarrow{d}S^3,
+\]
+where $d$ is regarded as a homeomorphism. Our convention that a simply
+connected space is nonempty and path connected ensures both hypotheses
+needed to construct the smooth model. Thus the construction applies to
+every topological manifold in the following statement.
+
+\begin{theorem}[Topological endpoint]
+\label{thm:topological-endpoint}
+Every compact, Hausdorff, second-countable, simply connected topological
+three-manifold is homeomorphic to $S^3$.
+\lean{PoincareMT.m77TransportTopologicalHypotheses}
+\lean{PoincareMT.m78EndpointTransport}
+\lean{PoincareMT.m79TopologicalPoincare}
+\lean{PoincareMT.m80EndpointAssembly}
+\source{Hamilton1976,Cairns1940,MT2007}
+\dcref{Hamilton 1976, Theorem 2(1), p.~64; Cairns 1940, Theorem III, p.~797; Morgan--Tian Corollary 0.2(a)}
+\end{theorem}
+
+\begin{proof}
+The Hamilton--Cairns construction gives a smooth model $N$ and a specified
+homeomorphism $h:M\cong N$. Transport simple connectedness along
+$h^{-1}$ and apply Theorem~\ref{thm:sphere-smooth-endpoint} to obtain
+$d:N\cong_{\mathrm{sm}}S^3$. Then $d\circ h$ is the required
+homeomorphism.
+\end{proof}
+
+\section{Dependency of the endpoint}
+\label{sec:smoothing-contracts}
+
+The smoothing construction depends on the protected Dehn surfaces,
+compact cores, prime replacement and relative rigidity of
+Chapters~\ref{ch:dehn-surfaces}--\ref{ch:relative-rigidity}. It is
+independent of simple connectedness and of Ricci flow. The smooth sphere
+theorem was proved in Chapter~\ref{ch:sphere-reduction}, using the finite
+surgery history and extinction. Their combination through the specified
+map $d\circ h$ yields the topological conclusion.

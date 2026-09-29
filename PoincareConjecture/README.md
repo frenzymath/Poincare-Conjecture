@@ -20,9 +20,14 @@ for the exact revisions, verifier configuration, and logs, and the
 [FrenzyMath announcement](https://frenzymath.com/news/poincare-formalization/)
 for the project's background.
 
-The separately authored Morgan--Tian blueprint is a reading guide. Its readiness
-labels and declaration links still need reconciliation with the completed Lean
-library; they do not describe the verification status of the proof.
+The [main blueprint](blueprint/src/content.tex) now contains Horizon's 18-chapter
+exposition of the implemented proof, imported from workspace revision
+`fbdf7e1493ed`. Seventeen chapters have passed Horizon's source and readability
+review; smoothing and whole-book publication review remain pending. The
+[snapshot record](blueprint/horizon-import/README.md) preserves chapter hashes,
+review decisions, and the distinction between current and historical Lean links.
+Only this project's blueprint shows formalization progress; all 16 reference
+projects remain blueprint-only.
 
 ## Build
 
@@ -37,14 +42,11 @@ Graph synchronization and local website preview are documented in the root
 ## Blueprint map
 
 The project-local `Blueprint map` tab is generated from the live hgraph nodes
-and `uses` edges. Regenerate it after changing the blueprint or synchronizing
-the graph:
+and `uses` edges during the site build:
 
 ```bash
-python3 blueprint/tools/build_blueprint_map.py
+python3 scripts/build_site.py --out _site
 ```
 
-The generated `blueprint/blueprint-map-tab.html` is loaded only by this
-project's blueprint tab; the built-in dependency graph remains the canonical
-hgraph view. The map is a collapsed reader view of the same live semantic DAG,
-not a smaller proof graph.
+Run this command from the repository root. The map is generated in temporary
+storage from the same current chapters as the built-in dependency graph.
