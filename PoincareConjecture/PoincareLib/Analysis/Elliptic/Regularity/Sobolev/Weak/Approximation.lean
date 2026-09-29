@@ -3,6 +3,8 @@
 /-
 Adapted from Chow--Liao--Qin, revision `1b535dd102b94cc42b107cca27059687888f08b3`,
 `DifferentialGeometry/External/DeGiorgi/SobolevSpace/Approximation.lean`.
+The cited file derives from Julia Kempe and Scott Armstrong's DeGiorgi project.
+Copyright 2026 Scott Armstrong and Julia Kempe.
 Apache-2.0; see `references/ricci-flow/chow-liao-qin-2026/LICENSE.Apache-2.0.txt`.
 -/
 

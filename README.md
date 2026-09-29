@@ -70,6 +70,7 @@ See [frenzymath/PoincareConjecture](https://github.com/frenzymath/PoincareConjec
 for the companion proof repository and comparator statement. This repository
 organizes the proof library by mathematical subject and adds the blueprint.
 Exact import revisions, adaptations, and retained source notices are recorded
-in [the import provenance](PoincareConjecture/IMPORT.md).
+in [the import provenance](PoincareConjecture/IMPORT.md) and
+[MODIFICATIONS.md](PoincareConjecture/MODIFICATIONS.md).
 
 Licensed under [Apache 2.0](LICENSE).

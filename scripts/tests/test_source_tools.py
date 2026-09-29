@@ -7,10 +7,16 @@ import unittest
 SCRIPTS = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(SCRIPTS))
 from lean_stats import count_source, scan_tree
+from detect_provenance import lean_tokens
 from build_site import preserve_legacy_routes, stage_workspace
 
 
 class StatisticsTests(unittest.TestCase):
+    def test_provenance_tokenizer_ignores_nested_comments_and_whitespace(self):
+        left = '/- ignored -/\n/- nested /- comment -/ -/ def x := 1'
+        right = 'def x := 1'
+        self.assertEqual(lean_tokens(left), lean_tokens(right))
+
     def test_explicit_exclusions_keep_solution_and_nested_production_sources(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

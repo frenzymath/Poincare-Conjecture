@@ -60,3 +60,8 @@ frozen `contracts/`, and `Comparator/Challenge.lean`. The challenge deliberately
 contains two admissions and is checked separately from the production Solution.
 The source report lists these exclusions and still scans Solution and all
 production library sources. It does not certify compilation or proof fidelity.
+
+File-level reuse and attribution decisions are recorded in
+[MODIFICATIONS.md](MODIFICATIONS.md). The repository includes a detector that
+reports high-similarity Lean files for maintainer review; similarity alone does
+not establish authorship or copyright.
